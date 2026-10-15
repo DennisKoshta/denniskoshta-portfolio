@@ -1,0 +1,791 @@
+[
+  {
+    "slug": "rag-eval-kit",
+    "title": "rag-eval-kit",
+    "eyebrow": "Comparable experiments for retrieval systems",
+    "summary": "A published Python framework for comparing RAG pipelines across answer quality, retrieval, latency, and cost—with resumable runs and inspectable reports.",
+    "kind": "Tool",
+    "domains": [
+      "AI & ML",
+      "Evaluation",
+      "Developer tools"
+    ],
+    "status": "Published",
+    "stack": [
+      "Python",
+      "Pydantic",
+      "YAML",
+      "pytest"
+    ],
+    "contribution": "Independent open-source project: evaluation architecture, adapters, metrics, execution, reporting, and PyPI packaging.",
+    "sections": [
+      {
+        "title": "A common experiment, across different systems",
+        "paragraphs": [
+          "A retrieval change can improve an average score while making a particular topic worse, increasing latency, or doubling the cost of an answer. I built rag-eval-kit to make those tradeoffs visible in the same experiment.",
+          "A pipeline plugs in through one query method. A configuration file defines the labeled questions, parameter sweep, and metrics. The runner applies the same evaluation loop to raw model integrations, LangChain, LlamaIndex, R2R, and Haystack. It records per-question results before producing aggregate comparisons."
+        ]
+      },
+      {
+        "title": "Keep the run inspectable",
+        "paragraphs": [
+          "Parallel queries, checkpoints, and configuration-aware resume support make experiments practical to repeat. Reports retain the individual answers, group results by dataset tags, and compare matching configurations across runs. CSV exports and self-contained HTML reports keep the evidence available outside the original execution environment.",
+          "The metric set separates answer matching, retrieval quality, model-judged correctness and faithfulness, latency, and estimated token cost. That separation matters: a high retrieval score does not establish that the generated answer is correct, and agreement from another model is a different kind of evidence from an executable check."
+        ]
+      },
+      {
+        "title": "Available to reproduce",
+        "paragraphs": [
+          "The package is published on PyPI with source, configuration examples, adapter documentation, and a test suite. The reusable contribution is the experiment infrastructure; any conclusion about a particular RAG system still depends on the dataset, metric choices, and run being examined."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "PyPI",
+        "label": "Installable Python package"
+      },
+      {
+        "value": "5",
+        "label": "Bundled system adapters"
+      }
+    ],
+    "limitations": [
+      "Model-based graders require calibration for the task and data.",
+      "Cost is estimated from supplied token counts and pricing; it is not a provider billing receipt.",
+      "No adoption or general model-performance claim is implied by publication."
+    ],
+    "links": [
+      {
+        "label": "Source & documentation",
+        "url": "https://github.com/DennisKoshta/rag-eval-kit"
+      },
+      {
+        "label": "Install from PyPI",
+        "url": "https://pypi.org/project/rag-eval-kit/"
+      }
+    ],
+    "related": [
+      "upbringing",
+      "custom-llm-harness"
+    ],
+    "evidenceDate": "2026-10-14"
+  },
+  {
+    "slug": "neurotechml",
+    "title": "NeuroTechML",
+    "eyebrow": "From recorded signals to streaming inference",
+    "summary": "Team research on classifying phonemes from surface EMG, spanning data collection, preprocessing, LSTM training, and the difficult transfer from recorded examples to live signals.",
+    "kind": "Research",
+    "domains": [
+      "AI & ML",
+      "Signal processing",
+      "Empirical research"
+    ],
+    "status": "Research archive",
+    "stack": [
+      "Python",
+      "TensorFlow",
+      "Pandas",
+      "NumPy",
+      "Matplotlib"
+    ],
+    "contribution": "Machine Learning and Data Team Lead at NeuroTechSC; contributed preprocessing, training notebooks, analysis, documentation, and live application integration within a multidisciplinary student team.",
+    "sections": [
+      {
+        "title": "Can muscle signals distinguish speech sounds?",
+        "paragraphs": [
+          "NeuroTechSC investigated whether surface electromyography could support phoneme recognition. We collected signals from facial and neck muscles, segmented labeled recordings, and trained recurrent models. The data collection grew from a small phoneme set to 44 phonemes plus a rest class, with four recording channels.",
+          "My work connected the data and model stages: cleaning and normalization, labeled-window generation, LSTM training, performance visualization, and integration with a streaming application. The team presented the research at the California Neurotechnology Conference."
+        ]
+      },
+      {
+        "title": "The deployment assumptions changed the result",
+        "paragraphs": [
+          "The most useful findings came from trying to move beyond the recorded dataset. Training on individually pronounced sounds did not transfer cleanly to continuous speech or subvocalization. Electrode placement and muscle selection changed the input distribution, and the amount and diversity of data were limiting factors.",
+          "One concrete mismatch was normalization. The offline pipeline could normalize using an entire recording; the live application received only a stream. Retraining with segment-local normalization did not recover the hoped-for performance. The repository retains that unsuccessful experiment and the resulting changes to our data-collection recommendations."
+        ]
+      },
+      {
+        "title": "What the work established",
+        "paragraphs": [
+          "The project produced documented data-processing and training pipelines, saved models, visual analysis, and a live integration attempt. Its lasting lesson is methodological: an offline score is meaningful only in relation to the recording, labeling, split, and deployment conditions that produced it."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "44",
+        "label": "Phonemes in the final collection"
+      },
+      {
+        "value": "4",
+        "label": "Surface-EMG channels"
+      }
+    ],
+    "limitations": [
+      "A student research project with limited recordings, not a validated silent-speech interface.",
+      "The reported offline experiments do not establish generalization to new speakers or continuous subvocal speech.",
+      "The hardware, collection, and research were team efforts."
+    ],
+    "links": [
+      {
+        "label": "Notebooks, models & findings",
+        "url": "https://github.com/NeuroTechSC/neurotechML"
+      },
+      {
+        "label": "NeuroTechSC team",
+        "url": "https://neurotech.ucsc.edu/our-team.html"
+      }
+    ],
+    "related": [
+      "upbringing",
+      "curiosity-satisfaction"
+    ],
+    "evidenceDate": "2026-10-14"
+  },
+  {
+    "slug": "custom-llm-harness",
+    "title": "Custom LLM Harness",
+    "eyebrow": "Model access, agent execution, and evaluation",
+    "summary": "A private harness for running model-backed agents, managing inference resources, preserving trial evidence, and comparing behavior against task-level checks.",
+    "kind": "Tool",
+    "domains": [
+      "AI & ML",
+      "Agent systems",
+      "Evaluation",
+      "Infrastructure"
+    ],
+    "status": "Active development",
+    "stack": [
+      "Python",
+      "TypeScript",
+      "Node.js",
+      "vLLM",
+      "RunPod",
+      "Docker"
+    ],
+    "contribution": "Independent systems project: deployment and gateway integration, resource lifecycle controls, benchmark orchestration, result analysis, and run inspection. Built on upstream models, OpenCode, vLLM, Harbor, and Terminal-Bench.",
+    "sections": [
+      {
+        "title": "Make an agent run observable",
+        "paragraphs": [
+          "The harness connects model serving to an interactive agent environment and a repeatable evaluation path. It manages endpoint warm-up and shutdown, reports billing information with its reporting delay, preserves run metadata and traces, and distinguishes infrastructure failures from scored task attempts.",
+          "The hosted gateway checks access credentials and separates its management credentials from the agent process. A dedicated operating-system user and service restrictions limit the hosted agent's local access. These are scoped deployment controls; they are not a claim of a general-purpose secure sandbox."
+        ]
+      },
+      {
+        "title": "A negative result from an agent comparison",
+        "paragraphs": [
+          "One study compared a baseline configuration with an optional delegation-oriented workflow on a frozen 30-task Terminal-Bench subset, using three attempts per task and arm. Task tests supplied the success signal; the analysis retained infrastructure-invalid attempts separately.",
+          "The 180 scored trials gave average success rates of 55.6% and 57.8%. The paired difference was +2.2 percentage points, with a 95% interval from −7.8 to +12.2: the experiment did not establish an improvement. Trace analysis also found no invocation of the secondary worker CLIs in either arm. Making delegation available had not demonstrated delegation in use."
+        ],
+        "table": {
+          "columns": [
+            "Measure",
+            "Baseline",
+            "Optional delegation workflow"
+          ],
+          "rows": [
+            [
+              "Scored trials",
+              "90",
+              "90"
+            ],
+            [
+              "Average task success",
+              "55.6%",
+              "57.8%"
+            ],
+            [
+              "Trials invoking secondary worker CLIs",
+              "0",
+              "0"
+            ]
+          ]
+        }
+      },
+      {
+        "title": "What is original here",
+        "paragraphs": [
+          "My contribution is the harness and the experimental accounting around it: keeping interactive workloads separate from benchmark endpoints, bounding runs, recording failures, and checking what the agent actually did. The model weights, inference engine, base agent, benchmark environments, and task checkers are credited upstream components."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "180",
+        "label": "Scored trials in the comparison"
+      },
+      {
+        "value": "No clear gain",
+        "label": "Paired interval includes zero"
+      }
+    ],
+    "limitations": [
+      "One model configuration and a selected task subset; these results do not rank general agent capability.",
+      "Infrastructure-invalid attempts were recorded and rerun; 53 such attempts are outside the 180 scored trials.",
+      "Passing task tests is not evidence of broad safety, honesty, or resistance to specification gaming.",
+      "Source and hosted access remain private."
+    ],
+    "links": [
+      {
+        "label": "Study summary data",
+        "url": "/assets/supporting/harness-study.json"
+      }
+    ],
+    "related": [
+      "rag-eval-kit",
+      "upbringing",
+      "busycoq"
+    ],
+    "evidenceDate": "2026-10-14"
+  },
+  {
+    "slug": "llm-scry",
+    "title": "llm-scry",
+    "eyebrow": "An unfinished interface to transformer internals",
+    "summary": "An open prototype for inspecting token probabilities and captured model activations through a local API built on TransformerLens.",
+    "kind": "Tool",
+    "domains": [
+      "AI & ML",
+      "Model internals",
+      "Developer tools"
+    ],
+    "status": "Prototype",
+    "stack": [
+      "Python",
+      "PyTorch",
+      "TransformerLens",
+      "FastAPI",
+      "React",
+      "TypeScript"
+    ],
+    "contribution": "Independent prototype: local model engine, generation streaming, session state, activation capture, and attention inspection API.",
+    "sections": [
+      {
+        "title": "Inspect the computation behind a generation",
+        "paragraphs": [
+          "llm-scry explores an interface for moving from a generated token to the model state behind it. The implemented backend loads a TransformerLens model, streams tokens and alternative-token log probabilities, then captures attention patterns and residual, attention-output, and MLP-output activations in a final forward pass.",
+          "Session endpoints expose generated tokens and attention patterns by layer and head. TransformerLens supplies the model hooks; this project supplies the API and session plumbing around those hooks."
+        ]
+      },
+      {
+        "title": "Current boundary",
+        "paragraphs": [
+          "The public repository is an unfinished prototype. The committed frontend references components that are not present, and the design document's activation patching and logit-lens goals are not implemented in the inspected API. It is source to examine, rather than a working browser demonstration.",
+          "Capturing an attention pattern is a starting point for inspection. It does not, by itself, explain a behavior or establish a causal mechanism. The next useful step is a bounded, reproducible intervention experiment supported by a complete interface."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "Activation capture",
+        "label": "Implemented in the model engine"
+      },
+      {
+        "value": "Source available",
+        "label": "Prototype scope is explicit"
+      }
+    ],
+    "limitations": [
+      "Incomplete frontend; no working hosted demonstration is claimed.",
+      "Activation patching and causal findings are not demonstrated by this repository.",
+      "The underlying model instrumentation is provided by TransformerLens."
+    ],
+    "links": [
+      {
+        "label": "Explore the prototype source",
+        "url": "https://github.com/DennisKoshta/llm-scry"
+      }
+    ],
+    "related": [
+      "curiosity-satisfaction",
+      "upbringing"
+    ],
+    "evidenceDate": "2026-10-14"
+  },
+  {
+    "slug": "transferbatch",
+    "title": "TransferBatch",
+    "eyebrow": "Production sheets with an accountable order trail",
+    "summary": "A Shopify-connected workflow that turns transfer orders into checked production sheets while preserving quantities, physical dimensions, and the identity of issued files.",
+    "kind": "Product",
+    "domains": [
+      "Products & tools",
+      "Verification",
+      "Workflow systems"
+    ],
+    "status": "Deployed · prelaunch",
+    "stack": [
+      "Python",
+      "TypeScript",
+      "React",
+      "PostgreSQL",
+      "Shopify",
+      "Docker"
+    ],
+    "contribution": "Independent product: production-layout engine, objective checks, order reconciliation, Shopify integration, artifact issuance, and deployment.",
+    "sections": [
+      {
+        "title": "A layout is only useful if it preserves the order",
+        "paragraphs": [
+          "TransferBatch prepares batches of direct-to-film transfers from individual orders. Its central constraint is preserving what was ordered: the original artwork, exact copy counts, and physical dimensions. A compact sheet is useful only when those properties still hold.",
+          "The workflow separates preparation, verification, and issuance. Artwork is explicitly mapped to order lines; missing dimensions or mappings are not guessed by a model. The issued batch includes production artwork, copy-level traceability, and a manifest that records the files and their hashes."
+        ]
+      },
+      {
+        "title": "Check the business state as well as the pixels",
+        "paragraphs": [
+          "The system handles order revisions, allowance accounting, intentional reprints, cancellation, and private downloads. Issuing a batch creates an immutable artifact record. A later change or reprint has its own state instead of silently changing a file that may already be in a print shop's possession.",
+          "A real development-store order exercised the deployed workflow: 12 transfers across three line items were prepared, verified, and issued on one sheet. All seven output files matched their recorded hashes on repeated downloads. Cancelling a separate reprint returned its reserved allowance while preserving the original issued quantity."
+        ]
+      },
+      {
+        "title": "Release state",
+        "paragraphs": [
+          "The service is deployed and the Shopify integration has been exercised with a real test order. Commercial distribution and launch operations remain in preparation. The recorded checks establish the software workflow; they do not establish paid customer adoption or physical print quality."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "12 transfers",
+        "label": "Issued from a real test-store order"
+      },
+      {
+        "value": "7 files",
+        "label": "Hash-checked on repeated downloads"
+      }
+    ],
+    "limitations": [
+      "The observed order used a zero-cost test subscription.",
+      "No paid adoption or physical printing is claimed.",
+      "Commercial plans, store review, and operational release work remain pending."
+    ],
+    "links": [
+      {
+        "label": "Visit TransferBatch",
+        "url": "https://transferbatch.com"
+      },
+      {
+        "label": "Verification summary",
+        "url": "/assets/supporting/transferbatch-verification.json"
+      }
+    ],
+    "related": [
+      "sheetmason",
+      "living-scenarios",
+      "cognanimus"
+    ],
+    "evidenceDate": "2026-10-06"
+  },
+  {
+    "slug": "sheetmason",
+    "title": "SheetMason",
+    "eyebrow": "Document automation that preserves the original",
+    "summary": "A local desktop tool for reviewing drawing-sheet labels and splitting PDF sets into traceable exports, with explicit approvals and conservative preservation checks.",
+    "kind": "Product",
+    "domains": [
+      "Products & tools",
+      "Verification",
+      "Desktop software"
+    ],
+    "status": "Local alpha",
+    "stack": [
+      "Python",
+      "Qt / PySide",
+      "pikepdf",
+      "Tesseract",
+      "Windows"
+    ],
+    "contribution": "Independent desktop product: PDF inspection and export pipeline, review UI, local OCR integration, worker lifecycle and recovery, packaging, and validation.",
+    "sections": [
+      {
+        "title": "Automation with a reviewable boundary",
+        "paragraphs": [
+          "SheetMason turns large drawing sets into individually named PDF sheets. It extracts labels from user-defined title-block regions, offers local OCR where appropriate, and keeps source crops alongside the values being reviewed. Originals remain read-only; exports are written to a new batch directory.",
+          "The application treats a label as a proposal until it is approved. Changes to the source, layout, or naming invalidate relevant approvals. Unsupported PDF features are rejected explicitly rather than silently discarded. Export manifests preserve the mapping from every output back to its source page."
+        ]
+      },
+      {
+        "title": "Preservation and recognition are different questions",
+        "paragraphs": [
+          "Validation checks page geometry, output rendering, hashes, duplicate names, cancellation, and recovery. In a bounded native-text workflow, ten reviewed pages passed production and independent preservation checks. Two titles still required punctuation-order corrections despite having no warnings.",
+          "Scanned documents exposed a different weakness. A tighter crop improved provisional label matches to 5 of 18 sheet numbers and 5 of 13 titles, while regressing two titles. Those results remain recorded. Preserving the PDF successfully does not imply accurate OCR or reduced operator effort."
+        ]
+      },
+      {
+        "title": "Desktop reliability",
+        "paragraphs": [
+          "The implementation also addresses practical desktop failure modes: cancelled worker startup, retained process handles, interrupted imports, export cleanup, and packaged Windows execution. It remains a local alpha while native desktop qualification, broader document coverage, and independent operator comparisons continue."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "Local processing",
+        "label": "Documents stay on the workstation"
+      },
+      {
+        "value": "10 pages",
+        "label": "Preservation passed in the bounded native-text workflow"
+      }
+    ],
+    "limitations": [
+      "Unsupported forms, annotations, signatures, active content, and other unmodeled PDF features remain outside the support contract.",
+      "OCR accuracy and operator time savings are not established.",
+      "Not a signed commercial release; paid activation is unconfigured."
+    ],
+    "links": [
+      {
+        "label": "Validation summary",
+        "url": "/assets/supporting/sheetmason-validation.json"
+      }
+    ],
+    "related": [
+      "transferbatch",
+      "siting-radar"
+    ],
+    "evidenceDate": "2026-10-06"
+  },
+  {
+    "slug": "siting-radar",
+    "title": "Siting Radar",
+    "eyebrow": "Public-document signals with source-level evidence",
+    "summary": "A municipal-document pipeline that looks for energy siting changes before votes, preserving quotations and page citations while measuring coverage gaps and false positives.",
+    "kind": "Product",
+    "domains": [
+      "Products & tools",
+      "Data pipelines",
+      "Evaluation"
+    ],
+    "status": "Deployed pilot",
+    "stack": [
+      "Python",
+      "SQLite",
+      "OCR",
+      "FastAPI",
+      "HTML / CSS"
+    ],
+    "contribution": "Independent data product: jurisdiction registry, source discovery, document collection, detection, backtesting, evidence review, and alert delivery infrastructure.",
+    "sections": [
+      {
+        "title": "Find the decision before it happens",
+        "paragraphs": [
+          "Local energy siting rules are scattered across municipal agendas, packets, minutes, and hearing notices. Siting Radar collects these public sources and extracts candidate events with a jurisdiction, sector, stage, date, verbatim quotation, and page citation.",
+          "The pipeline separates finding a source, obtaining a document, extracting text, detecting a relevant event, and verifying it for display. That separation makes coverage failures visible: a missed event can originate in an absent source or unreadable scan before the detector ever runs."
+        ]
+      },
+      {
+        "title": "A quotation is necessary, but not sufficient",
+        "paragraphs": [
+          "Mechanical grounding checks require a quoted span to occur in the stored text. Early review nevertheless found many false positives: old minutes inside newer packets, model ordinances, and general guidance could all contain genuine quotations without establishing an upcoming local decision.",
+          "The response was a verification gate and explicit feedback on stage, jurisdiction, and relevance. The historical backtest also retains stricter variants instead of relying on one headline: the recorded snapshot found signals at least five days before enactment for 176 of 420 reference moratoria; requiring a posting date for minutes reduced that count to 143."
+        ]
+      },
+      {
+        "title": "Measure the pipeline honestly",
+        "paragraphs": [
+          "The product includes a public methodology and coverage view. Historical document dates support a retrospective detection study, not proof that a customer received an alert before the event. The reference dataset is Moratorium Nation, used with attribution under CC BY 4.0. Geographic coverage, extraction quality, and live precision remain separate measurements."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "Source citations",
+        "label": "Stored text and page references"
+      },
+      {
+        "value": "Separate gates",
+        "label": "Coverage, detection, and verification"
+      }
+    ],
+    "limitations": [
+      "Historical backtest results are not prospective alert recall.",
+      "Quotes occurring in source text do not establish correct interpretation.",
+      "Coverage varies by state and source platform; blocked or inaccessible sources remain gaps.",
+      "No customer or revenue claim is made."
+    ],
+    "links": [
+      {
+        "label": "Visit Siting Radar",
+        "url": "https://sitingradar.com"
+      },
+      {
+        "label": "Methodology & coverage",
+        "url": "https://sitingradar.com/methodology"
+      },
+      {
+        "label": "Backtest summary",
+        "url": "/assets/supporting/siting-radar-backtest.json"
+      }
+    ],
+    "related": [
+      "rag-eval-kit",
+      "sheetmason",
+      "transferbatch"
+    ],
+    "evidenceDate": "2026-09-30"
+  },
+  {
+    "slug": "living-scenarios",
+    "title": "Living Scenarios",
+    "eyebrow": "Specifications connected to executable results",
+    "summary": "A Jira app and CLI that connect Gherkin scenarios to their latest CI results while keeping feature files in Git as the source of truth.",
+    "kind": "Product",
+    "domains": [
+      "Products & tools",
+      "Developer tools",
+      "Verification"
+    ],
+    "status": "Staging validated",
+    "stack": [
+      "TypeScript",
+      "React",
+      "Atlassian Forge",
+      "Forge SQL",
+      "Gherkin"
+    ],
+    "contribution": "Independent product: scenario identity and result mapping, Forge app, CLI, CI adapters, consistency handling, and live platform validation.",
+    "sections": [
+      {
+        "title": "Keep the specification next to its evidence",
+        "paragraphs": [
+          "Living Scenarios shows behavior specifications and their latest test results on Jira work items. Product collaborators can draft scenarios in Jira while the committed feature files remain authoritative in Git. A CLI sends feature files and test reports from CI, so the app does not need repository credentials.",
+          "The difficult part is matching changing scenarios to the correct results and keeping derived issue summaries consistent. The implementation handles feature identity, report formats, repeated uploads, asynchronous summary updates, and Jira search properties. A green status is meaningful only when it refers to the right scenario and run."
+        ]
+      },
+      {
+        "title": "The real platform changed the implementation",
+        "paragraphs": [
+          "A live Forge staging benchmark ingested 500 feature files containing 5,000 scenarios in 19.9 seconds and uploaded 20,000 results in 18.1 seconds. The workload used generated data and the real CLI, web trigger, and Forge SQL path.",
+          "Real deployment exposed behavior the local TiDB environment accepted: large derived-table updates failed inside Forge SQL, so the implementation bounded their batch size. Jira's asynchronous bulk-property writes also required completion polling rather than immediately sending another write. These findings are recorded alongside the measured results."
+        ]
+      },
+      {
+        "title": "Release state",
+        "paragraphs": [
+          "The app has been exercised on development and staging sites. The public marketplace release, production operating setup, and some cross-persona and browser validation remain pending. It is a product engineering case study with live integration evidence, not a claim of a launched customer business."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "5,000 scenarios",
+        "label": "In a real Forge staging ingestion"
+      },
+      {
+        "value": "20,000 results",
+        "label": "Uploaded in 18.1 seconds"
+      }
+    ],
+    "limitations": [
+      "The performance workload is generated test data on a development-tier site, not customer traffic.",
+      "End-to-end in-Jira panel latency was not measured by the ingestion benchmark.",
+      "Marketplace distribution and public CLI publication remain pending."
+    ],
+    "links": [
+      {
+        "label": "Staging benchmark summary",
+        "url": "/assets/supporting/living-scenarios-benchmark.json"
+      }
+    ],
+    "related": [
+      "transferbatch",
+      "answerwell",
+      "rag-eval-kit"
+    ],
+    "evidenceDate": "2026-10-06"
+  },
+  {
+    "slug": "answerwell",
+    "title": "Answerwell",
+    "eyebrow": "Team knowledge with native permissions",
+    "summary": "A Confluence Q&A app that preserves questions as native content, adds accepted answers and expert routing, and validates access and consistency on real development sites.",
+    "kind": "Product",
+    "domains": [
+      "Products & tools",
+      "Workflow systems",
+      "Platform integrations"
+    ],
+    "status": "Staging validated",
+    "stack": [
+      "TypeScript",
+      "Atlassian Forge",
+      "Confluence",
+      "CQL"
+    ],
+    "contribution": "Independent product: Q&A domain model, native-content integration, permission-aware workflows, importers, notifications, and live acceptance and performance validation.",
+    "sections": [
+      {
+        "title": "Make institutional knowledge findable",
+        "paragraphs": [
+          "Answerwell adds structured Q&A to Confluence: questions, accepted answers, follows, tags, moderation, and expert routing. Questions and answers use native pages and comments, so the collaboration model remains tied to the host platform's content and permissions.",
+          "The engineering challenge is the boundary between native state and app-owned metadata. Events may be duplicated or reordered, content may become inaccessible, and search indexing is asynchronous. Reconciliation and permission checks have to keep lists, answer status, and notifications consistent with what a viewer can actually read."
+        ]
+      },
+      {
+        "title": "Validate assumptions on the host platform",
+        "paragraphs": [
+          "The implementation was deployed to real development and staging sites and exercised through multiple test personas, notification flows, forged-call checks, and uninstall/reinstall behavior. Native content survives uninstall while app storage is removed, and the product treats that distinction explicitly.",
+          "A separate benchmark used a 300-question test space to measure real REST read paths. Moving vote sorting into CQL reduced the warm p90 from 1.76 seconds to 0.60 seconds. These timings exclude the Forge bridge, app-data invocation, and rendering; they measure the data path rather than the complete user experience."
+        ]
+      },
+      {
+        "title": "Release state",
+        "paragraphs": [
+          "The app is awaiting marketplace and business setup. The Atlassian Questions import path was exercised end to end; an additional legacy importer remains a labeled preview because it needs validation against real existing data. Answerwell remains a working product name."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "Native content",
+        "label": "Questions and answers remain in Confluence"
+      },
+      {
+        "value": "Live personas",
+        "label": "Acceptance flows checked on dev and staging"
+      }
+    ],
+    "limitations": [
+      "No marketplace listing or customer adoption is claimed.",
+      "Read-path timings omit the bridge, cold app invocation, and rendering.",
+      "The additional legacy importer is a preview; branding and release setup are unfinished."
+    ],
+    "links": [
+      {
+        "label": "Read-path benchmark summary",
+        "url": "/assets/supporting/answerwell-benchmark.json"
+      }
+    ],
+    "related": [
+      "living-scenarios",
+      "cognanimus"
+    ],
+    "evidenceDate": "2026-10-07"
+  },
+  {
+    "slug": "http-server",
+    "title": "Multithreaded HTTP Server",
+    "eyebrow": "Systems foundations",
+    "summary": "An earlier C project exploring concurrent GET/PUT requests, worker queues, file locking, and an audit trail for request ordering.",
+    "kind": "Foundations",
+    "domains": [
+      "Foundations",
+      "Systems programming",
+      "Concurrency"
+    ],
+    "status": "Archive",
+    "stack": [
+      "C",
+      "POSIX threads",
+      "File locks",
+      "Clang"
+    ],
+    "contribution": "Course project implementation built on supplied server helper interfaces; worker dispatch, request handlers, synchronization, and request audit logging.",
+    "sections": [
+      {
+        "title": "Ordering concurrent work",
+        "paragraphs": [
+          "The server dispatches accepted connections into a shared queue and processes them through a configurable worker pool. GET and PUT handlers combine file access, synchronization, response handling, and audit entries. The exercise made the relationship between concurrent execution and an externally understandable request order concrete.",
+          "This is an archived learning project, with its original scope and dependencies. The retained repository references a course helper archive that is not included, so the snapshot is not presented as a standalone runnable server or a production network service."
+        ]
+      }
+    ],
+    "outcomes": [
+      {
+        "value": "C / POSIX",
+        "label": "Concurrency and file-I/O foundations"
+      }
+    ],
+    "limitations": [
+      "The original helper library is absent from the archived repository.",
+      "The source is private; this page describes the educational work without offering an unverified build."
+    ],
+    "links": [],
+    "related": [
+      "sixdegrees",
+      "transferbatch"
+    ],
+    "evidenceDate": "2026-10-14"
+  },
+  {
+    "slug": "sixdegrees",
+    "title": "Sixdegrees",
+    "eyebrow": "Algorithms foundations",
+    "summary": "An earlier C++ graph project that finds the shortest chain of movie collaborations between two actors.",
+    "kind": "Foundations",
+    "domains": [
+      "Foundations",
+      "Algorithms"
+    ],
+    "status": "Archive",
+    "stack": [
+      "C++",
+      "Graph search",
+      "Make"
+    ],
+    "contribution": "Actor/movie graph construction, shortest-path search, input parsing, and output reconstruction.",
+    "sections": [
+      {
+        "title": "Make the path explainable",
+        "paragraphs": [
+          "Sixdegrees represents actors and their shared films as a graph and returns a shortest connection for a requested actor pair. The output includes the movie/actor links, so the result can be followed rather than reduced to a distance alone. It remains in the archive as an example of data-structure and graph-algorithm work."
+        ]
+      }
+    ],
+    "outcomes": [],
+    "limitations": [
+      "Archived project; no current performance benchmark or deployed interface is claimed."
+    ],
+    "links": [],
+    "related": [
+      "http-server"
+    ],
+    "evidenceDate": "2026-10-14"
+  },
+  {
+    "slug": "virtual-viper",
+    "title": "Virtual Viper",
+    "eyebrow": "An early collaborative game",
+    "summary": "A Snake-inspired GDevelop game, with contributions to its vertical slice, core mechanics, visuals, and audio integration.",
+    "kind": "Foundations",
+    "domains": [
+      "Foundations",
+      "Games",
+      "Collaboration"
+    ],
+    "status": "Archive",
+    "stack": [
+      "GDevelop",
+      "Game design"
+    ],
+    "contribution": "Team project; contributed the initial vertical slice, gameplay mechanics, graphics, sprites, audio integration, and documentation.",
+    "sections": [
+      {
+        "title": "Build a playable slice together",
+        "paragraphs": [
+          "Virtual Viper is an earlier team game project. My contributions are recorded in the shared repository, including an initial vertical slice with basic mechanics and graphics, followed by sprite, sound, and background-music updates. It provides an early point of reference for the interactive tools and worlds in the Studio collection."
+        ]
+      }
+    ],
+    "outcomes": [],
+    "limitations": [
+      "The repository is available; a current hosted playable build has not been verified.",
+      "Game and asset work was collaborative."
+    ],
+    "links": [
+      {
+        "label": "Shared project repository",
+        "url": "https://github.com/superspeeder/virtual-viper"
+      }
+    ],
+    "related": [
+      "parlour",
+      "lanternfish"
+    ],
+    "evidenceDate": "2026-10-14"
+  }
+]
