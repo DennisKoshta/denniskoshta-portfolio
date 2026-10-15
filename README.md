@@ -24,14 +24,15 @@ Open `http://localhost:4173`. `PORT` can select another local port. Run the buil
 - `content/profile.json`: verified biography, public contact details, experience, and collaboration disclosure.
 - `public/evidence/`: curated source-backed experimental and implementation summaries. Preserve observation dates, source references, conditions, and limitations when updating these files.
 - `public/assets/studio/`: real screenshots of the public Studio applications.
-- `scripts/build.mjs`: page templates and conceptual illustrations.
-- `public/assets/site.css`: responsive presentation and print styles.
+- `public/assets/products/`: actual product screenshots using demonstration data.
+- `scripts/build.mjs`: page templates, workflow illustrations, and the intervention chart generated from the public evidence summary.
+- `styles/site.css`: readable responsive and print styles, with shared color and type tokens. The build minifies this into `dist/assets/site.css`.
 - `public/assets/site.js`: filtering, accessible navigation, copy actions, and the verifier interface.
 - `public/assets/verifier.js`: exact rational arithmetic for the illustrative task.
 
 Project slugs produce stable `/work/<slug>/` URLs. Change `featured` and the other selection arrays to adjust the emphasis without forking the site. Keep category, domain, maturity, and contribution independent. Research, products, tools, and Studio entries remain available from the complete catalog.
 
-Each project record contains a title, summary, type, status, domains, tools, contribution, sections, source links, limitations, related projects, and an evidence snapshot date. Outcome entries use `{ "value": "…", "label": "…" }`. Project cards do not display dates; source artifacts preserve their real provenance. Entries with private source should never use inaccessible private repositories as visitor CTAs.
+Each project record contains a title, summary, type, status, domains, tools, contribution, sections, source links, limitations, related projects, and an evidence snapshot date. Outcome entries use `{ "value": "…", "label": "…" }`. Project cards do not display dates; source artifacts preserve their real provenance. Articles use their actual `publishedAt` date. An optional `primaryLink` selects a visitor-facing entry point; raw JSON/CSV evidence stays in the source links. Entries with private source should never use inaccessible private repositories as visitor CTAs.
 
 The project intentionally excludes Rootspan, the homework collections, membership-only repositories, and infrastructure as standalone portfolio entries. Studio helper services belong in their parent projects. Commercial projects are described through the customer workflow rather than the original income motivation.
 
@@ -60,6 +61,6 @@ For future updates, build, check, and visually inspect the affected routes; use 
 
 ## Attribution and design
 
-The site uses DM Sans, with IBM Plex Mono for code, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is Dennis's publicly published portrait. Studio images are screenshots of the actual applications. The Cognanimus interface illustration is labeled as such. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
+The site uses DM Sans, with IBM Plex Mono for code, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is Dennis's publicly published portrait. Studio and product images are screenshots of the actual applications; product screenshots use demonstration data and say so. The Cognanimus workflow is labeled as an illustration. The Curiosity chart is built from `public/evidence/satisfaction-screen-summary.json`, not decorative sample data. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
 
 Codex and Claude Code contributed to the body of work in the ways described on individual project pages. This portfolio was authored and implemented with Codex. Preserve those distinctions, upstream credit, and the recorded negative findings when editing the site.

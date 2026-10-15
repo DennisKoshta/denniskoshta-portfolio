@@ -23,6 +23,7 @@ if(catalog){
     const query=search.value.trim().toLowerCase();
     let visible=0;
     for(const card of cards){const matched=(selected==='all'||card.dataset.kind===selected)&&query.split(/\s+/).every(term=>card.dataset.search.includes(term));card.hidden=!matched;if(matched)visible++;}
+    catalog.querySelectorAll('[data-project-group]').forEach(group=>{group.hidden=![...group.querySelectorAll('[data-project]')].some(card=>!card.hidden);});
     buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===selected)));
     count.textContent=`${visible} ${visible===1?'project':'projects'}${query?' matching your search':''}`;
     empty.hidden=visible>0;
@@ -43,8 +44,7 @@ async function copy(text){try{if(!navigator.clipboard?.writeText)throw new Error
 document.querySelectorAll('[data-copy-link]').forEach(b=>b.addEventListener('click',()=>copy(location.href)));
 document.querySelectorAll('[data-copy-email]').forEach(b=>b.addEventListener('click',()=>copy(b.dataset.copyEmail)));
 
-const form=document.querySelector('[data-verifier]');
-if(form){
+for(const form of document.querySelectorAll('[data-verifier]')){
   const input=form.querySelector('input[name=expression]');
   function check(){const result=checkExpression(input.value);for(const [key,passed] of [['numeric',result.numeric],['contract',result.inputs]]){const row=form.querySelector(`[data-check=${key}]`);row.dataset.passed=String(result.valid&&passed);row.querySelector('b').textContent=!result.valid?'Invalid':passed?'Pass':'Fail';}form.querySelector('[data-verifier-message]').textContent=result.message;input.setAttribute('aria-invalid',String(!result.valid));}
   form.addEventListener('submit',e=>{e.preventDefault();check();});
