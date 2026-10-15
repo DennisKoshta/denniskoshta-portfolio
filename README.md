@@ -1,6 +1,6 @@
 # Dennis Koshta — portfolio
 
-Public portfolio at **https://denniskoshta.com**. Static HTML, local fonts, original project photography/screenshots, and small browser scripts. There is no frontend framework, application database, analytics SDK, or visitor account system.
+Public portfolio at **https://denniskoshta.com**. Static HTML, local fonts, project screenshots and a profile photograph, and small browser scripts. There is no frontend framework, application database, analytics SDK, or visitor account system.
 
 ## Run locally
 
@@ -60,6 +60,6 @@ For future updates, build, check, and visually inspect the affected routes; use 
 
 ## Attribution and design
 
-The site uses DM Sans, Instrument Serif, and IBM Plex Mono, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is Dennis's publicly published portrait. Studio images are screenshots of the actual applications. The Cognanimus interface illustration is labeled as such. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
+The site uses DM Sans, with IBM Plex Mono for code, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is Dennis's publicly published portrait. Studio images are screenshots of the actual applications. The Cognanimus interface illustration is labeled as such. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
 
 Codex and Claude Code contributed to the body of work in the ways described on individual project pages. This portfolio was authored and implemented with Codex. Preserve those distinctions, upstream credit, and the recorded negative findings when editing the site.
