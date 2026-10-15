@@ -14,6 +14,8 @@ npm run dev
 
 Open `http://localhost:4173`. `PORT` can select another local port. Run the build again after content or source changes; the preview server serves the current `dist/` files.
 
+After changing the profile photo, rebuild and start the preview server, run `node scripts/render-social.mjs`, then rebuild again to include the updated link-preview image. The renderer accepts the same browser executable and base URL overrides as the browser checks.
+
 ## Content and emphasis
 
 - `content/site.json`: homepage introduction, featured project order, section selections, contact links, and canonical origin.
@@ -61,6 +63,6 @@ For future updates, build, check, and visually inspect the affected routes; use 
 
 ## Attribution and design
 
-The site uses DM Sans, with IBM Plex Mono for code, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is Dennis's publicly published portrait. Studio and product images are screenshots of the actual applications; product screenshots use demonstration data and say so. The Cognanimus workflow is labeled as an illustration. The Curiosity chart is built from `public/evidence/satisfaction-screen-summary.json`, not decorative sample data. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
+The site uses DM Sans, with IBM Plex Mono for code, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is the headshot Dennis supplied directly for this portfolio. Studio and product images are screenshots of the actual applications; product screenshots use demonstration data and say so. The Cognanimus workflow is labeled as an illustration. The Curiosity chart is built from `public/evidence/satisfaction-screen-summary.json`, not decorative sample data. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
 
 Codex and Claude Code contributed to the body of work in the ways described on individual project pages. This portfolio was authored and implemented with Codex. Preserve those distinctions, upstream credit, and the recorded negative findings when editing the site.
