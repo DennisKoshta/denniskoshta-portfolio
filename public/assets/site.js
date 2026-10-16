@@ -1,53 +1,62 @@
-import {checkExpression} from './verifier.js';
-
-const menu=document.querySelector('.menu-toggle');
-const nav=document.querySelector('#primary-nav');
-function closeMenu(){menu?.setAttribute('aria-expanded','false');nav?.classList.remove('is-open');}
-menu?.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));nav.classList.toggle('is-open',open);});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu?.getAttribute('aria-expanded')==='true'){closeMenu();menu.focus();}});
-document.addEventListener('click',e=>{if(menu?.getAttribute('aria-expanded')==='true'&&!e.target.closest('.site-header'))closeMenu();});
-nav?.addEventListener('click',e=>{if(e.target.closest('a'))closeMenu();});
-window.matchMedia('(min-width: 651px)').addEventListener('change',e=>{if(e.matches)closeMenu();});
-
-const catalog=document.querySelector('[data-catalog]');
-if(catalog){
-  const cards=[...catalog.querySelectorAll('[data-project]')];
-  const buttons=[...catalog.querySelectorAll('[data-filter]')];
-  const search=catalog.querySelector('input[type=search]');
-  const count=catalog.querySelector('[data-result-count]');
-  const empty=catalog.querySelector('.empty-results');
-  const clear=catalog.querySelector('.reset-filters');
-  const allowed=new Set(buttons.map(b=>b.dataset.filter));
-  let selected='all';
-  function render(updateUrl=true){
-    const query=search.value.trim().toLowerCase();
-    let visible=0;
-    for(const card of cards){const matched=(selected==='all'||card.dataset.kind===selected)&&query.split(/\s+/).every(term=>card.dataset.search.includes(term));card.hidden=!matched;if(matched)visible++;}
-    catalog.querySelectorAll('[data-project-group]').forEach(group=>{group.hidden=![...group.querySelectorAll('[data-project]')].some(card=>!card.hidden);});
-    buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===selected)));
-    count.textContent=`${visible} ${visible===1?'project':'projects'}${query?' matching your search':''}`;
-    empty.hidden=visible>0;
-    clear.hidden=selected==='all'&&!query;
-    if(updateUrl){const u=new URL(location.href);if(selected==='all')u.searchParams.delete('type');else u.searchParams.set('type',selected);if(query)u.searchParams.set('q',search.value.trim());else u.searchParams.delete('q');history.replaceState(null,'',u);}
+const catalog = document.querySelector('[data-catalog]');
+if (catalog) {
+  const form = catalog.querySelector('form');
+  const search = form.elements.q;
+  const category = form.elements.type;
+  const entries = [...catalog.querySelectorAll('[data-project]')];
+  const categories = new Set([...category.options].map(o => o.value));
+  function render(updateURL = true) {
+    const query = search.value.trim().toLowerCase();
+    let count = 0;
+    for (const entry of entries) {
+      entry.hidden = !((category.value === 'all' || entry.dataset.kind === category.value) && query.split(/\s+/).every(term => entry.dataset.search.includes(term)));
+      if (!entry.hidden) count++;
+    }
+    catalog.querySelectorAll('[data-project-group]').forEach(section => {
+      section.hidden = ![...section.querySelectorAll('[data-project]')].some(entry => !entry.hidden);
+    });
+    catalog.querySelector('[data-result-count]').textContent = `${count} ${count === 1 ? 'project' : 'projects'}`;
+    catalog.querySelector('.empty-results').hidden = count > 0;
+    if (updateURL) {
+      const url = new URL(location.href);
+      for (const [key,value] of [['q',search.value.trim()],['type',category.value === 'all' ? '' : category.value]]) {
+        if (value) url.searchParams.set(key,value); else url.searchParams.delete(key);
+      }
+      history.replaceState(null,'',url);
+    }
   }
-  function fromUrl(){const params=new URLSearchParams(location.search);selected=allowed.has(params.get('type'))?params.get('type'):'all';search.value=params.get('q')||'';render(false);}
-  buttons.forEach(b=>b.addEventListener('click',()=>{selected=b.dataset.filter;render();}));
-  search.addEventListener('input',()=>render());
-  catalog.querySelectorAll('.reset-filters,[data-clear-filters]').forEach(b=>b.addEventListener('click',()=>{selected='all';search.value='';render();search.focus();}));
-  window.addEventListener('popstate',fromUrl);
-  fromUrl();
+  function fromURL() {
+    const params = new URLSearchParams(location.search);
+    search.value = params.get('q') || '';
+    const requested = params.get('type') === 'tools' ? 'research' : params.get('type');
+    category.value = categories.has(requested) ? requested : 'all';
+    render(false);
+  }
+  form.addEventListener('submit',e => {e.preventDefault(); render();});
+  search.addEventListener('input',() => render());
+  category.addEventListener('change',() => render());
+  catalog.querySelector('[data-clear-filters]').addEventListener('click',() => {search.value = ''; category.value = 'all'; render(); search.focus();});
+  window.addEventListener('popstate',fromURL);
+  fromURL();
 }
 
-let toastTimer;
-function toast(message){const el=document.querySelector('.copy-toast');if(!el)return;el.textContent=message;el.classList.add('is-visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('is-visible'),3500);}
-async function copy(text){try{if(!navigator.clipboard?.writeText)throw new Error('unavailable');await navigator.clipboard.writeText(text);toast('Copied to clipboard.');}catch{toast('Copy is unavailable in this browser. Select the address to copy it.');}}
-document.querySelectorAll('[data-copy-link]').forEach(b=>b.addEventListener('click',()=>copy(location.href)));
-document.querySelectorAll('[data-copy-email]').forEach(b=>b.addEventListener('click',()=>copy(b.dataset.copyEmail)));
-
-for(const form of document.querySelectorAll('[data-verifier]')){
-  const input=form.querySelector('input[name=expression]');
-  function check(){const result=checkExpression(input.value);for(const [key,passed] of [['numeric',result.numeric],['contract',result.inputs]]){const row=form.querySelector(`[data-check=${key}]`);row.dataset.passed=String(result.valid&&passed);row.querySelector('b').textContent=!result.valid?'Invalid':passed?'Pass':'Fail';}form.querySelector('[data-verifier-message]').textContent=result.message;input.setAttribute('aria-invalid',String(!result.valid));}
-  form.addEventListener('submit',e=>{e.preventDefault();check();});
-  form.querySelectorAll('[data-expression]').forEach(b=>b.addEventListener('click',()=>{input.value=b.dataset.expression;check();}));
-  check();
+// Load the actual application only on request. Destroying the frame stops its audio.
+for (const panel of document.querySelectorAll('[data-demo]')) {
+  const mount = panel.querySelector('[data-demo-mount]');
+  panel.addEventListener('toggle',() => {
+    if (!panel.open) {mount.replaceChildren(); return;}
+    if (mount.firstChild) return;
+    const frame = document.createElement('iframe');
+    frame.title = 'Signal Garden music composition application';
+    frame.src = 'https://denniskoshta.github.io/studio/signal-garden/';
+    frame.allow = 'autoplay; fullscreen';
+    frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-downloads allow-forms');
+    frame.referrerPolicy = 'no-referrer';
+    mount.append(frame);
+  });
+  panel.querySelector('[data-close-demo]').addEventListener('click',() => {
+    panel.open = false;
+    mount.replaceChildren();
+    panel.querySelector('summary').focus();
+  });
 }

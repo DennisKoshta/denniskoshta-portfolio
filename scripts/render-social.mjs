@@ -10,16 +10,16 @@ const browser = await chromium.launch({headless:true, ...(process.env.PLAYWRIGHT
 try {
   const page = await browser.newPage({viewport:{width:1200,height:630},deviceScaleFactor:1});
   await page.goto(base);
-  await page.setContent(`<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="${base}/assets/fonts/fonts.css"><style>
-    * { box-sizing:border-box; } body { margin:0; background:#19221f; color:#e2e7df; font-family:'DM Sans',sans-serif; }
+  await page.setContent(`<!doctype html><html><head><meta charset="utf-8"><style>
+    * { box-sizing:border-box; } body { margin:0; background:#191b1d; color:#deddd9; font-family:Arial,sans-serif; }
     main { padding:68px 70px; } .intro { display:flex; justify-content:space-between; align-items:start; }
     h1 { margin:22px 0 24px; font-size:60px; line-height:1.15; font-weight:600; letter-spacing:-2px; }
-    p { margin:0; font-size:26px; line-height:1.55; color:#b0beb1; }
+    p { margin:0; font-size:26px; line-height:1.55; color:#a9adb2; }
     img { width:205px; height:235px; object-fit:cover; object-position:center 25%; border-radius:4px; }
-    footer { display:flex; justify-content:space-between; gap:24px; margin-top:70px; padding-top:30px; border-top:1px solid #3a483e; color:#b0beb1; font-size:18px; }
+    footer { display:flex; justify-content:space-between; gap:24px; margin-top:70px; padding-top:30px; border-top:1px solid #3c3f43; color:#a9adb2; font-size:18px; }
     .topics { display:flex; gap:28px; }
   </style></head><body><main><div class="intro"><div><h1>Dennis Koshta</h1><p>Software engineer &amp;<br>independent researcher.</p></div><img src="${base}${esc(profile.image)}" alt="Dennis Koshta"></div><footer><div class="topics"><span>Language models</span><span>Evaluation</span><span>Formal verification</span></div><span>denniskoshta.com</span></footer></main></body></html>`, {waitUntil:'networkidle'});
   await page.evaluate(async () => {await document.fonts.ready; await Promise.all([...document.images].map(i => i.decode()));});
-  await page.screenshot({path:'public/assets/social-headshot.png'});
-  console.log('Rendered public/assets/social-headshot.png');
+  await page.screenshot({path:'public/assets/social-plain.png'});
+  console.log('Rendered public/assets/social-plain.png');
 } finally { await browser.close(); }

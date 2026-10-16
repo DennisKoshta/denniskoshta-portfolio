@@ -27,8 +27,8 @@ try {
   }
   if(exceptions.length)result.failures.push({width,exceptions});
   await page.goto(base+'/work/');
-  await page.getByRole('button',{name:'Research',exact:true}).click();
-  assert.equal(await page.locator('[data-project]:visible').count(),4);
+  await page.getByLabel('Category',{exact:true}).selectOption('research');
+  assert.equal(await page.locator('[data-project]:visible').count(),7);
   await page.getByRole('searchbox').fill('curiosity');
   assert.equal(await page.locator('[data-project]:visible').count(),1);
   await page.reload();assert.equal(await page.getByRole('searchbox').inputValue(),'curiosity');
@@ -38,38 +38,48 @@ try {
   assert.equal(await page.locator('[data-project-group]:visible').count(),0);
   await page.getByRole('button',{name:'Show all projects'}).click();
   assert.equal(await page.locator('[data-project]:visible').count(),28);
-  assert.equal(await page.locator('[data-project] a').count(),0);
   await page.getByRole('searchbox').fill('rag-eval-kit');
-  assert.equal(await page.locator('[data-project-group]:visible').count(),1);
-  await page.getByRole('link',{name:'View project: rag-eval-kit',exact:true}).click();
+  await page.getByRole('link',{name:'rag-eval-kit',exact:true}).click();
   assert.equal(new URL(page.url()).pathname,'/work/rag-eval-kit/');
-  for(const verifierRoute of ['/','/work/upbringing/']) {
-  await page.goto(base+verifierRoute);
-  await page.getByRole('button',{name:'8 / (3 − 8 / 3)',exact:true}).click();
-  assert.equal(await page.locator('[data-check=numeric] b').textContent(),'Pass');
-  assert.equal(await page.locator('[data-check=contract] b').textContent(),'Pass');
-  await page.getByRole('button',{name:'24',exact:true}).click();
-  assert.equal(await page.locator('[data-check=numeric] b').textContent(),'Pass');
-  assert.equal(await page.locator('[data-check=contract] b').textContent(),'Fail');
-  await page.locator('#expression').fill('8/(3-3)');await page.getByRole('button',{name:'Check',exact:true}).click();
-  assert.equal(await page.locator('#expression').getAttribute('aria-invalid'),'true');
-  }
   await page.goto(base+'/work/curiosity-satisfaction/');
-  assert.equal(await page.locator('.project-links .button').getAttribute('href'),'/notes/when-steering-changes-nothing/');
-  assert.deepEqual(await page.locator('.result-row strong').allTextContents(),['48 / 144','48 / 144','48 / 144','48 / 144']);
+  assert.equal(await page.locator('.project-links a').first().getAttribute('href'),'/notes/when-steering-changes-nothing/');
+  await page.locator('.contents summary').click();
+  await page.locator('.contents a[href="#sources"]').click();
+  assert.equal(new URL(page.url()).hash,'#sources');
+  const requests=[];
+  const record=request=>requests.push(request.url());
+  page.on('request',record);
+  await page.goto(base+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('iframe').count(),0);
+  assert.equal(requests.some(url=>url.includes('github.io')),false);
+  assert.equal(requests.some(url=>/\.woff2?(?:$|\?)/.test(url)),false);
+  page.off('request',record);
+  await page.locator('[data-demo] summary').click();
+  const app=page.frameLocator('iframe');
+  await app.getByRole('button',{name:'Play',exact:true}).waitFor({timeout:30000});
+  const welcome=app.getByRole('button',{name:'Start growing',exact:true});
+  if(await welcome.isVisible())await welcome.click();
+  await app.getByRole('button',{name:'Play',exact:true}).click();
+  await app.getByRole('button',{name:'Pause',exact:true}).waitFor({timeout:10000});
+  const close=page.getByRole('button',{name:'Close application',exact:true});
+  await close.scrollIntoViewIfNeeded();
+  // Let the cross-origin frame's compositor catch up with the outer-page scroll.
+  await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+  await close.click();
+  await page.locator('iframe').waitFor({state:'detached'});
+  assert.equal(await page.locator(':focus').textContent(),'Try Signal Garden here');
   await page.goto(base+'/');await page.keyboard.press('Tab');assert.equal(await page.locator(':focus').textContent(),'Skip to content');
-  if(width===390){const menu=page.getByRole('button',{name:'Menu',exact:true});await menu.click();assert.equal(await menu.getAttribute('aria-expanded'),'true');await page.keyboard.press('Escape');assert.equal(await menu.getAttribute('aria-expanded'),'false');}
   for(const route of ['/','/work/','/work/upbringing/','/work/curiosity-satisfaction/','/studio/','/about/']){
    await page.goto(base+route,{waitUntil:'networkidle'});
-   await page.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,25));}await Promise.all([...document.images].map(i=>i.decode().catch(()=>{})));window.scrollTo(0,0);});
-   const broken=await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>!i.complete||!i.naturalWidth).map(i=>i.src));
+   await page.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,25));}await Promise.all([...document.images].filter(i=>i.getClientRects().length).map(i=>i.decode().catch(()=>{})));window.scrollTo(0,0);});
+   const broken=await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>i.getClientRects().length&&(!i.complete||!i.naturalWidth)).map(i=>i.src));
    if(broken.length)result.failures.push({route,width,brokenImages:broken});
    await page.screenshot({path:path.join(qa,`${route.replaceAll('/','-')||'home'}-${width}.png`),fullPage:true});
   }
   const bad=await page.goto(base+'/a-page-that-does-not-exist/');assert.equal(bad.status(),404);assert.equal(await page.locator('h1').count(),1);
   await context.close();
  }
- result.interactions='Passed search, filters and hidden groups, URL persistence, single-link cards, homepage and case-study verifiers, research CTA and evidence chart, skip link, mobile menu, and 404';
+ result.interactions='Passed project search and category filters, URL persistence, no-results/reset, project navigation, contents links, on-demand application playback and removal, no initial app/font requests, skip link, and 404';
 }catch(error){result.failures.push({error:error.stack});}
 finally{await browser.close();fs.writeFileSync(path.join(qa,'browser-report.json'),JSON.stringify(result,null,2));}
 console.log(JSON.stringify({pageChecks:result.checks.length,failures:result.failures.length,interactions:result.interactions,report:path.join(qa,'browser-report.json')}));

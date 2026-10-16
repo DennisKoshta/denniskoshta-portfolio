@@ -1,6 +1,6 @@
 # Dennis Koshta — portfolio
 
-Public portfolio at **https://denniskoshta.com**. Static HTML, local fonts, project screenshots and a profile photograph, and small browser scripts. There is no frontend framework, application database, analytics SDK, or visitor account system.
+Public portfolio at **https://denniskoshta.com**. Static HTML, system fonts, a small stylesheet, and browser JavaScript for project search and an optional application embed. No frontend framework, analytics, database, or visitor accounts.
 
 ## Run locally
 
@@ -12,36 +12,34 @@ npm run build
 npm run dev
 ```
 
-Open `http://localhost:4173`. `PORT` can select another local port. Run the build again after content or source changes; the preview server serves the current `dist/` files.
+Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after source changes; the server serves `dist/`.
 
-After changing the profile photo, rebuild and start the preview server, run `node scripts/render-social.mjs`, then rebuild again to include the updated link-preview image. The renderer accepts the same browser executable and base URL overrides as the browser checks.
+## Edit the site
 
-## Content and emphasis
+- `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project slug and a short description.
+- `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 28 project records.
+- `content/notes.json`: technical articles, including their actual publication dates.
+- `content/profile.json`: biography, experience, contribution disclosures, and the supplied headshot.
+- `scripts/build.mjs`: readable static page templates.
+- `styles/site.css`: responsive and print styles; minified into `dist/assets/site.css` at build time.
+- `public/assets/site.js`: project filtering and loading/unloading the Signal Garden application.
+- `public/evidence/` and `public/assets/supporting/`: source-backed experimental and implementation summaries. Preserve their conditions, dates, and limitations.
+- `public/assets/studio/` and `public/assets/products/`: actual application screenshots. Product screenshots use demonstration data.
 
-- `content/site.json`: homepage introduction, featured project order, section selections, contact links, and canonical origin.
-- `content/core-projects.json`: Upbringing, Cognanimus, BusyCoq, and curiosity/satisfaction research.
-- `content/supporting-projects.json`: AI tools, commercial products, and selected earlier work.
-- `content/studio-projects.json`: the twelve Studio projects.
-- `content/notes.json`: the two technical essays.
-- `content/profile.json`: verified biography, public contact details, experience, and collaboration disclosure.
-- `public/evidence/`: curated source-backed experimental and implementation summaries. Preserve observation dates, source references, conditions, and limitations when updating these files.
-- `public/assets/studio/`: real screenshots of the public Studio applications.
-- `public/assets/products/`: actual product screenshots using demonstration data.
-- `scripts/build.mjs`: page templates, workflow illustrations, and the intervention chart generated from the public evidence summary.
-- `styles/site.css`: readable responsive and print styles, with shared color and type tokens. The build minifies this into `dist/assets/site.css`.
-- `public/assets/site.js`: filtering, accessible navigation, copy actions, and the verifier interface.
-- `public/assets/verifier.js`: exact rational arithmetic for the illustrative task.
+Project URLs remain `/work/<slug>/`. Project lists omit dates; articles and evidence retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
 
-Project slugs produce stable `/work/<slug>/` URLs. Change `featured` and the other selection arrays to adjust the emphasis without forking the site. Keep category, domain, maturity, and contribution independent. Research, products, tools, and Studio entries remain available from the complete catalog.
+The homepage is deliberately selective. The complete project index and existing research, Studio, writing, and case-study URLs remain available. The research notes keep negative results, limitations, and attribution alongside positive findings.
 
-Each project record contains a title, summary, type, status, domains, tools, contribution, sections, source links, limitations, related projects, and an evidence snapshot date. Outcome entries use `{ "value": "…", "label": "…" }`. Project cards do not display dates; source artifacts preserve their real provenance. Articles use their actual `publishedAt` date. An optional `primaryLink` selects a visitor-facing entry point; raw JSON/CSV evidence stays in the source links. Entries with private source should never use inaccessible private repositories as visitor CTAs.
+## Interactive application
 
-The project intentionally excludes Rootspan, the homework collections, membership-only repositories, and infrastructure as standalone portfolio entries. Studio helper services belong in their parent projects. Commercial projects are described through the customer workflow rather than the original income motivation.
+The Signal Garden panel embeds the real application hosted on GitHub Pages. It makes no application request before the visitor opens the panel. Closing the panel removes the iframe and stops its audio. An ordinary link to the full application remains available with or without JavaScript. The application is developed separately; portfolio checks do not certify every application workflow.
+
+After replacing the headshot, rebuild and start the preview server, run `node scripts/render-social.mjs`, then rebuild again. This regenerates the link-preview card from HTML using the photo unchanged. The renderer accepts `TEST_BASE_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
 
 ## Verification
 
 ```bash
-npm test
+npm run build
 npm run check
 npx playwright install chromium
 npm run dev
@@ -49,20 +47,18 @@ npm run dev
 npm run test:browser
 ```
 
-`npm test` exercises the arithmetic verifier's semantic boundary, malformed inputs, resource limits, and exact fraction handling. `npm run check` validates content, evidence links, local routes/assets/anchors, metadata, duplicate identifiers, and accidental private-path/credential patterns. The browser check covers desktop/mobile pages, WCAG A/AA automated rules, search/filter state, keyboard navigation, the verifier, images, and the 404 route. It writes its report and screenshots to the ignored `research/qa/` directory.
+The content check validates all project records, local routes/assets/anchors, metadata, duplicate identifiers, and accidental private-path/credential patterns. Browser checks cover all routes at desktop and mobile widths, automated WCAG A/AA rules, search and URL persistence, keyboard navigation, application loading/closing, and the 404 page. Reports and screenshots go to ignored `research/qa/`.
 
-The browser suite accepts `TEST_BASE_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. A minimal Linux/WSL installation may also need Playwright's documented browser libraries. Install system dependencies or supply a previously prepared library path through `LD_LIBRARY_PATH`; do not hard-code another machine's cache into the project.
+The browser suite accepts `TEST_BASE_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. A minimal Linux/WSL environment may also need browser libraries through `LD_LIBRARY_PATH`. No machine-specific cache paths belong in the project.
 
-Application demos linked from this portfolio have their own maturity, operating constraints, and external dependencies. Portfolio checks do not certify every application workflow or rerun the underlying training experiments.
+## Previous design
+
+The previous design is preserved in source commit `43372fe4763f8b101a49e7a0c97e8368f477f0ae` and hosted version 5. Separate source and built-site archives were also saved outside this checkout before the redesign. The removed arithmetic demo and its tests remain recoverable from that snapshot.
 
 ## Publication
 
-The Site identity and static output directory are tracked in `.openai/hosting.json`. The Sites workflow owns the source remote, commit, archive, and deployment. Keep the project ID unchanged. A deployment packages `dist/` and the hosting manifest from the exact pushed commit. Runtime credentials must never be written into this repository.
+`.openai/hosting.json` contains the existing Site identity and `dist/` output directory. The Sites workflow owns source synchronization, commits, archives, and deployment. Preserve the project ID, public audience, and custom domains. Build, check, and inspect changes before saving and deploying the matching archive. Never write runtime credentials into this repository.
 
-For future updates, build, check, and visually inspect the affected routes; use the Sites source workflow with a fresh short-lived credential; save and deploy the resulting archive. Preserve public access and the existing custom domains. DNS is managed through the owner's Cloudflare account. The source repository is private; publication contains only the generated static site and selected public evidence/assets.
+## Attribution
 
-## Attribution and design
-
-The site uses DM Sans, with IBM Plex Mono for code, served locally with their SIL Open Font License files under `public/assets/fonts/`. The portrait is the headshot Dennis supplied directly for this portfolio. Studio and product images are screenshots of the actual applications; product screenshots use demonstration data and say so. The Cognanimus workflow is labeled as an illustration. The Curiosity chart is built from `public/evidence/satisfaction-screen-summary.json`, not decorative sample data. The small arithmetic example is an illustrative task, distinct from the historical Upbringing grader incident.
-
-Codex and Claude Code contributed to the body of work in the ways described on individual project pages. This portfolio was authored and implemented with Codex. Preserve those distinctions, upstream credit, and the recorded negative findings when editing the site.
+The portrait was supplied directly by Dennis. Codex and Claude contributed to the projects in the ways described on their pages. This site was implemented with Codex. Preserve contribution distinctions, upstream credit, and the recorded negative findings when editing.
