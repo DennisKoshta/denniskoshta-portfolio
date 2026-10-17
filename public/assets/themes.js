@@ -1,13 +1,18 @@
-// Temporary theme experiments. Loaded before CSS to restore a local choice without a flash.
+// Shared light/dark theme state. Loaded before CSS to restore preferences without a flash.
 (() => {
-  const key = 'portfolio-theme-preview-v1';
+  const key = 'portfolio-appearance-v2';
   const presets = [
-    {id:'paper', name:'Paper', bg:'#f6f5f1', accent:'#526779'},
-    {id:'porcelain', name:'Porcelain', bg:'#f5f7fa', accent:'#456b94'},
-    {id:'sand', name:'Sand', bg:'#f2eee6', accent:'#796348'},
-    {id:'mist', name:'Mist', bg:'#edf2f2', accent:'#426b70'},
-    {id:'mono', name:'Monochrome', bg:'#f3f3f3', accent:'#555555'},
-    {id:'slate', name:'Blue slate', bg:'#242e40', accent:'#9acdf7'}
+    {id:'mist', name:'Mist', mode:'light', bg:'#edf2f2', accent:'#426b70'},
+    {id:'paper', name:'Paper', mode:'light', bg:'#f6f5f1', accent:'#526779'},
+    {id:'porcelain', name:'Porcelain', mode:'light', bg:'#f5f7fa', accent:'#456b94'},
+    {id:'sand', name:'Sand', mode:'light', bg:'#f2eee6', accent:'#796348'},
+    {id:'mono', name:'Monochrome', mode:'light', bg:'#f3f3f3', accent:'#555555'},
+    {id:'graphite', name:'Graphite', mode:'dark', bg:'#202326', accent:'#adc6c8'},
+    {id:'ink', name:'Ink', mode:'dark', bg:'#181c22', accent:'#a8bad2'},
+    {id:'night-mist', name:'Night mist', mode:'dark', bg:'#1c272a', accent:'#a8cbcc'},
+    {id:'charcoal', name:'Charcoal', mode:'dark', bg:'#252525', accent:'#c5c5c5'},
+    {id:'warm-gray', name:'Warm gray', mode:'dark', bg:'#272522', accent:'#cdbda7'},
+    {id:'slate', name:'Blue slate', mode:'dark', bg:'#242e40', accent:'#9acdf7'}
   ];
   const hex = value => typeof value === 'string' && /^#[\da-f]{6}$/i.test(value);
   const rgb = color => color.slice(1).match(/../g).map(v => parseInt(v,16));
@@ -44,19 +49,40 @@
       'scheme':dark?'dark':'light'
     };
   }
-  let current={...presets[0]};
+  const modeOf = theme => luminance(theme.bg)<.179?'dark':'light';
+  const valid = theme => theme && hex(theme.bg) && hex(theme.accent);
+  const defaults = {light:presets[0],dark:presets.find(p=>p.id==='graphite')};
+  const state = {mode:'light',light:{...defaults.light},dark:{...defaults.dark}};
+  try {
+    const stored=JSON.parse(localStorage.getItem(key));
+    if(stored){
+      for(const mode of ['light','dark'])if(valid(stored[mode])&&modeOf(stored[mode])===mode)state[mode]=stored[mode];
+      if(['light','dark'].includes(stored.mode))state.mode=stored.mode;
+    }else{
+      const legacy=JSON.parse(localStorage.getItem('portfolio-theme-preview-v1'));
+      if(valid(legacy)){state.mode=modeOf(legacy);state[state.mode]=legacy;}
+    }
+  }catch{}
+  let current;
   function apply(theme,persist=true) {
-    if(!theme || !hex(theme.bg) || !hex(theme.accent))return;
+    if(!valid(theme))return;
+    const mode=modeOf(theme);
     const preset=presets.find(p=>p.bg.toLowerCase()===theme.bg.toLowerCase()&&p.accent.toLowerCase()===theme.accent.toLowerCase());
-    current={id:preset?.id||'custom',name:preset?.name||'Custom',bg:theme.bg.toLowerCase(),accent:theme.accent.toLowerCase()};
+    current={id:preset?.id||'custom',name:preset?.name||'Custom',mode,bg:theme.bg.toLowerCase(),accent:theme.accent.toLowerCase()};
+    state.mode=mode;state[mode]={...current};
     const tokens=colors(current),root=document.documentElement;
     for(const [name,value] of Object.entries(tokens))if(name!=='scheme')root.style.setProperty('--'+name,value);
     root.style.colorScheme=tokens.scheme;
-    root.dataset.theme=current.id;
+    root.dataset.theme=current.id;root.dataset.mode=mode;
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content',current.bg);
-    if(persist)try{localStorage.setItem(key,JSON.stringify(current));}catch{}
+    if(persist)try{localStorage.setItem(key,JSON.stringify(state));localStorage.removeItem('portfolio-theme-preview-v1');}catch{}
+    if(typeof window.dispatchEvent==='function')window.dispatchEvent(new Event('portfolio-theme-change'));
   }
-  try {const stored=JSON.parse(localStorage.getItem(key));if(stored&&hex(stored.bg)&&hex(stored.accent))current=stored;}catch{}
-  apply(current,false);
-  window.portfolioTheme={presets,colors,get current(){return {...current};},apply,reset(){apply(presets[0],false);try{localStorage.removeItem(key);}catch{}}};
+  apply(state[state.mode],false);
+  window.portfolioTheme={
+    presets,colors,get current(){return {...current};},apply,
+    setMode(mode){if(['light','dark'].includes(mode))apply(state[mode]);},
+    toggleMode(){this.setMode(state.mode==='light'?'dark':'light');},
+    reset(){apply(defaults[state.mode]);}
+  };
 })();
