@@ -40,23 +40,30 @@ if (catalog) {
   fromURL();
 }
 
-// Load the actual application only on request. Destroying the frame stops its audio.
+// The inline application starts paused. Removing its frame also stops its audio.
 for (const panel of document.querySelectorAll('[data-demo]')) {
   const mount = panel.querySelector('[data-demo-mount]');
-  panel.addEventListener('toggle',() => {
-    if (!panel.open) {mount.replaceChildren(); return;}
-    if (mount.firstChild) return;
-    const frame = document.createElement('iframe');
-    frame.title = 'Signal Garden music composition application';
-    frame.src = 'https://denniskoshta.github.io/studio/signal-garden/';
-    frame.allow = 'autoplay; fullscreen';
-    frame.setAttribute('sandbox','allow-scripts allow-same-origin allow-downloads allow-forms');
-    frame.referrerPolicy = 'no-referrer';
-    mount.append(frame);
-  });
-  panel.querySelector('[data-close-demo]').addEventListener('click',() => {
-    panel.open = false;
+  const rest = panel.querySelector('[data-demo-rest]');
+  const start = panel.querySelector('[data-start-demo]');
+  const stop = panel.querySelector('[data-stop-demo]');
+  const status = panel.querySelector('[data-demo-status]');
+  const initialFrame = mount.querySelector('iframe');
+  const template = initialFrame.cloneNode();
+  stop.addEventListener('click', () => {
     mount.replaceChildren();
-    panel.querySelector('summary').focus();
+    rest.hidden = false;
+    stop.hidden = true;
+    status.textContent = 'Demo stopped.';
+    start.focus();
+  });
+  start.addEventListener('click', () => {
+    if (mount.firstChild) return;
+    const frame = template.cloneNode();
+    frame.loading = 'eager';
+    mount.append(frame);
+    rest.hidden = true;
+    stop.hidden = false;
+    status.textContent = 'Starts paused. Play or create a scene to listen.';
+    stop.focus();
   });
 }

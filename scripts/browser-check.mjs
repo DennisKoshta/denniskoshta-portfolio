@@ -64,28 +64,31 @@ try {
   await page.locator('.contents summary').click();
   await page.locator('.contents a[href="#sources"]').click();
   assert.equal(new URL(page.url()).hash,'#sources');
-  const requests=[];
-  const record=request=>requests.push(request.url());
-  page.on('request',record);
   await page.goto(base+'/',{waitUntil:'networkidle'});
-  assert.equal(await page.locator('iframe').count(),0);
-  assert.equal(requests.some(url=>url.includes('github.io')),false);
-  assert.equal(requests.some(url=>/\.woff2?(?:$|\?)/.test(url)),false);
-  page.off('request',record);
-  await page.locator('[data-demo] summary').click();
-  const app=page.frameLocator('iframe');
+  const demo=page.locator('[data-demo]');
+  assert.equal(await demo.locator('iframe').count(),1);
+  assert.equal(await demo.locator('iframe').getAttribute('loading'),'lazy');
+  await demo.scrollIntoViewIfNeeded();
+  const app=page.frameLocator('[data-demo] iframe');
   await app.getByRole('button',{name:'Play',exact:true}).waitFor({timeout:30000});
-  const welcome=app.getByRole('button',{name:'Start growing',exact:true});
-  if(await welcome.isVisible())await welcome.click();
+  assert.equal(await app.locator('dialog[open]').count(),0);
+  assert.equal(await app.locator('.tab').filter({hasText:'Scenes'}).getAttribute('aria-pressed'),'true');
   await app.getByRole('button',{name:'Play',exact:true}).click();
+  await app.getByRole('button',{name:'Pause',exact:true}).click();
+  const sceneName=await app.locator('.scene-title').textContent();
+  await app.getByRole('button',{name:/Create random scene/}).click();
+  assert.notEqual(await app.locator('.scene-title').textContent(),sceneName);
   await app.getByRole('button',{name:'Pause',exact:true}).waitFor({timeout:10000});
-  const close=page.getByRole('button',{name:'Close application',exact:true});
-  await close.scrollIntoViewIfNeeded();
-  // Let the cross-origin frame's compositor catch up with the outer-page scroll.
+  const stop=demo.getByRole('button',{name:'Stop demo',exact:true});
+  await stop.scrollIntoViewIfNeeded();
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
-  await close.click();
-  await page.locator('iframe').waitFor({state:'detached'});
-  assert.equal(await page.locator(':focus').textContent(),'Try Signal Garden here');
+  await stop.click();
+  await demo.locator('iframe').waitFor({state:'detached'});
+  assert.equal(await page.locator(':focus').textContent(),'Start demo');
+  await demo.getByRole('button',{name:'Start demo',exact:true}).click();
+  await app.getByRole('button',{name:'Play',exact:true}).waitFor({timeout:30000});
+  assert.equal(await app.locator('.tab').filter({hasText:'Scenes'}).getAttribute('aria-pressed'),'true');
+  assert.equal(await demo.locator('iframe').count(),1);
   await page.goto(base+'/');await page.keyboard.press('Tab');assert.equal(await page.locator(':focus').textContent(),'Skip to content');
   for(const route of ['/','/work/','/work/upbringing/','/work/curiosity-satisfaction/','/studio/','/about/']){
    await page.goto(base+route,{waitUntil:'networkidle'});
@@ -97,7 +100,7 @@ try {
   const bad=await page.goto(base+'/a-page-that-does-not-exist/');assert.equal(bad.status(),404);assert.equal(await page.locator('h1').count(),1);
   await context.close();
  }
- result.interactions='Passed whole-tile padding/image clicks, independent resource links, keyboard activation, project search and category filters, URL persistence, no-results/reset, project navigation, contents links, on-demand application playback and removal, no initial app/font requests, skip link, and 404';
+ result.interactions='Passed whole-tile padding/image clicks, independent resource links, keyboard activation, project search and category filters, URL persistence, no-results/reset, project navigation, contents links, visible paused demo, Scenes default, random scene, playback, stop/restart, skip link, and 404';
 }catch(error){result.failures.push({error:error.stack});}
 finally{await browser.close();fs.writeFileSync(path.join(qa,'browser-report.json'),JSON.stringify(result,null,2));}
 console.log(JSON.stringify({pageChecks:result.checks.length,failures:result.failures.length,interactions:result.interactions,report:path.join(qa,'browser-report.json')}));
