@@ -4,17 +4,15 @@ const root=path.resolve('dist');
 const errors=[];
 const read=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 const projects=['core','supporting','studio'].flatMap(n=>read(`content/${n}-projects.json`));
-const notes=read('content/notes.json');
 const slugs=new Set();
 for(const p of projects){
  if(slugs.has(p.slug))errors.push(`Duplicate project ${p.slug}`);slugs.add(p.slug);
  for(const key of ['slug','title','summary','kind','status','contribution'])if(!p[key])errors.push(`${p.slug}: missing ${key}`);
- if(!p.sections?.length)errors.push(`${p.slug}: missing case study`);
+ if(!p.details?.length)errors.push(`${p.slug}: missing description`);
  for(const o of p.outcomes||[])if(typeof o!=='object'||!o.value||!o.label)errors.push(`${p.slug}: incomplete outcome`);
  for(const l of p.links||[])if(!l.label||!l.url)errors.push(`${p.slug}: incomplete source link`);
 }
 for(const p of projects)for(const s of p.related||[])if(!slugs.has(s))errors.push(`${p.slug}: unknown related project ${s}`);
-for(const n of notes){if(!n.sections?.length||!n.sources?.length)errors.push(`${n.slug}: article missing evidence`);for(const s of n.related||[])if(!slugs.has(s))errors.push(`${n.slug}: unknown related project ${s}`);}
 const pages=[];
 function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())walk(f);else if(e.name.endsWith('.html'))pages.push(f);}}
 // The imported research site has its own export/link validation.
@@ -40,4 +38,4 @@ for(const file of pages){
  }
 }
 const index=read('dist/project-index.json');if(index.length!==projects.length)errors.push('Incomplete project catalog');
-if(errors.length){console.error(errors.join('\n'));process.exitCode=1;}else console.log(`Content and build checks passed: ${projects.length} projects, ${notes.length} notes, ${pages.length} HTML pages, ${localLinks} local references.`);
+if(errors.length){console.error(errors.join('\n'));process.exitCode=1;}else console.log(`Content and build checks passed: ${projects.length} projects, ${pages.length} HTML pages, ${localLinks} local references.`);

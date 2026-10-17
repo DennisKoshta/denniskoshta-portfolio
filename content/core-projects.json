@@ -3,7 +3,7 @@
     "slug": "upbringing",
     "title": "Upbringing",
     "eyebrow": "Post-training, observed",
-    "summary": "Language-model post-training experiments using SFT, DPO, and verifiable rewards.",
+    "summary": "Experiments in teaching language models through examples, preferences, and rewards.",
     "kind": "Research",
     "domains": [
       "Language Models",
@@ -19,122 +19,7 @@
       "PEFT",
       "Modal"
     ],
-    "contribution": "Independent project spanning training runs, evaluation, artifact analysis and an interactive explanation, built on open models, published recipes and AI-assisted development.",
-    "sections": [
-      {
-        "title": "The question",
-        "paragraphs": [
-          "What changes when a base language model is taught to follow instructions, learn preferences, or optimize a programmatic reward? Upbringing makes those changes inspectable across checkpoints, including the cases where a better score hides a narrower improvement."
-        ]
-      },
-      {
-        "title": "Three experiments, three kinds of feedback",
-        "paragraphs": [
-          "The first experiment runs a reduced-scale version of Ai2’s OLMo 2 post-training recipe: supervised fine-tuning followed by direct preference optimization. The second uses LoRA DPO and simulated labelers with known preferences, so the learned behavior can be compared with the rule behind the labels. The third trains Qwen2.5-3B on Countdown arithmetic with GRPO and a programmatic verifier.",
-          "These are separate training experiments, not one model moving through all three stages. Checkpoint sweeps, reference releases, fixed prompts and saved rollouts connect training decisions to observed behavior."
-        ]
-      },
-      {
-        "title": "Training changed behavior—and exposed tradeoffs",
-        "paragraphs": [
-          "On OLMo 2 1B, instruction-following accuracy rose while the preference-training step reduced arithmetic performance relative to the SFT checkpoint. Evaluating Ai2’s released models provided a check on the local harness; it did not establish a reproduction of Ai2’s training results."
-        ],
-        "table": {
-          "columns": [
-            "Checkpoint",
-            "IFEval, loose",
-            "GSM8K, 0-shot CoT"
-          ],
-          "rows": [
-            [
-              "Base",
-              "16.6%",
-              "16.4%"
-            ],
-            [
-              "SFT · 6,500 steps",
-              "39.6%",
-              "49.4%"
-            ],
-            [
-              "SFT + DPO · 60k pairs",
-              "48.4%",
-              "45.8%"
-            ]
-          ]
-        }
-      },
-      {
-        "title": "Reward improved reliability within a limited task set",
-        "paragraphs": [
-          "For Countdown, the base model scored 1.3% per sampled attempt; the final checkpoint scored 55.7%. The final puzzle-bootstrap 95% interval was 49.7–61.7%. Every evaluated checkpoint received the same 256 puzzles and 32 samples per puzzle, with a separate greedy evaluation.",
-          "The important shape is below the headline: pass@32 reached 55.1% at step 50 and finished at 56.2%, while per-attempt accuracy kept improving. Within this experiment, training increasingly concentrated probability on solutions it could already find early. Thirty-two samples per puzzle cannot settle whether the model acquired genuinely new capabilities."
-        ],
-        "table": {
-          "columns": [
-            "Checkpoint",
-            "Per-attempt accuracy",
-            "pass@32"
-          ],
-          "rows": [
-            [
-              "Base",
-              "1.3%",
-              "26.6%"
-            ],
-            [
-              "Step 50",
-              "6.5%",
-              "55.1%"
-            ],
-            [
-              "Step 200",
-              "47.7%",
-              "56.2%"
-            ],
-            [
-              "Step 900",
-              "55.7%",
-              "56.2%"
-            ]
-          ]
-        }
-      },
-      {
-        "title": "The grader was part of the experiment",
-        "paragraphs": [
-          "An early run kept generating beyond its answer. The model often continued the conversation with invented questions and additional answers; the grader read the last answer block. Re-scoring the one retained batch found different extracted answers in 166 of 256 rollouts. Both graders awarded one correct answer, but to different rollouts.",
-          "The repair combined a generation stop at the closing answer tag with first-answer extraction and regression checks. The evidence establishes a grading vulnerability with a measured reward effect in one stopped run. It does not demonstrate that training taught the model to exploit it."
-        ]
-      },
-      {
-        "title": "Inspect the work",
-        "paragraphs": [
-          "The public repository includes training and evaluation entry points, correctness tests, the retained grader-bug batch and result tables. Final SFT, DPO and GRPO checkpoints are published on Hugging Face. The interactive project lets visitors compare responses and preference-learning traces; visitors’ own judgments are fit locally rather than used for live model training.",
-          "Models and training mixtures come from Ai2 and Qwen; Countdown data and prompt conventions build on TinyZero. The contribution is the implemented experiments, evaluation and analysis, not the base models or training algorithms."
-        ]
-      }
-    ],
-    "outcomes": [
-      {
-        "value": "3",
-        "label": "post-training methods exercised"
-      },
-      {
-        "value": "1.3 → 55.7%",
-        "label": "Countdown per-attempt accuracy"
-      },
-      {
-        "value": "166 / 256",
-        "label": "grader extraction disagreements"
-      }
-    ],
-    "limitations": [
-      "The 256 Countdown puzzles were excluded from training updates but monitored during development; they are not an untouched confirmation set.",
-      "Small models, limited training and one arithmetic task do not establish transfer to general reasoning or safety behavior.",
-      "Greedy evaluation can vary with vLLM batch composition; sub-point reference differences are not decisive.",
-      "Only one batch survives from the stopped first RLVR run. No claim of learned reward hacking is supported."
-    ],
+    "contribution": "I developed the experiments, evaluation, and interactive study with AI assistance, using existing models and training methods.",
     "links": [
       {
         "label": "Explore the interactive study",
@@ -157,18 +42,17 @@
         "url": "/evidence/upbringing-grader-audit.json"
       }
     ],
-    "related": [
-      "busycoq",
-      "cognanimus",
-      "curiosity-satisfaction"
+    "details": [
+      "Three small-scale studies: instruction tuning on OLMo 2, preference learning with simulated labelers, and reinforcement learning on Countdown arithmetic with Qwen2.5-3B.",
+      "Countdown accuracy rose from 1.3% to 55.7% per attempt on 256 development-monitored puzzles. An earlier run also exposed an answer-extraction bug in the grader; it did not establish learned reward hacking."
     ],
-    "evidenceDate": "2026-10-15"
+    "usage": "Explore the interactive study to compare model responses, or use the repository and published checkpoints to inspect the experiments."
   },
   {
     "slug": "cognanimus",
     "title": "Cognanimus",
     "eyebrow": "Learning with an evidence trail",
-    "summary": "An adaptive learning platform with generated feedback, checked answers, and records of student progress.",
+    "summary": "An adaptive learning platform with lessons, practice, feedback, and progress tracking.",
     "kind": "Product",
     "domains": [
       "Learning",
@@ -184,88 +68,7 @@
       "SQLite",
       "Structured outputs"
     ],
-    "contribution": "Independent product development: learning flows, typed content contracts, grading, evidence tracking and operational recovery, with AI-assisted implementation and curriculum review.",
-    "sections": [
-      {
-        "title": "The product",
-        "paragraphs": [
-          "Cognanimus turns broad learning goals into scoped paths, lessons, practice and cumulative assessments. Prepared material makes the ordinary learning flow immediate; metered generation adds custom content and written feedback. The live catalog contains 17 paths, 85 milestones, 255 lessons and 1,530 questions.",
-          "The design problem is larger than generating a lesson. A useful learning system must keep the question, grading criteria, learner’s submission and resulting progress consistent—even when a model disagrees, a provider fails or content changes."
-        ]
-      },
-      {
-        "title": "Make the application own the grade",
-        "paragraphs": [
-          "Numerical, choice, ordering and circuit answers use deterministic checks. Written responses go to a model with the submitted question’s rubric and relevant public context. The application validates question identities, point allocations and outcomes, then computes weighted totals itself.",
-          "An inconsistent rubric or an ambiguous judgment can remain visibly ungraded. Provider failure preserves the saved answer and exposes a retry path. Repeated submissions reuse the original attempt instead of multiplying grades or rewards. Content revisions preserve submitted snapshots; explicit corrections carry an audit record."
-        ]
-      },
-      {
-        "title": "Treat grader failures as product findings",
-        "paragraphs": [
-          "A broad 100-case run matched 99 declared score expectations. The disagreement exposed an ambiguous quantum partial-credit criterion. The expected score stayed fixed; the public rubric was clarified and a complementary valid-input case added. A focused 25-case run then passed.",
-          "A separate reported biology grading issue revealed a hidden requirement: the rubric demanded information the question had not asked for. Three related questions were repaired, and a later nine-case regression passed. Those are distinct diagnostic runs, not a single 110-case result or a real-world accuracy estimate."
-        ],
-        "table": {
-          "columns": [
-            "Evaluation",
-            "Observed result",
-            "What it supports"
-          ],
-          "rows": [
-            [
-              "Broad grading sweep",
-              "99 / 100",
-              "Detected partial-credit ambiguity"
-            ],
-            [
-              "Focused rubric / feedback regression",
-              "25 / 25",
-              "Checked the bounded repair"
-            ],
-            [
-              "Later hidden-requirement regression",
-              "9 / 9",
-              "Checked three revised biology questions"
-            ]
-          ]
-        }
-      },
-      {
-        "title": "Keep progress separate from learning evidence",
-        "paragraphs": [
-          "First attempts, fresh follow-ups and delayed recall are reported separately. The evidence view records content versions, available references, extra help and repeated questions. An unresolved check stays visible; an empty denominator says there is no evidence yet.",
-          "This makes the product’s claims narrower and more useful. Completing an activity and answering a fresh question after a delay are different observations. Neither alone establishes a causal learning benefit or a calibrated mastery probability."
-        ]
-      },
-      {
-        "title": "Reliability beyond the happy path",
-        "paragraphs": [
-          "The system includes isolated accounts, durable jobs, spending reservations, export and deletion, graceful shutdown and backup/restore verification. A local reliability exercise used real HTTP requests, SQLite and process crashes with a synthetic delayed provider. Sixteen- and 24-learner bursts exposed a shared-IP throttle that could block unrelated signed-in learners; authenticated API limits were moved to verified accounts.",
-          "The public application is an invite-only alpha. The engineering evidence covers recovery and bounded operation; a real learner study is still needed to evaluate educational effectiveness."
-        ]
-      }
-    ],
-    "outcomes": [
-      {
-        "value": "17",
-        "label": "learning paths"
-      },
-      {
-        "value": "1,530",
-        "label": "prepared questions"
-      },
-      {
-        "value": "110",
-        "label": "maintained grading cases"
-      }
-    ],
-    "limitations": [
-      "Most grading fixtures are constructed and labels are not independently supplied by human subject-matter experts. The complete 110-case suite was not rerun as one final benchmark.",
-      "Passing regression cases does not establish prompt-injection immunity, comprehensive curriculum correctness or population grading accuracy.",
-      "Reliability observations use a local single-instance application and a synthetic provider, not a production capacity benchmark.",
-      "No causal learning-effectiveness result is claimed. The freshness detector checks exact normalized repeats, not semantic paraphrases."
-    ],
+    "contribution": "I designed and built the learning flows, grading, and progress tracking with AI assistance.",
     "links": [
       {
         "label": "Visit Cognanimus",
@@ -276,18 +79,16 @@
         "url": "/evidence/cognanimus-validation.json"
       }
     ],
-    "related": [
-      "upbringing",
-      "rag-eval-kit",
-      "busycoq"
+    "details": [
+      "Choose a learning path and work through lessons and assessments. Structured answers use programmatic checks; written answers receive model-generated feedback. Saved attempts and follow-up questions help track what you retain."
     ],
-    "evidenceDate": "2026-10-15"
+    "usage": "The website is an invite-only alpha. Learning effectiveness has not yet been evaluated in a learner study."
   },
   {
     "slug": "busycoq",
     "title": "Busy Beaver Challenge",
     "eyebrow": "Proofs the kernel can check",
-    "summary": "AI-assisted research on six-state Turing machines, with formally verified halting and nonhalting proofs contributed to BusyCoq.",
+    "summary": "AI-assisted work on the Busy Beaver Challenge: proving whether small Turing machines halt or run forever.",
     "kind": "Research",
     "domains": [
       "Formal Methods",
@@ -301,89 +102,7 @@
       "C",
       "BusyCoq"
     ],
-    "contribution": "Directed an AI-assisted proof-search effort, reviewed selected write-ups and submitted the accepted contributions. The merged informal proofs and Rocq formalizations were produced with Claude Code; BusyCoq provides the verification framework.",
-    "sections": [
-      {
-        "title": "A tiny program can be very hard to understand",
-        "paragraphs": [
-          "A six-state, two-symbol Turing machine has a short transition table, yet its behavior can resist enormous amounts of simulation. A long run without a halt is evidence about that run; it is not a proof that the machine will run forever.",
-          "This work contributes formal proofs for individual machines in the Busy Beaver community’s holdout lists. Five merged pull requests contain twelve nonhalting proofs and one halting proof. These are contributions toward classifying particular machines, not a solution to BB(6)."
-        ]
-      },
-      {
-        "title": "From observed behavior to a checkable statement",
-        "paragraphs": [
-          "The workflow begins with simulation and compressed tape descriptions, then proposes macro rules and an invariant. Each macro rule must be justified by the actual transition table. An invariant must include the reached starting configuration, survive every relevant step and exclude halting.",
-          "For several related machines, state renaming or mirroring exposes shared structure. The proofs reuse the common argument while checking each exact transition table and its different starting orbit. Resemblance in a plot is not enough.",
-          "The acceptance boundary is concrete: compile against the unmodified upstream framework, check the exact machine literal and top-level theorem, inspect assumptions and run coqchk. The research harness also rejects proof escapes such as admitted lemmas."
-        ]
-      },
-      {
-        "title": "What shipped",
-        "paragraphs": [],
-        "table": {
-          "columns": [
-            "Upstream contribution",
-            "Formal result"
-          ],
-          "rows": [
-            [
-              "PR #14 · counter variant",
-              "1 nonhalting proof"
-            ],
-            [
-              "PR #15 · shared-table family",
-              "4 nonhalting proofs"
-            ],
-            [
-              "PR #16 · shared-table family",
-              "4 nonhalting proofs"
-            ],
-            [
-              "PR #17 · ternary-counter family",
-              "3 nonhalting proofs"
-            ],
-            [
-              "PR #18 · exhausted counter",
-              "1 halting proof"
-            ]
-          ]
-        }
-      },
-      {
-        "title": "A useful boundary: halting versus the step count",
-        "paragraphs": [
-          "One accepted machine is calculated to halt after approximately 1.77 × 10^44 steps. The formal theorem proves that it halts; it does not prove that exact number. The step count comes from a separate computation with simulation cross-checks. Keeping those claims separate is part of making the result inspectable.",
-          "The halting proof compresses the execution into certified batches. An untrusted procedure proposes a batch; proved guards determine whether that batch can be used. The checker does not need to trust the proposal mechanism. This is an appealing pattern for AI-assisted research: let search be inventive, and keep acceptance explicit."
-        ]
-      },
-      {
-        "title": "Attribution and the trust boundary",
-        "paragraphs": [
-          "The merged submissions disclose Claude Code’s role in producing the informal proofs and formalizations. My role was directing the effort, reviewing selected explanations and getting the contributions into the upstream project. The current broader search also uses Codex; its unpublished results are not included in the totals here.",
-          "These proofs build on BusyCoq and prior community analyses, with the specific dependencies credited in each pull request. Nonhalting submissions report closed assumptions; the halting submission records the framework’s functional-extensionality assumption. Kernel checking validates a formal statement within that foundation. It does not automatically validate every informal explanation or an extra numerical claim."
-        ]
-      }
-    ],
-    "outcomes": [
-      {
-        "value": "5",
-        "label": "merged upstream contributions"
-      },
-      {
-        "value": "12",
-        "label": "nonhalting proofs"
-      },
-      {
-        "value": "1",
-        "label": "halting proof"
-      }
-    ],
-    "limitations": [
-      "The portfolio counts only merged contributions, not locally claimed or still-open proof-search results.",
-      "AI assistance is substantive: these are not presented as unaided, hand-authored proofs.",
-      "The formal guarantee concerns exact machine statements and their recorded assumptions. The approximately 1.77e44 step count is outside the formal theorem."
-    ],
+    "contribution": "I directed the search and submitted contributions. Claude Code produced the merged proofs and Rocq formalizations, checked with BusyCoq.",
     "links": [
       {
         "label": "Research dashboard · static snapshot",
@@ -414,24 +133,23 @@
         "url": "/evidence/busycoq-contributions.json"
       }
     ],
-    "related": [
-      "upbringing",
-      "curiosity-satisfaction"
-    ],
-    "evidenceDate": "2026-10-15",
     "primaryLink": {
       "label": "Open research dashboard",
       "resourceLabel": "Research dashboard",
       "url": "/busy-beaver/",
       "featured": true,
       "note": "Static snapshot of the research dashboard."
-    }
+    },
+    "details": [
+      "The dashboard collects machine simulations, proof writeups, and contributions to BusyCoq. It shows how a tiny program can produce behavior that is difficult to understand, even after billions of simulated steps."
+    ],
+    "usage": "Open the dashboard, pick a machine, and explore its tape diagram, proof, or interactive simulator. The dashboard is a dated static copy."
   },
   {
     "slug": "curiosity-satisfaction",
     "title": "Curiosity & satisfaction in LLMs",
     "eyebrow": "Model internals, with negative results",
-    "summary": "Activation-steering experiments testing whether a candidate direction changes information-seeking behavior.",
+    "summary": "Experiments on whether model activations associated with curiosity and satisfaction affect information-seeking.",
     "kind": "Research",
     "domains": [
       "Model Internals",
@@ -446,118 +164,7 @@
       "Activation steering",
       "Deterministic task oracles"
     ],
-    "contribution": "Independent research direction and experimental development, with AI-assisted implementation, review and analysis. The studies use Qwen’s existing model weights; the contribution is the task design, measurement, intervention and evidence pipeline.",
-    "sections": [
-      {
-        "title": "The question",
-        "paragraphs": [
-          "Can internal representations associated with curiosity or satisfaction help explain when a language model seeks more information or decides to stop? The broader motivation includes possible model internal experience, but the experiments distinguish semantic representations, causal effects on behavior and claims about experience.",
-          "This is work on actual model activations: contrast directions, read-only measurements and sustained interventions in Qwen3-32B. A model describing a state is not, by itself, evidence that the model occupies that state."
-        ]
-      },
-      {
-        "title": "Start with a candidate that transfers",
-        "paragraphs": [
-          "Two separately authored narrative corpora supplied matched descriptions of curiosity versus indifference, satisfaction versus a neutral response, and six neighboring concepts. Directions were fitted on corpus A; the layer and sign were fixed before evaluating corpus B. An earliest-layer tie rule selected layer 15.",
-          "Both candidates correctly ordered all twelve held-out description pairs. Specificity was weaker than that headline: the curiosity direction also separated novelty interest and general motivation, while the satisfaction candidate’s fixed threshold transferred poorly. These results establish useful semantic contrasts, not a distinct motivational mechanism."
-        ],
-        "table": {
-          "columns": [
-            "A-fitted candidate on corpus B",
-            "Pair ordering",
-            "Fixed-threshold accuracy"
-          ],
-          "rows": [
-            [
-              "Curiosity versus indifference",
-              "12 / 12",
-              "20 / 24"
-            ],
-            [
-              "Satisfaction versus neutral",
-              "12 / 12",
-              "14 / 24"
-            ]
-          ]
-        }
-      },
-      {
-        "title": "Check natural behavior before imposing a state",
-        "paragraphs": [
-          "A follow-up used tasks with a known hidden answer and an independent oracle for which reports were informative. The model consistently requested useful information when uncertainty remained and stopped after decisive evidence.",
-          "The whole two-family study nevertheless failed readiness: the machine family missed three of twelve new-fact checks. The predicted joint activation signature also failed; the satisfaction candidate did not increase after resolution. Those failures stayed in the record. Restricting the next exploratory screen to the passing object family was an explicit development decision."
-        ]
-      },
-      {
-        "title": "The intervention engaged. Choices did not change.",
-        "paragraphs": [
-          "A fixed satisfaction-direction screen crossed 24 object worlds with four arms: untouched baseline, installed zero sham and two positive doses. The perturbation was applied at the record boundary and throughout active generated-token positions. All 1,152 assigned generations were retained, including 576 choices and 576 diagnostics.",
-          "Every arm made exactly the same choices: 96 informative reports while unresolved, then 48 stops after resolution. The primary dose’s effect on valid stopping was zero percentage points in both panels. The primary arm also failed one strict response-format diagnostic; the half-dose passed its diagnostics and still showed no choice effect."
-        ],
-        "table": {
-          "columns": [
-            "Arm",
-            "Informative choices while unresolved",
-            "Stops after resolution",
-            "Valid + correct diagnostics"
-          ],
-          "rows": [
-            [
-              "Baseline",
-              "96 / 96",
-              "48 / 48",
-              "144 / 144"
-            ],
-            [
-              "Zero sham",
-              "96 / 96",
-              "48 / 48",
-              "144 / 144"
-            ],
-            [
-              "Satisfaction +0.5",
-              "96 / 96",
-              "48 / 48",
-              "144 / 144"
-            ],
-            [
-              "Satisfaction +1.0 · primary",
-              "96 / 96",
-              "48 / 48",
-              "143 / 144"
-            ]
-          ]
-        }
-      },
-      {
-        "title": "Make a null result interpretable",
-        "paragraphs": [
-          "Checks verified exact zero-sham identity, nonzero positive perturbations, preserved pre-intervention activations, hook cleanup and complete outcome coverage. Median perturbation magnitudes were approximately 11.32% and 22.64% of the native residual norm. This confirms local intervention engagement, not satisfaction-specific engagement.",
-          "The screen ended without a positive result. No layer, sign, dose or parser was changed to rescue this test. The public evidence includes all outcome rows, candidate metrics, the failed natural-resolution gates and the fixed screen decision. Later ongoing experiments are outside this completed-study snapshot."
-        ]
-      }
-    ],
-    "outcomes": [
-      {
-        "value": "576",
-        "label": "choice trials across four intervention arms"
-      },
-      {
-        "value": "1,152",
-        "label": "retained screen outcomes"
-      },
-      {
-        "value": "0 pp",
-        "label": "observed primary stopping effect"
-      }
-    ],
-    "limitations": [
-      "One fixed candidate, site, sign and intervention schedule on one unchanged checkpoint; a null result here is not a general absence claim.",
-      "The object-only screen followed a failed two-family study. Twenty of its 24 worlds had partial projected-table exposure during development.",
-      "Semantic transfer and local activation engagement do not establish a naturally recruited regulator, psychological specificity or felt experience.",
-      "Primary response validity failed. A degenerate empirical interval from identical choices is not population equivalence.",
-      "The curated export supports arithmetic inspection; it is not a full public release of the inference pipeline or all raw captures."
-    ],
+    "contribution": "I designed and ran the experiments with AI-assisted implementation and analysis.",
     "links": [
       {
         "label": "Candidate transfer metrics · JSON",
@@ -576,16 +183,11 @@
         "url": "/evidence/satisfaction-screen-outcomes.csv"
       }
     ],
-    "related": [
-      "upbringing",
-      "busycoq",
-      "llm-scry"
+    "statusShort": "Research in progress",
+    "details": [
+      "I tested activation directions in Qwen3-32B, then applied a satisfaction-related direction while the model chose whether to request more information or stop.",
+      "In the completed 24-world screen, all four conditions made the same choices. The larger steering dose also failed one response-format check. This is a limited negative result, not evidence for or against a model having subjective experience."
     ],
-    "evidenceDate": "2026-10-15",
-    "primaryLink": {
-      "label": "Read the research note",
-      "url": "/notes/when-steering-changes-nothing/"
-    },
-    "statusShort": "Research in progress"
+    "note": "Summary data and all 1,152 outcome rows are available below; the full inference pipeline is not public."
   }
 ]

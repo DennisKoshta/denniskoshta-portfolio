@@ -18,7 +18,6 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 
 - `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project slug and a short description.
 - `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 28 project records.
-- `content/notes.json`: technical articles, including their actual publication dates.
 - `content/profile.json`: biography, experience, contribution disclosures, and the supplied headshot.
 - `scripts/build.mjs`: readable static page templates.
 - `styles/site.css`: responsive and print styles; minified into `dist/assets/site.css` at build time.
@@ -26,9 +25,9 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 - `public/evidence/` and `public/assets/supporting/`: source-backed experimental and implementation summaries. Preserve their conditions, dates, and limitations.
 - `public/assets/studio/` and `public/assets/products/`: actual application screenshots. Product screenshots use demonstration data.
 
-Project URLs remain `/work/<slug>/`. Project lists omit dates; articles and evidence retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
+Project URLs remain `/work/<slug>/`. Evidence files retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
 
-The homepage is deliberately selective. The complete project index and existing research, Studio, writing, and case-study URLs remain available. The research notes keep negative results, limitations, and attribution alongside positive findings.
+The homepage is deliberately selective. The project index, research, Studio, and project URLs remain available. Project pages use a short description, practical access information, and brief credits. Writing and its two posts have been removed; their old URLs return 404.
 
 ## Interactive application
 

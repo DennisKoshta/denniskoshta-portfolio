@@ -6,9 +6,8 @@ import assert from 'node:assert/strict';
 const base=process.env.TEST_BASE_URL||'http://127.0.0.1:4173';
 const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{})});
 const result={base,checks:[],failures:[]};
-const routes=['/','/work/','/research/','/studio/','/notes/','/about/','/colophon/'];
+const routes=['/','/work/','/research/','/studio/','/about/','/colophon/'];
 for(const p of JSON.parse(fs.readFileSync('dist/project-index.json','utf8')))routes.push(p.url);
-for(const n of JSON.parse(fs.readFileSync('content/notes.json','utf8')))routes.push(`/notes/${n.slug}/`);
 const qa=path.resolve('research/qa');fs.mkdirSync(qa,{recursive:true});
 try {
  for(const width of [1440,390]){
@@ -60,10 +59,13 @@ try {
   await page.getByRole('link',{name:'rag-eval-kit',exact:true}).click();
   assert.equal(new URL(page.url()).pathname,'/work/rag-eval-kit/');
   await page.goto(base+'/work/curiosity-satisfaction/');
-  assert.equal(await page.locator('.project-links a').first().getAttribute('href'),'/notes/when-steering-changes-nothing/');
-  await page.locator('.contents summary').click();
-  await page.locator('.contents a[href="#sources"]').click();
-  assert.equal(new URL(page.url()).hash,'#sources');
+  await page.locator('#sources summary').click();
+  assert.equal(await page.locator('#sources a').count(),4);
+  for(const route of ['/notes/','/notes/when-steering-changes-nothing/','/notes/what-the-checker-actually-checks/']){
+   const removed=await page.goto(base+route);assert.equal(removed.status(),404);
+  }
+  await page.goto(base+'/');
+  assert.equal(await page.getByRole('navigation',{name:'Main navigation'}).getByRole('link').allTextContents().then(names=>names.includes('Writing')),false);
   await page.goto(base+'/',{waitUntil:'networkidle'});
   const demo=page.locator('[data-demo]');
   assert.equal(await demo.locator('iframe').count(),0);
@@ -100,7 +102,7 @@ try {
   const bad=await page.goto(base+'/a-page-that-does-not-exist/');assert.equal(bad.status(),404);assert.equal(await page.locator('h1').count(),1);
   await context.close();
  }
- result.interactions='Passed whole-tile padding/image clicks, independent resource links, keyboard activation, project search and category filters, URL persistence, no-results/reset, project navigation, contents links, visible paused demo, Scenes default, random scene, playback, stop/restart, skip link, and 404';
+ result.interactions='Passed whole-tile padding/image clicks, independent resource links, keyboard activation, project search and category filters, URL persistence, no-results/reset, project navigation, data links, removed writing routes, visible paused demo, Scenes default, random scene, playback, stop/restart, skip link, and 404';
 }catch(error){result.failures.push({error:error.stack});}
 finally{await browser.close();fs.writeFileSync(path.join(qa,'browser-report.json'),JSON.stringify(result,null,2));}
 console.log(JSON.stringify({pageChecks:result.checks.length,failures:result.failures.length,interactions:result.interactions,report:path.join(qa,'browser-report.json')}));
