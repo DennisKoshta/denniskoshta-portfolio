@@ -18,7 +18,7 @@ try {
     img { width:205px; height:235px; object-fit:cover; object-position:center 25%; border-radius:4px; }
     footer { display:flex; justify-content:space-between; gap:24px; margin-top:70px; padding-top:30px; border-top:1px solid #3c3f43; color:#a9adb2; font-size:18px; }
     .topics { display:flex; gap:28px; }
-  </style></head><body><main><div class="intro"><div><h1>Dennis Koshta</h1><p>Software engineer.</p></div><img src="${base}${esc(profile.image)}" alt="Dennis Koshta"></div><footer><div class="topics"><span>AI safety &amp; alignment</span><span>LLM systems</span><span>Creative projects</span></div><span>denniskoshta.com</span></footer></main></body></html>`, {waitUntil:'networkidle'});
+  </style></head><body><main><div class="intro"><div><h1>Dennis Koshta</h1><p>Software engineer.</p></div><img src="${base}${esc(profile.image)}" alt="Dennis Koshta"></div><footer><div class="topics"><span>AI systems</span><span>Tools &amp; games</span><span>Experiments</span></div><span>denniskoshta.com</span></footer></main></body></html>`, {waitUntil:'networkidle'});
   await page.evaluate(async () => {await document.fonts.ready; await Promise.all([...document.images].map(i => i.decode()));});
   await page.screenshot({path:'public/assets/social-plain.png'});
   console.log('Rendered public/assets/social-plain.png');
