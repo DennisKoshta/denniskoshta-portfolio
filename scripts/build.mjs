@@ -44,7 +44,7 @@ function page({title, description = config.description, body, route = '/', activ
 <link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script><script type="module" src="/assets/site.js"></script>
 </head><body class="${route === '/' ? 'home' : ['/work/','/studio/'].includes(route) ? 'project-index-page' : ''}"><a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header">${route === '/' ? '' : link('/', 'Dennis Koshta')}<nav aria-label="Main navigation">${[['Work','/work/'],['Writing','/notes/'],['About','/about/']].map(([name,href]) => `<a href="${href}"${active === name ? ' aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
+<header class="site-header">${route === '/' ? '' : link('/', 'Dennis Koshta')}<nav aria-label="Main navigation">${[['Home','/'],['Work','/work/'],['Writing','/notes/'],['About','/about/']].map(([name,href]) => `<a href="${href}"${active === name || (name === 'Home' && route === '/') ? ' aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
 <main id="main">${body}</main>
 <footer class="site-footer"><span>Dennis Koshta</span><div>${link('mailto:' + profile.email,'Email')}${link(config.github,'GitHub')}${link('/colophon/','About this site')}</div></footer></body></html>`;
 }
