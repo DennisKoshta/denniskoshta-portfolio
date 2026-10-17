@@ -59,9 +59,9 @@ function resourceLinks(p) {
   const repo = p.links?.find(l => l.url.startsWith('https://github.com/'));
   const website = p.links?.find(l => /^https:\/\//.test(l.url) && !/github\.com|huggingface\.co|pypi\.org/.test(l.url));
   const links = [];
-  if (p.primaryLink) links.push(link(p.primaryLink.url,p.primaryLink.label));
+  if (p.primaryLink) links.push(link(p.primaryLink.url,p.primaryLink.resourceLabel || p.primaryLink.label));
   if (repo) links.push(link(repo.url, p.slug === 'busycoq' ? 'Merged contributions' : 'Code'));
-  if (website) links.push(link(website.url, p.kind === 'Creative' ? 'Open application' : p.slug === 'upbringing' ? 'Interactive study' : 'Website'));
+  if (website && website.url !== p.primaryLink?.url) links.push(link(website.url, p.kind === 'Creative' ? 'Open application' : p.slug === 'upbringing' ? 'Interactive study' : 'Website'));
   return links.length ? `<p class="resource-links">${links.join('<span aria-hidden="true"> · </span>')}</p>` : '';
 }
 function entry(p, description = p.summary, resources = false, visual = false, href = url(p.slug)) {
@@ -110,7 +110,7 @@ function contents(sections, extra) {
 }
 for (const p of projects) {
   const primary = p.primaryLink || p.links?.find(l => !/\.(json|csv)(?:$|\?)/i.test(l.url));
-  const body = `<article class="prose"><header class="page-intro"><p class="back-link">${link(p.kind === 'Creative' ? '/studio/' : '/work/',p.kind === 'Creative' ? 'Interactive projects' : 'All work')}</p><h1>${esc(p.title)}</h1><p>${esc(p.summary)}</p><p class="project-links">${primary ? link(primary.url,primary.label) + ' · ' : ''}${link('#sources','Source code & evidence')}</p></header>
+  const body = `<article class="prose"><header class="page-intro"><p class="back-link">${link(p.kind === 'Creative' ? '/studio/' : '/work/',p.kind === 'Creative' ? 'Interactive projects' : 'All work')}</p><h1>${esc(p.title)}</h1><p>${esc(p.summary)}</p><p class="project-links${primary?.featured ? ' has-featured-link' : ''}">${primary ? (primary.featured ? `<a class="project-action" href="${esc(primary.url)}">${esc(primary.label)}</a>` : link(primary.url,primary.label)) + (primary.featured ? ' ' : ' · ') : ''}${link('#sources','Source code & evidence')}</p>${primary?.note ? `<p class="small">${esc(primary.note)}</p>` : ''}</header>
 <p class="contribution"><strong>My role.</strong> ${esc(p.contribution)}</p><details class="project-info"><summary>Project details</summary><dl><dt>Status</dt><dd>${esc(p.status)}</dd><dt>Focus</dt><dd>${(p.domains || []).map(esc).join(', ')}</dd><dt>Tools & methods</dt><dd>${(p.stack || []).map(esc).join(', ')}</dd></dl></details>
 ${p.image ? `<details class="project-image"><summary>View the application</summary><figure><img src="${p.image}" alt="${esc(p.imageAlt || p.title)}" loading="lazy">${p.imageCaption ? `<figcaption>${esc(p.imageCaption)}</figcaption>` : ''}</figure></details>` : ''}
 ${contents(p.sections,`${p.limitations?.length ? '<li><a href="#scope">Limitations</a></li>' : ''}<li><a href="#sources">Source code & evidence</a></li>`)}
