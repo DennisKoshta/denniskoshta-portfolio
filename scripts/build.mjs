@@ -35,7 +35,7 @@ function page({title, description = config.description, body, route = '/', activ
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(fullTitle)}</title><meta name="description" content="${esc(description)}">
-<meta name="theme-color" content="#1b211f"><link rel="canonical" href="${config.origin + route}">
+<meta name="theme-color" content="#242e40"><link rel="canonical" href="${config.origin + route}">
 <meta property="og:type" content="${article ? 'article' : 'website'}"><meta property="og:site_name" content="Dennis Koshta">
 <meta property="og:title" content="${esc(fullTitle)}"><meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${config.origin + route}"><meta property="og:image" content="${config.origin}/assets/social-plain.png">
@@ -44,7 +44,7 @@ function page({title, description = config.description, body, route = '/', activ
 <link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script><script type="module" src="/assets/site.js"></script>
 </head><body class="${route === '/' ? 'home' : ['/work/','/studio/'].includes(route) ? 'project-index-page' : ''}"><a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header">${route === '/' ? '' : link('/', 'Dennis Koshta')}<nav aria-label="Main navigation">${[['Home','/'],['Work','/work/'],['Writing','/notes/'],['About','/about/']].map(([name,href]) => `<a href="${href}"${active === name || (name === 'Home' && route === '/') ? ' aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
+<header class="site-header"><a class="site-mark" href="/" aria-label="Dennis Koshta — home"><img src="/favicon.svg" alt="" width="44" height="44"></a><nav aria-label="Main navigation">${[['Home','/'],['Work','/work/'],['Writing','/notes/'],['About','/about/']].map(([name,href]) => `<a href="${href}"${active === name || (name === 'Home' && route === '/') ? ' aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
 <main id="main">${body}</main>
 <footer class="site-footer"><span>Dennis Koshta</span><div>${link('mailto:' + profile.email,'Email')}${link(config.github,'GitHub')}${link('/colophon/','About this site')}</div></footer></body></html>`;
 }
