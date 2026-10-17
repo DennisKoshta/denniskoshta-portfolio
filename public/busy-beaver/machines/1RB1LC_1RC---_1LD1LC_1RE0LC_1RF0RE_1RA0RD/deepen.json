@@ -1,0 +1,35 @@
+{
+ "tm": "1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD",
+ "pass": "deepen round 2 (overnight 2026-10-10)",
+ "confidence": "med",
+ "recommend": "cryptid",
+ "mechanism": "Particle system: (01)^n runs split by defects. On the left, an exact period-doubling counter (G16 from step 190,860). On the right, a regular tail of repeated blocks that grows in +11-cell steps. Between them sits a disordered 'mixed zone' of about 70-100 tokens at roughly fixed absolute position (about 250..2200). Halting reduces exactly to one recurring local chain. A seed is an x-phase head hitting the cluster 11.01.00 (cells 110100). Five arrivals at that cluster with phases x,E,x,x,E halt the machine; every other phase sequence dissolves the cluster harmlessly. Seeds keep forming in the mixed zone: 11 of them by 2.45e10 steps, about 0.7 per doubling of the step count. Stages 2-5 never read the cells right of the cluster, so their phases come only from the far-left context. Those phases match the generic reflection statistics (about 50%, 35%, 13%, 50%) and nothing forces them. Under that coin model each seed halts with probability about 1%. The closest call (step 12,975,111, seed #3) got through x,E,x and was saved at stage 4. Non-halting therefore rests on unforced mod-4 phases inside an undecoded disordered zone. That makes the machine cryptid-like (probabilistic), not a structural invariant waiting to be found.",
+ "closed_gaps": [
+  "[r1] Blank -> G16 regime: the left block locks at wall visit 125 (step 190,860, n=7) and matches at every 16th visit up to 3197 (193/193)",
+  "[r1] Complete head/defect interaction table for 11, 00, 1111, 111, 11111, 0000, 000, 00000 x {E-phase, x-phase, from right}: 1440/1440 random run lengths 3..80, one outcome per cell",
+  "[r1] Halting reduction (cell-level proof sketch): halt => earlier 'F> 1 1 0 0 1' (x-phase head at an 11 immediately followed by 00); exhaustive 2- and 3-defect cluster search agrees",
+  "[r1] Hierarchy beyond G3 is exact period doubling: periodic prefix 10/13/16/17/18/19/20/25 tokens for P=16..2048",
+  "[r1] Right edge grows only in +11-cell steps; tail alternates between two fixed forms X/Y, each +11 step toggles them",
+  "[r2] Closest call explained: step 12,975,111 is stage 3 of a recurring chain (seed #3). The full halting chain on the cluster 11.01.00 is x,E,x,x,E. It runs 11->00(+1) | 00->1111(-1), leaving 1111.00 | 1111->11(+2), leaving a bare 1100 | 11->000 | E at 000 = HALT. Validated with 60/60 random run lengths (8..60) on both sides. All 30 phase sequences of length 1..4 were enumerated with 40 random instances each, each giving one outcome. Only the prefix x,E,x,x keeps the cluster alive; every other prefix sends the head through to the right and dissolves the cluster (deepen2_chainval.py)",
+  "[r2] Round-1 statement sharpened: an x-phase hit on a bare 1100 does not halt immediately. It writes 000 and reflects, and the next arrival halts only if it is E-phase (x-phase turns the 000 into 1^5, which is safe)",
+  "[r2] Every observed 1-run/00 adjacency (k=0) arose inside a seed chain: to 2e9 there were 4 such events (11 E x1, 1111 E x2, 1111 x x1), all in seeds #2-#4 (deepen2_gapcensus.c, deepen2_chain.c)",
+  "[r2] Is the arrival phase forced after a reflection? No. Next-arrival phase after a reflection at the same defect (3e8 steps): after 11 x-reflect E 39,305 / x 39,788; after 00 E-reflect, at the new 1111, E 25,318 / x 13,943; after 1111 x-reflect, at the new 11, E 12,127 / x 1,812. Chained (1e9): 00E -> 1111 x 26,085/75,170 (35%); then 11 x 3,315/26,083 (13%) (deepen2_reflnext.c, deepen2_chain3.c)",
+  "[r2] Is there a simple global phase gauge? No. theta=(kappa-pos) mod 4 over right-moving clean steps takes all 4 values in 5,175 of 5,180 wall cycles to 1e8 (deepen2_gauge.c). The phase depends on the defects passed, not on time parity",
+  "[r2] Mod-4 near-invariant tested and found broken: an x-phase 11 is followed by a 00 at k = 0 mod 4 in 10,472 cases but at k = 2 mod 4 in 76 cases (to 2e9). Seeds are the k=2 exceptions, so no gap-mod-4 invariant can exclude them",
+  "[r2] Seeds are not one local template: the 70 cells left of each seed differ in all 7 seeds to 2e9 (deepen2_chain.c with a wide window)"
+ ],
+ "remaining_gaps": [
+  "Mixed zone (about 70-100 tokens between the counter and the regular tail, near absolute positions 250..2200) is undecoded. All seeds and all near misses happen there (seed positions q = 254..1915 while hi grows 992 -> 8043)",
+  "Whether seeds keep forming forever at about 0.7 per octave, and whether their stage phases are truly unforced or carry hidden structure (2-automatic, from the counter). 11 seeds are too few to tell about 1% events. Under the coin model the machine is expected to halt eventually, very late (order 2^100+ steps); under hidden structure it may never halt",
+  "Tail block rules (A=(12:11 10:11)^a, B=(12:1111 8:1111)^b, C=(11:00 11:11 10:1111)^c with fixed separators) are observed at wall visits 1000..16000 but not stated as validated transitions",
+  "No proof that non-seed routes to an 11/1111 next to a 00 are impossible (none observed to about 4e10)"
+ ],
+ "evidence": [
+  "deepen2_chainval.py: x,E,x,x,E -> HALT 60/60; x,E,x,x,x -> safe (1^5) 60/60; 30 prefixes x 40 instances: one outcome each",
+  "deepen2_chain.c run to about 4e10 (stopped at the stage budget; log in scripts/deepen2_chain_seeds_4e10.txt): 11 seeds at steps 1.93e6, 5.46e6, 1.08e7, 1.30e7, 1.60e8, 7.35e8, 8.99e8, 1.24e10, 1.69e10, 1.89e10, 2.45e10. Stage 2 (at the new 00) for #0-#9: x,x,E,E,E,x,x,E,x,x (E 4/10); #10 had no return by the end of the run. Stage 3 (at 1111, when stage 2 was E): E,x,E,E (x 1/4). Stage 4 (bare 1100, when stage 3 was x): E (x 0/1). Seed #3 = the step-12,975,111 near miss",
+  "deepen2_reflnext.c (3e8) and deepen2_chain3.c (1e9): generic next-arrival phase rates of about 50% / 35% / 13%, matching the seed stages; nothing forces them",
+  "deepen2_gapcensus.c (2e9): gap from a 1-run to the next 00, split by phase and run type. Strong mod-4 bias with recurring exceptions; k=0 only inside seed chains",
+  "deepen2_gauge.c (1e8): no per-cycle phase synchronisation (5,175/5,180 cycles see all 4 theta values)",
+  "deepen2_wvsel.c + deepen2_tokpos.py: wall-visit token maps for visits 1000..16000. The counter is on the left, the mixed zone sits near a fixed absolute position, and the regular tail (blocks A/B/C) is on the right"
+ ]
+}

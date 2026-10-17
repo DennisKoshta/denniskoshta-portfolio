@@ -1,0 +1,898 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>atlas_stage2.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/k42/atlas_stage2.md · <a href="/busy-beaver/reports/k42/atlas_stage2.md.html">raw</a></div>
+<h2 id="stage-2-2026-10-14-the-5k-acceleration-and-the-verdict">Stage 2 (2026-10-14): the 5^k acceleration, and the verdict</h2>
+<h3 id="in-plain-words">In plain words</h3>
+<p><strong>We ported mxdys's 5^k-Inc acceleration</strong> (<code>RIncs</code> from <code>Sk1like_TC_v2.v</code>) to Python and made it exact for all 16 variants: anything the shared core table does not cover is handed to the real machine.</p>
+<p><strong>It is exact and it finds his cycles.</strong>
+- From each line's first F entry it lands on stage 1's final configuration digit for digit, 2.4-4.6 million Incs later, on all 40 lines, with all 327 F entries in between.
+- On his two proved variants it finds his translated cycles with his exact periods: 669,180 Incs (<code>Sk1like_TC_v1</code>) and 518 Incs after 1.73e10 Incs (<code>Sk1like_TC_v2</code>).</p>
+<p><strong>Every line ran to 10^139-10^153 Incs in 40 s</strong>, then on to 10^169-10^194 Incs. mxdys's note on line 496 stops at a tape of about 10^64 cells. Nothing settled:
+- no line halted;
+- no line entered a translated cycle;
+- 261-443 escapes (F entries) per line, 13,228 in all.</p>
+<p><strong>The tape is a base-5 odometer, and that makes simulation hopeless.</strong>
+- The number of digits is log5(Incs), within 2.
+- The front holds huge numbers. The only exponents small enough to run down to 0 sit at the far end of the tape (the oldest digits) and in a few recurring "front gadgets" (classes B and G).
+- Halting needs an exponent of exactly 0 at an escape, so only those places matter.
+- The far end changes once per factor of 5 in Incs, and a digit dies there far more rarely still. Across the 40 continuations, which cover about 1,100 orders of magnitude of Incs in all, it happened once.</p>
+<p><strong>Verdict: (ii), a cryptid family.</strong> Whether a line halts depends on the outcome of an endless series of rare events at the tape's end. Each outcome is set by the residues of numbers inherited from the front, which have no pattern we can find.</p>
+<p>Per the cryptid protocol: the exact rules are written below, the family is flagged, and the work stops here. There are no kills and no predicted halts. No family-proof route was found: the translated-cycle route is ruled out far beyond any reach that has produced a proof, and the digit language is not a regular invariant even for the proved variants.</p>
+<h3 id="what-was-built-stage-2-python-stdlib-only">What was built (stage 2; Python, stdlib only)</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>accel.py</code></td>
+<td>The accelerated machine: mxdys's <code>RIncs</code>/<code>Incs</code>/<code>Incss</code> scheduler; the F-free part of his core table (<code>core_rinc</code>); and a TM oracle that runs one real Inc on a run-length tape built straight from the digits, so exponents of 10^190 cost nothing. <code>validate</code> and <code>run</code> modes.</td>
+</tr>
+<tr>
+<td><code>calib.py</code></td>
+<td>Runs mxdys's proved variants from his start <code>x0</code> and reports the front repeats (<code>runs2/calib.json</code>).</td>
+</tr>
+<tr>
+<td><code>rules2.py</code></td>
+<td>Checks on the real machine that the context <code>00101 00101 w^m</code> acts exactly like <code>w w 01 w^m</code> (<code>runs2/rules2.json</code>).</td>
+</tr>
+<tr>
+<td><code>closure2.py</code></td>
+<td>Tests whether mxdys's digit language is closed under one Inc (<code>runs2/closure2.json</code>).</td>
+</tr>
+<tr>
+<td><code>cont.py</code>, <code>endtrace.py</code>, <code>enddeaths.py</code>, <code>endglue.py</code></td>
+<td>Continue a run and trace the last 4 digits; count the deaths at the tape's end; run a glued death at the end on every variant (<code>runs2/C*.json</code>, <code>runs2/E*.json</code>, <code>runs2/enddeaths.json</code>, <code>runs2/endglue.json</code>).</td>
+</tr>
+<tr>
+<td><code>analyze2.py</code>, <code>digitmap.py</code></td>
+<td>The per-line summary (<code>runs2/summary.json</code>, <code>runs2/table.md</code>) and the digit map at the escapes (<code>runs2/digitmap.json</code>).</td>
+</tr>
+<tr>
+<td><code>runs2/A&lt;line&gt;.json</code></td>
+<td>Each 40 s run: checkpoints, every F event (Inc, depth, context, exponent m, next digit), the exact final configuration.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="validation-and-calibration">Validation and calibration</h3>
+<p><strong>Exact reproduction (<code>accel.py validate</code>, all 40 lines).</strong>
+- Start: the configuration at the line's first F entry (stage 1, Inc 127-140).
+- Run: exactly as many Incs as stage 1 ran, in 1,048-1,844 accelerated macro steps.
+- Result: the same tape as stage 1's last configuration on all 40 lines, and the same F entries (327 in all).
+- Line 121 matches only once stage 1's Inc count is corrected (erratum below).</p>
+<p><strong>Core table against the machine.</strong> On the first 3,000 Incs after each line's first F entry, every Inc the F-free core table covers agrees with the machine: 119,885 of 119,885.</p>
+<p><strong>The second F context reduces to the first.</strong> One Inc from <code>w^a 00101 00101 w^m r</code> and from <code>w^(a+2) 01 w^m r</code> gives the same tape:
+- on all 16 variants;
+- at the front and behind a <code>00111</code> digit;
+- for random tails, m = 1-4 and a = 1-5;
+- 6,400 of 6,400 cases.</p>
+<p>The third context, <code>0011101 w^m</code>, is literally the tape <code>00111 01 w^m</code>.</p>
+<p><strong>Calibration on mxdys's proved variants</strong> (<code>calib.py</code>, 30 s each, from his <code>x0 = (1, 0011^27 00001^8 001)</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Variant</th>
+<th>His proof</th>
+<th>What our run finds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(1RF, 1RB), <code>Sk1like_TC_v1</code></td>
+<td><code>Inc_Sn 669179</code> = 669,180 Incs per cycle</td>
+<td>the first 4 digits and n repeat from Inc 7,423 to Inc 676,603: <strong>period 669,180</strong></td>
+</tr>
+<tr>
+<td>(0RF, 0RE), <code>Sk1like_TC_v2</code></td>
+<td><code>msteps'</code> with T = 17,340,200,000, then T = 518</td>
+<td>repeat from Inc 17,340,195,891 to Inc 17,340,196,409: <strong>period 518, onset 1.73e10</strong></td>
+</tr>
+<tr>
+<td>(0RF, 0RB), hlin-proved</td>
+<td>hlin certificate</td>
+<td>an escape about every 100 Incs; the tape stays at 3 digits (117,311 escapes in 1.2e7 Incs)</td>
+</tr>
+</tbody>
+</table>
+<p>So the detector finds both of mxdys's cycles, with his exact periods.</p>
+<p><strong>Errata for stage 1.</strong>
+- <strong>Inc numbers.</strong> Stage 1 skipped Inc boundaries whose tape did not parse into mxdys's digits, so its Inc numbers are low:
+  - by 2 or 11 on 26 lines, all of them before the first F entry, so differences and twin offsets are unaffected;
+  - by 52 on line 121, 50 of them after its first F entry.
+- <strong>mxdys's cycle length.</strong> His <code>Inc_Sn 669179</code> runs 669,180 Incs, so the cycle is 669,180 Incs, not 669,179. Stage 1's own measurement, 1,338,360 Incs = 2 × 669,180, was right.</p>
+<h3 id="the-rules-cryptid-protocol-written-out">The rules (cryptid protocol: written out)</h3>
+<p><strong>1. Configuration</strong> (at the start of an Inc, core naming):</p>
+<div class="highlight"><pre><span></span><code>0^inf  D&gt;  w^n  d1 w^m1  d2 w^m2  ...  dk w^mk  001 0^inf        (w = 0001, n &gt;= 1)
+</code></pre></div>
+
+<p>Here d1..dk are mxdys's 25 digits (<code>digits.MX</code>). Rarely a digit falls outside them, such as class D's <code>000001</code> or a rewritten end of tape (below). Such cases are run on the machine itself.</p>
+<p><strong>2. Core (shared by all 16 variants; F is never entered).</strong> This is mxdys's <code>RInc</code>/<code>Inc</code> table of <code>Sk1like_TC_v1.v</code> and <code>Sk1like_TC_v2.v</code> with the rules that run through F removed (our port: <code>mxinc.py</code>; the F-free cut: <code>accel.core_rinc</code>). The digit cycle is</p>
+<div class="highlight"><pre><span></span><code>0011 -&gt; 0011001 -&gt; 001101 -&gt; 00111 -&gt; (carry into the next digit) -&gt; 00101 -&gt; 0011
+</code></pre></div>
+
+<p>Each digit's exponent loses 2 per cycle and gains what the next digit hands back. Exponent-0 merges follow his table.</p>
+<p><strong>3. Acceleration (all variants).</strong> Suppose d1..dk are all cycle digits (<code>00101 0011 0011001 001101 00111</code>) with <code>m_j &gt;= 2·5^(k-j)</code>. Then 5^k Incs take</p>
+<div class="highlight"><pre><span></span><code>n -&gt; n + 5^(k-1) + 5^k
+m_j -&gt; m_j - 2·5^(k-j) + 5^(k-j-1)     (j &lt; k)
+m_k -&gt; m_k - 2 + dn
+</code></pre></div>
+
+<p>Meanwhile the rest of the tape receives exactly one carry, which must return Tp0 with dn. This is <code>RIncs_spec</code> in <code>Sk1like_TC_v2.v</code>. Its proof only uses passes over the five cycle digits, which never reach state E or F, so it holds for every (E1, F0).</p>
+<p><strong>4. Escape: the only rule that depends on the variant.</strong> F is entered exactly when the carry meets a <code>01</code>. Each class has one rule: what one Inc does to <code>w^n 01 w^m r</code> for m &gt;= 1 (m &gt;= 2 in classes I and J). The ten rules are in "The ten escape rules" above. The other two F contexts reduce to this one:
+- <code>00101^0 00101^m</code> acts as <code>01^m</code> with 2 more <code>w</code> in front (checked above);
+- <code>0011101^m</code> is <code>00111^0 01^m</code>.</p>
+<p><strong>5. Halting.</strong> F reads a 1 only after a glued escape: m = 0, or m = 1 in classes I and J. Which next digits make it halt, at once or one carry later, is listed per class in (b). So a line can halt only if some escape is ever glued.</p>
+<h3 id="results-per-line-40-s-each">Results per line (40 s each)</h3>
+<p>"Smallest m" is the smallest exponent after the <code>01</code> at any F entry. The last column is the far end of the tape at the end of the run (the terminal <code>001^0</code> last).</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>line</th>
+<th>(E1, F0) / start</th>
+<th>reached (Incs)</th>
+<th>digits</th>
+<th>F entries</th>
+<th>smallest m (at Inc)</th>
+<th>smallest m after Inc 1e12</th>
+<th>last digits of the final tape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>44</td>
+<td>0RF, 0RA / D</td>
+<td>1e150</td>
+<td>213</td>
+<td>349</td>
+<td>6 (1e48)</td>
+<td>6 (1e48), next <code>001</code></td>
+<td><code>00111^268758318 00111^97127563 0011001^3036092 00101^46204 00111^3 001^0</code></td>
+</tr>
+<tr>
+<td>A</td>
+<td>208</td>
+<td>0RF, 0RA / A</td>
+<td>1e148</td>
+<td>213</td>
+<td>340</td>
+<td>74673 (1e8)</td>
+<td>7.0e8 (1e13), next <code>00111</code></td>
+<td><code>00101^17156022 0011^2928793 00101^1243332 00111^46755 001101^171062 001^0</code></td>
+</tr>
+<tr>
+<td>A</td>
+<td>260</td>
+<td>0RF, 1RB / B</td>
+<td>1e151</td>
+<td>218</td>
+<td>324</td>
+<td>38097 (1e46)</td>
+<td>38097 (1e46), next <code>00111</code></td>
+<td><code>00111^230010 001101^3114265 0011001^13756 00101^54215 0011^2020 001^0</code></td>
+</tr>
+<tr>
+<td>A</td>
+<td>404</td>
+<td>0RF, 0RA / B</td>
+<td>1e152</td>
+<td>218</td>
+<td>325</td>
+<td>38097 (1e46)</td>
+<td>38097 (1e46), next <code>00111</code></td>
+<td><code>00001^223510 00001^3112965 00001^13497 00001^54162 00001^2020 001^0</code></td>
+</tr>
+<tr>
+<td>A</td>
+<td>494</td>
+<td>1RF, 0LD / D</td>
+<td>1e149</td>
+<td>212</td>
+<td>348</td>
+<td>6 (1e48)</td>
+<td>6 (1e48), next <code>001</code></td>
+<td><code>00111^268762620 00111^97128423 00111^3036265 00111^46238 00111^3 001^0</code></td>
+</tr>
+<tr>
+<td>A</td>
+<td>703</td>
+<td>1RF, 0LD / A</td>
+<td>1e148</td>
+<td>212</td>
+<td>340</td>
+<td>74673 (1e8)</td>
+<td>7.0e8 (1e13), next <code>00111</code></td>
+<td><code>00111^17155753 00111^2928740 00111^1243321 00111^46753 00111^171062 001^0</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>67</td>
+<td>0RF, 1RC / A</td>
+<td>1e149</td>
+<td>214</td>
+<td>415</td>
+<td>934 (1e18)</td>
+<td>934 (1e18), next <code>0011</code></td>
+<td><code>00111^25663868 00111^15259110 00111^3940508 00111^609769 00111^6 001^0</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>263</td>
+<td>0RF, 0LA / A</td>
+<td>1e149</td>
+<td>213</td>
+<td>413</td>
+<td>934 (1e18)</td>
+<td>934 (1e18), next <code>0011</code></td>
+<td><code>00111^25666118 00111^15259560 00111^3940598 00111^609787 00111^6 001^0</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>266</td>
+<td>0RF, 0LA / B</td>
+<td>1e148</td>
+<td>210</td>
+<td>442</td>
+<td>1632 (1e36)</td>
+<td>1632 (1e36), next <code>001101</code></td>
+<td><code>00111^26612 00111^164960 00111^266095 00111^233303 00111^377 001^0</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>321</td>
+<td>0RF, 1RC / D</td>
+<td>1e149</td>
+<td>213</td>
+<td>443</td>
+<td>1632 (1e36)</td>
+<td>1632 (1e36), next <code>001101</code></td>
+<td><code>0011^19896 0011^163617 0011^265826 00111^233249 00111^385 001^0</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>664</td>
+<td>0RF, 1RC / B</td>
+<td>1e146</td>
+<td>209</td>
+<td>440</td>
+<td>1632 (1e36)</td>
+<td>1632 (1e36), next <code>001101</code></td>
+<td><code>00111^33362 00111^166310 00111^266365 00111^233357 00111^377 001^0</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>688</td>
+<td>1RF, 1LB / D</td>
+<td>1e147</td>
+<td>212</td>
+<td>442</td>
+<td>1632 (1e36)</td>
+<td>1632 (1e36), next <code>001101</code></td>
+<td><code>00111^27635 0011^165165 0011^266136 0011001^233311 00001^386 001^0</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td>100</td>
+<td>1RF, 1RC / F</td>
+<td>1e148</td>
+<td>211</td>
+<td>283</td>
+<td>257383 (1e7)</td>
+<td>2.5e9 (1e15), next <code>0011001</code></td>
+<td><code>00111^2697630 00111^2562544 00111^732712 00111^214980 00111^154 001^0</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td>335</td>
+<td>1RF, 0LA / B</td>
+<td>1e151</td>
+<td>216</td>
+<td>279</td>
+<td>128451 (1e7)</td>
+<td>1.7e10 (1e14), next <code>00101</code></td>
+<td><code>00111^6678727 00111^45872955 00111^368448 00111^144546 00111^150 001^0</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td>491</td>
+<td>1RF, 1RC / B</td>
+<td>1e150</td>
+<td>215</td>
+<td>280</td>
+<td>1597 (1e7)</td>
+<td>1.7e10 (1e14), next <code>00101</code></td>
+<td><code>00111^6687185 00101^45874647 00101^368787 0011001^144613 0011001^150 001^0</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td>496</td>
+<td>1RF, 1RC / D</td>
+<td>1e149</td>
+<td>214</td>
+<td>280</td>
+<td>1597 (1e7)</td>
+<td>1.7e10 (1e14), next <code>00101</code></td>
+<td><code>001101^6689477 0011001^45875104 00101^368879 0011^144632 0011001^158 001^0</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>306</td>
+<td>1RF, 1RE / B</td>
+<td>1e149</td>
+<td>212</td>
+<td>310</td>
+<td>18 (1e7)</td>
+<td>1.2e7 (1e15), next <code>00111</code></td>
+<td><code>00111^3353838080 00111^8079062 00111^1386309 00111^170255 00111^5361 001^0</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>361</td>
+<td>1RF, 1RE / D</td>
+<td>1e150</td>
+<td>211</td>
+<td>280</td>
+<td>18 (1e7)</td>
+<td>1.2e7 (1e15), next <code>00111</code></td>
+<td><code>00111^7563812 00111^1283259 00111^149645 00111^168 00111^7 001^0</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>413</td>
+<td>1RF, 1RE / A</td>
+<td>1e150</td>
+<td>215</td>
+<td>305</td>
+<td>6029 (1e8)</td>
+<td>11247 (1e14), next <code>00111</code></td>
+<td><code>00111^1268974557 00111^136118707 00111^9568954 00111^178998 00111^63 001^0</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>420</td>
+<td>1RF, 0RC / A</td>
+<td>1e151</td>
+<td>217</td>
+<td>305</td>
+<td>6029 (1e8)</td>
+<td>11247 (1e14), next <code>00111</code></td>
+<td><code>00001^1268972307 00001^136118257 00001^9568864 00001^178980 00001^64 001^0</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>587</td>
+<td>1RF, 0RC / D</td>
+<td>1e148</td>
+<td>211</td>
+<td>277</td>
+<td>18 (1e7)</td>
+<td>1.2e7 (1e15), next <code>00111</code></td>
+<td><code>00111^7575062 00111^1285509 00111^150095 00111^258 00111^7 001^0</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>673</td>
+<td>1RF, 0RC / B</td>
+<td>1e149</td>
+<td>213</td>
+<td>312</td>
+<td>18 (1e7)</td>
+<td>1.2e7 (1e15), next <code>00111</code></td>
+<td><code>0011001^3353836779 0011001^8078801 00111^1386257 001101^170245 00001^5362 001^0</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td>407</td>
+<td>1RF, 0RE / D</td>
+<td>1e152</td>
+<td>217</td>
+<td>262</td>
+<td>1733 (1e7)</td>
+<td>2.6e10 (1e12), next <code>001101</code></td>
+<td><code>0011001^5738546 0011001^45684918 00111^330841 0011001^137027 0011001^9 001^0</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td>571</td>
+<td>1RF, 0RE / B</td>
+<td>1e151</td>
+<td>216</td>
+<td>261</td>
+<td>1733 (1e7)</td>
+<td>2.6e10 (1e12), next <code>001101</code></td>
+<td><code>0011^5745437 00111^45686297 001101^331116 00111^137083 0011^2 001^0</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td>578</td>
+<td>1RF, 0RE / A</td>
+<td>1e147</td>
+<td>210</td>
+<td>282</td>
+<td>257383 (1e7)</td>
+<td>2.5e9 (1e15), next <code>0011001</code></td>
+<td><code>00111^2702130 00111^2563444 00111^732892 00111^215016 00111^154 001^0</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td>92</td>
+<td>0RF, 0LC / A</td>
+<td>1e146</td>
+<td>209</td>
+<td>298</td>
+<td>129189 (1e7)</td>
+<td>2.8e7 (1e61), next <code>00111</code></td>
+<td><code>00101^6173994 00101^4713978 0011^5303719 00111^116326 0011^8 001^0</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td>129</td>
+<td>0RF, 0LC / B</td>
+<td>1e149</td>
+<td>212</td>
+<td>296</td>
+<td>2638 (1e32)</td>
+<td>2638 (1e32), next <code>0011001</code></td>
+<td><code>00111^2990197631 00111^144048403 00111^110642802 00111^306759 00111^4535 001^0</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td>411</td>
+<td>0RF, 0LC / D</td>
+<td>1e149</td>
+<td>213</td>
+<td>297</td>
+<td>2638 (1e32)</td>
+<td>2638 (1e32), next <code>0011001</code></td>
+<td><code>00101^2990196904 00111^144048257 00101^110642774 0011^306753 001101^4543 001^0</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td>435</td>
+<td>0RF, 0LB / A</td>
+<td>1e148</td>
+<td>212</td>
+<td>382</td>
+<td>175023 (1e7)</td>
+<td>2.4e10 (1e12), next <code>00111</code></td>
+<td><code>0011^3653000 00101^3088717 00101^1142325 0011^106303 0011^447606 001^0</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td>709</td>
+<td>0RF, 0LB / B</td>
+<td>1e147</td>
+<td>210</td>
+<td>394</td>
+<td>47884 (1e19)</td>
+<td>47884 (1e19), next <code>0011001</code></td>
+<td><code>0011001^22992857 00101^5686108 0011^18147 0011001^55823 00111^1 001^0</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td>718</td>
+<td>0RF, 0LB / D</td>
+<td>1e147</td>
+<td>209</td>
+<td>395</td>
+<td>47884 (1e19)</td>
+<td>47884 (1e19), next <code>0011001</code></td>
+<td><code>00111^22991608 00111^5685857 00111^18097 00111^55814 00111^9 001^0</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td>64</td>
+<td>0RF, 1LB / B</td>
+<td>1e139</td>
+<td>197</td>
+<td>344</td>
+<td>136549 (1e8)</td>
+<td>4.9e7 (1e125), next <code>00111</code></td>
+<td><code>00111^3076368 0011^107855 00101^39660 00111^5183 00111^1 001^0</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td>124</td>
+<td>0RF, 1LB / D</td>
+<td>1e139</td>
+<td>200</td>
+<td>343</td>
+<td>136549 (1e8)</td>
+<td>4.9e7 (1e125), next <code>00111</code></td>
+<td><code>00111^3081993 0011^108980 00101^39885 00111^5228 00111^9 001^0</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td>305</td>
+<td>0RF, 1LB / A</td>
+<td>1e145</td>
+<td>207</td>
+<td>374</td>
+<td>2171 (1e12)</td>
+<td>2171 (1e12), next <code>00111</code></td>
+<td><code>00111^140959207 00111^7072852 00111^7309697 00111^421358 00111^521 001^0</code></td>
+</tr>
+<tr>
+<td>I</td>
+<td>86</td>
+<td>0RF, 0RD / A</td>
+<td>1e153</td>
+<td>220</td>
+<td>325</td>
+<td>19059 (1e7)</td>
+<td>107980 (1e35), next <code>001101</code></td>
+<td><code>00111^506049189 00101^78540941 0011001^7455927 001101^103565 001101^15512 001^0</code></td>
+</tr>
+<tr>
+<td>I</td>
+<td>121</td>
+<td>0RF, 0RD / B</td>
+<td>1e153</td>
+<td>219</td>
+<td>305</td>
+<td>130187 (1e7)</td>
+<td>3.0e10 (1e13), next <code>00111</code></td>
+<td><code>001101^377777455 0011^140058078 001101^143890 0011^881411 001101^11295 001^0</code></td>
+</tr>
+<tr>
+<td>I</td>
+<td>405</td>
+<td>0RF, 0RD / D</td>
+<td>1e150</td>
+<td>216</td>
+<td>317</td>
+<td>77368 (1e7)</td>
+<td>107980 (1e32), next <code>001101</code></td>
+<td><code>00001^40478389 00001^6194614 00001^84247 00001^10554 00001^7 001^0</code></td>
+</tr>
+<tr>
+<td>J</td>
+<td>285</td>
+<td>0RF, 1RD / B</td>
+<td>1e146</td>
+<td>209</td>
+<td>266</td>
+<td>350288 (1e13)</td>
+<td>350288 (1e13), next <code>00111</code></td>
+<td><code>00111^101153008 00111^1205320 00111^117751 00111^1191 00111^0 001^0</code></td>
+</tr>
+<tr>
+<td>J</td>
+<td>421</td>
+<td>0RF, 1RD / D</td>
+<td>1e146</td>
+<td>209</td>
+<td>268</td>
+<td>350288 (1e13)</td>
+<td>350288 (1e13), next <code>00111</code></td>
+<td><code>00111^101149633 00111^1204645 00111^117616 00111^1164 00111^8 001^0</code></td>
+</tr>
+<tr>
+<td>J</td>
+<td>713</td>
+<td>0RF, 1RD / A</td>
+<td>1e147</td>
+<td>209</td>
+<td>287</td>
+<td>68 (1e9)</td>
+<td>4.4e10 (1e27), next <code>00101</code></td>
+<td><code>00111^1267135 00111^2199057 00111^99301 00111^215 00111^71 001^0</code></td>
+</tr>
+</tbody>
+</table>
+<p>What the table shows:
+- <strong>No halts, and no translated cycle.</strong> Exact repeats of n and the first 4 digits did occur on lines 64, 124 (1 each), 709, 718 (10 each) and the 6 class-B lines 67, 263, 266, 321, 664, 688 (50 each). Each is a short "front gadget" re-forming after the front resets: for example <code>n=1 | 0011^3 00001^91 0011^1630 001101^0 …</code> on line 67, at Incs 3.9e8, 6.2e9 and 2.1e24. The intervals grow, so this is not a cycle. The digits behind the gadget differ each time.
+- <strong>Escapes are mostly at the front</strong> (70%), with m growing with the scale.
+- <strong>The small m values come from two places:</strong>
+  - recurring front gadgets in class B: m = 934 (lines 67, 263) and 1632 (266, 321, 664, 688). These come back with the same value again and again; line 67 has m = 1632 at Incs 1e8.6, 1e9.8, 1e24.3, 1e38.5, 1e68.4 and 1e92.0. Class G's smallest value, 47,884 (lines 709, 718), is a single escape deeper in the tape at Inc 1e19;
+  - the tape's far end: m = 6 on lines 44 and 494 at Inc 1e48, an escape <code>01^6 001</code> against the terminal.</p>
+<h3 id="where-a-halt-could-still-come-from-the-far-end-of-the-tape">Where a halt could still come from: the far end of the tape</h3>
+<p>New digits are made at the front, so the oldest digits sit at the far end. Each far-end digit changes about once each time a carry runs the whole tape, and a whole-tape carry comes once per factor of 5 in Incs. Here is line 285 (class J) traced from Inc 1e6 to 1e188 (<code>endtrace.py</code>, <code>cont.py</code>; the last 4 digits, terminal last):</p>
+<table>
+<thead>
+<tr>
+<th>Inc</th>
+<th>digits</th>
+<th>far end of the tape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1e6.5</td>
+<td>10</td>
+<td><code>00101^154822 00101^8606 0011^1 001</code></td>
+</tr>
+<tr>
+<td>1e40.6</td>
+<td>58</td>
+<td><code>001101^145786 00111^6798 00111^0 001</code></td>
+</tr>
+<tr>
+<td>1e81.4</td>
+<td>116</td>
+<td><code>0011^134984 0011^4638 00001^1 001</code></td>
+</tr>
+<tr>
+<td>1e122.6</td>
+<td>176</td>
+<td><code>00001^124096 00001^2460 00001^1 001</code></td>
+</tr>
+<tr>
+<td>1e166.1</td>
+<td>237</td>
+<td><code>0011^111792 00101^0 0011001^0 001</code>: the second-to-last digit has run out</td>
+</tr>
+<tr>
+<td>1e166.1</td>
+<td>236</td>
+<td><code>0011^1175519 0011^111792 001^0 001</code>: merged away (no escape); the next oldest digit moves up</td>
+</tr>
+<tr>
+<td>1e188</td>
+<td>269</td>
+<td><code>00111^1174270 00111^111792 001</code></td>
+</tr>
+</tbody>
+</table>
+<p>The pattern holds on every line we traced:
+- the last digit's exponent barely moves: it stays within 1-3 of a fixed value (0-1 on line 285, 3-4 on line 44 after its death at Inc 1e48, 447,605-447,606 on line 435);
+- the next digits lose a steady amount per digit added to the tape (about 37 and 187 on line 285), until one dies;
+- then an older digit, with a much larger exponent, moves up. Line 285: the 1,392 digit runs out at Inc 1e166 and the 111,792 digit moves up. Line 44: the 35 digit runs out at Inc 1e48 and the 50,750 digit moves up.</p>
+<p>Each death is a single local event. Its outcome depends on the phases of the dying digit's neighbours at that moment, that is, on residues of numbers inherited from the front long ago.</p>
+<ul>
+<li><strong>Counted.</strong> The 40 continuations (from about 1e148 to 1e169-1e194, 1,097 orders of magnitude in all) show 1 death at the far end, on line 285 (<code>enddeaths.py</code>). The line-44 trace from Inc 1e6 shows 1 more, at Inc 1e48. Neither halted.</li>
+<li><strong>How a death makes an escape.</strong> On line 44 at Inc 1e47.7 the tape end read <code>00101^0 001101^6 001</code>. mxdys's rule <code>00101^0 001101 -&gt; 01</code> turned it into the escape <code>01^6 001</code>, where m = 6 is the last digit's exponent. On line 285 the last digit's exponent is 0 or 1, so a glued escape at the end is not ruled out by size.</li>
+<li><strong>Such glued deaths are survivable.</strong> We started every variant from <code>w^5 0011^a 00101^0 001101^m 001</code> with a = 40, 41 and m = 0-3, and ran 10^7 Incs (<code>endglue.py</code>). None of the 128 runs halted; every one rebuilt an ordinary end of tape. So a halt would need something rarer: a death further from the end, or a front gadget drifting to 0.</li>
+<li><strong>Escapes next to the terminal never halt at once.</strong> We tested <code>01^m 001</code>, with and without a <code>00111^0</code> in front, m = 0-2, on all 16 variants. Several rewrite the end of the tape: class D makes <code>000001</code>; class F with m = 0 deletes the terminal, leaving only <code>w^7</code>. The <code>endglue.py</code> runs pass through exactly these escapes (m = 0-3) and recover.</li>
+</ul>
+<p><strong>Why simulation cannot settle it.</strong> The next digits at the far end lose only tens to hundreds per digit added to the tape, so a death there is separated from the next by tens to hundreds of orders of magnitude of Incs. Our runs saw 0 or 1 per line. A halt needs one specific outcome, out of an unbounded series of such events, whose inputs are residues of numbers with hundreds of digits.</p>
+<h3 id="the-digit-map-at-the-escapes">The digit map at the escapes</h3>
+<p>At each escape the counter hands the escape rule two values: the exponent m and the next digit (<code>digitmap.py</code>).
+- <strong>Next digit.</strong> Over all 13,228 escapes, all five phases occur: <code>0011</code> 2,114, <code>0011001</code> 1,328, <code>001101</code> 5,651, <code>00111</code> 2,789, <code>00101</code> 1,344, other 2.
+- <strong>No periodic tail.</strong> On no line is the second half of the next-digit sequence periodic, nor that of m mod 5. Line 44's first 90 escapes, coded a-e for the phases in the order above:</p>
+<div class="highlight"><pre><span></span><code>bbcddaedddccaadaacaacddbbdddeeecdaabaacccccdaacdacbbcdddddacddaacdedabbccbbccbbacecddaacee
+</code></pre></div>
+
+<ul>
+<li><strong>The front escapes are regular; the rest are not.</strong></li>
+<li>The front escapes follow the base-5 times n = 100·25^k − 11 and 400·25^k − 11 of stage 1 (a). For example, one of line 44's front escapes has n = 100·25^42 − 11 (about 5.2e60).</li>
+<li>The exponents they carry, and every escape deeper in the tape, follow no formula stage 1 could find. Here their next digits and residues show no period either.</li>
+</ul>
+<h3 id="is-the-digit-language-a-regular-invariant-no">Is the digit language a regular invariant? No</h3>
+<p>If one Inc mapped every tape of mxdys's language into the language without halting, the language itself would prove nonhalting. It does not, for any variant. We ran one Inc from 2,000 random tapes of the language per variant (exponents 0-3, <code>closure2.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Variant(s)</th>
+<th>halt</th>
+<th>leave the language</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10 holdout classes (A-H)</td>
+<td>3-4</td>
+<td>71-150</td>
+</tr>
+<tr>
+<td>classes I and J</td>
+<td>31</td>
+<td>80-99</td>
+</tr>
+<tr>
+<td>mxdys's proved (1RF, 1RB) and (0RF, 0RE)</td>
+<td>3</td>
+<td>73-133</td>
+</tr>
+</tbody>
+</table>
+<p>The proved variants fail too, so the reachable tapes are a thin subset of the language. A regular invariant would have to track which phases can meet at the far end, which is the arithmetic above. No upstream decider closes any of the 16 holdout variants, and the critic's hlin run at the proving configuration was 0 of 8 (stage 1 (d)).</p>
+<h3 id="verdict">Verdict</h3>
+<ul>
+<li><strong>(i) Family-proof route: none found.</strong> The only proof shape that has closed this core is a translated cycle found by a long accelerated run. It is excluded here to 10^139-10^153 Incs on every line, and to 10^169-10^194 Incs on all 40 in the continuations. That is far beyond the 1.7e10 Incs that <code>Sk1like_TC_v2</code> needed.</li>
+<li><strong>(ii) Cryptid: yes.</strong> The rules are in the section above. The halting question is "does one of infinitely many far-end deaths (or a drifting front gadget) ever give m = 0 with the class's next digit?", and the inputs to each death are residues of inherited huge numbers. Flagged; stopped.</li>
+<li><strong>(iii) Predicted halts: none.</strong> No halt to 10^169-10^194 Incs, and no small-m trend that points to one.</li>
+</ul>
+<h3 id="reproduce-stage-2">Reproduce (stage 2)</h3>
+<p>From reports/k42/; each step is 2 processes, nice 10, ulimit -v 6e6:</p>
+<div class="highlight"><pre><span></span><code>python3 -B accel.py validate 44 64 ...        # exact reproduction of stage 1 (seconds per line)
+python3 -B calib.py 30                         # mxdys's two cycles
+python3 -B rules2.py 200 7; python3 -B closure2.py 2000 1; python3 -B endglue.py
+runs2/run_all.sh 40                            # 40 s per line -&gt; runs2/A&lt;line&gt;.json
+runs2/cont_all.sh 30; python3 -B cont.py 285 60; python3 -B cont.py 713 60
+python3 -B analyze2.py; python3 -B digitmap.py 44; python3 -B enddeaths.py; python3 -B build_atlas.py
+</code></pre></div>
+</main></body></html>

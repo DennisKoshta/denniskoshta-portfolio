@@ -1,0 +1,296 @@
+{
+ "tm": "1RB1RF_0RC0LE_1RD0RF_1LB---_1LB1LE_1RA0LC",
+ "rank": 198,
+ "class_sheet": "Unknown",
+ "class_guess": "Defect-conveyor bouncer with wall phases (1D-CA-like bouncer); no macro law yet",
+ "confidence": "low",
+ "summary": "Bouncer over a 0111 field: defects drift left, walls stall growth in irregular phases; no macro law yet",
+ "mechanism": [
+  "The tape is a field of 0111 blocks (runs of three 1s between single 0s) carrying defects: odd runs 1 and 5 (rarely 7, 9) and even runs 0, 2, 4. The head bounces: the left sweep (state E, rule LS) moves every 0 one cell left; the right sweep (F/A, rules RS3 and RSodd) moves it back, so the 0111 field is unchanged by a bounce. Odd defects are transparent: each bounce toggles 11111 <-> 10111 and the defect drifts 2 cells left per bounce (203/203 real defects at 2.86e6). The left end absorbs arriving defects and grows; the right end emits a periodic defect stream (runs 1 3 1 5 5, 20 cells) and grows about 4 cells per 3 bounces.",
+  "Even runs are reflectors (rule RSeven: A meets a 0 and turns). Walls of this kind appear at the left end and move right about 3-4 cells per bounce; while one stands, the head never reaches the right part, which freezes, and growth stops. Growth and wall phases alternate irregularly (span 6.4k at 1e8, 129k at 2e10). At 2e10 the tape is a chain of periodic regions in run-length form ((1 3 1 5 5)^3142, (5 1 3 1 5)^2043, a 45-run block ^125, older regions); no law for the phase lengths found.",
+  "Halting is possible only as A> 0 0 0 1 (F reading 0000 then 1). The head itself creates four-zero runs inside a sweep (20 times by step 1.3e6), but no 0000 was seen in tape censuses every 1e5 steps to 1e8; no halt to 2e10."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "Site Default view, 10,000 steps from blank",
+   "title": "bbchallenge Default view",
+   "why": "The standard site picture: a dense block field growing on both sides.",
+   "primary": true,
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 rows (site view, about 20 steps per row)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head after a move R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "state:C:R",
+   "png": "img/conveyor_2855346.png",
+   "html": null,
+   "steps": 374419,
+   "caption": "One row per bounce from step 2,855,346: conveyor, then walls",
+   "title": "Defect conveyor, then wall phase",
+   "why": "Top band: head reaches the right end each bounce. Follow the thin diagonal stripes, then the flat wall bands.",
+   "primary": false,
+   "start": "mid-run: step 2,855,346",
+   "rows": "entries into state C moving right (once per bounce at the left end, plus one per bounce at an internal wall); 400 rows, steps 2,855,346..3,229,765",
+   "window": "cells -1130..84, 1 px = 1 cell (cell 0 = head cell at step 2,855,346, absolute cell 732)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head after a move R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "state:C:R",
+   "png": "img/bounces_8e6.png",
+   "html": null,
+   "steps": 787687,
+   "caption": "Growth phase ends at about 8.5e6; walls sweep right, right part freezes",
+   "title": "Wall phase from step 8e6",
+   "why": "Right of the stepped boundary the columns are vertical (frozen). Watch the boundary move right and restart further left.",
+   "primary": true,
+   "start": "mid-run: step 8,000,000",
+   "rows": "entries into state C moving right (left-end and internal-wall bounces); 1,500 rows, steps 8,000,000..8,787,687",
+   "window": "cells -382..1735, 1 px = 1 cell (cell 0 = head cell at step 8e6, absolute cell -274)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head after a move R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:4000000",
+   "png": "img/every4e6_2e9.png",
+   "html": null,
+   "steps": 2000000000,
+   "caption": "One row every 4e6 steps to 2e9, every 16th cell",
+   "title": "Long run to 2e9",
+   "why": "Both edges grow in irregular steps; long stalls on the right are the wall phases.",
+   "primary": false,
+   "start": "blank",
+   "rows": "every 4,000,000 steps, 501 rows to step 2e9",
+   "window": "cells -12269..19485, 1 px = 16 cells (every 16th cell sampled; periodic regions alias into flat or striped bands)",
+   "legend": "white = 1, black = 0 or unvisited",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom: one row per left-end bounce (scripts/stage1/chain_figure.py)",
+   "png": "img/halt_chain_rows.png",
+   "html": null,
+   "steps": null,
+   "caption": "Real tape, 3 edge-timing edits: a 000 forms, then the machine halts",
+   "title": "Halting chain (3 edge-timing edits)",
+   "why": "A wall leaves a 000 (red) at row 52; a second wall reaches it at row 105: halt.",
+   "primary": true,
+   "start": "constructed: real tape at step 1,238,230,449 with its first run 3 -> 1 (two more edge edits at rows 52 and 87)",
+   "rows": "one row per left-end bounce, 107 rows (bounces 0-105, then the halt); magenta ticks = edits (rows 0, 52, 87), red tick = halt",
+   "window": "cells 0..249, 1 px = 0.5 cells (cell 0 = 2 cells left of the first 1 in each row; 3 px per row)",
+   "legend": "grey = run 3 (the 0111 field), blue = odd defect (run 1, 5 or 7), orange = wall (even run or 00), red = 000, black = 0",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf 1011^a … (1^5 011 111010^2)^b 1^5 0 1^5 010111^2 A> 0^inf",
+  "vars": [
+   "a",
+   "b"
+  ],
+  "rows": [
+   {
+    "step": 97903407,
+    "values": [
+     21,
+     205
+    ]
+   },
+   {
+    "step": 97996639,
+    "values": [
+     18,
+     206
+    ]
+   },
+   {
+    "step": 98089991,
+    "values": [
+     15,
+     207
+    ]
+   },
+   {
+    "step": 98183463,
+    "values": [
+     12,
+     208
+    ]
+   },
+   {
+    "step": 98277055,
+    "values": [
+     9,
+     209
+    ]
+   },
+   {
+    "step": 98370767,
+    "values": [
+     6,
+     210
+    ]
+   },
+   {
+    "step": 98464599,
+    "values": [
+     3,
+     211
+    ]
+   },
+   {
+    "step": 98558551,
+    "values": [
+     0,
+     212
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "LS (left sweep step)",
+   "from": "L 1^(a+1) 0 1^b <E R",
+   "to": "L 1^a <E 0 1^(b+1) R",
+   "steps": "b+2",
+   "cases": "a, b >= 0; any L, R",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "WALL (left turn)",
+   "from": "L 0 0 <E R",
+   "to": "L 0 0 F> R",
+   "steps": "3",
+   "cases": "also at the left end (L = 0^inf)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RS3 (right sweep, field)",
+   "from": "L F> 0111^n R",
+   "to": "L 1011^n F> R",
+   "steps": "6n",
+   "cases": "n >= 0",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RSodd (odd run passes)",
+   "from": "L F> 0 1^(2k+1) R",
+   "to": "L 1 01^k 1 F> R",
+   "steps": "4k+2",
+   "cases": "k >= 0: run 1 merges, run 3 shifts, run 5 splits",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RSeven (even run reflects)",
+   "from": "L F> 0 1^(2k) 0 1 R",
+   "to": "L 1 01^k 1 <E 0 R",
+   "steps": "4k+3",
+   "cases": "k >= 0; k = 0 is a 00 wall",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "HALT (only halting pattern)",
+   "from": "L A> 0 0 0 1 R",
+   "to": "halt",
+   "steps": "3",
+   "cases": "table: D1 is reached only via A0, B0, C0; every other entry into B or C reads a 1 that was just written",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Conveyor (bounce level, observed)",
+   "from": "defect run r at cell p (between events)",
+   "to": "same run r at cell p-4 two bounces later",
+   "steps": "2 bounces",
+   "cases": "holds away from walls, ends and absorption events; 17,137/19,471 at 9.84e7 including events",
+   "validated": {
+    "instances": 203,
+    "passed": 203
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Left field (rulefit, bounded)",
+   "from": "A0(3n+3, -n+19)",
+   "to": "A1(3n+1, -n+19) -> A0(3n, -n+20)",
+   "steps": null,
+   "cases": "only for 3n+3 <= 60, with a fixed literal history between the fields",
+   "validated": {
+    "instances": 28,
+    "passed": 28
+   },
+   "source": "rulefit"
+  }
+ ],
+ "template": {
+  "file": null,
+  "module": null,
+  "machine": null,
+  "diff": null,
+  "applies": "no",
+  "note": "No proved table within 5 transitions, and no killed machine of ours has this shape (all our templates are counters or Bell eats counter). The closest proof style is upstream's closed-tape-language verifier (CTLv1.v: solve_cert with CPS_LRU / NG / RWL_mod parameters), which fits because halting needs a four-zero run that so far only appears next to the head."
+ },
+ "strategy": "Two lanes. (a) Certificate lane: a bounded CTL62 parameter sweep (CPS_LRU, NG, RWL_mod) on the three list starts, since halting needs F> 0000 1. (b) Model lane: an exact run-length model (conveyor + RSeven wall motion + left-end absorption + right emitter) to test whether wall phases follow a law or are cryptid-like.",
+ "risks": [
+  "Wall phases start at left-end absorption events whose timing looks irregular; the run-length history may act like a chaotic 1D CA.",
+  "Runs of four zeros do occur transiently next to the head, so a regular invariant needs head context.",
+  "The three list starts (198, 248, 582) differ only in their history, so a model proof must handle any history."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "conveyor_2855346: in the rows where the head still reaches the right end (top band), do the thin diagonal stripes all slant left at one angle, none crossing another?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "bounces_8e6: below the first rows, are the columns right of the stepped boundary vertical (frozen), while the boundary moves right and several times restarts further left?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "No macro law yet: the defect conveyor is exact, but the wall phases look irregular. Should we fund a 2 h stage for a CTL/CPS certificate sweep, or for the exact defect-and-wall model (to decide cryptid or structured), or park?",
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 20000000000,
+  "cells": 129249,
+  "nonzeros": 96935,
+  "growth": "span about t^0.55: 6,398 at 1e8, 83,076 at 1e10, 129,249 at 2e10; irregular staircase on both edges"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Local mechanism exact (6 sweep rules, 200/200 each); macro law of the wall phases not found. Confidence low."
+}

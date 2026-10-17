@@ -1,0 +1,159 @@
+{
+ "tm": "1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---",
+ "stage": "deepen2",
+ "date": "2026-10-10",
+ "confidence": "med",
+ "recommend": "more_observation",
+ "mechanism": "Counter = wall positions (cells k with c[k-1]==c[k]) to the right of the bell; the bell and the grid shift drop out. Each bounce is an Inc of the counter: if the first wall p1 is 1 or 2 it moves one cell right, and two walls that meet cancel (Gap-Inc). If p1 = 2j+1 is odd, the counter is 0 (10)^j W: a junction, i.e. a sub-bell of size j-1 for the counter W on the other grid. The carry then runs one complete phase of the machine itself on (j-1, W) and leaves 00 (10)^M' C', the sub-bell returned as an aligned d=1 frame followed by the sub-phase's new counter (J-rule; for j=1 this is the ordinary d=3 carry and the overflow). Phase(M, C) = M-1 Incs, then the marker walk (round-1 rules C1a/Z-absorb, C3a/C3b, C2, T; a frame with odd p1 is crossed by the J-rule with b=0). So the dynamics is a recursive phase map. On the orbit, every phase start is a one-junction counter G1 = (aligned prefix)(junction head)(aligned W). Every sub-phase runs on an aligned W. After the M-1 Incs the counter is fully aligned, so the walk uses only the round-1 aligned rules. Halting can only enter if M-1 < k_align(C), the number of Incs needed to resolve the junction chain.",
+ "notation": "Counter C = cells after the bell (10)^M, starting at an even cell; walls p0=0<p1<p2<..., with a wall at every cell of the zero tail. Aligned frame (d,e) = walls at 0 and d, next frame at 2e+4 (round-1 blocks: d=1 'o S^(e+1)', d=2 'Z S^(e+1)', d=3 'Z o S^e'); terminator 'Z' = frame (3, width 4) before the tail; tail = endless width-2 frames 'o'. Junction = first gap odd >= 3 (cells 0 (10)^j, j >= 1). A = aligned: every frame wide (p1 in {1,2,3}, p2 even >= 4) up to the tail. G1 = A, or (wide aligned prefix) X W with W in A, where X is a junction head: narrow frame (p2 <= 3) with p3 odd (W read from p3; e.g. 'o' + Z-run, 'Z #', 'o #'), or p1 odd >= 5, or p1 = 3 with p2 odd (W read from p1). Phase(m, W) := next phase start (M', C') reached from 0^inf 0 A> (10)^m W 0^inf. k_align(C) := number of Incs until C is in A.",
+ "rules": [
+  {
+   "name": "Gap-Inc",
+   "from": "L A> S^(b+1) C, walls of C 0,p1,p2,.. with p1 in {1,2}",
+   "to": "L S A> S^b C', with p1 -> p1+1 (if it reaches p2 both walls vanish)",
+   "cases": "b>=1, any p2 (either parity); covers aligned d=1->2, d=2->3, width-2 'o' merges, 'o #', 'Z #', the carry into the zero tail",
+   "validated": {
+    "instances": 1500,
+    "passed": 1500,
+    "script": "scripts/deepen2_validate_jrule.py seeds 1 (500), 2 (1000)"
+   }
+  },
+  {
+   "name": "J-rule (junction carry = one sub-phase)",
+   "from": "L A> S^(b+1) [0 (10)^j W], j>=1",
+   "to": "L S A> S^b [00 (10)^M' C'] with (M',C') = Phase(j-1, W); halts iff Phase(j-1, W) halts",
+   "cases": "j=1 is the round-1 d=3 carry (W = 0 (10)^e R) and also handles d=3 frames of odd width ('Z o #'); j>=2 is the renormalisation of shifted frames",
+   "validated": {
+    "instances": 1500,
+    "passed": 1500,
+    "halt_agree": 157,
+    "script": "scripts/deepen2_validate_jrule.py seeds 1, 2 (j=1..12, b=1..30, aligned and wall-random W)",
+    "mutation": "Phase(j, W) instead of Phase(j-1, W): 187/200 fail",
+    "structured": "84/84 (j=2..8, 6 W, b=1,4)",
+    "orbit": "1702/1702 junction bounces (p1>=5) to 1e11, sub-phases replayed recursively"
+   }
+  },
+  {
+   "name": "Even head (halting)",
+   "from": "C with p1 even >= 4",
+   "to": "p1=4: HALT at once (B> Z -> # E>, E> Z -> F reads 1); p1>=6: odd-grid sub-run starting on a 1",
+   "validated": {
+    "orbit": "never reached (0 of ~6.94e6 Incs to 1e11)"
+   }
+  },
+  {
+   "name": "J-crossing (marker meets a frame with odd p1)",
+   "from": "0^inf 0 L A> S [0 (10)^j W]",
+   "to": "0^inf 0 L S A> [00 (10)^M' C'] with (M',C') = Phase(j-1, W), then A> o S -> # S A> (C3b) and the walk goes on",
+   "cases": "j=1 = round-1 C3a; j>=2 never met on the orbit (marker crossings there: d1 1338, d2 939, d3 1124, T 67)",
+   "validated": {
+    "instances": 400,
+    "passed": 366,
+    "halt_agree": 34,
+    "script": "scripts/deepen2_validate_jcross.py seed 1"
+   }
+  },
+  {
+   "name": "Round-1 aligned rules",
+   "from": "Inc (aligned), C1a, Z-absorb, C3a, C3b, C2, T",
+   "to": "unchanged (see round-1 notes)",
+   "validated": {
+    "instances": 1300,
+    "passed": 1300,
+    "script": "scripts/deepen_validate_walk.py"
+   }
+  },
+  {
+   "name": "Phase map (composition)",
+   "from": "0^inf A> (10)^M C",
+   "to": "C after M-1 Incs, then the marker walk -> next phase start (M', C')",
+   "validated": {
+    "orbit": "bounce-level replay with the bell removed (scripts/deepen2_orbit.py) reproduces 1321/1321 logged phase starts (phases 3..1323, to step 1e11) exactly; every Inc and crossing classified, see evidence"
+   }
+  }
+ ],
+ "invariant_candidate": {
+  "statement": "Inv(M, C): C in G1 and M-1 >= k_align(C). Inv gives: no halt; the Incs keep C in G1 and end in A (each junction resolved by a J-rule sub-phase on an aligned W); the aligned walk gives next start C' in G1.",
+  "closure_tests": [
+   "Inc maps G1 into G1 without halting: 1000/1000 random G1 counters x 150 Incs (deepen2_validate_closure.py seeds 1, 2)",
+   "Phase(m, A) is in G1 and never halts, for all m >= 0: 1600/1600 random (m up to 400) (deepen2_inv.py test A; deepen2_validate_closure.py (b))",
+   "Phase(M, C in G1) with M-1 >= k_align: 549/549 give G1, no halt; with M-1 < k_align: 3 halts in 380, 210 outputs leave G1 (two nested junctions)",
+   "NOT inductive: M-1 >= k_align holds at the next start in only 192/316 random cases; with M-1 = c*k_align for c = 1, 2, 4, 10 the next ratio is < 1 in 15, 43, 6, 3 of 182 cases (min 0.17-0.48), though all next starts are G1 and none halt (deepen2_ratio.py seed 3)"
+  ],
+  "orbit": "All 1324 logged phase starts to 1e11 are in G1 (N12 1149, A 129, N23 28, J 14, N13 2, J3 1). M-1 >= k_align at 1320/1322 phase starts; the exceptions are phases 5 and 7 (M = 8, 10), which still run correctly. min (M-1)/k_align = 1.4 (phase 16), >= 2.4 after phase 68; phases with ratio < 5 per window: 14/92, 17/200, 4/300, 6/400, 2/324. k_align max 3456 (phase 1074, M=8668)."
+ },
+ "closed_gaps": [
+  "Eat closed for aligned counters: it is the marker walk continuing through the counter; 7 exact block rules (Inc, C1a, Z-absorb, C3a, C3b, C2, T) validated 1300/1300 each, with '#' walls in the left part (scripts/deepen_validate_walk.py; mutating C1a or C2 drops them to 0/1000).",
+  "Why g and the new counter do not depend on N: the walk only reads the counter; the bell just grows by the absorbed blocks.",
+  "Phase end is exact: C2/T give the left-record configuration; the new phase is 2 steps later, read one cell shifted, which explains the Z-runs and the 'pending' shapes (shifted frames: o Z^(e+1), o # Z^e, o S Z^e, terminator o S).",
+  "Phase-start grammar to 1e11 (1324 phases): 1071 match (o S+)* (o Z*) (shifted frame)* o S (C2 end), 102 match aligned frames + Z (T end), 61 have a third junction shape.",
+  "Junction invariant: an aligned frame 'o S' (one S) never sits directly before an empty junction (0 of 1324; k=2/3/4+ seen 69/17/145 times). This follows from C3b, which always leaves '# S A>'. Random counters that break it halt (37/3000).",
+  "Halting can come only from structure: 3000/3000 random aligned counters ran 8 phases with no halt, and every C1/C2/C3/T branch is non-halting whatever the digits.",
+  "Round 2: Inc on shifted frames closed. A shifted counter has a junction (odd first gap), and the first carry into it is exactly one full phase of the machine on the sub-counter: J-rule Inc(0 (10)^j W) = 00 (10)^M' C', (M',C') = Phase(j-1, W). Validated 1500/1500 random (incl. 157 halt-agree), 84/84 structured, 1702/1702 orbit junction bounces; mutation j-1 -> j fails 187/200. Example from round 1: o Z o Z o Z o S is 'o' + junction; the merge then the J-rule give o S6 o S2 Z.",
+  "Round 2: wall view. Counters are wall lists; for p1 in {1,2} Inc moves the first wall right and cancels coincident walls (Gap-Inc, 1500/1500, any parity of p2). This covers the width-2 'o' frames, 'o #', 'Z #' and the zero tail (the tail = endless width-2 'o' frames; terminator Z = frame (3, width 4)).",
+  "Round 2: marker crossing shifted frames / landing on a token closed. A frame with odd p1 (d=3 frame, odd-width 'Z o #', or junction) is crossed by the J-rule with b=0, then C3b (366/366 + 34 halt-agree). On the orbit the outer marker meets only d1/d2/d3/T frames; after the M-1 Incs the counter is fully aligned in 1320/1322 phases.",
+  "Round 2: third junction shape derived. 'o S2 Z #...' = aligned prefix + narrow frame 'Z #' (walls 0,2,3) + even run. Gap-Inc merges it into a junction with odd p1, then the J-rule. With the narrow heads 'o' and 'o #' and the heads 'J >= 5' and odd-width 'Z o #', every one of the 1324 phase starts parses as G1 (one junction, W aligned).",
+  "Round 2: complete regime coverage to 1e11. The bounce-level replay (bell removed) reproduces all 1321 phase starts 3..1323 exactly. Of ~6.94e6 Incs: Gap-Inc kinds d1 3466687, d2 3463754, o-merges 2390, 'o #' 58, 'Z #' 118, tail 334; J-rule kinds junction 1702 (j=2..34), odd-width d=3 332, overflow T 3277. Marker steps: d1 1338, d2 939, d3 1124, T 67, plus ~14.3k walk Incs of the same kinds. Sub-phases (recursive): aligned rules only. No even head (p1 >= 4 even) ever.",
+  "Round 2: why halting needs small M. Halting needs an even head (p1 = 4 halts at once) or a sub-phase on a non-aligned W; both need M-1 < k_align at some phase start. Orbit counters with M forced to <= k_align: 7 halts in 3293 (6 with M < k_align/3), 0 in 1100 with M in [3k/4, k]; with M > k_align: 0 in 2200 (8 phases each; deepen2_lowM.py + deepen_xrand.c)."
+ ],
+ "remaining_gaps": [
+  "Margin lemma (the one missing piece of a proof): M-1 >= k_align(C) at every phase start. It holds on the orbit from phase 8 to 1e11 with min ratio 1.4 (>= 2.4 after phase 68). It is not inductive by a constant factor on random G1 counters, so the proof must use orbit structure. Likely route: k_align ~ 2*3^(h_total), where h counts the d=1 prefix frames from '#' walls (= d=3 frames crossed by the previous walk) along the chain of J-rule outputs. On the orbit h is small (mean 1.0-1.2, max 6) while log3 M reaches 8.4; max 3^h/M per 250-phase window falls 0.58, 0.13, 0.04, 0.11, 0.03, 0.008.",
+  "Priority call for Dennis: is the margin structural or luck? Crude digit heuristic: each crossed digit is 2 with probability 1/3, so P(h >= k) ~ 2^-k. If digits were random, margin violations would be rare but not summable (about sum M^-0.63). Mild violations look harmless (0/1100 halts with M in [3k/4, k]). If the margin cannot be bounded structurally, the machine is a cryptid-margin case. The dynamics themselves need no pseudo-random arithmetic (counting + recursion).",
+  "Formal side not started: the aligned-walk lemma (Phase(m, A) in G1, non-halting) uses only round-1 rules + aligned Inc and can be formalized now; the J-rule needs a recursive (nested-phase) lemma in Rocq."
+ ],
+ "evidence": [
+  "scripts/deepen2_orbit.py 1324 -> deepen2_orbit_1324.txt: bounce-level replay, phases 3..1323 match the direct-simulation log exactly; Jrule ok 1702, FAIL 0; Inc/crossing kind counts",
+  "scripts/deepen2_validate_jrule.py seeds 1 (500) and 2 (1000): J-rule 1500/1500 (157 halt-agree), Gap-Inc 1500/1500; outputs deepen2_validate_jrule_s1.txt, _s2.txt",
+  "scripts/deepen2_validate_jcross.py seed 1: J-crossing 366/366 + 34 halt-agree (deepen2_validate_jcross_s1.txt)",
+  "scripts/deepen2_inv.py (A closure 600/600) and deepen2_validate_closure.py seeds 1 (400), 2 (600) -> deepen2_validate_closure.txt: Inc on G1, Phase(m, A), Phase(M, G1) by margin, margin inductiveness 192/316",
+  "scripts/deepen2_types.py 2 400 (deepen2_types_2_400.txt): every J-rule input W is aligned (425/425); J outputs A 159, N12 254, N23 9, J 3; counter after M-1 Incs aligned in 396/398 phases",
+  "scripts/deepen2_subphase.py 120 40: 66 distinct orbit sub-phase counters W, none halts for any bell m in 0..40",
+  "scripts/deepen2_margin.py 2 1324 1 -> deepen2_margin.txt: k_align per phase, Jchain <= 5, k_align > M-1 only at phases 5, 7",
+  "scripts/deepen2_lowM.py -> deepen2_lowM.txt: orbit counters with shrunk bells, 7/3293 halts (M <= k_align), 0/2200 (M > k_align)",
+  "scripts/deepen2_ratio.py seed 3 -> deepen2_ratio_s3.txt: margin factor c = 1, 2, 4, 10 is not inductive (next ratio < 1 in 15/43/6/3 of 182)"
+ ],
+ "rounds": [
+  {
+   "round": 3,
+   "stage": "funded:prove_margin",
+   "date": "2026-10-10",
+   "confidence": "med",
+   "recommend": "park",
+   "result": "No margin proof. The strict margin M-1 >= k_align(C) is not inductive on random reachable-looking counters and depends on the exact bell (low base-3 digits of M-1-k_align). By the funded stage's exit rule (failed bound) the machine is parked as STUCK, cryptid-margin suspect. Not CRYPTID_CANDIDATE: no tested margin break led to halting.",
+   "new_tools": [
+    "scripts/deepen3_fast.py: fast exact phase map (round-2 bounce-level replay + bijective base-3 arithmetic incs on aligned counters; cell-level for pre-alignment incs, the carry into the top frame and the marker walk). 1321/1321 logged phase starts; 40/40 random extended phases agree with direct one-phase C simulation (scripts/deepen3_onephase.c, deepen3_onephase_check.txt)."
+   ],
+   "rules": [
+    {
+     "name": "Aligned Inc = bijective base 3",
+     "from": "aligned counter, frames (d_i,w_i) below the top frame",
+     "to": "n incs add n to sum d_i 3^i (digits d in 1..3, widths fixed) until all lower digits are 3; the next inc carries into the top frame (cell level)",
+     "validated": {
+      "orbit": "fast map reproduces 1321/1321 logged phase starts; 40/40 extended phases vs direct simulation (M up to 27,680)"
+     }
+    },
+    {
+     "name": "Walk merges widths",
+     "from": "post-inc counter, marker walk crossing d=1/d=3 frames, stopping at d=2",
+     "to": "each '#' (D) frame of the next counter = merger of a crossed d=3 frame and the following d=1 frames, width = sum of their widths; d=1 frames before the first d=3 go into the bell (M' = M + 1 + sum w/2)",
+     "validated": {
+      "orbit": "traced on phases 1290-1323, 3535, 1497 (not a separate random test; consequence of the round-1 walk rules)"
+     }
+    }
+   ],
+   "evidence": [
+    "Extended orbit (deepen3_extend.py -> deepen3_orbit_ext.txt): phases 1323..11798, M 10,902 -> 114,554, ~9.7e13 steps (estimate from 2.00*M^2 steps per phase, 40/40 measured 2.0006-2.0043); no halt; margin holds at all 10,475 new phase starts.",
+    "Margin ratio r = k_align/(M-1) per window (deepen3_margin_windows.txt): max 0.415, 0.399, 0.358, 0.467, 0.301, 0.164, 0.398 for phases 69-999, 1000-1999, 2000-3999, 4000-5999, 6000-7999, 8000-9999, 10000-11798; P(r>0.2) 0.033 -> 0.002. No drift toward 1.",
+    "k_align structure: chain of junction heads at merged frame positions q, each needing 1-2 carries of ~3^q incs; the chain ends after the last d=2 digit of the post-inc counter. Phase 3535: heads at 4,6,7,7,8, k_align 11,097, M 30,990.",
+    "Bell perturbation of orbit counters, one phase (deepen3_perturbM.py): M in [0.5,2]*M_t 800/800 next ratio < 0.5 (max 0.287); M_t +-30: 147/150 < 0.25 but max 0.979 (phase 10666, bell 102,051 instead of 102,052: k_align 99,927 vs M' 102,052; orbit gives k_align 0); zero-free x = M-1-k: 120/120 < 0.25 (max 0.227); uniform-x control 119/120 (max 0.256).",
+    "Random reachable-looking starts (aligned, all digits 1, V_al <= M-1, random widths 4..160, deepen3_violate.py seed 3): margin fails in 7/200 runs within 12 phases (up to 2.84), each for one phase; 0/200 halt; 0 leave G1. With orbit-sampled widths (seed 4): 4/200 fail (up to 2.66), 0 halt, 1 leaves G1.",
+    "Inv(k_align <= (M-1)/2, V_al <= M-1) not inductive on the same family: fails in 60/300 runs within 8 phases (deepen3_inductive_s1.txt)."
+   ],
+   "remaining_gaps": [
+    "Margin lemma unprovable as stated (random reachable-looking counters break it; one-cell bell changes on the orbit reach ratio 0.979).",
+    "A violation-tolerant invariant (k_align <= c*(M-1), c ~ 3, plus recovery) is conceivable but would still need to rule out deep deficits, which is again digit arithmetic; it also needs rules for the walk on an unaligned counter (J-crossing j >= 2).",
+    "deepen3_perturb_multi.py (multi-phase bell perturbation) written, not run."
+   ]
+  }
+ ]
+}

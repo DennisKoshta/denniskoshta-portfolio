@@ -1,0 +1,472 @@
+{
+ "tm": "1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF",
+ "rank": null,
+ "class_sheet": "Bell eats counter",
+ "class_guess": "Bell eats counter: BECv5 TM1/TM2's counter with F1 = 1LF; the counter alternates std / packed encodings, with dirty transients",
+ "confidence": "med",
+ "summary": "BECv5 TM1/TM2 counter; F1=1LF packs the top pair. Halting only at rare dirty overflows, avoided by >= 0.29 m.",
+ "mechanism": [
+  "K(w,n,m) = w <A 1(10)^(1+n)0(10)^m. Each bounce applies phi to w (last 00 -> 1, zeros to its right; F1 = 1LF lets a carry pass 11) and moves one 10 from n to m. At n = 0 the right side eats the counter's low end (template ROv).",
+  "The counter comes back shifted one cell and recounts, so it alternates encodings: std(N) -> pk(2k+b) -> std(2r+b) ... In 2.8% of cycles the overflow sees a dirty word, still shifted.",
+  "Halting needs an odd landing at a dirty overflow ending 01/11 (or 10, nested). None in 17M cycles (~5e22 steps), gap >= 0.29 m. No 740 holdout shares the table; 349 is equivalent (TM518) to it started in F."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, first 10,000 steps",
+   "why": "The site's view. The right edge holds the (10) block; the left edge is the counter being eaten and rebuilt.",
+   "primary": true,
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 px rows (1 px row = 20 steps; the site blends steps 20y+9 and 20y+10)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom rows: one per overflow configuration",
+   "png": "img/counter_rows.png",
+   "html": null,
+   "steps": 604697267,
+   "caption": "The counter word at each of the first 400 overflows",
+   "title": "Counter word at each overflow",
+   "why": "One row per cycle. Read the colour strip on the right, then compare the leftmost lit cells row to row.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per overflow configuration K(w,0,m) = w <A 1100 (10)^m 0^inf, cycles 1..400 (steps 32..604,697,267, not evenly spaced), 2 px per row",
+   "window": "cells -27..0, 1 px = 0.25 cells (counted from the counter's right end, the cell A reads; that cell moves left over time)",
+   "legend": "white = 1, black = 0; light orange = a 1 in the top pair of a packed counter; pink = a 1 in a dirty word; right strip: blue = standard counter, orange = packed counter, red = dirty word",
+   "style": "custom"
+  },
+  {
+   "mode": "explore, constructed start, every step",
+   "png": "img/cycle_vs_TM1.png",
+   "html": null,
+   "steps": 368,
+   "caption": "One cycle: this machine (left) vs template TM1 (right)",
+   "title": "One cycle, this machine vs BECv5 TM1",
+   "why": "Same start and steps, columns aligned. Follow the cyan F head down both panels; find the first differing row.",
+   "primary": true,
+   "start": "constructed: 0^inf 10100 <A 1100 10^6 0^inf",
+   "rows": "every step, steps 0..368 (= blank-tape steps 430..798, from overflow std(6), m = 6 to the next overflow), 3 px per row",
+   "window": "cells -6..17, 1 px = 1/3 cell (left panel); right panel: TM1 1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA0RB, cells -4..17 shifted to the same columns (slate filler at its left)",
+   "legend": "slate = 0, white = 1; head colour = state: red A, orange B, blue C, green D, magenta E, cyan F",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "records:L",
+   "png": "img/recL_2e8.png",
+   "html": null,
+   "steps": 200000000,
+   "caption": "Left records to 2e8 steps",
+   "title": "Left records to 2e8 steps",
+   "why": "One row per new leftmost cell. The green diagonal is the head eating left; bands are the (10)/(01) blocks.",
+   "start": "blank",
+   "rows": "the start, then one row per new leftmost cell (1,047 rows, steps 0..200,000,000; not evenly spaced in time)",
+   "window": "cells -1046..280, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:2000000",
+   "png": "img/every2e6_2e9.png",
+   "html": null,
+   "steps": 2000000000,
+   "caption": "Snapshot every 2e6 steps to 2e9",
+   "title": "Every 2,000,000 steps to 2e9",
+   "why": "Overall growth: both edges grow like the cube root of time. The 1010 tape reads as grey at this scale.",
+   "start": "blank",
+   "rows": "every 2,000,000 steps (1,001 rows, steps 0..2,000,000,000)",
+   "window": "cells -2313..591, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited (alternating 1010 cells look grey), red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom: histogram per counter class",
+   "png": "img/ratio_classes.png",
+   "html": null,
+   "steps": {
+    "log10": 19.06
+   },
+   "caption": "(N-m)/m at each clean overflow, by counter class",
+   "title": "N/m by counter class vs invariant",
+   "why": "One band per class: bars stay left of the white tick; the dotted grey tick is where halting becomes possible.",
+   "primary": false,
+   "start": "blank",
+   "rows": "5 bands, top to bottom: std N even, std N odd, pk N even, pk N odd (N = m mod 2), then N != m mod 2; clean overflow states of cycles 1..1,000,000 with N > 100 (abstract rules), bar height = sqrt of count",
+   "window": "x = (N-m)/m from 0 to 1.6, 1 px = 0.004",
+   "legend": "blue = std counter, light blue = std N odd, orange = pk N even, yellow = pk N odd, purple = parity broken, white tick = bound of invariant I, grey dotted tick = N = 2m+4 (halting possible for N even), dark grey = band background",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf w <A 1100 (10)^m 0^inf, w = std(N) | pk(N) | dirty word",
+  "vars": [
+   "type",
+   "N",
+   "m"
+  ],
+  "rows": [
+   {
+    "step": 32,
+    "values": [
+     "std",
+     1,
+     1
+    ]
+   },
+   {
+    "step": 135,
+    "values": [
+     "std",
+     3,
+     3
+    ]
+   },
+   {
+    "step": 430,
+    "values": [
+     "std",
+     6,
+     6
+    ]
+   },
+   {
+    "step": 797,
+    "values": [
+     "pk",
+     13,
+     7
+    ]
+   },
+   {
+    "step": 1362,
+    "values": [
+     "std",
+     11,
+     9
+    ]
+   },
+   {
+    "step": 2295,
+    "values": [
+     "pk",
+     14,
+     12
+    ]
+   },
+   {
+    "step": 3366,
+    "values": [
+     "std",
+     19,
+     13
+    ]
+   },
+   {
+    "step": 4931,
+    "values": [
+     "pk",
+     20,
+     16
+    ]
+   },
+   {
+    "step": 6664,
+    "values": [
+     "std",
+     21,
+     17
+    ]
+   },
+   {
+    "step": 8795,
+    "values": [
+     "pk",
+     29,
+     19
+    ]
+   },
+   {
+    "step": 11364,
+    "values": [
+     "std",
+     27,
+     21
+    ]
+   },
+   {
+    "step": 14661,
+    "values": [
+     "pk",
+     30,
+     24
+    ]
+   },
+   {
+    "step": 18216,
+    "values": [
+     "std",
+     39,
+     25
+    ]
+   },
+   {
+    "step": 22931,
+    "values": [
+     "pk",
+     33,
+     29
+    ]
+   },
+   {
+    "step": 179620,
+    "values": [
+     "std",
+     66,
+     60
+    ]
+   },
+   {
+    "step": 199243,
+    "values": [
+     "dirty",
+     "101101010101",
+     61
+    ]
+   },
+   {
+    "step": 199297,
+    "values": [
+     "std",
+     0,
+     69
+    ]
+   },
+   {
+    "step": 224984,
+    "values": [
+     "std",
+     70,
+     70
+    ]
+   },
+   {
+    "step": 1150500,
+    "values": [
+     "std",
+     132,
+     116
+    ]
+   },
+   {
+    "step": 1220919,
+    "values": [
+     "dirty",
+     "10110101000001",
+     117
+    ]
+   },
+   {
+    "step": 9121201,
+    "values": [
+     "pk",
+     265,
+     233
+    ]
+   },
+   {
+    "step": 74292260,
+    "values": [
+     "std",
+     475,
+     469
+    ]
+   },
+   {
+    "step": 251944630,
+    "values": [
+     "std",
+     1163,
+     705
+    ]
+   },
+   {
+    "step": 609476754,
+    "values": [
+     "std",
+     1212,
+     976
+    ]
+   },
+   {
+    "step": 2118660118,
+    "values": [
+     "pk",
+     2653,
+     1465
+    ]
+   },
+   {
+    "step": 5070324706,
+    "values": [
+     "pk",
+     2472,
+     1954
+    ]
+   },
+   {
+    "step": 9968287008,
+    "values": [
+     "pk",
+     3953,
+     2451
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "init",
+   "from": "0^inf A> 0^inf",
+   "to": "0^inf 1 <A 1100 10 0^inf",
+   "steps": "32",
+   "cases": "via K('',0,0) at step 5 and K('',1,0) at step 14; = std(1), m = 1",
+   "validated": {
+    "instances": 1,
+    "passed": 1
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R1 bounce",
+   "from": "0^inf w <A 1 10^(1+n) 0 10^m 0^inf",
+   "to": "0^inf phi(w) <A 1 10^n 0 10^(m+1) 0^inf",
+   "steps": null,
+   "cases": "n >= 1; phi(w): last cell 0 -> 1, else the last 00 pair (0^inf counts) -> left cell 1, all cells right of it 0 (random w up to 14 cells)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R2 overflow, q even",
+   "from": "0^inf w <A 1100 10^m 0^inf",
+   "to": "0^inf x <A 1 10^(2+m+q/2) 0 0^inf",
+   "steps": null,
+   "cases": "phi(w) = x 1 0^q with q even (the template's ROv when w = std((2k+1)2^i-1): q = 2i, x = std(k)0)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R3 overflow reset, q odd",
+   "from": "0^inf w <A 1100 10^m 0^inf",
+   "to": "0^inf x' <A 1100 10^(m+(q+3)/2) 0^inf",
+   "steps": null,
+   "cases": "phi(w) = x 1 0^q, q odd, x = x' 00 or x empty",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R4 overflow halt",
+   "from": "0^inf w <A 1100 10^m 0^inf",
+   "to": "halt",
+   "steps": null,
+   "cases": "phi(w) = x 1 0^q, q odd, x ends in 01 or 11; never reached from blank (17M cycles)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B std -> pk",
+   "from": "0^inf std(N) <A 1100 10^m 0^inf",
+   "to": "0^inf pk(2k+b) <A 1100 10^b 0^inf",
+   "steps": null,
+   "cases": "N = (2k+1)2^i - 1, b = 1+i+m, L = bitlen(k); clean iff k a power of 2 or 2k+b >= 2^(L+1); k = 0: std(b); else dirty phi^b(std(k)0)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B pk -> std",
+   "from": "0^inf pk(N) <A 1100 10^m 0^inf",
+   "to": "0^inf std(2r+b) <A 1100 10^b 0^inf",
+   "steps": null,
+   "cases": "k = 2^(L-1)+r, r > 0, clean iff 2r+b >= 2^L; k a power of 2: std(k+b); k = 0 (all ones): reset, then std(b+1), m = b+1; else dirty phi^b(pk(k)0)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "phi^j acceleration",
+   "from": "w",
+   "to": "phi^j(w)",
+   "steps": null,
+   "cases": "cells below the lowest 1 at an odd offset count in binary on their even offsets; when full, the next step lands above",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "BECv5.v",
+  "module": "TM1",
+  "machine": "1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA0RB",
+  "diff": "F1: 1LF here vs 0RB (TM1) / 1LB (TM2)",
+  "applies": "partly",
+  "note": "Kept: LC0, R n m, LInc0, LIncs, RIncs, ROv for std counters. New: a packed counter pk with its own ROv/increments, the shifted-counter orbit (replaces LIncs': H0 -> pk(2k+j) / std), dirty transients, reset R3, and the invariant."
+ },
+ "strategy": "Find an invariant on (type, N, m) at overflow, plus the dirty state, that keeps b' off the odd landings ending 01/11/10 (measured gap >= 0.29 m). Then copy BECv5 TM1's LC0/R/RIncs/ROv, add pk lemmas and the dirty-orbit lemma, and close with progress_nonhalt_cond.",
+ "risks": [
+  "No invariant yet: the halting branch is real in the abstract system, so a proof must pin down N vs m tightly enough.",
+  "Dirty orbits need a recursive word description (binary sub-counters on even offsets) that is heavier to formalize than BinInc.",
+  "R3 resets (hit once, near misses at distance 2) put non-standard words into the next overflow; the invariant must cover them."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Counter word at each overflow: do the rows read as one binary counter whose encoding flips every cycle (blue/orange strip), with rare red dirty rows?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "One cycle vs TM1: the panels agree until the second bounce, where this machine's cyan F keeps sweeping left over 1s (F1 = 1LF) and TM1 turns back. Is that the only split you see?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Mechanism is closed and validated, but non-halting needs an invariant not yet found (gap >= 0.29 m in 17M cycles). Fund one stage to hunt the invariant, or park?",
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 10000000000,
+  "cells": 4934,
+  "nonzeros": 2462,
+  "growth": "span ~ 2.3\u00b7steps^(1/3) cells (4,934 at 1e10); m ~ 1.14\u00b7steps^(1/3); abstract rules: 17,000,000 cycles (m = 4.25e7, ~5e22 steps)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Observe done, confidence med: rules closed and validated, non-halting invariant open (decision.json)"
+}

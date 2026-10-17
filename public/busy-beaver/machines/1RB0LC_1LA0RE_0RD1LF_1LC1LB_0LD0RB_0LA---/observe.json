@@ -1,0 +1,609 @@
+{
+ "tm": "1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---",
+ "rank": 1,
+ "class_sheet": "Structural counter + counter",
+ "class_guess": "Two coupled binary counters: drifting-defect digit counter (right) + edge bit counter (left)",
+ "confidence": "med",
+ "summary": "Period-5 tape; a binary counter of drifting 3-cell digits feeds a left-edge bit counter that absorbs them",
+ "mechanism": [
+  "Period-5 tape 10110. Right counter: little-endian digits 110=1 / 100=0 in the stripes; each sweep adds 1 with carry.",
+  "A carried digit moves 5 cells left (digit k drifts 1 block per 2^k sweeps); overflow adds two 0-digits at the right end.",
+  "Left counter: big-endian bits 10=1 / 00=0, +1 per 2 sweeps; absorbing the lowest digit halves it (phases X/Y follow)."
+ ],
+ "diagrams": [
+  {
+   "mode": "hubs (custom)",
+   "png": "img/hubmap.png",
+   "html": null,
+   "steps": 8750000,
+   "caption": "One row per sweep: digits 1=orange, 0=blue drift left, get absorbed",
+   "title": "Hub map: one row per right sweep",
+   "why": "Each row is the tape at the start of a right sweep. Follow one orange/blue track down the rows.",
+   "primary": true,
+   "start": "mid-run: step 7400830",
+   "rows": "one row per hub = start of each right sweep (state E, taken 6 cells after the head turns right): 1,056 rows, steps 7,400,830 to 8,747,651, unevenly spaced (22 to 2,614 steps apart, median 1,272)",
+   "window": "cells -412..105, 1 px = 0.5 cells (each cell 2 px wide; each row 1 px tall)",
+   "legend": "custom, each row recoloured from its parsed hub: left of the head (10 W σ) white = 1, slate = 0; red = head (E); lavender = 1s between the head and the first two 10110 blocks (normally the 110 right after the head); gray = one 10110 background block (5 cells drawn flat); orange = digit 110 (=1); blue = digit 100 (=0); green = 1s of the right-end tail 11; black = blank",
+   "style": "custom"
+  },
+  {
+   "mode": "hubs (raw)",
+   "png": "img/hubs_raw.png",
+   "html": null,
+   "steps": 8750000,
+   "caption": "Same rows and window as the hub map, plain bbchallenge colours",
+   "title": "Same rows as Fig 1, plain colours",
+   "why": "The same rows and window as Fig 1, nothing recoloured: compare its small stripe breaks with Fig 1's tracks.",
+   "primary": true,
+   "start": "mid-run: step 7400830",
+   "rows": "one row per hub = start of each right sweep (state E, taken 6 cells after the head turns right): 1,056 rows, steps 7,400,830 to 8,747,651, unevenly spaced (22 to 2,614 steps apart, median 1,272)",
+   "window": "cells -412..105, 1 px = 0.5 cells (each cell 2 px wide; each row 1 px tall)",
+   "legend": "white = 1, black = 0 or unvisited, red = head (state E, just moved right)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e8.png",
+   "html": "img/viewer.html",
+   "steps": 100000000,
+   "caption": "Records: both edges grow, left faster",
+   "title": "Left/right records to 100M steps",
+   "why": "The whole run from blank: both edges keep growing, the left one faster.",
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new leftmost or rightmost cell (1,148 rows to step 100,000,000; not evenly spaced in time)",
+   "window": "cells -916..231, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "blaze",
+   "png": "img/blaze_1e8.png",
+   "html": "img/viewer.html",
+   "steps": 100000000,
+   "caption": "Blaze 1e8: period-5 stripes, width ~ t^(1/3)",
+   "title": "Blaze, 100M steps",
+   "why": "Period-5 stripes fill a bell whose width grows like t^(1/3).",
+   "start": "blank",
+   "rows": "Blaze time blocks of 131,072 steps (each averaged), 763 blocks to step 1e8, stretched to 500 px (1 px = about 200,000 steps)",
+   "window": "cells -916..231, 1 px = 1.44 cells (Blaze image: 1 column per cell, 1,148 columns stretched to 800 px)",
+   "legend": "white = 0, orange = 1, paler orange = 1 only part of the time (or in part of the cells) of that pixel's block; no head",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "default",
+   "png": "img/default_site_1e4.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge default view: bell growth from the blank tape",
+   "title": "bbchallenge default view, first 10,000 steps",
+   "why": "The site's view: a narrow bell growing from the blank tape.",
+   "start": "blank",
+   "rows": "every step 0..9,999, squeezed into 500 px by the site's bilinear filter: px row y blends steps 20y+9 and 20y+10, so it is effectively one sample every 20 steps",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf 10 W σ E> 110 (10110)^g D_1 (10110)^G_1 ... D_k (10110)^G_k 11 0^inf   (σ = 101010 for X, 100010 for Y)",
+  "vars": [
+   "phase (X/Y)",
+   "W left bits MSB-first (10=1, 00=0)",
+   "g",
+   "D digits LSB-first (110=1, 100=0)",
+   "G gaps after each digit",
+   "lo",
+   "hi"
+  ],
+  "rows": [
+   {
+    "step": 3304,
+    "values": [
+     "Y",
+     "0",
+     1,
+     "0100",
+     "2 0 0 0",
+     -32,
+     10
+    ]
+   },
+   {
+    "step": 6050,
+    "values": [
+     "Y",
+     "00",
+     1,
+     "10000",
+     "2 1 0 0 0",
+     -40,
+     12
+    ]
+   },
+   {
+    "step": 10278,
+    "values": [
+     "X",
+     "1",
+     4,
+     "111",
+     "2 1 0",
+     -46,
+     13
+    ]
+   },
+   {
+    "step": 15768,
+    "values": [
+     "X",
+     "01",
+     4,
+     "0110",
+     "3 1 0 0",
+     -54,
+     15
+    ]
+   },
+   {
+    "step": 30190,
+    "values": [
+     "X",
+     "00",
+     5,
+     "0101",
+     "4 1 1 0",
+     -66,
+     18
+    ]
+   },
+   {
+    "step": 39622,
+    "values": [
+     "X",
+     "01",
+     7,
+     "00100",
+     "3 2 0 0 0",
+     -72,
+     20
+    ]
+   },
+   {
+    "step": 60156,
+    "values": [
+     "Y",
+     "110",
+     1,
+     "00101",
+     "7 4 1 1 0",
+     -82,
+     22
+    ]
+   },
+   {
+    "step": 112236,
+    "values": [
+     "Y",
+     "10",
+     10,
+     "00110",
+     "5 3 1 0 0",
+     -100,
+     27
+    ]
+   },
+   {
+    "step": 150658,
+    "values": [
+     "Y",
+     "0001",
+     1,
+     "0100000",
+     "11 5 2 1 0 0 0",
+     -112,
+     30
+    ]
+   },
+   {
+    "step": 251402,
+    "values": [
+     "X",
+     "0010",
+     7,
+     "0000000",
+     "10 5 2 1 0 0 0",
+     -132,
+     35
+    ]
+   },
+   {
+    "step": 386450,
+    "values": [
+     "Y",
+     "1110",
+     1,
+     "010101",
+     "16 7 4 1 1 0",
+     -150,
+     39
+    ]
+   },
+   {
+    "step": 631060,
+    "values": [
+     "Y",
+     "0101",
+     12,
+     "0011000",
+     "13 7 3 1 0 0 0",
+     -176,
+     46
+    ]
+   },
+   {
+    "step": 1023498,
+    "values": [
+     "X",
+     "111",
+     22,
+     "001110",
+     "12 6 3 1 0 0",
+     -204,
+     53
+    ]
+   },
+   {
+    "step": 1564836,
+    "values": [
+     "Y",
+     "01111",
+     1,
+     "00101000",
+     "26 13 6 3 1 0 0 0",
+     -236,
+     61
+    ]
+   },
+   {
+    "step": 2556812,
+    "values": [
+     "Y",
+     "0111",
+     31,
+     "0001100",
+     "16 8 4 2 0 0 0",
+     -276,
+     71
+    ]
+   },
+   {
+    "step": 3963894,
+    "values": [
+     "Y",
+     "11110",
+     1,
+     "0001011",
+     "36 18 9 4 2 1 0",
+     -318,
+     81
+    ]
+   },
+   {
+    "step": 6310650,
+    "values": [
+     "X",
+     "001001",
+     12,
+     "1011011",
+     "37 19 9 4 2 1 0",
+     -372,
+     94
+    ]
+   },
+   {
+    "step": 8307182,
+    "values": [
+     "X",
+     "00100",
+     48,
+     "1110110",
+     "24 12 5 3 1 0 0",
+     -406,
+     103
+    ]
+   },
+   {
+    "step": 8310866,
+    "values": [
+     "X",
+     "00101",
+     47,
+     "1001110",
+     "24 12 6 3 1 0 0",
+     -406,
+     103
+    ]
+   },
+   {
+    "step": 8314032,
+    "values": [
+     "X",
+     "00110",
+     46,
+     "1101110",
+     "25 12 6 3 1 0 0",
+     -406,
+     103
+    ]
+   },
+   {
+    "step": 8317492,
+    "values": [
+     "X",
+     "00111",
+     45,
+     "1011110",
+     "25 13 6 3 1 0 0",
+     -406,
+     103
+    ]
+   },
+   {
+    "step": 8320596,
+    "values": [
+     "X",
+     "01000",
+     44,
+     "1111110",
+     "26 13 6 3 1 0 0",
+     -406,
+     103
+    ]
+   },
+   {
+    "step": 8427418,
+    "values": [
+     "X",
+     "010001",
+     3,
+     "100010000",
+     "46 23 11 6 2 1 0 0 0",
+     -408,
+     104
+    ]
+   },
+   {
+    "step": 8428868,
+    "values": [
+     "X",
+     "010010",
+     2,
+     "110010000",
+     "47 23 11 6 2 1 0 0 0",
+     -408,
+     104
+    ]
+   },
+   {
+    "step": 8430898,
+    "values": [
+     "X",
+     "010011",
+     1,
+     "101010000",
+     "47 24 11 6 2 1 0 0 0",
+     -408,
+     104
+    ]
+   },
+   {
+    "step": 8437790,
+    "values": [
+     "X",
+     "01011",
+     47,
+     "01110000",
+     "25 12 6 2 1 0 0 0",
+     -408,
+     104
+    ]
+   },
+   {
+    "step": 8441584,
+    "values": [
+     "X",
+     "01100",
+     46,
+     "00001000",
+     "25 12 6 3 1 0 0 0",
+     -408,
+     104
+    ]
+   },
+   {
+    "step": 9999794,
+    "values": [
+     "Y",
+     "001001",
+     24,
+     "0100111",
+     "39 19 9 5 2 1 0",
+     -432,
+     109
+    ]
+   },
+   {
+    "step": 15848708,
+    "values": [
+     "Y",
+     "001110",
+     39,
+     "10110010",
+     "40 20 10 4 2 1 0 0",
+     -502,
+     127
+    ]
+   },
+   {
+    "step": 25116996,
+    "values": [
+     "Y",
+     "110111",
+     2,
+     "01111101",
+     "69 34 17 8 4 1 1 0",
+     -582,
+     147
+    ]
+   },
+   {
+    "step": 39809272,
+    "values": [
+     "X",
+     "010001",
+     68,
+     "01010110",
+     "48 23 12 5 3 1 0 0",
+     -678,
+     171
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "R1 E-chain",
+   "from": "E> (10110)^n",
+   "to": "(11010)^n E>",
+   "steps": "17n",
+   "cases": null,
+   "validated": {
+    "instances": 40,
+    "passed": 40
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R2 F-chain",
+   "from": "(11010)^n <F",
+   "to": "<F (10110)^n",
+   "steps": "9n",
+   "cases": "n>=1",
+   "validated": {
+    "instances": 40,
+    "passed": 40
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R3 set (no carry)",
+   "from": "E> (10110)^a 100",
+   "to": "<F (10110)^a 110",
+   "steps": "26a+7",
+   "cases": "a>=0",
+   "validated": {
+    "instances": 35,
+    "passed": 35
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R4 carry through j ones",
+   "from": "E> (10110)^a [110 (10110)^b_i]_{i=1..j} 100",
+   "to": "<F (10110)^(a-1) [100 (10110)^b_i]_{i<j} 100 (10110)^(b_j+1) 110",
+   "steps": "26(a+sum b_i)+16j+7",
+   "cases": "j>=1, a>=1, b_i>=0 (carried digits shift one block left)",
+   "validated": {
+    "instances": 125,
+    "passed": 125
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R5 right overflow",
+   "from": "E> (10110)^a [110 (10110)^b_i]_{i=1..j} 11 0^inf",
+   "to": "<F (10110)^(a-1) [100 (10110)^b_i]_{i=1..j} 100 100 11 0^inf",
+   "steps": "26(a+sum b_i)+16j+13",
+   "cases": "j>=0, a>=1 (all digits 1: reset + two new 0-digits)",
+   "validated": {
+    "instances": 80,
+    "passed": 80
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R6 hub macro (X and Y)",
+   "from": "0^inf 10 W σ E> 110 (10110)^g R",
+   "to": "0^inf 10 (W+1) σ E> 110 inc(inc((10110)^g R))",
+   "steps": null,
+   "cases": "g>=2; inc = R3/R4/R5 (g drops by 1); W+1 widens by one bit on overflow, left edge -2",
+   "validated": {
+    "instances": 160,
+    "passed": 160
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R7 absorption, phase X",
+   "from": "0^inf 10 W w 101010 E> 110 (10110)^1 D_1 (10110)^G_1 R'",
+   "to": "phase X if D_1=110 else Y; left bits W+1+w(1-d); right = inc^(2+(d xor w)) of (10110)^(G_1+2) R'",
+   "steps": null,
+   "cases": "4 cases (d,w) in {0,1}^2, 30/30 each; w = low bit of W, d = 1 iff D_1=110",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R8 hub macro, separator regime",
+   "from": "0^inf 10 W1 s W2 σ E> 110 (10110)^g R",
+   "to": "0^inf 10 W1 s (W2+1) σ E> 110 inc(inc((10110)^g R))",
+   "steps": null,
+   "cases": "s in {0, 110}; W2 non-empty and not all ones; both σ (entry/exit of this regime still open)",
+   "validated": {
+    "instances": 96,
+    "passed": 96
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "vendor/busycoq/verify/CounterCmp_v1.v",
+  "module": "TM1",
+  "machine": "1RB0LD_1RC0RE_0LA0RC_1LB1LD_0LF1RE_---1LA",
+  "diff": "10 of 12 transitions differ (A1 B0 C0 C1 D0 D1 E0 E1 F0 F1); CounterClass1 TM1: 9; BECv7 TMs: 11-12",
+  "applies": "no",
+  "note": "Different mechanism (unary blocks at the 0^inf edge); its S1/Inc1 shape fails 0/5 here (3 halt). Only BECv7's digit-list layout (Inductive RD + bin_inc) carries over."
+ },
+ "strategy": "Encode the hub as (phase, W, separator, W2, g, digit list with gaps) using BECv7-style Inductive lists. Prove R1-R5 with es/ind, R6-R8 and absorption with follow/mid, init to the first hub, then nonhalt via multistep_nonhalt + progress_nonhalt_cond on a well-formed-hub invariant. Missing first: Y-phase absorption and separator entry/exit rules.",
+ "risks": [
+  "Separator regime (left part 10 W1 0|110 W2 ..., about 40% of hubs) is entered after Y-phase absorption; its entry/exit rules are not found yet.",
+  "The invariant must show g>=2 after every absorption and that digit gaps never collide (a spacing lemma on G_i).",
+  "Likely a 30-60 KB proof; the trio is correlated, so a stall here also stalls #21 and #22."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 1: do the orange/blue tracks read as one binary counter whose digits drift left and are absorbed by the left counter? Fig 2 is the same rows, uncoloured.",
+   "figs": [
+    0,
+    1
+   ]
+  },
+  {
+   "text": "Fig 1: in the left band, do the bits change every few rows, like a second counter rather than a fixed wall?",
+   "figs": [
+    0
+   ]
+  }
+ ],
+ "discord_check": "see reports/discord-drafts.md message 1",
+ "stats": {
+  "simulated_steps": 1000000000,
+  "cells": 2457,
+  "nonzeros": 1464,
+  "growth": "~t^0.33 (span 1148 at 1e8, 2457 at 1e9; lo -1964, hi 492)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism found: two coupled binary counters, no Collatz-like branching. 8 rule families validated (696/696); separator-regime rules still open."
+}

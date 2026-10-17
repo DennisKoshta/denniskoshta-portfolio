@@ -1,0 +1,19 @@
+{
+ "tm": "1RB1RA_1RC1LB_1LD0RA_1LB0LE_1LF1LD_---0LD",
+ "label": "P-697",
+ "status": "SKIPPED",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 697,
+ "class": "Cubic Mess",
+ "upstream_twin": "FARv3.v nonhalt58 = 1RB1RA_1RC1LB_1LD0RA_1RB0LE_1LF1LD_---0LD, solve_cert (RWL_mod_FAR 2000 1000 1 3200 2 4 1 0) (CTL62 decider certificate; also in the pinned vendor copy)",
+ "relation": "identity (same names, same start A, no mirror); tables differ only in D0: 697 1LB, twin 1RB. If D reads 0 at p with t[p+1]=1, 697 runs D0 and the twin runs D0 B1 B1, and both end in the same configuration (B at p-1, t[p]=t[p+1]=1); only cells p,p+1 are read, so this holds for every tape. D0 with t[p+1]=0 is possible only right after F1 (window E0 F1 D0); there the runs split.",
+ "reason": "Twin port refuted at the level of upstream's invariant. Lockstep needs P: every D0 has a 1 on its right (F1 is never followed by D0). P holds in simulation (1e10 steps of 697, 2,170 D0 events, none violating; 1e6-step trace lockstep), but upstream's certificate does not contain it. The native replay of nonhalt58's exact FAR call closes with 256 events, and the closed set contains pre3L 1|C>[0x2%2] -> ret3 ... -> D<[1x1%1] -> retL D<[1x1%1]: with its DFA transitions it covers 0^inf 1 C> 1^(4k+2) 0^inf for every k, from which both machines reach a P-violation (0^inf <D 0 (1 0)^.. at step 10+8k) and then 697 halts (F reads 0 after 51/89/135/189 steps for c=2/6/10/14) while the twin runs on. So the twin's closed set contains configurations from which 697 halts; the same call on 697 fails at retL F<[0x1%1]. Upstream's argument does not carry over from any opening.",
+ "searches": "On 697 (extracted CTL62 deciders): RWL_mod_FAR 1,260 configs and CPS_LRU_FAR 504 configs (20 s cap), all false; plain RWL_mod 609 configs (584 false, 25 timeouts; stopped in bsz 3) and plain CPS_LRU 449 configs (425 false, 24 timeouts; stopped in bsz 8), 10 s cap, 0 true (logs/grid_summary.json). Split-state FAR on the twin (F1 -> 0LG, G = ---0LE halts exactly at a P-violation): false with upstream's parameters and on all 1,764 FAR configs; calibration (twin + unused state) true (logs/grid_splittwin.jsonl). hlin at Indv6's config: true on the two Indv6 near-twins (tm99, tm326; calibration), no result on 697 in 150 s (logs/hlin697.txt).",
+ "checks": {
+  "twin_check": "scripts/twin_check.py SUMMARY PASS, 7 checks (R relation, E entry lemma, M merge lemma, X split lemma, L 1e6-step lockstep, U upstream certificate replay + concrete halting family, S split-state probe); --long adds C (1e10-step P count); output scripts/twin_check.out; logs/d0ctx_697_1e10.log"
+ },
+ "formalization_route": "None for the port. Importing nonhalt58 (or copying its solve_cert) proves the twin only; the missing P is a new nonhalting-strength invariant of 697 (upstream's invariant contains P-violating configurations from which 697 halts), and CTL62 brings PArray/Uint63, which the unchanged check_kill baseline rejects. No Perm or Flip is needed (identity relation). A kill needs a regular invariant for 697 itself excluding the left-end family 0^inf 1 C> 1^(4k+2) ... in a gate-passing format (Astra's NFA package; direction 5), or a hand proof of P plus a gate-passing twin proof.",
+ "next": "No port, no delta proof.md. Candidate for direction 5 (regular-language search): the target invariant must exclude 'F1 followed by D0' while covering the twin's orbit. scripts/fartrace (ancestry query: 11th argument) and scripts/twin_check.py test any FAR closed set in seconds."
+}

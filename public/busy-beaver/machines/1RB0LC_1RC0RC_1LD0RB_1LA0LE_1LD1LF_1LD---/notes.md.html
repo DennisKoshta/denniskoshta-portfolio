@@ -1,0 +1,874 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/notes.md · <a href="/busy-beaver/machines/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/notes.md.html">raw</a></div>
+<h1 id="1rb0lc_1rc0rc_1ld0rb_1la0le_1ld1lf_1ld-">1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</h1>
+<p>Status: STUCK (2026-10-10), informal_proof stage, after the skeptic review. The fatal gap (no invariant, proof.md §5) stands. The major gap (no rule for 45 events) is fixed by the general rule G (proof.md §3.5–3.6). See ## Outcome.
+Class guess (agent / Dennis): parent #11's binary counter plus a new "partial overflow" at u = 1 digits. Skelet 1-like Class 2 on the sheet. / _
+Spreadsheet notes / Discord thread: line 395 of <code>data/holdouts/2026-10-07_778.txt</code> (<code>holdouts.py contains</code>: exit 0, byte-exact). Results tab: class only (<code>Skelet 1-like Class 2</code>), with no status, notes, sources or Done By. Classifications tab: listed under that class. It is on no Level/category/link/strikethrough tab and in no <code>data/discord/*.txt</code>. Not claimed. <code>reports/targeting.md</code> lists it as #32 ("follow-on to #11, different trajectory").
+Viewer: https://bbchallenge.org/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---
+Parent: <code>machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code> (KILLED_NONHALT). The two tables differ only in A1: the twin has 0LC, the parent 0LE.</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>Over 1e10 steps there is no halt. The span is −81..271,700: the right edge reaches 89,969 at 1e9 (parent 77,513). The left edge barely moves (−69 at 1e9, −81 at 1e10), while the parent's moves 3 cells per overflow.</li>
+<li>The twin runs the parent's trajectory exactly up to step 283, <code>K((0,0,3),(1,1,2); 4, 1)</code>. The two first differ in state at step 28, but C0 = E0 = 1LD, so the paths stay together. Head and tape first differ at step 322.</li>
+<li>Images:</li>
+<li><code>img/bounce_twin_K283.png</code> and <code>img/bounce_parent_K283.png</code>: the same start config <code>img/bounce_from_K283.txt</code>, 330 rows each. The twin turns at the u = 1 digit; the parent sweeps on to <code>d_1</code>.</li>
+<li><code>img/records_3e5.png</code>.</li>
+<li>Data: <code>scripts/kdump.c</code>, a C simulator that prints every K-config as right-aligned 2-cell tokens. Output to 1e10 (67,857 K-configs) is in the session scratchpad, not kept. Rebuild it with <code>gcc -O2 -o kdump scripts/kdump.c &amp;&amp; ./kdump "$TM" 1e10</code>.</li>
+</ul>
+<h2 id="candidate-rules-the-delta">Candidate rules (the delta)</h2>
+<p>Window-lemma level (<code>scripts/twin.py</code>, checks L and T):
+- 17 of the parent's 20 window lemmas hold verbatim.
+- T3, T5 and T12 write the same tape but exit in <strong>C instead of E</strong>. Because C0 = E0 = 1LD, they act as the parent's lemmas whenever the next cell read is 0.
+- The only reachable divergence is T5 followed by a 1. That is the parent's Lb on a <strong>bit-1 digit with u = 1 whose left neighbour cell is 1</strong>: a previous digit's <code>01</code>, or the leading <code>10 01</code>. (T3 with a = 0 would also diverge, but M only ever meets a ≥ 1.)
+- New lemmas:
+  - T5b: <code>110 &lt;D → 010 B&gt;</code>, 5 steps (D0 A1 C1 B0 C1).
+  - Lt (bounce): <code>1 10 (01)^v &lt;E → 01 (10)^(v−1) 000 B&gt;</code>, 8v+1 steps (T4, S3(v−1), T5b, S6(v−1), T10).</p>
+<p>The leftward sweep turns at that digit, eating its <code>10</code>, and moves one cell of the left text (<code>1</code> becomes <code>01</code>).</p>
+<p>Macro level. Each rule below is checked by <code>scripts/twin.py</code> on random configs (300 each, exact tape and step count):</p>
+<div class="highlight"><pre><span></span><code>M  parent M, unchanged, when every trailing bit-1 digit the carry crosses has u &gt;= 2 (and a &gt;= 1).
+   Left text arbitrary (misaligned junk included).
+O  parent O, unchanged, when all bits are 1, the wall is the plain 10 01 and every digit has u &gt;= 2.
+P  NEW (partial overflow). The sweep meets its first bit-1 digit with u = 1 at index p, and the left text L ends in 1:
+     L · (1,1,v_p) (u_i,1,v_i)_{i&gt;p} (10)^a 000 (10)^b B&gt;
+   → L[:-1] 01 (10)^(v_p-1) 00 (01)^u_{p+1} [(10)^(v_i-1) 00 (01)^u_{i+1}]_{p&lt;i&lt;m} (10)^v_m (01)^a (10)^(b+3) 000 10 B&gt;
+     (p = m:  L[:-1] 01 (10)^v_m (01)^a (10)^(b+3) 000 10 B&gt;)
+   steps 77 - 4k + 8a + 20b + 4·Σ_{i&gt;=p} u_i + 8·Σ_{i&gt;=p} v_i      (k = m-p+1)
+</code></pre></div>
+
+<p>P is O applied to the suffix <code>d_p..d_m</code>, with the far-left turn T9 (and Lb/Ro on <code>d_p</code>) replaced by Lt. It is 12 steps cheaper than that O. P can come from an M-type carry (a bit-0 digit left of p; 15 of the 43 P events to 1e10) or from an O-type all-ones sweep (28). Its result is <strong>not</strong> in the parent's family: the left text is shifted by one cell. Read from the right, <code>d_{p−1} = (u',β',w)</code> becomes <code>(w−1,1,1)</code> plus misaligned text <code>...0</code>, and runs of <code>11</code> and bare <code>00</code> digits (<code>(u,0,0)</code>) appear.</p>
+<p>Every transition to 1e10 (<code>scripts/classify.py</code>), with the exact text and step count of the next K-config:</p>
+<table>
+<thead>
+<tr>
+<th>transition</th>
+<th>count</th>
+<th>rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M (parent rule)</td>
+<td>67,752</td>
+<td>exact, 0 mismatches</td>
+</tr>
+<tr>
+<td>P (new)</td>
+<td>43</td>
+<td>exact, 0 mismatches</td>
+</tr>
+<tr>
+<td>O (parent rule)</td>
+<td>7</td>
+<td>exact, 0 mismatches</td>
+</tr>
+<tr>
+<td>other: carry/sweep reaches a junction digit <code>(u,0,0)</code></td>
+<td>40</td>
+<td><strong>no rule yet</strong></td>
+</tr>
+<tr>
+<td>other: sweep enters the misaligned left text</td>
+<td>11</td>
+<td><strong>no rule yet</strong></td>
+</tr>
+<tr>
+<td>other: far-left wall <code>10 (01)^v</code> with v ≥ 2 (T9 needs v = 1)</td>
+<td>3</td>
+<td><strong>no rule yet</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The 54 "other" transitions realign the left text, which a later sweep re-pairs. Some act like an M (a+1, b+2), others like an O/P (b → 1). <code>python3 -B scripts/classify.py &lt;kdump file&gt; --examples 3</code> prints them as digit lists.</p>
+<p>Why the parent's invariant cannot carry over:
+- Class A ends its cycle at an all-ones state with top <code>(1,1,v)</code>. In the twin, that overflow is always a P, at <code>d_1</code> or at a lower u = 1 digit, never the parent's O.
+- Along the parent's own orbit (2·10^5 macro steps from step 483), class-A overflows are the only steps that would bounce: 39 of 39. All 199,923 M steps and all 38 class-C overflows have only u ≥ 2 digits in the sweep, because class C's <code>u_j = ubar_j ≥ 2^j ≥ 2</code>. So they run unchanged.
+- In the twin itself, M-type P's do occur (15 of 43 to 1e10). They come from the structures that earlier P's leave behind.
+- The run leaves the parent family at the first P. That is an M-type P at step 283→428, before the parent's INV start (step 483).</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<h2 id="informal-proof">Informal proof</h2>
+<p>2026-10-10, informal_proof stage: <code>proof.md</code> written, <strong>incomplete (STUCK at the invariant, proof.md §5)</strong>. Done and checked by <code>check_proof.py</code> (10/10 PASS):
+- rule table facts and an exact token-machine reformulation (proof.md §1);
+- 23 atomic window lemmas: the parent's 20 with T3/T5/T12 exiting in C, plus S4c, T2c and the bounce T5b; the composite Lt (§2);
+- M and O with their narrower twin domains; P derived as a chain and checked link by link (§3);
+- the exact initial segment to step 609 (§4);
+- census to 1e9: M 22,349 / P 35 / O 6 / other 45, 0 mismatches;
+- <strong>every step of every transition</strong> (all to 1e7, all non-M to 1e9) lies in the 23 windows, and F always reads 0 in them. The three "other" types are new compositions, not new local behaviour;
+- arithmetic cannot be dropped: <code>K((1,0,2);2,1)</code> halts at step 2535, and 807 of 5,472 small canonical configs halt;
+- a lemma plan against the parent's .v (§7).</p>
+<p>Still open: closed forms for the 3 "other" types, and a family plus invariant closed under M/O/P/other (the parent's A/B/C classes do not survive P, and P moves the left text by one cell).</p>
+<p>2026-10-10, skeptic revision: <code>proof.md</code> revised (Review log at its end), <code>check_proof.py</code> 12/12 PASS.
+- <strong>General rule G</strong> (proof.md §3.5). Phases 1–2, then Lb/Lb1 over the maximal swept suffix, then one of five turns on the left text X, then Rb or Ro and the M or O right end. The turns:
+  - Lf: <code>00(01)^v</code>;
+  - T3S2: <code>1100 → 01 C&gt;11</code>;
+  - Jc: <code>00(01)^v00 → 10(01)^v C&gt;11</code>;
+  - T2: <code>000 → 100 B&gt;</code>;
+  - Lt: the bounce.</p>
+<p>G is derived from 24 windows (new: T3j <code>0100&lt;E → &lt;D1011</code>; new composite Lb1 for a u = 1 digit with a 0 on its left). It predicts every transition exactly, 22,435/22,435 to 1e9 and 67,856/67,856 to 1e10. M = Lf; O = T2 after Lb1 on the wall (T9 = Lb1 + T2c + Ro); P = Lt. The 45 old "other" events are T2 31, T3S2 8, Jc 2, Lf 4.
+- <strong>Sweep case analysis</strong> (proof.md §3.6). The left-moving part of the table is a 5-state automaton, and the ending of X falls in exactly one class:
+  - covered: Lf, T2 (k ≥ 1), T3S2, Jc;
+  - halting: H1 (<code>11</code>), H2 (<code>111(01)^v</code>);
+  - uncovered: U0 (T2 with k = 0), U1 (<code>011(01)^v</code>), U2 (<code>10(01)^w0100</code>), U3 (<code>11(01)^w0100</code>).</p>
+<p>Non-halting is now exactly "no reachable K-config is in H or U". The halting example <code>K((1,0,2);2,1)</code> ends in H1 at step 2384.
+- Scratch for this stage (not kept): <code>t32/</code> in the session scratchpad. It holds <code>gen.py</code> (G), the dumps to 1e9 and 1e10, and turn/seq tracers.</p>
+<p>Old text: no <code>proof.md</code>. A delta proof needs the parent's family, rules and invariant to survive with local changes. Here the family changes (misaligned left text, <code>(u,0,0)</code> digits, a <code>10 (01)^v</code> wall), the overflow rule changes (P), and 3 event types are still without rules.</p>
+<h2 id="formalization-log">Formalization log</h2>
+<h2 id="outcome">Outcome</h2>
+<ul>
+<li>2026-10-10, delta stage: <strong>OPEN, not a delta of #11.</strong></li>
+<li>Carried over:</li>
+<li>all of the parent's shift and turn lemmas (3 of them with exit state C, which is harmless before a 0);</li>
+<li>M (99.8% of transitions to 1e10);</li>
+<li>O when all u ≥ 2.</li>
+<li>New:</li>
+<li>the bounce Lt and the partial overflow P (validated, exact);</li>
+<li>3 realignment event types (54 of 67,856 transitions to 1e10), not yet characterized.</li>
+<li>Next, as a standalone proof:
+  1. Pin down the realignment events. These are sweeps that reach a <code>(u,0,0)</code> junction, the misaligned text, or a <code>10 (01)^v</code> wall. Get window lemmas for each.
+  2. Choose a configuration family that is closed under M/O/P/realign. Probably: a left part in a small set of shapes, then right-aligned digits.
+  3. Find a new invariant. The parent's A/B/C classes do not survive P.</li>
+</ul>
+<p>Not assessed for cryptid-likeness. The left-text shapes look irregular, but no pseudo-random arithmetic has been seen. Budget for this stage is used.
+- 2026-10-10, informal_proof stage: <strong>STUCK at the invariant.</strong> <code>proof.md</code> is complete except §5 (family + invariant) and the closed forms of the 3 "other" transition types. New: the token machine, 23-window coverage of the whole run, the P chain, init to 609, and evidence that arithmetic is needed. <code>check_proof.py</code> 10/10 PASS (64 s). Next: the route in proof.md §5.
+- 2026-10-10, skeptic revision (informal_proof): <strong>STUCK, fatal gap stands.</strong>
+  - Fixed: the major gap (closed forms for all events, rule G) and the 3 minor gaps (§6 coverage wording, §3.3 "moves left" wording, M/O chains written out, T9's twin trace).
+  - Open: a family closed under G with no member in H1/H2/U0–U3. The left text is a multi-level counter (R4's fossil walls), so this needs a recursive invariant.
+  - <code>check_proof.py</code> 12/12 PASS (79 s default; 52 s <code>--seed 2026 --n 1000 --quick</code>).
+  - Priority call shared with R4.
+- Files:
+  - <code>scripts/twin.py</code>: checks L, T, M, O, P, X; ALL PASS at <code>--n 300</code>.
+  - <code>scripts/classify.py</code>.
+  - <code>scripts/kdump.c</code>.
+  - <code>img/*</code>.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Parked by Dennis 2026-10-10 together with R4 (same table, 1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---): multi-level counter invariant open. (R4 decision queue: park_both.)</p>
+<h2 id="reopened-2026-10-12">Reopened (2026-10-12)</h2>
+<p>Dennis: close out Skelet 1-like Class 2. The class's 8 kills (#3's and #11's tables) are the templates to learn from.</p>
+<h2 id="class-2-close-out-stage-1-2026-10-12">Class 2 close-out, stage 1 (2026-10-12)</h2>
+<p>Track R4 + #32 (one table), stage 1 of at most 3. <strong>Outcome: progress, not closed.</strong> Halting turns out to be decided by residues mod 5 of "fuel" values at the exhaustion events of a multi-level counter. A regime-I state whose fuel N is cut to 2 or 7 halts, from every real state tried, while the other residues pass. <strong>R4's real orbit has its top in regime I with N = 27 ≡ 2 (mod 5)</strong> (section 5), so R4 may actually halt, at a step count far beyond direct simulation; a deeper level with fuel 1083 has to run out first. Scratch (<code>c2/</code> in the session scratchpad) is not kept; the scripts are kept as <code>scripts/c2s1_*</code> (list at the end).</p>
+<p><strong>1. The delta against #11, exact.</strong>
+- In the token machine (proof.md §1.3) the one changed transition (A1: 0LE → 0LC) changes exactly one entry: A entering an <code>X</code> token. Parent: <code>X → a</code>, continue left in F. Twin: <code>X → o</code>, turn right (C'). In digit terms this is the bounce of Lt: a bit-1 digit with u = 1 whose left cell is 1.
+- So #11's INV cannot be extended level by level. Every class-A overflow of #11 has the top <code>(1,1,v)</code> right after the wall's last 1, so in the twin it is always a P. INV counts R_j, ubar, vbar against one wall and one full overflow; the twin's overflows are partial (P re-pairs only the suffix below the bounce digit, T2 only the suffix below a junction), and a P followed by a T2 swaps u and v twice, so fuel is not refilled.
+- Check (<code>c2s1_kickinv.py</code>): #11's INV on the re-paired lower counter after every O<em>-type kick to 1e10 (87 kicks: 43 Lt, 44 T2; one Lt has an empty suffix) holds in </em><em>0 of 86</em>*. After the 42 Lt kicks Common holds but no class does (the parities of v + beta are mixed); after the 44 T2 kicks S &lt; 0 or T &lt; 0.
+- Drops happen inside the lower counter: to 1e10 there are 36 carries into a bit-0 digit with v = 1 and 42 sweeps of a v = 1 digit, some of them 7–10 digits below the top. A lower-counter invariant would need #11's B/C-style drop analysis as well.</p>
+<p><strong>2. Two regimes.</strong> Every kick below is a G transition (proof.md §3.5): <code>c2s1_events.py</code> recomputes each extracted kick and finds 0 mismatches in tape, a, b and step count (the plain carries are covered by check_proof.py check 8). The one exception is the U2 event of the N = 0 cut (section 3), where G makes no prediction. The cycle maps are read off the runs; they are not derived symbolically. W = <code>10 01</code>; digits as in proof.md.
+- <strong>Regime I</strong>, at a full overflow: <code>I(N, M) = K(W (0,0,N) (0,0,M) D; a, 1)</code>.
+  - One big cycle is 16 kicks, <code>Lt T2 Lt T3S2 T2 Lt T2 Lt T2 Lt T2 Lt Jc T2 Lt T2</code>, plus 6–8 carries into the top text.
+  - Map: <code>N → N − 5</code>, <code>M → M + 1</code>; the digit d places below M: <code>u − 12·2^(d−1)</code>, <code>v + 2^d</code> (exact for d = 1..6 between the last two real cycles). <code>N + 5M</code> is conserved.
+  - Real run: I(136, 360) at step 276,440,631; I(131, 361) at 943,552,925; I(126, 362) at 7,098,925,607. The second cycle took about 9 times as long as the first (6.7e8 and 6.2e9 steps).
+  - The top pieces after each kick (left-to-right digit parse; <code>·</code> = a v the top does not depend on). Checked against all 16 kicks of the cycle from step 943,552,925 (N = 131, M = 361):</p>
+<div class="highlight"><pre><span></span><code>| # | kick | top after the kick |
+|---|---|---|
+| 0 | | `W (0,0,N) (0,0,M)`; a carry then flips `(0,0,M)` to `(1,1,M−1)` |
+| 1 | Lt | `W (0,0,N−1) (0,0,0) 1 (M−2,0,·)` |
+| 2 | T2 | `W (1,1,N−1) (0,0,M−1)`; a carry then gives `(1,1,M−2)` |
+| 3 | Lt | `W (1,1,N−2) (0,0,0) 1 (M−3,0,·)` |
+| 4 | T3S2 | `(1,0,0) 1 (N−2,0,0) (M−2,0,·)` (W is now `10001`) |
+| 5 | T2 | `(1,0,0) 1 (N−3,1,0) 1 (1,1,M−1)` |
+| 6 | Lt | `(1,0,0) 1 (N−3,1,1) (M−2,0,·)`; a carry into `10001` then gives `1 (N−2,0,0) (M−1,0,·)` |
+| 7 | T2 | `1 (N−3,1,0) 1 (1,1,M)` |
+| 8 | Lt | `1 (N−3,1,1) (M−1,0,·)`; a carry into `1` then gives `(N−2,0,0) (M,0,·)` |
+| 9 | T2 | `(N−3,1,0) 1 (1,1,M+1)` |
+| 10 | Lt | `(N−3,1,1) (M,0,·)` |
+| 11 | T2 (blank) | `(1,1,N−3) (0,0,M+1)`; a carry then gives `(1,1,M)` |
+| 12 | Lt | `(1,1,N−4) (0,0,0) 1 (M−1,0,·)` |
+| 13 | Jc | `W (N−4,0,0) (M,0,·)` |
+| 14 | T2 | `W (N−5,1,0) 1 (1,1,M+1)` |
+| 15 | Lt | `W (N−5,1,1) (M,0,·)` |
+| 16 | T2 (Lb1 on W) | `W (0,0,N−5) (0,0,M+1)` |
+</code></pre></div>
+
+<ul>
+<li>With N = 2, kick 2 already leaves <code>W (1,1,1)</code>, the double wall of the halting mechanism (section 3).</li>
+<li><strong>Regime II</strong>: <code>II(P, f, Q) = K(W (0,0,P) (f,0,Q) D; a, 1)</code>.</li>
+<li>One big cycle is 4 kicks: Lt on <code>(1,1,P−1)</code>; T2 on the blank, after carries have absorbed the wall into <code>10001</code> and then <code>1</code>; Lb1 + T2 on the new wall <code>(1,1,P+3)</code>; T2 full overflow.</li>
+<li>Map: <code>P + 3</code>, <code>f − 5</code>, <code>Q + 2</code>; the digit d places below the top (d = 1 is the f digit): <code>u − 5·2^(d−1)</code>, <code>v + 2^d</code>. Exact for d = 1..7 over 2 consecutive cycles of the N = 1 cut run. <code>5P + 3f</code> is conserved.</li>
+<li><code>II(P, 0, Q)</code> is <code>I(P, Q)</code>: the f = 0 cut runs the 16-kick cycle.</li>
+</ul>
+<p><strong>3. Fuel exhaustion (fuel-cut runs).</strong> A cut takes a real full-overflow K-config and changes only one fuel value (<code>c2s1_cut.py</code>), then runs the machine from it (<code>c2s1_kfrom.c</code>).</p>
+<p>Regime II, cut at II(373, f, 179), the state the N = 1 cut reaches at step 6.2e9; 2e10 steps each, no halt:</p>
+<table>
+<thead>
+<tr>
+<th>f</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>I(373, 179)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>merge: II(555, 29, 2629), so P' = P + Q + 3 and the next digit supplies (f, Q)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>I(372, 180) after 8 kicks</td>
+</tr>
+<tr>
+<td>3</td>
+<td>merge: II(557, 27, 2631)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>I(374, 181)</td>
+</tr>
+</tbody>
+</table>
+<p>Regime I, cut at I(N, 361), the K-config after step 943,552,925; 2e10–3e10 steps:</p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>the first sweep meets a class-U2 text (proof.md §3.6), passes it without halting, then II(363, 34, 171)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>II(364, 32, 173), then 5 more regime-II cycles to II(379, 7, 183), no halt to 3e10</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td><strong>HALT at step 1,024,792,782</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>II(362, 28, 171)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>II(362, 29, 171)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>the cycle runs until N runs out inside it: II(364, 21, 173) at step 1.69e10, no halt to 3e10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>N = 2 halts from every regime-I state tried:</strong> I(2, 361) from step 943,552,925 (halt at 1,024,792,782 steps), I(2, 360) from step 276,440,631 (202,227,190), I(2, 362) from step 7,098,925,607 (15,416,326,862), and I(2, 180) from the f = 2 cut's regime I (17,558,927,962). The mechanism is the same each time:
+- the first two kicks leave a double wall, <code>W (1,1,1)</code> = <code>10 01 10 01</code>;
+- the next Lt leaves <code>10 01 1</code> in front of a digit with u ≥ 2;
+- the next overflow sweep crosses that digit and reaches <code>10011</code>, class H1 (E reads 1, then F reads 1).</p>
+<p><strong>4. What this means for #32.</strong>
+- Non-halting needs at least: no regime-I exhaustion with N ≡ 2 (mod 5), ever. Deeper exhaustions have their own residue-dependent outcomes (the tables above).
+- N at a regime-I entry is <code>P_end + δ(f mod 5)</code> with <code>5·P_end = 5P + 3f − 3·(f mod 5)</code> and δ = 0, −1, +1 for f ≡ 0, 2, 4. P and f come from deeper digits, which are consumed at 5·2^(d−1) or 12·2^(d−1) per cycle and merged when they run out (as P + Q + 3, or by #11-style drops).
+- So the residues that decide halting follow a piecewise-affine map with mod-5 case splits over an unbounded hierarchy. No invariant that controls them was found. If none exists, this is cryptid-like.
+- #32's real orbit so far: before about 2e8 steps the top is a deeper stack than either regime (e.g. <code>W (0,0,10) (0,0,10) (0,0,122)</code> at step 1,326,678, three fuels at once), whose exhaustions merge it down (<code>(133,1,7) (358,1,61)</code> at 1.7e8). Then II(133, 5, 358) at step 184,166,036 gives the first clean regime I, I(136, 360), with N ≡ 1 (mod 5); N = 1 passes when it runs out (cut table). Its next structural events are the lower digits' exhaustions, not N's: u_3 = 24 (−12 per cycle) and u_4 = 50 (−24), while N = 126 lasts about 25 more cycles. A direct run to 5e11 (<code>c2s1_kdumpb1.c</code>, b = 1 dump) does not halt: I(121, 363) at step 170,047,445,118 (N − 5 and M + 1 again; the third digit's u 24 → 12 as the map says). At step 4.9e11 that u is 7, so it runs out near the end of the current cycle, beyond 5e11.
+- G's case analysis is incomplete as a hazard list: the N = 0 cut passes a U2 text without halting.</p>
+<p><strong>5. R4's orbit (same table, D start).</strong> Dump of R4's orbit in #32's orientation (<code>c2s1_kdumpq.c</code> / <code>c2s1_kdumpb1.c</code> with start D), 2e10 steps, no halt:
+- II(30, 7, 29) at step 51,277, II(33, 2, 31) at 115,809 (one regime-II cycle: P + 3, f − 5, Q + 2), then I(32, 32) at 475,465. That last step is exactly the f ≡ 2 rule of the table above (II(P, 2, Q) gives I(P − 1, Q + 1)).
+- One regime-I cycle later: <strong>I(27, 33) at step 14,968,044,039</strong>, so N − 5 and M + 1 as the map says. The cycle ended with a long stretch (1e8 to 1.4e10) in which the top digits had little fuel left (<code>(27,1,1) (32,0,6) (57,0,6) (59,0,22) (103,0,30)</code>).
+- 27 ≡ 2 (mod 5). If the top's regime-I map keeps holding for 5 more cycles, N reaches 2 and, going by the four N = 2 cuts, R4 halts there. (Cutting R4's own state to N = 2 does not show this within 4e10 steps: the top does not move at all, because R4 is active deeper down; see the next item.)
+- But the top is not where R4 is active. Its full digit list at that step is <code>W (0,0,27) (0,0,33) (4,0,59) (2,0,63) (14,0,111) (14,0,77) (0,0,1083) (240,0,477) ...</code> (20 pieces). The <code>(0,0,1083)</code> seven digits down is a second, deep level, and the kicks after 1.5e10 happen there (steps 17,443,368,848 and 19,117,748,741: <code>(14,0,76) (0,0,0) 1</code> and <code>(15,1,76) (0,0,1082)</code>). Carries reach the top only through the four digits in between, which count the deep level's kicks, so the top regime I(27, 33) moves very slowly while the deep level spends its fuel (1083).
+- So R4's fate depends on the residues at the deep level's exhaustions as well as on the top's N ≡ 2. The top's small lower fuels (u = 4, 2, 14 against a use of 12, 24, 48 per regime-I cycle) will also run out inside its next cycle. The one top cycle observed (N 32 → 27) kept the map. A run of R4 to 3e11 (b = 1 dump) does not halt. The top stays I(27, 33) the whole time, and every kick from 1.5e10 to 2.74e11 is at the deep level, whose fuel goes 1083 → 1076, one unit per two kicks, with the kicks 2e9 to 5e10 steps apart and growing.
+- The step count of such a halt is not known. Cycles grow by large factors (the first took about 1.5e10 steps), so 5 more cycles are far beyond direct simulation.</p>
+<p><strong>Validated.</strong> Every listed kick is an exact G transition. The cycle maps hold on 2 real regime-I cycles of #32 and 1 of R4, on 1 real regime-II cycle of R4, and on 1–5 regime-II cycles in each of three cut runs. The exhaustion tables come from 12 cut runs. N = 2 halts from 4 different regime-I states. N = 7 halts too (from the step-276,440,631 state: one full 16-kick cycle, then the N = 2 path, halt after 1,692,042,796 steps), so the halting residue carries through the cycle map: N ≡ 2 (mod 5) at a cycle start.</p>
+<p><strong>Open.</strong> A symbolic derivation of the cycle maps; what lower-digit exhaustions inside regime I do to N; the residues of the true orbits at future exhaustions; any invariant; whether R4 halts.</p>
+<p><strong>Next (stage 2):</strong> an exact event-driven abstract simulator. The text is kept as alternating runs, plain-M stretches are jumped in closed form between non-plain events, and G is applied exactly at the top. Validate it against the direct runs (#32 to 5e11, R4 to 3e11), then project R4's orbit to its N exhaustion and #32's through many exhaustions. Possible results:
+- R4 reaches N = 2 and halts: a halting proof becomes possible (the abstract run would give the step count);
+- a lower exhaustion moves R4 off the residue, or a residue invariant shows up: a non-halting proof route;
+- irregular residues with no invariant: flag both as cryptid candidates.</p>
+<p>Scripts (<code>scripts/</code>): <code>c2s1_kfrom.c</code> (K-config dumper from a given start; <code>@file</code> for long texts), <code>c2s1_kdumpb1.c</code> (dumps only b = 1 K-configs), <code>c2s1_kdumpq.c</code> (start state as argument; D gives R4's orbit mirrored), <code>c2s1_gm.py</code> / <code>c2s1_dparse.py</code> (G from check_proof.py, digit parse), <code>c2s1_events.py</code> / <code>c2s1_topev.py</code> / <code>c2s1_deepev.py</code> (event extraction), <code>c2s1_s0.py</code> (full-overflow states), <code>c2s1_pinv.py</code> / <code>c2s1_kickinv.py</code> (#11's INV on the kicks), <code>c2s1_cut.py</code> (fuel cuts).</p>
+<h2 id="class-2-close-out-stage-2-2026-10-12">Class 2 close-out, stage 2 (2026-10-12)</h2>
+<p>Track R4 + #32 (one table), stage 2 of at most 3. <strong>Outcome: progress, not closed.</strong> The exact fast simulator now exists and is validated. With it both orbits run to 8.5e37 steps without halting. R4's top has not moved since step 6.2e15. Projecting R4 to its N exhaustion needs more than 128-bit step counts and a level-by-level acceleration.</p>
+<p><strong>1. The simulator (<code>scripts/c2s2_tsim.c</code>).</strong>
+- The tape is two stacks of runs of 2-cell tokens (proof.md §1.3), with the pairing fixed from the start cell. The token table is computed from the cell table.
+- Three exact accelerations:
+  - <strong>chain</strong>: a whole run passed in one state;
+  - <strong>zig-zag</strong>: a 3-visit cycle that turns twice and writes the hole token back, applied to a whole run. These are the S-type sweeps at the other token parity; without them a sweep costs 3 visits per token;
+  - <strong>carry jump</strong>: at a K-config, the right-hand block of digits with u, v ≥ 1 is advanced n times by rule M in closed form. n is the largest count for which every step is a plain M: the stop digit has v ≥ 2, the swept digits have u ≥ 2 and v ≥ 2, and the carry stays inside the block. It works at both K parities (<code>R</code> lines are the odd parity).
+- K-configs at both parities are detected exactly. The output format is kdump's; <code>c2s2_tk.py</code> converts <code>R</code> lines and parses digits, and <code>c2s2_dv.py</code> prints the parity-free defect view (constant runs Z_k / O_k and the alternating gaps between them).</p>
+<p><strong>Validation.</strong></p>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>every K-config to 1e9 (#32), against c2s1 kdump</td>
+<td>22,436 / 22,436 identical (step, a, b, text)</td>
+</tr>
+<tr>
+<td>b = 1 dump of #32 to 5e11, against the cell-level run</td>
+<td>107 / 107 identical</td>
+</tr>
+<tr>
+<td>b = 1 dump of R4 (D start) to 3e11, against the cell-level run</td>
+<td>119 / 119 identical</td>
+</tr>
+<tr>
+<td>random tapes, random state and side, 10 to 1e5 steps (<code>c2s2_selftest.py</code>, seeds 1, 2)</td>
+<td>8,000 trials (3,599 halts), 0 mismatches in tape, head, state and step count</td>
+</tr>
+<tr>
+<td>N = 2 fuel cut (stage 1)</td>
+<td>halts at 1,024,792,782, the same step as kfrom</td>
+</tr>
+<tr>
+<td>carry jump on vs off: b = 1 lines to 1e17</td>
+<td>R4 186 / 186 and #32 278 / 278 identical</td>
+</tr>
+</tbody>
+</table>
+<p>Speed: 5e11 in 0.1 s without jumps (the cell-level run took minutes); 1e17 in 3 ms with jumps; the 2^126 guard (8.5e37 steps) in 8–11 s.</p>
+<p><strong>2. The orbits.</strong>
+- <strong>#32</strong>: no halt to 8.5e37 steps.
+  - Regime I continued with N − 5, M + 1 per cycle: I(121, 363) at 1.70e11 and I(116, 364) at 1.14e12.
+  - Then the third digit ran out (stage 1 predicted this), and the top left regime I. Its defect view became <code>1 Z3 0 O2 224 Z2 0 O2 710 Z3 316 O2 ...</code> at step 5.8e14.
+  - The first 12 defects of the top have not changed since 5.8e14.
+- <strong>R4</strong>: no halt to 8.5e37 steps.
+  - I(27, 33) at 1.50e10.
+  - The carry into M at 2.5e13 flips <code>(0,0,33)</code> to <code>(1,1,32)</code>.
+  - Kick 1 of the regime-I cycle (Lt) at 6.24e15 leaves <code>W (0,0,26) (0,0,0) 1 (31,0,·)</code>; in the defect view, <code>1 Z2 1 Z3 51 Z2 0 O2 ...</code>.
+  - The first 60 defects of the top have not changed from 3.5e25 to 8.5e37.
+  - So the next top kick (kick 2 of 16 in this cycle) comes after 8.5e37 steps. Each top kick waits for a full exhaustion of the levels below, and those levels are refilled with values that grow like 2^k (a = 2.9e17 at 8e37).
+- <strong>Cuts on R4's own state</strong> (<code>(01)^N</code> replaced in I(27, 33) at step 14,968,044,039; N = 0, 1, 2, 3, 7, 12):
+  - none halts by 8.5e37;
+  - all six reach the guard within a few hundred steps of each other, so the top never moved in any of them.</p>
+<p><strong>3. The mod-5 halting rule, tested further</strong> (<code>c2s2_sweep.sh</code>, carry jump on, cut to 2^126 steps):</p>
+<table>
+<thead>
+<tr>
+<th>base state (#32)</th>
+<th>N cut to</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I(N, 360), step 276,440,631</td>
+<td>2, 7, 12, 17, 22</td>
+<td><strong>halt</strong> after 2.02e8, 1.69e9, 2.22e10, 4.46e11, 1.383e14 steps</td>
+</tr>
+<tr>
+<td>I(N, 360)</td>
+<td>3</td>
+<td>no halt to 8.5e37</td>
+</tr>
+<tr>
+<td>I(N, 361), step 943,552,925</td>
+<td>2, 7, 12, 17</td>
+<td><strong>halt</strong> after 1.02e9, 2.16e10, 4.46e11, 1.383e14</td>
+</tr>
+<tr>
+<td>I(N, 361)</td>
+<td>0, 1, 3, 4</td>
+<td>no halt to 8.5e37</td>
+</tr>
+<tr>
+<td>I(N, 361)</td>
+<td>5, 6, 8–11, 13–16</td>
+<td>no halt, to about 1e17 (5, 6, 8–11; 20 s each, no jump) or to 8.5e37 (13–16)</td>
+</tr>
+<tr>
+<td>I(N, 361)</td>
+<td>18–32, among them 22, 27, 32</td>
+<td>no halt to 8.5e37</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The 943M base is one regime-I cycle after the 276M base. Its N = 17 halt is the 276M base's N = 22 halt: the step counts differ by exactly the 6.67e8 steps between the two bases.</li>
+<li>So <strong>N ≡ 2 (mod 5) halts through four full cycles</strong> (N = 22 from the 276M base).</li>
+<li>The fifth cycle does not finish by 8.5e37: N = 27 from the 276M base (= N = 22 from the 943M base). Halting times grow by ×8 to ×20 per cycle, then jump from 1.4e14 to more than 8.5e37. A lower digit runs out in that cycle and opens a deep slow level.</li>
+</ul>
+<p><strong>What is validated.</strong> The simulator: exact, with the six checks above. The two orbits to 8.5e37, the cut table and the halting step counts are exact runs of the machine, not projections of an abstract model.</p>
+<p><strong>Open.</strong>
+- Whether R4's top ever reaches N = 2. That is 5 more cycles of 16 top kicks, and the next top kick alone lies beyond 8.5e37 steps.
+- Whether the mod-5 rule survives the deep-level exhaustions. The first test of that (N = 27 from the 276M base) is beyond 8.5e37.
+- A residue log of every exhaustion at every level. Not done yet: the orbits now run far enough to produce many lower-level exhaustions, but no logger reads them.
+- No invariant.</p>
+<p><strong>Next (stage 3, the last of this track).</strong>
+1. Remove the 128-bit limits: big-integer step count (or log10 steps plus an exact residue) and 128-bit run counts.
+2. Add one more acceleration level: apply a whole regime-II/kick cycle at a deep level in closed form, checked against the carry-jump run where both reach.
+3. Log (level, N or f, P) at every exhaustion in both orbits and in the N = 27 cut, then look for a residue invariant.</p>
+<p>The stop rule applies. If the residues at deep exhaustions show no invariant, flag both CRYPTID_CANDIDATE (the halting question is the mod-5 residue of a fuel produced by an unbounded piecewise-affine hierarchy) and write the decision. If R4 reaches N = 2 in the abstract run, that is the case for a halting proof.</p>
+<p>Scripts (<code>scripts/</code>): <code>c2s2_tsim.c</code> (simulator; <code>NOJUMP=1</code> turns the carry jump off), <code>c2s2_tk.py</code> (line parser, R-line re-pairing, digit parse), <code>c2s2_dv.py</code> (defect view), <code>c2s2_cmp.py</code> (compare with kdump output), <code>c2s2_selftest.py</code> (random differential test against a direct simulator), <code>c2s2_mkcut.py</code> + <code>c2s2_sweep.sh</code> (N cuts). Run outputs are in the session scratchpad (<code>s2/</code>) and are not kept; each regenerates in seconds.</p>
+<h2 id="class-2-close-out-stage-3-2026-10-12">Class 2 close-out, stage 3 (2026-10-12)</h2>
+<p>Track R4 + #32 (one table), stage 3 of 3, the last. <strong>Outcome: cryptid. Both machines are flagged CRYPTID_CANDIDATE, confidence med.</strong> No invariant was found, and there is a concrete reason none of the simple kind exists. Halting is decided by modular conditions on fuel values, one per level of the hierarchy, and the outcome already depends irregularly on the level just below the top. Both real orbits are frozen at the top to 1e80 steps. The decision for Dennis is in R4's <code>decision.json</code> (recommended: stop).</p>
+<p><strong>1. Simulator with wide integers (<code>scripts/c2s3_tsim.c</code>).</strong> This is c2s2_tsim.c with the 128-bit limits removed:
+- steps are <code>unsigned _BitInt(2048)</code> (guard 2^2000);
+- run counts are <code>unsigned _BitInt(512)</code> (guard 2^500);
+- the carry jump is computed in 2048-bit arithmetic and capped at 2^JCAP plain carries (env <code>JCAP</code>, default 450).</p>
+<p>Stage 2 had a hard-wired cap of 2^40. Above about 1e35 almost every jump hit that cap, which made the run slow. Needs gcc ≥ 14 (<code>gcc -O2 -std=gnu2x</code>).</p>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>JCAP=40</code> against stage 2's b = 1 dumps to 1e37</td>
+<td>byte-identical, END line included (#32 533 lines, R4 903 lines)</td>
+</tr>
+<tr>
+<td>default cap against the same dumps</td>
+<td>identical b = 1 lines (a b = 1 K-config is never inside a jump); #32 needs 962 jumps instead of 1,771,183</td>
+</tr>
+<tr>
+<td>N cuts from I(N, 360)</td>
+<td>the same halting step counts as stage 2: 202,227,190 / 1,692,042,796 / 22,239,439,966 / 446,232,598,668 / 138,314,248,200,034 for N = 2, 7, 12, 17, 22</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Speed on #32's orbit: 1e60 in 0.13 s, 1e68 in 0.25 s, 1e80 in 2.5 s.</li>
+<li>1e100 is not reached in 100 s, because the number of non-plain events explodes after about 1e80 (zig-zag passes: 77k to 1e68, 671k to 1e80).</li>
+<li><strong>The level-2 acceleration was not built.</strong> Deep levels are not copies of the top regimes: R4's deep wall loses 1 fuel per 2 kicks, while the top loses 5 per 16. So each deep level would first need its own derived cycle map.</li>
+</ul>
+<p>The base state of the cuts is the b = 1 K-config at step 276,564,068: <code>I(136, 360)</code>, with first lower digit <code>(48,0,169)</code>. Stages 1 and 2 named it by its event step, 276,440,631. <code>scripts/c2s3_mkbase.py</code> extracts it from a dump.</p>
+<p><strong>2. The real orbits, to 1e80 steps.</strong>
+- <strong>#32:</strong> no halt to 1.0e80. The first 40 defects of the left text (<code>scripts/c2s3_top.py</code>) are unchanged from 5.8e14 to 1e80.
+- <strong>R4</strong> (D start): no halt to 1.0e80. The first 40 defects are unchanged from 4.8e17 to 1e80; the first 8 have been fixed since kick 1 of the current top cycle at 6.24e15.
+- So in both orbits the top waits behind deep levels whose next event lies beyond 1e80. R4's top is mid-cycle at <code>W (0,0,26) ...</code>, and that cycle started at N = 27 ≡ 2 (mod 5).</p>
+<p><strong>3. N cuts from I(N, 360), N = 0..44, to 1e80</strong> (<code>scripts/c2s2_mkcut.py</code>, <code>scripts/c2s3_runcut.sh</code>):
+- <strong>exactly N = 2, 7, 12, 17, 22 halt</strong>;
+- N = 0, 1, 3–6, 8–11, 13–16, 18–21 do not halt by 1e80;
+- for every N ≥ 23 the END step (at 1e80) is linear in N, 188 steps more per unit of N. So the runs differ only in the cost of sweeping the top's <code>(01)^N</code>, and the top never moved in any of them.</p>
+<p>The reason for the freeze is that the first lower digit <code>(48,0,169)</code> loses 12 per regime-I cycle. It therefore runs out in the 5th cycle (48 = 4·12). N = 22 needs 4 cycles before its halting path; N = 27 needs 5.</p>
+<p><strong>4. Lower-digit exhaustion changes the outcome irregularly.</strong> This is the new result. Each cut changes both N and u1, the u of the first lower digit, which is 48 in the base (<code>scripts/c2s3_mkcut2.py</code>). Every run goes to 1e80 with a 40 s limit, and none hit the time limit.</p>
+<table>
+<thead>
+<tr>
+<th>N</th>
+<th>u1 values tested</th>
+<th>halts by 1e80</th>
+<th>no halt by 1e80</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>0–6, 8, 10–13, 18, 23–25</td>
+<td>all</td>
+<td>none</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0–6, 8, 10–13, 18, 23–25</td>
+<td>all others</td>
+<td>0, 3</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0–24</td>
+<td>none</td>
+<td>all</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0–49</td>
+<td>1, 4, 7, 10, 11, 13–17, 19, 21–49</td>
+<td>0, 2, 3, 5, 6, 8, 9, 12, 18, 20</td>
+</tr>
+<tr>
+<td>13</td>
+<td>0–24</td>
+<td>none</td>
+<td>all</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0–49</td>
+<td>4, 7, 10, 13, 16, 21, 22, 25–49</td>
+<td>0–3, 5, 6, 8, 9, 11, 12, 14, 15, 17–20, 23, 24</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>If u1 is large enough that the digit never runs out (u1 ≥ 25 for N = 12, u1 ≥ 37 for N = 17), the run halts at the unperturbed step: 2.2e10 for N = 12, 4.5e11 for N = 17.</li>
+<li>Otherwise the halting times scatter between 6.8e9 and 2.4e14 steps.</li>
+<li>If u1 runs out in the first cycle, u1 ≡ 1 (mod 3) tends to halt (4, 7, 10 for both N = 12 and N = 17). There are exceptions: u1 = 1 halts for N = 12 but not for N = 17, and so does u1 = 11. In later cycles the pattern breaks up (N = 12 halts at 13–17, N = 17 only at 13 and 16).</li>
+<li>With N ≢ 2 (mod 5), no u1 tested gives a halt (N = 11, 13: 0 of 50). So in this sample a lower exhaustion only ever cancels a halt; it never creates one.</li>
+</ul>
+<p><strong>5. Verdict.</strong>
+- At the top, halting is a residue condition: a regime-I exhaustion with N ≡ 2 (mod 5).
+- Whether that condition is met depends on the next digit's residue when that digit runs out first (roughly mod 3, with exceptions), and those exceptions come from deeper digits.
+- Every one of these values comes from the piecewise-affine maps of stages 1–2:
+  - per cycle, the top changes by (−5, +1) in regime I and by (+3, −5, +2) in regime II;
+  - digit d loses 12·2^(d−1) or 5·2^(d−1) of its u per cycle and gains 2^d in v;
+  - exits split on residues mod 5, and merges add (P + Q + 3).
+- This is mixed 2-adic / 5-adic arithmetic over an unbounded hierarchy. An invariant would have to control residues at every level at once. No finite family of residue classes was found, and the u1 table is not periodic in any simple modulus.
+- So halting is decided by pseudo-random-looking arithmetic. Under the cryptid protocol (PLAN.md rule 6) both machines are flagged and proof work stops.
+- Heuristic, not evidence: if each top-level regime-I exhaustion is a fresh draw with roughly a 1/5 chance of halting (less after lower cancellations), and the top keeps cycling, the random model leans to an <strong>astronomically late halt</strong>, not to non-halting. This differs from Antihydra-type cryptids. R4's current top cycle already has the halting residue.</p>
+<p><strong>Validated.</strong>
+- The simulator (all three checks above).
+- All halt and no-halt claims to 1e80 are exact runs of the machine, not projections.</p>
+<p><strong>Open.</strong>
+- Exact cycle maps for the deep levels.
+- Whether R4's or #32's top ever reaches its next exhaustion, and with which residue.
+- No invariant.
+- The rules in Rocq: only rule G and the token machine are written up and checked, in proof.md and check_proof.py. Nothing for this reduction exists in Rocq.</p>
+<p><strong>Scripts (<code>scripts/</code>).</strong>
+- <code>c2s3_tsim.c</code>: the simulator. <code>JCAP</code> sets the jump cap; <code>NOJUMP=1</code> turns jumps off.
+- <code>c2s3_mkbase.py</code>: a K-config from a dump as a cell string.
+- <code>c2s3_mkcut2.py</code>: cut both N and u1.
+- <code>c2s3_runcut.sh</code>: run one cut.
+- <code>c2s3_top.py</code>: the top's defect view over time.
+- <code>c2s3_sweep.py</code>: locates the turn of a K-config's sweep on run-length text (proof.md §3.6 automaton).</p>
+<p>Run outputs are in the session scratchpad (<code>s3/</code>) and are not kept. Each regenerates in seconds, or in under 40 s per cut.</p>
+<h2 id="class-2-close-out-stage-2-2026-10-12-re-run">Class 2 close-out, stage 2 (2026-10-12), re-run</h2>
+<p>The workflow issued stage 2 of this track a second time, with only stage 1 in its history. Stages 2 and 3 had already run today (the two sections above). The track ended at stage 3 with both machines flagged CRYPTID_CANDIDATE, and the priority call in R4's <code>decision.json</code> is still unanswered (<code>tools/decisions.py --lint</code>: ok). Under the cryptid protocol (PLAN.md rule 6) and with that call open, this re-run did no new proof work. It did two things: it checked that the kept scripts reproduce the earlier results, and it ran one new probe of the mechanism behind the flag. <strong>Outcome: cryptid, unchanged; confidence med.</strong> No new <code>decision.json</code>.</p>
+<p><strong>1. Reproduction from the kept scripts.</strong> Fresh builds (gcc 15.2) of <code>scripts/c2s2_tsim.c</code> and <code>scripts/c2s3_tsim.c</code>:</p>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#32 b = 1 dump to 1e37 with <code>JCAP=40</code></td>
+<td>532 / 532 K-config lines identical to stage 2's dump</td>
+</tr>
+<tr>
+<td>#32 and R4 (D start) b = 1 dumps to 1e80, default cap</td>
+<td>byte-identical to stage 3's (1,088 and 2,145 lines); no halt</td>
+</tr>
+<tr>
+<td>cut base at step 276,564,068 (<code>c2s3_mkbase.py</code>)</td>
+<td><code>I(136, 360)</code>, a = 1024, b = 1</td>
+</tr>
+<tr>
+<td>N = 2 cut</td>
+<td>halt after 202,227,190 steps, as in stages 1–3</td>
+</tr>
+<tr>
+<td>N = 12 with u1 = 1</td>
+<td>halt after 6,820,607,376 steps</td>
+</tr>
+<tr>
+<td>N = 3; N = 12 with u1 = 2; N = 11 with u1 = 5</td>
+<td>no halt to 1e80</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2. New probe: the second lower digit decides too.</strong></p>
+<p>The base's first digits below the top are</p>
+<div class="highlight"><pre><span></span><code>W (0,0,136) (0,0,360) (48,0,169) (98,0,818) (7,0,1797) (271,0,847) ...
+</code></pre></div>
+
+<p>so u1 = 48 (it loses 12 per regime-I cycle) and u2 = 98 (it loses 24). Stage 3 cut N and u1. Here N, u1 and u2 are cut together (<code>scripts/c2s2r_mkcut3.py</code>, the same pattern as <code>c2s3_mkcut2.py</code>), and every run goes to 1e80 steps or to its halt.</p>
+<p>N = 12 (the unperturbed run halts after 2.22e10 steps, in the third cycle). Entries are halting step counts; <code>-</code> means no halt by 1e80:</p>
+<table>
+<thead>
+<tr>
+<th>u1 \ u2</th>
+<th>98</th>
+<th>60</th>
+<th>47</th>
+<th>40</th>
+<th>30</th>
+<th>23</th>
+<th>13</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>1</td>
+<td>6.82e09</td>
+<td>6.82e09</td>
+<td>6.82e09</td>
+<td>6.82e09</td>
+<td>6.82e09</td>
+<td>1.49e11</td>
+<td>3.62e12</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2.04e10</td>
+<td>2.04e10</td>
+<td>2.04e10</td>
+<td>2.04e10</td>
+<td>2.04e10</td>
+<td>2.99e11</td>
+<td>-</td>
+<td>5.88e09</td>
+</tr>
+<tr>
+<td>7</td>
+<td>7.49e09</td>
+<td>7.49e09</td>
+<td>7.49e09</td>
+<td>7.49e09</td>
+<td>7.03e09</td>
+<td>-</td>
+<td>4.60e09</td>
+<td>1.58e10</td>
+</tr>
+<tr>
+<td>10</td>
+<td>8.86e09</td>
+<td>8.86e09</td>
+<td>8.86e09</td>
+<td>8.86e09</td>
+<td>5.28e09</td>
+<td>6.55e12</td>
+<td>2.37e09</td>
+<td>3.11e09</td>
+</tr>
+<tr>
+<td>11</td>
+<td>1.11e13</td>
+<td>9.26e13</td>
+<td>3.82e12</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>3.37e12</td>
+</tr>
+</tbody>
+</table>
+<p>N = 11 and N = 13 (residues 1 and 3), u1 = 0, 1, 2, 3, 4, 7, 10 and u2 = 5, 13, 23: <strong>no halt in any of the 42 runs</strong> by 1e80.</p>
+<p>What the tables show:
+- <strong>The outcome is not a function of (N, u1).</strong> For u1 = 1, 4, 7, 10 the halt is fixed while u2 ≥ 40: the same step for every such u2. Once u2 runs out before the halting path ends, the halt moves (to as early as 2.4e9 or as late as 6.5e12 steps), and in 3 of these 16 cells it disappears.
+- For u1 = 11, which runs out late in the first cycle, the halting step depends on u2 even for u2 = 47..98, there is no halt for u2 = 13..40, and there is a halt again at u2 = 5. So the dependence on u2 is not monotone.
+- For u1 = 0, 2, 3, no u2 tested brings the halt back.
+- With N ≢ 2 (mod 5) no lower exhaustion created a halt (0 of 42 here, 0 of 50 in stage 3). In every sample so far a lower exhaustion only moves or cancels a halt of the N ≡ 2 residue.</p>
+<p><strong>3. The obstruction, stated precisely.</strong> Non-halting needs a family of configurations, closed under rule G, with no member in H1, H2 or U0–U3 (proof.md §3.6, §5). Every probe so far says that membership in such a family would have to be decided by the following data:
+- Halting at the top happens at a regime-I exhaustion with N ≡ 2 (mod 5). This is exact on N = 0..44 from one base.
+- Whether that exhaustion is reached depends on which lower digit runs out first, and on its residue at that moment (stage 3: u1, roughly mod 3 with exceptions).
+- Whether the halt survives that exhaustion depends in turn on the digit below it, once that digit runs out first (section 2 above: u2), and not monotonically.
+- The per-cycle maps that produce these values are affine with 2-power rates (u_d − 12·2^(d−1) or − 5·2^(d−1), v_d + 2^d), with mod-5 exits and P + Q + 3 merges (stages 1–2).</p>
+<p>So a closed family would have to fix a residue condition at every level of an unbounded hierarchy of floor-divisions by different moduli. No finite set of residue classes is visible, and the same picture now holds one level deeper than in stage 3. This is the cryptid flag of stage 3, reinforced, not a new route.</p>
+<p><strong>Validated:</strong> every number in sections 1 and 2 comes from an exact run of the machine with the kept simulator. <strong>Open:</strong> as at the end of stage 3: no invariant, R4's fate unknown (its top is frozen behind deep levels to 1e80), and the rules exist in proof.md / check_proof.py but not in Rocq.</p>
+<p>Scripts: <code>scripts/c2s2r_mkcut3.py</code> (new), with <code>c2s3_runcut.sh</code> and <code>c2s3_tsim.c</code>. The base comes from a 3e8 dump (<code>NOJUMP=1 c2s3_tsim TM 3e8 A all</code>) through <code>c2s3_mkbase.py</code>. Grid outputs are in the session scratchpad (<code>s2r/</code>), not kept; each cut regenerates in under 40 s.</p>
+</main></body></html>

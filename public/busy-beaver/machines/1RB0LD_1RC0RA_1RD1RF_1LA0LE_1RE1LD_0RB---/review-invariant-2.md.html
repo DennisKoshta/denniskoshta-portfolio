@@ -1,0 +1,485 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>review-invariant-2.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/review-invariant-2.md · <a href="/busy-beaver/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/review-invariant-2.md.html">raw</a></div>
+<h1 id="second-skeptic-review-proofmd-38-inve-and-its-use-in-3335-2026-10-10">Second skeptic review: proof.md §3.8 (INV+(e)) and its use in §3.3–3.5, 2026-10-10</h1>
+<p><strong>Scope.</strong> Revision 3 of proof.md: §3.8 (statement, F1–F3, L6 and its corollary, L5′ with C1–C3, §3.8.3 survival of pairs 1 and 2, §3.8.4 proof of the Theorem, §3.8.5 notes), and the places where §3.3–3.5 rely on it. I did not re-review §0–§2 (the rules) or §3.7 beyond what my own tooling needed.</p>
+<p><strong>Stance and tooling.</strong> I started from the assumption that the proof is wrong. All code is new and written for this review. It does not use <code>check_proof.py</code>, <code>scripts/</code> or the first skeptic's code. It lives in <code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/m3-skeptic2/</code>, a session scratchpad that may not persist:
+- <code>lib.py</code>: the TM simulator, the K encoder and parser, the abstract rules transcribed from §2, the accelerated countdown and the INV+(e) checker.
+- <code>cyc.py</code>: the cycle-pair driver. It checks every §3.8 claim at every event.
+- <code>gen.py</code>: the adversarial INV+(e) start generator.
+- <code>counter.py</code>: the pure counter model (L6 and F2 under arbitrary merges).
+- <code>exh.py</code> and <code>rand_run.py</code>: the sweeps.
+- <code>validate.py</code> and <code>base.py</code>: tool validation.</p>
+<p><strong>Verdict: no fatal or major gap. INV+(e) is inductive, and the Theorem (period) of §3.8.1 holds as stated.</strong>
+- I re-derived every equality and inequality in §3.8 by hand (sketches below), and each one is justified by the text, not just checked.
+- L6, F2 and the L5′ identities survive exhaustive tests in a pure counter model where <em>any</em> end touch may be a run-out, which is far more adversarial than the machine.
+- INV+(e) preservation survives:
+  - 1,022,976 exhaustive near-threshold starts (L* = 3–6, regular and T2), each run for 2 chained cycle pairs (2,045,952 cycle pairs in all);
+  - 150,600 random adversarial cycle pairs, with L* up to 600 and Ep blocks drawn to hit every L-slot run-out timing.</p>
+<p>Every check passed and no configuration left D.
+- I found 7 minor items: wording and terminology (m1, m4–m6) and formalization aids for §3.8.1 and §3.8.5 (m2, m3, m7). None affects correctness.</p>
+<h2 id="1-validation-of-my-own-tooling">1. Validation of my own tooling</h2>
+<ul>
+<li><strong>Abstract rules vs. direct TM simulation:</strong> 7,040 random rule instances, 0 mismatches. All 9 rules are covered, with h = 0–7, sizes up to 25 and all three tails. The 4,960 outside-D draws were skipped. Each instance is simulated until the next configuration that parses as K, and that configuration must equal the prediction exactly.</li>
+<li><strong>Accelerated countdown vs. the single-step map:</strong> 6,000 random K, 0 mismatches. The plain runs are also maximal: the next step is always a merge or an outside case.</li>
+<li><strong>Base, from the blank tape:</strong></li>
+<li>step 956 is exactly K0 = K(2; (11,11,0); −);</li>
+<li>step 78,710 is exactly K(2; (95,68,0),(34,33,1),(10,15,1),(1,24,1); −);</li>
+<li>INV+(e) holds there;</li>
+<li>K0 reaches it in 57 macro steps (45 Dec, 3 End, 3 EndLast, 6 Ov), all in D.</li>
+<li><strong>Orbit from the base to L* = 300:</strong></li>
+<li>541 cycle pairs, 3 X1 slots and 245 L-slot merges, with all §3.8 checks passing;</li>
+<li>min p₁′/(2^(L*′+2) − 1) = 1.000 and min p₂′/2^(L*′) = 2.234;</li>
+<li>min ΔΦ/2^(k−1) = 1.000.</li>
+<li><strong>Sensitivity:</strong> the checker rejects all six revision-2 counterexamples of §6.2 in the same way the old review found:</li>
+<li>five have a merge at k = 1 or 2;</li>
+<li>the sixth, K(2; (15,41,0),(8,17,1),(1,9,1); −), stays in D, but INV+(e) fails at its next start. Its p₂ there is 6, which is below 2^(L*) = 8.</li>
+</ul>
+<h2 id="2-what-was-attacked-and-the-result">2. What was attacked, and the result</h2>
+<h3 id="21-l6-steps-v-2n-never-decreases-each-merge-adds-2k1">2.1 L6 (Φ = steps + V − 2^n never decreases; each merge adds ≥ 2^(k−1))</h3>
+<ul>
+<li><strong>Derivation.</strong> A merge at k from x = H·2^k + 2^(k−1) gives V′ = 2^(k−1) − 1 + H·2^(k−1) and n′ = n − 1, so ΔΦ = 2^(n−1) − H·2^(k−1). Since x ≤ 2^n − 1, H ≤ 2^(n−k) − 1, and therefore ΔΦ ≥ 2^(k−1). A plain Dec gives ΔΦ = 0. The proof is correct and complete.</li>
+<li><strong>Exhaustive identity check:</strong> every n ≤ 18 and every x &lt; 2^n, 524,268 cases. ΔΦ matches the formula, ΔΦ ≥ 2^(k−1) and V′ ≤ x − 1, with 0 failures. The bound is tight in 171 cases.</li>
+<li><strong>L6 by dynamic programming over all merge strategies</strong> (any end touch may merge, every n₀ ≤ 10 and V₀ &lt; 2^(n₀)): the minimum D over strategies satisfies D ≥ V₀ − 2^(n₀) + 2^N + m in all 18,444 (n₀, V₀, N) cases. It is tight in 2,101.</li>
+<li><strong>The corollary under arbitrary merges at k ≥ 3</strong> (M = 4–11): a first countdown from 2^M − 2, then either X1 or EndLast plus a countdown from 2^(N₁−1) − 1. Both T1 ≥ 2^(L*′) − 2 (X1) and T1 ≥ 3·2^(L*′−1) − 2 (EndLast) hold, with 0 violations.</li>
+<li><strong>In the machine:</strong> every merge in every run had ΔΦ = 2^(n−1) − H·2^(k−1) ≥ 2^(k−1), and the min ratio was exactly 1. D₁ ≥ 2^(N₁) − 2 + m₁ and D₂ ≥ 2^(N_f) − 1 + m₂ held in every slot, and so did p₁′ = 4·T1 + 7.</li>
+<li><strong>No counterexample exists.</strong> There is no cycle in which Φ decreases, and no merge that adds less than 2^(k−1).</li>
+</ul>
+<h3 id="22-the-e2-touch-upper-bound-f2-and-383">2.2 The (e2) touch upper bound (F2 and §3.8.3)</h3>
+<ul>
+<li><strong>F2 under arbitrary merges.</strong> Dynamic programming over all strategies gave 0 violations, both for pairs 1 and 2 with merges at k ≥ 3 (n ≤ 11) and for every pair j with merges at <em>any</em> k (n ≤ 9). This covers both the index-based and the block-based reading.</li>
+<li><strong>Slot maxima.</strong> The maximum number of touches over all strategies equals the bound exactly:</li>
+<li>pair 1: 3·2^(M−1) − 2;</li>
+<li>pair 2: 3·2^(M−2) − 1.</li>
+</ul>
+<p>So §3.8.3's budget is tight but never exceeded.
+- <strong>The arithmetic of §3.8.3 and §3.8.4 (e2), re-derived:</strong>
+  - q₁ᴸ ≥ 11·2^(L*−1) − 4 ≥ (3·2^(L*) − 2) + 1;
+  - q₂ᴸ ≥ 7·2^(L*−2) − 1 ≥ 3·2^(L*−1);
+  - p₂′ = q₁ᴸ − T1 ≥ 5·2^(L*−1) − 2 ≥ 2^(L*+1) ≥ 2^(L*′).</p>
+<p>All three hold for L* ≥ 2. Empirically, min p₂′/2^(L*′) = 1.125, which is exactly (5·4 − 2)/16 at L* = 3.</p>
+<h3 id="23-l5-c1-and-c2-the-explicit-potential-s_i">2.3 L5′, C1 and C2 (the explicit potential s_i)</h3>
+<p>Re-derived:
+- <strong>Plain Dec and EndLast:</strong> s does not change.
+- <strong>Merge at k &gt; i:</strong> R′ = 2^(k−i) − 1 + H·2^(k−i) + c·2^(n−1−i), which gives 2(p + 1 + R′) − (p + R) = p + 2^(k−i).
+- <strong>Fused block:</strong> R_F equals R_(k+1) before the step, and e_F = e_(k+1).
+- <strong>Blocks above k + 1:</strong> they shift down with s unchanged, since ⌊V′/2^(i−2)⌋ = ⌊x/2^(i−1)⌋.
+- <strong>End of slot:</strong> s = r′, with δ = 1 after Ov and δ = 0 after X1.
+- <strong>L-start values:</strong> 9 − 3/2^(M−1) or 8 − 3/2^(M−1) for the head, and r or r − 1 for the other blocks.</p>
+<p>Checked with exact rationals at every event of every slot, for L* ≤ 160: the plain-run invariance, the exact merge and fusion increments, the L5′.4 start values, s_end = r′, the A-bound p_i ≥ 2^(e_i) + 1 for non-tail i ≥ 2 before every event, rises &gt; 1 for i ≥ 2, and fusion gains ≥ 2. There were 0 failures.</p>
+<p>The threshold argument of §3.8.4 (b) holds, including the after-T2 case. Its margin is larger than claimed:
+- At the DecMergeTail, k = n and δ = 1, so the boost is &gt; p_i/2^(e_i) + 1/2 &gt; 1.5.
+- Empirically, min r′ at a regular K′ after a T2 start is 8.0.</p>
+<h3 id="24-inve-preservation-from-adversarial-starts-inside-inve">2.4 INV+(e) preservation from adversarial starts <em>inside</em> INV+(e)</h3>
+<p><strong>The generator.</strong> Every clause sits at its minimum, or a few units above it. The Ep blocks p_j (j ≥ 3, and the T2 top pair) range over <strong>every L-slot run-out timing</strong>, p ∈ {2, 4, …, 3·2^e + 2}, plus one survivor. The Eq q_j sit at threshold or threshold + 1, so both parities occur. The far p_L is 1–8 (x = 3–10), or up to 40 in random runs. T2(k) has k = 4–40. T2 starts with L = 2 (L* = 3) are included: INV allows them although they are unreachable.</p>
+<p><strong>At each start the checker asserts:</strong>
+- every macro step is a rule (in D);
+- the E-cycle is [X2,] End, Ov, with exact τ_j, h + 5 = 3·2^(L*+1) − 1 and x as claimed;
+- the L-start shape, and that every q-block below the x-pair is good;
+- merges only at k ≥ 3, only good or x ∈ {3, 5} run-outs, and no DecMergeEmpty;
+- the slot type matches the S2 table (EndLast iff x ≠ 4, X1 iff x = 4);
+- the pair-1/pair-2 touch bounds;
+- the L6 inequalities;
+- the L5′ checks;
+- p₁′ = 4·T1 + 7, p₂′ = q₁(end), L*′ = M − m ≤ L* + 1, and L*′ ≥ 4 after X1;
+- <strong>all of INV+(e) at K′</strong>: h, digits, q_L ≥ 6, k ≥ 4, θ-thresholds, parity, L* ≥ 3, (e1) and (e2).</p>
+<table>
+<thead>
+<tr>
+<th>sweep</th>
+<th style="text-align: right;">starts</th>
+<th style="text-align: right;">cycle pairs checked</th>
+<th style="text-align: right;">failures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exhaustive, regular, L* = 3 (q offsets 0–5)</td>
+<td style="text-align: right;">2,304</td>
+<td style="text-align: right;">4,608</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>exhaustive, regular, L* = 4 (q offsets 0–3)</td>
+<td style="text-align: right;">16,384</td>
+<td style="text-align: right;">32,768</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>exhaustive, regular, L* = 5 (q offsets 0–2)</td>
+<td style="text-align: right;">145,152</td>
+<td style="text-align: right;">290,304</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>exhaustive, regular, L* = 6 (q offsets 0–1)</td>
+<td style="text-align: right;">745,472</td>
+<td style="text-align: right;">1,490,944</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>exhaustive, T2, L* = 3 / 4 / 5 / 6</td>
+<td style="text-align: right;">288 / 2,048 / 18,144 / 93,184</td>
+<td style="text-align: right;">227,328</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>random, L* = 3–20, 5-pair chains (incl. 'timing' mode)</td>
+<td style="text-align: right;">20,000</td>
+<td style="text-align: right;">100,000</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>random, L* = 3–14 timing / 3–12 mixed</td>
+<td style="text-align: right;">5,300</td>
+<td style="text-align: right;">12,800</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>random, L* = 13–60 / 20–80 (4- or 3-pair chains)</td>
+<td style="text-align: right;">5,000</td>
+<td style="text-align: right;">18,000</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>random, L* = 60–200 / 80–160 / 200–400 / 300–600</td>
+<td style="text-align: right;">700</td>
+<td style="text-align: right;">1,800</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>random, L* = 3–30 (p₁ check at regular starts)</td>
+<td style="text-align: right;">6,000</td>
+<td style="text-align: right;">18,000</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Every row-type of the far-end table was exercised many times:</strong> x = 3, 4, 5 and ≥ 6; X1 slots; cascading DecMergeTails; and up to 16,770 merges in 120 cycle pairs at L* = 200–400.</p>
+<p><strong>Minimum margins over all runs:</strong></p>
+<table>
+<thead>
+<tr>
+<th>quantity</th>
+<th style="text-align: right;">minimum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p₁′/(2^(L*′+2) − 1)</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr>
+<td>T1/(2^(L*′) − 2)</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr>
+<td>p₂′/2^(L*′)</td>
+<td style="text-align: right;">1.125</td>
+</tr>
+<tr>
+<td>min r′/θ′</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr>
+<td>ΔΦ/2^(k−1)</td>
+<td style="text-align: right;">1.000</td>
+</tr>
+<tr>
+<td>p₁′/(3·2^(L*′+1) − 1) at regular K′</td>
+<td style="text-align: right;">1.000 (16,161 cases)</td>
+</tr>
+</tbody>
+</table>
+<p>The tight cases are expected:
+- (e1) and L6 are tight after a merge-free X1 slot;
+- (b) is tight after an X1 slot from a threshold regular start, where r′ = r − 1 = 4 = θ′;
+- the last row confirms §3.8.1's remark that regular starts give p₁ ≥ 3·2^(L*+1) − 1.</p>
+<h3 id="25-is-each-informal-step-actually-justified">2.5 Is each informal step actually justified?</h3>
+<p>I went through §3.8.3–3.8.4 line by line. Every step follows from the stated lemmas, and none rests on a check alone:
+- <strong>The goodness of the L-start q-blocks</strong> comes from INV(c), from the fact that touches preserve p + d, and from X2's non-flipping touch. Merges preserve goodness below the x-pair, because the fused pair takes pair k+1's q and d.
+- <strong>The far-end schedule</strong> is F3 plus the explicit touch sequence end, pass, end at the x-pair. <strong>DecMergeEmpty is impossible</strong>: before EndLast the top pair has q = 1 and d = 0, and is never touched again.
+- <strong>"V = 0 ⇒ every pair below the far pairs has q even ≥ 2"</strong> holds because these pairs are good with d = 0.
+- <strong>The pair-1/pair-2 survival argument is not circular.</strong> §3.8.3 uses only F2, and L6 is applied afterwards.
+- <strong>(a), (c) and (d) at K′</strong> follow from Ov/X1 mechanics and from the survival argument.</p>
+<h2 id="3-gap-list">3. Gap list</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>severity</th>
+<th>where</th>
+<th>issue</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>m1</td>
+<td>minor (wording)</td>
+<td>§3.8.2 F2</td>
+<td>The proof treats only a merge at k &gt; j, and "pair j" is ambiguous once merges below it renumber the pairs. The claim is true for all k under both readings. Index-based: V′ ≤ x − 1 always, and a run-out at k = j counts its touch, giving touches + H ≤ 2H + 1. Block-based: F3. Exhaustive DP over all strategies gives 0 violations. Only j = 1, 2 with k ≥ 3 is used.</td>
+<td>Add one sentence: "merges at k ≤ j: V′ ≤ x − 1 still gives the bound".</td>
+</tr>
+<tr>
+<td>m2</td>
+<td>minor (formalization)</td>
+<td>§3.8.5 J, "pair-1/pair-2 budget: q_j ≥ (remaining touch bound) + 1"</td>
+<td>§3.8.3's bound is a whole-slot count that uses N₁ ≤ M, which is not yet known during the first countdown. A loop invariant needs a state function. <strong>This one works:</strong> q_j ≥ R_j + 1 for j = 1, 2, with R_j = ⌊V/2^(j−1)⌋ + c·2^(n−j), the R of L5′. It holds at the L-start by (e). It is preserved: q_j − R_j is unchanged by plain Dec and by EndLast, and it does not decrease at merges at k ≥ 3, since V′ ≤ x − 1 (and x is even when k ≥ 2). I asserted q_j ≥ R_j + 1, with q_j − R_j non-decreasing, before every event of every run above. There were 0 failures.</td>
+<td>Suggest stating J's budget this way.</td>
+</tr>
+<tr>
+<td>m3</td>
+<td>minor (formalization)</td>
+<td>§3.8.5 J, "s_i ≥ σ"</td>
+<td>σ changes during the slot after a T2 start: it is 4 before the x-block's DecMergeTail and 5 after it. "Tail block" also needs a state definition. Both are expressible: a block is a tail block iff it is the top pair's p-block before EndLast or X1. σ is then a function of whether the x-block has been absorbed, which J already tracks via "far end is in one of the S2 rows".</td>
+<td>Spell out σ(phase) and the tail predicate in J.</td>
+</tr>
+<tr>
+<td>m4</td>
+<td>minor (terminology)</td>
+<td>§3.8.4 (b), "Tail blocks are absorbed by EndLast, X1 or DecMergeTail: t₀, and the x-block's p in slots with x ∈ {3, 5}"</td>
+<td>By the definition just before C1 (t₀, or a block fused with it), the x-pair's p-block in an x = 5 slot is <em>not</em> a tail block. It is a non-tail block that DecMergeTail absorbs. The block is never interior, so this is harmless, and the A-bound holds for it anyway.</td>
+<td>Say "tail blocks, and the x-pair's p-block when x = 5, are absorbed".</td>
+</tr>
+<tr>
+<td>m5</td>
+<td>minor (cosmetic)</td>
+<td>§3.4 S2 table, x = 3</td>
+<td>"[p_{M−1}+t₀+4, 1, 0]" mixes conventions: p_{M−1} is the value at the merge, after 2 touches, while t₀ is the L-start value. In L-start values the fused p is p_{M−1} + t₀ + 6. Check: an L-start with x-pair (20, 3, 1) and last pair (9, 2, 1) fuses to (35, 1, 0). Not load-bearing, since the block is a tail block.</td>
+<td>Fix the constant or name the convention.</td>
+</tr>
+<tr>
+<td>m6</td>
+<td>minor (wording)</td>
+<td>§3.3, "pair j runs out in the E-cycle iff r_j &lt; 3"</td>
+<td>Only "r_j ≥ 3 ⇒ survives" is true and used. With r_j &lt; 3, the q can reach 0 on a <em>pass</em> touch, which is (o1), not a run-out.</td>
+<td>Say "can run out only if r_j &lt; 3".</td>
+</tr>
+<tr>
+<td>m7</td>
+<td>minor (formalization)</td>
+<td>§3.8.1 (a), T2 digits "(0,1,…,1,0)"</td>
+<td>With L = 2 this must read (0,0). INV+(e) admits T2 starts with L = 2 (L* = 3). They are unreachable, since X1 yields L*′ ≥ 4, but the Theorem covers them, and the exhaustive T2 L* = 3 box passes.</td>
+<td>State the digits as "d₁ = d_L = 0, all others 1".</td>
+</tr>
+</tbody>
+</table>
+<p>Not gaps, noted for calibration:
+- Several INV constants are stronger than needed: q_L ≥ 6, k ≥ 4, and (e1) itself, since p₁ only needs to support (e2) and pair-1 survival.
+- The after-T2 bound r′ ≥ 5 is loose: 8 is observed.
+- C3 is informational.</p>
+<h2 id="4-claims-attacked-that-held-with-the-reason">4. Claims attacked that held, with the reason</h2>
+<ul>
+<li><strong>L6 and its corollary.</strong> The telescoping potential argument is exact, and ΔΦ ≥ 2^(k−1) follows from H ≤ 2^(n−k) − 1. The machine's merges are exactly the counter-model merges, because the rule effects on V and n were validated against the TM.</li>
+<li><strong>F1–F3.</strong> F1: every step touches pair 1. F2: V′ ≤ x − 1. F3: the high digits H are unchanged by a merge below them.</li>
+<li><strong>§3.8.3 survival of pairs 1 and 2.</strong> The bound q ≥ total touches + 1 gives q ≥ 2 before every touch. That rules out a pass-through with q = 1 and a run-out, and it covers End/EndLast/X1's "q ≥ 2" side conditions. The arithmetic holds for L* ≥ 2.</li>
+<li><strong>(e1) at K′.</strong> p₁′ = h + 5 = 4·T1 + 7, because h starts at 2, every Dec-family step and EndLast adds 4, and T1 = D₁ (X1) or D₁ + 1 + D₂ (EndLast). With L6 this gives T1 ≥ 2^(L*′) − 2. L*′ = N₁ after X1, which yields N₁ − 1 pairs plus T2, and L*′ = N_f + 1 ≤ N₁ after Ov.</li>
+<li><strong>(e2) at K′.</strong> p₂′ = q₁ at the end (Ov, and X1 with N₁ ≥ 4). The touch budget and L*′ ≤ L* + 1 do the rest.</li>
+<li><strong>(b) at K′.</strong> This is L5′ plus C1/C2:</li>
+<li>regular → EndLast slot: σ = 5;</li>
+<li>regular → X1 slot: σ = 4 = θ′;</li>
+<li>T2 → x = 5 slot: the DecMergeTail boost lifts every surviving non-tail block above 5, and the head is ≥ 8.6.</li>
+</ul>
+<p>The fused blocks satisfy s_F &gt; s_(k+1).
+- <strong>(c) at K′.</strong> Every q-block below the top pair is good with d = 0 at V = 0, so it is even, and Ov/X1 give d = 1. The T2 top pair is the stated exception: even p, d = 0.
+- <strong>(a) and (d) at K′.</strong> h = 2, p₁′ ≥ 7, t ≥ 5 ⇒ q_L′ ≥ 6, k = t₀ + 4 ≥ 8. Pairs 1 and 2, the x-pair and the last pair are distinct at X1, so L*′ ≥ 4 there; L*′ ≥ 3 after Ov.
+- <strong>The §3.3–3.5 narrative agrees with §3.8.</strong> This covers the τ_j table (L3, both start types), h + 5 = 3·2^(L*+1) − 1, x = p_L + 2 or 5, the S2 table (the m5 constant aside), the head-block values 9 − 3/2^(M−1) and 8 − 3/2^(M−1), the fusion bound r_F ≥ 2(r_a − 3) + r_b (−1 after X1), C3's 2r − 3 / 2r − 4, and the corrected "L*′ ≥ 4 after X1".</p>
+<h2 id="5-reproduce">5. Reproduce</h2>
+<div class="highlight"><pre><span></span><code>cd /tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/m3-skeptic2
+python3 validate.py 1; python3 validate.py 2      # rules vs TM, accel vs single-step
+python3 base.py 300                               # base from blank tape + orbit to L*=300
+python3 counter.py                                # L6 / F2 / corollary, all merge strategies
+python3 exh.py reg 5 3; python3 exh.py T2 6 2; python3 exh.py reg 6 2   # exhaustive boxes
+python3 rand_run.py 31 20000 3 20 5               # random chains (seed, N, Lmin, Lmax, chain [, modes, s-check limit])
+</code></pre></div>
+</main></body></html>

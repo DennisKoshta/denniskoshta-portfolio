@@ -1,0 +1,333 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>review-invariant.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/review-invariant.md · <a href="/busy-beaver/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/review-invariant.md.html">raw</a></div>
+<h1 id="skeptic-review-of-proofmd-3335-class-invariant-inv-2026-10-10">Skeptic review of proof.md §3.3–3.5 (class invariant INV), 2026-10-10</h1>
+<p>Reviewer stance: a skeptical busycoq maintainer. All checks use new code written for this review: a direct TM simulator, a K parser, the abstract map transcribed from the §2 table, an accelerated countdown, block-identity tracking and an INV checker. It does not use check_proof.py or scripts/. The code is in <code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/m3-skeptic/</code>, which is a session scratchpad and may not persist. Every counterexample below can be replayed by hand from the §2 rule table.</p>
+<p><strong>Verdict: the Theorem of §3.3 is false as stated (fatal, repairable).</strong> INV is not inductive. Configurations exist that satisfy every clause of INV, yet within one cycle pair they leave D ((o7) L = 0 or (o4) X1 with L ≤ 2), or they break INV(d). The step where this happens is the proof of INV(d), and with it the "k ≥ 3" premise of the fusion bound. Both use lower bounds on the two newest Ep blocks (p_1 and p_2 at the E-start), and those bounds come from earlier cycles; INV does not record them. Everything else I attacked in §3.3–3.5 held: L3, L5, the fusion bound, the head-block bound, the X1/X2 costs, INV(a)/(b)/(c) mechanics, the far-end table and the base case. Adding one clause, (e) below, made INV inductive in every test I ran (1,027,584 exhaustive cases and 70,000 random cycle pairs). Proving that (e) carries over needs one new counter lemma.</p>
+<p>Consequence for the Rocq plan (§4): <code>Lemma period: INV K -&gt; exists K', INV K' /\ K --&gt;+ K'</code> <strong>cannot be proved with INV as written</strong>, because it is false for the K below. The formalizer should switch to INV + (e) now.</p>
+<h2 id="validation-of-my-own-tooling-so-the-findings-can-be-trusted">Validation of my own tooling (so the findings can be trusted)</h2>
+<ul>
+<li><strong>Abstract map vs direct simulation:</strong> 0 mismatches. Small sizes: 2,274 in-D instances (all 9 rules; the 726 outside-D cases were skipped). Sizes up to 300: 462 instances.</li>
+<li><strong>Accelerated countdown vs single-step map:</strong> 0 mismatches on 20,000 random K.</li>
+<li><strong>Base, from the blank tape:</strong></li>
+<li>Step 956 is K0 = K(2; (11,11,0); −).</li>
+<li>Step 78,710 is K(2; (95,68,0),(34,33,1),(10,15,1),(1,24,1); −).</li>
+<li>All 101 canonical transitions from step 956 to step 198,415 are predicted. The re-pairings are followed by starts at steps 1845, 4610, 8319, 19436, 34137, 78710 and 137547.</li>
+<li><strong>Real orbit:</strong> INV and all lemma checks hold at every E-start up to L* = 300 (560 cycle pairs). Rule counts match proof.md §E: DecMerge 240, DecMergeTail 5, X1 3, X2 3.</li>
+</ul>
+<h2 id="gap-list">Gap list</h2>
+<h3 id="g1-fatal-as-written-repairable-inv-is-not-inductive-invd-and-q_1-q_2-never-run-out-use-history-that-inv-does-not-carry">G1 (FATAL as written; repairable): INV is not inductive. INV(d) and "q_1, q_2 never run out" use history that INV does not carry</h3>
+<p><strong>Claim attacked:</strong> §3.3 Theorem ("If INV holds at an E-start, then every K up to the next E-start is in D, and INV holds again there") and the §3.5 INV(d) paragraph.</p>
+<p><strong>Why the argument fails.</strong> INV(a) bounds p_1 only by p_1 ≥ 7, and INV puts no lower bound at all on the other Ep blocks (p_j, j ≥ 2). The INV(d) paragraph uses three facts that are not consequences of INV:
+- q_1 ≥ 11·2^(L*−1) − 4 at the L-start. This needs p_1 ≥ 2^(L*+2) − 1 at the E-start, the value left by the <em>previous</em> slot.
+- q_2 ≥ 3·2^(L*) − 3. This needs p_2 ≥ 9·2^(L*−2) − 2, which "uses L* ≤ L*_prev + 1", again the previous cycles.
+- "It is 15·2^(L*−1) − 4 after a regular start". This is exact only when the previous L-slot had no merges.</p>
+<p>With small p_1 and p_2, the L-slot's q_1 and/or q_2 run out. That gives merges at k = 1 or 2, which the fusion bound excludes ("k ≥ 3"). The pair list then collapses into the far end.</p>
+<p><strong>Concrete counterexamples.</strong> Each start satisfies INV(a)–(d), p_1 ≥ 7 and non-empty blocks; my checker reports no violation.
+1. <strong>(o7).</strong> Start: K(2; (7,19,0),(2,10,1),(1,6,1); −). Here L* = 3, r_1 = 20/4 = 5, r_2 = 10/2 = 5, p_1 = 7 is odd with d = 0, and p_2 = 2 with d = 1.
+   - E-cycle: 6 Dec, End, 3 Dec, Ov. The L-start is K(2; (47,16,0),(9,7,1),(5,3,1),(4,2,1); −), with x = 3.
+   - L-slot: after 10 Dec, the x = 3 pair runs out (DecMerge at k = 3, as the table predicts). After 1 more Dec, pair 2's q runs out (DecMerge at k = <strong>2</strong>); it was 7 at the L-start, but the INV(d) paragraph claims q_2 ≥ 3·2^3 − 3 = 21. After 1 more Dec, EndLast fires with L = 1, leaving K(62; (62,1,1); T1(37)).
+   - Pair 1's q runs out next (DecMergeTail), leaving K(66; −; T1(102)). This is <strong>L = 0, (o7), outside D.</strong>
+2. <strong>(o4).</strong> Start: K(2; (7,39,0),(2,20,1),(2,10,1),(2,6,1); −). Here L* = 4 and r = 5, 5, 5.
+   - The L-start is (95,28,0),(17,13,1),(9,7,1),(5,4,1),(4,2,1), with x = 4.
+   - After 24 Dec: DecMerge at k = 2 (pair 2's q, 13 at the L-start), then 1 Dec, then DecMerge at k = 2 again, then DecMerge at <strong>k = 1</strong> (pair 1's q). This leaves K(114; (183,1,0),(5,1,0); −): the X1 shape with <strong>L = 2, (o4), outside D.</strong>
+3. <strong>INV(d) breaks at a T2 start.</strong> Start: K(2; (7,15,0),(8,8,0); T2(4)).
+   - E-cycle: X2, End, Ov. L-slot: EndLast, DecMerge, DecMergeTail, Ov.
+   - The next start is K(2; (83,80,0),(2,18,1); −), which has <strong>L* = 2</strong>.
+4. <strong>Not a small-L artifact.</strong> Take the all-at-threshold INV configuration with L* = 20: p = (7,2,…,2,1), q = (5·2^19 − 1, 5·2^18, …, 10, 6). One cycle pair later it is at <strong>L = 0, (o7)</strong>. Across 3,000 random INV starts with L* in 20–60, all 984 at-threshold starts went outside D. The random ones survived, but only because a random p_1 is huge.</p>
+<p><strong>Scale of the failure under literal INV.</strong></p>
+<table>
+<thead>
+<tr>
+<th>sweep</th>
+<th style="text-align: right;">total</th>
+<th style="text-align: right;">breaks INV(d)</th>
+<th style="text-align: right;">(o7)</th>
+<th style="text-align: right;">(o4)</th>
+<th style="text-align: right;">ok</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>exhaustive, L* = 3, T2 start</td>
+<td style="text-align: right;">73,728</td>
+<td style="text-align: right;">40,320</td>
+<td style="text-align: right;">10,368</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23,040</td>
+</tr>
+<tr>
+<td>exhaustive, L* = 3, regular start</td>
+<td style="text-align: right;">552,960</td>
+<td style="text-align: right;">106,272</td>
+<td style="text-align: right;">10,368</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">436,320</td>
+</tr>
+<tr>
+<td>exhaustive, L* = 4, T2 start</td>
+<td style="text-align: right;">69,120</td>
+<td style="text-align: right;">18,360</td>
+<td style="text-align: right;">50,760</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>exhaustive, L* = 4, regular start</td>
+<td style="text-align: right;">331,776</td>
+<td style="text-align: right;">187,920</td>
+<td style="text-align: right;">46,008</td>
+<td style="text-align: right;">1,944</td>
+<td style="text-align: right;">95,904</td>
+</tr>
+<tr>
+<td>random, L* = 3–12</td>
+<td style="text-align: right;">3,000</td>
+<td style="text-align: right;">262</td>
+<td style="text-align: right;">867</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1,870</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Not a halting witness.</strong> None of these starts is reachable: on the orbit, p_1 ≥ 5.94·2^(L*) at regular starts and p_1 ≥ 3.999·2^(L*) at T2 starts. The machine also runs on through both outside configurations above:
+- the (o4) one reaches K(2; (119,182,0),(3,8,1); −) after 6,445 steps;
+- the (o7) one reaches K(2; (71,102,0); −) after 3,641 steps.</p>
+<p>This is a gap in the proof, not in the machine.</p>
+<p><strong>Repair (tested, not proved).</strong> Add a clause (e) to INV that records the newest Ep blocks.
+- <strong>(e1)</strong> p_1 ≥ 2^(L*+2) − 1. This is the T2-start value; it is tight after a merge-free X1 slot.
+- <strong>(e2)</strong> p_2 ≥ 2^(L*).</p>
+<p>Why this is enough:
+- (e1) gives q_1 ≥ 11·2^(L*−1) − 4 &gt; 3·2^(L*) − 2, so pair 1 survives.
+- (e2) gives q_2 ≥ 7·2^(L*−2) − 1 &gt; 3·2^(L*−1) − 1, so pair 2 survives.
+- From these, INV(d) and the "k ≥ 3" premise follow exactly as §3.5 argues.</p>
+<p>Preservation:
+- <strong>(e2)</strong> follows from (e1), from "pair-1 touches in an L-slot ≤ 3·2^(L*) − 2" (merges only lower the counter), and from L*' ≤ L* + 1. The algebra is p_2' = p_1 + τ_1 − 1 − T1 ≥ 5·2^(L*−1) − 2 ≥ 2^(L*+1).
+- <strong>(e1)</strong> needs a <strong>new lemma</strong>: an L-slot that ends with L*' must touch pair 1 at least 2^(L*') − 2 times, because p_1' = 4·T1 + 7. A potential-function argument should work: each merge at k costs H·2^(k−1) &lt; 2^(c−1) decrements and removes one pair. It is not in proof.md and must be written.
+- <strong>Alternative:</strong> the text's own numbers also work: p_1 ≥ 3·2^(L*+1) − 1 at regular starts (2^(L*+2) − 1 at T2 starts), and p_2 ≥ 9·2^(L*−2) − 2. Both are exactly tight at the base: 95 = 3·2^5 − 1 and 34 = 9·4 − 2. This version also passed 10,000 random starts.</p>
+<p>Evidence that INV + (e1) + (e2) is inductive:
+- <strong>Exhaustive:</strong> the same four boxes as above, with p_1 and p_2 raised to their (e) minima. All 1,027,584 cases are in D and satisfy INV + (e) at the next start.
+- <strong>Random single cycle pairs:</strong> 20,000 (L* = 3–14). The "text numbers" variant passed a separate 10,000.
+- <strong>Random chains:</strong> 3,000 × 6 cycle pairs (L* ≤ 14) and 4,000 × 8 cycle pairs (L* ≤ 40). All chains completed, with no outside case and no INV or (e) failure.
+- <strong>Margins:</strong> at later starts, min p_1/(2^(L*+2) − 1) = 1.000 (tight) and min p_2/2^(L*) = 1.125.
+- <strong>Both clauses are needed.</strong> With only one of (e1)/(e2), or with the bare "survival" bounds p_1 ≥ 3·2^(L*−1) + 2 and p_2 ≥ 3·2^(L*−2) + 1, the invariant fails within one cycle pair. Example: from K(2; (15,41,0),(8,17,1),(1,9,1); −), the next start has p_2 = 6 &lt; 3·2^1 + 1.</p>
+<h3 id="g2-minor-after-x1-the-bound-is-l-m-4-is-false-when-the-x1-slot-has-interior-merges">G2 (minor): "After X1 the bound is L* = M ≥ 4" is false when the X1 slot has interior merges</h3>
+<ul>
+<li><strong>Counterexample:</strong> in INV+(e) chains, 111 of 127 X1 slots had L*' &lt; M. One example has M = 14 and L*' = 8, after 6 interior DecMerges. It starts from K(2; (32767,20479,0),(19630,10240,1),(2,6340,1),…,(2,44,1); −).</li>
+<li><strong>What is true:</strong> L*' ≥ 4. Pairs 1 and 2 survive under (e), and the x-pair and the last pair are both present at X1. Reword the sentence.</li>
+</ul>
+<h3 id="g3-minor-l5s-corollary-with-1-merge-r-2r-3-does-not-follow-from-l5-in-an-x1-slot">G3 (minor): L5's corollary "with ≥ 1 merge, r' ≥ 2r − 3" does not follow from L5 in an X1 slot</h3>
+<ul>
+<li><strong>Derivation gap:</strong> in an X1 slot, L5 gives base r − 1 plus A/2^e ≥ r − 3, which is only 2r − 4.</li>
+<li><strong>It still holds empirically:</strong> min margin over 2r − 3 is 0.51, over 22,379 + 104,312 merge cases including X1 slots. The reason is that an Ep block can run out only after at least 3·2^(e_k) touches, which is late in the countdown, so A has already grown.</li>
+<li><strong>Not load-bearing:</strong> the T2-start threshold needs only r − 1 ≥ 4. Either state 2r − 4 for X1 slots or add the "Ep run-outs are late" remark.</li>
+</ul>
+<h3 id="g4-minor-for-the-formalizer-l5s-remaining-touches-in-a-merge-free-continuation-needs-a-definition">G4 (minor, for the formalizer): L5's "remaining touches in a merge-free continuation" needs a definition</h3>
+<ul>
+<li><strong>The problem:</strong> in x = 3 and x = 5 slots, every real continuation contains a far-end merge.</li>
+<li><strong>The definition that works:</strong> R := ⌊V/2^(i−1)⌋ + 2^(N−i) for EndLast-type slots and R := ⌊V/2^(i−1)⌋ for X1-type slots, where N is the current pair count. Depth is N − i before EndLast and N + 1 − i after it.</li>
+<li><strong>Checks:</strong> with this R, I re-derived R' − R/2 = (a − 1)/2 ≥ 0 for a first-countdown DecMerge (a = 2^(k−i)). The EndLast-plus-second-countdown part halves exactly. A DecMergeTail has H = 0, so R' = R.</li>
+</ul>
+<h2 id="claims-attacked-that-held-with-the-reason">Claims attacked that held (with the reason)</h2>
+<ul>
+<li><strong>L1, merge effect on the counter.</strong> Algebra: pairs to the right keep ⌊(x−1)/2^(j−1)⌋ = ⌊H/2^m⌋ remaining touches, the fused pair inherits pair k+1's H, and pairs to the left lose H·2^(k−j). Exact in 20,000 accelerated-vs-stepwise comparisons.</li>
+<li><strong>L3, exact τ_j in E-cycles (both regular and T2 starts).</strong> Every interior Eq block in every tracked cycle pair (orbit and random) lost exactly 3·2^e − 1 (pair 1: 3·2^e − 2). No E-cycle ever merged.</li>
+<li><strong>L5 and persisting Eq blocks.</strong> Merge-free EndLast slot: r' = r exactly (min = max = 0 over 244,115 cases). X1 slot: r' = r − 1. With merges to the right: r' ≥ r always.</li>
+<li><strong>Fusion lower bound r_F ≥ 2(r_a − 3) + r_b (−1 after X1).</strong> Min margin +3.00 over 14,053 fusions; nested fusions had margin ≥ 26.5. Under literal INV, fusions with the current head block (k = 1) also stayed far above threshold. The fusion bound is not where G1 bites.</li>
+<li><strong>New head block.</strong> r_1 = 9 − 3/2^(M−1) (EndLast slot) or 8 − 3/2^(M−1) (X1 slot) exactly when merge-free, and never lower.</li>
+<li><strong>X1/X2 cycle pair.</strong> The T2 countdown never touches the top pair. X2 and End always apply. x = 5 after every T2 start, and the following slot always has a DecMergeTail. k = p_M + 3 ≥ 8 (the text's "p_M ≥ 2" is weaker but true). The X1 slot costs exactly 2^e in scaled value, i.e. r' = r − 1.</li>
+<li><strong>Far-end table (x = 3, 4, 5, ≥ 6).</strong> Exercised 1,866 / 1,013 / 3,636 / 25,485 times in the (e) chains, with no outside case. x = p_L + 2 ≥ 3 follows from blocks never being empty.</li>
+<li><strong>INV(c).</strong> Every interior p-block at the next start is the new head block or one of the L-slot's q_1..q_{M−2}. No x-block, tail block or Eq block ever became an interior p-block. Every L-slot run-out was an interior Ep block or the x-pair.</li>
+<li><strong>INV(a).</strong> Shape, h = 2, digits, q_L ≥ 6 and k ≥ 4 held in every case that stayed in D.</li>
+<li><strong>Base case.</strong> Step 78,710 is as stated, and INV(a)–(d) hold there: r = 8.625, 8.25, 7.5 and L* = 4. The proposed (e) also holds there, tightly: p_1 = 95 and p_2 = 34. Every transition from K0 is rule-predicted.</li>
+</ul>
+</main></body></html>

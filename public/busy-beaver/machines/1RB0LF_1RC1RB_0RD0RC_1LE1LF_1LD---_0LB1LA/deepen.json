@@ -1,0 +1,117 @@
+{
+ "tm": "1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA",
+ "pass": "follow (funded 2026-10-10)",
+ "confidence": "med",
+ "recommend": "park #37: the real orbit is in sync to phase 1,857 and the next excursion (phase 3,321) is predicted benign, but a proof needs a wave grammar on run words with no template; optional cheap step: confirm phase 3,321 on the real orbit (~1 h, one light C process)",
+ "mechanism": "Bit 0 of the counter is the parity of the block: the block's left end oscillates between two fixed cells for a whole phase and only its right end erodes. The counter word L lives in K = words whose 1-runs all have length >= 2; K is closed under the visit, nothing in it halts inside a phase, and the block change is exact (d = -1 / -3 by block parity, d = r-1 when the final gap is 1 and the bottom run r merges). So m mod 4 in {1,2} (the sync) can only break at a merge. If the final gap z is >= 3 at an even visit, z alternates exactly '=3' / '>=4' for the rest of the phase and no merge happens. The reset maps z to z-1 and n' = 4 visits + 2. In the steady class (n = 6 mod 8, z = 3 at start, long bottom run) this closes: visits = 3 mod 4, z_reset = 4, z' = 3, n' = 6 mod 8. The real run is in that class from phase 11 on. Deepen2: inside a phase the counter is a binary counter on fixed cells (bit 1 = right end of the bottom run, bit 2 = its left end). From phase 15 the bottom run loses exactly 1 cell per phase; it becomes an 11 digit at phases 91 and 119, and both times a 3-phase excursion (z_reset 8, then z 7 > 3, then z 2 with one merge, d = +1) restores the steady class. Excursions are safe when the run that becomes the bottom is long; runs of 3-4 arriving during an excursion go off-sync (random tests 9/40). Follow stage: a C port of the jump simulator followed the real orbit to phase 1,857 (n ~ 2^1860) with no off-sync; excursions at phases 91, 119, 215, 487 were all benign, and after each one a merge wave climbs from the bottom (about 0.5 runs per phase), absorbing short runs (the 3-run from phase 171 was absorbed at phase 231-233) and leaving a frozen, ever coarser low region. A fast-forward check (exact on the past excursion) predicts the next excursion at phase 3,321 as benign.",
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "deepen",
+   "confidence": "med",
+   "model": "State (L, m, g): L in K, m = block, g = pad (always 0 mod 4). Visit: (L,m,g) -> (inc L, m+d(L,m), g+4); reset at m=2: n' = g+6. Invariants: S (m mod 4 in {1,2}), P (final gap alternates 3 / >=4 once >=3), R (z_start = z_reset - 1). Steady class Sigma = {n = 6 mod 8, z_start = 3, bottom run never an erasable 11 digit}.",
+   "closed_gaps": [
+    "K = 1-runs of length >= 2: all 57,448 real words to 1.2e10; random closure 18,000/18,000 visits (validate_K.py 21 300 60)",
+    "No halt inside a phase for any start word: 1,000 random binary words x 60 visits and 300 K-words x 100 visits, 0 halts",
+    "D, exact block change: real 57,433/57,433 (7 merges); random 18,000/18,000",
+    "S, sync invariant m mod 4 in {1,2}: real 57,433/57,433; only a merge can break it",
+    "P, low-end lemma (final gap alternates 3 / >=4 once >=3, so no merge after the phase start): real 28,698/28,698 even-visit pairs, random 8,688/8,688; phase test from z>=3: 583/583 runs x 400 visits without a mod-4 violation (z in {1,2}: 117/217 violate within 4 visits)",
+    "R, reset: z_start = z_reset - 1 (13/13), n' = 4 visits + 2 (13/13 phases), visits = n/2 without merges",
+    "Forced resets on real words: z_reset >= 4 always gives a synced next phase end (532/532); z_reset = 3 depends on the bottom run",
+    "Sync derived for the steady class Sigma; the real run is in Sigma from phase 11 (n+2 = 1681 x 2^j, z_start 3, z_reset 4, bottom run 26..80)",
+    "Random multi-phase: Sigma with bottom run >= 3: 249/250 runs in sync over 5 phases (1,317 phase ends); outside Sigma 120/238 go off-sync"
+   ],
+   "remaining_gaps": [
+    "Lemma B: the bottom run never again becomes an 11 digit that a carry erases at the wrong time (that gives z = 7/8, shifts the 3/4 pattern and makes z_reset = 3). Its length only moves at carries of level >= 2 (30, 28, 27, 31 at phase starts 11-14; up to 80 in phase 15). Random upper words break it in 1 of 250 runs, so B needs a finer grammar of the high digits (drifting long runs, gaps that shrink and merge), which this stage did not write",
+    "The early phases 1-10 (bottom 11 digits, merges with r = 2, 2+5) are covered by the simulation to 1.2e10 only; a proof can start from the configuration at the phase-11 start (step 150,742,757)"
+   ],
+   "evidence": [
+    "work/deepen/allvisits_1.2e10.txt (57,448 visits), work/deepen/realcheck_1.2e10.txt, work/deepen/ruler_1.2e10.txt (57,378/57,431)",
+    "work/deepen/validate_K_seed21.log, work/deepen/phasetest_seed11.log, work/deepen/forcereset_seed1.log",
+    "work/deepen/steady_seed3_rmin3.log (249/250), work/deepen/steady_seed2.log, work/deepen/steady_seed4_r2.log (bottom 11 digit: 63/150 off-sync), work/deepen/multiphase_seed1.log, work/deepen/bottomrun_V2000.log"
+   ],
+   "scripts": [
+    "scripts/deepen/lowend.c",
+    "scripts/deepen/lib37.py",
+    "scripts/deepen/realcheck.py",
+    "scripts/deepen/validate_K.py",
+    "scripts/deepen/phasetest.py",
+    "scripts/deepen/forcereset.py",
+    "scripts/deepen/steady.py",
+    "scripts/deepen/multiphase.py",
+    "scripts/deepen/bottomrun.py",
+    "scripts/deepen/randiter.py",
+    "scripts/deepen/randiter2.py",
+    "scripts/deepen/dtest.py",
+    "scripts/deepen/dtest2.py"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "deepen2",
+   "confidence": "med",
+   "model": "Per phase: fixed-cell binary counter (N0 = 3) on a layout P; phase map P -> P' driven by the final counter value (n+2 = omega x 2^j, omega odd, changed by +1 at each excursion merge). Bottom run r: r' = r - 1 per phase; at r = 2 a 3-phase excursion makes the next run the bottom (minus 2). Safety lemma B': no run of length <= 4 becomes the bottom during an excursion.",
+   "closed_gaps": [
+    "Fixed-cell counter inside a phase: one 1- or 2-cell group per carry level plus one-time migration fills (bitcells_1.2e10.log; phase 13 bit flips 13,447 / 6,722 / 3,361 / ...)",
+    "Visit-level accelerator fastphase.c (block 1^(8 + m mod 4), rule V + R): 50,752/50,752 visits equal to the real TM dump (k 6,697..57,448, 3 resets)",
+    "Phase-level jump simulator jumpsim.py (sound memo on all read cells): 15/15 exactly simulated phase-start layouts reproduced (phases 12-26)",
+    "Real orbit to phase 171 (n ~ 9.8e51): no off-sync; bottom run 78 -> 2 at 1 cell per phase from phase 15; excursions at phases 91 and 119, both benign with the same 3-phase pattern",
+    "Excursion insensitive to the next run's length: 70..81 all benign, 12/12; random 000-separated layouts with runs 2..40 and 3..12: 120/120 benign over 4 phases"
+   ],
+   "remaining_gaps": [
+    "Lemma B is false as stated (the bottom run does become an 11 digit); the replacement B' fails on random layouts with short runs (runs 2..8 over 16 phases: 9/40 off-sync, all with a 3- or 4-run reaching the bottom during an excursion)",
+    "Whether a short run reaches the bottom at an excursion in the real orbit: the layout at phase 171 has a 3-run 16 runs up (about 2,000 phases away), and the layout is written by the rising bits of the final counter value, which every excursion changes; no regular grammar found",
+    "jumpsim in Python costs about 1 s per phase at phase 160 and grows with the level count; following the next excursions needs a C port with hashed memo keys"
+   ],
+   "evidence": [
+    "work/deepen2/bitcells_1.2e10.log, work/deepen2/cmpdump_6697_57448.log, work/deepen2/cmplayout_jump_vs_exact.log",
+    "work/deepen2/jump_160.log, work/deepen2/jump_layout_160.txt (real orbit to phase 171)",
+    "work/deepen2/excursion_vary1_ph108.log, work/deepen2/excursion_rand_seed1_a2-40.log, work/deepen2/excursion_rand_seed2_a3-12.log, work/deepen2/excursion_rand_seed3_a2-8_16ph.log"
+   ],
+   "scripts": [
+    "scripts/deepen2/runs_abs.py",
+    "scripts/deepen2/celldiff.py",
+    "scripts/deepen2/bitcells.py",
+    "scripts/deepen2/fastphase.c",
+    "scripts/deepen2/cmpdump.py",
+    "scripts/deepen2/cmplayout.py",
+    "scripts/deepen2/shrink.py",
+    "scripts/deepen2/jumpsim.py",
+    "scripts/deepen2/excursion.py"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "follow",
+   "confidence": "med",
+   "model": "Phase map on the counter word, as run lengths a0 (bottom), a1, ... with gaps. Steady phase: a0 -> a0 - 1, everything else frozen below the wave front. Excursion when a0 = 2: a1 becomes the bottom (minus 2), 3-phase sync pattern, then a merge wave climbs from the bottom at ~0.5 runs per phase (gap 3 -> 2, then merge), absorbing short runs and leaving the low region frozen behind it. Candidate maturation rule M: the cascade's first merges always produce the new bottom and the new a1, so a1 >= 6 at every excursion.",
+   "closed_gaps": [
+    "C port exact: jumpsim.c = Python log and layouts on all 160 real phases (incl. exact_steps), 13/13 exact layouts; jumpsim2.c (fast paths) same layouts; random instances 90/90 vs Python (248 phases, 37 off-sync) and 90/90 vs exact fastphase (250 phases, 41 off-sync) for both binaries; fast-path rules Z0/Z1/Z2/S 3,000/3,000 each",
+    "Real orbit followed to the start of phase 1,857 (n ~ 2^1860): no off-sync, no halt; excursions at phases 91, 119, 215, 487, all benign, with 14, 77, 93, 700 cells in the run that became the bottom",
+    "The 3-run 16 runs up at phase 171 never reached the bottom: absorbed by a merge wave at phases 231-233",
+    "Between excursions: bottom run -1 per phase with gap 3 kept (1,777/1,779 steady phase pairs; the 2 exceptions are phases 14-15), and runs below the wave front frozen",
+    "Fast-forward (cut the bottom run of a real layout) reproduces the real excursion at phase 487 and its cascade exactly: lowest 12/14 runs equal over 45/45 phases from donors at phases 311 and 411; donors with a low wave front diverge exactly where the cascade leaves the frozen region",
+    "Next excursion predicted at phase 3,321 (identical lowest 30 runs from donors at phases 811, 1,011, 1,207): a1 = 555, benign; cascade gives bottom 1,542, a1 = 102 and absorbs the 2-run at index 11. Chained: phases 4,866 (a1 = 102) and 5,172 (a1 = 1,052) benign"
+   ],
+   "remaining_gaps": [
+    "Maturation rule M (new bottom and new a1 are merge products after every cascade) holds in 4 real + 3 predicted cascades but is not derived; the wave is driven by run-length parities (F/A arrival at a gap) and is probably a finite-state rule on run residues",
+    "A proof would need the visit rule, the fixed-cell phase rule, the wave rule on run words and M as an invariant, all over unbounded nested structure; no busycoq template is close",
+    "Real-orbit confirmation of the predicted phase-3,321 excursion not run (about 1 h of one light C process from work/follow/ckpt_follow_end.txt)"
+   ],
+   "evidence": [
+    "work/follow/cmp_c_vs_py_160.log, work/follow/validate_jumpsim_py_seed7.log, work/follow/validate_jumpsim_fast_seed7.log, work/follow/validate_jumpsim2_py_seed7.log, work/follow/validate_jumpsim2_fast_seed7.log, work/follow/check_cycles_seed1.log",
+    "work/follow/real.log, work/follow/real2.log, work/follow/real_runs.txt, work/follow/real2_runs.txt, work/follow/frozen_real_1846.log, work/follow/ckpt_follow_end.txt, img/follow_lowruns_real.png",
+    "work/follow/ffwd/d300_r4.txt, work/follow/ffwd/d400_r5.txt, work/follow/ffwd/d250_r9.txt, work/follow/ffwd/next_d800_r4.txt, work/follow/ffwd/next_d1000_r4.txt, work/follow/ffwd/next_d1196_r4.txt, work/follow/ffwd/chain2.txt, work/follow/ffwd/chain3.txt"
+   ],
+   "scripts": [
+    "scripts/follow/jumpsim.c",
+    "scripts/follow/jumpsim2.c",
+    "scripts/follow/validate_c.py",
+    "scripts/follow/check_cycles.py",
+    "scripts/follow/frozen.py",
+    "scripts/follow/ffwd.py",
+    "scripts/follow/render_runs.py"
+   ]
+  }
+ ]
+}

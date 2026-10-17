@@ -1,0 +1,269 @@
+{
+ "tm": "1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB",
+ "rank": 552,
+ "class_sheet": "Skelet 1-like Class 2",
+ "class_guess": "multi-level binary counter: #11-style carry M over fueled units, walls migrate unit to unit, edge fossils = Pascal rows",
+ "confidence": "med",
+ "summary": "Fueled-unit binary counter, rules closed (27,813/27,813 to 1e9); halting = a k=1 unit losing the fuel race.",
+ "mechanism": [
+  "Wall view: 1-blocks of length 3g+2 (11, 1^5, ...) are unit boundaries with g glued walls; 3j+1 (1111, 1^7, ...) are passive stacks; units are `x M m Q .. y` (lead M = 00/1111 is the bit, y = fuel); the leftmost block is the edge. Carry M: leads 1111->00 up to the first 00->1111, every touch burns fuel.",
+  "Markers flow right: a passive wall that reaches the boundary glues, then becomes the next unit's lead (unglue S) while that unit's old lead turns passive. The edge grows by 3 per overflow and fossilizes into passive stacks that seed the Pascal rows; resets turn the tail into a new LSB unit.",
+  "Halts iff F reads a 1 after `00`: only a single-marker unit running dry does that. Its margin y-(2T-bit) is constant between resets; non-halting needs the reset ratio a_{n+1}/a_n < 2 (observed 1.79-1.86). No halt to 1e11 (direct) or in 3M more macro increments."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge Default view, first 10k steps",
+   "title": "bbchallenge Default view, 10,000 steps",
+   "why": "Orientation: the run as the site shows it. Note the slowly widening left zone and the drifting walls.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step 0..9,999, squeezed into 500 px by the site's bilinear filter (about one sample per 20 steps)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:4",
+   "png": "img/units_constructed.png",
+   "html": null,
+   "steps": 5100,
+   "caption": "Built 5-unit tape: each sweep is one carry M",
+   "title": "Carries on a built unit tape",
+   "why": "Each leftward diagonal is one increment; its depth is the carry length. Compare the depths of successive sweeps.",
+   "primary": true,
+   "start": "constructed: 0^inf 1^7 0 1^4 0 1 0 1^2 0 1 0 1 0 1 0 1 0^2 1 0 1 0 1 0 1 0 1 0 1 0 1^4 0 1 0 1 0 1 0 1 0 1^2 0 1 0 1 0 1 0 1 0 1^4 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1^2 0 1 0 1 0 1 0^2 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1^2 0 1 0 1^4 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1^2 0 A> 0^inf",
+   "rows": "every 4 steps, 0..5,100 (1,276 rows, 2 px each)",
+   "window": "cells -211..41, 1 px = 0.5 cells (each cell 2x2 px); cell 0 = the head's start cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_3e5.png",
+   "html": "img/viewer.html",
+   "steps": 300000,
+   "caption": "Edge records to 3e5: unit walls drift right and curve",
+   "title": "Edge records to 300,000 steps",
+   "why": "White diagonals are 1111 markers drifting right as x grows; the vertical stripes at the left are the fossil zone.",
+   "primary": true,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new leftmost or rightmost cell (1,017 rows to step 300,000; not evenly spaced in time)",
+   "window": "cells -36..980, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records:L",
+   "png": "img/lrec_3e9.png",
+   "html": null,
+   "steps": 3000000000,
+   "caption": "Left records to 3e9: the fossil zone during left sweeps",
+   "title": "Left records to 3 billion steps",
+   "why": "One row per carry reaching the far left (676 rows), tape mid-sweep. Watch the slow drift of wall bands.",
+   "primary": false,
+   "start": "blank",
+   "rows": "left records only: the start, then one row per new leftmost cell (677 rows to step 3,000,000,000; not evenly spaced in time)",
+   "window": "cells -699..2300, 1 px = 1 cell (the tape continues to the right, to cell ~91,000)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "reset: ... 11 x M (a-1) 11 1 1111 (2a-1) 11 1 A> 0^inf",
+  "vars": [
+   "a",
+   "lo"
+  ],
+  "rows": [
+   {
+    "step": 537,
+    "values": [
+     2,
+     -10
+    ]
+   },
+   {
+    "step": 884,
+    "values": [
+     4,
+     -11
+    ]
+   },
+   {
+    "step": 1665,
+    "values": [
+     7,
+     -14
+    ]
+   },
+   {
+    "step": 3132,
+    "values": [
+     11,
+     -17
+    ]
+   },
+   {
+    "step": 5841,
+    "values": [
+     17,
+     -19
+    ]
+   },
+   {
+    "step": 11638,
+    "values": [
+     28,
+     -22
+    ]
+   },
+   {
+    "step": 26355,
+    "values": [
+     50,
+     -25
+    ]
+   },
+   {
+    "step": 70210,
+    "values": [
+     93,
+     -29
+    ]
+   },
+   {
+    "step": 211425,
+    "values": [
+     173,
+     -34
+    ]
+   },
+   {
+    "step": 677044,
+    "values": [
+     317,
+     -42
+    ]
+   },
+   {
+    "step": 2195541,
+    "values": [
+     574,
+     -51
+    ]
+   },
+   {
+    "step": 7122972,
+    "values": [
+     1036,
+     -68
+    ]
+   },
+   {
+    "step": 23158343,
+    "values": [
+     1875,
+     -95
+    ]
+   },
+   {
+    "step": 75751078,
+    "values": [
+     3407,
+     -143
+    ]
+   },
+   {
+    "step": 249431021,
+    "values": [
+     6205,
+     -228
+    ]
+   },
+   {
+    "step": 824902774,
+    "values": [
+     11304,
+     -381
+    ]
+   },
+   {
+    "step": 2732037815,
+    "values": [
+     20577,
+     -658
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "M carry (wall view)",
+   "from": "... 11 [x 00 m P .. y] {11 [x_i 1111 m_i P .. y_i]}_i 11 t A>",
+   "to": "... 11 [x-1 1111 m+1 P .. y-2] {11 [x_i+3 00 m_i+1 P .. y_i-2]}_i 11 (t+2) A>   (k=1 units: no m, y-1)",
+   "steps": "2t + sum_passed (20 + 16(k-1) + 2(x+sum m+y)) + (16 + 16(k-1) + 2(sum m + y))",
+   "cases": "carry stops at the first unit with lead 00; units left of it and the prefix untouched",
+   "validated": {
+    "instances": 30033,
+    "passed": 30033
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Closed unit rules (stage 2)",
+   "from": "E U_0 b_1 U_1 ... b_N U_N b_T [t] A>",
+   "to": "one increment: tail t+2; per unit from the right: M pass / S unglue (boundary 1^(3g+2)) / leadless +2 / M stop; edge e+=3 or fossilize (e = 1 mod 3) or absorb b_1; glue G when a last gap hits -1; reset R in two increments",
+   "steps": "not modelled (the macro step count is not needed for the non-halting argument)",
+   "cases": "see notes.md stage 2 table; executable spec work/rules3.py",
+   "validated": {
+    "instances": 28413,
+    "passed": 28413,
+    "note": "27,813 consecutive orbit increments from step 342 to 999,928,220 plus 600 independent TM checks past 1e9 (200 spaced, 400 rare-rule)"
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "verify/SBCv6.v",
+  "module": "TM21 (via our kill #11)",
+  "machine": "1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---",
+  "diff": "no close table; architecture only",
+  "applies": "partly",
+  "note": "Level 0 is #11's per-carry M (one macro step per carry, every touch burns fuel). There is no global re-pairing O: new LSB units enter at the right, old units fossilize at the left into an unbounded Pascal-triangle zone (depth ~ log t). #3's down-counter with ghost-phase J does not fit (this counter increments)."
+ },
+ "strategy": "Stage 3: an invariant for the k=1 fuel race (margin y-(2T-bit) >= 0 for every episode), closed under all rules and tested on the macro simulator. Needs a bound on the reset ratio a_{n+1}/a_n < 2, set by the Pascal-structured arrival schedule from U_0/U_1.",
+ "risks": [
+  "The invariant must control future fuel-race episodes, whose start depends on the arrival schedule from an unbounded Pascal-structured fossil zone: far beyond #11's INV.",
+  "The reset ratio a_{n+1}/a_n oscillates slowly (1.79-1.86 observed) with no closed form; a proof needs a uniform bound below 2.",
+  "Rules are validated, not proved: the macro step uses shift rules over alternating stretches that a Coq proof would have to establish one by one."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Do the carries in the built tape (units_constructed.png) look like a ruler sequence, deepest into the prefix?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "The rules are closed and the halting question is now one fuel race, but proving it needs the reset ratio a_{n+1}/a_n < 2 over an unbounded Pascal structure. Spend stage 3 on an invariant candidate (no Coq proof expected), or park after stage 2?",
+   "figs": [
+    2
+   ],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 100000000000,
+  "cells": 556565,
+  "nonzeros": 283762,
+  "growth": "span ~ t^0.5 to the right; left edge +1 per far-left carry (-676 at 3e9, -3,671 at 1e11); walls ~ log t"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Rule closure done (Class 2 close-out stage 2): 27,813/27,813 increments from step 342 to 1e9; invariant (k=1 fuel race) open."
+}

@@ -1,0 +1,535 @@
+{
+ "tm": "1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC",
+ "rank": null,
+ "class_sheet": "Bell eats counter",
+ "class_guess": "Bell eats counter: a phase defect walks a 1010 budget word away from a binary counter (digits 11/00); at the far end the counter's low digits are eaten",
+ "confidence": "high",
+ "summary": "A phase defect walks a 1010 word one pair per count; at the far end it eats 1-3 low digits of a binary counter.",
+ "mechanism": [
+  "Tape between counts: M(a,X,b,N) = 0^inf 10^a X 10^b 011 B> 0 D(N) 11 0^inf. D(N) 11 is N in binary, low digit first, 1 = 11, 0 = 00 (the final 11 is the leading 1). X is a one-cell phase defect (an extra 1 or 0) in the 1010 word.",
+  "Each count adds 1 to N and moves the defect left (X=1 -> X=0 in place, X=0 -> X=1 two pairs left). When it falls off the far end (word 10^p, no defect: E(p,N)) a C/F sweep runs the whole word into the counter and eats its low end: N odd -> (N+1)/2, N = 0 mod 4 -> N/4, N = 2 mod 8 -> (N+6)/8, N = 6 mod 8 -> a two-defect transient ending in a quick second eat. The word gains 2 to 7+t pairs.",
+  "Eat to eat: p' = p+1+e+[p odd], N' = f(N)+p'+[p even] (e = 1,2,3 digits eaten); 6 mod 8: N = (2m+1)2^(t+3)-2 -> E(p+7+t, m+2^t+t+1), N = 16m+6 -> E(p+7, m+5). This equals the direct run at all 2,091 eats to 1e11 steps. Invariant p >= 20, 1 <= N <= 2p is kept by every branch (algebra; exhaustive for p <= 2000) and holds from E(21, 6) at step 3,097. No branch halts (the only halt, F0, needs a C/F sweep, and all 514 sweeps to 1e9 are eats), so the pseudo-random order of eat types needs no prediction: not a cryptid. Siblings: none."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view",
+   "why": "The site's view. The grey 1010 word grows to the left; the counter's 11/00 digits sit at its right edge.",
+   "primary": true,
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 px rows (1 px row = 20 steps; the site blends steps 20y+9 and 20y+10)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom: phase view, one row per count",
+   "png": "img/phase_rows.png",
+   "html": null,
+   "steps": 117683,
+   "caption": "Phase view: one row per count, from blank",
+   "title": "Phase view, one row per count",
+   "why": "One row per count. Follow the cream/navy border left, row by row, to the reset at the left edge.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per count configuration M (B reading the 0 left of the counter digits): counts 1..700, steps 31..117,683 (not evenly spaced), 2 px per row",
+   "window": "cells -73..99, 1 px = 0.5 cells (each cell drawn 2 px wide)",
+   "legend": "cream = cell value equals position parity, navy = opposite parity, red = head (state B), black = blank outside the written word; the cream/navy border inside the word is the defect, and the checkered strip at the right is the counter",
+   "style": "custom"
+  },
+  {
+   "mode": "explore, constructed start, every step",
+   "png": "img/eat_explore.png",
+   "html": null,
+   "steps": 66,
+   "caption": "One eat, every step, from E(8, 11)",
+   "title": "One eat, every step",
+   "why": "Follow orange/magenta (B/E) left to the edge, then blue/cyan (C/F) right across the word into the counter.",
+   "primary": false,
+   "start": "constructed: 0^inf 10^8 011 B> 0 111100 11 0^inf",
+   "rows": "every step, steps 0..66: from the eat configuration E(8, 11) to the next count configuration M(10, 1, 0, 6)",
+   "window": "cells -22..8, 1 px = 0.125 cells (8 px per cell)",
+   "legend": "slate = 0, white = 1, head cell coloured by state: A red, B orange, C blue, D green, E magenta, F cyan",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "custom: chart, N/p per eat",
+   "png": "img/ratio_eats.png",
+   "html": null,
+   "steps": 100000000000,
+   "caption": "N/p at each eat of the blank run, by eat type",
+   "title": "N/p at each eat, by type",
+   "why": "One dot per eat. Check every dot against the black line; the band near 0 is the quick second eats.",
+   "primary": true,
+   "start": "blank",
+   "rows": "x = eats 1..2,091 of the blank run (steps 31..99,939,266,761), 3 eats per px column, in order; abstract model, equal to the direct run at every one of these eats",
+   "window": "x = eat index, 1 px = 3 eats; y = N/p from 0 (bottom) to 2.4 (top), 1 px = 0.01",
+   "legend": "blue = N odd, green = N 0 mod 4, orange = N 2 mod 8, red = N 6 mod 8, black line = N/p of 2 (invariant bound), dashed grey = N/p of 1; a dot's colour is the type of the eat taken from that state",
+   "style": "custom"
+  },
+  {
+   "mode": "every:16",
+   "png": "img/cycle_every16.png",
+   "html": null,
+   "steps": 8800,
+   "caption": "One budget cycle mid-run, every 16 steps",
+   "title": "One budget cycle, every 16 steps",
+   "why": "Default colours, mid-run. Look for the faint diagonal seam (the defect) and the eats at the top and bottom.",
+   "primary": false,
+   "start": "mid-run: step 30,900",
+   "rows": "every 16 steps, steps 30,900..39,700 (551 rows; eats at steps 31,017 and 39,071)",
+   "window": "cells -43..69, 1 px = 0.5 cells",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf 10^p 011 B> 0 D(N) 11 0^inf",
+  "vars": [
+   "p",
+   "N"
+  ],
+  "rows": [
+   {
+    "step": 31,
+    "values": [
+     0,
+     1
+    ]
+   },
+   {
+    "step": 165,
+    "values": [
+     2,
+     4
+    ]
+   },
+   {
+    "step": 451,
+    "values": [
+     5,
+     7
+    ]
+   },
+   {
+    "step": 905,
+    "values": [
+     8,
+     12
+    ]
+   },
+   {
+    "step": 1695,
+    "values": [
+     11,
+     15
+    ]
+   },
+   {
+    "step": 2725,
+    "values": [
+     14,
+     22
+    ]
+   },
+   {
+    "step": 3097,
+    "values": [
+     21,
+     6
+    ]
+   },
+   {
+    "step": 3521,
+    "values": [
+     28,
+     5
+    ]
+   },
+   {
+    "step": 7351,
+    "values": [
+     30,
+     34
+    ]
+   },
+   {
+    "step": 12121,
+    "values": [
+     34,
+     40
+    ]
+   },
+   {
+    "step": 17599,
+    "values": [
+     37,
+     48
+    ]
+   },
+   {
+    "step": 23871,
+    "values": [
+     41,
+     53
+    ]
+   },
+   {
+    "step": 31017,
+    "values": [
+     44,
+     71
+    ]
+   },
+   {
+    "step": 8899889,
+    "values": [
+     316,
+     366
+    ]
+   },
+   {
+    "step": 51650943,
+    "values": [
+     585,
+     66
+    ]
+   },
+   {
+    "step": 151908391,
+    "values": [
+     862,
+     1293
+    ]
+   },
+   {
+    "step": 341226479,
+    "values": [
+     1146,
+     98
+    ]
+   },
+   {
+    "step": 688305625,
+    "values": [
+     1400,
+     2505
+    ]
+   },
+   {
+    "step": 1174692265,
+    "values": [
+     1664,
+     2627
+    ]
+   },
+   {
+    "step": 1810659775,
+    "values": [
+     1952,
+     2938
+    ]
+   },
+   {
+    "step": 2643272113,
+    "values": [
+     2264,
+     2653
+    ]
+   },
+   {
+    "step": 3886992717,
+    "values": [
+     2522,
+     4839
+    ]
+   },
+   {
+    "step": 5367305747,
+    "values": [
+     2774,
+     3383
+    ]
+   },
+   {
+    "step": 7068639749,
+    "values": [
+     3050,
+     4827
+    ]
+   },
+   {
+    "step": 9103740755,
+    "values": [
+     3312,
+     4971
+    ]
+   },
+   {
+    "step": 11588017111,
+    "values": [
+     3567,
+     4856
+    ]
+   },
+   {
+    "step": 14480475277,
+    "values": [
+     3832,
+     6307
+    ]
+   },
+   {
+    "step": 17569657423,
+    "values": [
+     4103,
+     5946
+    ]
+   },
+   {
+    "step": 21470553403,
+    "values": [
+     4331,
+     4380
+    ]
+   },
+   {
+    "step": 25524842867,
+    "values": [
+     4619,
+     6452
+    ]
+   },
+   {
+    "step": 29787116731,
+    "values": [
+     4936,
+     274
+    ]
+   },
+   {
+    "step": 34846961227,
+    "values": [
+     5231,
+     7328
+    ]
+   },
+   {
+    "step": 41082713729,
+    "values": [
+     5482,
+     10133
+    ]
+   },
+   {
+    "step": 47342989449,
+    "values": [
+     5758,
+     11284
+    ]
+   },
+   {
+    "step": 54754780221,
+    "values": [
+     6018,
+     7393
+    ]
+   },
+   {
+    "step": 61934244623,
+    "values": [
+     6310,
+     10745
+    ]
+   },
+   {
+    "step": 70409297503,
+    "values": [
+     6562,
+     11918
+    ]
+   },
+   {
+    "step": 79694337829,
+    "values": [
+     6826,
+     10290
+    ]
+   },
+   {
+    "step": 89464421297,
+    "values": [
+     7092,
+     12458
+    ]
+   },
+   {
+    "step": 99939266761,
+    "values": [
+     7367,
+     197
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "INC1",
+   "from": "0^inf 10^a 1 10^b 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^a 0 10^b 011 B> 0 D(N+1) 11 0^inf",
+   "steps": null,
+   "cases": "a >= 0, b >= 0, N >= 1",
+   "validated": {
+    "instances": 319,
+    "passed": 319
+   },
+   "source": "manual"
+  },
+  {
+   "name": "INC0",
+   "from": "0^inf 10^a 0 10^b 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^(a-2) 1 10^(b+2) 011 B> 0 D(N+1) 11 0^inf",
+   "steps": null,
+   "cases": "a >= 2; a = 1 is INCL; a = 0 is E(b, N)",
+   "validated": {
+    "instances": 276,
+    "passed": 276
+   },
+   "source": "manual"
+  },
+  {
+   "name": "INCL",
+   "from": "0^inf 10 0 10^b 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^(b+2) 011 B> 0 D(N+1) 11 0^inf",
+   "steps": null,
+   "cases": "defect falls off the far end; the word grows one pair",
+   "validated": {
+    "instances": 601,
+    "passed": 601
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT1",
+   "from": "0^inf 10^p 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^(p+2) 1 011 B> 0 D((N+1)/2) 11 0^inf",
+   "steps": null,
+   "cases": "N odd",
+   "validated": {
+    "instances": 292,
+    "passed": 292
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT2",
+   "from": "0^inf 10^p 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^(p+2) 111 011 B> 0 D(N/4) 11 0^inf",
+   "steps": null,
+   "cases": "N = 0 mod 4; next count gives 0^inf 10^(p+2) 1 10 011 B> 0 D(N/4+1) 11 0^inf (137/137)",
+   "validated": {
+    "instances": 137,
+    "passed": 137
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT3",
+   "from": "0^inf 10^p 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^(p+4) 1 011 B> 0 D((N+6)/8) 11 0^inf",
+   "steps": null,
+   "cases": "N = 2 mod 8",
+   "validated": {
+    "instances": 111,
+    "passed": 111
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT4",
+   "from": "0^inf 10^p 011 B> 0 D(N) 11 0^inf",
+   "to": "0^inf 10^(p+7-2^t) 0 10^(2^t-1) 1^(2t+1) 011 B> 0 D(m+1) 11 0^inf",
+   "steps": null,
+   "cases": "N = (2m+1)2^(t+3)-2, t >= 1, p+7 >= 2^t; t = 0 (N = 16m+6): 0^inf 10^(p+5) 1 10 1 011 B> 0 D(m+1) 11 0^inf",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "E2E (eat to eat)",
+   "from": "E(p, N) = 0^inf 10^p 011 B> 0 D(N) 11 0^inf",
+   "to": "E(p', N'): p' = p+1+e+[p odd], N' = f(N)+p'+[p even]; 6 mod 8: E(p+7+t, m+2^t+t+1), or E(p+7, m+5) if t = 0",
+   "steps": null,
+   "cases": "e,f = 1,(N+1)/2 (N odd); 2,N/4 (0 mod 4); 3,(N+6)/8 (2 mod 8). 6 mod 8 needs p+7 >= 2^t (sharp: tested p = 2^t-16..2^t+3 for t = 2..7, fails exactly below it). 855/855 random instances inside the precondition (1 more, p=50 with t=6, is outside it); plus all 2,091 blank-run eats to 1e11 steps",
+   "validated": {
+    "instances": 855,
+    "passed": 855
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R1 (hub view)",
+   "from": "0^inf 10^(a+2^(k-1)) X 10^b 1^(2k) A> 0^inf",
+   "to": "0^inf 10^a X 10^(b+2^(k-1)) 1^(2k+2) A> 0^inf",
+   "steps": null,
+   "cases": "X in {1,0}, k >= 2, b >= 1: 2^(k-1) counts with no eat (counter overflow view)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "BECv5.v",
+  "module": "TM1",
+  "machine": "1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA0RB",
+  "diff": "different table (no busycoq hand proof within 3 transitions; the distance-3 tables are decider proofs in Indv2.v and RWL_mod_v3.v)",
+  "applies": "partly",
+  "note": "Same architecture as BECv5 TM1 (and our W4-2): a binary counter BinInc plus a budget word with a one-cell phase defect (TM1's R n m = 1 (10)^(1+n) 0 (10)^m), one budget pair per count (RIncs), an eat that removes low counter digits (ROv), BigStep and progress_nonhalt_cond with a linear invariant (TM1: a <= 1+b; here N <= 2p). Different: the defect walks AWAY from the counter and the eat happens at the far blank end via a C/F sweep over the whole word; the eat removes 1, 2 or 3 digits by N mod 8, plus a two-defect transient for N = 6 mod 8. Our counter D(N) 11 0^inf is BinInc [1;1] N on the right (RBinInc_spec)."
+ },
+ "strategy": "S(p,N) := E(p,N). Prove INC1/INC0/INCL (E/B sweep, defect fix, A sweep, RBinInc_spec), the C/F sweep, EAT1-3 and EAT4 plus its transient, then BigStep E -> E. Close with progress_nonhalt_cond, P := p >= 20 /\\ 1 <= N <= 2p, after multistep_nonhalt to E(21, 6) at step 3,097.",
+ "risks": [
+  "The N = 6 mod 8 transient (a 1^(2t+1) block becomes a second defect that walks 2^t+t pairs and cancels the first) is validated end to end but its inner steps are not yet stated as exact lemmas; it is the largest piece of Rocq work.",
+  "No busycoq file has a defect that walks away from the counter with an eat at the far blank end, so most lemmas are new; expect a W4-2-sized effort (2-3 Rocq stages).",
+  "Edge cases must be exact: the defect at a = 0 or 1, a leading blank when p+7 = 2^t, and the [p odd] / [p even] terms in every eat."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Phase view: does each row move the cream/navy border (the defect) one step left, and does the whole word turn cream again when the border reaches the left edge?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "One eat: does the blue/cyan sweep start at the left edge, cross the whole word and enter the counter on the right before the head turns back?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "N/p chart: do all dots stay below the black line N = 2p, with the quick second eats as a band near 0?",
+   "figs": [
+    3
+   ],
+   "kind": "check"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 100000000000,
+  "cells": 14769,
+  "nonzeros": 7386,
+  "growth": "span 14,769 cells at 1e11 (6,815 at 1e10), about 3.2 steps^(1/3); word 2p with p = 7,367 pairs at the last eat before 1e11; counter N <= 2p; abstract model run for 2,000,000 eats (p = 7,056,392): N/p < 2 throughout, and 6 mod 8 slack p - 2^t >= 80 after eat 20"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism closed: all 2,091 eats from blank to 1e11 steps follow the validated eat-to-eat model, and a simple linear invariant (N <= 2p) is kept by every branch. Next: proof.md, then Rocq from BECv5 TM1's architecture."
+}

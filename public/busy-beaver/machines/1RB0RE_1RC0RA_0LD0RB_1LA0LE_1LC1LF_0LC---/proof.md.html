@@ -1,0 +1,694 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/proof.md · <a href="/busy-beaver/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/proof.md.html">raw</a></div>
+<h1 id="1rb0re_1rc0ra_0ld0rb_1la0le_1lc1lf_0lc-halts"><code>1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---</code> halts</h1>
+<p>This machine halts after 1,816,824,067,232,869,945 ≈ 1.82 × 10^18 steps. The count is computed (§10); the formal proof shows only that the machine halts.</p>
+<p>Left of the head the tape holds a counter, written in digits of three cells. Right of the head is a long "bell": a run of three-cell blocks with one defect in it. In each round the head adds 1 to the counter and then moves the defect one block to the left.</p>
+<p>When the defect reaches the counter, the bell eats a few cells off the low end of the counter, and the defect starts again near the far end of the bell. That is one cycle. The cells left in the counter are then grouped into digits differently, and this can make digit shapes that ordinary counting never produces.</p>
+<p>In cycle 611,577 one of these shapes, <code>111</code>, sits directly below a digit whose last cell is 1. Two carries reach it. The first turns it into <code>110</code>, and at the second the machine reads a 1 in state F, its only undefined transition.</p>
+<p>The proof is a computation checked in Coq. Rounds whose carry stays inside ordinary digits are general lemmas, applied many at a time in closed form. Eats and all other rounds are run by a verified run-length simulator of the machine. A checker replays the whole run from step 288 in 4,942,483 checked moves.</p>
+<h2 id="machine-and-status">Machine and status</h2>
+<ul>
+<li><strong>Machine:</strong> <code>1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---</code>, viewer https://bbchallenge.org/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---</li>
+<li><strong>Holdout:</strong> line 29 of the 740-machine BB(6) holdout list, class "Bell eats counter".</li>
+<li><strong>Statement:</strong> <code>Lemma halt: halts tm c0.</code> with <code>tm := TM_from_str "1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---"</code>. The proof is for the string itself, with no mirror and no renaming.</li>
+<li><strong>Status:</strong> formalized in the accompanying .v (2,976 lines).</li>
+<li>It compiles in Coq 8.20.1 against unmodified busycoq BB6 (commit <code>0940bb9</code>) in about 610 s with <code>-native-compiler yes</code>.</li>
+<li>The 751 computed chunks are closed by <code>vm_check_eq</code> of <code>verify/Helper.v</code> (<code>vm_cast_no_check</code> of <code>eq_refl</code>). The kernel checks each of them with its virtual machine at <code>Qed</code>.</li>
+<li>coqchk does not finish on this file within 600 s, so the chunks are checked by coqc's kernel only.</li>
+<li><strong>Print Assumptions halt:</strong> Closed under the global context.</li>
+<li><strong>Template:</strong> busycoq <code>verify/Sk1Machines.v</code>, <code>Module Sk1Auto</code>: one step function iterated with <code>Eqb.N_iter_until</code> and proved sound once with <code>N_iter_until_spec</code>, where untrusted proposals are checked at each use.</li>
+<li>Kept: that architecture (here the step <code>next</code>, iterated by <code>run</code>, with <code>run_ok</code> and <code>run_halt</code> from <code>N_iter_until_spec</code>), and run-length configurations.</li>
+<li>New: this machine's rounds and digits (proved with <code>es</code> of <code>verify/Individual62.v</code>), and closed-form batches of rounds.</li>
+<li>New: a macro simulator whose block rules are found while it runs, by window simulation, and crossed with <code>shift_rule_L</code> / <code>shift_rule_R</code> of <code>verify/Individual62.v</code>. Sk1Auto instead takes a fixed list of validated scans.</li>
+<li>New: a parser for the round-start configuration, and the run cut into 751 chunks between literal states.</li>
+<li><strong>Equivalent machines:</strong> busycoq's <code>verify/Eqv_v2.v</code> (<code>TM291</code>, <code>TM392</code>, <code>TM1913</code>) proves three machines equivalent to this one, and <code>verify/Eqv_v3.v</code> (<code>TM558</code>, <code>TM605</code>) proves two machines equivalent to its mirror image. So they halt too.</li>
+<li><strong>Step count:</strong> 1,816,824,067,232,869,945, the halting step included. Computed, not proved (§10).</li>
+</ul>
+<h3 id="where-each-part-lives-in-the-v">Where each part lives in the .v</h3>
+<table>
+<thead>
+<tr>
+<th>part</th>
+<th>names in the .v</th>
+<th>lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>table and notations</td>
+<td><code>tm</code>, <code>--&gt;*</code>, <code>--&gt;+</code></td>
+<td>35–37</td>
+</tr>
+<tr>
+<td>K-forms and rounds (§2, §3.1)</td>
+<td><code>bellw</code>, <code>K</code>, <code>callw</code>, <code>bellpart</code>, <code>round</code></td>
+<td>39–52</td>
+</tr>
+<tr>
+<td>digits and the carry (§3.2)</td>
+<td><code>dg</code>, <code>dcell</code>, <code>cells</code>, <code>inc</code>, <code>absm</code>, <code>abs0</code>, <code>abs1</code>, <code>pass2</code>, <code>callw_inc</code>, <code>round_inc</code></td>
+<td>54–88</td>
+</tr>
+<tr>
+<td>values and closed-form rounds (§5)</td>
+<td><code>dv</code>, <code>val</code>, <code>maxv</code>, <code>val_le_maxv</code>, <code>val_inj</code>, <code>inc_some</code>, <code>inc_val</code>, <code>rounds</code>, <code>addn</code>, <code>addn_spec</code></td>
+<td>90–169</td>
+</tr>
+<tr>
+<td>run-length sides (§6.1)</td>
+<td><code>sd</code>, <code>sdn</code>, <code>pop</code>, <code>push_block</code>, <code>push</code>, <code>take</code>, <code>pop3</code> and their <code>_spec</code> lemmas</td>
+<td>171–319</td>
+</tr>
+<tr>
+<td>block rules (§6.2)</td>
+<td><code>wsim</code>, <code>wsim_spec</code>, <code>try_k</code>, <code>rule_ok</code>, <code>try_k_spec</code>, <code>try3</code>, <code>try3_spec</code></td>
+<td>321–396</td>
+</tr>
+<tr>
+<td>one macro step (§6.2)</td>
+<td><code>cfg</code>, <code>cdn</code>, <code>try_rule</code>, <code>try_rule_spec</code>, <code>single</code>, <code>single_spec</code>, <code>mstep</code>, <code>mstep_spec</code></td>
+<td>397–466</td>
+</tr>
+<tr>
+<td>K-forms on run-length tapes (§6.3)</td>
+<td><code>eat001</code>, <code>isK</code>, <code>isK_spec</code></td>
+<td>468–529</td>
+</tr>
+<tr>
+<td>running to the next K-form (§6.3)</td>
+<td><code>step1</code>, <code>urun</code>, <code>rok</code>, <code>urun_spec</code></td>
+<td>531–570</td>
+</tr>
+<tr>
+<td>the checker (§5, §7.1)</td>
+<td><code>krec</code>, <code>kden</code>, <code>kcfg</code>, <code>split</code>, <code>pushd</code>, <code>propose</code>, <code>batch</code>, <code>batch_spec</code>, <code>next</code>, <code>next_spec</code></td>
+<td>572–664</td>
+</tr>
+<tr>
+<td>the run and the start (§7)</td>
+<td><code>run</code>, <code>run_ok</code>, <code>run_halt</code>, <code>k0</code>, <code>init</code>, <code>mk</code></td>
+<td>666–698</td>
+</tr>
+<tr>
+<td>the chunks (§7.2)</td>
+<td><code>k1</code> … <code>k750</code>, <code>s1</code> … <code>s751</code></td>
+<td>700–2202</td>
+</tr>
+<tr>
+<td>the halting chain (§7.2)</td>
+<td><code>h750</code> … <code>h0</code>, <code>halt</code></td>
+<td>2203–2954</td>
+</tr>
+</tbody>
+</table>
+<p>A comment at the end of the .v restates the rules in the .v's own notation.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>At the start of every round the tape is a <strong>K-form</strong> (§2): a counter of three-cell digits, a boundary cell, and the bell <code>101 (001)^b 0001 (001)^c</code> with its defect <code>0001</code> after b blocks.</li>
+<li>A <strong>round</strong> (§3) takes b to b − 1 and c to c + 1. It adds 1 to the counter, which on ordinary digits is +1 in balanced base 4 with digits −1, 0, 1, 2.</li>
+<li>At b = 0 the round becomes an <strong>eat</strong> (§4). The counter loses a few low cells, and the next K-form has b close to the old c. A <strong>cycle</strong> is one eat followed by its rounds.</li>
+<li>Long stretches of rounds are applied at once in <strong>closed form</strong> (§5). Eats and rounds whose carry reaches an unusual digit are <strong>simulated</strong> by a verified run-length simulator (§6).</li>
+<li>A <strong>checker</strong> (§7) replays the run from step 288 to the halt, in 751 chunks.</li>
+<li>The <strong>halt</strong> (§8, §9) comes in cycle 611,577, from a digit <code>111</code> that two eats in a row produced by regrouping cells.</li>
+</ul>
+<h2 id="1-when-the-machine-can-halt">1. When the machine can halt</h2>
+<p>The transition table:</p>
+<div class="highlight"><pre><span></span><code>      0     1
+A   1RB   0RE
+B   1RC   0RA
+C   0LD   0RB
+D   1LA   0LE
+E   1LC   1LF
+F   0LC   ---
+</code></pre></div>
+
+<p>The only halting transition is F reading 1. State F is entered only by E1 = <code>1LF</code>, which writes 1 and moves left. So the machine halts exactly when E reads a 1 whose left neighbour is also 1:</p>
+<div class="highlight"><pre><span></span><code>1 1      with E on the right 1
+</code></pre></div>
+
+<h2 id="2-notation">2. Notation</h2>
+<h3 id="tapes">Tapes</h3>
+<p>Configurations are written left to right, with <code>0^∞</code> for the blank part of the tape. A state letter followed by <code>&gt;</code> stands for the head, in that state, on the cell just right of the mark. A word in parentheses with an exponent is repeated, so <code>(001)^b</code> is b copies of <code>001</code>.</p>
+<h3 id="digits">Digits</h3>
+<p>The counter is read in digits of three cells. A digit is written <code>x m y</code> (its three cells from left to right), and the lowest digit is the one next to the head.</p>
+<p>A digit is <strong>clean</strong> when its middle cell m is 0. Clean digits have values in balanced base 4:</p>
+<table>
+<thead>
+<tr>
+<th>digit</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>001</code></td>
+<td>−1</td>
+</tr>
+<tr>
+<td><code>000</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>101</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>100</code></td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>So a clean digit <code>x 0 y</code> has value 2x − y. A blank digit is <code>000</code>, so the counter can grow upward for free.</p>
+<p>A word w of clean digits has the value Σ e_i 4^i, where e_0 is the lowest digit. A digit with m = 1 (<code>010</code>, <code>011</code>, <code>110</code>, <code>111</code>) is <strong>dirty</strong>.</p>
+<h3 id="k-forms">K-forms</h3>
+<p>A <strong>K-form</strong> is the configuration</p>
+<div class="highlight"><pre><span></span><code>K(w, b, c)  =  0^∞ w 0 E&gt; 101 (001)^b 0001 (001)^c 0^∞
+</code></pre></div>
+
+<ul>
+<li>w is the counter, and the single 0 after it is the <strong>boundary</strong>.</li>
+<li>Right of the boundary is the <strong>bell</strong>: <code>101</code>, then b blocks <code>001</code>, then the <strong>defect</strong> <code>0001</code>, then c more blocks <code>001</code>.</li>
+<li>A <strong>cycle start</strong> is a K-form with b = 0:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>K0(w, c)  =  K(w, 0, c)  =  0^∞ w 0 E&gt; 101 0001 (001)^c 0^∞
+</code></pre></div>
+
+<p>From the blank tape the machine reaches <code>K0('', 2)</code> (an empty counter) after 288 steps.</p>
+<p>In the .v, <code>K X b c</code> is <code>X &lt;* [0] {{E}}&gt; bellw b c *&gt; 0inf</code>. There X is a busycoq side, so its cells are listed nearest the head first, and a digit <code>x m y</code> appears as <code>[y; m; x]</code>. For example, <code>dcell Dm = [1;0;0]</code> is the digit <code>001</code>.</p>
+<h2 id="3-rounds">3. Rounds</h2>
+<p>A round goes from <code>K(w, b, c)</code> with b ≥ 1 to <code>K(w', b − 1, c + 1)</code>. It has two parts: a call into the counter, then a trip over the bell.</p>
+<h3 id="31-the-call-and-the-bell-part">3.1 The call and the bell part</h3>
+<p>At a K-form, E reads the first 1 of the bell and its left neighbour is the boundary 0. So E1 = <code>1LF</code> leads to F reading 0, and F0 = <code>0LC</code> enters the counter in state C on its lowest cell.</p>
+<p>A <strong>call</strong> is the run from there until the head is back on the boundary in state B:</p>
+<div class="highlight"><pre><span></span><code>callw X X'  :  for every r,   X &lt;{{C}} 0 &gt;&gt; r  --&gt;*  X' {{B}}&gt; 0 &gt;&gt; r
+</code></pre></div>
+
+<p>In busycoq's notation, <code>X &lt;{{C}} 0 &gt;&gt; r</code> has the head in state C on the cell of X next to it, with the boundary 0 and then r to its right. The call holds for every right part r, so it never looks at the bell, and w' depends on w alone.</p>
+<p>The <strong>bell part</strong> then walks right to the defect and back, and moves the defect one block to the left (<code>bellpart</code>, proved by <code>es</code>):</p>
+<div class="highlight"><pre><span></span><code>0^∞ w B&gt; 0 101 (001)^(b+1) 0001 (001)^c 0^∞   --&gt;+   K(w, b, c + 1)
+</code></pre></div>
+
+<p>It takes 12(b + 1) + 19 steps. Its rightmost cell is inside the defect, so the c blocks after the defect play no part.</p>
+<p>Together they give <code>round</code>:</p>
+<div class="highlight"><pre><span></span><code>callw X X'   -&gt;   K X (S b) c  --&gt;+  K X' b (S c)
+</code></pre></div>
+
+<h3 id="32-the-carry-on-clean-digits">3.2 The carry on clean digits</h3>
+<p>On clean digits the call is a carry. It enters the lowest digit and either stops there or passes on to the next digit up.</p>
+<table>
+<thead>
+<tr>
+<th>digit reached</th>
+<th>becomes</th>
+<th>the carry</th>
+<th>steps</th>
+<th>lemma</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>001</code> (−1)</td>
+<td><code>000</code></td>
+<td>stops</td>
+<td>1</td>
+<td><code>absm</code></td>
+</tr>
+<tr>
+<td><code>000</code> (0, or blank)</td>
+<td><code>101</code></td>
+<td>stops</td>
+<td>5</td>
+<td><code>abs0</code></td>
+</tr>
+<tr>
+<td><code>101</code> (1)</td>
+<td><code>100</code></td>
+<td>stops</td>
+<td>1</td>
+<td><code>abs1</code></td>
+</tr>
+<tr>
+<td><code>100</code> (2)</td>
+<td><code>001</code></td>
+<td>passes to the next digit</td>
+<td>14</td>
+<td><code>pass2</code></td>
+</tr>
+</tbody>
+</table>
+<p>So the call adds 1 in balanced base 4. <code>inc</code> computes this on a list of digits, and <code>callw_inc</code> proves it, by induction on the list, for any higher part H above the digits:</p>
+<div class="highlight"><pre><span></span><code>inc ds = Some ds'   -&gt;   callw (cells ds *&gt; H) (cells ds' *&gt; H)
+</code></pre></div>
+
+<p><code>inc</code> fails only when the carry would leave the list. A round on clean digits therefore costs</p>
+<div class="highlight"><pre><span></span><code>12b + 22 + 14t + 4[the digit that stops the carry is 000 or blank]
+</code></pre></div>
+
+<p>steps, where t is the number of <code>100</code> digits the carry passes.</p>
+<p>These step counts, like the one in §3.1, are facts about the machine used only in §10. The lemmas state reachability, not step counts.</p>
+<h3 id="33-dirty-digits">3.3 Dirty digits</h3>
+<p>The table above does not cover a carry into a dirty digit. The proof never needs to: such rounds are simulated (§6). Two cases explain the halt, and both follow from the transition table.</p>
+<ul>
+<li><strong>Into <code>111</code>.</strong> C reads y = 1, and C1 = <code>0RB</code> turns it into <code>110</code> and stops the carry, as for <code>101</code>.</li>
+<li><strong>Into <code>110</code>.</strong> C reads y = 0 and moves left; D reads m = 1 (D1 = <code>0LE</code>); E reads x = 1 (E1 = <code>1LF</code>); F reads the last cell y of the digit above. If that cell is 1, the machine halts (§1).</li>
+</ul>
+<p>The other dirty digits, <code>010</code> and <code>011</code>, are what eats usually create (§8). In the run, a carry into them turns them back into clean digits, often a whole run of them at once, with a large carry upward.</p>
+<h2 id="4-eats-and-cycles">4. Eats and cycles</h2>
+<h3 id="the-eat">The eat</h3>
+<p>At b = 0 there is no block between <code>101</code> and the defect. The round then does not return to a K-form at once. The head makes a few long trips over the whole bell, and the boundary moves left into the counter: a few low cells of the counter are taken into the bell. The run ends at the next K-form</p>
+<div class="highlight"><pre><span></span><code>K0(w, c)   --&gt;*   K(w', b', c')
+</code></pre></div>
+
+<p>with b' close to c and c' small. The proof does not need a rule for this. The checker runs every eat on the simulator of §6, at its true c (up to 1,218,828), until it reaches a K-form with b ≥ 1.</p>
+<p>In half of the eats of the run, b' = c − 1 and c' = 2. Over all eats with c &gt; 250, b' − c lies between −1 and 115 and c' between 2 and 13.</p>
+<h3 id="the-cycle">The cycle</h3>
+<p>A cycle is an eat followed by b' rounds:</p>
+<div class="highlight"><pre><span></span><code>K0(w, c)  --&gt;*  K(w', b', c')  --&gt;*  K0(w'', c' + b')
+</code></pre></div>
+
+<p>so the next cycle starts with c' + b' blocks after the defect. On average c grows by about 2 per cycle: it is 2 at cycle 0 and 1,218,828 at cycle 611,577.</p>
+<p>The rounds of a cycle cost about 12b each for b = b', b' − 1, …, 1, about 6c² steps per cycle. This is where almost all of the 1.82 × 10^18 steps go.</p>
+<h2 id="5-batches-of-rounds">5. Batches of rounds</h2>
+<h3 id="closed-form">Closed form</h3>
+<p>Many rounds in a row only add to the clean low part of the counter. <code>rounds</code> applies n of them at once. If ds and ds' are lists of clean digits of the same length, and val ds' = val ds + n, then for any higher part H</p>
+<div class="highlight"><pre><span></span><code>K (cells ds *&gt; H) (n + b) c   --&gt;*   K (cells ds' *&gt; H) b (n + c)
+</code></pre></div>
+
+<p>The proof is an induction on n. Each step is one <code>round_inc</code>. The carry never leaves ds, because <code>val_le_maxv</code> bounds every value of a list of k digits by</p>
+<div class="highlight"><pre><span></span><code>maxv k  =  2 (4^k − 1) / 3
+</code></pre></div>
+
+<p>the value of k digits <code>100</code>, and <code>val_inj</code> closes the case n = 0.</p>
+<h3 id="the-batch-step">The batch step</h3>
+<p><code>batch</code> uses this at a K-form <code>K(w, b, c)</code>:</p>
+<ul>
+<li><code>split 16 w</code> takes up to 16 clean digits D off the low end of w, stopping at the first dirty one. Past the end of w the blank tape gives <code>000</code> digits.</li>
+<li><code>propose</code> suggests n = min(b, maxv |D| − val D), the number of increments before the carry would leave D.</li>
+<li><code>addn D n</code> adds n digit by digit in balanced base 4, and fails if a carry would leave D. <code>addn_spec</code> gives the same length and val D' = val D + n.</li>
+<li>If n ≥ 1, n ≤ b and <code>addn</code> succeeds, <code>batch_spec</code> gives K(w, b, c) --&gt;* K(w', b − n, c + n), where w' is w with D replaced by D'.</li>
+</ul>
+<p><code>propose</code> is untrusted: whatever n it returns, the other conditions are checked. When it returns 0, because the next carry would reach a dirty digit or go past 16 digits, the checker simulates one round instead (§7.1).</p>
+<h2 id="6-the-macro-simulator">6. The macro simulator</h2>
+<h3 id="61-run-length-sides">6.1 Run-length sides</h3>
+<p>A side of the tape (<code>sd</code>, <code>sdn</code>) is a list of runs (u, n), a block u of cells repeated n times, followed by blanks.</p>
+<ul>
+<li><code>pop</code> and <code>push</code> take or put one cell next to the head, and <code>push</code> merges equal blocks back into runs.</li>
+<li><code>pop3</code> takes a whole three-cell block, which is how the counter is read in digits.</li>
+</ul>
+<h3 id="62-macro-steps">6.2 Macro steps</h3>
+<p>A macro step (<code>mstep</code>) is either a block rule or a single step of the machine.</p>
+<ul>
+<li><strong>Single step</strong> (<code>single</code>): one transition of <code>tm</code>. When the transition is undefined, the result is <code>halts tm</code> of the current configuration (<code>halted_halts</code>).</li>
+<li><strong>Block rule</strong> (<code>try_rule</code>): the head faces a run u^n with n ≥ 2 and |u| ≥ 2.</li>
+<li><code>wsim</code> simulates the head crossing one copy of u, with 0, 1 or 2 cells d already behind it (at most 64 steps).</li>
+<li>If the head leaves the window forward, in the same state, with d unchanged, then one copy obeys a rule <code>d q&gt; u --&gt;* u' d q&gt;</code>.</li>
+<li><code>shift_rule_R</code> (or <code>shift_rule_L</code> on the left) of <code>verify/Individual62.v</code> then crosses all n copies at once:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>d q&gt; u^n   --&gt;*   u'^n d q&gt;
+</code></pre></div>
+
+<p>Rules are found while the checker runs and are checked where they are used, so no list of rules is trusted. <code>wsim_spec</code>, <code>try_k_spec</code>, <code>try_rule_spec</code> and <code>mstep_spec</code> prove each part.</p>
+<h3 id="63-running-to-the-next-k-form">6.3 Running to the next K-form</h3>
+<p><code>isK</code> recognises a K-form: state E, the boundary 0 behind the head, and ahead of it the bell of §2 followed by blanks. <code>isK_spec</code> proves that it returns the right (w, b, c).</p>
+<p><code>urun bmin FUEL</code> makes macro steps until <code>isK</code> finds a K-form with b ≥ bmin (it looks after every macro step), a halt, or 65,535 macro steps (<code>FUEL</code>). <code>urun_spec</code> proves the result. An eat is <code>urun 1</code>, and a simulated round is <code>urun 0</code>.</p>
+<p>The block rules make the long trips cheap. The 611,578 eats of the run take 115,095,507 macro steps in all, about 190 per eat, although the late ones cross more than a million blocks several times.</p>
+<h2 id="7-the-checker-and-the-run">7. The checker and the run</h2>
+<h3 id="71-one-move">7.1 One move</h3>
+<p>A checker state <code>krec</code> is a triple (w, b, c) with w a run-length side, and <code>kden</code> maps it to <code>K(w, b, c)</code>. One move, <code>next</code>, is:</p>
+<table>
+<thead>
+<tr>
+<th>state</th>
+<th>move</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b = 0</td>
+<td>the eat: <code>urun 1</code></td>
+</tr>
+<tr>
+<td>b ≥ 1, <code>batch</code> succeeds</td>
+<td>a batch (§5)</td>
+</tr>
+<tr>
+<td>b ≥ 1, otherwise</td>
+<td>one simulated round: <code>urun 0</code></td>
+</tr>
+</tbody>
+</table>
+<p>A halt found by the simulator ends the run. If <code>urun</code> runs out of macro steps, <code>next</code> keeps the same state, which is trivially sound. <code>next_spec</code> covers every case:</p>
+<div class="highlight"><pre><span></span><code>next k = inl k'   -&gt;   kden k  --&gt;*  kden k'
+next k = inr tt   -&gt;   halts tm (kden k)
+</code></pre></div>
+
+<h3 id="72-the-run">7.2 The run</h3>
+<p><code>run T k</code> iterates <code>next</code> at most T times with <code>N_iter_until</code>. Its two soundness lemmas follow from <code>next_spec</code> by <code>N_iter_until_spec</code>:</p>
+<div class="highlight"><pre><span></span><code>run T k = inl k'   -&gt;   kden k  --&gt;*  kden k'          (run_ok)
+run T k = inr tt   -&gt;   halts tm (kden k)              (run_halt)
+</code></pre></div>
+
+<p><code>init</code> proves by <code>solve_init</code> that the blank tape reaches <code>kden k0 = K('', 0, 2)</code> (at step 288, §2). From there the run is cut into 751 chunks of about 400,000 macro steps:</p>
+<div class="highlight"><pre><span></span><code>k_i   :=  a literal state                                  (i = 1 … 750)
+s_i   :   run T_i k_{i−1} = inl k_i                        (i = 1 … 750)
+s751  :   run 7514 k750 = inr tt                           (the halt)
+</code></pre></div>
+
+<p>Each <code>s_i</code> is proved by <code>vm_check_eq</code>. The <code>k_i</code> are written with <code>mk</code>, as a list of runs (block, count) and the numbers b and c. A block is a positive number whose binary digits, from the lowest bit, are its cells, with the top bit as a sentinel. The values of the <code>k_i</code> need no trust, since the <code>s_i</code> certify them.</p>
+<p>The final chain is</p>
+<ul>
+<li><code>h750 : halts tm (kden k750)</code>, from <code>run_halt</code> on <code>s751</code>;</li>
+<li><code>h_i</code>, from <code>h_{i+1}</code> and <code>run_ok</code> on <code>s_{i+1}</code> by <code>halts_evstep</code>, down to <code>h0</code>;</li>
+<li><code>halt</code>, from <code>h0</code> and <code>init</code>.</li>
+</ul>
+<h3 id="73-what-the-run-contains">7.3 What the run contains</h3>
+<p>The 751 chunks hold 4,942,483 moves in all, the sum of the T_i. The last one is the halting round; each of the 4,942,482 moves before it returns a checker state (<code>inl</code>).</p>
+<table>
+<thead>
+<tr>
+<th>part</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eats (cycles 0 to 611,577)</td>
+<td>611,578</td>
+</tr>
+<tr>
+<td>batches</td>
+<td>2,234,211</td>
+</tr>
+<tr>
+<td>simulated rounds</td>
+<td>2,096,694</td>
+</tr>
+<tr>
+<td>macro steps</td>
+<td>300,612,334</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-why-the-halt-comes-so-late">8. Why the halt comes so late</h2>
+<p>This section explains the run; the proof does not need it. Its counts are computed from the same run, outside Coq.</p>
+<h3 id="eats-regroup-the-counter">Eats regroup the counter</h3>
+<p>An eat removes d cells from the low end of the counter, most often 2, 5, 8 or 11. In 610,646 of the 611,445 eats with c &gt; 250, d ≡ 2 (mod 3); the others are deep bites of 15 cells or more. Apart from a few cells near the new boundary when d = 2, the cells above the bite are unchanged.</p>
+<p>The digits are counted from the low end. So when d ≡ 2 (mod 3), the remaining cells fall into new groups of three. Each new digit is the last two cells of one old digit, followed by the first cell of the old digit to its right:</p>
+<div class="highlight"><pre><span></span><code>old digits:   x1 m1 y1 | x2 m2 y2 | …
+new digit:          m1 y1 x2
+</code></pre></div>
+
+<h3 id="which-digits-this-makes">Which digits this makes</h3>
+<p>With d ≡ 2 (mod 3), regrouped clean old digits (m = 0) give new digits that start with 0: only <code>000</code>, <code>001</code>, <code>010</code> and <code>011</code>. The carries of the next rounds turn the dirty ones back into clean digits.</p>
+<p>A dangerous digit <code>110</code> or <code>111</code> then needs an old digit with m = 1 and y = 1, that is <code>011</code> or <code>111</code>. Such a digit must survive a whole cycle without a carry converting it, and then be regrouped by the next eat.</p>
+<p>Even then, by §3.3 the new digit halts the machine only when the digit directly above it ends in 1, and only once the carries reach it. Counted over the run:</p>
+<ul>
+<li>right after the eat, a digit <code>110</code> or <code>111</code> appears in 369 of the 611,578 cycles, each time after a bite with d ≡ 2 (mod 3), and each of these cycles starts with a <code>011</code> or <code>111</code> digit in its counter;</li>
+<li>in 331 of the 369 it is the top digit (blank above), and in 37 the digit above ends in 0;</li>
+<li>only in cycle 611,577 does the digit above end in 1.</li>
+</ul>
+<h3 id="the-last-three-cycles">The last three cycles</h3>
+<p>The counters around the halt, highest digit first:</p>
+<div class="highlight"><pre><span></span><code>cycle 611,576 starts   001 011 100 001 100 101 101 000 001 000 001 001 000 000    c = 1,218,827
+after its eat          010 111 000 011 001 011 010 000 010 000 010 010 001        b = 1,218,826, c = 2
+cycle 611,577 starts   010 111 100 100 001 101 000 000 000 001 001 000 101        c = 1,218,828
+after its eat          101 111 001 000 011 010 000 000                            b = 1,218,830, c = 3
+</code></pre></div>
+
+<ul>
+<li>The <code>011</code>, the second digit from the top, was made by the eat of cycle 611,575 and survived that cycle's rounds unconverted.</li>
+<li>The eat of cycle 611,576 removed 2 cells and regrouped the rest: the cells <code>1 1</code> of that <code>011</code> and the first cell 1 of the <code>100</code> after it became the digit <code>111</code>.</li>
+<li>In cycle 611,576 no carry got past the third digit from the top, so the <code>111</code> survived.</li>
+<li>The eat of cycle 611,577 removed 14 cells (14 ≡ 2 mod 3) and regrouped again. The <code>111</code> came back as <code>111</code>, from its own last two cells and the 1 that starts <code>100</code>. Above it, the cells <code>1 0</code> of <code>010</code> and the 1 that starts <code>111</code> became <code>101</code>, a digit ending in 1.</li>
+</ul>
+<p>This bite was deep, so the counter is only 8 digits long, and the carries of the cycle reach the <code>111</code> early in the cycle.</p>
+<h2 id="9-the-halt">9. The halt</h2>
+<p>The counter of cycle 611,577 at the start of four of its rounds:</p>
+<div class="highlight"><pre><span></span><code>round     1    101 111 001 000 011 010 000 000
+round    12    101 111 001 100 001 001 001 001
+round 3,340    101 110 001 001 001 001 001 001
+round 7,435    101 110 100 100 100 100 100 100      b = 1,211,396, c = 7,437
+</code></pre></div>
+
+<ul>
+<li><strong>Rounds 1 to 11.</strong> Rounds 1 to 10 count in the two lowest digits. In round 11 the carry reaches the dirty <code>010</code>, and that one round turns <code>000 011 010 100 100</code> into the clean <code>100 001 001 001 001</code>.</li>
+<li><strong>Rounds 12 to 3,339.</strong> The six low digits count up from value −597 at round 12 and reach 2,730, the largest value of six digits, at round 3,339. The carry of that round passes all six, leaves them as <code>001 001 001 001 001 001</code> (value −1,365) and reaches <code>111</code>, which becomes <code>110</code> (§3.3).</li>
+<li><strong>Round 7,435.</strong> After 4,095 more increments the six low digits are <code>100</code> each (value 2,730) again.</li>
+</ul>
+<p>In round 7,435 the carry passes the six <code>100</code> digits and reaches <code>110</code>. There C reads 0, D reads the middle 1, E reads the first 1, and F reads the last cell of <code>101</code> above it, which is 1:</p>
+<div class="highlight"><pre><span></span><code>… 1 0 1 | 1 1 0 | …
+      ^   ^
+      F   E
+</code></pre></div>
+
+<p>That is the halting transition F1, the 36th step of the round. The checker's last move is this round: <code>urun 0</code> returns <code>Halt</code>, so <code>run 7514 k750 = inr tt</code>.</p>
+<h2 id="10-step-count-computed-not-proved">10. Step count (computed, not proved)</h2>
+<p>Adding up the steps of the same run, the machine halts after</p>
+<div class="highlight"><pre><span></span><code>N  =  1,816,824,067,232,869,945   ≈  1.82 × 10^18
+</code></pre></div>
+
+<p>steps from the blank tape, counting the halting step. In busycoq's convention (<code>halts_in tm c0 n</code>: n steps, then a halting configuration) this is n = N − 1. The .v does not prove this number.</p>
+<table>
+<thead>
+<tr>
+<th>part</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blank tape to <code>K0('', 2)</code></td>
+<td>288</td>
+</tr>
+<tr>
+<td>the first 133 cycles (c ≤ 250), run whole</td>
+<td>17,789,836</td>
+</tr>
+<tr>
+<td>the eats of cycles 133 to 611,577</td>
+<td>15,593,792,071,655</td>
+</tr>
+<tr>
+<td>rounds: 12b each</td>
+<td>1,816,798,040,775,616,704</td>
+</tr>
+<tr>
+<td>rounds: the rest (including the 36-step halting round)</td>
+<td>10,432,647,391,462</td>
+</tr>
+<tr>
+<td><strong>total</strong></td>
+<td><strong>1,816,824,067,232,869,945</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The counts use these facts about the machine, each checked against direct simulation:</p>
+<ul>
+<li>a round on clean digits costs the formula of §3.2;</li>
+<li>a round whose carry reaches a dirty digit costs 12b plus a part that does not depend on b;</li>
+<li>an eat's cost is affine in c, and its result does not depend on c, for every eat of the run.</li>
+</ul>
+<p>Direct simulation of the machine agrees with the count at every cycle start up to 3 × 10^10 steps (1,573 of them), on 14 whole cycles further out, and on the whole halting cycle. That cycle starts at step 1,816,823,958,776,312,687 and halts 108,456,557,258 steps later: an eat of 58,503,988 steps, 7,434 complete rounds, and the 36-step halting round.</p>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</p>
+<h2 id="appendix-working-copy-only-evidence-and-files">Appendix (working copy only): evidence and files</h2>
+<p>This appendix is not part of the public write-up (submission/proof.md is the public copy; everything above this heading is identical to it).</p>
+<ul>
+<li>Order of work: this write-up was written after the .v. The formalization followed rocq-plan.md and the stage notes (notes.md, "Wave 5, stage 1" and the two halt-certification sections), not a proof.md.</li>
+<li>Checkpoint B: no notes from Dennis on file (non-blocking).</li>
+<li>Formal proof: the .v in this directory is rocq/test/assemble.py's output (test/header.txt + dev/W55.v + gen/full400k.v + test/footer.txt). Build log and design notes: rocq/log.md. The audited file (sha256 851ca695…0ea92; rocq/check_kill_r1.log PASS, and the independent audit's own PASS run) differs from the shipped one only in the comment on line 699 ("200,000" -&gt; "400,000 macro steps"); shipped sha256 866a5226…27f4 (the sha GPT-6 Astra audited). On 2026-10-14 the header comment was corrected per Astra's audit patch (4,942,483 iterations; disclosure line), comment only: sha256 5b83f5b1…3f39, 2,976 lines, every line after 25 now numbered one higher. Fresh <code>tools/check_kill.sh --halt</code> run on the current file: submission/check_kill.txt.</li>
+<li>Checker cross-check: rocq/gen/eats_all.txt (every b = 0 state of the extracted checker) is byte-identical to columns 1, 3, 4 of work/indep/k0_model_all.txt for cycles 0..611,577.</li>
+<li>Cycle models: scripts/fastabs2.c (stage 1) and work/indep/model.py (independent, eats as exact macro runs at the true c); both reach the same halt.</li>
+<li>§8 counts: work/writeup_stats/ (scan.py: post-eat 11y digits, hits.json; stats.py: eat d, delta, c' per cycle, eatstats.txt), both from work/indep/model.py's eat over work/indep/k0_model_all.txt. The halting-cycle rows in §9 are from work/indep/direct_final_cycle.txt (direct TM run from the cycle-611,577 start).</li>
+<li>§10 step count: work/steps_exact/ (stepsx.c, steps_chunk.py, directcyc.c, eatreal*.c, validate.c); notes.md "Halt certification: exact step count". Not proved in Coq.</li>
+</ul>
+</main></body></html>

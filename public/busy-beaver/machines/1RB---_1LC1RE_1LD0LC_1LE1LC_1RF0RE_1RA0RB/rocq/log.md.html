@@ -1,0 +1,578 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>log.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB/rocq/log.md · <a href="/busy-beaver/machines/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB/rocq/log.md.html">raw</a></div>
+<h1 id="machine-14-formalization-log">Machine #14 formalization log</h1>
+<p>Machine <code>1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB</code>. Kill file:
+<code>machines/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB.v</code>
+(built from <code>rocq/m14_base.v</code> plus a header and the closing rule table; keep the two in sync, or edit the kill file directly from round 2 on).</p>
+<p>Compile (one at a time, outside vendor/): <code>rocq/cc.sh &lt;file.v&gt; Kill [builddir]</code> (default builddir $TMPDIR/m14_build). It runs</p>
+<div class="highlight"><pre><span></span><code>eval $(opam env --switch=bb6); ulimit -s unlimited; ulimit -v 8000000
+cp &lt;file&gt;.v $SCRATCH/Kill.v &amp;&amp; cd $SCRATCH &amp;&amp; coqc -Q &lt;repo&gt;/vendor/busycoq/verify BusyCoq -Q &lt;repo&gt;/vendor/busycoq/verify/BigInt BigInt -native-compiler yes Kill.v
+</code></pre></div>
+
+<p>The whole file currently compiles in 3.0 s with 455 MB (1,000 lines).</p>
+<h2 id="round-1-2026-10-13">Round 1 (2026-10-13)</h2>
+<h3 id="architecture">Architecture</h3>
+<p>The proof is split at <strong>Theorem U</strong>. Everything above it is about unit words only, with no machine steps:</p>
+<div class="highlight"><pre><span></span><code>nonhalt  &lt;==  AbsDefined  :=  forall t U, Reach t U -&gt; exists U', Pops (rk t) U U'
+</code></pre></div>
+
+<ul>
+<li><code>Reach</code> is the record-level dynamics. It starts at <code>Reach XC U0</code> and steps with <code>Reach t U -&gt; Pops (rk t) U U' -&gt; Reach (rnext t) (rF t ++ U')</code>.</li>
+<li><code>Pops k</code> means k times "three carries (Inc), then the first unit is P and is removed". This is exactly the W-rule use of Lemma N.</li>
+<li><code>nonhalt_of_abs : AbsDefined -&gt; ~ halts tm c0</code> is <strong>proved</strong> (init + windows + <code>progress_nonhalt_cond</code>).</li>
+<li>So the remaining work is pure unit-word mathematics: proof.md sections 3-7 (conveyor, Lemma T, invariant) and section 6 (Theorem B).</li>
+</ul>
+<h3 id="proved-in-round-1-all-in-the-kill-file-no-axioms">Proved in round 1 (all in the kill file, no axioms)</h3>
+<p><strong>Machine layer, done</strong>
+- <code>ArrS r r' := forall l, l {{B}}&gt; r --&gt;* l &lt;{{C}} r'</code>, the arrival on a side.
+- Unit lemmas <code>arr_Z</code>, <code>arr_D1</code>, <code>arr_P</code>, <code>arr_W</code> (by <code>step</code>/<code>follow</code>/<code>execute</code>).
+  They take the arrival on the rest as an argument, so they hold for every left context.
+- Units: <code>unt = uD0 | uD1 | uP | uS1 | uSP | uW</code> (do not use <code>S1</code>/<code>D</code>/<code>A</code>... as names: <code>S1</code> is a Sym constructor and A..F are states).
+  Related definitions: <code>enc</code>, <code>Rs w = enc w *&gt; const 0</code>, and <code>shift</code>, which returns None on a hit (S1, SP or W).
+- <code>Inc</code> is an inductive relation (no stacked heads; a hit is simply not derivable).
+- <code>inc_arr</code> (Theorem U) is proved by <code>induction</code> on the <code>Inc</code> derivation. <code>Inc_det</code> is proved too.
+- Window runner <code>wrun</code> on <code>lcfg</code> = (left cells, head, right cells, state).
+  - The left side is followed by 0^inf and the right side by an opaque side X.
+  - It applies the W rule (<code>wready</code>/<code>wpop</code>, sound by <code>arr_W</code> + <code>inc_arr</code>) and stops when the head leaves the window to the left.
+  - <code>wrun_spec</code> gives <code>--&gt;+</code> for any unit word, given <code>Pops k</code>.
+- <code>window t : Pops (rk t) U U' -&gt; rcfg t U --&gt;+ rcfg (rnext t) (rF t ++ U')</code>. All 8 record types are proved by one <code>vm_compute</code>, and they reproduce proof.md section 4 exactly (pops 3/12/2, F lists).
+- <code>init : c0 --&gt;* rcfg XC U0</code> (203,465 steps): <code>cconfig_evstep_dec_spec</code> with n = 1e6 and <code>vm_compute</code>, under 1 s.</p>
+<p><strong>Carry library, started</strong>
+- <code>IncN</code> with add/split/det/snoc.
+- P transparency: <code>IncN_P</code>, <code>IncN_P_inv</code>, <code>IncN_Ps</code>, <code>IncN_Ps_inv</code>.
+- <code>IncN_digit</code>, and the r-digit counter <code>IncN_digits</code>: t carries on <code>digits r v ++ rest</code> pass <code>((v mod 2^r) + t) / 2^r</code> carries up.
+- Wall rotor <code>wall_feed</code>: t carries on <code>wallu b :: r</code> give <code>Ps f ++ wallu (odd (t+b)) :: r'</code>, with f = (t+b)/2, whenever <code>Pops f r r'</code>.
+  - So a conveyor wall is literally "f Inc3Pops on the rest".
+  - <code>Inc3Pop_P</code>, <code>Pops_Ps</code>, <code>Inc3Pop_wall</code> and <code>Pops_add</code>/<code>Pops_split</code> support it.
+- <code>C1</code> (Lemma C1).</p>
+<p><strong>Closed zone system, interface fixed</strong>
+- <code>cs_step Z D j Z' D' j'</code> (relational):
+  <code>exists m A Y,
+    IncN m Z (Ps A ++ Y),  notP Y,  m = D + pj j + 3A,
+    no fixed point m' &lt; m,
+    shift Y = Some Z',  D' = D + A,  j' = S j</code>
+- <code>CSreach</code>, starting from Z1 = <code>S1 D0 D1 D1 D1 D0 D1</code>, D = 0, j = 1.
+- Executable step <code>csf</code> (fuelled <code>incf</code>/<code>incNf</code>, <code>cs_loop</code> to the least fixed point). <code>csf_sound</code> includes the minimality clause.
+- <code>C0_reach : CSreach [S1 D0 D1 D1 D1 D1 D1] 16 17</code>: this is C(0), proved by <code>vm_compute</code> through <code>csf_sound</code>.</p>
+<p><strong>Upward flow (Lemma L item 1), done</strong>
+- <code>IncX X e X'</code>: X passes e carries up, and every shift lands inside X (<code>shiftX</code> refuses to escape).
+- <code>IncX_flow</code>: <code>IncX X e X' -&gt; IncN e Y Y' -&gt; Inc (X ++ Y) (X' ++ Y')</code>. <code>IncXN_flow</code> is the n-carry version.
+- The executable <code>incXf</code> is covered by <code>incXf_sound</code>.</p>
+<h3 id="check_kill-round-1">check_kill (round 1)</h3>
+<p><code>rocq/check_kill_r1.log</code>: FAIL only on <code>theorem_text</code> ("expected exactly one top-level Lemma/Theorem nonhalt, found 0").
+- Every other text check passes: args, input, framework, framework_build, forbidden, structure, tm_text and integrity.
+- The Rocq layers did not run.
+- This is expected: <code>nonhalt</code> can only be stated once <code>AbsDefined</code> is proved.</p>
+<h3 id="what-remains-the-plan-for-rounds-2-4">What remains (the plan for rounds 2-4)</h3>
+<p><code>AbsDefined</code> needs two independent developments.</p>
+<p><strong>(I) Zone: the closed system never gets stuck</strong></p>
+<p>Target: <code>forall J, exists Z D, CSreach Z D J</code> for every J ≥ 1. Since <code>cs_step</code> is deterministic, this means the orbit is infinite. Every <code>IncN m Z ..</code> inside it is defined, and <code>shift</code> never hits.
+- It comes from proof.md section 6: Theorem B for every b, plus <code>C0_reach</code> as the base. Lemmas Z0 and Z1 are not needed in this formulation, because "defined" is built into <code>cs_step</code>.
+- Needed:
+  1. <strong>Upward flow: done in round 1</strong> (<code>IncX_flow</code>, <code>IncXN_flow</code>, <code>incXf_sound</code>).
+  2. <strong>Bulk feed engine.</strong> The representatives have feeds near 2^56 (endgame) and T0 = 2^19, so single carries are far too slow (about 6e10 carries). This needs a verified bulk feed:
+     - a digit block takes t carries at once (<code>IncN_digits</code>);
+     - P passes them;
+     - S1 takes 1 and becomes P;
+     - SP/W go through <code>wall_feed</code> firing by firing (zone walls dissolve after a few firings).
+  3. <strong>Lemma L / L' as Coq theorems about two runs</strong> (member vs representative, cut R, Δ ≡ 0 mod 2^R).
+     - The per-step core is upward flow for the first T0 carries, then counter arithmetic after T0 (<code>IncN_digits</code>), then the value bookkeeping H' = (H/2^a + Δ)/2^b.
+     - The representative checks (H0)-(H2) and κ are a boolean checker run by <code>vm_compute</code>, with a soundness lemma.
+  4. <strong>Lemma E</strong> (3 steps) and <strong>Lemma P</strong> (5 steps) on closed forms: <code>digits</code>/<code>bin</code> arithmetic with <code>lia</code>/<code>nia</code> on 2^k.
+  5. <strong>Lemma VF</strong> (1,304 one-step representatives at R = 8), the endgame (smaller split: R = 12, 4,094 residues), the nested range 11 ≤ v ≤ 50 (80 runs), the small classes (655 runs) and the class recursion (well-founded induction on K, switching to the induction hypothesis from v &gt; 50).
+- Size estimate: the largest part, 2-3 rounds.</p>
+<p><strong>(II) Conveyor + Lemma T + record invariant (proof.md sections 3-5 and 7)</strong>
+- Represent the conveyor as walls with absolute positions:
+  <code>bw base [(x1,b1);...;(xk,bk)] z Z = Ps(x1-base) ++ wallu b1 :: Ps(x2-x1-1) ++ ... ++ wallu bk :: Ps(z-xk-1) ++ Z</code>
+- One record step = (rk t) times "feed 3 carries at the bottom, then base += 1", then prepend rF t (new walls, R = 0).
+- Per-bottom-carry lemma by induction on the wall list:
+  - <code>wall_feed</code> gives the wall's firings as Inc3Pops on the rest.
+  - <code>Pops</code> on the rest follows from "IncN (3f) rest (Ps f ++ ...)" plus "the leading P count after 3i carries is ≥ i". For a wall above, it moves ≥ 1 per 3 carries. For the zone, the leading P count is the wire plus drops: this is the absorption condition.
+  - The top wall can be absorbed mid-feed. Its firing is then <code>Inc_W</code> with <code>shift</code> landing in the zone, not a pop, and the next wall becomes top. Several absorptions can happen in one record step (Y→Z steps absorb 3).
+- The zone part of the invariant is: zone = inc^m(CS_J) with its leading P units moved to the wire. The absorption happens exactly at the least fixed point m = c + 3A(m) with c = D_J + p(J mod 8).
+  - This is Lemma T: c = 3(43 + D_J - b_J) - E_then(J), and E_then(J) is read off wall J-1's absorption.
+  - The bracket 43 - 3b_J + 2b_{J-1} + s_{J-1} + H_{J-1} must be computed from the birth tables (proof.md section 4) and checked equal to p(J mod 8). That is a finite check; J = 1..6 uses U0's walls.
+- Invariant Inv(n, J) as in proof.md section 7 (explicit in n and J, with the R chain from the youngest wall). Closure is the per-carry lemma + the Lemma T algebra (<code>lia</code> with floors) + (I).
+- Size estimate: 1-2 rounds.</p>
+<h3 id="tactic-notes-round-1">Tactic notes (round 1)</h3>
+<ul>
+<li>WORKED: unit lemmas with the IH as an argument. <code>do k step. follow H. execute.</code>, where H : <code>ArrS r r'</code> = <code>forall l, l {{B}}&gt; r --&gt;* l &lt;{{C}} r'</code>. <code>follow</code> unifies the left context through <code>tl</code>/<code>hd</code> without help.</li>
+<li>WORKED: a finite window with an opaque right side as a <em>function</em> (<code>wrun</code> on <code>lcfg</code>, sound by <code>lstep_spec</code> and <code>wpop_spec</code>) instead of tactic stepping. All 8 windows (1,700 steps, 17 W-rule uses) check in one <code>vm_compute</code>.</li>
+<li><code>lc X (l, m, r, q)</code> is convertible to <code>l *&gt; const 0 {{q}}&gt; ...</code> / <code>&lt;{{q}}</code>, so the window lemma follows from <code>wrun_spec</code> with only <code>Rs_app</code> + <code>Str_app_assoc</code> rewrites.</li>
+<li>WORKED: <code>init</code> via <code>change (rcfg XC U0) with (cconfig_to_config ([], rg XC ++ enc U0, 0, C))</code> then <code>cconfig_evstep_dec_spec</code> (n = 1000000), <code>vm_compute</code>, <code>reflexivity</code>.</li>
+<li>PITFALL: <code>cbn in H</code> unfolds <code>3 * A</code> to <code>A + (A + (A + 0))</code> and unfolds Fixpoints deeply, so later <code>destruct (f x) eqn:E</code> / <code>Nat.eqb</code> matching fails ("No primitive equality found", unfinished bullets). Use <code>cbn [f] in H</code>.</li>
+<li>PITFALL: <code>D</code>, <code>A</code>, <code>B</code>, ... are state constructors, so <code>let '(Z, D, j) := s</code> and <code>| Some (m, A, Y) =&gt;</code> treat them as constructors (type error "constructor of inductive type state"). Use lower-case pattern variables. Numerals 0/1 in <code>match n with 0 =&gt; ...</code> are Sym (sym_scope is open): use <code>O</code>/<code>S</code>, or <code>nth</code> on a nat list.</li>
+<li>PITFALL: <code>destruct (Nat.eqb_spec m x)</code> does not rewrite the <code>Nat.eqb</code> inside a hypothesis. Use <code>destruct (Nat.eqb m x) eqn:E; [apply Nat.eqb_eq in E | apply Nat.eqb_neq in E]</code>.</li>
+</ul>
+<h2 id="round-2-2026-10-13">Round 2 (2026-10-13)</h2>
+<h3 id="new-idea-families-instead-of-representatives">New idea: families instead of representatives</h3>
+<p>Lemma L (two runs, a representative and a member) is replaced by a one-run statement.
+- Once X (the part below the cut) is clean after the first T0 carries, the rest of the step acts on X only through c mod 2^r.
+- So one concrete run of X at the smallest feed covers a whole affine family of states.
+- A family <code>(X, y, ay, D, j, aD)</code> stands for, for every u &gt;= 0:
+  <code>zone X ++ bin (y + ay u),   D + aD u,   j + aD u</code>
+- κ of Lemma L becomes the coefficient <code>ay</code>.
+  - While <code>ay</code> is odd, the cut shrinks.
+  - When <code>ay</code> is even, <code>fnorm</code> pulls digits from Y back into X.
+- T0 is the family base's own feed (T0 = c0). No separate T0 is needed: it works for all 4,829 runs.</p>
+<h3 id="proved-in-round-2-dev-files-rocqr2zonescegv-assembled-single-file-rocqr2kill_r2_hdrv">Proved in round 2 (dev files <code>rocq/r2/{Zone,SC,EG}.v</code>; assembled single file <code>rocq/r2/Kill_r2_hdr.v</code>)</h3>
+<p><strong>Binary words</strong>
+- <code>binp</code>/<code>binN</code>/<code>bin</code> (bin through N, so <code>Inc (bin v) (bin (S v))</code> is a 3-line induction on positive).
+- <code>IncN_bin</code>, <code>bin_eq</code>/<code>bin_pos</code>, <code>digits_app_bin</code>, <code>bin_ones</code>, <code>digits_val</code>, <code>val_lt</code>.</p>
+<p><strong>Carries through a cut</strong>
+- <code>XN t X e X' := forall Y Y', IncN e Y Y' -&gt; IncN t (X ++ Y) (X' ++ Y')</code>.
+- Closure lemmas <code>XN_P/digit/S1/SP/W/add</code>.
+- The bulk feed <code>xfeed : nat -&gt; N -&gt; list unt -&gt; option (list unt * N)</code> with <code>xfeed_sound</code>.
+  - Digits halve the count, P passes it, S1/SP take one carry.
+  - W fires once: 3 carries go up, then <code>shiftX</code>, and the rest passes the new P.</p>
+<p><strong>Clean words are counters</strong>
+- <code>XN_clean</code>: <code>allb cleanu X = true -&gt; XN t X ((val X + t) / 2^(ndig X)) (fill X (val X + t))</code>.
+- <code>fill_mod</code>: the X part depends only on t mod 2^(ndig X).</p>
+<p><strong>cutstep (the locality step)</strong></p>
+<div class="highlight"><pre><span></span><code>XN T0 X e1 (Ps A ++ X1) -&gt; dhead X1 -&gt; XN (c + 3A - T0) X1 e2 X2 -&gt; T0 &lt;= c -&gt; c = D + pj j -&gt;
+IncN (e1 + e2) Y Y' -&gt; shift (X2 ++ Y') = Some Z' -&gt; cs_step (X ++ Y) D j Z' (D + A) (S j)
+</code></pre></div>
+
+<p>This includes the least-fixed-point clause. Y is arbitrary: any word with <code>IncN e Y Y'</code> works, so a marker P in Y is fine.</p>
+<p><strong>Families</strong>
+- <code>fam</code>, <code>fz</code>, <code>fstep</code>, <code>frun</code>, <code>canonb</code>.
+- <code>fstep_sound : fstep R F = Some F' -&gt; forall u, CS (fz F u) (fz F' u)</code>.
+- <code>canonb_sound</code>, <code>frun_sound : frun n R F = true -&gt; forall u, exists b', CSplus (fz F u) (Cst b')</code>.
+- Fallback for concrete runs (aD = 0): when the absorption shift lands above X, as in the o0 = 1 direct runs (the shift lands on the overflow D1), the full <code>shift</code> is applied to <code>X2 ++ bin y</code>.</p>
+<p><strong>Theorem B pieces (all proved, no axioms)</strong>
+- <code>small_classes : b + 2 = o 2^k -&gt; odd o -&gt; k &lt;= 40 -&gt; exists b', CSplus (Cst b) (Cst b')</code>.
+  - 327 direct runs + 328 families (o mod 16, cut k + 9): <code>sc_all</code>, vm 5 s.
+- Value forms: <code>vfl</code> (heads at positions 0..3, marker P at L), <code>vlow</code> (the low R digits), <code>vfl_split</code>, <code>vlow_mod</code>.
+  - Rows: <code>phrows</code> (phase table of proof.md 6.2), <code>vfz</code>, <code>off_end</code>, <code>VFe k Om</code> (the value form at off_end(k)).
+- <code>eg_family</code>: one <code>egok k0 Om0 R</code> check covers every (k, Om) with k ≡ k0, Om ≡ 0 (mod 2^R), k &gt;= k0 and Om &gt;= Om0.
+- <code>endgame : 41 &lt;= k -&gt; (k+9) mod 2048 &lt;&gt; 0 -&gt; 1 &lt;= U -&gt; exists b', CSplus (VFe k (U 2^(k+5))) (Cst b')</code>.
+  - 4,094 families, cut 12, base Om0 = 2^46: <code>eg_all</code>, vm 23 s.
+- <code>nested : k + 9 = s 2^v -&gt; odd s -&gt; 11 &lt;= v &lt;= 50 -&gt; 1 &lt;= U -&gt; ...</code>.
+  - 80 families (s mod 4), cut v + 2, base Om0 = 2^(v+10): <code>ns_all</code>, vm 1 s.
+- <code>E_low</code>: E(K) of proof.md 6.5 for every K &gt;= 41 with nu2(K+9) &lt;= 50 (no induction hypothesis).
+- Python prototype of the runner (mirrors the Coq functions): <code>rocq/r2/fam.py</code>, <code>vf.py</code>, <code>nested.py</code>.</p>
+<h3 id="what-remains">What remains</h3>
+<p><strong>(I) Zone</strong>
+1. <strong>Lemma VF (descent from off 20 to off_end).</strong>
+   - Plan: a generic one-step lemma from <code>cutstep</code> with X = the low 8 digits (heads, plus the marker for 5 &lt;= L &lt;= 8) and Y = <code>binP (L-8) (V/256)</code> (marker in Y), or <code>bin</code> (marker in X).
+   - Per-class concrete check of phase 1 with T0 = 2^12, and the X3 / next-form match.
+   - Classes: 12 entry offsets + off mod 256 for L &gt;= 9 + (off mod 256, L) for 5 &lt;= L &lt;= 8.
+   - Plus the three affine identities of proof.md 6.3 item 3, checked per class:
+     <code>mu + 2^a = 2^(a+b) mu'
+     alpha + 2^a = 2^(a+b) alpha'
+     q0 + e1 + floor((val X1 + K)/2^nd) = floor((alpha'(off0+1) + beta')/2^nd3)</code>
+     These use Z for the negative w and the 3·2^(L-1) term.
+   - Then induction on off.
+2. <strong>Lemma E</strong> (17 → 20) and <strong>Lemma P</strong> (12 → 17), by hand on closed forms with the <code>bin</code> lemmas plus <code>cutstep</code>. Steps whose shift lands far up (17 → 18, 13 → 14) need a direct <code>cs_step</code> proof.
+3. Identification (plant end = VF level 2 at off' 17), the class recursion (well-founded on K, K' = v − 10, from v &gt; 50), Theorem B, then <code>forall J, exists Z D, CSreach Z D J</code> (from <code>C0_reach</code> and j' &gt; j).</p>
+<p><strong>(II) Conveyor + Lemma T + record invariant.</strong> Unchanged from round 1's plan.</p>
+<h3 id="tactic-notes-round-2">Tactic notes (round 2)</h3>
+<ul>
+<li>PITFALL (cost 20 min): <code>cbn [negb] in H</code> on a hypothesis holding an unfolded big definition (<code>fstep</code>, which contains <code>xfeed 4000</code>) makes <strong>Qed</strong> hang, even though the tactics finish in 3 s.</li>
+<li>The kernel conversion goes astray.</li>
+<li>Fix: <code>rewrite if_negb_true in H</code> with <code>if_negb_true : (if negb true then x else y) = y</code> (instant).</li>
+<li>Bisect Qed time by closing the remaining goals with a dummy hypothesis <code>Hno : forall x, shiftX x = None -&gt; False</code> (<code>exfalso; apply (Hno [uS1]); reflexivity</code>), so Qed still runs.</li>
+<li>PITFALL: <code>inversion H</code> on <code>Some (.., 3 * N.of_nat a, ..) = Some ..</code> reduces <code>N.mul 3 _</code> to a match on <code>N.of_nat a</code>, and later rewrites find nothing.</li>
+<li>Use <code>injection H as &lt;- &lt;- &lt;-</code>.</li>
+<li>Wrap such terms in an opaque helper (<code>n3 a := N.of_nat (3 * a)</code> with <code>n3_spec</code>).</li>
+<li>PITFALL: sym_scope again. <code>= 0</code>, <code>= 1</code>, <code>[1; 3; ..]</code>, <code>replace x with 0</code> and <code>Nat.eqb k 0</code> in a goal all read 0/1 as Sym.</li>
+<li>Write <code>O</code>, <code>1%nat</code>.</li>
+<li>For <code>N.to_nat 2</code>, use <code>change (N.to_nat 2) with 2%nat</code>; <code>replace</code> fails with "Terms do not have convertible types".</li>
+<li>PITFALL: <code>&amp;&amp;</code> is not <code>andb</code> under busycoq's scopes ("The term No has type {..}+{..}"). Fix: <code>Local Open Scope bool_scope.</code></li>
+<li>PITFALL: never let a nat like <code>s0 * 2^v - 9</code> (v up to 50) reach vm_compute: Out of memory at 4.5 GB. Family bases are N throughout (<code>off_endN</code>, <code>egL</code>, <code>egV</code>, <code>egF</code> take k0 : N).</li>
+<li>PITFALL: <code>lia</code>/<code>nia</code> with <code>x mod 2^n = 0</code> hypotheses in context can run for minutes. <code>clear</code> them, or give lia a minimal context (<code>clear -Hc; lia</code>).</li>
+<li>WORKED: per-family soundness as one generic lemma (<code>eg_family</code>) plus one boolean check over all classes (<code>forallb .. (upto 4096)</code>), extracted with <code>forallb_forall</code> and <code>upto_In</code>.</li>
+</ul>
+<h3 id="kill-file-and-check_kill-round-2">Kill file and check_kill (round 2)</h3>
+<ul>
+<li>The kill file now holds everything: 2,291 lines; one coqc in 133 s at 2.6 GB.</li>
+<li>That breaks down as about 23 s ×2 for <code>eg_all</code>, 5 s ×2 for <code>sc_all</code>, about 10 s for <code>fstep_sound</code>'s Qed, and about 40 s of nia/lia in the bridge lemmas.</li>
+<li>From round 2 on, the kill file is the source of truth. <code>rocq/m14_base.v</code> is the stale round-1 body.</li>
+<li><code>rocq/r2/{Zone,SC,EG}.v</code> are the dev splits (they <code>Require M14.Base</code>); <code>rocq/r2/Kill_r2_hdr.v</code> is the installed copy.</li>
+<li><code>rocq/check_kill_r2.log</code>: FAIL, only on <code>theorem_text</code> (no <code>nonhalt</code> yet, as expected).</li>
+<li>args, input, framework, framework_build, forbidden, structure, tm_text and integrity all PASS.</li>
+<li><code>From Coq Require PArith NArith</code> is accepted.</li>
+</ul>
+<h2 id="round-3-2026-10-13">Round 3 (2026-10-13)</h2>
+<h3 id="proved-in-round-3-dev-file-rocqr3vsv-now-appended-to-the-kill-file-as-sections-18-22-no-axioms">Proved in round 3 (dev file <code>rocq/r3/VS.v</code>, now appended to the kill file as sections 18-22; no axioms)</h3>
+<p><strong>Counter words and the generic step</strong>
+- <code>ctr Yc := forall n e, IncN e (Yc n) (Yc (n + e))</code>, with the instances <code>ctr_bin</code> and <code>ctr_vfl m</code>.
+  - <code>vfl [] m n = digits m n ++ P :: bin (n / 2^m)</code> is the digit word with the marker P at height m (<code>vfl_nil</code>).
+- <code>astep</code>: one <code>cs_step</code> on <code>X ++ Yc n</code> from the phase-1 fact <code>XN T0 X e1 (Ps A ++ X1)</code>, a clean digit-headed X1, and <code>shiftX</code> of the phase-2 fill landing in X. The new upper value is <code>n + e1 + (val X1 + t) / 2^ndig X1</code>.
+- Splits of value forms at a cut:
+  - <code>vfl_split_hi</code>: marker above the cut, upper part <code>vfl [] (L - R)</code>;
+  - <code>vfl_split_le</code>: marker at or below the cut, upper part <code>bin</code>;
+  - <code>vlow_L</code>: the low part does not see the marker height once it is above the cut.</p>
+<p><strong>Lemma VS (one descent step), symbolic</strong>
+- <code>vsok fx r r' off0 Lc</code>: a boolean check, implemented as <code>vsrun</code> (computation) plus <code>vscond</code> (conditions).
+  - It runs the first 4096 carries on the low 8 digits <code>vlow (vh r) Lc 8 (V mod 256)</code>. Lc = 5..8 means the marker is in X; Lc = 9 means L ≥ 9.
+  - The rest of the carry phase is residues in Z: t0, <code>t0 mod 2^nd</code>, <code>t0 / 2^nd</code>. The absorption shift is <code>shiftX</code>.
+  - It checks the next form's low part <code>X3 = vlow (vh r') L2 nd3 (V' mod 2^nd3)</code>, the λ and d bookkeeping, and three integer identities:
+    <code>vz/256 + e1 + t0/2^nd = vz2/2^nd3
+    mu + 2^(8-nd) = mu' 2^(8-nd3)
+    alpha + 2^(8-nd) = alpha' 2^(8-nd3)     (skipped for the entry rows, fx = true, where off is fixed)</code>
+- <code>vs_gen</code>: <code>vsok .. = true</code>, <code>off = off0 + 256 g</code>, Ω = 256 w, (L = Lc ≤ 8 or L ≥ 9 = Lc), no truncation (<code>wn + 3 2^(L-1) + 256 ≤ μΩ + α off + wp</code>) and c ≥ 4096 give
+  <code>CS (vfz r k Ω off) (vfz r' k Ω (S off))</code>
+  - The arithmetic is <code>ar_main</code>, a lemma on plain variables. The machine part is <code>vs_core</code>.
+  - Python prototype: <code>rocq/r3/vs.py</code>, all 12 + 1,280 classes pass. <code>rocq/r3/vs_truth.py</code> cross-checks the tables against concrete closed-system steps (19,269 steps, 0 mismatches).
+- The tables:
+  - <code>enrows</code>: the entry table of proof.md 6.2, as <code>vrow</code>s.
+  - <code>row1 off</code>: entry row for off ≤ 31, else <code>phrow (off mod 8)</code>.
+  - <code>en_all : forallb en_ok (upto 12) = true</code> and <code>ph_all : forallb ph_ok (upto 256) = true</code> (5 marker classes each), by vm_compute in about 0.7 s.
+  - Row bounds: <code>rowok</code>, <code>row1_lam</code>.
+- <code>vs_en</code>, <code>vs_ph</code>: the step for an entry row and for a phase row.
+- <code>descent</code>: chains the steps, using <code>CSstar</code> (with <code>CSstar_snoc</code> and <code>CSstar_plus</code>).
+- <strong><code>VF1</code></strong>: for k ≥ 41 and o ≥ 1,
+  <code>CSstar (vfz (row1 20) k (o 2^(k+5)) 20) (VFe k (o 2^(k+5)))</code>
+- <strong><code>VF2</code></strong>: for v ≥ 12 and S ≥ 2,
+  <code>CSstar (vfz (phrow 1) (v-10) (S 2^v) 17) (VFe (v-10) (S 2^v))</code></p>
+<h3 id="kill-file-and-check_kill-round-3">Kill file and check_kill (round 3)</h3>
+<ul>
+<li>The kill file is now 2,960 lines.</li>
+<li>The new sections are 18-22, placed after <code>E_low</code> and before the rule table.</li>
+<li>It imports <code>From Coq Require Import ZArith.</code> mid-file (ZArith is on check_kill's allowlist).</li>
+<li>It uses <code>Strategy expand [en_ok ph_ok].</code> (not a forbidden token).</li>
+<li>Backup of the round-2 file: <code>rocq/r3/Kill_r2_backup.v</code>.</li>
+<li>One coqc of the whole file takes 292 s and 3.5 GB; the round-2 file took 148 s on the same machine today.</li>
+<li><code>rocq/check_kill_r3.log</code>: FAIL, only on <code>theorem_text</code> (no <code>nonhalt</code> yet, as expected).</li>
+<li>args, input, framework, framework_build, forbidden, structure (8 Requires, including the mid-file ZArith), tm_text and integrity all PASS.</li>
+</ul>
+<h3 id="what-remains-zone-lemmas-e-and-p-identification-recursion-theorem-b-then-the-conveyor">What remains (zone: Lemmas E and P, identification, recursion, Theorem B; then the conveyor)</h3>
+<p><strong>Lemma E (17 → 20)</strong>: three steps via <code>cutstep</code> with a concrete low part and a <code>bin</code>/<code>vfl []</code> upper part. Prototype numbers, with P := 2^(k-3), o = 2q + 1 and b = o 2^k - 2:
+- <strong>17 → 18</strong>
+  - Zone: <code>S1 :: bin V17</code>, V17 = 32(b+1) + 30 = 256 o P - 2. Split X = <code>S1 :: digits 8 254</code> = <code>[S1; D0; D1 x7]</code>, Y = <code>bin (oP - 1)</code>.
+  - Phase 1: <code>xfeed 4000 4096 X = (P :: digits 8 253, 16)</code>, so A = 1.
+  - c = 32b + 64 = 256 oP. Phase 2: val X1 + t = 256(oP - 15), so X2 = D0^8 and e2 = oP - 15. Y' = <code>bin (2 o P)</code> = <code>bin (2^(k-2)(2q+1))</code>.
+  - The shift lands in Y. Needs <code>shift_D0s</code>, <code>bin_pow_odd</code> (<code>bin (2^i (2q+1)) = D0^i D1 bin q</code>) and the full <code>shift</code> on <code>X2 ++ Y'</code>.
+  - Result: <code>D0^(k+6) S1 bin q</code>, D = 32b + 17, j = 32b + 18.
+- <strong>18 → 19</strong>
+  - c = 256 oP + 1. X = D0^8, A = 0, e1 = 16. X2 = <code>[D1; D0 x7]</code>, e2 = oP - 16.
+  - Y = <code>digits (k-2) 0 ++ S1 :: bin q</code> receives oP carries. It passes q to <code>S1 :: bin q</code>, which gives <code>s1w q</code> := if q = 0 then <code>[S1]</code> else <code>P :: bin (2q - 1)</code>.
+  - The shift lands on digit 0.
+  - Result: <code>S1 D0^(k+4) D1 (s1w q)</code>, D = j - 2. One lemma covers q = 0 and q ≥ 1.
+- <strong>19 → 20</strong>
+  - c = 256 oP. X = <code>S1 :: D0^8</code>, A = 1, X1 = <code>digits 8 255</code>, e1 = 15. X2 = <code>[D0; D1; D0 x6]</code>, e2 = oP - 15.
+  - Y = <code>digits (k-3) 2^(k-4) ++ s1w q</code> passes 2q + 1 carries into <code>s1w q</code>, which gives <code>P :: bin (4q)</code> in both cases.
+  - The shift lands on digit 1.
+  - Then show that the result equals <code>vfz (row1 20) k (o 2^(k+5)) 20</code>: <code>vfl [[]; [S1]] (k+4) V20</code> with V20 = q 2^(k+6) + 2^(k+3).</p>
+<p><strong>Lemma P (off' 12 → 17)</strong>: five steps of the same kind.
+- 13 → 14 has a wall SP at digit 3 whose shift lands at digit v + 1, above any concrete X.
+- So it needs a symbolic XN chain: <code>XN_W</code> with a symbolic <code>digits n (2^n - 3)</code> block, plus <code>shiftX (repeat D0 m ++ D1 :: w)</code>. That is an <code>XN_digits</code> lemma (the XN analogue of <code>IncN_digits</code>), or a direct IncN proof.</p>
+<p><strong>Identification and recursion</strong>
+- Identification: <code>VFe K Om</code> at off_end(K) in phase 4 is off' = 12 of the plant. The plant end (off' 17) is <code>vfz (phrow 1) (v-10) (S 2^v) 17</code> (algebra on the closed forms).
+- Class recursion: strong induction on K.
+  - Base <code>E_low</code> (v ≤ 50).
+  - For v &gt; 50: Lemma P, then <code>VF2</code>, then the induction hypothesis at K' = v - 10 &lt; K.
+- Theorem B for k ≥ 41: <code>E1-E3</code>, then <code>VF1</code>, then E(k). Small classes cover k ≤ 40.
+- Then <code>forall J, exists Z D, CSreach Z D J</code>, from <code>C0_reach</code> and <code>CSplus_j</code>.</p>
+<p><strong>Conveyor, Lemma T and the record invariant</strong> (proof.md sections 3-5 and 7): not started. The plan is unchanged from round 1.</p>
+<h3 id="lemma-e-started-dev-file-rocqr3ev-compiles-in-6-s-against-m14kill-the-round-2-kill-file-and-m14vs-rocqr3vsv">Lemma E, started (dev file <code>rocq/r3/E.v</code>, compiles in 6 s against <code>M14.Kill</code> = the round-2 kill file and <code>M14.VS</code> = <code>rocq/r3/VS.v</code>)</h3>
+<ul>
+<li>Helper lemmas:</li>
+<li><code>bin_pow_odd</code>: <code>bin (2^i (2q+1)) = D0^i D1 bin q</code>;</li>
+<li><code>shift_D0s</code>;</li>
+<li><code>digits_pow2</code>: <code>digits (S i) (2^i) = D0^i [D1]</code>;</li>
+<li><code>s1w q</code> with <code>IncN_s1w : IncN q (S1 :: bin q) (s1w q)</code>;</li>
+<li><code>odd_half</code>, <code>pj17</code>, <code>pj18</code>;</li>
+<li><code>cs_step_conv</code>: converts D' and j'.</li>
+<li><strong><code>E1</code></strong> (off 17 → 18) is proved: <code>CS (Cst b) (D0^(k+6) S1 bin q, 32b+17, 32b+18)</code> with b = (2q+1)2^k - 2 and k ≥ 41.</li>
+<li><strong><code>E2</code></strong> (off 18 → 19) is proved: <code>CS (D0^(k+6) S1 bin q, ..) (S1 D0^(k+4) D1 (s1w q), 32b+17, 32b+19)</code>, for q = 0 and q ≥ 1 alike.</li>
+<li>Both use <code>cutstep</code> with a concrete low part. The phase-1 fact comes from <code>xfeed_sound</code> with <code>reflexivity</code>, phase 2 from <code>XN_clean</code> and <code>fill_mod</code>, and the shift is either <code>shiftX_app</code> or <code>shift_D0s</code> + <code>bin_pow_odd</code> (E1, where the shift lands in Y).</li>
+<li>Next:</li>
+<li><code>E3</code> (19 → 20). The numbers are in the plan above: X = <code>S1 :: D0^8</code>, X1 = <code>digits 8 255</code>, e1 = 15, X2 = <code>[D0; D1; D0 x6]</code>, e2 = oP - 15, Y = <code>digits (k-3) 2^(k-4) ++ s1w q</code>, which passes 2q + 1 carries.</li>
+<li>Then the identification with <code>vfz (row1 20) k (o 2^(k+5)) 20</code>.</li>
+<li>Then move E.v into the kill file. Note: <code>0</code> in <code>change .. with 0</code> is a Sym; write <code>O</code>.</li>
+</ul>
+<h2 id="round-4-2026-10-13">Round 4 (2026-10-13)</h2>
+<h3 id="result-the-zone-part-i-is-finished">Result: the zone part (I) is finished</h3>
+<p><code>zone_forever : forall J, 1 &lt;= J -&gt; exists Z D, CSreach Z D J</code> is proved, no axioms. With it, Theorem B for every b (<code>thmB</code>) and the closed-system orbit as a function (<code>CS_next</code>, <code>CSreach_det</code>).
+Dev files (each compiles in about 3 s on top of <code>M14.Kill</code>): <code>rocq/r4/E.v</code> (section 23), <code>rocq/r4/P.v</code> (sections 24-26), <code>rocq/r4/C.v</code> (sections 27-29).
+They are appended to the kill file before the rule table (<code>rocq/r4/Kill_r4b.v</code> is the assembled candidate).</p>
+<p><strong>Lemma E (section 23).</strong> <code>E3</code> (off 19 -&gt; 20) by <code>cutstep</code> with X = <code>S1 :: D0^8</code>, plus <code>E_id</code> (the off-20 form is <code>vfz (row1 20) k (o 2^(k+5)) 20</code>, via <code>vfl_row20</code>), and <code>LemmaE : CSplus (Cst ((2q+1) 2^k - 2)) (vfz (row1 20) k ((2q+1) 2^(k+5)) 20)</code> for k &gt;= 41.</p>
+<p><strong>Lemma P (section 24).</strong> Generic helpers that make every plant step a few lines:
+- <code>IncN_dig_q r v t p v'</code>: t carries on <code>digits r v</code> leave v' and pass p, given <code>v + t = v' + 2^r p</code>.
+- <code>XN_clean_q</code>: the phase-2 fact with an explicit value and pass count.
+- <code>pstep</code>: one closed-system step from a concrete low part X (phase 1 by <code>xfeed_sound</code> + <code>reflexivity</code>, then the clean rest), the counter Y above it, and a <code>shiftX</code> landing in X.
+- <code>cs_nodrop</code>: one step with no drop on a zone with a digit at the bottom (used for 13 -&gt; 14, where the wall SP fires and its shift lands at digit v+1 far above any cut; the IncN chain is written by hand with <code>Inc_W3</code> and <code>IncN_dig_q</code>).
+- <code>P12 .. P16</code>, <code>LemmaP</code>, <code>P_id</code> (plant end = <code>vfz (phrow 1) (n-7) ((2Q+1) 2^(n+3)) 17</code>), <code>VFe_plant</code> (VFe K Om for 8 | K+9 is the plant start).
+  States are parametrised by n = v-3 and Q with the step number <code>8 * gP n Q + i</code>, <code>gP n Q = (2Q+1) 2^n - 8</code>; <code>pjg</code> gives <code>pj (8g + i) = pj i</code>.</p>
+<p><strong>Recursion and Theorem B (sections 25-26).</strong>
+- <code>EK : 41 &lt;= K -&gt; 1 &lt;= U -&gt; exists b', CSplus (VFe K (U 2^(K+5))) (Cst b')</code>, by <code>lt_wf_ind</code>: v = nu2(K+9) &lt;= 50 is <code>E_low</code>; otherwise plant + <code>VF2</code> + IH at v - 10 with U' = 32 S.
+- <code>thmB b : exists b', CSplus (Cst b) (Cst b')</code>: <code>small_classes</code> for k &lt;= 40, <code>LemmaE</code> + <code>VF1</code> + <code>EK</code> for k &gt;= 41.
+- <code>all_Cst</code>, <code>CSreach_down</code>, <code>zone_forever</code>.</p>
+<p><strong>Conveyor foundation (sections 27-29).</strong>
+- <code>cs_step_det</code>, <code>CSreach_pos</code>, <code>CSreach_det</code>, <code>CS_next</code> (every reached state has its next step; from <code>zone_forever</code> + determinism).
+- <code>leading_P</code> (every word is <code>Ps a ++ y</code> with <code>notP y</code>), <code>IncN_le</code>.
+- <code>Pops_wall</code>: f pops through a wall that is not the top wall:
+  <code>Pops ((3f + b)/2) r r' -&gt; Pops f (Ps a ++ wallu b :: r) (Ps (a + (3f+b)/2 - f) ++ wallu (odd (3f+b)) :: r')</code>.
+- Birth data <code>wb</code> (Z, U0 frame), <code>wsb</code>, <code>wH</code> (U0 walls 0..5 in absorption order 32 20 12 7 3 1 / W W W SP W SP / H 0 0 0 0 0 9; then phase (w-6) mod 8 from proof.md 4 with H = 36, 6, 9 on the last wall of each group) and <code>bracket : 1 &lt;= J -&gt; p(J mod 8) = 43 - 3 b_J + 2 b_(J-1) + s_(J-1) + H_(J-1)</code> (14 cases by vm_compute + period 8).</p>
+<h3 id="pitfalls-round-4">Pitfalls (round 4)</h3>
+<ul>
+<li><code>From Coq Require Import ZArith</code> mid-file shadows our <code>shift</code> with <code>Coq.ZArith.Zpower.shift</code> for everything after it ("The term repeat uD0 m ++ w has type list unt while it is expected to have type Z"). Fix: import ZArith in the header (<code>From Coq Require Import PArith NArith ZArith.</code>), so our later <code>shift</code> shadows it. Dev files never saw this because they import ZArith before <code>M14.Kill</code>.</li>
+<li><code>cbn</code> on a goal containing <code>2 ^ 51</code> (nat) never returns (unary). Keep big powers symbolic; prove <code>v + 5 &lt;= 2^v</code> from <code>Nat.pow_gt_lin_r</code> instead of comparing with <code>2^51</code>.</li>
+<li><code>change A with B</code> silently does nothing when A does not occur syntactically (here <code>[x;y] ++ (u :: d) ++ r</code> vs <code>[x;y] ++ u :: d ++ r</code>), and the next <code>eapply</code> then unifies with the wrong split. Pass the low part X to <code>pstep</code> explicitly or match the exact association.</li>
+<li><code>Nat.div_unique</code> concludes <code>q = a / b</code>; do not put <code>symmetry</code> before it when the goal already has that shape.</li>
+<li><code>rewrite digits_snoc'</code> picked the first <code>digits</code> in the goal (on the other side of the equation); give the argument (<code>digits_snoc' n</code>).</li>
+</ul>
+<h3 id="plan-for-the-conveyor-part-ii-worked-out-this-round">Plan for the conveyor (part II), worked out this round</h3>
+<p>The zone side is now a black box: from any reached <code>CSreach Z D J</code> there is a unique <code>cs_step</code> with fixed point m<em>, A</em>, Y*.
+What remains is <code>AbsDefined</code>, that is the record invariant of proof.md 7 and its closure. Design:</p>
+<ol>
+<li><strong>Skip the U0 walls and interval 0 by computation.</strong> Run the unit-word dynamics concretely (an executable Pops built on <code>incf</code>, sound by <code>incf_sound</code>) from <code>U0</code> for about 3 cycles (24 records, 51 carries per cycle), until walls 0..5 are absorbed. Prove those <code>Reach</code> steps and their <code>Pops</code> by vm_compute. From that record on, every live wall has periodic birth data (w &gt;= 6) and every interval is a real <code>cs_step</code> (J &gt;= 1), so interval 0 (33 carries, not a <code>cs_step</code>) never needs a general proof.</li>
+<li><strong>Shifted frame</strong> (+1) so all positions are nat: b' = b + 1, base' = 1 at XC XD XE ZD ZE and 0 at YC YD YE, zone bottom z = 44 + D_J + A.</li>
+<li><strong>Wall data and positions.</strong> R_w = carries received since birth; f_w = (R_w + s_w)/2 firings; position p_w = b'<em>w + f_w; state W iff R_w + s_w odd. Chain: R</em>(w-1) = H_(w-1) + 3 f_w. At a record the youngest wall has R = 0, so every R is a function of the record and J.</li>
+<li><strong>The word from position p upward, as a relation <code>WdR w p R u</code></strong> (recursion on the wall number w, oldest first):
+   - live w (R &lt; Rabs w): <code>u = Ps (p_w - p) ++ wallu (odd (R + s_w)) :: u'</code> and <code>WdR (w-1) (S p_w) (H_(w-1) + 3 f_w) u'</code>;
+   - absorbed w (R &gt;= Rabs w, with Rabs w = 2(44 + D_(w+1) - b'<em>w) - s_w): <code>u</code> is the zone of interval w+1 seen from p: <code>exists Z D A Y, CSreach Z D (S w) /\ IncN m Z (Ps A ++ Y) /\ notP Y /\ m &lt;= m*_(w+1) /\ u = Ps (44 + D + A - p) ++ Y</code> with m = R - Rabs w.
+   D</em>(w+1) is unique by <code>CSreach_det</code>, so this is a functional description without choice.</li>
+<li><strong>Cascade lemma</strong> (the only real induction): <code>WdR w p R u -&gt; p &lt;= p_w R -&gt; exists u', Inc u u' /\ WdR w p (S R) u'</code>, by induction on w.
+   - SP: the head becomes W, nothing above changes (f unchanged).
+   - W, not the absorbing firing: <code>IncN 3</code> above by the IH (three times), then the shift lands on a P because p_(w-1) grows by at least one per 3 carries (or the wall above is absorbed and is a P). The result is the same word with p_w + 1: <code>Ps (p_w - p) ++ P :: SP :: ..</code>.
+   - W at the absorbing firing (w is top, zone count reaches m<em>): 3 x = c + 3 A(m) - m with c = D + pj = 3(44 + D - b'_J) - E_J (this is <code>bracket</code>), so x = 0 exactly at m = m</em>. Before m<em>, x &gt;= 1, because m' &lt;= c + 3 A(m') holds for all m' &lt;= m</em> (induction on m', using minimality and A monotone). The shift is <code>shift Y*</code>, which <code>cs_step</code> provides, and the word becomes <code>Ps (p_w + 1 - p) ++ Z_(J+1)</code> with 44 + D_(J+1) = p_w + 1.
+   - Mod 3: m<em> is a triple boundary, because m</em> = c + 3A ≡ c ≡ -E_J (mod 3), and the boundaries of interval J are the m ≡ -E_J with m &gt;= r.</li>
+<li><strong>Record step.</strong> <code>Pops k U U'</code> comes from k applications of the cascade (3 carries each) plus the pop. The leading P count after 3i carries is at least i, since the youngest wall fires floor((3i + s)/2) &gt;= i times. Then prepend <code>rF t</code>: new walls with R = 0, and the old youngest has R = 3 rk = H (36, 6 or 9). The placement table of proof.md 4 gives the gaps &gt;= 0 (a finite check).</li>
+<li><strong>Assemble.</strong> Inv(t, U) := exists J and the zone data with <code>WdR (youngest) base 0 U</code>. Show Inv for the concrete state after step 1, closure under <code>ReachS</code>, and from it <code>AbsDefined</code> (the Pops of each step exists). Then <code>Lemma nonhalt : ~ halts tm c0. Proof. apply nonhalt_of_abs, AbsDefined_proof. Qed.</code></li>
+</ol>
+<p>Estimate: items 1-7 are about 600-900 lines, roughly one full round.</p>
+<h3 id="update-the-conveyor-part-ii-is-done-too-and-nonhalt-is-proved">Update: the conveyor (part II) is done too, and <code>nonhalt</code> is proved</h3>
+<p>The plan above was implemented the same day, with one change: interval 0 is not skipped by a concrete run. Wall 0's rest is described directly as the counter <code>bin (60 + m)</code> (<code>Zone0</code>), which needs no closed-system step.
+<code>Print Assumptions nonhalt</code> in the dev chain (<code>M14.Kill</code> + <code>E</code> + <code>P</code> + <code>C</code> + <code>Cv</code>): <strong>Closed under the global context</strong>.
+Dev file <code>rocq/r4/Cv.v</code> (sections 30-32, about 620 lines, compiles in 7 s on top of the others).</p>
+<ul>
+<li><strong>Section 30: data and the word relation.</strong></li>
+<li><code>bq w</code> (birth index + 1, nat), <code>fw w R = (R + s_w)/2</code>, <code>posw = bq + fw</code>, <code>Rab w D = 2(44 + D - bq w) - s_w</code> (the carry count at which wall w is absorbed, with D = D_(w+1)).</li>
+<li><code>ZoneR J m p u</code>: the zone of interval J after m carries, seen from position p. It holds the <code>CSreach</code> state, <code>IncN m Z (Ps A ++ Y)</code>, <code>notP Y</code>, no fixed point below m (<code>nofix</code>), and <code>u = Ps (44 + D + A - p) ++ Y</code>.</li>
+<li><code>WdR w p R u</code> (Fixpoint on w): either w is absorbed, and u is <code>ZoneR (S w) (R - Rab w D)</code>; or w is live, and u is <code>Ps (posw - p) ++ wallu (odd (R + s)) :: u'</code> with u' = <code>WdR (w-1) (S posw) (H_(w-1) + 3 fw)</code>, or <code>Zone0</code> for w = 0.</li>
+<li><code>Can w R</code>: if w is absorbed, the zone can take one more carry.</li>
+<li><strong>Section 31: <code>cascade : WdR w p R u -&gt; Can w R -&gt; exists u', Inc u u' /\ WdR w p (S R) u'</code></strong>, by induction on w.</li>
+<li>Absorbed: <code>zone_carry</code>.</li>
+<li>Live SP: the head becomes W.</li>
+<li>Live W: three IH calls (their <code>Can</code> comes from <code>Can_lt</code> and the key identity <code>m* + Rab w' D = R' + 3 (44 + D1 - bq W - f)</code>, which is <code>bracket_nat</code> + <code>cs_step</code>). Then either:<ul>
+<li>absorption (<code>S R = Rab</code>): the zone count is exactly m<em>, <code>IncN_det</code> identifies Y with the step's Y</em>, and the shift is the step's;</li>
+<li>a move: x &gt;= 1 by <code>below</code> (m' &lt;= c + 3A(m') up to m*) plus <code>nofix</code>, or because the wall above moved (<code>fw_add3</code>).</li>
+</ul>
+</li>
+<li>Wall 0 against <code>Zone0</code>: f = 10 is the absorption, and <code>bin 93</code> shifts to Z1.</li>
+<li><strong>Section 32: the record invariant.</strong></li>
+<li><code>RInv t U := exists Y, 5 &lt;= Y /\ (Y+2) mod 8 = rph t /\ WdR Y (rbase t) 0 U</code>.</li>
+<li><code>Pops_bottom</code>: k pops through a live youngest wall.</li>
+<li><code>WdR_push</code>: put a newborn wall below; data from <code>wd</code> and <code>mod8_S'</code>.</li>
+<li><code>RInv_step</code> for all 8 record types, <code>RInv_U0</code> (the six U0 walls pushed onto wall 0), <code>Pops_det</code>, <code>Reach_RInv</code>, <code>AbsDefined_proof</code>, and <code>Lemma nonhalt: ~halts tm c0</code>.</li>
+</ul>
+<h3 id="kill-file-round-4">Kill file (round 4)</h3>
+<p>The kill file is now the assembled <code>rocq/r4/Kill_r4c.v</code> (4,407 lines). It is the round-3 file plus sections 23-32 before the rule table, with ZArith moved into the header imports, the structure list in the header extended, the Checked line updated, and the rule table extended.
+Backup of the round-3 installed file: <code>rocq/r4/Kill_r3_installed_backup.v</code>.
+check_kill log: <code>rocq/check_kill_r4.log</code>.</p>
+<h3 id="tactic-notes-round-4-conveyor">Tactic notes (round 4, conveyor)</h3>
+<ul>
+<li>WORKED: describe the unit word above a position as a <em>relation</em> (Fixpoint on the wall number with a Prop disjunction absorbed/live). The closed-system state comes from <code>CSreach</code> plus <code>CSreach_det</code>, so no choice is needed for D_J as a function of J.</li>
+<li>WORKED: a one-carry cascade lemma with a <code>Can</code> precondition (only the absorbed zone needs room for the carry). The caller discharges it by the identity <code>m* - m = 3 (remaining firings)</code>, which also gives the mod-3 fact for free.</li>
+<li>PITFALL: <code>destruct (Nat.odd ..) eqn:Ho</code> also rewrites hypotheses, so a later <code>rewrite Ho in Eu</code> fails ("Found no subterm"). Use <code>try rewrite</code>.</li>
+<li>PITFALL: <code>f_equal</code> on <code>Ps a ++ Y = Ps b ++ Y</code> leaves <code>Ps a = Ps b</code>, which lia cannot do. Use <code>replace</code> on the count.</li>
+<li>PITFALL: <code>cbn in P</code> on <code>(S Y + 2) mod 8 = S 7 mod 8</code> unfolds the mod into <code>Nat.divmod</code>. Feed the residue with a lemma and <code>eq_refl</code> instead (<code>mod8_S'</code>).</li>
+<li>PITFALL: <code>nth i phb 0</code> inside <code>%Z</code> still reads <code>0</code> as Sym; write <code>0%Z</code>.</li>
+</ul>
+<h3 id="check_kill-round-4-pass">check_kill (round 4): PASS</h3>
+<p><code>rocq/check_kill_r4.log</code>: <strong>RESULT: PASS -- this is a kill</strong> (exit 0).
+- File sha256 a4144ade7c58e6c1ff15e9f905ed01bb0ec5c945e0ced0acc6cba043e050c65e, 4,422 lines.
+- Compile 317.9 s.
+- coqchk -norec passes in 300.9 s.
+- Print Assumptions nonhalt: closed (0 assumptions).
+- All checks pass: args, input, framework, framework_build, forbidden, structure (8 Requires, ZArith now in the header), tm_text, theorem_text (line 4343), coq, names, compile, tm_rocq, theorem_rocq, isolation, assumptions, coqchk and integrity.</p>
+<p>Next: independent audit and packaging. The submission write-up (submission/proof.md) must pass writeup_lint. The title line of proof.md still says "Rocq formalization not started", which is stale.</p>
+<h3 id="packaging-2026-10-13">Packaging (2026-10-13)</h3>
+<ul>
+<li>Fresh check_kill on the unchanged kill file (sha256 a4144ade…): PASS, compile 315.6 s native, coqchk -norec pass 299.9 s, 0 assumptions. Log: rocq/check_kill_submission.log; sanitized copy in submission/check_kill.txt.</li>
+<li>submission/ written (see notes.md ## Kill). No change to the .v.</li>
+</ul>
+</main></body></html>

@@ -1,0 +1,108 @@
+{
+ "round": 5,
+ "confidence": "med",
+ "recommend": "park",
+ "mechanism": "As round 4, plus the generation structure. The left part of the tape (raw prefix + first K blocks) changes only at arrivals (sweeps whose carry reaches it), and the next reset is fixed by the window itself (second left overflow after a reset). So the pre-reset window of generation g+1 is a function Phi of that of generation g, and the digits to the right only time the arrivals. Right part: each digit passes about half of its arrivals and moves one P per 4 visits (a wall crossing adds one pass and one move), so digit gaps at a reset tend to ratio 2 and the arrivals into the window during a regrowth are about (first gap) + 3/4 of the window's previous-generation arrivals. Left zone: safe where tested (gens 2-4) but not stable over gens 2-6: raw prefix 50, 168, 96, 128, 212 cells, possibly a 2-cycle (g vs g-2 agree on 53, 91, 99 cells).",
+ "closed_gaps": [
+  "D-X adjacency (gen-2 wall crossing): the only adjacencies a moving digit makes are D0.X and D1.X. Rules: D3 P^1 X -> P D0 X (carry); D0 X -> D1 X (turn); D1 X P^c -> X P D0 P^(c-1) (carry, c>=1), i.e. the digit gains +2 on crossing. Tape identities D0.X = X.D2, D3.X = X.D3 and X.D0 = P are handled by a canonical parse (scripts/deepen_model2.py: decode2, canon, predict2).",
+  "Gen-2 regime fully covered by the sweep model predict2: 3732/3732 real right-edge sweeps 3.8e7-2e8 match exactly, and the carry never entered the left prefix there. Random instances of the 3 crossing rules: 300/300 (small/large/odd/even runs, both tails, random guard and carry chains, walls in the chain).",
+  "When the next left overflow happens: a hybrid exact fast-forward (predict2 sweeps, plus direct C simulation of every sweep the model does not cover, on run-capped tapes; cap 12 vs 20 consistent) follows the real orbit from step 4e8. The carry first reaches the raw left prefix at sweep 130,171 after 4e8. It is absorbed there 7 times (no left record) before the first true left record at sweep 6,202,107 (type DA, 2 cells). After 3 more absorbed events comes a reset-type left record (CDAEA) at sweep 13,979,318 (span ~5.6e7 cells). The 381 capped direct spot checks of model sweeps along the way all agree.",
+  "Left-overflow type rule: if the tape starts with 7 ones (1111111 0..), a left overflow is type DA: the tape grows 2 cells and now starts with 9 ones. If it starts with 9 ones (111111111 0..), the overflow is a CDAEA reset, and the rebuilt tape starts with 7 ones again. So DA and reset alternate. This fits all 10 non-initial left events of gen 1 (DA at 51, 264, 739, 1992, 39589; reset at 107, 394, 1603, 5272, 2.97e7) and correctly predicted DA then reset in the gen-2 fast-forward.",
+  "Reset regime, observed: an inner bouncer starts at the left end and regrows into the Q-form tape left by the full left pass (Q=01010010). Its front advances +8 cells per inner sweep (1032 of 1051 increments at the 2.97e7 reset). At each old digit (194, 336, 606, 1150, 2244, 4396, 8738) it jumps +4/+34/+16 (or +38/+16), and the old digit becomes a static wall. Inner left turns stay >= 34, so there is no left record during regrowth.",
+  "Reset outcome stays in the grammar: the real pre-reset configuration at sweep 13,979,318 was run through its reset on copies with runs capped at 16/32/64/128. All four give the same structure (D 22->46, X 10->30, the same 194-cell prefix starting with 7 ones = the DA type). After that, 399/400 direct sweeps match predict2. The one exception is the first sweep after regrowth, a right-edge transient: D3 P^0 tail-B -> X P^1 tail-A, carry continues.",
+  "Round 2: the extended real-orbit check of predict2 has finished. 2e8-3e9: 16391/16391 right-edge sweeps match, 0 bad, 0 unmodelled (scripts/deepen_check_gen2_2e8_3e9.json).",
+  "Round 2: the reset is not a separate mechanism. Every left pass converts P->Q cell-locally (P->01010010, D0->010010, D3->010101, X->01; checked token by token on the real tape at 2.975e7: 1080/1080 P and all 17 blocks), and every return pass converts back. The 'full left pass' is just a carry that ran off the left end. The regrowth is the return pass of that sweep, turned into a counter.",
+  "Round 2: Q-edge rule. L [toks] TQ | 0010 Q^k M.. -> L [carry(toks with n0+1)] TQ | 0010 Q^(k-1) M.. (k>=2; TQ=1010101; carry = the unchanged predict2 rules). Head: state A on the last cell of TQ. Random instances: 600/600 exact tape matches (scripts/deepen2/valq_*.json). These cover all 7 carry targets (D0, D1, D2, D3, X, D1X, D3->D0X), small/large/odd/even runs, k from 2 to 60, and d0/d3 next markers, all on the real 94-cell prefix. Real orbit: 1001/1065 inner sweeps of the gen-1 reset match, and 1081/1442 of the run-capped (cap 64) 2nd reset.",
+  "Round 2: every inner sweep that does not match the Q-edge model is in a short episode with a fixed shape (scripts/deepen2/ana.py). Gen-1 reset: 1 start episode (15 sweeps), 5 marker episodes, 1 single-sweep episode and 1 end episode (7 sweeps). 2nd reset at cap 64: the start (3-4 episodes), 20 marker episodes and the switch to normal mode (187 ordinary 0^inf-edge sweeps). There are 3 marker shapes. (i) 9 sweeps, front jumps 8,4,34,8x6, leaving X P^2 D2 P^1 D1 P^7 (15 seen). (ii) 7 sweeps, jumps 38,8x6, leaving X P^1 D2 P^1 D1 P^7 (6 seen). (iii) 2 sweeps, jumps 34,8, leaving X P^1 X P^1 D0 P^3: an old digit next to an old wall (4 seen). Throughout, the counter tokens left of the new wall keep their longest common prefix (only the last 2-4 tokens change).",
+  "Round 2: post-regrowth right-edge transient. The round-1 statement 'D3 P^0 B -> X P^1 A' was wrong about the tail. The correct rule is L [.. b1 P^n1] D3 P^0 tail-B -> L [carry(.. b1 P^n1)] X P^1 tail-B, with the carry continuing past the old D3. Random instances: 400/400 exact (scripts/deepen2/valendB_*.json; every digit before it, all run sizes).",
+  "Round 3: the left zone of ordinary sweeps is closed. The sweep is a finite right-to-left transducer on x/v words, with 10 crossing-sequence states and 3 pairs of lookahead. The table (scripts/deepen3/ttable.json, 100 keys) was learned on 30,000 random words with 0 ambiguity. On 30,000 fresh random words, 26,813/26,813 sweeps that stay inside the word match it at every pair boundary, with 0 unseen keys (scripts/deepen3/tval_2.json). Words cover iid x/v, token words with runs 0-3, raw vvv, D-D adjacency, D2 0 X and D3 P^0 X/D.",
+  "Round 3: the real orbit from blank to 1.1e8 steps (exact simulation, gen 1 and gen 2) matches the table on 4,347/4,347 ordinary sweeps. The other 10 sweeps are left-end events: 6 DA and 5 resets, one sweep holding a reset with a nested DA; the last is the 8.0e6-step reset at 2.975e7 (scripts/deepen3/treal_1.1e8.json).",
+  "Round 3: no halt inside the word. In scripts/deepen3/haltwhere.py (20,000 iid random words), all 63 halts come after the head crosses the word's left end, and 0 of the 17,183 sweeps that stay inside halt.",
+  "Round 3: DA is safe for any body. With prefix xxxv and a random body, 645/645 left-end events are DA and the new word starts xxxxvv (scripts/deepen3/tleft_x3v.json).",
+  "Round 4: the regrowth in pair letters. CDAEA shifts the grid by 5 cells, so in the new grid Q-territory = (aovv)^k and P = xxvv. Real gen-1 regrowth: front turns 1,059 x state A (even cell), 15 x D (after the end), 1 start. Front +8 cells in 1,046 sweeps; at old digits +4,+34 (4x) or +38 (3x). So a round-2 marker episode is a single long front jump.",
+  "Round 4: the regrowth front is one finite table (scripts/deepen4/tfront3.py). With a local cut (a new front cell entered from state F, or a new global right record in state D): inner side right-to-left, key (cs[b+1], pairs b-3..b); front side left-to-right, key (cs[b] with old-state labels, pairs b..b+3, b-hp). Learned on 68 random regrowths (9,128 sweeps): 213 keys, 0 ambiguous, 23 labels, front side within 8 pairs of the head.",
+  "Round 4: validation (scripts/deepen4/tfront3_51_52.json). Fresh random regrowths: 24,457/24,463 inner sweeps match with 0 contradictions; the other 6 each hit a key not seen in learning. Real gen-1 reset: 2,207/2,207. Real 2nd reset (cap 64): 2,705/2,705. The random pre-reset bodies have every marker kind, zero runs and adjacent markers, so the 3 marker shapes are validated as readings of this table on random instances.",
+  "Round 4: the capacity bound is stated and checked on random bodies (scripts/deepen4/tcap.py). Real gen-2 prefix with Q-runs growing <= x2 per marker: 200 runs, 0 nested resets, 0 halts (22 with one nested DA). Growth x3: 1 nested reset in 100. Bare xxxxvv prefix with x2 growth: 39 nested resets and 1 halt in 150. Real orbit: 5 resets from blank with 0,0,1(DA),0,0 nested events; 2nd reset (caps 16-128): 0.",
+  "Round 5: left window map Phi (scripts/induct/phi.py) validated on the real orbit: from the real gen-1 pre-reset window, 11-12-block windows (R = 6, 12, 30; 6/6 runs) reproduce the real gen-2 left-zone event sequence exactly (11 events + reset, full-tape hybrid) and the pre-reset prefix + 12-17 leading tokens (scripts/induct/val12seq.json).",
+  "Round 5: reset 2 with exact near runs (cells < 8,000 or < 30,000; far runs capped at 64): CDAEA only, no nested event, post-reset prefix = the known 194 cells (scripts/induct/gradcap2_*.json). The round-1 uniform caps had cut the near runs that carry most arrivals.",
+  "Round 5: x2 run growth explained by counter arithmetic: a digit passes floor/ceil(a/2)+-1 of a arrivals and moves floor(a/4)+-1 P (wall crossing: +1 pass, +1 move), so digit j right of the window drifts about 2^(j-2) N_W and gaps tend to ratio 2. Real resets: gap ratios <= 2.18 (gen 1), 1.44-2.007 with the last 14 at 2 +- 0.01 (gen 2).",
+  "Round 5: predicted left zones (Phi iterated from the real gen-2 window, 8- and 10-block windows agree on 203 / 2,185 / 229 cells) are safe under the round-4 capacity test: gen-3 zone 0/80 nested events, gen-4 zone 0/80 (real gen-2 zone: 22/200 nested DA, 0 nested resets); no halts (scripts/induct/tcap_g3_R2.json, tcap_g4_R2.json)."
+ ],
+ "remaining_gaps": [
+  "Left zone (stop rule hit): not stable and not monotonically growing over generations 2-6 (raw prefix 50, 168, 96, 128, 212 cells; left-zone events 12, ~125, ~20, 98, 410). Possible 2-cycle: gens g and g-2 agree on 53, 91, 99 cells (gens 4, 5, 6), but event counts do not cycle. An invariant of Phi for all generations is missing.",
+  "Locality of Phi on the zone is sampled (2-3 window sizes per generation), not proved.",
+  "The regrowth arrival bound N_reg <~ first gap + 3/4 N_W is a derivation with loosely tracked O(1) terms; no third real reset can be simulated.",
+  "Both finite tables (deepen3 ordinary sweep, deepen4 inner sweep) are learned, not derived."
+ ],
+ "evidence": [
+  "scripts/deepen_check_gen2_3.8e7_2e8.json: 3732/3732 real gen-2 sweeps match predict2 (crossing rules used 2x each)",
+  "scripts/deepen_validate_cross_11.json: 300/300 random wall-crossing instances",
+  "scripts/deepen_hybrid_events.txt: real-orbit fast-forward from step 4e8 (left-zone events at sweeps 130171, 278454, 543926, 1703675, 2444027, 3331766, 4367099; DA at 6202107; 9294587, 9522870, 11620022; reset at 13979318); spot checks 311/311 + 70/70",
+  "scripts/deepen_prereset_state.json: full token state just before the predicted 2nd reset",
+  "scripts/deepen_force_reset.json: the reset on caps 16/32/64/128 -> identical D 46 / X 30 / 194-cell prefix; 399/400 subsequent sweeps match predict2",
+  "scripts/deepen_reset_turns_2.98e7.txt: inner-bouncer turning points of the real reset (front +8/sweep, jumps at old digits)",
+  "Left records from blank to 4e7: DA (2 cells) at 7, 51, 264, 739, 1992, 39589; CDAEA (5 cells) at 107, 394, 1603, 5272, 29787121; leading-ones rule fits all but the initial step-7 event",
+  "Not a cryptid: the digit values (including the +2 shifts at walls) only move event timing; whether the tape stays in the grammar does not depend on arithmetic",
+  "scripts/deepen_check_gen2_2e8_3e9.json: 16391/16391 real sweeps 2e8-3e9, 0 bad, 0 unmodelled",
+  "scripts/deepen2/valq_1.json + valq_2.json: Q-edge rule 600/600 random instances (exact tape string match)",
+  "scripts/deepen2/valendB_1.json + valendB_2.json: post-regrowth transient D3 P^0 B -> X P^1 B, 400/400 random instances",
+  "scripts/deepen2/dump1.json, reg1.json: every inner sweep of the real gen-1 reset (from step 29,787,121): 1001/1065 Q-edge model, 64 in 8 episodes",
+  "scripts/deepen2/dump2_64.json: inner sweeps of the 2nd reset (cap 64; start config reset2_cap64.json): 1081/1442 model, the rest in 25 episodes (3 marker shapes, start, switch to normal edge)",
+  "Low-level traces (2.9733e7, 2.9754e7): the left pass of an ordinary sweep runs the same D/A + E-C-F-A-B-C-F-A cycle that turns P into Q, so ordinary sweeps and the reset share one mechanism",
+  "Not a cryptid: run lengths only affect timing; which episode shape occurs depends on the counter phase, not on arithmetic of large numbers",
+  "scripts/deepen3/tval_2.json: transducer table 26,813/26,813 fresh random sweeps, 0 unseen keys, 10 crossing-sequence states",
+  "scripts/deepen3/treal_1.1e8.json: 4,347/4,347 real ordinary sweeps (blank to 1.1e8, gen 1 and gen 2) match the table; left-end prefixes vv, xxxvv, xxxxvvvv, xxxvvvvv, xxxxvvxx, ...",
+  "scripts/deepen3/tleft_x3v.json: DA 645/645 for random bodies (no halt)",
+  "scripts/deepen3/tleft_x4vv.json: reset with random bodies: nested overflows and 4/326 halts, so the reset needs the real body structure",
+  "scripts/deepen3/exp2.py, exp3.py: per-pair zero-run outcomes (D1 0 D2 -> D3 0 D2 continue; D2 0 D2 -> vvv D3 stop; X 0 X P^r -> D1 0 D0 P^(r-1) stop; vvv acts like D2). These led to dropping per-pair rules in favour of the transducer.",
+  "scripts/deepen4/tfront3_51_52.json + .log: inner-sweep table, 213 keys, 0 ambiguous; validation 24,457/24,463 random (0 contradictions), 2,207/2,207 real gen-1 reset, 2,705/2,705 real 2nd reset (cap 64)",
+  "scripts/deepen4/ktest_c11_gapcut.txt: with the round-2 cut (gap 24) the front side stays ambiguous even with 20 pairs of lookahead, so the cut must be local",
+  "scripts/deepen4/tcap_g2_R2.0.json, tcap_g2_R3.0.json, tcap_x4vv_R2.0.json: nested left events of whole reset sweeps vs body growth ratio and prefix",
+  "scripts/deepen3/treal_1.1e8.json: the real resets at sweeps 3, 5, 14, 30, 2188 grew the tape by 5, 5, 7 (=5+2, nested DA), 5, 5 cells",
+  "scripts/induct/val12seq.json: Phi reproduces the real gen-2 left-zone event sequence from the gen-1 window (6/6 runs at 11-12 blocks)",
+  "scripts/induct/gradcap2_8000_64.json, gradcap2_30000_64.json: reset 2 with exact near runs, CDAEA only",
+  "scripts/induct/iter2_8_10.json: left zone of gens 3-5 predicted by Phi, two window sizes each",
+  "scripts/induct/tcap_g3_R2.json, tcap_g4_R2.json: capacity of predicted gen-3/4 zones, 0/80 nested each",
+  "scripts/induct/pre1.json: real gen-1 pre-reset state (step 29,754,243)",
+  "scripts/induct/iter2_8_10_g7.json: same iteration continued to gen 6 (212-cell prefix, 410 events, 99 cells shared with gen 4)"
+ ],
+ "round2_remaining_gaps": [
+  "Left zone (main gap): there are no parametric rules where the carry meets zero-length runs (D-D adjacency, D2 0 X, D3 P^0 X/D). This one gap covers 3 regimes: (a) the raw prefix (94 cells after gen 1, 194 after gen 2), where new digits are born and the gen-2 'absorbed' events happen; (b) the 7/9-leading-ones DA/reset alternation; (c) the inside of the marker episodes and the start episode of each regrowth. These are currently seen only as fixed-shape episodes on real or run-capped instances.",
+  "Marker episodes: their 3 shapes and what decides between them (the counter phase when the front arrives: last digit D1 vs D2) are only observed (21 real + 20 capped instances), not validated on random instances. To validate them, randomise the counter left of the front and the Q-run lengths around the marker.",
+  "No generation invariant. A non-halting proof needs a tape language closed under: counter sweeps (predict2), both edge modes, marker episodes, the start/end episodes, and the left-zone events. With the left zone open, this is not written yet.",
+  "Claims past 2e10 (the 2nd reset at about 3e15 steps) still rest on predict2 plus run-capped direct simulation of the events. The Q-edge model now explains why capping is safe: every regrowth sweep is local except the carry, which is run-length independent. But no uncapped run exists."
+ ],
+ "stage": "induct (funded 2026-10-10)",
+ "updated": "2026-10-10",
+ "history": [
+  {
+   "round": 3,
+   "confidence": "med",
+   "recommend": "more_observation",
+   "mechanism": "At every sweep end the tape is a word over x=11, v=10 (P=xxvv, D0=xvv, D1=vxx, D2=vvx, D3=xxx, X=x). Every ordinary sweep (one that does not cross the left end) is a single finite transducer: 10 crossing sequences at pair boundaries, each fixed by the one to its right plus 3 pairs of lookahead to the left. That table covers the counter, walls, zero-length runs, raw v-runs and digit births at once. Left-end events depend on the first symbols: 'xxxv' gives a DA, after which the word starts 'xxxxvv'; 'xxxxvv' gives a CDAEA reset, whose regrowth is the counter with a Q-territory edge (round 2), and the new word starts 'xxxvvvvv' or 'xxxxvvxx'. Open: why the regrowth never halts. It needs the real counter body (capacity), since random bodies can nest overflows and halt.",
+   "remaining_gaps": [
+    "Reset/regrowth (main gap). With prefix xxxxvv and a random body, all 326 left-end events start CDAEA, but the regrowth nests further overflows (98 CDAEA+DA, 55 CDAEA+DA+CDAEA, 92 deeper) and 4 runs halt, all after CDAEA DA CDAEA DA (scripts/deepen3/tleft_x4vv.json). So the reset is safe only for real counter bodies. Still needed: a capacity argument showing that the inner counter gains 2 digits per old marker (x4) while the Q-run to the next marker only doubles, plus the real nested case (the reset at step 1,603 contains a DA at 1,992).",
+    "Marker episodes: the 3 shapes are still observed only (21 real + 20 capped). The random-instance harness (scripts/deepen3/tmark.py) produced no numbers. The expected reduction is the same transducer plus a finite front rule at the Q-territory edge, untested.",
+    "Generation invariant: drafted in notes.md (x/v word with prefix xxxv or xxxxvv, ordinary sweeps = transducer, DA validated, reset = open core). Not yet closed because of the reset.",
+    "The transducer is learned from samples, not derived. A proof needs an exhaustive check of the crossing-sequence tiles, which is finite: 10 states x 2 pair values on each side."
+   ],
+   "stage": "left_zone (funded 2026-10-10)",
+   "updated": "2026-10-10"
+  },
+  {
+   "round": 4,
+   "confidence": "med",
+   "recommend": "decision",
+   "mechanism": "Tape = x/v word (x=11, v=10). Ordinary sweeps: one finite transducer (round 3). Left end: 'xxxv' gives a DA, 'xxxxvv' a CDAEA reset. Reset = a carry that runs off the left end, leaving the tape in Q form; the regrowth is that sweep's return pass, read in the new grid (shifted by 1 cell): Q=aovv (a=01, o=00) becomes P=xxvv, one Q per inner sweep. Every inner sweep (Q edge, marker arrivals, start, end, then 0 edge) is one finite table: 69 inner-side right-to-left keys plus 144 front-side left-to-right keys, cut locally (new front cell entered from F, or a new right record in D). Open: the capacity bound. A regrowth stays free of nested resets only if the Q-runs grow at most about x2 per old marker AND the left zone is large enough. Both hold for the 2 real resets checked, but need an induction over generations.",
+   "remaining_gaps": [
+    "Capacity lemma (main gap): prove, for every generation g, that the pre-reset body has Q-runs growing at most about x2 per old marker, and that the left zone is at least as strong as the real gen-2 prefix. Both are needed: with the bare xxxxvv prefix, x2 bodies nest resets (39/150) and can halt (1/150). This is an induction over generations (static walls, drifting digits, left zone after each reset). Gen 3 is out of reach of direct simulation (about 2^46 sweeps).",
+    "Both finite tables (the deepen3 ordinary sweep and the deepen4 inner sweep) are learned from samples. A proof needs them derived by an exhaustive tile check. The inner-sweep table also has 6 unseen-key sweeps in validation: re-learn on more instances to saturate it.",
+    "Generation invariant: x/v word, prefix xxxv or xxxxvv; ordinary sweeps = the deepen3 table; DA safe; reset = Q-ification plus inner sweeps by the deepen4 table, safe given the capacity lemma. Written down, but it rests on the capacity lemma."
+   ],
+   "stage": "reset (funded 2026-10-10)",
+   "updated": "2026-10-10"
+  }
+ ],
+ "round4_note": "Funded stage 'reset' (2026-10-10): front table and randomised marker episodes closed; capacity bound stated, checked numerically, not proved (needs generation induction).",
+ "round5_note": "Funded stage 'induct' (2026-10-10): left window map Phi built and validated on the real gen 1->2 step; x2 growth explained; left zone safe for gens 2-5 but not stable or growing, so parked by the stop rule."
+}

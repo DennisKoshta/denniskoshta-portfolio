@@ -1,0 +1,19 @@
+{
+ "tm": "1RB1LF_1LC0RD_---1LA_0LA0RE_1LA1RA_1LB0LD",
+ "label": "P-728",
+ "status": "SKIPPED",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 728,
+ "class": "Bell-like",
+ "upstream_twin": "FARv3.v nonhalt216 = 1RB1LF_1LC0RD_---1LA_1LE0RE_1LA1RA_1LB0LD, solve_cert (RWL_mod_FAR 60000 30000 2 3200 2 2 3 0) (CTL62 decider certificate)",
+ "relation": "identity (same names, same start A, no mirror); tables differ only in D0: 728 0LA, twin 1LE. If D reads 0 at p with t[p-1]=0, 728 runs D0 A0 B0 C1 and the twin runs D0 E0, and both end in the same configuration (A at p-2, t[p-1]=t[p]=1); only cells p-1,p are read, so this holds for every tape.",
+ "reason": "Twin port refuted at the level of upstream's invariant. Lockstep needs P: every D0 has a 0 on its left. With a 1 there the machines split, and 728 gains a halting route the twin lacks (t[p-4..p-1]=0001: D0 A1 F0 B0, then C0 halts). P holds in simulation (2e9 steps each, about 2e8 D0 events, none violating), but upstream's certificate does not contain it. The native event-by-event replay of nonhalt216's exact FAR call closes with 10,461 events, and its closure evaluates block transitions where E, entered by D0, reads blocks 10/11 (12 frame/pop pairs) and D< 01 (D0 then E1 inside the block). Those configurations are harmless for the twin (E1 1RA, A1 1LF, F1 0LD) but in 728 a P-violation next to blank cells halts (D0 A1 F0 B0 C0); the same call on 728 fails exactly in that shape (retL F< -> retL C<: A reads a 1 at the left end). So upstream's argument does not carry over from any opening of 728.",
+ "searches": "On 728 (extracted CTL62 deciders, 20 s cap): RWL_mod_FAR 1,080 configs and CPS_LRU_FAR 378 configs, all false; plain RWL_mod 772 configs (699 false, 73 timeouts; stopped in bsz 4); plain CPS_LRU 378 (338 false, 40 timeouts); 0 true anywhere (logs/grid728_summary.json). The twin closes under only 2 of 900 RWL_mod_FAR configs, and neither closed set implies P. Split-state FAR (7-state context; the state after D0 is a copy that halts on 1): twin and 728 both false on all 1,458 FAR configs each; calibration (twin + unused state) true (logs/far7_grid.jsonl).",
+ "checks": {
+  "twin_check": "scripts/twin_check.py --long SUMMARY PASS, 7 checks (R relation, M merge lemma, X exit lemma, L 1e6-step lockstep, C 2e9-step P count, U upstream certificate replay, S split-state probes); output scripts/twin_check.out; logs/d0ctx_2e9.log"
+ },
+ "formalization_route": "None for the port. Importing nonhalt216 (or copying its solve_cert) proves the twin only; the missing P is a new nonhalting-strength invariant, and CTL62 brings PArray/Uint63, which the unchanged check_kill baseline rejects. No Perm or Flip is needed (identity relation). A kill needs a regular invariant for 728 itself that tracks the alignment of the (0011)^m region (CTL format: left NFA, right NFA, key set) through Astra's package, i.e. direction 5, or a hand proof of P plus a gate-passing twin proof.",
+ "next": "No port, no delta proof.md. Candidate for direction 5 (regular-language search): the target invariant must exclude 'D reads 0 with a 1 on its left' while covering the twin's orbit. scripts/fartrace.ml + scripts/pcheck.py test any FAR closed set for P in seconds."
+}

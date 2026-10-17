@@ -1,0 +1,598 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC/notes.md · <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC/notes.md.html">raw</a></div>
+<h1 id="1rb0rf_1rc1rf_1ld0re_-0le_1la0le_0ra0lc-pool-30">1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC (pool #30)</h1>
+<p>Status: KILLED_NONHALT (2026-10-10; see ## Kill at the bottom). Not a cryptid candidate.
+Class guess (agent / Dennis): Bell eats counter, partial eat with residue (sibling of #10) / -
+Spreadsheet / Discord: results.csv row 1053, class "Bell eats counter", status/notes/sources/done-by blank; listed in classifications.csv only. Not in data/discord/*.txt. Byte-exact in data/holdouts/2026-10-07_778.txt (line 748). Forensics: eqv group size 1 (no known twin).
+Viewer: https://bbchallenge.org/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>1e9 steps: no halt; span -274..7445 (7,720 cells), 4,642 nonzeros (<code>sim_1e9.jsonl</code>). 137 epochs (left records in A) by 1e9; each epoch moves the left edge by exactly 2 cells; epoch length grows faster than cubic in the epoch index.</li>
+<li>qsim (block 3, 20k loops): 4 single-use diff rules, nothing recursive (<code>qsim.jsonl</code>). compress track: record skeletons scatter; head-local ones repeat (<code>compress_track.txt</code>).</li>
+<li>Hub <code>K(a,b,X) := 0^inf (110)^a 0 (011)^b C&gt; X 0^inf</code> (normalized: X never starts with 011). This is the same hub as #10 and the same marker bounce as FractalBEC (mirrored: w1 = 011, w0 = the <code>00</code> around the marker).</li>
+<li>Left record <code>L(k,T) := 0^inf &lt;A 101 (001)^k T 0^inf</code>. Every epoch: L -&gt; K(1,k+1,..) -&gt; bounces -&gt; eats -&gt; next L.</li>
+</ul>
+<h2 id="micro-automaton-derived-by-hand-from-the-table-checked-by-the-rules-below">Micro-automaton (derived by hand from the table, checked by the rules below)</h2>
+<p>Moving right (F split by predecessor): A: 0-&gt;1,B / 1-&gt;0,Fa. B: 0-&gt;1,C / 1-&gt;Fb (kept). Fa: 0-&gt;A / 1: (q-1,q):=(1,0), D at q-2. Fb: 0-&gt;A / 1-&gt;Fb (kept; this is where C1=0RE differs from #10, which goes to B). C: 0: write 1, turn, D at q-1. C: 1 then 0: (q,q+1):=(1,1), Fb at q+2. C: 1 then 1: (q-1,q,q+1):=(1,0,0), D at q-2.
+Moving left: D: 1-&gt;0,E / 0: <strong>halt</strong>. E: 1-&gt;0,E. E on 0 at p: p-1=1 -&gt; (p-1,p):=(1,0), D at p-2; p-1=0 -&gt; (p-1,p):=(1,1), Fb at p+1 (turn).
+So the only halts are D reading 0: (a) Fa turning when the cell two to the left is 0 (pattern F0,A1,F1 in a right pass), (b) E finding <code>010</code>.
+The left sweep of a bounce turns at the marker and never enters (110)^a; that is why a is inert until b runs out.</p>
+<h2 id="rules-all-validated-scriptsval_rulespy-seeds-1-and-2-data_val_rules_12json">Rules (all validated: <code>scripts/val_rules.py</code>, seeds 1 and 2, <code>data_val_rules_{1,2}.json</code>)</h2>
+<p>Clean counter words: <code>tail_0..3 = '', 0001, 000010001, 000110001</code>; <code>D(k,s,v) = (v0 01 001000)(v1 01 001000)...(v_{k-1} 01) tail_s</code> (LSB first) holds the value <code>n = 2^(k+2)-4 + s*2^k + v</code>; <code>D(1..3) = 1, 010001, 110001</code>; <code>D(k,4,0) = D(k+1,0,0)</code> as words. <code>E(0,s,0) = tail_s</code>, <code>E(j,s,u) = 001000 D(j,s,u)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from -&gt; to</th>
+<th>cases</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R restart</td>
+<td><code>L(k, 000 Y) -&gt; K(1, k+1, Y)</code> in 3k+7 steps</td>
+<td>any Y not starting 011 (random words + orbit residues), k &lt;= 3000</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>B bounce</td>
+<td><code>K(a,b+1,X) -&gt; K(a+1, b+d, inc X)</code> in 8b+c(X) steps</td>
+<td>b&gt;=1, X any of 9,730 orbit hub words; inc X, d in {0,1}, c(X) independent of a,b</td>
+<td>600/600 (x3 (a,b) each)</td>
+</tr>
+<tr>
+<td>W clean count</td>
+<td><code>K(a,b+1,D(n)) -&gt; K(a+1, b+[n=3], D(n+1))</code></td>
+<td>n up to 1e5</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>E2 odd eat</td>
+<td><code>K(a,1, 101 E(j,s,u)) -&gt; L(a, 000 11 E(j,s,u+1))</code></td>
+<td>j&lt;=9, all s,u (overflow u+1=2^j -&gt; s+1)</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>E1 even eat</td>
+<td><code>K(a,1, (001)^i 000 Y) -&gt; K(a+2, i, Y)</code></td>
+<td>i&lt;=40, Y random/orbit/clean</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>E0 empty</td>
+<td><code>K(a,1, eps) -&gt; L(a+1, 0001)</code></td>
+<td>a&lt;=3000</td>
+<td>200/200</td>
+</tr>
+</tbody>
+</table>
+<p>Clean epoch (residue <code>0001</code>, e.g. epochs N=16, 32): <code>K(1,N,D(1))</code> counts <code>D(1..N+1)</code>; at a=N+1 the clean counter is eaten: odd value -&gt; E2 (only the LSB is eaten, the rest +1 becomes the next residue <code>11 E(...)</code>); even value -&gt; E1 drops the LSB digit (value halves), gives b=2, one bounce adds 1, repeat (cascade) until odd or empty.
+Template (FractalBEC tm10) by contrast eats the whole counter every epoch: in the same hub notation its left records are <code>L(k,0001)</code> with k = 1,5,13,29,61 (k -&gt; 2k+3), and its counter digits are 2 cells, not 3 + a 4-stage tail.</p>
+<h2 id="residue-epochs-not-yet-exact">Residue epochs (not yet exact)</h2>
+<ul>
+<li>Most epochs start from <code>X0 = 11 E(j,s,u)</code> (from E2) or from an eat at a non-clean counter (75 of 138 eats to 1e8 are not clean <code>D</code> words; their spacers carry extra <code>001</code> groups, e.g. <code>1 01 (001)^5 000 ...</code>). E1 then gives b = (number of 001 groups), i.e. the extra groups become extra bounces.</li>
+<li>Digestion: the first bounces absorb one leading group every 2 bounces (b stays), then the counter passes through a short transition and continues as a clean counter (<code>img/epoch48_counter.png</code>).</li>
+<li>Forced-eat scan (<code>scripts/scan_eats.py</code>; scratch run to 3e7 = 52 epochs): forcing the eat after j bounces halts only for 1-2 consecutive j inside the digestion window: N=48: j=24,25; N=84: 8,9; N=94: 16,17; N=104: 11; N=162: 42,43; N=344: 54,55; N=702: 57. No unsafe j in [N/2, N+40) for any epoch; the real eat is at j ~ N. Unsafe j does not depend on a. Random multi-epoch walks with random eat times halt (2 of 450), so the safety is NOT regular: it needs "eat time &gt; digestion time".</li>
+<li>Scan from the 1e9 orbit (<code>data/scan_eats_1e9.jsonl</code>, background run, 68 of 136 epochs at write time, N up to 1,029): the same 7 epochs have unsafe j (listed above), max unsafe j / N = 0.54 (N=48 only; every other epoch &lt; 0.32), no bounce ever halts, no unsafe j in [N/2, N+20) after N=48.</li>
+</ul>
+<h2 id="non-halting-argument-sketch-not-proved">Non-halting argument (sketch, not proved)</h2>
+<p>Every regime from the blank tape is R / B / W / E0 / E1 / E2 plus the digestion phase. Halting needs an eat at an unsafe counter state. Unsafe states occur only while the residue is digested, which takes O(len X0) bounces, and len X0 = O(log N) while the epoch has N bounces and N grows every epoch. Missing: (1) an exact rule set for the digestion and for non-clean counters (inc on words with extra 001 groups), (2) a proved bound "digestion time &lt; N" on the reachable residues, i.e. an invariant like #10's Lemma N but with large slack (observed max unsafe j / N = 0.52 at N=48, otherwise &lt; 0.3).</p>
+<h2 id="cryptid-check-ground-rule-6">Cryptid check (ground rule 6)</h2>
+<p>Branching is on low bits of the counter (E2 vs E1 cascade c -&gt; c/2+1), the epoch size grows additively, nothing is x3/2 or Collatz-like in the halting condition. The open condition is a size inequality with large slack, not a parity coincidence. Not a cryptid candidate.</p>
+<h2 id="template-check">Template check</h2>
+<p><code>verify/FractalBEC.v</code> line 269, tm10 = <code>1LB0LF_1LC1LF_1RD1LB_---0RE_1RA0RE_0LA0RC</code>; mirrored = <code>1RB0RF_1RC1RF_1LD1RB_---0LE_1LA0LE_0RA0LC</code>, only C1 differs (1RB vs our 0RE). RInc (marker bounce) = our rule B on the block side: same. LInc (counter +1, 2-cell digits d1=[1;0]) and Ov/P0 (the whole counter is eaten and expanded fractally, f(i+1)=2f(i)+2): do not carry over (our counter has 3-cell digits + a 4-stage tail; our eat is partial, E1/E2). Verdict: <strong>partly</strong>. Closer in spirit: #10 (C1=1RA), which has the same hub, a different counter encoding (bit0 + 3-cell digits, inert/pending groups) and is STUCK on its Lemma X.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>Questions in observe.json -&gt; checkpoint_questions. decision.json: the call on proof work.</p>
+<h2 id="files">Files</h2>
+<p><code>scripts/common.py</code> (builders, parsers, D/E words, orbit events), <code>scripts/val_rules.py</code>, <code>scripts/scan_eats.py</code>, <code>scripts/plot_epoch.py</code>; images in <code>img/</code>.</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: Fund one deepen stage on #30 (exact digestion rules, abstract epoch map checked against the TM, and a proof idea for 'eat after digestion'), or park it as STUCK next to #10?
+Answer: <strong>deepen</strong> (One deepen stage (about 2 h)). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-deepen">Funded stage (2026-10-10, deepen)</h2>
+<p><strong>Result: STUCK at the pre-agreed exit.</strong> The size invariant ("the eat comes after the digestion") is not proved, so the stage stops with the reduced lemma below. <strong>Not a cryptid candidate.</strong> #10's stop rule fired because its safety needs exact equations such as <code>P = 2^B</code>. Here the open condition is a size bound with slack that grows like sqrt(N). The worst case also has an exact closed form: it doubles every 2 digits.</p>
+<h3 id="notation">Notation</h3>
+<ul>
+<li>Chunks: <code>a = 001</code>, <code>b = 101</code>, <code>z = 000</code>.</li>
+<li>A block is <code>c = d01 (001)^e</code>: a digit <code>d</code> (a-block if d = 0, b-block if d = 1) followed by <code>e</code> extra a's.</li>
+<li><strong>Grammar G (aligned words):</strong> <code>''</code>, a bare tail, or <code>c (z c)* [z tail]</code>, where tail is <code>1</code>, <code>010001</code> or <code>110001</code> (= Dn(1..3)) and the exponents e are arbitrary. The clean <code>D(k,s,v)</code> words are the case e = 1 for every block except the last, which has e = 0.</li>
+<li><strong>O2 words:</strong> a 2-cell prefix <code>P</code> in {00, 01, 10, 11}, then a G word, or <code>z</code> then a G word. Every residue is O2: E2 leaves <code>'11' a^e0 z W</code>.</li>
+</ul>
+<h3 id="new-exact-rules-scriptsfs_val_rulespy-seeds-1-and-2-datafs_val_rules_12json">New exact rules (<code>scripts/fs_val_rules.py</code>, seeds 1 and 2, <code>data/fs_val_rules_{1,2}.json</code>)</h3>
+<p>A bounce is one hub-to-hub run. Rule B (validated at observe) makes it independent of a and b.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>statement</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GI</td>
+<td>inc on G is a binary +1 with LSB first. A 0-digit becomes 1. A 1-digit becomes 0 and carries into the rest after z. The tails step <code>'' -&gt; 1 -&gt; 010001 -&gt; 110001 -&gt; 001</code> and the last step absorbs. The top-level word's absorption goes into the hub (b stays the same); a carry's absorption appends one <code>001</code> to the block in front of it. G is closed under inc</td>
+<td>1200/1200</td>
+</tr>
+<tr>
+<td>D1</td>
+<td><code>'11' a V -&gt; '01' V</code>, absorbed (b stays the same)</td>
+<td>800/800</td>
+</tr>
+<tr>
+<td>D2</td>
+<td><code>'01' V -&gt; '11' V</code></td>
+<td>800/800</td>
+</tr>
+<tr>
+<td>D3</td>
+<td><code>'11' z V -&gt; '00' V</code>, absorbed (V nonempty)</td>
+<td>792/792</td>
+</tr>
+<tr>
+<td>D4</td>
+<td><code>'00' V -&gt; '10' V</code></td>
+<td>770/770</td>
+</tr>
+<tr>
+<td>D5</td>
+<td><code>'10' c z R -&gt; '01' c' z inc(R)</code>, for an a-block c. c' is c plus the 001 that inc(R) absorbs, if any</td>
+<td>1200/1200</td>
+</tr>
+<tr>
+<td>D6 (shape only)</td>
+<td><code>'10' (b-block) z R -&gt; a^m z Y</code> in <strong>one</strong> bounce. Y is a G word (105), an O2 word (1042) or a deeper nest (53)</td>
+<td>1200/1200 shape; no closed rule</td>
+</tr>
+<tr>
+<td>E2g</td>
+<td><code>K(a,1, 101 a^e [z R]) -&gt; L(a, 000 11 a^(e+d') z R')</code> with <code>(R',d') = inc(R)</code>. This generalizes E2 to any first-block exponent and any G rest</td>
+<td>1200/1200</td>
+</tr>
+<tr>
+<td>E1g</td>
+<td><code>K(a,1, a^(e+1) z R) -&gt; K(a+2, e+1, R)</code> for any G word R</td>
+<td>1200/1200</td>
+</tr>
+<tr>
+<td>tail eat</td>
+<td><code>K(a,1,110001) -&gt; K(a+1,1,001)</code></td>
+<td>orbit: 2/2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How digestion runs.</strong>
+- D1/D3 eat the residue one chunk every 2 bounces. Only 1 b is used per chunk, because the hub absorbs one 011.
+- At an a-block, D5 adds 1 to the rest and the eating goes on.
+- At the first b-block, D6 fires.
+  - The right sweep turns <code>10 101 (001)^e 000</code> into <code>11 100 (011)^(e+1)</code>. This builds a sub-hub <code>1 (110) 0 (011)^(e+1) C&gt; R</code>.
+  - The sub-hub runs a whole sub-epoch inside this one bounce. Its sub-eat then goes back through the main word and leaves <code>a^m z Y</code>.
+- After D6 the top block toggles, so Y is incremented once every 2 main bounces. Its absorptions go into <code>a^m</code>. These are the O2 rules again, one level down and at half speed.
+- The same thing repeats at every D6 below that. <strong>The counter is fractal.</strong> This nesting is why digestion takes about 2^(k/2) bounces.</p>
+<h3 id="orbit-to-1e11-steps">Orbit to 1e11 steps</h3>
+<ul>
+<li>Run: <code>scripts/fs_orbit.c</code>, a C logger with main-hub detection matching <code>common.events()</code>. 1e9 steps take 5.3 s.</li>
+<li>Data: <code>data/fs_orbit_1e11_LE.txt</code>, <code>data/fs_orbit_1e11_eats.txt</code>, summarized in <code>data/fs_analyze.json</code>.</li>
+<li>Size: 519 complete epochs, N up to 12,668, 1,022 eats, no halt.</li>
+<li><strong>Every eat after epoch 2 is at a G word.</strong> The 1,020 such eats split as E1g 500, E2g 515, E0 2 and bare tails 3, and all of them match the rules above.</li>
+<li>The only 2 non-G eats are in the N = 3 transient epoch, and they do not halt.</li>
+<li>Digestion cost β is the b used until the hub word is back in G and stays there.</li>
+<li>Worst share of the budget: the b left when digestion ends is at least 0.467·N (minimum at N = 45).</li>
+<li>β/N ≤ 0.127 for N ≥ 1000, and ≤ 0.051 for N ≥ 6000.</li>
+<li>β ≤ 6.52·sqrt(N) overall.</li>
+<li>First blocks reach up to 34 a's, and other blocks have exponents up to 24.</li>
+<li>Figure: <code>img/fs_digest_share.png</code> (observe.json diagram 5, not primary).</li>
+</ul>
+<h3 id="exhaustive-digestion-scriptsfs_digestc-scriptsfs_analyzepy-gen-clean-datafs_digest_clean_k1-12txtgz">Exhaustive digestion (<code>scripts/fs_digest.c</code>, <code>scripts/fs_analyze.py gen-clean</code>; <code>data/fs_digest_clean_k1-12.txt.gz</code>)</h3>
+<ul>
+<li><strong>All clean residues</strong> <code>a z D(k,s,v)</code> for k ≤ 12 (32,760): all re-enter G and stay there for 30 more bounces.</li>
+<li>The maximum β for each k is attained at v = 1 (s = 2 for odd k, s = 1 for even k). It is exactly:</li>
+<li><code>2^((k+9)/2) - 7</code> for odd k;</li>
+<li><code>5*2^((k+4)/2) - 7</code> for even k.</li>
+<li>Equivalently <code>β_max(k+2) = 2*β_max(k) + 7</code>, and β_max(k) ≤ 22.5·2^(k/2).</li>
+<li>The formula matches all 12 values.</li>
+<li><strong>Long first blocks:</strong> a first block <code>a^e0</code> adds exactly e0 - 1 to β (24/24 cases, e0 up to 33).</li>
+<li><strong>400 random non-clean residues</strong> (inner exponents up to 24): all OK, with (β - e0)/2^(k/2) ≤ 39.5. Inner exponents cost more than the first block, because each extra a sits one nesting level deeper.</li>
+<li>This was cross-checked against the Python TM on 25 random residues, with 0 mismatches.</li>
+</ul>
+<h3 id="unsafe-eats-observe-scan-now-identified">Unsafe eats (observe scan, now identified)</h3>
+<ul>
+<li>Forcing the eat halts only at <code>11 z Dn(3)</code> (= 11000110001) and <code>00 Dn(3)</code> (= 00110001). This happens in the epochs N = 48, 84, 94, 162 and 344.</li>
+<li>In the epochs N = 104 and 702, the halt comes from E1g eats at a nested word <code>a^m z (O2)</code>, which cascade into those two words.</li>
+<li>All of these lie inside the digestion phase.</li>
+</ul>
+<h3 id="reduced-lemma-open">Reduced lemma (open)</h3>
+<p><strong>Lemma D.</strong> Take an E2 eat <code>K(N-1, 1, b a^e0 z W)</code> on the orbit. Then digestion from <code>K(1, N, '11' a^(e0+d) z inc(W))</code> returns to G without halting after β ≤ N - 2 b-steps.</p>
+<p>Together with GI, E1g, E2g, E0 and R (all exact and closed over G), Lemma D gives non-halting. It needs three pieces:
+- <strong>(D-a)</strong> A closed rule for D6, and for inc on nested words <code>a^m z P V'</code>. The sub-epoch inside one bounce and its eat through the outer word are the missing piece. The D6 outcome census does not close at depth 1 (53/1200 deeper nests).
+- <strong>(D-b)</strong> <code>β ≤ 22.5·2^(k/2) + (e0 - 1) + (inner-exponent term)</code>, by induction on nesting depth. The exact doubling law above suggests that such an induction exists.
+- <strong>(D-c)</strong> A size bound: N ≳ 2^(k+3) at E2 eats, plus exponents of size o(sqrt N). On the orbit the exponents are at most 34 while N reaches 12,668.</p>
+<h3 id="still-open-next">Still open / next</h3>
+<ul>
+<li>D6 is the bottleneck. A stage could aim at an exact recursive statement of D6 (sub-hub <code>K'(1,e+1,R)</code>, sub-bounces, sub-eat) and a proof of the doubling law.</li>
+<li>If that closes, Lemma D becomes a 2-epoch size induction with slack that grows like sqrt(N).</li>
+<li>The Coq side would need a nested (fractal) counter. The FractalBEC bounce (rule B) carries over; its eat does not.</li>
+</ul>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: Fund one more stage on #30's D6 nesting step (exact recursive rule plus a proof of the doubling law for digestion), or park it as STUCK?
+Answer: <strong>nest</strong> (One stage on D6 / nested digestion (about 2 h)). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-nest">Funded stage (2026-10-10, nest)</h2>
+<p><strong>Result: D6 closes into an exact recursive rule, and the rule set is now closed.</strong> A rules-only model reproduces every TM epoch to 1e11 steps. Lemma D (the eat comes after the digestion) now has a concrete proof plan, and every link in it is checked on 8,000-12,000 model epochs. Confidence is <strong>high</strong> for the mechanism and the non-halting argument. proof.md still has to write out lemmas V, K, X and fix the constants. <strong>Not a cryptid candidate.</strong></p>
+<h3 id="d6-exactly-scriptsnest_modelpy-scriptsnest_valpy">D6 exactly (<code>scripts/nest_model.py</code>, <code>scripts/nest_val.py</code>)</h3>
+<ul>
+<li><strong>D6:</strong> <code>K(a, b+1, '10' 101 a^e [z R]) -&gt; K(a+1, b, a^(k+1) z Y)</code> in <strong>one</strong> bounce. Here <code>(k, 000 Y)</code> is the <strong>first left record of an ordinary epoch</strong> started at <code>K(1, e+1, R)</code>. R is the rest, a G word, or <code>''</code> when there is none.</li>
+<li>The right sweep builds the sub-hub <code>1 (110) 0 (011)^(e+1) C&gt; R</code>. Its sub-epoch is a plain epoch: G bounces (GI) and E1g eats until the first E2g, E0 or tail eat. There is no digestion inside it, because it stops at its first left record.</li>
+<li>At that point the sub-record <code>&lt;A 101 (001)^k 000 Y</code> meets the 1 on its left (not a blank). It turns into <code>a^(k+1) z Y</code>, and the main bounce finishes normally (d = 0).</li>
+<li>Validated against the TM on 1,200/1,200 random instances (seeds 1, 2; e ≤ 10; R random G, <code>''</code> or none; random a, b). The prediction comes from the model's own epoch map, which uses no TM. A first exploratory run of 300/300 compared against the TM sub-epoch, and 200/200 more with e in 10..40 (seed 3).</li>
+</ul>
+<h3 id="nested-words-and-inc-on-them">Nested words and inc on them</h3>
+<ul>
+<li>The census's "deeper nests" are flat. Each D6 puts one block in front of the O2 word: <code>H ::= G | O2 | c z H</code>, where <code>O2 ::= '11' a^x z W | '01' a^x z W | '00' W | '10' W</code>.</li>
+<li>inc on H:</li>
+<li><strong>HT:</strong> <code>a-block z H -&gt; b-block z H</code>.</li>
+<li><strong>HC:</strong> <code>b-block(e) z H -&gt; a-block(e+d') z H'</code>, where <code>(H', d') = inc(H)</code>. The inner absorption goes into the block, so the hub gets d = 0.</li>
+<li><strong>D1-D6</strong> apply to the innermost O2 word.</li>
+<li><strong>D5</strong> also works with no rest: <code>'10' a-block -&gt; '01' a-block z 1</code>.</li>
+<li><strong>8 constant end-of-word words T</strong> (<code>10</code>, <code>00</code>, <code>11</code>, <code>10 tail2</code>, <code>10 tail3</code>, <code>10 00 tail2</code>, <code>10 01 z tail2</code>, <code>10 01 a z 1</code>), as a table. They occur when a sub-epoch eats the word down to its tail.</li>
+<li>Tail eats:</li>
+<li><code>K(a,1,1) -&gt; L(a, 000 01 a z 1)</code></li>
+<li><code>K(a,1,010001) -&gt; L(a, 000 10 00 010001)</code></li>
+<li>plus E0 and Et3 from before.</li>
+<li>Validation (seeds 1 + 2, against one TM bounce each, random a ≤ 60, b ≤ 60):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>passed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D6</td>
+<td>1,200/1,200</td>
+</tr>
+<tr>
+<td>HT/HC (1-4 blocks in front of a random non-G inner word)</td>
+<td>1,200/1,200</td>
+</tr>
+<tr>
+<td>D1, D2, D3, D4 with V outside G</td>
+<td>1,200/1,200 each</td>
+</tr>
+<tr>
+<td>T</td>
+<td>160/160</td>
+</tr>
+<tr>
+<td>tail eats</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>whole epochs, model vs TM, from random residues <code>11 a^x z W</code> with N in 30..400</td>
+<td>387/387</td>
+</tr>
+<tr>
+<td>hub words sampled from the model orbit</td>
+<td>1,200/1,200</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In the whole-epoch check, 13 residues were skipped because the model predicts an eat at a non-G word there. Data: <code>data/nest_val_{1,2}.json</code>.</li>
+</ul>
+<h3 id="the-model-is-the-tm-scriptsnest_orbitpy-datanest_orbit_517json">The model is the TM (<code>scripts/nest_orbit.py</code>, <code>data/nest_orbit_517.json</code>)</h3>
+<ul>
+<li>The model is built only from rules: R, B, GI, HT, HC, D1-D6, T, E1g, E2g, E0, Et1-Et3.</li>
+<li>Started at the TM's third left record <code>L(7, 000010001)</code>, it reproduces <strong>all 517 later TM left records to 1e11 steps</strong> exactly (k and T). It never uses a TM fallback and never meets an unknown word.</li>
+<li>Rule uses: GI 2.95M, HT/HC 30,052 each, D6 1,128, D5 1,161, E1g 1,355, E2g 1,392, T 506.</li>
+<li>Fast counting <code>add_G</code> (n GI steps at once on a G word with ≥ 1 block; no hub absorption happens there) matches iterated GI on 1,889/1,889 random cases. The fast model orbit equals the slow one for 200 epochs (<code>scripts/nest_ff_check.py</code>).</li>
+</ul>
+<h3 id="cost-recursion-and-the-doubling-law-scriptsnest_costpy">Cost recursion and the doubling law (<code>scripts/nest_cost.py</code>)</h3>
+<ul>
+<li>Write J(w) for the own-level bounces until the word is in G, and A for the hub absorptions.</li>
+<li>Top level: β = J - A.</li>
+<li>D6: <code>J = 1 + 2 J(Y)</code>. The new block is an a-block, so the nest is incremented on every 2nd bounce and never absorbs.</li>
+<li><code>J('11' a^x z W) = 2x + 2 + J('10' W)</code>.</li>
+<li>A top-level a-block strip costs <code>e + d + 4</code>. An inner strip costs <code>2e + 2d + 6</code>.</li>
+<li>This recursion equals the TM's β on <strong>all 32,760 clean residues</strong> (k ≤ 12, <code>data/nest_cost_clean.json</code>).</li>
+<li><strong>Doubling law, proved from the rules (k ≥ 3, any s):</strong></li>
+<li>Let <code>Y_k = '11' a z D(k,s,1)</code>.</li>
+<li><code>D(k,s,1) = b(1) z D(k-1,s,0)</code>.</li>
+<li>The sub-epoch <code>K(1,2,D(k-1,s,0))</code> makes one bounce, to <code>D(k-1,s,1)</code>, and then an E2g eat. So <code>Y = '11' a z D(k-2,s,1)</code> (k' = 2).</li>
+<li>Hence <code>J(Y_k) = 4 + 1 + 2 J(Y_{k-2})</code> and <code>β(k) = 2 + 1 + 2 J(Y_{k-2})</code>, so <code>β(k+2) = 2 β(k) + 7</code>.</li>
+<li>Checked by the recursion to k = 40 for all s (<code>data/nest_cost_family.json</code>; β(40) = 20,971,513).</li>
+<li>The family is the maximum over all clean residues for k ≤ 15: TM-exhaustive to 12, recursion-exhaustive 13-15 (<code>data/nest_cost_exhaust.json</code>: 2041, 2553, 4089). Clean words are no longer needed for the proof plan below.</li>
+</ul>
+<h3 id="proof-plan-for-lemma-d-all-links-checked-on-the-model-orbit">Proof plan for Lemma D (all links checked on the model orbit)</h3>
+<ul>
+<li><strong>Positions are stable.</strong> inc, E1g bounces and overflows change digit bits and append blocks at the top, but they never move a block's exponent.</li>
+<li><strong>(K)</strong> Each D6 level consumes a contiguous run of at least 2 positions of W: the trigger b-block, the sub-epoch's E1g strips and E2g digit, and that level's own D5 strips.</li>
+<li>The parent block's exponent is <code>Σ(consumed e) + 2·(#consumed) − 2 + (overflow d's)</code>.</li>
+<li>Level ℓ only uses positions ≥ 2(ℓ−1), so <code>2(L−1) + S ≤ kW</code>. Check: 12,000 epochs, maximum <code>2(L−1) + S − kW = 0</code>.</li>
+<li><strong>(P)</strong> When digestion ends, the word is just these L blocks plus at most one remnant: <code>k_post − L ∈ {0, 1}</code> in 12,000 of 12,000 epochs. The counter restarts from a value below <code>2^(L+4)</code>.</li>
+<li><strong>(V)</strong> Write m for the counter value n+4.</li>
+<li>The eat value is at most <code>2^(L+4) + N</code>. The eat removes at least 1 digit.</li>
+<li>So <code>m_W ≤ N/2 + 2^(L+3) + X + 1</code>, which gives <code>2^(kW+3) ≲ N</code>.</li>
+<li>Observed: <code>m_W/N ≤ 0.517</code> for N ≥ 100.</li>
+<li><strong>(X) Excess flow.</strong></li>
+<li>The excess of a block is <code>η = e − 1</code> (or e for the last block); clean words have excess 0. Let <code>S_t(q)</code> be the sum of η over positions ≥ q of W at epoch t.</li>
+<li>Step: <code>S_{t+1}(q) ≤ S_t(2q+2) + 3k_t + 4</code> and <code>x0_{t+1} ≤ S_t(0) + 3k_t + 5</code>. Checked: 103,679/103,679 and 8,000/8,000 (<code>scripts/nest_excess.py</code>, <code>data/nest_excess.json</code>).</li>
+<li>Why the step holds: block q of the next W is post-digestion block q+h (h ≥ 1 digits eaten). That block merged positions ≥ 2(q+h) ≥ 2q+2. Each level creates at most 3 per consumed digit. x0 is destroyed by the top-level D1 steps.</li>
+<li>Unrolled: <code>S_t(q) ≤ ⌈log2((k+2)/(q+2))⌉·(3k+4)</code>. Excess is O(log N · log log N); observed <code>S_0 ≤ 0.26 ×</code> this bound. The largest exponents in the long run are x0 = 95 and e = 59, up to N = 3.49e6.</li>
+<li><strong>Bound.</strong></li>
+<li><code>Bnd = x0 + 2 + Σ_q 2^((q+1)//2+1)·(2η(q)+10) + 3·2^(k//2+2) + 20·2^(k//2+1)</code> (<code>scripts/nest_bound.py</code>).</li>
+<li>On 8,000 epochs: <code>β ≤ Bnd</code> holds every time (β/Bnd ≤ 0.333), and <code>Bnd ≤ N − 2</code> holds for every epoch with N &gt; 784.</li>
+<li>With the worst-case profile from (X) and N ≥ 0.95·2^(k+3) from (V): <code>Bnd(k) &lt; N − 2</code> for every k ≥ 13, and <code>Bnd(k ≤ 12) ≤ 40,110</code>. So every epoch with N ≥ 40,112 is safe whatever its k.</li>
+<li>The finite rest, N &lt; 40,112, is inside the model orbit, which is the rules' own orbit. The TM log checks it directly up to N = 12,668.</li>
+<li><strong>Non-halting.</strong> Every eat then happens at a G word. G eats (E1g, E2g, E0, Et) never halt, and N never decreases. The only halts in the table need D reading 0, which only happens at a non-G eat.</li>
+</ul>
+<h3 id="long-model-run-scriptsnest_longpy-datanest_longtxt-figure-imgnest_beta_sqrtnpng">Long model run (<code>scripts/nest_long.py</code>, <code>data/nest_long.txt</code>, figure <code>img/nest_beta_sqrtN.png</code>)</h3>
+<ul>
+<li>Size: 80,583 epochs, N up to 3,493,246, with no unsafe eat and no unknown word (<code>data/nest_long_summary.json</code>).</li>
+<li>β/√N ≤ 6.54 overall (maximum near N ≈ 2,000) and ≤ 4.95 for N ≥ 2e5.</li>
+<li>β/N ≤ 0.0093 for N ≥ 1e5 and ≤ 0.0043 for N ≥ 1e6.</li>
+<li>Nesting depth ≤ 9. Exponents stay small: first block ≤ 95, inner ≤ 59. kW ≤ log2 N − 2.99.</li>
+</ul>
+<h3 id="still-open-for-proofmd">Still open (for proof.md)</h3>
+<ul>
+<li>Write (K), (P), (V) and (X) as lemmas from the rule statements, with exact constants. In particular, handle the edge cases where a sub-epoch or the top-level residue reaches E0/Et1/Et2 (rare: 3 top-level epochs in 6,000).</li>
+<li>D6 needs a "sub-epoch in a left context" lemma. Checked (<code>scripts/nest_ctx.py</code>, <code>data/nest_ctx.json</code>): a bounce and an E1g eat never move the head left of the first cell of <code>(110)^a</code> (400/400 each), and an E2g eat always does (400/400). So the sub-epoch cannot see its context until its left record. The exit through the outer hub still has to be written out; it is validated, not proved.</li>
+<li>Rocq: the bounce (rule B) is FractalBEC's RInc. D6 needs a recursive (nested) epoch map. The finite part of the argument (N &lt; 40,112: 1,408 epochs) would have to be run inside Rocq or tightened away. This is heavy, and it is a priority call for later.</li>
+</ul>
+<h3 id="files-nest-stage">Files (nest stage)</h3>
+<p><code>scripts/nest_model.py</code> (rules-only model, FAST counting), <code>nest_val.py</code> (TM validation), <code>nest_orbit.py</code> (model vs TM log), <code>nest_ff_check.py</code>, <code>nest_cost.py</code> (cost recursion), <code>nest_mass.py</code>, <code>nest_excess.py</code>, <code>nest_bound.py</code> (proof-plan checks), <code>nest_ctx.py</code> (left-context fact), <code>nest_long.py</code> + <code>nest_plot.py</code> (long model run, figure). Data in <code>data/nest_*</code>.</p>
+<h2 id="informal-proof-stage-2026-10-10">Informal proof stage (2026-10-10)</h2>
+<ul>
+<li><code>proof.md</code> written; <code>check_proof.py</code> (machine dir) validates every claim; results in <code>data/check_proof_seed{1,2}.json</code> and <code>.log</code>.</li>
+<li>New structure: a bounce is LP (word-local pass, exits as <code>&lt;A 100 X'</code> for d = 0 or <code>&lt;A 101 000 X'</code> for d = 1) followed by RP (region pass, <code>8n+4</code> / <code>8n+7</code> steps, any left context). Every word rule of the earlier stages is an LP rule built from 10 window rules (W1-W10) and 3 shift rules (S1-S3). D1/D3 are one rule (LP11) and D2/D4/HT are one rule (LP0).</li>
+<li>D6 is proved: a right pass of <code>3e+14</code> steps builds the sub-hub <code>K(1,e+1,R)</code> behind a <code>1</code>. The sub-epoch reads nothing left of its marker until its final eat reaches <code>first-1</code> in state E (pre-record L'). There it meets the <code>1</code> and W10 exits in 4 steps with <code>a^(k+1) z Y</code>.</li>
+<li>Lemma D: N<em> = 2917 (was 40,112) with tau = 13 and c</em> = 1. <strong>Open link: D.6</strong> (c_t &lt;= 1 overflows per digestion; checked on every epoch, argument sketched). N<em> for c</em> = 2..12 ranges from 4,757 to 1,844,287, all below the nest-stage model run (N = 3.49e6).</li>
+<li>status.json: stage informal_proof, status OPEN.</li>
+</ul>
+<h2 id="checkpoint-b-skeptic-round-1-2026-10-10">Checkpoint B, skeptic round 1 (2026-10-10)</h2>
+<ul>
+<li>Skeptic: D.6 (c_t &lt;= 1) fatal: inside the invariant c reaches 2 (k = 2), 4 (k = 16); D.4(b) false (TM: <code>'11' z b(8) z t1</code>, N = 100 gives x_{t+1} = 17); checker undercounted overflows inside <code>add_G</code>; minor: threshold mixed epochs, D.3 sentence wrong at tails, Phi termination, special residues. All confirmed.</li>
+<li>Fixes (proof.md section 5 rewritten):</li>
+<li><strong>Lemma C</strong> (D.0), proved from the rules: <code>3*2^(k+c) &lt;= 9*2^k + sum_q 2^(q+1) eta_q - 5</code>. Positions and front; (P1) at most one extra unit per position; (P2) at most e+1 increments per front; potential <code>Z = 2^f V</code> never grows on consumption. Clean words: c &lt;= 1. Also gives Phi termination (explicit fuel).</li>
+<li>D.3: merged blocks itemized; B_L gets bare-tail absorptions + <code>tau_end &lt;= T = 5</code> (end chain of <code>'10' t2</code> 5, <code>'10' t3</code> 2, Et2 1+4, Et1 2, E0 2, Et3 chain 2). D.4(a): <code>S_{t+1}(q) &lt;= S_t(2q+2) + 3(k+c) + T - 8 - 6q</code> when positive; D.4(b): <code>x_{t+1} &lt;= S_t(0) + 3(k+c) + T - 1</code>; D.4(r) resets after special residues / L = 0.</li>
+<li>D.6: running max kappa; fixed point <code>G(kappa)</code> (least G with max_k (k + Gamma(k,kappa)) &lt;= G); invariant (I1)-(I4) by induction. D.7: <code>F = {0..11}</code>, <strong>N* = 14,796</strong>, closed-form tail for kappa &gt;= 64.</li>
+<li>Finite part: 591 epochs (3..593), explicit rules-only orbit; first 517 = TM log to 1e11.</li>
+<li>check_proof.py: overflow counter now wraps GI, <code>add_G</code> and Et3 (orbit: c = 1 in 35.6% of epochs, still never 2); new claims D.0, D.3 end words, D.6C/D.6G, D.4a/b/c/r/x, D.7a/b/m/f/t/n, FIN beta &lt;= N-2; adversarial section (in-invariant + unconstrained residues, skeptic's named cases, 40 TM epochs). ALL PASS seeds 1, 2 (~57 s each); <code>--adv 12000</code> seeds 11, 12 ALL PASS (largest slacks: D.4(a) -5 vs -3, D.4(b) 2 vs 4).</li>
+<li>status.json: CHECKPOINT_B (no open link).</li>
+</ul>
+<h2 id="kill">Kill</h2>
+<ul>
+<li>2026-10-10: <strong>KILLED_NONHALT.</strong> Kill file <code>1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC.v</code> (1,726 lines, 2,012 sentences, sha256 <code>93a493f5531185781ddecc40b40ad3e5cf0c325326b42aa1d2631802611d90c0</code>) proves top-level <code>Lemma nonhalt: ~halts tm c0.</code>. Header: "Adapted from verify/FractalBEC.v, tm10 (its RInc, mirrored)".</li>
+<li><code>tools/check_kill.sh</code>: PASS 3 times on the same sha256, each with <code>ulimit -s unlimited</code> and <code>ulimit -v 8000000</code>, one check at a time. The watchdog showed about 21 GB available, and nothing was killed.</li>
+<li>Formalizer (round 2): compile 15.0 s (native on), coqchk -norec pass 67.8 s, 0 assumptions (rocq/log.md).</li>
+<li>Independent audit, <code>--json</code> (18:20-18:21 PDT): 17/17 checks pass, compile 15.33 s, coqchk -norec pass 66.3 s (no timeout, so the VM steps were re-checked), 0 assumptions. The audit confirmed the string is line 748 of <code>data/holdouts/2026-10-07_778.txt</code> (<code>holdouts.py contains</code>, one <code>grep -x -F</code> match, list sha256 as in SOURCES.md). It read the whole file (ASCII, no CRs; Requires only Individual62 and Lia/String/List/Arith; no Module/Section/Variable/Context/Axiom/Opaque/Hint/Fail/native_compute; <code>vm_compute</code> only for closed numeric facts and the finite orbit) and compiled it independently: <code>Print Assumptions nonhalt</code> = "Closed under the global context", and <code>Compute tm</code> matches the string and the rule-table comment. Nothing suspicious. Wording nit, left as is: the header says the threshold is "computed for kappa &lt;= 13"; the code checks κ ≤ 11 by <code>forallb</code>, bases κ = 10..13 by <code>vm_compute</code>, then a two-step induction.</li>
+<li>Fresh human-readable run for the submission, 18:30:15-18:31:40 PDT (checked_at 2026-10-11T01:31:40Z): 17/17 PASS, compile 15.5 s (native on), coqchk -norec pass 67.7 s, 0 assumptions (closed), 85 s wall (<code>submission/check_kill.txt</code>).</li>
+<li><code>holdouts.py lookup</code>: in all 26 snapshots (2024-06-14 to 2026-10-07; line 748 of the 778 list), and line 710 of <code>data/holdouts/BB6_holdouts_740.txt</code>. <code>holdouts.py solved</code>: absent from busycoq <code>verify/</code> (no byte-exact, renamed or mirrored proof).</li>
+<li>How the .v relates to proof.md:</li>
+<li>§3-§4 (window/shift rules, RP, LP, the eats, D6 as an <code>LP</code> constructor whose premise is a <code>Phi</code>, the restart) are formalized as written, as mutually inductive <code>LP</code>/<code>Phi</code> with <code>sound</code> (every left context).</li>
+<li>Lemma D follows D.0-D.3 (front, positions, nested levels, merged blocks) but replaces the excess-profile bookkeeping of D.4-D.7 (Lemma C's Γ, the fixed point G(κ), U(κ,q), N* = 14,796, 591 finite epochs) by potentials:<ul>
+<li>the Q potential <code>2^f (value + 2 qsum + pending) &lt;= Q0 + 3*2^(f+len)</code>, so created positions stay below Pf κ = max(12, κ+3);</li>
+<li>a weighted potential <code>Pot</code> with prepaid future positions for the cost (<code>Dig_cost</code>, weights 2^⌊(q+1)/2⌋, the same as D.7's) and for the merged masses (<code>Dig_mass</code>);</li>
+<li>the invariant <code>Inv κ N Y</code>: N ≥ 17,705, N ≥ Nlo κ, k(W) ≤ κ, Mw ≤ Af κ, M2 ≤ Bf κ, x ≤ Xf κ.</li>
+</ul>
+</li>
+<li>The finite part is 691 model epochs by <code>vm_compute</code>, from K(1,8,t2) (epoch 3) to K(1,17713,Y694) (epoch 694), with <code>Inv 10 17713 Y694</code>. Counting-phase termination uses the simpler Ψ potential (<code>gcount</code>).</li>
+<li>Submission package: <code>submission/</code>.</li>
+<li>The .v, unchanged (same sha256).</li>
+<li>proof.md: a public write-up built by <code>rocq/submission_src/build.py</code> (<code>python3 -B rocq/submission_src/build.py proof.md rocq/submission_src submission/proof.md</code>; header + working §0-§7 with 17 one-match asserted scrubs + new §8/§9; rebuild is byte-identical). §0-§7 keep their numbering and mathematics (the .v cites 3.x and D.x). A diff against the working copy shows only process and history wording: check_proof.py mentions, "first version", "observe stage", "Checkpoint B examples", <code>nest_cost.JA</code>, "nest-stage", the <code>Dn(3)</code> example, plus one D.8 bullet that points to the .v's threshold.<ul>
+<li>New parts: a header (holdout lists, template tm10 and the C1 difference, status, section map) and a Summary.</li>
+<li>§8 "The formal proof": 8.1 what is kept from the template, 8.2 a write-up-to-.v table, 8.3 Lemma D in the .v (the potentials, <code>Inv</code>, N1/N2, a κ table, the finite part).</li>
+<li>§9: the numerical checks, without script names, seeds or paths.</li>
+<li>It has no review log, status lines or internal names. <code>tools/writeup_lint.py</code>: 0 errors, 0 warnings.</li>
+<li>The working proof.md (sha256 <code>2db1bee5…139b</code>) is untouched. It still states its own invariant (N* = 14,796), which is fine as an informal proof; the public copy explains the .v's variant.</li>
+</ul>
+</li>
+<li>check_kill.txt (the 18:31:40 run, verbatim), README.md (writeup_lint: 0 errors; 1 warning, for the holdout snapshot dates).</li>
+<li>discord.md: a draft of 1,609 characters plus <code>&lt;LINK&gt;</code> (source text in <code>rocq/submission_src/discord_msg.txt</code>). <strong>Not posted.</strong></li>
+<li>Before posting:</li>
+<li>Search Discord #bb6 for the string. Sheet row 1053 is blank, and the string is not in our Discord exports.</li>
+<li>No Checkpoint A or B notes from Dennis were on file when this was packaged. If he adds any, fold them into proof.md and the submission copy first.</li>
+<li>check_kill.txt carries absolute local paths, as every earlier package does. Scrub them before attaching it anywhere public.</li>
+<li>Sibling #10 <code>1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC</code> (same hub, C1 = 1RA; 740 line 611) stays CRYPTID_CANDIDATE. The draft does not mention it.</li>
+<li>PR #15 (the #3 family) is still open; this kill waits in the same queue as the other claimed kills.</li>
+</ul>
+<h2 id="same-table-other-starts-added-2026-10-11">Same table, other starts (added 2026-10-11)</h2>
+<ul>
+<li>W4-1 <code>1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB</code> (740 line 590) = this table started in this machine's B (sigma A-&gt;E, B-&gt;A, C-&gt;B, D-&gt;C, E-&gt;D, F-&gt;F, no mirror; canon check: canon(#30, start B) == canon(W4-1, start A)). KILLED_NONHALT 2026-10-11, its kill file is this machine's .v renamed, with its own init and finite part; its status.json names this machine as parent.</li>
+<li>
+<h1 id="7-1rb0ra_1lc0ld_1le1ld_0lb0re_1rf0la_-0ra-740-line-381-this-table-started-in-e-mirrored-not-killed-see-its-own-dir">7 <code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA</code> (740 line 381) = this table started in E, mirrored. Not killed (see its own dir).</h1>
+</li>
+<li>A sibling stage that labelled this machine "W4-1b" with W4-1 as its parent (delta proof) was SKIPPED on 2026-10-11: this machine is the template and is already killed (check_kill PASS, sha256 93a493f5...0c0), so a delta proof would be circular and nothing here was changed except this section.</li>
+</ul>
+</main></body></html>

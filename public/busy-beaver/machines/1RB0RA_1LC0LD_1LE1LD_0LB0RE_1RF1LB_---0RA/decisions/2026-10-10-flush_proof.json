@@ -1,0 +1,57 @@
+{
+ "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA",
+ "bucket_reason": "Medium confidence at observe: every round to 1e10 is covered by validated rules, but non-halting still needs an unproved flush lemma, so proof work waits.",
+ "question": "Fund one stage for the flush lemma and proof.md (hand route, BECv7-style carry relation), run a native CTL search first, or park?",
+ "options": [
+  {
+   "id": "flush_proof",
+   "label": "One stage: prove the flush lemma informally, then write proof.md (rule table, invariant, closure)",
+   "consequence": "Pins down the one open bound: the 001 debris is gone before the marker returns. If it closes, proof.md follows and formalization can start from BECv1's unary lemmas plus a BECv7-style inductive carry. Stop rule: if no clean bound turns up within the stage, write it up and park."
+  },
+  {
+   "id": "ctl_first",
+   "label": "Native CTL / regular-invariant search first (copy #7's extracted CTL62 tool), no hand proof yet",
+   "consequence": "Costs compute plus a short setup. The odds look low: the invariant needs a size bound (debris flushed in time), which bounded CTL windows cannot express, and #7's 118 runs found nothing."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "The mechanism is fully mapped (100% of rounds to 1e10 exact), so a later stage can pick it up from notes.md and scripts/ without redoing the observe work."
+  }
+ ],
+ "recommended": "flush_proof",
+ "rationale": [
+  "9 round rules predict all 1,008,130 rounds to 1e10 exactly (100/100 random sims each).",
+  "One gap: no 001 debris at an eat. Slack is large (worst 0.44), but fuzzed eats with debris halt.",
+  "tm10 with E1 changed (10/11 cert hypotheses hold); the counter is a BECv7-like block list."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Fig 2: one row per left entry into E; the diagonal 00 marker runs down to the counter band, then an eat",
+   "href": "card.html#fig-2"
+  },
+  {
+   "kind": "fact",
+   "text": "Coverage to 1e10: 1,008,130 round transitions, 100.0000% predicted, 0 mismatches (INC0 503,071; CARRY 503,424 incl. 1,293 CARRY_S; BIRTH 569; EAT0f 498; EAT1 495; EAT0z 73)",
+   "href": "scripts/predict.py"
+  },
+  {
+   "kind": "fact",
+   "text": "Flush slack per epoch: worst 0.44 (step 664), at most 0.107 after 1e9, median 0.005; 0 of 1,066 eats see an 001 block",
+   "href": "scripts/slack.py"
+  },
+  {
+   "kind": "fact",
+   "text": "Fuzz: 0 halts in 13,651 rounds while words stay in {100,000,010,001}; 26 halts in 1,200 samples once an eat with debris pushes them out",
+   "href": "scripts/fuzz.py"
+  }
+ ],
+ "effort_if_yes": "One stage (2 h of agent time) for the flush lemma and proof.md; then likely 2-3 stages to formalize (block-list carry relation as in BECv7.v, about 30-50 KB of Rocq).",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "flush_proof",
+  "note": "auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.",
+  "date": "2026-10-10"
+ }
+}

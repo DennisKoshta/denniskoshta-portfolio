@@ -1,0 +1,53 @@
+{
+ "tm": "1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA",
+ "label": "H-3",
+ "status": "STUCK",
+ "stage": "halting-hunt exact model",
+ "updated": "2026-10-13",
+ "reason": "Halting hunt H-3 (exact model) ended without a halt. Exact run-length model (TM4 labels with each machine's own D0; upstream P0_n plus derived batch rules W (wave), A (absorption), P (passes) over the word run U=(0 1^2); Python + validated C port) ran 244 to epoch 108, b ~ 10^35.9, ~10^(1.1e+35) TM steps; 216 to epoch 97, b ~ 10^32.1, ~10^(1.8e+31) TM steps; 701 to epoch 96, b ~ 10^31.8, ~10^(9e+30) TM steps. No halt. Brief corrected: the differing transition (244's C0 = TM4-label D0) is not startup-only. It fires at every right-end event (first post-startup at step 402,723,884, checked with tools/sim on the holdout string), so these machines do not run TM4's table. Real step counts are doubly exponential (P0_n costs 24*2^n-6n-24 steps). Halting needs a post-wave config F> 0 0 1^L 0 with L=1; census over the whole run: never (min L: 244 2, 216 5, 701 4). Right-end routines are linear; the only 1-block doors are g=4 in routine (ii) for 244 and k=0 in routine (i) for 216/701. Neither ever occurs (right-end event grammar is rigid). Injected into real contexts they halt 12/40 (244) and 38/40 (216). 244's nearest door: k2 events need gap G<=16 to step to k3; the run's minimum is G=18. Model checked: 2022/2022 rule checks on constructed tapes; 14/14 direct-simulation anchors on the original holdout strings (tools/sim C engine, up to 1.5e11 steps for each of 244, 216, 701); plain vs batched full tapes at every epoch start to 19 (244: 21); Python vs C at 64 epochs; TM4's certified halt reproduced (1012 macro moves, ~1.341e395 steps). Not cryptid (nested counter comparisons, no modular step). Nonhalting looks like the true answer; the right-end grammar is the lead (216/701 especially: after startup only k4/g3 or big events). Upstream works this side (CounterClass3v2).",
+ "holdout_line_740": 244,
+ "family": "CounterClass3v1 TM4 table with D0 changed (TM4 labels): 244 = D0 1LB from F; 216 (1RB0RA_0RC0LD_1LA1RF_1LE1LD_1LB1RE_---1RA) and 701 (1RB1RA_1RC1LB_0LD0RA_1RF1LE_---1LF_1LC0LF, mirrored) = D0 1LF from F and A; all three claimed by claude",
+ "hunt": {
+  "244": {
+   "epoch": 108,
+   "log10_b": 35.8623,
+   "b": "728220738755644974829897585431960599",
+   "log10_steps": 1.09608e+35,
+   "d0": 397998429,
+   "Lmin": 2,
+   "L2": 6969750,
+   "L3": 68135398,
+   "msteps": 31069556793
+  },
+  "216": {
+   "epoch": 97,
+   "log10_b": 32.0823,
+   "b": "120860769075791407668089466898701",
+   "log10_steps": 1.81914e+31,
+   "d0": 74294216,
+   "Lmin": 5,
+   "L2": 0,
+   "L3": 0,
+   "msteps": 4212441505
+  },
+  "701": {
+   "epoch": 96,
+   "log10_b": 31.7778,
+   "b": "59946721306034064405925122421303",
+   "log10_steps": 9.02288e+30,
+   "d0": 63432649,
+   "Lmin": 4,
+   "L2": 0,
+   "L3": 0,
+   "msteps": 3596524272
+  },
+  "halts": 0,
+  "doors": {
+   "244": "routine (ii) with g=4 (needs k4; k2->k3 needs gap <= 16, min seen 18)",
+   "216/701": "routine (i) with k=0"
+  },
+  "resume": "scripts/rle2c HOURS work/c_run NAME:TABLE:START (restarts from scratch; ~3 min to epoch 98); int128 limit ~epoch 110",
+  "anchors": "14/14 match (work/anchors_long*.out, work/anchors_deep.out); deepest 1.5e11 steps per machine"
+ },
+ "premise_correction": "D0 (244 own C0) fires at every right-end event, not startup-only; machines do not run TM4's table"
+}

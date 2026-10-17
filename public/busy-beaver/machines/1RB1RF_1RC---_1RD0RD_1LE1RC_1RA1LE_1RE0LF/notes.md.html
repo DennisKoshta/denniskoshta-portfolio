@@ -1,0 +1,608 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF/notes.md · <a href="/busy-beaver/machines/1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF/notes.md.html">raw</a></div>
+<h1 id="1rb1rf_1rc-_1rd0rd_1le1rc_1ra1le_1re0lf">1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF</h1>
+<p>Status: CHECKPOINT_A
+Class guess (agent / Dennis): base-4 bouncer counter, sheet "Shift-overflow structural counter" / <em>pending</em>
+Spreadsheet notes / Discord thread: Results row 620: class only, no status, notes, links or cell comments. The only Discord appearance is mxdys's UBRRBA_TODO list (2026-08-24), which Dennis ruled fair game on 2026-10-10. Not on Level 1, Category 1 or dyuan01's list. Trajectory twin: <code>1RB1LF_1LC1RB_1LE1LD_1LB0RD_1LF---_1LA0LA</code> (Level 0 tab, Eqv mention).
+Viewer: https://bbchallenge.org/1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>Simulated to 2·10^10 steps (scratch C tracker, <code>observe_scripts/cyc.c</code>) with no halt. Right edge at 214,890; step ≈ 0.432·hi². The left edge has been at −78 since step 1.8·10^8 (left records only at 1.45e6 and 1.8e8).</li>
+<li>Tape: <code>0^inf [left end] … Z2 S1 Z1 S0 Z0 W 0^inf</code>.</li>
+<li>Each zone Z_k is a single 6-cell block repeated (a rotation of 110101).</li>
+<li>Each separator S_k is a small debris word.</li>
+<li>W is a fixed 99-cell wall that just translates right.</li>
+<li>Head motion:</li>
+<li>Right pass in C/D, 1 cell/step.</li>
+<li>Left pass: F carries a <code>0^6</code> packet at 0.3 cells/step.</li>
+<li>Turn-back depth over cycles follows the base-4 ruler (cyc.c output, file not kept; to 2e6 steps it is visible in <code>img/sweeps_turnback_2e6.png</code>, one row per round trip, red = turn-back, made by <code>python3 -B observe_scripts/sweepview.py img/sweeps_turnback_2e6.png 2e6 4 -68 900</code>):</li>
+<li>S0 bounces 3 times, at positions x−10, x+2 and x; the 4th sweep passes to S1.</li>
+<li>S1 has the same pattern (offset −12 instead of −10), and so does S2.</li>
+<li>This was seen to at least 9 levels by 2e9.</li>
+<li>Zone sizes at 1.45e9: Z0 7205, Z1 1790, Z2 440, Z3 70, Z4 17 blocks, so ×~4 per level (history rows in observe.json).</li>
+<li>Left end: at the 1.8e8 left record the deep zones were rebuilt (Z3 went from 32 to new pieces of 6 and 13). After 2.28e8, no sweep reached below cell 104 up to 2e10.</li>
+<li>qsim: block size 2, 200k loops, 0 rules (no acceleration). rulefit: no validated rules (26 fitted, all killed). The tools can't see a counter whose digits are separators.</li>
+</ul>
+<p>Definitions used below:
+- <code>W = 0^3 1^11 0^7 (111110)^2 1^13 0 1^5 0^7 1^5 0 1^11 0^7 1^7 0^inf</code>
+- <code>P0 = 1^7 0 1^9 (01111111)^2 (110101)^3 (01)^2 1^8 0 1^7 0 1^9 0 1^7 0 (1^8 (10)^4)^2</code> (inert part of S0)
+- S0 at its turn-back (F reading the last 0):
+  - <code>a(n) = X 1^9 010 &lt;F 0^4 1^13 (011111)^n 1^8 W</code>
+  - <code>b(n) = X 1^9 0 1^7 (01)^3 0 &lt;F 0^4 (111110)^n 1^13 W</code>
+  - <code>c(n) = X 1^9 (01)^6 0 &lt;F 0^4 (111110)^n 1^13 W</code>
+- S1 stored forms (followed by P0):
+  - <code>H(m) = 1^8 (10111111)^2 (10)^6 (101110)^m</code>
+  - <code>P(m) = 1^8 (10111111)^2 (10)^4 1^7 0 (101110)^m</code>
+  - <code>M(m) = 1^9 0 1^7 (01)^3 1 (10)^5 (101110)^m</code>
+  - <code>L(m) = 1^9 0 1^4 (11101010)^2 1^7 0 (101110)^m</code></p>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All are exact configuration transitions, checked by <code>observe_scripts/harness.py</code>: Python engine, head-relative trimmed-tape equality, first hit, with the step count fitted and then re-checked.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>transition</th>
+<th>steps</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td><code>C&gt; (011111)^n -&gt; (110101)^n C&gt;</code></td>
+<td>6n</td>
+<td>24/24, n ≤ 2770, random contexts</td>
+</tr>
+<tr>
+<td>R2</td>
+<td><code>(111010)^n &lt;F 0^6 -&gt; &lt;F 0^6 (111110)^n</code></td>
+<td>20n</td>
+<td>24/24, n ≤ 1894, random contexts</td>
+</tr>
+<tr>
+<td>Ra</td>
+<td><code>a(n) -&gt; b(n)</code></td>
+<td>26n+624</td>
+<td>16/16, n ≤ 1342; full and 300-cell X (local)</td>
+</tr>
+<tr>
+<td>Rc</td>
+<td><code>c(n) -&gt; a(n+1)</code></td>
+<td>26n+688</td>
+<td>16/16, n ≤ 1290</td>
+</tr>
+<tr>
+<td>RbH</td>
+<td><code>b(n)[Y H(m) P0] -&gt; c(n+1)[Y P(m) P0]</code></td>
+<td>52n+26m+2130</td>
+<td>14/14</td>
+</tr>
+<tr>
+<td>RbM</td>
+<td><code>b(n)[Y M(m) P0] -&gt; c(n+1)[Y L(m) P0]</code></td>
+<td>52n+26m+2130</td>
+<td>14/14</td>
+</tr>
+<tr>
+<td>RbL</td>
+<td><code>b(n)[Y L(m) P0] -&gt; c(n+1)[Y H(m+1) P0]</code></td>
+<td>52n+26m+2220</td>
+<td>14/14</td>
+</tr>
+<tr>
+<td>RbP</td>
+<td><code>b(n)[Y_b P(m) P0] -&gt; c(n+1)[Y_c M(m+1) P0]</code> (carry into S2, real S2 context)</td>
+<td>52n+26m+6340</td>
+<td>12/12</td>
+</tr>
+</tbody>
+</table>
+<p>Total: 134/134 instances, with random n and m (small values 1–5 and large ones up to about 2770; both parities).</p>
+<p>How the rules fit together:
+- Digit 0 cycles a → b → (S0 open) → c → a, with Z0 += 2 per 4 sweeps.
+- Digit 1 cycles H → P (open) → M → L → H, with Z1 += 2 per 4 visits.
+- So this is a base-4 counter whose digits sit at the left edges of the growing zones.
+- No parity-of-big-number branching anywhere, so this is not a cryptid.</p>
+<p>Template check:
+- Named templates: SBCv6a TM1 (9 transitions away), SBCv10 TM4 (8), SOBLv2 TM3 (8; that one is a HALT proof).
+- Their tapes collapse to <code>(10)^k</code> or halt at step 1 under this machine, so their rules don't carry over. The architecture does: SBCv6a's <code>RIncs</code> digit list and SBCv10's signal net.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<ul>
+<li>Q1: In sweeps_turnback_2e6 (diagram 1), are there 3 turn-backs at S0, then 1 deeper, with every 4th deeper one going deeper still? Call it a base-4 counter?</li>
+<li>Q2: In blaze_1e9, are the inner curves (about 1/4 and 1/16 of the edge) the digit borders?</li>
+<li>Q3: Pin down the left end (new-digit creation, the 1.8e8 rebuild) before proof.md?</li>
+</ul>
+<h2 id="informal-proof">Informal proof</h2>
+<p>Not started (waiting for Checkpoint A).</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>Not started.</p>
+<h2 id="outcome">Outcome</h2>
+<p>Open.</p>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<p>The card now shows at most 3 short mechanism bullets and yes/no questions that point at figures by number (primary figures first). The text they replaced is kept here.
+- Figure order on the card: Fig 1 = <code>img/counter_every50.png</code>, Fig 2 = <code>img/sweeps_turnback_2e6.png</code>, Fig 3 = <code>img/records_R_right.png</code>, Fig 4 = <code>img/blaze_1e9.png</code>, Fig 5 = <code>img/default_site.png</code> (Figs 1-3 primary).
+- Mechanism, full observer version:
+  - Tape = left end … Z2 S1 Z1 S0 Z0 W: each zone Z is one 6-cell block (110101, some rotation) repeated; W = fixed 99-cell right wall.
+  - Right pass: C&gt; (011111)^n -&gt; (110101)^n C&gt; (1 cell/step). Left pass: F carries a 0^6 packet: (111010)^n <F 0^6 -> &lt;F 0^6 (111110)^n (20 steps/block).
+  - A left sweep stops at the first separator that is closed. Each separator has 4 states: 3 bounce the head back, the 4th lets it through to the next one.
+  - So bounce depth follows the base-4 ruler (0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,0,2 …). Z0 gains 1 block per 2 sweeps, Z_k ≈ Z_(k-1)/4, edge ≈ sqrt(t/0.432).
+  - Left end: new digits appear rarely. The left end reorganised at the left records (1.45e6, 1.8e8) and is NOT characterised yet.
+- Checkpoint questions before the rewrite (some were decisions, not questions about a figure):
+  - Diagram 1 (one row per round trip): do the red turn-backs read as 3 at the S0 diagonal, then 1 deeper, with every 4th deeper one going deeper still? OK to call it a base-4 counter?
+  - blaze_1e9: are the inner curves (about 1/4 and 1/16 of the edge) the digit borders, all made of the same 6-cell block?
+  - records_R_right: the far-left lines barely change (new digits are rare). Should the next stage pin down the left end before writing proof.md?</p>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Result: the digit layer is now one rule for every level, checked on every trip of the real run. The open gap is narrower and now has a location: the <strong>top region</strong> (left end + an "embryo" word that absorbs the top carries and eats the topmost zone). Confidence stays <strong>med</strong>. Not a cryptid: there is no parity or big-number branching anywhere. The top region is reached once every 4^7 trips up to 1e11, and once every 4^8 trips after trip 236129, the fast-forward result in §3.</p>
+<p>Scripts (all new, in <code>scripts/</code>; C tools are built with <code>gcc -O2 -o X X.c</code>):
+- <code>toktrack.c</code>: blank-start tracker that prints the rest tape as tokens at every trip (format below).
+- <code>counter_trace.py</code>: replays the digit rule trip by trip on that output and lists every trip it does not explain.
+- <code>top_events.py</code>: shows the top region before and after each unexplained trip.
+- <code>digit_cycle.py</code>, <code>counter_check.py</code>, <code>runcfg.c</code>: synthetic tests (real S0 + Z0 + wall, with a synthetic digit or digit stack and left context above it).
+- <code>trips.c</code>, <code>tripsr.c</code>, <code>levels.c</code>: turn-back trackers. <code>tok.py</code>, <code>tokmark.py</code>, <code>zones.py</code>, <code>load.py</code>, <code>snap.py</code>: viewers and helpers.
+- Results: <code>scripts/data/*.json</code>.</p>
+<h3 id="1-rest-tape-alphabet">1. Rest-tape alphabet</h3>
+<ul>
+<li>A rest tape is the tape when the head makes a new right record, at the end of a full right pass.</li>
+<li>It reads <code>0^inf 1^t1 0 1^t2 0 ... W</code>, and every token t_i is odd. The only exception is the leftmost token (10 now).</li>
+<li>Reason: the C/D right pass flips the C-cells and needs every D-cell to be 1, so 0s sit only on C-cells.</li>
+<li>Below, a token sequence like <code>7 1 1 7</code> means <code>1^7 0 1 0 1 0 1^7 0</code>.</li>
+<li>A zone block is the pair <code>1 3</code>, which is <code>101110</code>. <code>Zk</code> means <code>(1 3)^k</code>.</li>
+</ul>
+<h3 id="2-digit-rule-the-same-at-every-level-closes-missing-phase-rules-separators-differ-carry-at-s2">2. Digit rule, the same at every level (closes "missing phase rules", "separators differ", "carry at S2+")</h3>
+<p>The rest tape is:</p>
+<p><code>LE'  D_top Z_top  E  { debris_k  X_k  (1 3)^m_k }  (k = K..0)  W</code></p>
+<p>Each digit word X_k is one of two types, A or B, and each type has 4 states:</p>
+<table>
+<thead>
+<tr>
+<th>type</th>
+<th>s=0</th>
+<th>s=1</th>
+<th>s=2</th>
+<th>s=3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>1 1 1 1 1 1 1</code> = (10)^7</td>
+<td><code>1 1 1 1 1 7</code></td>
+<td><code>7 1 1 1 1</code></td>
+<td><code>7 1 1 7</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>7 1 1 3 1 1 1 1</code></td>
+<td><code>7 1 1 3 1 1 7</code></td>
+<td><code>7 7 1 1 1 1 1</code></td>
+<td><code>7 7 1 1 1 7</code></td>
+</tr>
+</tbody>
+</table>
+<p>Every trip adds 1 at X_0, the S0 digit, as follows:
+- <strong>State s &lt; 3:</strong> the digit moves to s+1 and the sweep turns back inside this digit. The zone m_k gains 1 block when the digit leaves s=1, and stays the same when it leaves s=0 or s=2.
+- <strong>State s = 3:</strong> the digit goes to s=0 and m_k gains 1. The sweep then runs on through debris_k, which is left unchanged, and into zone k+1 and digit X_(k+1). This is the carry.</p>
+<p>What stays fixed:
+- The debris words never change, and neither does the wall W.
+  - S0 is type A. Its debris is <code>7 9 7 9 1 3 1 3 1 1 1 9 7 9 7 9 1 1 1 9 1 1 1 9</code>.
+  - S1 is type B. Its debris is <code>1 1 1 9 7 1 1 3 1 1 3 9 1 3 1 1 1 7 1 9 7 7 1 1 1 3 9 1 3 1 1 1 9</code>.
+  - Deeper digits are type A or B. Some have their own debris and some are bare: S3 at 9825, for example, is just <code>(10)^7</code>.
+- The bounce offsets −10 and −12 from the observe pass are the two types, A and B.
+- Earlier rules: the observe-pass rules Ra/Rc/Rb* (turn-back configurations) are this rule for S0 (type A) and S1 (type B), seen at turn-back time instead of at rest.</p>
+<p>Time law:
+- The turn-back level of trip t is 1 + (number of trailing digits in state 3). This is a base-4 ruler.
+- Between trips 2000 and 5088 the level is exactly 1 + v4(t+31), capped at 4.
+- The 1.8e8 rebuild changed the phase of the levels ≥ 4.</p>
+<p>Validation:
+- <strong>Real run, trip by trip</strong> (<code>toktrack 2e10</code> → <code>counter_trace.py</code>). The prediction is compared on the whole token string, including all debris and the wall.
+  - 53572 of 53703 trip-to-trip transitions are exactly the predicted counter step, at turn-back levels 1..7: {1: 40254, 2: 10030, 3: 2495, 4: 611, 5: 147, 6: 28, 7: 7}.
+  - The 131 others:
+    - the start-up phase up to about trip 480, where zones are too small for the parser;
+    - young-digit and top-region events at trips 481..5729;
+    - 12 top-region events after trip 5729: 6753, 7777, 8801, 9825, 10849, 11873, 12897, 13921, 14945, 23137, 39521, and 5729 itself.
+  - To 1e11 (<code>toktrack 1e11</code>, 120,092 trips, no halt): 119,956 of 120,091 transitions are counter steps: {1: 90045, 2: 22478, 3: 5607, 4: 1389, 5: 341, 6: 77, 7: 19}.
+  - The 135 others are the same start-up and top events as above, plus the top events at 55905, 72289, 88673 and 105057.
+  - Since trip 14945 the <strong>only</strong> trips the rule does not explain are the six carries into the top region, at 23137 + k·16384 (k = 0..5).
+- <strong>Synthetic, single digit</strong> (<code>digit_cycle.py</code>, 40 runs):
+  - Set-up: type A and type B, all 4 start states, zone 0..274, random left context ending in a 9, real S0 + Z0 + wall below.
+  - All 87 non-carry visits matched the prediction.
+  - Carry visits: 27 runs end OK.
+  - The other 13 carries go into the artificial top context. There the left end starts a long excursion (up to about 9e7 steps), and the check cannot follow it: 11 runs end with S0 outside the printed window, and 2 report MISMATCH from a window that no longer contains the digit.
+  - So these 13 runs are untested, not failures of the digit itself. A carry into a realistic debris ending (<code>9 1 3 1 1 1 9</code>) is OK.
+- <strong>Synthetic stacks</strong> (<code>counter_check.py</code>, 24 runs, 2–4 random digits, zones 0–12):
+  - 14 runs are fully OK, up to and including the carry out of the stack.
+  - 9 runs end with S0 outside the window after the stack carries into the artificial top.
+  - 1 run <strong>HALTs</strong>, after 57 correct counter steps, when the carry left the stack into the artificial left context <code>9 1 1 9</code>. So non-halting depends on what the top region looks like.
+  - With B defined without its leading 7, a bare B digit right after a zone breaks at once: it borrows a 7 from the digit above. That is why the B words include the 7. In the real tape every B digit has <code>...9</code> debris in front of it.</p>
+<h3 id="3-what-is-still-open-the-top-region">3. What is still open: the top region</h3>
+<ul>
+<li>No left record after 1.8e8: the left edge is −78 from trip 5089 up to 1e11 (<code>levels 1e11</code>, 120,092 trips, no halt).</li>
+<li>Since trip 9825 the left part reads:</li>
+<li><code>LE' = 10 1 1 3 1 1 1 7 1 1 3 15 1 1 1 1 1 7 7 1 1 3 1 7 9 9 7 9 1 3 1 3 1 1 1 1 1 3 9 1 3</code>. It was unchanged from trip 5729 until trip 236129.</li>
+<li>D_top is a type-A digit at the end of LE'. Its history: a1 (5729), then a2 (9825), then a3 (72289).</li>
+<li>Z_top is D_top's zone, but it <strong>shrinks</strong>: 12 (5729), 10 (9825), 9 (39521), 7 (72289).</li>
+<li>E is an "embryo" word, followed by young digits whose zones are 0–5.</li>
+<li>E takes the carry out of the highest normal digit. That happens once every 4^7 = 16384 trips: 23137, 39521, 55905, 72289, 88673, 105057.</li>
+<li>In the one full cycle seen (23137..72289), E absorbed 3 carries and passed the 4th, like a 4-state digit. That pass, at 72289, moved D_top from a2 to a3 and cost Z_top 2 blocks.</li>
+<li>E's words over time:</li>
+<li>after 23137: <code>1 9 1 1 13</code></li>
+<li>after 39521: <code>1 9 1 1 1 1 1 7 9</code> (Z_top −1)</li>
+<li>after 55905: <code>1 9 1 1 1 7 7 9</code></li>
+<li>after 72289: <code>1 9 1 9 1 1 1 1 1 3 7 9</code> (Z_top −2)</li>
+<li>after 88673: <code>1 9 1 9 1 1 7 1 3 7 9</code></li>
+<li>after 105057: <code>1 15 1 1 1 1 1 1 1 1 1 3 1 3 7 9</code></li>
+<li>D_top + Z_top + E together grow by exactly 4 cells per event. This is the same +4 per visit that every separator shows.</li>
+<li>New digits are born inside or next to E with zones of 0–1. Examples:</li>
+<li>The proto-word <code>1 1 3 1 1 3 1</code> → <code>1 1 3 1 1 9</code> → <code>7 1 1 1 1 9</code> → <code>13 1 1 1 9</code> (trips 6753, 7777, 8801, 9825).</li>
+<li>At 23137 two young A digits, with zones 1 and 5, both carry and E's <code>7 1</code> becomes <code>13</code>.</li>
+<li>The earlier left-end history looks similar, at smaller sizes: the left records at 1.45e6 and 1.8e8, and the LE rewrites at trips 993, 1249, 1505, 1761, 2017, 2273, 2529, 2785, 3041, 4065.</li>
+<li><strong>Past 1e11, with a fast-forward</strong> (<code>fastforward.py</code>):</li>
+<li><strong>How it works.</strong> The digit rule above is applied trip by trip in compact form. Only the trips it cannot cover (carry out of the topmost parsed digit) are run exactly in C (<code>runcfg</code>), from the rendered rest tape.</li>
+<li><strong>Spot checks.</strong> Some ordinary trips are also run exactly and compared with the rule's prediction: deep carries and every 997th trip in the first run, every 4999th trip in the second.</li>
+<li><strong>Check against real data.</strong> Started at trip 88673, it matched every real line to 105057 exactly: 16,384/16,384 trips, including the simulated top event at 105057, plus 80 spot checks. Output: <code>scripts/data/fastforward_check_88673.json</code>.</li>
+<li><strong>From trip 120092 (1e11) on</strong> (<code>scripts/data/fastforward_120092.json</code>):<ul>
+<li>164 spot checks agree with the rule. The one failure, at trip 789842, is the tool limit: the tape no longer fits runcfg's 4M-cell buffer.</li>
+<li>No halt, and no left record.</li>
+<li>Step counts below are ≈ 6.93·trip², extrapolated from the real run.</li>
+</ul>
+</li>
+<li><strong>Trips 121441, 137825, 154209:</strong> E has <strong>matured into an ordinary type-A digit</strong>. Read as debris <code>1 15 1</code> + a0 + Z2, it counts a0→a1→a2→a3 with zone 2→3 like any digit. Its old debris <code>1 15 1</code> is the new embryo.</li>
+<li><strong>Trip 170593 (≈2.0e11 steps):</strong> the carry out of that digit is absorbed by the embryo, <code>1 15 1</code> → <code>1 21</code>.</li>
+<li><strong>Trip 236129 (≈3.9e11):</strong> the embryo passes the carry on. D_top (a3) carries into LE'. LE' is rewritten from its 8th token on (<code>10 1 1 3 1 1 1 7 1 1 3 15 ...</code> → <code>10 1 1 3 1 1 1 13 1 3 ...</code>), and <strong>Z_top is used up completely</strong>. The deepest turn-back is cell 32 of the tape, so there is no left record, unlike 1.45e6 and 1.8e8. One trip, 4.1M steps.</li>
+<li><strong>Trips 301665, 367201, ..., 760417 (≈4.0e12):</strong> every 65536 = 4^8 trips the carry out of the 8th digit enters the new top region and is absorbed there. Turn-backs are at cells 210–260, the top words change, and young digits form inside them (e.g. tokens <code>15</code>, <code>19</code>, <code>7 9 Z2 ...</code>).</li>
+<li><strong>What a proof still needs:</strong></li>
+<li>(a) a closed description of the top region. That means the embryo word family; how an embryo matures into a type-A/B digit and leaves a new embryo behind; and the rewrite of LE' when D_top carries (seen at 449, 5089 and 236129, each time different).</li>
+<li>(b) an invariant on the debris words that rules out the halting pattern (F reads 0 with <code>0 0 1</code> to its right). A synthetic top context does halt (§2), so this has to come from the real words.</li>
+<li>(c) head-level lemmas for passage through debris and for type-A/B bounces. So far the rule is checked at rest-tape level, plus the observe-pass head-level rules for S0/S1.</li>
+</ul>
+<h3 id="4-verdict-for-this-pass">4. Verdict for this pass</h3>
+<ul>
+<li><strong>Confidence:</strong> med, unchanged.</li>
+<li><strong>Covered:</strong> the counter layer is covered, at every level, on every trip seen so far.</li>
+<li><strong>Not covered:</strong> the top region, which is where new digits are created and where the halting risk sits (shown by a synthetic halt), has no rule yet.</li>
+<li><strong>Recommendation:</strong> more observation, aimed only at the top region.</li>
+<li>No new long runs are needed: <code>fastforward.py</code> reaches about 4e12 equivalent steps in about 1 minute.</li>
+<li>Next step: dump the full top-region word after every top event, at 1.45e6, 1.8e8, 1.0e11 … 4e12, and fit the embryo life cycle. That is: embryo → absorbs carries → matures into a digit → leaves a new embryo, and LE' is rewritten when D_top carries.</li>
+<li>To go past trip ~790k, raise runcfg's buffer (<code>SZ</code>). This costs about 2 bytes per tape cell (tape plus input buffer), so 8 MB now.</li>
+</ul>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Result: the counter is <strong>not</strong> the whole story. A closed-form fast-forward reaches trip 13.5e6, about 1.27e15 steps. There the counter <strong>overflows</strong>: the carry crosses the whole top region, the sweep makes a new left record, and the return pass rewrites the whole tape. That trip is quadratic in zone size, about 1e16 steps at the real sizes. Afterwards a fresh base-4 counter starts from a new wall on top of the recoded tape. So the machine is a multi-epoch shift-overflow counter, which matches the sheet class "Shift-overflow structural counter". <strong>Confidence: low</strong> (down from med), because the recoding rule and the epoch recursion are open. Not a cryptid so far: no Collatz-like branching was seen, but the recoding depends on zone parity (§3). <strong>Recommendation: more observation</strong>, aimed at the rebuild rule. This is a large job, so Dennis may prefer to park the machine (see §6).</p>
+<p>New scripts (in <code>scripts/</code>; build the C tools with <code>gcc -O2 -o X X.c</code>):
+- <code>topsim.py</code>: the closed-form fast-forward (§1).
+- <code>trip1.c</code>: one exact trip, any tape size.
+- <code>rebuild_split.py</code>, <code>rebuild_scale.py</code>, <code>rebuild_continue.py</code> + <code>runtok.c</code>: the overflow trip with capped zones, and what follows it.
+- <code>trace1.c</code>, <code>trace_helpers.py</code>, <code>sweep_forms.py</code>, <code>sweep_excursion.py</code>: head-level sweep windows.</p>
+<p>Data is in <code>scripts/data/</code>: <code>topsim_events_to_13539937.*</code>, <code>topsim_fullsize_check_2005601.json</code>, <code>pre_overflow_13539937.json</code>, <code>rebuild_split.txt</code>, <code>rebuild_continue_S512.txt</code>.</p>
+<h3 id="1-fast-forward-without-a-size-limit">1. Fast-forward without a size limit</h3>
+<p>How <code>topsim.py</code> works:
+- <strong>Between events, closed form.</strong> Take the counter digits from the topmost digit J down to S0, with value v = Σ s_k·4^k. After N trips, digit k is ⌊(v+N)/4^k⌋ mod 4. Its zone gains the number of odd c in [⌊v/4^k⌋, ⌊(v+N)/4^k⌋), since a zone grows on leaving states 1 and 3.
+- <strong>Events, exact.</strong> An event is a carry that leaves the topmost parsed digit, or that has to cross a debris word not yet shown to be transparent. Each event is run exactly with <code>trip1</code> on a tape where the zones below the event point are capped at 3 blocks.
+- <strong>Checks on each event.</strong> After the trip, the lower digits must come out exactly as predicted: state 0, zone+1, debris and wall unchanged. Their real zone sizes are then restored. A debris word that the carry crossed unchanged becomes trusted.
+- <strong>Validation:</strong>
+  - It reproduces all 16 round-1 events from trip 19041 to 760417; the tape after each event is identical.
+  - Capped and full-size runs agree on the K=9 events 1481313, 1743457 and 2005601. The full-size trips are 2.6e7 to 3.5e7 steps each.
+- Run: <code>./toktrack 2000000000 &gt; tok2e9.txt</code> (10 s), then <code>python3 -B topsim.py tok2e9.txt 16979 80 out.json</code>.</p>
+<h3 id="2-top-events-to-trip-135e6">2. Top events to trip 13.5e6</h3>
+<p>There are 72 events with no halt. All turn-backs land at cells 32–296, so none is a left record. Spacing is 4^K trips:</p>
+<table>
+<thead>
+<tr>
+<th>K</th>
+<th>trips</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>19041, 23137</td>
+<td>2</td>
+</tr>
+<tr>
+<td>7</td>
+<td>39521 … 121441</td>
+<td>every 16384</td>
+</tr>
+<tr>
+<td>8</td>
+<td>170593 … 1284705</td>
+<td>18</td>
+</tr>
+<tr>
+<td>9</td>
+<td>1481313 … 13277793</td>
+<td>46</td>
+</tr>
+</tbody>
+</table>
+<p>Debris words shown to be transparent:
+- 9 words in all.
+- Two are new this round: <code>7 9</code> (over type A, trip 121441) and the old embryo region <code>1 1 1 7 1 9 1 3 7 9 1 3 1 3 1 1 1 1 1 3 1 1 3 9</code> (over type A, trip 1284705).
+- So an embryo region does end up as frozen debris under a new top digit.</p>
+<p>What the top region looks like just before the overflow:
+- <code>10 1 1 3 1 1 1 19 1 19 1 1 1 7 1 3 1 7 7 7 1 9 7 7 1 7 1 7 1 1 1 7 (1 3)^11 1 1 1 9 1 1 1 9 7 9 1 3 7 1 1 3 9 1 3 1 3 7 9 7 7 1 1 1 3 9 1 3</code>
+- followed by the topmost digit <code>7 1 1 7 Z95</code>, which is in state a3.</p>
+<h3 id="3-the-overflow-at-trip-13539937-about-127e15-steps">3. The overflow at trip 13,539,937 (about 1.27e15 steps)</h3>
+<p>Pre-event state: <code>scripts/data/pre_overflow_13539937.json</code>. Every digit is in state 3 (zones 95, 411, 1651, 6605, 26433, 105737, 423110, 1692473, 6769940), so the carry runs through all of them into the top region.
+- <strong>Left record.</strong> The sweep turns back 7 cells left of the old left end. This is the first left record since 1.8e8.
+- <strong>Leftmost token.</strong> The leftmost token records each left record: 4 (from trip 13) → 10 (trip 5089, the 1.8e8 record) → 16 (now).
+- <strong>Whole-tape rewrite.</strong> The return pass rewrites the whole tape: every zone, every debris word and the wall. The 1.8e8 record only rewrote the top two zones; this one goes all the way down.</p>
+<p>With every zone capped at S blocks (<code>rebuild_split.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>S</th>
+<th>steps</th>
+<th>bottom zone after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64</td>
+<td>1.5e6</td>
+<td>47</td>
+</tr>
+<tr>
+<td>128</td>
+<td>5.2e6</td>
+<td>95</td>
+</tr>
+<tr>
+<td>200</td>
+<td>1.16e7</td>
+<td>149</td>
+</tr>
+<tr>
+<td>256</td>
+<td>1.8e7</td>
+<td>191</td>
+</tr>
+<tr>
+<td>300</td>
+<td>2.45e7</td>
+<td>224</td>
+</tr>
+<tr>
+<td>400</td>
+<td>4.3e7</td>
+<td>299</td>
+</tr>
+<tr>
+<td>512</td>
+<td>6.8e7</td>
+<td>383</td>
+</tr>
+<tr>
+<td>600</td>
+<td>9.1e7</td>
+<td>449</td>
+</tr>
+</tbody>
+</table>
+<p>What the capped runs show:
+- <strong>Time.</strong> The trip takes about 260·S² steps, so it is quadratic in zone size.
+- <strong>Length.</strong> The tape keeps its length, plus 10 cells.
+- <strong>Zone sizes.</strong> Each zone is cut into pieces of roughly fixed fractions; the bottom zone m becomes about 3m/4 − 1.
+- <strong>Parity.</strong> The piece pattern depends on the parity of m: S = 200, 202 and 204 give one pattern, 201 and 203 another. It may also depend on m mod 4 (not tested).
+- <strong>New tokens.</strong> New tokens appear, including runs of an 8-cell block <code>1 1 3</code>.
+- <strong>No halt</strong> in any capped run (about 20 sizes, 2 ≤ S ≤ 600).
+- <strong>Real sizes.</strong> Z0 is about 6.8e6 blocks, so the real rebuild trip extrapolates to about 1e16 steps, roughly ten times all the time before it. A direct full-size run was stopped after several CPU-minutes.</p>
+<h3 id="4-after-the-overflow-a-new-epoch-synthetic-zones-capped-at-512">4. After the overflow, a new epoch (synthetic: zones capped at 512)</h3>
+<ul>
+<li>Simulation continued for 2e10 steps, 53,650 trips (<code>rebuild_continue_S512.txt</code>), with no halt and no further left record.</li>
+<li>A new wall sits at the bottom: <code>1 1 1 1 1 3 9 Z2 7 9 Z2 1 1 1 1 1 3 9 Z2 1 1 1</code>.</li>
+<li>A fresh base-4 A/B counter grows above it: <code>… 1 1 1 1 1 1 Z1654 7 1 1 1 1 Z6618 7 9 7 9 1 1 1 9 7 9 1 3 1 1 1 7 1 9 1 3 7 1 1 7 Z26494 [wall]</code>, with the S0 digit in state a3.</li>
+<li>The recoded old tape is the new top region.</li>
+<li>So the cycle repeats: counter → overflow → recode → new counter. Only one overflow has been seen; its rebuild alone (about 1e16 steps) is roughly ten times all the time before it.</li>
+</ul>
+<h3 id="5-head-level-structure-toward-lemmas-for-coq">5. Head-level structure (toward lemmas for Coq)</h3>
+<p>Measured on two trips, 14944→14945 and 15968→15969 (<code>sweep_excursion.py</code>):
+- In the left sweep, the head never goes more than 15 cells right of its running minimum before the turn-back.
+- In the return pass, the head never backs up more than 13 cells.</p>
+<p>So a trip is two sweeps that each look only a bounded distance back. The head-level rules are then finitely many local rules plus the zone loops R1/R2. They are not enumerated yet. The left-sweep signal is not a function of (state, token) alone; it carries up to about 15 cells of context (<code>sweep_forms.py</code>).</p>
+<h3 id="6-what-is-open-and-a-decision-for-dennis">6. What is open, and a decision for Dennis</h3>
+<ul>
+<li>(a) <strong>The rebuild rule.</strong> Needed: how the return pass recodes a zone of size m (parity, maybe m mod 4) and each digit/debris word. This must come from an accelerated, rule-level model of the recoding pass, because the real trip is about 1e16 steps.</li>
+<li>(b) <strong>The epoch recursion.</strong> The tape at the start of epoch n+1 as a function of epoch n, and one family that holds every epoch's counter, top events and rebuild. The round-1 embryo/LE' gap is part of this.</li>
+<li>(c) <strong>A non-halting invariant across epochs.</strong></li>
+<li>(d) <strong>The finite head-level rule set.</strong></li>
+<li><strong>Cryptid watch.</strong> If the parity/mod-4 dependence in (a) compounds across epochs, it could become pseudo-random arithmetic. That is not shown either way.</li>
+<li><strong>Priority call for Dennis.</strong> This is a multi-session project (the shift-overflow SO* proofs in busycoq are the nearest templates). Continue with (a), or park the machine?</li>
+</ul>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Park #19, rather than fund a stage on its overflow/rebuild rule?
+Answer: <strong>park</strong> (Park (STUCK at deepen2)). Dennis: go with all recommendations (2026-10-10).
+Parked by Dennis 2026-10-10 (decision queue: park); deepen-2 findings are the re-entry point.</p>
+<h2 id="holdout-list-740-2026-10-10">Holdout list 740 (2026-10-10)</h2>
+<p>Removed from the 740 list by equivalence, not solved: upstream Eqv_WordPairs.v TM83 (commit d3c52f5) proves it equivalent to 1LB---_1RC0RC_1LD1RB_1RE1LD_0RA1RF_1RD0LF, which stays on the list. Re-entry (if ever) targets that representative.</p>
+</main></body></html>

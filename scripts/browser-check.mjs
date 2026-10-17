@@ -66,9 +66,9 @@ try {
   assert.equal(new URL(page.url()).hash,'#sources');
   await page.goto(base+'/',{waitUntil:'networkidle'});
   const demo=page.locator('[data-demo]');
-  assert.equal(await demo.locator('iframe').count(),1);
-  assert.equal(await demo.locator('iframe').getAttribute('loading'),'lazy');
+  assert.equal(await demo.locator('iframe').count(),0);
   await demo.scrollIntoViewIfNeeded();
+  await demo.getByRole('button',{name:'Start demo',exact:true}).click();
   const app=page.frameLocator('[data-demo] iframe');
   await app.getByRole('button',{name:'Play',exact:true}).waitFor({timeout:30000});
   assert.equal(await app.locator('dialog[open]').count(),0);

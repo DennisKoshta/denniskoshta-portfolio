@@ -1,0 +1,391 @@
+{
+ "tm": "1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---",
+ "rank": 45,
+ "class_sheet": "Shift-overflow structural counter",
+ "class_guess": "SO structural counter: binary counter stored between 6-cell-block segments, widening into a finite reservoir",
+ "confidence": "low",
+ "summary": "Binary counter over segments of 6-cell blocks; it eats a finite reservoir, and what happens after (~1e13+) is unseen",
+ "mechanism": [
+  "Cycle: from the right edge the head zigzags left (rule Z: 20 steps per block, 101110 -> 111110), bounces off the first boundary that does not carry, then runs right (RS: 6 steps per block). The right edge grows 4 cells per cycle. Halting needs `0 <A 101` (rule H).",
+  "The boundaries between block segments hold the bits of a binary counter: which boundary a cycle reaches follows the binary ruler sequence exactly (37,885/37,885 from step 5e4 to 1e10). Segment sizes double per bit (5, 23, 93, 374, 1496, ~6000 blocks at 1e9). Steps 0..~3.6e4 are a different, left-growing counter (init).",
+  "The counter grows leftwards into a reservoir (10)^m: m goes 58 -> 11 by step 7.5e9, losing 5 then 2 per new top bit. qsim (block 12): the reservoir is gone by 3.4e12, older prefix gadgets are eaten by 7.7e12, and there is no halt to 8e13. The prefix left after that, 1^4 (01)^11 1 (10)^4, is the open question."
+ ],
+ "diagrams": [
+  {
+   "mode": "records",
+   "png": "img/records_4e5.png",
+   "html": "img/viewer.html",
+   "steps": 400000,
+   "caption": "Records to 400k: early left counter, then left edge frozen",
+   "title": "Left/right records, first 400,000 steps",
+   "why": "Top quarter: the early phase grows on both sides. Below it, compare the frozen left block with the right part.",
+   "primary": true,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row each time the head reaches a new leftmost or rightmost cell (1,162 rows, steps 0..400,000); rows are not equal time",
+   "window": "cells -59..1102, 1 px = 1 cell",
+   "legend": "default colours: white = 1, black = 0 or never visited, red/green = head just moved right/left",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom",
+   "png": "img/cycle_depth_256.png",
+   "html": null,
+   "steps": 4879538,
+   "caption": "One row per cycle: how far left each sweep went",
+   "title": "How far left each of 272 cycles reaches",
+   "why": "One row per cycle. Compare where the orange bars start, row to row; their right parts are all alike.",
+   "primary": true,
+   "start": "mid-run: step 9406481 (rows are the real run from blank; no rebuilt tape)",
+   "rows": "one row (2 px tall) per cycle, i.e. per new right record after a leftward excursion of more than 20 cells: 272 cycles, steps 9,406,481..14,286,019",
+   "window": "cells -60..1539, 1 px = 2 cells (the right part of the tape, up to cell ~5,900, is cut off)",
+   "legend": "orange = cells the head swept during that cycle, dark grey = tape it did not reach in that cycle, black = never visited",
+   "style": "custom"
+  },
+  {
+   "mode": "every:1",
+   "png": "img/zigzag_closeup.png",
+   "html": null,
+   "steps": 120,
+   "caption": "Rule Z up close: 20-step zigzag per 6-cell block",
+   "title": "The leftward zigzag, step by step",
+   "why": "120 steps from the real tape. Follow the head colours through one 20-step repeat; compare blocks before and after.",
+   "primary": true,
+   "start": "mid-run: step 9848484 (the real tape at that step, passed in with --from-config)",
+   "rows": "every step (121 rows, steps 9,848,484..9,848,604)",
+   "window": "cells 4902..4957, 1 px = 0.1 cells (each cell is 10 px wide; drawn as -44..11 relative to the head at the start)",
+   "legend": "explore colours: white = 1, slate = 0; the head cell is coloured by state: A red, B orange, C blue, D green, E magenta, F cyan",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "blaze",
+   "png": "img/blaze_1e7.png",
+   "html": "img/viewer.html",
+   "steps": 10000000,
+   "caption": "Blaze 1e7: sqrt-like growth to the right, fixed left part",
+   "title": "Blaze, 10 million steps",
+   "why": "The overall shape: span grows about like sqrt(t) to the right while the left end stays put.",
+   "start": "blank",
+   "rows": "Blaze time blocks of 16,384 steps (averaged), 611 blocks stretched to 500 px, so 1 px row ~ 20,000 steps (steps 0..10,000,000)",
+   "window": "cells -60..4984, 1 px = 6.3 cells (about: 1,261 engine px of 4 cells each, stretched to 800 px)",
+   "legend": "white = 0, orange = 1, paler orange = mixed (each pixel averages its cells over its time block); no head drawn",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "every:400",
+   "png": "img/every400_16cycles.png",
+   "html": null,
+   "steps": 265000,
+   "caption": "16 cycles, every 400 steps, whole tape (sampled columns)",
+   "title": "16 cycles across the whole tape",
+   "why": "The slanted lines are the zigzag fronts moving left; their lower ends show how deep each cycle went.",
+   "start": "mid-run: step 9817765 (the real tape at that step, passed in with --from-config)",
+   "rows": "every 400 steps (663 rows, steps 9,817,765..10,082,765), about 40 rows per cycle",
+   "window": "cells -59..4998, 1 px = 4 cells (every 4th column sampled, so the 6-cell blocks alias into stripes; drawn as -4994..63 relative to the head at the start)",
+   "legend": "default colours: white = 1, black = 0 or never visited, red/green = head just moved right/left",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf 1^4 (01)^11 1 (10)^4 1^7 0 1^6 (10)^3 1^6 (10)^4 1^6 (10)^3 1^6 (10)^7 1^6 (10)^m [counter gadgets + block segments] C> 0^inf",
+  "vars": [
+   "m (reservoir pairs)",
+   "right edge cell",
+   "source"
+  ],
+  "rows": [
+   {
+    "step": 37397,
+    "values": [
+     66,
+     246,
+     "direct"
+    ]
+   },
+   {
+    "step": 45549,
+    "values": [
+     58,
+     342,
+     "direct"
+    ]
+   },
+   {
+    "step": 47893,
+    "values": [
+     53,
+     358,
+     "direct"
+    ]
+   },
+   {
+    "step": 53183,
+    "values": [
+     51,
+     390,
+     "direct"
+    ]
+   },
+   {
+    "step": 66489,
+    "values": [
+     46,
+     454,
+     "direct"
+    ]
+   },
+   {
+    "step": 103687,
+    "values": [
+     44,
+     582,
+     "direct"
+    ]
+   },
+   {
+    "step": 220745,
+    "values": [
+     39,
+     838,
+     "direct"
+    ]
+   },
+   {
+    "step": 625191,
+    "values": [
+     37,
+     1350,
+     "direct"
+    ]
+   },
+   {
+    "step": 2115721,
+    "values": [
+     32,
+     2374,
+     "direct"
+    ]
+   },
+   {
+    "step": 7823015,
+    "values": [
+     30,
+     4422,
+     "direct"
+    ]
+   },
+   {
+    "step": 30142857,
+    "values": [
+     25,
+     8518,
+     "direct"
+    ]
+   },
+   {
+    "step": 118403239,
+    "values": [
+     23,
+     16710,
+     "direct"
+    ]
+   },
+   {
+    "step": 469407113,
+    "values": [
+     18,
+     33094,
+     "direct"
+    ]
+   },
+   {
+    "step": 1869346983,
+    "values": [
+     16,
+     65862,
+     "direct"
+    ]
+   },
+   {
+    "step": 7460955529,
+    "values": [
+     11,
+     131398,
+     "direct"
+    ]
+   },
+   {
+    "step": 3387627872013,
+    "values": [
+     0,
+     "~2.8M (span)",
+     "qsim: reservoir gone; next gadget (10)^7 down to (10)^2"
+    ]
+   },
+   {
+    "step": 7686039316189,
+    "values": [
+     0,
+     "~4.2M (span)",
+     "qsim: prefix eaten down to 1^4 (01)^11 1 (10)^4"
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "Z  zigzag left (L-pass)",
+   "from": "(101110)^n <A 1111111 0",
+   "to": "<A 1111111 0 (111110)^n",
+   "steps": "20n",
+   "cases": "any n >= 0, any context (the head never leaves the shown cells)",
+   "validated": {
+    "instances": 90,
+    "passed": 90
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RS  run right (R-pass)",
+   "from": "D> (111110)^n",
+   "to": "(101011)^n D>",
+   "steps": "6n",
+   "cases": "any n >= 0, any context",
+   "validated": {
+    "instances": 90,
+    "passed": 90
+   },
+   "source": "manual"
+  },
+  {
+   "name": "H  the only way to halt",
+   "from": "0 <A 101",
+   "to": "halt",
+   "steps": "4 (A0, B1, E0, then F reads 1)",
+   "cases": "F1 is the only undefined transition and F is entered only from E0, so every halt goes through this pattern",
+   "validated": {
+    "instances": 50,
+    "passed": 50
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC0  right end, bit 0 -> 1",
+   "from": "X G S0 (110101)^n 01 C> 0^inf",
+   "to": "X G S1 (110101)^n 01 C> 0^inf",
+   "steps": "26n+108",
+   "cases": "G = 1^7 (01)^3 110 1^9 (01)^2 110 1^7 0; S0 = 1^8 (10)^4 1^9 (01)^6 1 (10)^3 1^5; S1 = 1^8 (10)^4 1^8 (10)^4 1^7 (01)^7; X = any left context (not reached)",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC1  right end, n+1",
+   "from": "X G S1 (110101)^n 01 C> 0^inf",
+   "to": "X G S2 (110101)^(n+1) 01 C> 0^inf",
+   "steps": "26n+44",
+   "cases": "S2 = 1^8 (10)^4 1^8 (10)^4 1^6 (10)^4 1^5",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC3  right end, back to S0, n+1",
+   "from": "X G S3 (110101)^n 01 C> 0^inf",
+   "to": "X G S0 (110101)^(n+1) 01 C> 0^inf",
+   "steps": "26n+44",
+   "cases": "S3 = 1^8 (10)^4 1^8 (10)^6 1^3 (01)^6",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC2  right end carries left",
+   "from": "X G S2 (110101)^n 01 C> 0^inf",
+   "to": "X' G S3 (110101)^n 01 C> 0^inf",
+   "steps": null,
+   "cases": "X' = X after one deeper pass (bit flips at the boundaries to the left); seen on the orbit, not yet an exact rule",
+   "validated": {
+    "instances": 0,
+    "passed": 0
+   },
+   "source": "manual"
+  },
+  {
+   "name": "D  binary-ruler law for cycle depths",
+   "from": "cycle k (right record after a leftward excursion > 20 cells)",
+   "to": "cycles that reach level j+1 are exactly every 2nd cycle that reaches level j",
+   "steps": null,
+   "cases": "levels found as nested local minima of each cycle's leftmost cell; checked on the real orbit, steps 5e4..1e10 (13 levels); one spacing of 3 at steps 41,783..47,893, the end of the early phase",
+   "validated": {
+    "instances": 37885,
+    "passed": 37885
+   },
+   "source": "manual"
+  },
+  {
+   "name": "M  reservoir use per new top bit",
+   "from": "1^6 (10)^m [top gadget]",
+   "to": "1^6 (10)^(m-5), then 1^6 (10)^(m-7)",
+   "steps": null,
+   "cases": "the 11 consecutive changes 58 -> 53 -> 51 -> ... -> 16 -> 11 on the real orbit (direct, to 1e10); 66 -> 58 at the start does not fit",
+   "validated": {
+    "instances": 11,
+    "passed": 11
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "verify/SOC_2_4_v4.v:655",
+  "module": "TM204",
+  "machine": "1RB1LA_1LC1RE_1RD0LC_1LA1RC_1RF0RB_1RA---",
+  "diff": "B0 1RC->1LC, C1 0RD->0LC, E1 0LE->0RB",
+  "applies": "no",
+  "note": "Nearest proved machine (3 cells away): a plain BinaryCounter_v2 proof with different words. The class templates SBCv6a/SBCv10/SOBLv1-3 are 8-11 cells away. Longitudinal.v, whose segRLs lemmas SOBLv3 uses (k passes become k*2^len), fits the pass-halving segment structure best."
+ },
+ "strategy": "First pin down the epoch map: exact rules for the boundary bit flips and the top gadget, then a fast abstract simulator to watch 2-3 overflows.\nOnly if the overflows look self-similar: a Longitudinal.v (segRLs) proof with a binary-counter invariant plus an epoch induction.\ninit covers steps 0..~5e4 (the early left counter).",
+ "risks": [
+  "Halting is decided by the overflow, which has not been seen. After the reservoir and prefix gadgets are gone (~1e13), the counter must reach blank tape on the left and seed a new reservoir, as it did once at step ~3.6e4. Maybe ~1e16 steps, past what qsim reaches.",
+  "The inner boundary gadgets (4 states each, in two block phases) and the top gadget are only read off the orbit; RC2, the deep right-end step, has no exact rule.",
+  "A proof needs an invariant over an unbounded list of segments plus an epoch-level argument; no template within 2 cells."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 2: do the left ends of the orange bars form a binary ruler (every 2nd bar reaches further, every 4th further still, and so on), with no row out of pattern?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fig 1 and Fig 3: once the left edge stops moving (about a quarter of the way down Fig 1), is every later leftward sweep the 20-step zigzag of Fig 3, followed by a straight run right?",
+   "figs": [
+    0,
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Priority call: the counter eats a finite reservoir (gone by ~3.4e12), then older prefix gadgets (by 7.7e12). Halting depends on the overflow after that, maybe ~1e16 steps out. Should we spend more budget (exact boundary-gadget rules + an abstract simulator to watch overflows), or park this machine?",
+   "figs": [
+    1
+   ],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": "Has anyone run 1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA--- (sheet: Shift-overflow structural counter) past ~8e13 steps, or analysed its long-run overflow? We see a binary counter stored between segments of 6-cell blocks. It widens by eating a finite reservoir (10)^m, and then the older prefix gadgets. Quick_Sim (block 12) shows no halt to 8e13, but the next overflow into blank tape looks much further out. (AI-assisted analysis.)",
+ "stats": {
+  "simulated_steps": 10000000000,
+  "cells": 152154,
+  "nonzeros": 107017,
+  "growth": "span ~ t^0.5 (48,282 cells at 1e9; 152,154 at 1e10); left edge fixed at -59 since step 35,809; qsim (block 12, steps exact) has no halt to 8e13"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism found within the current epoch (binary counter over block segments; 6 exact rules validated plus the binary-ruler law at 37,885/37,885). Confidence is low because the long-run overflow (after ~1e13) decides halting and has not been observed. No sign of a cryptid so far."
+}

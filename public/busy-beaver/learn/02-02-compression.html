@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compression and shift rules</title>
+<meta name="description" content="Module 2 of the BB(6) learning guide: write a long tape as blocks with exponents, cross a block in one jump with a shift rule, and follow only the defects in a background.">
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* page-local pieces: rule boxes, the whole-tape picture, the "from our kills" box and the recap (tokens from learn.css) */
+  .m2-box { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); padding: 10px 12px 12px; margin: 14px 0 20px; min-width: 0; }
+  .m2-box .tm-controls { margin: 6px 0 8px; }
+  .m2-box .tm-seg { flex-wrap: wrap; max-width: 100%; }
+  .m2-box .tm-seg sup { font-size: .72em; line-height: 0; }
+  .m2-box .tm-seg button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 4px 10px; min-height: 34px; cursor: pointer; }
+  .m2-box .tm-seg button:disabled { opacity: .45; cursor: default; }
+  .m2-box .tm-seg button.on { background: var(--accent-weak); border-color: var(--accent); font-weight: 650; }
+  .m2-cv { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px; overflow: hidden; }
+  .m2-cv canvas { display: block; margin: 0 auto; cursor: crosshair; touch-action: manipulation; }
+  .m2-hover { font: 12.5px/1.5 ui-monospace, Consolas, monospace; color: var(--muted); min-height: 1.5em; margin: 4px 2px 0; overflow-wrap: anywhere; }
+  .m2-box .tm-status { margin-top: 6px; }
+  .m2-box table.plain { margin: 8px 0 0; }
+  .m2-box table.plain td.num, .m2-box table.plain th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .m2-box table.plain tr.on td { background: var(--accent-weak); }
+  .lgd0, .lgd1 { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: -1px; margin: 0 4px 0 12px; border: 2px solid var(--bad); }
+  .lgd1 { background: var(--c1); }
+  .m2-rule { margin: 14px 0 18px; }
+  /* machine strings: break only after "_", never inside "---" (the copied text is unchanged) */
+  .stf { overflow-wrap: normal; word-break: normal; }
+  .stf > span { white-space: nowrap; }
+  /* narrow screens: block histories wrap inside their box instead of scrolling sideways */
+  @media (max-width: 600px) {
+    .tm-blocks { white-space: pre-wrap; }
+    .tm-bline { width: auto; min-width: 0; }
+    .tm-bline .lab { display: none; }
+  }
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); background: var(--surface); border-radius: 10px; padding: 12px 16px; margin: 34px 0 10px; }
+  .kills > b:first-child { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 4px; }
+  .kills ul { margin: 6px 0 2px; }
+  .kills li { margin: 6px 0; }
+  .recap { border: 1px solid var(--line); border-left: 4px solid var(--ink2); background: var(--surface); border-radius: 10px; padding: 12px 16px 10px; margin: 18px 0 10px; }
+  .recap > b:first-child { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--ink2); }
+  .recap ol { margin: 6px 0 2px; }
+  .side { font-size: 14px; color: var(--ink2); }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 2 · Compression and shift rules</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/01-01-easy-fates.html" title="The easy fates">← Module 1</a><a class="ui-btn" href="/busy-beaver/learn/03-03-counters.html" title="Counters on the tape">Module 3 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 2 (of 0–8) · about 12 minutes</div>
+<h1>Compression: blocks, background, shift rules</h1>
+
+<div class="answer"><b>In short</b>
+  <p>A long tape is mostly one short word repeated. Write each repeat as a block with an exponent, like <code>(10)^21</code> (the word 10, 21 times), and the whole tape fits on one line.</p>
+  <p>A <b>shift rule</b> says what the head does when it crosses a block, for every size of block at once. So a proof can jump the head across the block in one move.</p>
+</div>
+
+<!-- ============================================================== beat 1 -->
+<section class="beat"><h2><span class="num">1</span>One tape, written two ways</h2>
+<div data-tm-tape data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","step":165,"label":"W5-3 at step 165 (blocks bracketed under the tape)","mark":{"digits":"m2-blocks"},"blocks":true,"compress":{"words":["10","00","11"]}}'></div>
+<p>W5-3 (<code class="stf">1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</code>) at step 165. Two stretches repeat a 2-cell word, <code>10 10</code> and <code>00 00</code>, so the tape can be written <code>0^inf (10)^2 0 11 B&gt; 0 (00)^2 11 0^inf</code>. Here <code>(10)^2</code> means "10 twice", <code>0^inf</code> is the endless blank on each side, and <code>B&gt;</code> marks the head: state B, reading the cell right after it.</p>
+<p>The two lines under the tape compress in different ways. <b>as text</b> only merges runs of one symbol (<code>0^5</code> = five 0s). <b>as blocks</b> groups 2-cell words such as <code>10</code>, which is what the rules below need.</p>
+
+<p>Now the same machine each time its tape has this shape again, up to step 3,097. The raw tape grows from 15 to 52 cells, but the blocks line stays one short line. Press <b>▶ play</b>, then switch the history between <b>cells</b> and <b>blocks</b>.</p>
+<div id="w53rows"></div>
+<p>The exponent of <code>(10)</code> goes 2, 5, 8, 11, 14: up 3 per row. Then it jumps to 21, at a big <b>eat</b>: the machine bites the low digits of the counter written right of the head (the <code>00</code> and <code>11</code> pairs), and the counter drops from 22 to 6. Counters are module 3, eats module 4.</p>
+</section>
+
+<!-- ============================================================== beat 2 -->
+<section class="beat"><h2><span class="num">2</span>Crossing a block: a shift rule</h2>
+<p>Step 3,103 of W5-3's real run, 6 steps after the last row above. E stands on the right end of <code>(10)^21</code>, moving left. <code>&lt;E</code> is the mirror image of <code>B&gt;</code>: state E reads the cell just left of the arrow (here the last 0 of the block).</p>
+<p>Step through: every 2 steps the head passes one <code>10</code> and leaves it exactly as it was.</p>
+<div data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","start":"0^inf (10)^21 <E 1 0 1 1 0 0 1 1 1 1 0^inf","startPos":21,"startLabel":"W5-3’s tape at step 3,103 of the real run, 0^inf (10)^21 <E 1011 00 (11)^2 0^inf (steps here are counted from there)","rows":"each","count":43,"window":[-22,32],"view":"both","compress":{"words":["10","00","11"],"headCell":false},"mark":{"digits":"m2-blocks-l"},"speed":10,"title":"W5-3 crossing (10)^21, every step"}'></div>
+<p>The two rules that do it: <b>E reads 0</b> → write 0, move left, go to B; <b>B reads 1</b> → write 1, move left, go to E. After 42 steps (2 × 21) E reads the blank cell left of the block. In the blocks view the exponent simply moves from the left of the head to the right (it ends at <code>(10)^22</code> because the 10 that already stood right of the head joins the block).</p>
+
+<p>That is W5-3's shift rule <b>EB</b>: <code>(10)^n &lt;E → &lt;E (10)^n</code> in 2n steps. Pick n: the page runs that case and checks the end tape, the step count, and every cell the head reads. The head reads only the block's cells and ends on the cell just left of it; the <code>1 1</code> on each side is only an edge for the picture.</p>
+<div class="m2-rule" data-m2-rule='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","name":"EB","lhs":"0^inf 1 1 (10)^n <E 1 1 0^inf","rhs":"0^inf 1 1 <E (10)^n 1 1 0^inf","from":1,"to":10,"steps":"2n","pick":3,"edge":[2,2],"readLeft":0,"readRight":0}'></div>
+<p class="side">Because the head reads nothing outside the block, the rule holds wherever the block sits on a tape, for every n. The page checks n = 1 … 10; W5-3’s Coq file proves it for every n, inside each lemma that crosses a block (module 8).</p>
+
+<div data-tm-predict data-opts='{"id":"m2-eb7","prompt":"E stands on the right end of <code>(10)^7</code>, moving left (<code>(10)^7 &amp;lt;E</code>). How many steps until E reads the cell just left of the block?","input":{"kind":"number"},"answer":14,"run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","start":"0^inf 1 1 (10)^7 <E 1 1 0^inf","startLabel":"0^inf 1 1 (10)^7 <E 1 1 0^inf","rows":"each","count":18,"speed":6,"view":"both","compress":{"words":["10","00","11"],"headCell":false},"mark":{"digits":"m2-blocks-l"}},"revealTo":{"match":"^0\\^inf 1\\^2 <E"},"actual":"step","explain":"2 steps per copy of 10, so 2 × 7 = 14. The rule EB gets there in one jump, without simulating the 14 steps.","checkId":"C-M2-1, M2-d"}'></div>
+</section>
+
+<!-- ============================================================== beat 3 -->
+<section class="beat"><h2><span class="num">3</span>Not every crossing is a straight walk</h2>
+<p>W5-3’s head also crosses <code>(10)^n</code> to the right, in state A. Guess first: the answer is not what the last section suggests.</p>
+<div data-tm-predict data-opts='{"id":"m2-as5","prompt":"A stands on the first cell of <code>(10)^5</code>, moving right, and a 1 follows the block (<code>A&gt; (10)^5 1</code>). How many steps until A reads that 1?","input":{"kind":"number"},"answer":20,"run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","start":"0^inf 1 1 A> (10)^5 1 1 0^inf","startLabel":"0^inf 1 1 A> (10)^5 1 1 0^inf","rows":"each","count":24,"speed":5,"table":true,"view":"both","compress":{"words":["10","00","11"],"headCell":false},"mark":{"digits":"m2-blocks-l"}},"revealTo":{"match":"A> 1\\^2 0\\^inf$"},"actual":"step","explain":"4 steps per copy, not 2. On each 10: A reads the 1 and moves on (A1), writes 1 over the 0 (A0), B steps back onto it (B1), and E writes the 0 again (E1). Right, right, left, right.","checkId":"C-M2-1, M2-d, M2-e"}'></div>
+
+<p>That is rule <b>AS</b>: <code>A&gt; (10)^n 1 → (10)^n A&gt; 1</code> in 4n steps. The head steps back once per copy, and on the last copy B reads the 1 just after the block. It never goes past that 1, which is why the 1 is part of the rule.</p>
+<div class="m2-rule" data-m2-rule='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","name":"AS","lhs":"0^inf 1 1 A> (10)^n 1 1 0^inf","rhs":"0^inf 1 1 (10)^n A> 1 1 0^inf","from":1,"to":10,"steps":"4n","pick":2,"edge":[2,2],"readLeft":0,"readRight":1}'></div>
+
+<p>A shift rule may also rewrite the block it crosses. You met one in module 1: W5-8’s rule R1, where the head in state C crosses <code>(11)^n</code>.</p>
+<div data-tm-predict data-opts='{"id":"m2-w58","prompt":"W5-8: C stands on the first cell of <code>(11)^4</code>, moving right (<code>1 C&gt; (11)^4</code>). When C reaches the blank after the block, what is left where <code>(11)^4</code> was?","input":{"kind":"choice","options":[{"label":"(11)^4, unchanged","value":"0^inf 1^9 C> 0^inf"},{"label":"(10)^4","value":"0^inf 1^2 0 1 0 1 0 1 0 C> 0^inf"},{"label":"(01)^4","value":"0^inf 1 0 1 0 1 0 1 0 1 C> 0^inf"},{"label":"(00)^4","value":"0^inf 1 0^8 C> 0^inf"}]},"answer":"0^inf 1^2 0 1 0 1 0 1 0 C> 0^inf","run":{"tm":"1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF","start":"0^inf 1 C> (11)^4 0^inf","startLabel":"0^inf 1 C> (11)^4 0^inf","rows":"each","count":9,"speed":4,"view":"both","compress":{"words":["10","00","11"],"headCell":false},"mark":{"digits":"m2-blocks-l"}},"revealTo":{"row":8},"actual":"dh","explain":"<code>(10)^4</code>, after 8 steps. On each 11, C reads the first 1 and writes it back (C1 = 1RE), then E reads the second 1 and writes 0 (E1 = 0RC). Every copy gets the same treatment, so this is a shift rule that rewrites its block: <code>C&gt; (11)^n → (10)^n C&gt;</code> in 2n steps, and the head reads only the block’s cells (checked for n = 1 … 8).","checkId":"C-M2-3, M2-j"}'></div>
+</section>
+
+<!-- ============================================================== beat 4 -->
+<section class="beat"><h2><span class="num">4</span>Background and defects</h2>
+<p>W4-3 (<code class="stf">1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code>), our 20th kill. Each picture is its whole visited tape, wrapped into lines like text (100 cells per line, 50 on a narrow screen). Almost every cell continues the pattern <code>0101…</code>: that word is the <b>background</b> (also called the filler).</p>
+<p>A <b>defect</b> is a place where two neighbouring cells are equal, so the pattern breaks; each one is boxed in red. An empty box is a <code>00</code> defect and a dark box an <code>11</code> defect. After a defect the stripes shift by one column, because the <code>0101</code> pattern starts again one cell later.</p>
+<div class="m2-box" id="w43box">
+  <div class="tm-title">W4-3, the whole tape</div>
+  <div class="tm-label" id="w43lab">simulating…</div>
+  <div class="tm-controls"><span class="tm-seg" id="w43times"><span class="k">after step</span></span></div>
+  <div class="m2-cv"><canvas id="w43cv" aria-label="the whole visited tape of W4-3, wrapped like text, defects boxed in red"></canvas></div>
+  <div class="m2-hover" id="w43hover">hover or tap a cell to read it</div>
+  <div class="tm-status">
+    <span class="k">this tape</span><span id="w43stats"></span>
+    <span class="k">as blocks</span><span class="mono tm-dh" id="w43blocks"></span>
+  </div>
+  <div class="tm-legend"><i class="lg1" style="opacity:.5"></i>1 <i class="lg0"></i>0 (left blank) <span class="lgd0"></span>00 defect <span class="lgd1"></span>11 defect <i id="w43headsw"></i><span id="w43headtxt">the head</span> · after a defect the stripes shift by one column</div>
+  <table class="plain" id="w43table"><thead><tr><th class="num">after step</th><th class="num">cells visited</th><th class="num">defects</th></tr></thead><tbody></tbody></table>
+</div>
+<p>Between two defects the cells alternate, so each stretch is one block: <code>(10)^k</code>, or <code>(01)^k</code>, which is the same background starting one cell later. A lone <code>0</code> or <code>1</code> between blocks, or a switch from <code>(01)</code> to <code>(10)</code> (…0 1 | 1 0…), is a defect; <code>(100)^3</code> at the left end is three <code>00</code> defects in 9 cells.</p>
+<p>That is why the blocks line is short: at step 1,000,000 the tape has 1,945 cells but only 16 defects.</p>
+
+<div id="drill-defects" data-tm-predict data-opts='{"id":"m2-defects","prompt":"Ten times longer: at step 10,000,000 W4-3 has visited 6,104 cells. Using the table above, how many defects does that tape have?","input":{"kind":"choice","options":[{"label":"19","value":19},{"label":"about 600","value":600},{"label":"about 3,000","value":3000}]},"answer":19,"run":{"tm":"1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---","from":10000000,"rows":"each","count":12,"window":{"follow":14},"mark":{"defects":true,"words":[["10","bg"]],"digits":"defects"},"speed":6,"title":"W4-3 from step 10,000,000, around the head"},"revealTo":{"row":0},"actual":"decoded.length","explain":"The tape tripled (1,945 → 6,104 cells) but the defects only went from 16 to 19. In W4-3’s write-up most defects belong to counters: a left word of 10 defects that counts to 81, and a chain of base-3 digits (module 3). The chain gains 2 digits each time the long blocks get 9 times longer, so the number of defects grows like a number of digits, not like the tape. The 10,000,000 picture above is now unlocked.","checkId":"C-M2-2, M2-f; the regions are from W4-3’s write-up, Overview"}'></div>
+</section>
+
+<!-- ============================================================== beat 5 -->
+<section class="beat"><h2><span class="num">5</span>A sweep flips the background and leaves the defects</h2>
+<p>W4-3 from step 10,000,591: here are 38 cells of one long sweep to the right (the head turns only at cell 3,888, at step 10,003,345). Every step writes the opposite of what it reads (B0, C1, A0, B1, again and again), so <code>0101</code> becomes <code>1010</code>: still background, faded here.</p>
+<div data-tm-run data-opts='{"tm":"1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---","from":10000591,"rows":"each","count":39,"window":[1128,1176],"mark":{"defects":true,"words":[["10","bg"]]},"speed":6,"title":"W4-3 sweeping right over cells 1,135 … 1,172"}'></div>
+<p>The defect at cell 1,151 is still there after the head has passed: B reads 1 twice in a row there, and the cycle goes on one beat later. The red pair that travels with the head is the <b>seam</b> between the part already flipped and the part not yet flipped.</p>
+<p>Away from the defects the head only flips the background. The defects change only when the head reaches one (W4-3’s write-up lists 8 cases: pass, turn, wiggle). That is why its proof tracks only the defects, 18 at step 10,000,000 plus the seam next to the head, instead of 6,104 cells.</p>
+<p>The explorer can fade the background over a long run too. Its k-block view cuts the tape into 2-cell blocks that start on even cells, fades <code>10</code> and <code>01</code>, and paints the other blocks orange. So it shows a defect only when its two equal cells start on an even cell (6 of the 19 at step 10,000,000); phase 1 (key Shift+B, or the second link) cuts at odd cells and shows the other 13.</p>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---&amp;steps=1e7&amp;bg=kb:2:0">W4-3 to step 10^7, background faded, phase 0</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---&amp;steps=1e7&amp;bg=kb:2:1">the same, phase 1</a></p>
+<p class="side">The preset <a href="/busy-beaver/tools/explorer/index.html#preset=p17-walls-time">p17-walls-time</a> shows the same view for pilot machine #17 (<code class="stf">1RB0LF_0RC0RB_1LC1LD_1RE0RD_---0RA_1LA0LF</code>, line 628 of the 740 holdout list), which has the same <code>10</code>/<code>01</code> background.</p>
+</section>
+
+<!-- ============================================================== from our kills, recap -->
+<div class="kills"><b>From our kills</b>
+  <ul>
+    <li><a href="/busy-beaver/machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/index.html">W4-3 <code class="stf">1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></a>: our 20th kill, submitted upstream (busycoq pull request 17, open). Its write-up describes the tape by its defects alone: 8 rules say what happens when the head meets one, and most defects belong to counters (a left word that counts to 81 and a base-3 chain, module 3).</li>
+    <li><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/index.html">W5-3 <code class="stf">1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</code></a>: our 24th kill. EB and AS are two of its low-level rules; in the Coq file busycoq’s <code>es</code> tactic proves them inside each lemma that crosses a block (module 8).</li>
+    <li><a href="/busy-beaver/machines/1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF/index.html">W5-8 <code class="stf">1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code></a>: the bouncer from module 1, whose C rewrites <code>(11)^n</code> into <code>(10)^n</code>.</li>
+  </ul>
+</div>
+
+<div class="recap"><b>Recap</b>
+  <ol>
+    <li>A block <code>(w)^n</code> is a word repeated n times; a long tape is a few big blocks.</li>
+    <li>A shift rule crosses a whole block for every n at once (EB: 2n steps, AS: 4n), because the head treats each copy the same and reads no cell outside the ones the rule names.</li>
+    <li>When one word fills almost the whole tape (the background), only the defects matter: a sweep flips the background and leaves them in place.</li>
+  </ol>
+</div>
+
+<nav class="pager"><a href="/busy-beaver/learn/01-01-easy-fates.html">← Module 1: The easy fates</a><a href="/busy-beaver/dashboard/index.html">Dashboard</a> · <a href="/busy-beaver/learn/index.html">All modules</a><a href="/busy-beaver/learn/03-03-counters.html">Module 3: Counters →</a></nav>
+
+<footer class="checked">
+  <b>checked:</b> every tape here is simulated live by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>).
+  Every number, rule and drill answer is re-checked with <code>tools/sim.py</code>: <code>python3 -B learn/checks/m02_compression.py</code>, 16/16 pass, details in <code>learn/checks/m02_results.json</code>.
+  C-M2-1 EB and AS for n = 1 … 10 · C-M2-2 W4-3 at 10^7 · C-M2-3 W5-8’s rule · M2-a, M2-b W5-3’s tapes and blocks lines · M2-c the crossing 3,103 → 3,145 · M2-d, M2-e drills 14 and 20, transitions per copy · M2-f the W4-3 table · M2-g the 10^7 blocks line and the seam · M2-h the sweep · M2-j the cells each rule reads, the W5-8 drill · M2-k the rows’ counters (22 → 6) · M2-l the turn at cell 3,888, the 18 defects plus the seam, the 6 defects on even cells · M2-m the pieces of the blocks lines (<code>(100)^3</code>, lone cells, <code>(01)</code> meeting <code>(10)</code>).
+  The 8 defect cases and the defect set (seam not counted) are from W4-3’s write-up (<code>submission/proof.md</code> §2.1–2.2), the regions (left word, chain) from its Overview; the explorer’s k-block view is <code>tools/explorer/core/paint.mjs</code>; #17’s background from the explorer preset p17-walls-time.
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, decoders, compress, Run, blank, viewOf, parseConfig, parseTM, rule } from './tm.js';
+
+const W53 = '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC';
+const W43 = '1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---';
+const fmt = (n) => (n < 0 ? '−' + Math.abs(n).toLocaleString('en-US') : n.toLocaleString('en-US'));
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+// Machine strings: one nowrap group per transition pair, with a break opportunity after each "_".
+for (const c of document.querySelectorAll('.stf')) {
+  const parts = c.textContent.split('_');
+  c.textContent = '';
+  parts.forEach((g, i) => {
+    c.append(el('span', null, g + (i < parts.length - 1 ? '_' : '')));
+    if (i < parts.length - 1) c.append(document.createElement('wbr'));
+  });
+}
+
+// Brackets under the tape: one per block with exponent >= 2, from compress() (the same text as the "as blocks" line).
+const blockMarks = (headCell) => (v) => {
+  const c = compress(v.config ? v.config() : v, { words: ['10', '00', '11'], headCell });
+  const marks = c.tokens.filter((t) => t.n >= 2).map((t) => ({ from: t.from, to: t.to, label: t.w.length === 1 ? `${t.w}^${t.n}` : `(${t.w})^${t.n}` }));
+  return { label: '', text: '', marks };
+};
+decoders['m2-blocks'] = blockMarks(true);
+decoders['m2-blocks-l'] = blockMarks(false);
+
+// Beat 1: W5-3 each time the tape reads 0^inf (10)^p 0 1 1 B> 0 C(N) (module 4 calls these E(p,N)), up to step 3,097.
+mountRun(document.getElementById('w53rows'), {
+  tm: W53, rows: (v) => decoders['w53-E'](v) != null, count: 6, view: 'both',
+  compress: { words: ['10', '00', '11'] }, mark: { digits: 'm2-blocks' }, speed: 1,
+  label: (row) => { const e = decoders['w53-E'](viewOf(row.cfg)); return e ? `(10)^${e.p}` : ''; },
+  title: 'W5-3, each time the tape reads (10)^p 0 11 B> 0 …, steps 165 to 3,097',
+});
+
+// Beats 2-3: shift-rule boxes. Like tm.js mountRule, plus a stricter check: every cell the head reads is listed and
+// compared with the block (edge = how many edge cells the left side has on each side of the block; readRight = how many
+// cells after the block the rule may read). The run shows the blocks line and brackets.
+function ruleBox(target, o) {
+  const tm = parseTM(o.tm);
+  const box = el('div', 'tm-rule');
+  target.append(box);
+  const vals = [];
+  for (let x = o.from; x <= o.to; x++) vals.push(x);
+  const head = el('div', 'tm-rulehead');
+  head.append(el('span', 'k', `rule ${o.name}: `), el('code', null, `${o.lhs}  →  ${o.rhs}`), el('span', 'muted', `  in ${o.steps} steps`));
+  const sel = el('div', 'tm-seg tm-nsel');
+  sel.append(el('span', 'k', 'n = '));
+  const verdict = el('div', 'tm-verdict'), all = el('div', 'tm-verdict-all'), holder = el('div');
+  box.append(head, sel, verdict, holder, all);
+  const inst = (t, n) => t.replace(/\bn\b/g, String(n));
+  const res = {};
+  for (const n of vals) {
+    const base = rule(tm, o.lhs, o.rhs, o.steps, { n });
+    const c = parseConfig(o.lhs, { n });
+    const bLo = c.lo + o.edge[0], bHi = c.lo + c.tape.length - 1 - o.edge[1];
+    const run = new Run(tm, c, { maxSteps: base.steps + 1 });
+    const reads = new Set();
+    for (let i = 0; i < base.steps; i++) { reads.add(run.view().pos); run.step(); }
+    const end = run.view().pos;
+    const outside = [...reads].filter((p) => p < bLo || p > bHi).sort((a, b) => a - b);
+    const allowed = outside.every((p) => p >= bLo - o.readLeft && p <= bHi + o.readRight);
+    res[n] = { ok: base.ok && allowed, base, c, bLo, bHi, outside, end };
+  }
+  const where = (p, r) => (p === r.bLo - 1 ? 'the cell just left of the block' : p === r.bHi + 1 ? 'the cell just right of the block' : 'a cell outside the block');
+  const okAll = vals.every((n) => res[n].ok);
+  all.className = 'tm-verdict-all ' + (okAll ? 'yes' : 'no');
+  all.textContent = `${okAll ? '✓' : '✗'} checked live in this page for n = ${vals[0]} … ${vals[vals.length - 1]}: ` + (okAll
+    ? `every case ends exactly as the right side says, in ${o.steps} steps, and the head ${o.readRight ? 'reads nothing past the cell just after the block' : 'reads no cell outside the block'}`
+    : 'some cases fail');
+  function pick(n) {
+    for (const b of sel.querySelectorAll('button')) b.classList.toggle('on', +b.dataset.v === n);
+    const r = res[n];
+    verdict.className = 'tm-verdict ' + (r.ok ? 'yes' : 'no');
+    const readTxt = r.outside.length
+      ? `read the block’s cells (${fmt(r.bLo)} … ${fmt(r.bHi)}) and ${r.outside.map((p) => `cell ${fmt(p)}, ${where(p, r)}`).join(', ')}`
+      : `read only the block’s cells (${fmt(r.bLo)} … ${fmt(r.bHi)})`;
+    const endTxt = r.outside.includes(r.end) ? 'and ended there' : `and ended on cell ${fmt(r.end)}, ${where(r.end, r)}`;
+    verdict.textContent = r.ok
+      ? `✓ n = ${n}: ${r.base.steps} steps. The head ${readTxt}, ${endTxt}. The tape is then ${inst(o.rhs, n)}`
+      : `✗ n = ${n}: after ${r.base.steps} steps the tape is ${r.base.got}, not ${r.base.want}${r.outside.length ? ` (cells read outside the block: ${r.outside.map(fmt).join(', ')})` : ''}`;
+    holder.textContent = '';
+    mountRun(holder, { tm: o.tm, start: o.lhs, vars: { n }, rows: 'each', count: r.base.steps + 1, window: [r.c.lo - 1, r.c.lo + r.c.tape.length],
+      view: 'both', ruleText: true, speed: 6, startLabel: inst(o.lhs, n),
+      compress: { words: ['10', '00', '11'], headCell: false }, mark: { digits: 'm2-blocks-l' } });
+  }
+  for (const n of vals) {
+    const b = el('button', null, String(n));
+    b.type = 'button'; b.dataset.v = n;
+    b.addEventListener('click', () => pick(n));
+    sel.append(b);
+  }
+  pick(o.pick);
+  return { results: res };
+}
+for (const host of document.querySelectorAll('[data-m2-rule]')) ruleBox(host, JSON.parse(host.dataset.m2Rule));
+
+window.__learnReady = autoMount();
+
+// Beat 4: the whole tape of W4-3 at several times, wrapped like text (100 cells per line, 50 when narrow), defects boxed.
+const TIMES = [1e3, 1e4, 1e5, 1e6, 1e7];
+const LOCKED = 1e7;          // unlocked by the drill below
+const box = document.getElementById('w43box'), cv = document.getElementById('w43cv');
+const lab = document.getElementById('w43lab'), hover = document.getElementById('w43hover');
+const stats = document.getElementById('w43stats'), blocks = document.getElementById('w43blocks');
+const seg = document.getElementById('w43times'), tbody = document.querySelector('#w43table tbody');
+const snaps = new Map();
+let cur = 1e6, unlocked = false, geo = null;
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+void box;
+
+const btns = new Map();
+for (const t of TIMES) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.innerHTML = `10<sup>${Math.round(Math.log10(t))}</sup>`;
+  b.setAttribute('aria-label', `after step ${fmt(t)}`);
+  b.disabled = true;
+  b.addEventListener('click', () => { cur = t; render(); });
+  seg.append(b);
+  btns.set(t, b);
+}
+
+async function compute() {
+  const r = new Run(W43, blank(), { maxSteps: 1e7 + 10 });
+  for (const t of TIMES) {
+    while (r.t < t) { r.stepTo(Math.min(t, r.t + 1_000_000)); await new Promise((res) => setTimeout(res, 0)); }
+    const cfg = r.config(), v = viewOf(cfg);
+    snaps.set(t, { cfg, v, defects: decoders.defects(v), text: compress(cfg, { words: ['10'] }).text });
+    if (t !== LOCKED) btns.get(t).disabled = false;
+    if (t === cur) render();
+  }
+  fillTable();
+}
+
+function fillTable() {
+  tbody.textContent = '';
+  for (const t of TIMES) {
+    const s = snaps.get(t), tr = document.createElement('tr');
+    if (t === cur) tr.className = 'on';
+    const hide = t === LOCKED && !unlocked;
+    for (const [txt, cls] of [[fmt(t), 'num'], [s ? fmt(s.cfg.tape.length) : '…', 'num'], [hide ? '? (drill below)' : s ? fmt(s.defects.length) : '…', 'num']]) {
+      const td = document.createElement('td'); td.className = cls; td.textContent = txt; tr.append(td);
+    }
+    tbody.append(tr);
+  }
+}
+
+function render() {
+  const s = snaps.get(cur);
+  for (const [t, b] of btns) b.classList.toggle('on', t === cur);
+  fillTable();
+  if (!s) return;
+  const { cfg, v, defects } = s, n = cfg.tape.length;
+  const boxW = cv.parentElement.clientWidth;
+  const WRAP = boxW < 600 ? 50 : 100, lines = Math.ceil(n / WRAP);
+  const avail = boxW - 22;
+  const px = Math.max(3, Math.min(9, Math.floor(avail / WRAP)));
+  const gap = px >= 6 ? 1 : 0, W = px * WRAP, H = lines * px, dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round((W + 8) * dpr); cv.height = Math.round((H + 8) * dpr);
+  cv.style.width = (W + 8) + 'px'; cv.style.height = (H + 8) + 'px';
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 4, 4);
+  g.clearRect(-4, -4, W + 8, H + 8);
+  const c1 = css('--c1'), bad = css('--bad'), head = css('--s' + cfg.state);
+  const dcell = new Set();
+  for (const e of defects) { dcell.add(e - v.lo); dcell.add(e - v.lo + 1); }
+  for (let i = 0; i < n; i++) {
+    const x = (i % WRAP) * px, y = Math.floor(i / WRAP) * px;
+    if (i === cfg.head) { g.globalAlpha = 1; g.fillStyle = head; g.fillRect(x, y, px - gap, px - gap); continue; }
+    if (cfg.tape[i] !== 1) continue;
+    g.globalAlpha = dcell.has(i) ? 1 : 0.42; g.fillStyle = c1; g.fillRect(x, y, px - gap, px - gap);
+  }
+  g.globalAlpha = 1; g.strokeStyle = bad; g.lineWidth = px >= 6 ? 2 : 1.5;
+  const pad = px >= 6 ? 1.5 : 2;
+  for (const e of defects) {
+    const i = e - v.lo, a = { x: (i % WRAP) * px, y: Math.floor(i / WRAP) * px }, b = { x: ((i + 1) % WRAP) * px, y: Math.floor((i + 1) / WRAP) * px };
+    if (a.y === b.y) g.strokeRect(a.x - pad, a.y - pad, 2 * px - gap + 2 * pad, px - gap + 2 * pad);
+    else { g.strokeRect(a.x - pad, a.y - pad, px - gap + 2 * pad, px - gap + 2 * pad); g.strokeRect(b.x - pad, b.y - pad, px - gap + 2 * pad, px - gap + 2 * pad); }
+  }
+  geo = { px, n, lo: v.lo, W, H, wrap: WRAP };
+  cv.setAttribute('aria-label', `the whole visited tape of W4-3 after step ${fmt(cur)}, ${WRAP} cells per line, defects boxed in red`);
+  lab.textContent = `Start: blank tape (A on cell 0), simulated in this page · Rows: the tape after step ${fmt(cur)}, wrapped ${WRAP} cells per line (line 1 starts at cell ${fmt(v.lo)}, the leftmost visited cell) · ${lines} line${lines > 1 ? 's' : ''}`;
+  stats.textContent = `${fmt(n)} cells visited (cells ${fmt(v.lo)} … ${fmt(v.hi)}) · ${defects.length} defects · head on cell ${fmt(v.pos)} in state ${cfg.state}`;
+  blocks.textContent = s.text;
+  document.getElementById('w43headsw').style.background = `var(--s${cfg.state})`;
+  document.getElementById('w43headtxt').textContent = `the head (state ${cfg.state})`;
+  hover.textContent = 'hover or tap a cell to read it';
+}
+
+function readAt(ev) {
+  if (!geo) return;
+  const r = cv.getBoundingClientRect(), x = ev.clientX - r.left - 4, y = ev.clientY - r.top - 4;
+  const col = Math.floor(x / geo.px), line = Math.floor(y / geo.px), i = line * geo.wrap + col;
+  if (col < 0 || col >= geo.wrap || line < 0 || i >= geo.n) { hover.textContent = 'hover or tap a cell to read it'; return; }
+  const s = snaps.get(cur), p = geo.lo + i, val = s.cfg.tape[i];
+  const ds = s.defects.filter((e) => e === p || e === p - 1).map((e) => `cells ${fmt(e)} and ${fmt(e + 1)} are equal: a defect`);
+  hover.textContent = `cell ${fmt(p)} (line ${line + 1}, column ${col + 1}): ${val}${i === s.cfg.head ? ` · the head, state ${s.cfg.state}` : ''}${ds.length ? ' · ' + ds.join(' · ') : ''}`;
+}
+cv.addEventListener('mousemove', readAt);
+cv.addEventListener('click', readAt);
+new ResizeObserver(() => render()).observe(cv.parentElement);
+if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => render());
+
+// the drill unlocks the 10,000,000 picture
+window.__learnReady.then(() => {
+  const host = document.getElementById('drill-defects');
+  const unlock = () => {
+    if (unlocked || !host.querySelector('.tm-predict[data-revealed]')) return;
+    unlocked = true;
+    const b = btns.get(LOCKED);
+    b.disabled = false; b.title = '';
+    if (snaps.has(LOCKED)) { cur = LOCKED; render(); } else fillTable();
+  };
+  new MutationObserver(unlock).observe(host, { attributes: true, subtree: true, attributeFilter: ['data-revealed'] });
+  btns.get(LOCKED).title = 'answer the drill below first';
+});
+compute();
+</script>
+</body>
+</html>

@@ -1,0 +1,625 @@
+{
+ "tm": "1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB",
+ "rank": null,
+ "class_sheet": "Bell eats counter",
+ "class_guess": "Bell eats counter, two-level: a down-counting binary zone (bits 3 cells apart, anchored at the far end) bitten from its low end; W4-2's architecture mirrored",
+ "confidence": "med",
+ "summary": "Wall walks the bell, counting a zone down; bites its low end each cycle. Halts only if an overflow hits q=4.",
+ "mechanism": [
+  "R(p,q,Z) = 0^inf (10)^p 1 C> 0 0 (10)^q Z: each round the wall 00 moves 2 pairs right (q-2) and the zone Z counts down by 1 (zeros = set bits on the lattice j = w-1-3i); at v = 0 it refills (O0/O1/O2). At q <= 2 the wall bites Z's low end (B0/B1/B2/B2') and a new cycle starts with n one or two pairs longer.",
+  "Two levels: per two calm cycles v drops by 1; near n = 2^(L+1) the zone gains a bit (level-up), sometimes through a chaotic phase of nested bites (B2'', closed as a stack of the same rules in Wave 5). The closed rules reproduce the direct run at all 4,197 cycle starts to 1e11.",
+  "Why it never halts (Wave 5): the invariant I = {d = n - 2^(cap+1) >= 2, M = n + 2v - 2^(cap+2) != 0 mod 3}. Every rule keeps M or negates it mod 3, and the only halting starts from d >= 2 have M = 0. The blank run is in I from step 327. Checked on 7.9M states; two sub-lemmas (continuation cycles, nested levels) still need a paper argument."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, first 10,000 steps",
+   "why": "The site's view. The striped middle is the bell (10)^n; the dense band at the right edge is the zone.",
+   "primary": true,
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 px rows (1 px row = 20 steps, the site's bilinear squeeze)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:4",
+   "png": "img/cycle_every4.png",
+   "html": null,
+   "steps": 4592,
+   "caption": "One full cycle from the cycle start at step 53,839",
+   "title": "One cycle: the wall walks right",
+   "why": "Each thin diagonal is one round. Compare the wall's start per round and the zone width at the right edge.",
+   "primary": true,
+   "start": "constructed: 0^inf C> 0 0 10^36 1^2 0 1^2 0 1^2 0 1^2 0 1^3 0^inf",
+   "rows": "every 4 steps, 1,149 rows, steps 0..4,592 (= blank-tape steps 53,839..58,431, one cycle start to the next)",
+   "window": "cells -1..89, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom: counter fill at every cycle start",
+   "png": "img/levels_fill.png",
+   "html": null,
+   "steps": {
+    "log10": 20.3
+   },
+   "caption": "Counter fill v/2^L at each cycle start, abstract run",
+   "title": "Counter fill per cycle, levels 3 to 21",
+   "why": "One dot per cycle. Follow one descending curve (a calm level), then look at the scatter where curves restart (level-ups).",
+   "primary": true,
+   "start": "blank",
+   "rows": "one dot per cycle start R(-1,n,Z), cycles 1..1,100,000 of the abstract run (scripts/absim.py, equal to the direct run at all 4,200 cycle starts to 1e11 steps)",
+   "window": "x = log2 n from 3 to 21 (n = bell length at the cycle start), 1 px = 0.0205; y = v/2^L from 0 (bottom line) to 1 (top line)",
+   "legend": "blue = zone width w = 0 mod 3, orange = w = 2 mod 3, magenta = w = 1 mod 3; grey vertical lines = integer log2 n; light grey = y 0.25, 0.5, 0.75",
+   "style": "custom"
+  },
+  {
+   "mode": "explore",
+   "png": "img/round_explore.png",
+   "html": null,
+   "steps": 99,
+   "caption": "One round from R(1,8,Z), every step",
+   "title": "One round, step by step",
+   "why": "A zig-zag carries a gadget right along the bell; it decrements the zone, then blue C walks back.",
+   "primary": false,
+   "start": "constructed: 0^inf 1 0 1 C> 0 0 10^8 1^5 0 1^2 0 1^2 0 1^3 0^inf",
+   "rows": "every step, steps 0..99 (one round: R(1,8,Z) to R(3,6,dec Z) at step 98), 10 px per row",
+   "window": "cells -3..32, 1 px = 1/10 cell",
+   "legend": "slate = 0, white = 1; head colour = state: red A, orange B, blue C, green D, magenta E, cyan F",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "explore",
+   "png": "img/nested_bite_explore.png",
+   "html": null,
+   "steps": 80,
+   "caption": "The open case: nested bite at q=2, f=2, k=2",
+   "title": "Nested bite (no closed form yet)",
+   "why": "Two walls form at once; the inner one runs short rounds on the zone's low end first.",
+   "primary": false,
+   "start": "constructed: 0^inf 10^4 1 C> 0 0 10^2 1^2 0 1^2 0 1^5 0 1^2 0 1^2 0 1^3 0^inf",
+   "rows": "every step, steps 0..80 (R(4,2,(110)^2 1^5 0 1^2 0 1^2 0 1^3) to R(6,5,1^4 0 1^2 0 1^3) at step 74), 10 px per row",
+   "window": "cells -9..26, 1 px = 1/10 cell",
+   "legend": "slate = 0, white = 1; head colour = state: red A, orange B, blue C, green D, magenta E, cyan F",
+   "style": "bbchallenge-explore"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf C> 0 0 (10)^n Z 0^inf  (cycle start R(-1,n,Z); Z has width w, counter value v, L bits)",
+  "vars": [
+   "n",
+   "w",
+   "v",
+   "L"
+  ],
+  "rows": [
+   {
+    "step": 116,
+    "values": [
+     3,
+     6,
+     0,
+     1
+    ]
+   },
+   {
+    "step": 244,
+    "values": [
+     4,
+     8,
+     1,
+     1
+    ]
+   },
+   {
+    "step": 327,
+    "values": [
+     6,
+     5,
+     0,
+     0
+    ]
+   },
+   {
+    "step": 675,
+    "values": [
+     8,
+     6,
+     1,
+     1
+    ]
+   },
+   {
+    "step": 1167,
+    "values": [
+     10,
+     6,
+     0,
+     1
+    ]
+   },
+   {
+    "step": 1875,
+    "values": [
+     11,
+     9,
+     2,
+     2
+    ]
+   },
+   {
+    "step": 3712,
+    "values": [
+     15,
+     9,
+     1,
+     2
+    ]
+   },
+   {
+    "step": 6281,
+    "values": [
+     18,
+     9,
+     0,
+     2
+    ]
+   },
+   {
+    "step": 11559,
+    "values": [
+     22,
+     11,
+     1,
+     2
+    ]
+   },
+   {
+    "step": 19917,
+    "values": [
+     27,
+     12,
+     5,
+     3
+    ]
+   },
+   {
+    "step": 34268,
+    "values": [
+     32,
+     12,
+     2,
+     3
+    ]
+   },
+   {
+    "step": 58430,
+    "values": [
+     37,
+     15,
+     14,
+     4
+    ]
+   },
+   {
+    "step": 104530,
+    "values": [
+     45,
+     15,
+     10,
+     4
+    ]
+   },
+   {
+    "step": 179487,
+    "values": [
+     54,
+     15,
+     6,
+     4
+    ]
+   },
+   {
+    "step": 325977,
+    "values": [
+     66,
+     15,
+     0,
+     4
+    ]
+   },
+   {
+    "step": 568494,
+    "values": [
+     81,
+     18,
+     30,
+     5
+    ]
+   },
+   {
+    "step": 1015594,
+    "values": [
+     98,
+     18,
+     17,
+     5
+    ]
+   },
+   {
+    "step": 1819792,
+    "values": [
+     118,
+     18,
+     7,
+     5
+    ]
+   },
+   {
+    "step": 3217296,
+    "values": [
+     141,
+     21,
+     58,
+     6
+    ]
+   },
+   {
+    "step": 5662179,
+    "values": [
+     170,
+     21,
+     44,
+     6
+    ]
+   },
+   {
+    "step": 10090497,
+    "values": [
+     206,
+     21,
+     26,
+     6
+    ]
+   },
+   {
+    "step": 17830518,
+    "values": [
+     249,
+     21,
+     4,
+     6
+    ]
+   },
+   {
+    "step": 31972323,
+    "values": [
+     316,
+     26,
+     126,
+     7
+    ]
+   },
+   {
+    "step": 56366707,
+    "values": [
+     397,
+     18,
+     15,
+     5
+    ]
+   },
+   {
+    "step": 100571217,
+    "values": [
+     493,
+     24,
+     57,
+     7
+    ]
+   },
+   {
+    "step": 177845615,
+    "values": [
+     608,
+     29,
+     212,
+     8
+    ]
+   },
+   {
+    "step": 317209753,
+    "values": [
+     754,
+     20,
+     15,
+     5
+    ]
+   },
+   {
+    "step": 562863502,
+    "values": [
+     874,
+     27,
+     77,
+     8
+    ]
+   },
+   {
+    "step": 1002875795,
+    "values": [
+     1014,
+     29,
+     6,
+     8
+    ]
+   },
+   {
+    "step": 1781927417,
+    "values": [
+     1196,
+     30,
+     427,
+     9
+    ]
+   },
+   {
+    "step": 3167681311,
+    "values": [
+     1426,
+     30,
+     312,
+     9
+    ]
+   },
+   {
+    "step": 5625645742,
+    "values": [
+     1711,
+     30,
+     169,
+     9
+    ]
+   },
+   {
+    "step": 10005286011,
+    "values": [
+     2072,
+     14,
+     7,
+     3
+    ]
+   },
+   {
+    "step": 17798996334,
+    "values": [
+     2508,
+     33,
+     796,
+     10
+    ]
+   },
+   {
+    "step": 31649029640,
+    "values": [
+     3024,
+     33,
+     538,
+     10
+    ]
+   },
+   {
+    "step": 56244128079,
+    "values": [
+     3652,
+     35,
+     223,
+     10
+    ]
+   },
+   {
+    "step": 99952253520,
+    "values": [
+     4417,
+     36,
+     1888,
+     11
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "init",
+   "from": "0^inf A> 0^inf",
+   "to": "0^inf C> 0 0 1^2 0^inf",
+   "steps": "4",
+   "cases": "= R(-1,0,11); the next cycle starts follow from the rules below (abstract run = direct run at 4,200 cycle starts)",
+   "validated": {
+    "instances": 1,
+    "passed": 1
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R1 round",
+   "from": "0^inf 10^p 1 C> 0 0 10^q Z 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^(q-2) dec(Z) 0^inf",
+   "steps": null,
+   "cases": "q >= 3, Z has a zero, w = 0 or 2 mod 3; dec: leftmost zero j -> 1, zeros at j-3, j-6, ... >= 2",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R2 round",
+   "from": "0^inf 10^p 1 C> 0 0 10^q Z 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^(q-3) 11 dec(Z) 0^inf",
+   "steps": null,
+   "cases": "q >= 3, Z has a zero, w = 1 mod 3 (one bell pair joins the zone)",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   },
+   "source": "manual"
+  },
+  {
+   "name": "O2 overflow",
+   "from": "0^inf 10^p 1 C> 0 0 10^q 1^w 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^(q-2) 110^((w-2)/3) 111 0^inf",
+   "steps": null,
+   "cases": "q >= 3, w = 2 mod 3: zone + 1 cell, all bits set (v = 2^L - 1)",
+   "validated": {
+    "instances": 52,
+    "passed": 52
+   },
+   "source": "manual"
+  },
+  {
+   "name": "O1 overflow",
+   "from": "0^inf 10^p 1 C> 0 0 10^q 1^w 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^(q-2) allset(w+1) 0^inf",
+   "steps": null,
+   "cases": "q >= 3, w = 1 mod 3; allset(u) = every lattice position >= 2 set",
+   "validated": {
+    "instances": 53,
+    "passed": 53
+   },
+   "source": "manual"
+  },
+  {
+   "name": "O0 overflow",
+   "from": "0^inf 10^p 1 C> 0 0 10^q 1^w 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^(q-3) 1^5 (0 1^2)^(w/3-1) 0 1^3 0^inf",
+   "steps": null,
+   "cases": "q >= 3, w = 0 mod 3: zone + 3 cells, v = 2^L - 2",
+   "validated": {
+    "instances": 45,
+    "passed": 45
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B2 bite",
+   "from": "0^inf 10^p 1 C> 0 0 10^2 111 Y 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10 1 Y 0^inf",
+   "steps": "14",
+   "cases": "q = 2, zone starts 111; re-parse: a leading 10 of 1Y joins the bell",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B2' bite, k=1",
+   "from": "0^inf 10^p 1 C> 0 0 10^2 110 111 Y 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^3 Y 0^inf",
+   "steps": "32",
+   "cases": "q = 2, lowest bit set, next clear; Y starts 11",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   },
+   "source": "manual"
+  },
+  {
+   "name": "H halt",
+   "from": "0^inf 10^p 1 C> 0 0 10^2 110^k 111 0^inf",
+   "to": "halt",
+   "steps": "<= 60",
+   "cases": "q = 2 and every bit set, k >= 1",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B1 bite",
+   "from": "0^inf 10^p 1 C> 0 0 10 1 Y 0^inf",
+   "to": "0^inf C> 0 0 10^(p+3) Y 0^inf",
+   "steps": null,
+   "cases": "q = 1, zone 1Y starts 11; re-parse leading 10 of Y; new cycle with n = p+3",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B0 bite",
+   "from": "0^inf 10^p 1 C> 0 0 Z 0^inf",
+   "to": "0^inf C> 0 0 10^(p+3) dec(Z)[3:] 0^inf",
+   "steps": null,
+   "cases": "q = 0, w = 0 mod 3, Z starts 111 (f = 2: n = p+2 and zone 11 Z[3:], 30/30)",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B2'' nested bite",
+   "from": "0^inf 10^p 1 C> 0 0 10^2 110^k 1^(3a+5) 0 Y 0^inf",
+   "to": "0^inf 10^(p+2) 1 C> 0 0 10^q' Z' 0^inf",
+   "steps": null,
+   "cases": "q = 2, k >= 2 low bits set: an inner wall re-runs rounds on the low part; q' = 5..15, Z' a suffix of Z (top cells sometimes changed). No closed form yet; 49 of 204,953 transitions to 1e9",
+   "validated": {
+    "instances": 0,
+    "passed": 0
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "machines/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF.v (W4-2 kill, from BECv5.v TM1/TM2)",
+  "module": null,
+  "machine": "1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF",
+  "diff": "not a near table: architecture match only (mirrored bell + counter + bite)",
+  "applies": "partly",
+  "note": "Same plan: bell with a moving defect, counter bumped per pass, low-end bite, rare nested eating, halting needs a coincidence; proof via an invariant in progress_nonhalt_cond. Different: counter counts down, bits 3 apart anchored at the far end, defect moves 2 pairs per round, two-level slow counter (v -1 per 2 cycles, level-up at n ~ 2^(L+1)). W4-2's phi/Sweep lemmas do not transfer."
+ },
+ "strategy": "proof.md on the invariant I: the rules, Lemma M (mod-3 sign law, proved), Lemma K (d >= 2 closure, proved for plain cycles, checked exhaustively), and the entry at step 327. Then Rocq: one lemma per rule, the nested bite by induction on depth, progress_nonhalt_cond over I (W4-2's shape).",
+ "risks": [
+  "Lemma K for cycles with a B2'/B2'' continuation has no paper argument yet; the data show slack (min d' = 5 where 2 is needed).",
+  "No halt inside nested levels from K is only checked, not argued.",
+  "The Rocq build of the nested bite (a recursion over walls) is the long part."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "One cycle: do you see the wall step right once per round, the zone at the right edge widen at the overflow, and a bite at the bottom that restarts the wall at the left end?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Counter fill per cycle: does each level read as one smooth descending curve (calm phase), with scattered dots only where a new curve starts (level-up)?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Mechanism validated (rules exact on 99.98% of transitions, abstract run = direct run to 1e11, no halt in ~3e22 steps), but the non-halting invariant and the nested-bite closed form are open. Fund one 2 h stage to hunt both, or park?",
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 100000000000,
+  "cells": 2058,
+  "nonzeros": 1040,
+  "growth": "span ~ 2058 cells at 1e9 (tools/sim.py), ~1.2·n^3 steps for bell length n; n = 4,417 at 1e11 (direct C event logger); abstract run to 3e7 cycles"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism and rules validated; non-halting invariant (parity split of O2 overflows) and nested-bite closed form open."
+}

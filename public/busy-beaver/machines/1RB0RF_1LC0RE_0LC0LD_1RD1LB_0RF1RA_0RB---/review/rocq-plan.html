@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>#2 rocq-plan.md</title><link rel="stylesheet" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/review.css"><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><div class="wrap"><nav class="sec"><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review.html">← #2 review</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/proof.html">proof.md</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/v.html">the .v</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/diff.html">diff vs TM7</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/tm7.html">TM7 (SOMDCv6.v)</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/index.html#mechanism">machine page</a></nav><p class="muted" style="margin-top:12px">Rendered from <a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/rocq-plan.md.html"><code>rocq-plan.md</code></a> (raw file). Formalization prep, written before the domain fix in proof.md; its 3-sweep plan (§3.5) was not used.</p><div class="toc"><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s0">0. Summary</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s1">1. Template anatomy</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s1-1">1.1 Shared header (<code>SOMDCv6.v</code> lines 1–17)</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s1-2">1.2 <code>Module TM7</code> (lines 1627–1870), item by item</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s2">2. Standalone TM7 copy (template validation)</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3">3. What changes for #2</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-1">3.1 Measured: what breaks when only <code>tm</code> changes</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-2">3.2 New relation <code>Inc</code> and <code>Inc_spec</code> (segment facts verified)</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-3">3.3 The two <code>RIncs</code> clauses that change</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-4">3.4 <code>RIncs_spec</code>: the two new bullets</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-5">3.5 The domain argument (main risk)</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-6">3.6 <code>BigStep</code> and <code>nonhalt</code></a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-7">3.7 Size estimate</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s4">4. Tactics to reuse, and pitfalls</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s5">5. Files</a></div><div class="mdbody"><h1 id="rocq-plan-for-2-formalization-prep">Rocq plan for #2 (formalization prep) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#rocq-plan-for-2-formalization-prep">#</a></h1>
+<p>Machine #2 = <code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code>. Template: <code>vendor/busycoq/verify/SOMDCv6.v</code>, <code>Module TM7</code>, whose machine differs from #2 only in A1 (TM7 <code>0RC</code>, #2 <code>0RF</code>). Written 2026-10-10. This is preparation only. No proof of #2 has been written; the only Rocq for #2 is the segment probe in §3.2.</p>
+<h2 id="s0">0. Summary <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s0">#</a></h2>
+<ol>
+<li>
+<strong>The template route works.</strong> A top-level copy of TM7 compiles in 3.8 s with <code>Closed under the global context</code>, and <code>tools/check_kill.sh</code> gives <code>RESULT: PASS</code> on it in 5 s (coqchk passes in 0.8 s).
+</li>
+<li>
+<strong>Most of the file carries over.</strong> With only the machine string swapped to #2, everything in TM7 compiles except two cases of <code>RIncs_spec</code>: an eater entering an L, and a drain pass entering an L. <code>BigStep</code>, the start-up from blank, and all non-L cases go through unchanged.
+</li>
+<li>
+<strong>The new low-level facts are proved by the existing automation.</strong> The +1 pass is an ordinary <code>h</code> visit (enter as B, leave as C), and both L-entry segments emit <code>h ++ h&#x27; ++ h^^(1+k)</code> to the right. All 8 probe lemmas compile in 6.5 s (<code>rocq-scratch/probe_segments_2.v</code>).
+</li>
+<li>
+<strong>The domain lemma does NOT carry over, and it is the real work.</strong> TM7 proves nonhalting with the invariant <code>P r := exists r&#x27;, RIncs hx 0 r r&#x27;</code> (&quot;r is in the domain&quot;). For #2 that set is <strong>not closed</strong>: <code>LLLL10LL1L1</code> is in the domain, but its image <code>LLLLL1LLLLLLL111</code> is not.
+<ul>
+<li>
+The set <code>image(eat) ∩ dom(eat)</code> is closed in every test so far: exhaustive over inputs of length ≤ 12, plus about 62k random inputs of length ≤ 40.
+</li>
+<li>
+Proving that closure needs a new lemma about three consecutive sweeps. Its invariant has not been found yet (§3.5).
+</li>
+<li>
+A simpler fix, &quot;the same domain with a fixed safety margin&quot;, is not closed either. Margin 2 looked closed up to length 10 but failed at length 11.
+</li></ul>
+</li>
+<li>
+<strong>Size estimate.</strong> The finished file should run about 450–700 lines (TM7 has 245). Roughly 150 of those are routine. A 3-sweep domain lemma of 150–400 lines carries almost all of the risk.
+</li>
+<li>
+<strong>What this means for Checkpoint A, Q2 (&quot;extend TM7&quot;).</strong> Extending TM7 is still the right route for the machine-facing part. The nonhalting argument needs a genuinely new idea, so proof.md must settle the invariant before any <code>.v</code> work.
+</li></ol>
+<h2 id="s1">1. Template anatomy <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s1">#</a></h2>
+<h3 id="s1-1">1.1 Shared header (<code>SOMDCv6.v</code> lines 1–17) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s1-1">#</a></h3>
+<div class="tscroll"><table class="md"><thead><tr><th>Item</th><th>Statement / body</th><th>Role</th></tr></thead><tbody><tr><td>imports</td><td><code>From BusyCoq Require Import Individual62 Longitudinal DivModCases.</code>, then <code>ZifyNat Lia ZArith String List</code></td><td><code>Individual62</code> provides the machine and the segment machinery. <code>Longitudinal</code> provides <code>segRLs_addmul_v2</code> and <code>sideRLs_1</code>. <code>DivModCases</code> provides <code>mod2</code> and <code>sub</code>. All three are on check_kill&#x27;s allowlist and built (<code>.vo</code> + native).</td></tr><tr><td><code>Ltac esc</code></td><td>tries <code>BoundedConfig.segRLs_c_spec (T:=10^3)</code>, then <code>BoundedConfig.sideRLs_c_spec (T:=10^3)</code>, then <code>sideRLs_c_spec (T:=10^6)</code> with <code>vm_compute</code></td><td>Proves a concrete <code>segRLs</code>/<code>sideRLs</code> goal by computation. Used for the right-end base case and inside <code>am</code>.</td></tr><tr><td><code>Ltac ec</code></td><td><code>econstructor</code></td><td>Builds <code>RIncs</code> derivations.</td></tr><tr><td><code>Ltac am a a&#x27; k b b&#x27;</code></td><td><code>applys_eq (segRLs_addmul_v2 a a&#x27; k b b&#x27;); unfold DH0; flia; esc</code></td><td>Proves <code>segRLs tm (h^^(k*a+b)) (h^^(k*a&#x27;+b&#x27;)) w1 w2</code> from two concrete facts: b visits give b&#x27; out, and every further a visits give a&#x27; out. Used for the binary-counter digits (a 0-digit absorbing <code>1+2k</code> or <code>2+2k</code> passes). <code>flia</code> comes from the import chain. The header does not define it, but it resolves.</td></tr></tbody></table></div>
+<p>Framework pieces TM7 relies on (from <code>Individual.v</code> / <code>Individual62.v</code> / <code>Longitudinal.v</code>):</p>
+<ul>
+<li>
+<strong><code>sideRLs tm ls r1 r2</code>.</strong> The right half of the tape, initially <code>r1</code>, receives the visits in <code>ls</code> from the left and ends as <code>r2</code>. Each visit <code>(h1,h2)</code> enters moving right in state/prefix <code>h1</code> and leaves moving left as <code>h2</code>.
+</li>
+<li>
+<strong><code>segRLs tm ls1 ls2 w1 w2</code>.</strong> A finite word <code>w1</code> (becoming <code>w2</code>) turns incoming visits <code>ls1</code> into outgoing visits <code>ls2</code> to its right.
+</li>
+<li>
+<strong><code>segRLs_sideRLs_concat</code></strong> glues a segment onto a side.
+</li>
+<li>
+<strong><code>segRLs_trans</code>, <code>sideRLs_trans</code></strong> concatenate visit lists.
+</li>
+<li>
+<strong><code>segRLs_wall&#x27;&#x27;</code>.</strong> <code>segRLs h1 h2 w w -&gt; segRLs (h1^^n) (h2^^n) w w</code>.
+</li>
+<li>
+<strong><code>sideRLs_1</code></strong> turns a one-visit <code>sideRLs</code> into <code>--&gt;+</code>.
+</li>
+<li>
+<strong><code>esx</code></strong> dispatches to <code>solve_segRLs</code>, <code>solve_sideRLs</code>, <code>solve_init</code> or <code>es</code> by goal shape.
+</li>
+<li>
+<strong><code>follow10</code>.</strong>
+</li></ul>
+<h3 id="s1-2">1.2 <code>Module TM7</code> (lines 1627–1870), item by item <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s1-2">#</a></h3>
+<div class="tscroll"><table class="md"><thead><tr><th>Item</th><th>Statement</th><th>Role</th></tr></thead><tbody><tr><td><code>tm</code></td><td><code>Eval compute in (TM_from_str &quot;1RB0RC_…&quot;)</code></td><td>The machine. This is the only line that names A1.</td></tr><tr><td>notations</td><td><code>ld:=[1;1;0]</code> (L), <code>d0:=[0;0;0]</code>, <code>d1:=[1;0;0]</code>; <code>hR:=(B,[])</code>, <code>hR&#x27;:=(D,[1])</code>, <code>hL:=(C,[])</code>; <code>h:=[(hR,hL)]</code>, <code>h&#x27;:=[(hR&#x27;,hL)]</code></td><td>Digits, and the two visit kinds. <strong><code>h</code> is the drain-pass visit and, for #2, also the +1 pass.</strong> <code>h&#x27;</code> is the eater (state D with a 1 on its left).</td></tr><tr><td><code>RD</code>, <code>H</code></td><td><code>LD \| D0 \| D1</code>; <code>hx \| h1</code></td><td>Digit names. <code>hx</code> is the eater; <code>h1</code> is count mode, which has a stray 1 in front, so the alignment shifts by one cell.</td></tr><tr><td><code>toRC</code></td><td><code>list RD -&gt; side</code>, digits then <code>0inf</code></td><td>Converts the digit list to the tape side.</td></tr><tr><td><code>toH&#x27;</code>, <code>toH</code></td><td><code>toH&#x27; hx=[]</code>, <code>toH&#x27; h1=[1]</code>; <code>toH hx=h&#x27;</code>, <code>toH h1=[]</code></td><td>The extra cell in front of the side, and the first visit of the mode.</td></tr><tr><td><code>RIncs</code></td><td>10 clauses, <code>H -&gt; nat -&gt; list RD -&gt; list RD -&gt; Prop</code> (mode, pass count k, input, output)</td><td><strong>The sweep as a relation.</strong> <code>hx_ld</code>, <code>hx_d0</code>: eat, <code>k+1</code>. <code>hx_d1</code>: switch to <code>h1</code> with k. <code>h1_ld</code>: back to <code>hx</code> with the same k. <code>h1_d1</code>: absorb one pass. <code>h1_d0_0/1</code>: halve. <code>h1_rh_0/1/2</code>: write k at the right end (bijective binary followed by a terminating <code>D1</code>).</td></tr><tr><td><code>cat3</code>, <code>tr1</code>, <code>wal</code>, <code>tr2</code></td><td>Ltacs</td><td><code>cat3</code> peels a 3-cell digit off the side. <code>tr1</code> splits <code>h^^(1+k)</code> and proves the first visit by <code>esx</code>. <code>wal</code> handles k identical visits through a wall. <code>tr2</code> handles a leading <code>sideRLs</code> step.</td></tr><tr><td><code>RIncs_spec</code></td><td><code>RIncs tp k r r&#x27; -&gt; sideRLs tm (toH tp++h^^k) (toH&#x27; tp*&gt;toRC r) (toRC r&#x27;)</code></td><td><strong>Soundness:</strong> the relation is what the machine does. Proved by induction on the derivation, one bullet per clause.</td></tr><tr><td><code>RIncs_nxt_1</code></td><td><code>exists r, RIncs h1 k [] r</code></td><td>The right end always succeeds in count mode. Proved by well-founded induction on k with <code>mod2</code>.</td></tr><tr><td><code>solve_v2</code>, <code>solve_v1</code></td><td>Ltacs</td><td>Automation tailored to the case list of <code>RIncs_nxt</code>.</td></tr><tr><td><code>RIncs_nxt</code></td><td><code>RIncs tp k r r&#x27; -&gt; cond(tp,k,tp&#x27;,k&#x27;) -&gt; exists r&#x27;&#x27;, RIncs tp&#x27; k&#x27; r&#x27; r&#x27;&#x27;</code>, where cond is: <code>hx,hx: k&lt;=k&#x27;</code>; <code>h1,h1: 2k+1&lt;=k&#x27;</code>; <code>h1,hx: k+1&lt;=k&#x27;</code>; otherwise False</td><td><strong>The domain lemma:</strong> the output of a sweep is again in the domain. Proved by induction on <code>r</code>, with a nested <code>lt_wf_ind</code> on k for <code>[]</code>. It does not mention <code>tm</code>.</td></tr><tr><td><code>lh</code>, <code>S&#x27;</code></td><td><code>lh := 0inf&lt;*&lt;[1]</code>; <code>S&#x27; r := lh {{{(hR&#x27;,R)}}} toH&#x27; hx *&gt; toRC r</code></td><td>The boundary configuration <code>0^inf 1 1 D&gt; r</code>.</td></tr><tr><td><code>BigStep</code></td><td><code>RIncs hx 0 r r&#x27; -&gt; S&#x27; r --&gt;+ S&#x27; r&#x27;</code></td><td>One sweep: <code>RIncs_spec</code>, then <code>sideRLs_1</code> and <code>follow10</code>, then <code>es</code> steps back from the left wall.</td></tr><tr><td><code>nonhalt</code></td><td><code>~halts tm c0</code></td><td><code>multistep_nonhalt</code> to <code>S&#x27; [D1]</code> (<code>esx</code>, 5 steps), then <code>progress_nonhalt_cond</code> with <code>P r := exists r&#x27;, RIncs hx 0 r r&#x27;</code>, closed by <code>RIncs_nxt (hx,0)-&gt;(hx,0)</code>.</td></tr></tbody></table></div>
+<p>TM8 (line 1874, A1 = <code>0LC</code>) reuses the same proof text.</p>
+<h2 id="s2">2. Standalone TM7 copy (template validation) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s2">#</a></h2>
+<ul>
+<li>
+File: <code>rocq-scratch/TM7_toplevel.v</code>, 261 lines, sha256 <code>642086b1…20e59b5</code>.
+</li>
+<li>
+Regenerate: <code>{ sed -n &#x27;1,17p&#x27; SOMDCv6.v; sed -n &#x27;1627,1870p&#x27; SOMDCv6.v; } &gt; TM7_toplevel.v</code>, i.e. the header plus the module body without its <code>Module TM7.</code>/<code>End TM7.</code> lines. The body is byte-identical to upstream (checked by diff).
+</li>
+<li>
+Compile from a temp dir outside <code>vendor/</code>: <code>coqc -Q vendor/busycoq/verify BusyCoq -Q vendor/busycoq/verify/BigInt BigInt -native-compiler yes</code>, run under <code>ulimit -s unlimited</code>.
+<ul>
+<li>
+Wall time 3.8 s (2.7 s user, 445 MB max RSS).
+</li>
+<li>
+<code>Print Assumptions nonhalt.</code> gives <strong>Closed under the global context</strong>.
+</li></ul>
+</li>
+<li>
+<code>tools/check_kill.sh rocq-scratch/TM7_toplevel.v 1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code> gives <strong>RESULT: PASS</strong> in 5.0 s total (compile 3.1 s, coqchk <code>pass</code> in 0.8 s, 0 assumptions). This validates the route end to end: imports allowlisted, framework fresh, top-level <code>tm</code>/<code>nonhalt</code>, and no forbidden words in upstream&#x27;s text.
+</li></ul>
+<h2 id="s3">3. What changes for #2 <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3">#</a></h2>
+<h3 id="s3-1">3.1 Measured: what breaks when only <code>tm</code> changes <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-1">#</a></h3>
+<p>I swapped the string in the TM7 copy and compiled it (scratchpad only, not kept):</p>
+<ul>
+<li>
+The first error is <code>RIncs_spec</code>, bullet 1 (<code>RIncs_hx_ld</code>). The eater&#x27;s visit over <code>ld</code> now emits a different visit list.
+</li>
+<li>
+I then stubbed the two L bullets (1 and 4) in a throwaway copy that is not kept anywhere in the project. Everything else compiled: the other 8 bullets of <code>RIncs_spec</code>, <code>RIncs_nxt_1</code>, <code>RIncs_nxt</code>, <code>BigStep</code>, and the <code>c0 --&gt;* S&#x27; [D1]</code> start.
+</li>
+<li>
+So the two L-entry segments are the only places where the machine&#x27;s A1 matters.
+</li>
+<li>
+TM7 has no separate <code>es</code>/<code>ind</code> lemmas. Every low-level fact goes through the segment automation (<code>esx</code>/<code>esc</code>/<code>am</code>/<code>wal</code>), so no other low-level lemma touches A1.
+</li></ul>
+<h3 id="s3-2">3.2 New relation <code>Inc</code> and <code>Inc_spec</code> (segment facts verified) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-2">#</a></h3>
+<pre class="md">Inductive Inc: list RD -&gt; list RD -&gt; Prop :=
+| Inc_nil: Inc [] [D1]
+| Inc_d0 r: Inc (D0::r) (D1::r)
+| Inc_d1 r r&#x27;: Inc r r&#x27; -&gt; Inc (D1::r) (D0::r&#x27;)
+| Inc_ld r r&#x27;: Inc r r&#x27; -&gt; Inc (LD::r) (LD::r&#x27;).
+Lemma Inc_spec r r&#x27;: Inc r r&#x27; -&gt; sideRLs tm h (toRC r) (toRC r&#x27;).</pre>
+<p>Each case is <code>cat3</code> plus one segment fact. The segment facts are proved in <code>rocq-scratch/probe_segments_2.v</code> (compiles in 6.5 s):</p>
+<ul>
+<li>
+<code>segRLs tm h [] d0 d1</code>, by <code>esx</code>;
+</li>
+<li>
+<code>segRLs tm h h d1 d0</code>, by <code>esx</code>;
+</li>
+<li>
+<code>segRLs tm h h ld ld</code>, by <code>esx</code>;
+</li>
+<li>
+<code>sideRLs tm h 0inf (d1 *&gt; 0inf)</code>, by <code>esc</code>.
+</li></ul>
+<p>Planned helper lemmas:</p>
+<ul>
+<li>
+<code>Inc_total</code>: <code>forall r, exists r&#x27;, Inc r r&#x27;</code>.
+</li>
+<li>
+<code>Inc_fun</code>: <code>Inc</code> is deterministic.
+</li>
+<li>
+<code>Inc_D1</code>: the output always contains <code>D1</code>.
+</li></ul>
+<h3 id="s3-3">3.3 The two <code>RIncs</code> clauses that change <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-3">#</a></h3>
+<pre class="md">| RIncs_hx_ld k r r1 r&#x27;:  Inc r r1 -&gt; RIncs hx (1+k) r1 r&#x27; -&gt; RIncs hx k (LD::r) (LD::r&#x27;)
+| RIncs_h1_ld k r r1 r&#x27;:  Inc r r1 -&gt; RIncs hx (1+k) r1 r&#x27; -&gt; RIncs h1 (1+k) (LD::r) (LD::r&#x27;)</pre>
+<p>The other 8 clauses are TM7&#x27;s, verbatim. Simulation agrees with this relation:</p>
+<ul>
+<li>
+<code>rocq-scratch/py/rincs.py</code> mirrors these exact clauses;
+</li>
+<li>
+<code>out(hx,0,·)</code> equals <code>check_rules.eat</code> on all 29,523 words of length ≤ 9;
+</li>
+<li>
+<code>check_rules.py</code> matches 208/208 real sweeps.
+</li></ul>
+<h3 id="s3-4">3.4 <code>RIncs_spec</code>: the two new bullets <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-4">#</a></h3>
+<p>Segment facts, verified in the probe:</p>
+<ul>
+<li>
+<strong>Eater:</strong> <code>segRLs tm (h&#x27; ++ h^^k) (h ++ h&#x27; ++ h^^(1+k)) ld ld</code>. TM7&#x27;s is <code>h&#x27; ++ h^^(1+k)</code>.
+</li>
+<li>
+<strong>Drain pass:</strong> <code>segRLs tm (h^^1 ++ h^^k) (h ++ h&#x27; ++ h^^(1+k)) [1;1;1;0] ld</code>.
+</li></ul>
+<p>Both proofs are:</p>
+<ul>
+<li>
+<code>rewrite lpow_add</code>;
+</li>
+<li>
+then <code>change (h ++ h&#x27; ++ h^^1 ++ h^^k) with ((h ++ h&#x27; ++ h^^1) ++ h^^k)</code>;
+</li>
+<li>
+then <code>eapply segRLs_trans; [esx | wal]</code>.
+</li></ul>
+<p>Bullet shape: <code>eapply segRLs_sideRLs_concat</code> with the segment fact, then <code>eapply (sideRLs_trans (ls1:=h)); [apply Inc_spec; eauto | eauto]</code>.</p>
+<p>TM7&#x27;s <code>cat3</code> ends in <code>[|eauto 1]</code>, which cannot find the <code>sideRLs_trans</code> split, so these bullets are written out (about 4 lines each).</p>
+<h3 id="s3-5">3.5 The domain argument (main risk) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-5">#</a></h3>
+<p><strong>TM7&#x27;s invariant fails for #2.</strong> Script: <code>rocq-scratch/py/domain_facts.py</code>.</p>
+<ul>
+<li>
+Over all words of length ≤ 10, TM7&#x27;s map keeps its domain (12,491 words, 0 escape).
+</li>
+<li>
+#2&#x27;s map does not: 8 of 26,019 domain words map outside the domain.
+</li>
+<li>
+Over words of length ≤ 12 that end in 1, 230 domain words map outside the domain.
+</li>
+<li>
+Worked example: <code>LLLL10LL1L1</code> → <code>LLLLL1LLLLLLL111</code>. On the second word, the eater reaches the tail <code>10001</code> with k = 13. The 1 becomes L, and the drain of <code>0001</code> then needs 15 passes but has 12.
+</li></ul>
+<p>So <code>RIncs_nxt</code> has no #2 analogue with any condition on (tp, k, tp&#x27;, k&#x27;). I derived this by hand and the measurements back it: the constraints forced on a bound g(k) are contradictory (g(k+2) ≤ g(k)+1 versus g(k) ≥ k−1).</p>
+<p><strong>What holds instead (tested, not proved):</strong></p>
+<ol>
+<li>
+<strong>Commutation lemma <code>RIncs_Inc</code>:</strong> <code>RIncs tp k r r&#x27; -&gt; Inc r&#x27; r&#x27;&#x27; -&gt; RIncs tp (1+k) r r&#x27;&#x27;</code>. In words, a +1 applied to a sweep&#x27;s output is the same as one more pass in that sweep.
+<ul>
+<li>
+It holds because the count-mode digits encode the leftover passes in bijective base 2 (<code>D0</code>=1, <code>D1</code>=2, terminated by <code>D1</code>), and <code>Inc</code> is exactly bijective +1 on that code.
+</li>
+<li>
+Checked on 659,938 cases (all words of length ≤ 8, k &lt; 40).
+</li>
+<li>
+Proof: induction on the <code>RIncs</code> derivation, inverting <code>Inc</code>. Every case closes with one constructor and the IH; the D0 cases need <code>mod2</code> arithmetic. Estimate 40–60 lines.
+</li></ul>
+</li>
+<li>
+<strong><code>image(eat) ∩ dom(eat)</code> is closed under <code>eat</code>.</strong>
+<ul>
+<li>
+0 failures exhaustive: 26,011 image words from inputs of length ≤ 10, and 197,471 from inputs of length ≤ 12.
+</li>
+<li>
+0 failures random: about 62k image words from inputs of length ≤ 40.
+</li>
+<li>
+The real orbit lies in this set, since every config after <code>S(1)</code> is an image.
+</li></ul>
+</li></ol>
+<p><strong>Proposed proof shape:</strong></p>
+<ul>
+<li>
+<strong>Invariant:</strong> <code>P r := (exists r0, RIncs hx 0 r0 r) /\ (exists r&#x27;, RIncs hx 0 r r&#x27;)</code>.
+</li>
+<li>
+<strong>Start:</strong> <code>S&#x27; [LD;D1]</code>, reached at step 16 from blank (by simulation; <code>esx</code> should do it as for TM7). <code>P [LD;D1]</code> holds via <code>r0 = [D1]</code>, with <code>r&#x27; = [LD;LD;LD;D1;D1]</code>, which matches the step-91 config.
+</li>
+<li>
+<strong>Key lemma (new):</strong> <code>RIncs tpA a s r -&gt; RIncs tpB b r r&#x27; -&gt; Cond(tpA,a,tpB,b,tpC,c) -&gt; exists r&#x27;&#x27;, RIncs tpC c r&#x27; r&#x27;&#x27;</code>. It describes three sweeps A, B, C side by side, digit by digit.
+<ul>
+<li>
+A +1 fired by B on its rest becomes <code>a+1</code>, by <code>RIncs_Inc</code> together with <code>Inc_fun</code> and RIncs determinism. A +1 fired by C becomes <code>b+1</code>.
+</li></ul>
+</li>
+<li>
+<strong>Induction:</strong> on a measure of the middle word <code>r</code>, e.g. <code>length r + 2*(count of LD in r)</code>. This strictly drops every step even after B&#x27;s <code>Inc</code>. TM7&#x27;s structural induction on <code>r</code> fails here, because the sub-derivation runs on <code>Inc r</code>.
+</li>
+<li>
+<strong>Unknown: <code>Cond</code>.</strong> The harness <code>rocq-scratch/py/joint.py</code> replays the three sweeps jointly; it agrees with direct composition on 1678/1678 samples. Its data, over all inputs of length ≤ 11 where A and B succeed (71,695 inputs, C always succeeds):
+<ul>
+<li>
+only the mode triples <code>xxx</code>, <code>1xx</code>, <code>11x</code>, <code>111</code> occur (A&#x27;s mode ≥ B&#x27;s ≥ C&#x27;s);
+</li>
+<li>
+<code>b &gt;= a</code> and <code>2c &gt;= b</code> hold at every position;
+</li>
+<li>
+<code>111</code> occurs only after A has finished (a = 0).
+</li>
+<li>
+Neither <code>2c &gt;= b</code> nor a TM7-style pairwise condition is inductive on its own. Hand-checking the <code>111</code> transitions breaks both, so <code>Cond</code> must use <code>a</code> and the phase (A still reading, at the right end, or finished). Finding it is the first job of proof.md.
+</li></ul>
+</li>
+<li>
+<strong>Shortcut tried and ruled out: a fixed safety margin.</strong> The real orbit has large slack: at count-mode entries, k exceeds the passes needed by at least 2 in the first 400 sweeps, and usually by hundreds. So I tested &quot;the sweep still succeeds if each eater-to-count switch hands over fewer passes&quot;. Script: <code>rocq-scratch/py/margin.py</code>.
+<ul>
+<li>
+Each variant holds on the real orbit, but none is closed under the real <code>eat</code>.
+</li>
+<li>
+Margin 1 fails on 8 words of length ≤ 10.
+</li>
+<li>
+Margin 2 has 0 failures at length ≤ 10, which looked promising, but 38 at length ≤ 11 and 16 of 8,198 random words.
+</li>
+<li>
+Halving the count fails on 3,240 words; taking 3/4 of it fails on 64.
+</li>
+<li>
+The failures repeat the <code>…1 L^a 111</code> pattern of the counterexample above, at larger sizes.
+</li>
+<li>
+A TM7-style condition also fails on the margin-2 domain. The least k&#x27; that works for an <code>hx</code> count k is <code>[0,9,1,10,6,11,7,12,8]</code> for k = 0..8: not monotone, and parity-driven (<code>margin_cond.py</code>).
+</li>
+<li>
+Any quantitative invariant would have to scale with n, the length of the L-run. That route is untested.
+</li></ul>
+</li></ul>
+<h3 id="s3-6">3.6 <code>BigStep</code> and <code>nonhalt</code> <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-6">#</a></h3>
+<ul>
+<li>
+<code>BigStep</code> is unchanged, verified by compile in §3.1.
+</li>
+<li>
+<code>nonhalt</code> changes only in <code>P</code>, the start (<code>S&#x27; [LD;D1]</code>) and the closing step. Three facts close it: the new key lemma, <code>RIncs_Inc</code>, and the witness <code>r</code> itself for the image half of <code>P r&#x27;</code>.
+</li></ul>
+<h3 id="s3-7">3.7 Size estimate <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s3-7">#</a></h3>
+<div class="tscroll"><table class="md"><thead><tr><th>Piece</th><th>Lines</th><th>Risk</th></tr></thead><tbody><tr><td>TM7 text kept (notations, <code>toRC</code>, 8 <code>RIncs</code> clauses, 8 <code>RIncs_spec</code> bullets, <code>RIncs_nxt_1</code>, <code>BigStep</code>)</td><td>~150</td><td>none (compiles today)</td></tr><tr><td><code>Inc</code>, <code>Inc_spec</code>, <code>Inc_total</code>, <code>Inc_fun</code></td><td>40–60</td><td>low (segments verified)</td></tr><tr><td>2 new <code>RIncs_spec</code> bullets</td><td>~10</td><td>low (verified)</td></tr><tr><td><code>RIncs</code> determinism, <code>RIncs_Inc</code></td><td>60–90</td><td>low–medium</td></tr><tr><td>3-sweep domain lemma (replaces <code>RIncs_nxt</code>)</td><td>150–400</td><td><strong>high: invariant unknown</strong></td></tr><tr><td><code>nonhalt</code></td><td>~25</td><td>low</td></tr><tr><td><strong>Total</strong></td><td><strong>~450–700</strong></td><td>Compile should stay under 30 s: the computation is local segments only.</td></tr></tbody></table></div>
+<h2 id="s4">4. Tactics to reuse, and pitfalls <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s4">#</a></h2>
+<p><strong>Reuse:</strong></p>
+<ul>
+<li>
+<code>cat3</code> / <code>tr1</code> / <code>wal</code> / <code>tr2</code> / <code>am</code> / <code>esc</code> unchanged.
+</li>
+<li>
+The <code>rewrite lpow_add</code> + <code>change (… ++ h^^k)</code> + <code>segRLs_trans; [esx | wal]</code> pattern for any visit list of the form &quot;fixed prefix, then k copies&quot;.
+</li>
+<li>
+<code>mod2</code> / <code>sub</code> from <code>DivModCases</code> for parity and predecessor case splits, as in TM7&#x27;s <code>RIncs_nxt</code>.
+</li>
+<li>
+<code>gen</code> + <code>inverts</code> (LibTactics) for derivation inversion.
+</li></ul>
+<p><strong>Pitfalls (each hit while probing):</strong></p>
+<ul>
+<li>
+<strong><code>Open Scope nat</code> turns list literals into <code>list nat</code>.</strong> <code>[1;1;1;0]</code> fails as a <code>list Sym</code>. Declare word notations (e.g. <code>Notation w1ld := [1;1;1;0].</code>) before <code>Open Scope nat</code>, as TM7 does for <code>ld</code>/<code>d0</code>/<code>d1</code>.
+</li>
+<li>
+<strong>Use <code>0inf</code>, not <code>const 0</code>, for the blank side.</strong> <code>const 0</code> is read as <code>Stream nat</code>.
+</li>
+<li>
+<strong><code>cat3</code>&#x27;s <code>[|eauto 1]</code> will not combine <code>Inc_spec</code> with the IH.</strong> Write the <code>sideRLs_trans</code> split explicitly.
+</li>
+<li>
+<strong>TM7&#x27;s <code>solve_v1</code>/<code>solve_v2</code> are tied to its case order.</strong> The new domain lemma needs its own automation.
+</li>
+<li>
+<strong>Inducting on the derivation gives no IH for the <code>Inc</code> premise.</strong> That is fine for <code>RIncs_spec</code>. For the domain lemma, use the measure induction described in §3.5.
+</li>
+<li>
+<strong>check_kill reads raw text, comments included.</strong> Keep the forbidden words out of the final file, even in comments (see rocq-notes, &quot;Trust base&quot;). The stub run in §3.1 lived only in the scratchpad.
+</li>
+<li>
+<strong>Stack, native and timeouts are not an issue at this size.</strong>
+<ul>
+<li>
+TM7 needs no <code>ulimit</code> change in practice; it is set anyway.
+</li>
+<li>
+Native compile adds about 1 s.
+</li>
+<li>
+coqchk finishes in under 1 s, far below the 600 s cap.
+</li>
+<li>
+<code>esc</code>&#x27;s <code>vm_compute</code> fallback (<code>T:=10^6</code>) is never reached by the probes; <code>BoundedConfig</code> with <code>T:=10^3</code> suffices.
+</li></ul>
+</li></ul>
+<h2 id="s5">5. Files <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/rocq-plan.html#s5">#</a></h2>
+<ul>
+<li>
+<code>rocq-scratch/TM7_toplevel.v</code>: standalone TM7 (check_kill PASS with TM7&#x27;s string).
+</li>
+<li>
+<code>rocq-scratch/probe_segments_2.v</code>: #2 segment probes (8 lemmas, all <code>Qed</code>).
+</li>
+<li>
+<code>rocq-scratch/py/rincs.py</code>: #2&#x27;s <code>RIncs</code> as a function. It checks equality with <code>check_rules.eat</code> and the commutation lemma.
+</li>
+<li>
+<code>rocq-scratch/py/domain_facts.py</code>: the closure counterexample and the image∩dom closure test.
+</li>
+<li>
+<code>rocq-scratch/py/joint.py</code>: the 3-sweep joint harness, for testing candidate <code>Cond</code>s.
+</li>
+<li>
+<code>rocq-scratch/py/margin.py</code>, <code>margin_cond.py</code>: the ruled-out fixed-margin invariants (§3.5).
+</li></ul>
+<p>Reproduce the data: <code>cd rocq-scratch/py</code>, then run:</p>
+<ul>
+<li>
+<code>python3 -B rincs.py</code> (about 1 min);
+</li>
+<li>
+<code>python3 -B domain_facts.py 10</code> (about 2 min);
+</li>
+<li>
+<code>python3 -B joint.py</code> (about 5 min);
+</li>
+<li>
+<code>python3 -u -B margin.py 2 11 40000 300</code> (about 15 min).
+</li></ul></div></div></body></html>

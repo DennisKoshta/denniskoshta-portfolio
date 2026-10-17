@@ -1,0 +1,706 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>W61Plan.v</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1200px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v · <a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html">raw</a></div>
+<div class="src"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-1">  1</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-2">  2</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-3">  3</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-4">  4</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-5">  5</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-6">  6</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-7">  7</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-8">  8</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-9">  9</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-10"> 10</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-11"> 11</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-12"> 12</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-13"> 13</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-14"> 14</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-15"> 15</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-16"> 16</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-17"> 17</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-18"> 18</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-19"> 19</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-20"> 20</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-21"> 21</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-22"> 22</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-23"> 23</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-24"> 24</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-25"> 25</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-26"> 26</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-27"> 27</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-28"> 28</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-29"> 29</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-30"> 30</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-31"> 31</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-32"> 32</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-33"> 33</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-34"> 34</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-35"> 35</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-36"> 36</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-37"> 37</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-38"> 38</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-39"> 39</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-40"> 40</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-41"> 41</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-42"> 42</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-43"> 43</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-44"> 44</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-45"> 45</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-46"> 46</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-47"> 47</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-48"> 48</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-49"> 49</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-50"> 50</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-51"> 51</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-52"> 52</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-53"> 53</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-54"> 54</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-55"> 55</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-56"> 56</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-57"> 57</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-58"> 58</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-59"> 59</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-60"> 60</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-61"> 61</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-62"> 62</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-63"> 63</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-64"> 64</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-65"> 65</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-66"> 66</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-67"> 67</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-68"> 68</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-69"> 69</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-70"> 70</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-71"> 71</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-72"> 72</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-73"> 73</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-74"> 74</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-75"> 75</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-76"> 76</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-77"> 77</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-78"> 78</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-79"> 79</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-80"> 80</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-81"> 81</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-82"> 82</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-83"> 83</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-84"> 84</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-85"> 85</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-86"> 86</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-87"> 87</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-88"> 88</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-89"> 89</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-90"> 90</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-91"> 91</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-92"> 92</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-93"> 93</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-94"> 94</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-95"> 95</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-96"> 96</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-97"> 97</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-98"> 98</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-99"> 99</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-100">100</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-101">101</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-102">102</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-103">103</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-104">104</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-105">105</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-106">106</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-107">107</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-108">108</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-109">109</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-110">110</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-111">111</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-112">112</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-113">113</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-114">114</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-115">115</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-116">116</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-117">117</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-118">118</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-119">119</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-120">120</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-121">121</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-122">122</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-123">123</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-124">124</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-125">125</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-126">126</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-127">127</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-128">128</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-129">129</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-130">130</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-131">131</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-132">132</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-133">133</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-134">134</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-135">135</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-136">136</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-137">137</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-138">138</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-139">139</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-140">140</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-141">141</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-142">142</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-143">143</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-144">144</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-145">145</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-146">146</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-147">147</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-148">148</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-149">149</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-150">150</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-151">151</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-152">152</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-153">153</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-154">154</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-155">155</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-156">156</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-157">157</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-158">158</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-159">159</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-160">160</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-161">161</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-162">162</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-163">163</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-164">164</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-165">165</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-166">166</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-167">167</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-168">168</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-169">169</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-170">170</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-171">171</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-172">172</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-173">173</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-174">174</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-175">175</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-176">176</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-177">177</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-178">178</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-179">179</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-180">180</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-181">181</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-182">182</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-183">183</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-184">184</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-185">185</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-186">186</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-187">187</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-188">188</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-189">189</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-190">190</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-191">191</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-192">192</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-193">193</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-194">194</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-195">195</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-196">196</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-197">197</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-198">198</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-199">199</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-200">200</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-201">201</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-202">202</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-203">203</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-204">204</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-205">205</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-206">206</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-207">207</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-208">208</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-209">209</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-210">210</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-211">211</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-212">212</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-213">213</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-214">214</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-215">215</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-216">216</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-217">217</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-218">218</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-219">219</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-220">220</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-221">221</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-222">222</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-223">223</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-224">224</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-225">225</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-226">226</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-227">227</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-228">228</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-229">229</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-230">230</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-231">231</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-232">232</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-233">233</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-234">234</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-235">235</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-236">236</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-237">237</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-238">238</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-239">239</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-240">240</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-241">241</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-242">242</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-243">243</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-244">244</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-245">245</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-246">246</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-247">247</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-248">248</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-249">249</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-250">250</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-251">251</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-252">252</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-253">253</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-254">254</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-255">255</a></span>
+<span class="normal"><a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/W61Plan.v.html#L-256">256</a></span></pre></div></td><td class="code"><div><pre><span></span><a id="L-1" name="L-1"></a><span class="c">(** W6-1 PLANNING FILE.  Statements only: every [Admitted] below is open work.</span>
+<a id="L-2" name="L-2"></a><span class="c">    Nothing in this file counts as proved except the plumbing that composes the</span>
+<a id="L-3" name="L-3"></a><span class="c">    statements ([sobc_D_nonhalt], [nonhalt]); [Print Assumptions nonhalt] at</span>
+<a id="L-4" name="L-4"></a><span class="c">    the end lists exactly the open statements.</span>
+<a id="L-5" name="L-5"></a>
+<a id="L-6" name="L-6"></a><span class="c">    Frame: SOBCv10's table and frame (W61.SOBCv10, an unmodified copy of the</span>
+<a id="L-7" name="L-7"></a><span class="c">    upstream file).  Our machine is that table mirrored and renamed and started</span>
+<a id="L-8" name="L-8"></a><span class="c">    in SOBCv10's state D ([perm], [nonhalt] at the end).</span>
+<a id="L-9" name="L-9"></a>
+<a id="L-10" name="L-10"></a><span class="c">    Open statements:</span>
+<a id="L-11" name="L-11"></a><span class="c">    - [opening]          blank tape (state D) to the entry post-C/A state:</span>
+<a id="L-12" name="L-12"></a><span class="c">                         exceptions 1-5 and families (a)-(d) at m = 30, p = n4;</span>
+<a id="L-13" name="L-13"></a><span class="c">    - [entry_pre]        the round precondition at the entry (concrete numbers);</span>
+<a id="L-14" name="L-14"></a><span class="c">    - [tail_round]       THE tail-aware round lemma (one round, no trigger),</span>
+<a id="L-15" name="L-15"></a><span class="c">                         used three times (exceptions 6, 7, 8);</span>
+<a id="L-16" name="L-16"></a><span class="c">    - [tail_round_trigger] the same round when the decode triggers</span>
+<a id="L-17" name="L-17"></a><span class="c">                         (exception 9), ending where [nested_exit] starts. *)</span>
+<a id="L-18" name="L-18"></a>
+<a id="L-19" name="L-19"></a><span class="kn">From</span> <span class="n">BusyCoq</span> <span class="kn">Require</span> <span class="kn">Import</span> <span class="n">Individual62</span> <span class="n">Longitudinal</span> <span class="n">Flip</span> <span class="n">Permute</span><span class="o">.</span>
+<a id="L-20" name="L-20"></a><span class="kn">From</span> <span class="n">W61</span> <span class="kn">Require</span> <span class="kn">Import</span> <span class="n">SOBCv10</span> <span class="n">W61Exit</span><span class="o">.</span>
+<a id="L-21" name="L-21"></a><span class="kn">Require</span> <span class="kn">Import</span> <span class="n">ZifyNat</span> <span class="n">Lia</span> <span class="n">Arith</span> <span class="n">ZArith</span> <span class="n">String</span> <span class="n">List</span><span class="o">.</span>
+<a id="L-22" name="L-22"></a><span class="kn">Import</span> <span class="n">ListNotations</span><span class="o">.</span>
+<a id="L-23" name="L-23"></a><span class="kn">Local</span> <span class="kn">Open</span> <span class="kn">Scope</span> <span class="n">list</span><span class="o">.</span>
+<a id="L-24" name="L-24"></a><span class="kn">Local</span> <span class="kn">Open</span> <span class="kn">Scope</span> <span class="n">nat_scope</span><span class="o">.</span>
+<a id="L-25" name="L-25"></a><span class="kn">Local</span> <span class="kn">Open</span> <span class="kn">Scope</span> <span class="n">sym</span><span class="o">.</span>
+<a id="L-26" name="L-26"></a>
+<a id="L-27" name="L-27"></a><span class="c">(** * 1. The tail-aware post-C/A state *)</span>
+<a id="L-28" name="L-28"></a>
+<a id="L-29" name="L-29"></a><span class="c">(** Digits of the last column: SOBCv10's [A]/[B] plus the deficit (pre-state)</span>
+<a id="L-30" name="L-30"></a><span class="c">    digits [D] (-1) and [E] (-2) that a short decode leaves behind (law T3). *)</span>
+<a id="L-31" name="L-31"></a><span class="kn">Inductive</span> <span class="n">SDigit</span> <span class="o">:=</span> <span class="n">SE</span> <span class="o">|</span> <span class="n">SD</span> <span class="o">|</span> <span class="n">SA</span> <span class="o">|</span> <span class="n">SB</span><span class="o">.</span>
+<a id="L-32" name="L-32"></a><span class="kn">Definition</span> <span class="n">sdigit_word</span> <span class="o">(</span><span class="n">d</span> <span class="o">:</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">:</span> <span class="n">list</span> <span class="n">Sym</span> <span class="o">:=</span>
+<a id="L-33" name="L-33"></a>  <span class="k">match</span> <span class="n">d</span> <span class="k">with</span> <span class="n">SE</span> <span class="o">=&gt;</span> <span class="n">E8</span> <span class="o">|</span> <span class="n">SD</span> <span class="o">=&gt;</span> <span class="n">D8</span> <span class="o">|</span> <span class="n">SA</span> <span class="o">=&gt;</span> <span class="n">A8</span> <span class="o">|</span> <span class="n">SB</span> <span class="o">=&gt;</span> <span class="n">B8</span> <span class="k">end</span><span class="o">.</span>
+<a id="L-34" name="L-34"></a><span class="kn">Definition</span> <span class="n">sdigit_value</span> <span class="o">(</span><span class="n">d</span> <span class="o">:</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-35" name="L-35"></a>  <span class="k">match</span> <span class="n">d</span> <span class="k">with</span> <span class="n">SE</span> <span class="o">=&gt;</span> <span class="o">(-</span><span class="mi">2</span><span class="o">)%</span><span class="n">Z</span> <span class="o">|</span> <span class="n">SD</span> <span class="o">=&gt;</span> <span class="o">(-</span><span class="mi">1</span><span class="o">)%</span><span class="n">Z</span> <span class="o">|</span> <span class="n">SA</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="o">%</span><span class="n">Z</span> <span class="o">|</span> <span class="n">SB</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">%</span><span class="n">Z</span> <span class="k">end</span><span class="o">.</span>
+<a id="L-36" name="L-36"></a><span class="kn">Fixpoint</span> <span class="n">sdigits_word</span> <span class="o">(</span><span class="n">ds</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">:</span> <span class="n">list</span> <span class="n">Sym</span> <span class="o">:=</span>
+<a id="L-37" name="L-37"></a>  <span class="k">match</span> <span class="n">ds</span> <span class="k">with</span> <span class="bp">[]</span> <span class="o">=&gt;</span> <span class="bp">[]</span> <span class="o">|</span> <span class="n">d</span> <span class="o">::</span> <span class="n">ds'</span> <span class="o">=&gt;</span> <span class="n">sdigit_word</span> <span class="n">d</span> <span class="o">++</span> <span class="n">sdigits_word</span> <span class="n">ds'</span> <span class="k">end</span><span class="o">.</span>
+<a id="L-38" name="L-38"></a><span class="kn">Fixpoint</span> <span class="n">sdigits_value</span> <span class="o">(</span><span class="n">ds</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-39" name="L-39"></a>  <span class="k">match</span> <span class="n">ds</span> <span class="k">with</span>
+<a id="L-40" name="L-40"></a>  <span class="o">|</span> <span class="bp">[]</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="o">%</span><span class="n">Z</span>
+<a id="L-41" name="L-41"></a>  <span class="o">|</span> <span class="n">d</span> <span class="o">::</span> <span class="n">ds'</span> <span class="o">=&gt;</span> <span class="o">(</span><span class="n">sdigit_value</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sdigits_value</span> <span class="n">ds'</span><span class="o">)%</span><span class="n">Z</span>
+<a id="L-42" name="L-42"></a>  <span class="k">end</span><span class="o">.</span>
+<a id="L-43" name="L-43"></a><span class="kn">Definition</span> <span class="n">sdigit_of</span> <span class="o">(</span><span class="n">d</span> <span class="o">:</span> <span class="n">BDigit</span><span class="o">)</span> <span class="o">:</span> <span class="n">SDigit</span> <span class="o">:=</span> <span class="k">match</span> <span class="n">d</span> <span class="k">with</span> <span class="n">BA</span> <span class="o">=&gt;</span> <span class="n">SA</span> <span class="o">|</span> <span class="n">BB</span> <span class="o">=&gt;</span> <span class="n">SB</span> <span class="k">end</span><span class="o">.</span>
+<a id="L-44" name="L-44"></a>
+<a id="L-45" name="L-45"></a><span class="c">(** The counter after C/A: primary [A^primary], the z-columns [zs] (SOBCv10</span>
+<a id="L-46" name="L-46"></a><span class="c">    binary columns), the last column [last], then the tail [U^(2k+1) y] with</span>
+<a id="L-47" name="L-47"></a><span class="c">    [y = y_after lv]: tail value [lv] (= level + 1), i.e.</span>
+<a id="L-48" name="L-48"></a><span class="c">    [A], [B], [E t], [D t], [A t], [B t] for [lv] = 0..5. *)</span>
+<a id="L-49" name="L-49"></a><span class="kn">Definition</span> <span class="n">tail_layout</span> <span class="o">(</span><span class="n">primary</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">(</span><span class="n">zs</span> <span class="o">:</span> <span class="n">list</span> <span class="n">BinaryColumn</span><span class="o">)</span>
+<a id="L-50" name="L-50"></a>    <span class="o">(</span><span class="kr">last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">(</span><span class="n">k</span> <span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">:</span> <span class="n">list</span> <span class="n">Sym</span> <span class="o">:=</span>
+<a id="L-51" name="L-51"></a>  <span class="n">A8</span><span class="o">^^</span><span class="n">primary</span> <span class="o">++</span> <span class="n">U</span><span class="o">^^</span><span class="mi">2</span> <span class="o">++</span>
+<a id="L-52" name="L-52"></a>  <span class="n">spaced_words</span> <span class="o">(</span><span class="n">map</span> <span class="n">binary_column_word</span> <span class="n">zs</span> <span class="o">++</span> <span class="o">[</span><span class="n">sdigits_word</span> <span class="kr">last</span><span class="o">])</span> <span class="o">++</span>
+<a id="L-53" name="L-53"></a>  <span class="n">U</span><span class="o">^^(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span> <span class="o">++</span> <span class="n">y_after</span> <span class="n">lv</span><span class="o">.</span>
+<a id="L-54" name="L-54"></a>
+<a id="L-55" name="L-55"></a><span class="kn">Definition</span> <span class="n">post_ca_tail</span> <span class="o">(</span><span class="n">unary</span> <span class="n">primary</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">(</span><span class="n">zs</span> <span class="o">:</span> <span class="n">list</span> <span class="n">BinaryColumn</span><span class="o">)</span>
+<a id="L-56" name="L-56"></a>    <span class="o">(</span><span class="kr">last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">(</span><span class="n">k</span> <span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">:</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">tape</span> <span class="o">:=</span>
+<a id="L-57" name="L-57"></a>  <span class="n">ordinary_left</span> <span class="n">unary</span> <span class="o">{{{((</span><span class="n">B</span><span class="o">,</span> <span class="bp">[]</span><span class="o">),</span> <span class="n">R</span><span class="o">)}}}</span> <span class="o">(</span><span class="n">tail_layout</span> <span class="n">primary</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">k</span> <span class="n">lv</span> <span class="o">*&gt;</span> <span class="mi">0</span><span class="n">inf</span><span class="o">).</span>
+<a id="L-58" name="L-58"></a>
+<a id="L-59" name="L-59"></a><span class="c">(** * 2. The round parameters with a tail (laws T1 and T3) *)</span>
+<a id="L-60" name="L-60"></a>
+<a id="L-61" name="L-61"></a><span class="kn">Fixpoint</span> <span class="n">zs_value</span> <span class="o">(</span><span class="n">o</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">(</span><span class="n">zs</span> <span class="o">:</span> <span class="n">list</span> <span class="n">BinaryColumn</span><span class="o">)</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-62" name="L-62"></a>  <span class="k">match</span> <span class="n">zs</span> <span class="k">with</span>
+<a id="L-63" name="L-63"></a>  <span class="o">|</span> <span class="bp">[]</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="o">%</span><span class="n">Z</span>
+<a id="L-64" name="L-64"></a>  <span class="o">|</span> <span class="n">c</span> <span class="o">::</span> <span class="n">zs'</span> <span class="o">=&gt;</span> <span class="o">(</span><span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="n">o</span> <span class="o">*</span> <span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">column_value</span> <span class="n">c</span><span class="o">)</span> <span class="o">+</span>
+<a id="L-65" name="L-65"></a>                 <span class="n">zs_value</span> <span class="o">(</span><span class="n">o</span> <span class="o">+</span> <span class="n">column_width</span> <span class="n">c</span><span class="o">)</span> <span class="n">zs'</span><span class="o">)%</span><span class="n">Z</span>
+<a id="L-66" name="L-66"></a>  <span class="k">end</span><span class="o">.</span>
+<a id="L-67" name="L-67"></a>
+<a id="L-68" name="L-68"></a><span class="c">(** W: digits before the tail.  V: the counter value, tail level at 2^W. *)</span>
+<a id="L-69" name="L-69"></a><span class="kn">Definition</span> <span class="n">tail_W</span> <span class="o">(</span><span class="n">primary</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="n">zs</span> <span class="o">(</span><span class="kr">last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">:</span> <span class="n">nat</span> <span class="o">:=</span>
+<a id="L-70" name="L-70"></a>  <span class="n">primary</span> <span class="o">+</span> <span class="n">columns_width_sum</span> <span class="n">zs</span> <span class="o">+</span> <span class="n">length</span> <span class="kr">last</span><span class="o">.</span>
+<a id="L-71" name="L-71"></a><span class="kn">Definition</span> <span class="n">tail_V</span> <span class="o">(</span><span class="n">primary</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="n">zs</span> <span class="kr">last</span> <span class="o">(</span><span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-72" name="L-72"></a>  <span class="o">(</span><span class="n">zs_value</span> <span class="n">primary</span> <span class="n">zs</span> <span class="o">+</span>
+<a id="L-73" name="L-73"></a>   <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">primary</span> <span class="o">+</span> <span class="n">columns_width_sum</span> <span class="n">zs</span><span class="o">)</span> <span class="o">*</span> <span class="n">sdigits_value</span> <span class="kr">last</span> <span class="o">+</span>
+<a id="L-74" name="L-74"></a>   <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">tail_W</span> <span class="n">primary</span> <span class="n">zs</span> <span class="kr">last</span><span class="o">)</span> <span class="o">*</span> <span class="o">(</span><span class="n">Z.of_nat</span> <span class="n">lv</span> <span class="o">-</span> <span class="mi">1</span><span class="o">))%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-75" name="L-75"></a>
+<a id="L-76" name="L-76"></a><span class="c">(** T1: the hash that finds every digit [B] and the tail at [B t]. *)</span>
+<a id="L-77" name="L-77"></a><span class="kn">Definition</span> <span class="n">trigger_hash</span> <span class="n">primary</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-78" name="L-78"></a>  <span class="o">(</span><span class="mi">5</span> <span class="o">*</span> <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">tail_W</span> <span class="n">primary</span> <span class="n">zs</span> <span class="kr">last</span><span class="o">)</span> <span class="o">-</span> <span class="n">tail_V</span> <span class="n">primary</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span><span class="o">)%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-79" name="L-79"></a>
+<a id="L-80" name="L-80"></a><span class="c">(** The exception's n: the tally after the trigger hash is [2n+1]. *)</span>
+<a id="L-81" name="L-81"></a><span class="kn">Definition</span> <span class="n">tail_next_half</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-82" name="L-82"></a>  <span class="o">((</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">round_post_unary</span> <span class="n">current</span> <span class="n">previous</span><span class="o">)</span> <span class="o">+</span>
+<a id="L-83" name="L-83"></a>    <span class="n">trigger_hash</span> <span class="o">(</span><span class="n">round_primary_width</span> <span class="n">current</span> <span class="n">previous</span><span class="o">)</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-84" name="L-84"></a><span class="kn">Definition</span> <span class="n">tail_next_index</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span> <span class="o">:=</span>
+<a id="L-85" name="L-85"></a>  <span class="n">Z.to_nat</span> <span class="o">((</span><span class="n">tail_next_half</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">-</span> <span class="mi">6</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">).</span>
+<a id="L-86" name="L-86"></a>
+<a id="L-87" name="L-87"></a><span class="c">(** Effective tail level: the level minus the deficit left in the last column. *)</span>
+<a id="L-88" name="L-88"></a><span class="kn">Definition</span> <span class="n">eff_level</span> <span class="o">(</span><span class="kr">last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">(</span><span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">:</span> <span class="n">Z</span> <span class="o">:=</span>
+<a id="L-89" name="L-89"></a>  <span class="o">((</span><span class="n">sdigits_value</span> <span class="kr">last</span> <span class="o">+</span> <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">length</span> <span class="kr">last</span><span class="o">)</span> <span class="o">*</span> <span class="o">(</span><span class="n">Z.of_nat</span> <span class="n">lv</span> <span class="o">-</span> <span class="mi">1</span><span class="o">))</span> <span class="o">/</span>
+<a id="L-90" name="L-90"></a>     <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">length</span> <span class="kr">last</span><span class="o">))%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-91" name="L-91"></a>
+<a id="L-92" name="L-92"></a><span class="c">(** The decode of the next exception reaches [B t] with a carry left over. *)</span>
+<a id="L-93" name="L-93"></a><span class="kn">Definition</span> <span class="n">tail_triggers</span> <span class="o">(</span><span class="n">k</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">(</span><span class="kr">last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">(</span><span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">:</span> <span class="kt">Prop</span> <span class="o">:=</span>
+<a id="L-94" name="L-94"></a>  <span class="o">(</span><span class="n">Z.of_nat</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">+</span> <span class="o">(</span><span class="mi">2</span> <span class="o">-</span> <span class="n">eff_level</span> <span class="kr">last</span> <span class="n">lv</span><span class="o">)</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="o">)%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-95" name="L-95"></a>
+<a id="L-96" name="L-96"></a><span class="c">(** DRAFT precondition (to be fixed in the first proving stage).  It holds</span>
+<a id="L-97" name="L-97"></a><span class="c">    SOBCv10's column conditions for the z-columns, SOBCv10's width dominance</span>
+<a id="L-98" name="L-98"></a><span class="c">    for the whole layout, and the window that keeps the last column's decode</span>
+<a id="L-99" name="L-99"></a><span class="c">    below its top digit (T3).  Each field is a condition SOBCv10's own round</span>
+<a id="L-100" name="L-100"></a><span class="c">    proof uses or the tail laws need. *)</span>
+<a id="L-101" name="L-101"></a><span class="kn">Record</span> <span class="n">tail_round_pre</span> <span class="o">(</span><span class="n">current</span> <span class="n">previous</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">(</span><span class="n">zs</span> <span class="o">:</span> <span class="n">list</span> <span class="n">BinaryColumn</span><span class="o">)</span>
+<a id="L-102" name="L-102"></a>    <span class="o">(</span><span class="kr">last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span><span class="o">)</span> <span class="o">(</span><span class="n">k</span> <span class="n">lv</span> <span class="o">:</span> <span class="n">nat</span><span class="o">)</span> <span class="o">:</span> <span class="kt">Prop</span> <span class="o">:=</span> <span class="o">{</span>
+<a id="L-103" name="L-103"></a>  <span class="n">tp_zs_safe</span> <span class="o">:</span> <span class="n">Forall</span> <span class="n">column_safe</span> <span class="n">zs</span><span class="o">;</span>
+<a id="L-104" name="L-104"></a>  <span class="n">tp_head_odd</span> <span class="o">:</span> <span class="k">match</span> <span class="n">zs</span> <span class="k">with</span>
+<a id="L-105" name="L-105"></a>                <span class="o">|</span> <span class="n">c</span> <span class="o">::</span> <span class="o">_</span> <span class="o">=&gt;</span> <span class="n">Nat.odd</span> <span class="o">(</span><span class="n">column_value</span> <span class="n">c</span><span class="o">)</span> <span class="o">=</span> <span class="bp">true</span>
+<a id="L-106" name="L-106"></a>                <span class="o">|</span> <span class="bp">[]</span> <span class="o">=&gt;</span> <span class="n">Z.odd</span> <span class="o">(</span><span class="n">sdigits_value</span> <span class="kr">last</span><span class="o">)</span> <span class="o">=</span> <span class="bp">true</span>
+<a id="L-107" name="L-107"></a>                <span class="k">end</span><span class="o">;</span>
+<a id="L-108" name="L-108"></a>  <span class="n">tp_width</span> <span class="o">:</span>
+<a id="L-109" name="L-109"></a>    <span class="mi">2</span> <span class="o">*</span> <span class="o">(</span><span class="n">columns_width_sum</span> <span class="n">zs</span> <span class="o">+</span> <span class="n">length</span> <span class="kr">last</span><span class="o">)</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">&lt;=</span> <span class="n">half_parameter</span> <span class="n">previous</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/\</span>
+<a id="L-110" name="L-110"></a>    <span class="mi">2</span> <span class="o">*</span> <span class="o">(</span><span class="n">half_parameter</span> <span class="n">previous</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">columns_width_sum</span> <span class="n">zs</span> <span class="o">+</span> <span class="n">length</span> <span class="kr">last</span><span class="o">)</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">&lt;=</span>
+<a id="L-111" name="L-111"></a>      <span class="n">half_parameter</span> <span class="n">current</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+<a id="L-112" name="L-112"></a>  <span class="n">tp_last_len</span> <span class="o">:</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">length</span> <span class="kr">last</span><span class="o">;</span>
+<a id="L-113" name="L-113"></a>  <span class="n">tp_last_window</span> <span class="o">:</span>
+<a id="L-114" name="L-114"></a>    <span class="o">(</span><span class="mi">3</span> <span class="o">&lt;=</span> <span class="n">sdigits_value</span> <span class="kr">last</span> <span class="o">+</span> <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">length</span> <span class="kr">last</span><span class="o">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)%</span><span class="n">Z</span> <span class="o">/\</span>
+<a id="L-115" name="L-115"></a>    <span class="o">(</span><span class="n">sdigits_value</span> <span class="kr">last</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="o">^</span><span class="n">Z.of_nat</span> <span class="o">(</span><span class="n">length</span> <span class="kr">last</span><span class="o">)</span> <span class="o">-</span> <span class="mi">6</span><span class="o">)%</span><span class="n">Z</span><span class="o">;</span>
+<a id="L-116" name="L-116"></a>  <span class="n">tp_k</span> <span class="o">:</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="o">;</span>
+<a id="L-117" name="L-117"></a>  <span class="n">tp_lv</span> <span class="o">:</span> <span class="n">lv</span> <span class="o">&lt;=</span> <span class="mi">5</span>
+<a id="L-118" name="L-118"></a><span class="o">}.</span>
+<a id="L-119" name="L-119"></a>
+<a id="L-120" name="L-120"></a><span class="c">(** * 3. The tail-aware round lemma (open) *)</span>
+<a id="L-121" name="L-121"></a>
+<a id="L-122" name="L-122"></a><span class="c">(** One SOBCv10 round with the tail carried along.  Compared with</span>
+<a id="L-123" name="L-123"></a><span class="c">    [sobc1_round_invariant_progress]:</span>
+<a id="L-124" name="L-124"></a><span class="c">    - the exception's n is [tail_next_half] (T1 + T3), not [round_next_half];</span>
+<a id="L-125" name="L-125"></a><span class="c">    - its raw pass is [raw_tail_columns] (T2): the last column loses its top</span>
+<a id="L-126" name="L-126"></a><span class="c">      digit and the U run grows by one pair ([k -&gt; S k]);</span>
+<a id="L-127" name="L-127"></a><span class="c">    - the decode leaves the tail at effective level [k + 1 - L] (T3);</span>
+<a id="L-128" name="L-128"></a><span class="c">    - the z-columns are SOBCv10's ([columns_step]), with the new</span>
+<a id="L-129" name="L-129"></a><span class="c">      [z_column previous] in front, as in SOBCv10. *)</span>
+<a id="L-130" name="L-130"></a><span class="kn">Theorem</span> <span class="n">tail_round</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">k</span> <span class="n">lv</span> <span class="o">:</span>
+<a id="L-131" name="L-131"></a>  <span class="n">tail_round_pre</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">k</span> <span class="n">lv</span> <span class="o">-&gt;</span>
+<a id="L-132" name="L-132"></a>  <span class="o">~</span> <span class="n">tail_triggers</span> <span class="n">k</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">-&gt;</span>
+<a id="L-133" name="L-133"></a>  <span class="k">exists</span> <span class="n">zs'</span> <span class="kr">last</span><span class="k">'</span> <span class="n">lv'</span><span class="o">,</span>
+<a id="L-134" name="L-134"></a>    <span class="n">post_ca_tail</span> <span class="o">(</span><span class="n">round_post_unary</span> <span class="n">current</span> <span class="n">previous</span><span class="o">)</span>
+<a id="L-135" name="L-135"></a>      <span class="o">(</span><span class="n">round_primary_width</span> <span class="n">current</span> <span class="n">previous</span><span class="o">)</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">k</span> <span class="n">lv</span>
+<a id="L-136" name="L-136"></a>    <span class="o">-[</span><span class="n">tm</span><span class="o">]-&gt;+</span>
+<a id="L-137" name="L-137"></a>    <span class="n">post_ca_tail</span>
+<a id="L-138" name="L-138"></a>      <span class="o">(</span><span class="n">round_post_unary</span> <span class="o">(</span><span class="n">tail_next_index</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span><span class="o">)</span> <span class="n">current</span><span class="o">)</span>
+<a id="L-139" name="L-139"></a>      <span class="o">(</span><span class="n">round_primary_width</span> <span class="o">(</span><span class="n">tail_next_index</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span><span class="o">)</span> <span class="n">current</span><span class="o">)</span>
+<a id="L-140" name="L-140"></a>      <span class="o">(</span><span class="n">z_column</span> <span class="n">previous</span> <span class="o">::</span> <span class="n">zs'</span><span class="o">)</span> <span class="kr">last</span><span class="k">'</span> <span class="o">(</span><span class="n">S</span> <span class="n">k</span><span class="o">)</span> <span class="n">lv'</span> <span class="o">/\</span>
+<a id="L-141" name="L-141"></a>    <span class="n">tail_round_pre</span> <span class="o">(</span><span class="n">tail_next_index</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span><span class="o">)</span> <span class="n">current</span>
+<a id="L-142" name="L-142"></a>      <span class="o">(</span><span class="n">z_column</span> <span class="n">previous</span> <span class="o">::</span> <span class="n">zs'</span><span class="o">)</span> <span class="kr">last</span><span class="k">'</span> <span class="o">(</span><span class="n">S</span> <span class="n">k</span><span class="o">)</span> <span class="n">lv'</span> <span class="o">/\</span>
+<a id="L-143" name="L-143"></a>    <span class="n">length</span> <span class="kr">last</span><span class="k">'</span> <span class="o">=</span> <span class="n">pred</span> <span class="o">(</span><span class="n">length</span> <span class="kr">last</span><span class="o">)</span> <span class="o">/\</span>
+<a id="L-144" name="L-144"></a>    <span class="n">eff_level</span> <span class="kr">last</span><span class="k">'</span> <span class="n">lv'</span> <span class="o">=</span> <span class="o">(</span><span class="n">Z.of_nat</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">eff_level</span> <span class="kr">last</span> <span class="n">lv</span><span class="o">)%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-145" name="L-145"></a><span class="kn">Admitted</span><span class="o">.</span>
+<a id="L-146" name="L-146"></a>
+<a id="L-147" name="L-147"></a><span class="c">(** The round in which the decode triggers (exception 9: k = 4): the run</span>
+<a id="L-148" name="L-148"></a><span class="c">    reaches the configuration of [nested_exit] (W61Exit), with E''s call</span>
+<a id="L-149" name="L-149"></a><span class="c">    count below E''s budget (h'' - 1 &lt;= h_t - 1). *)</span>
+<a id="L-150" name="L-150"></a><span class="kn">Theorem</span> <span class="n">tail_round_trigger</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">:</span>
+<a id="L-151" name="L-151"></a>  <span class="n">tail_round_pre</span> <span class="n">current</span> <span class="n">previous</span> <span class="n">zs</span> <span class="kr">last</span> <span class="mi">4</span> <span class="n">lv</span> <span class="o">-&gt;</span>
+<a id="L-152" name="L-152"></a>  <span class="n">tail_triggers</span> <span class="mi">4</span> <span class="kr">last</span> <span class="n">lv</span> <span class="o">-&gt;</span>
+<a id="L-153" name="L-153"></a>  <span class="k">exists</span> <span class="n">c</span> <span class="n">f</span> <span class="n">es</span> <span class="n">e</span><span class="o">,</span>
+<a id="L-154" name="L-154"></a>    <span class="n">post_ca_tail</span> <span class="o">(</span><span class="n">round_post_unary</span> <span class="n">current</span> <span class="n">previous</span><span class="o">)</span>
+<a id="L-155" name="L-155"></a>      <span class="o">(</span><span class="n">round_primary_width</span> <span class="n">current</span> <span class="n">previous</span><span class="o">)</span> <span class="n">zs</span> <span class="kr">last</span> <span class="mi">4</span> <span class="n">lv</span>
+<a id="L-156" name="L-156"></a>    <span class="o">-[</span><span class="n">tm</span><span class="o">]-&gt;+</span>
+<a id="L-157" name="L-157"></a>    <span class="n">exception_call_left</span> <span class="n">c</span> <span class="n">f</span> <span class="o">{{{((</span><span class="n">B</span><span class="o">,</span> <span class="bp">[]</span><span class="o">),</span> <span class="n">R</span><span class="o">)}}}</span> <span class="o">(</span><span class="n">full_tail</span> <span class="n">es</span> <span class="o">(</span><span class="n">S</span> <span class="n">e</span><span class="o">)</span> <span class="mi">5</span> <span class="o">*&gt;</span> <span class="mi">0</span><span class="n">inf</span><span class="o">)</span> <span class="o">/\</span>
+<a id="L-158" name="L-158"></a>    <span class="n">nested_required</span> <span class="n">es</span> <span class="n">e</span> <span class="o">&lt;=</span> <span class="n">f</span><span class="o">.</span>
+<a id="L-159" name="L-159"></a><span class="kn">Admitted</span><span class="o">.</span>
+<a id="L-160" name="L-160"></a>
+<a id="L-161" name="L-161"></a><span class="c">(** * 4. The entry and the opening (open) *)</span>
+<a id="L-162" name="L-162"></a>
+<a id="L-163" name="L-163"></a><span class="kn">Definition</span> <span class="n">n4</span> <span class="o">:</span> <span class="n">nat</span> <span class="o">:=</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span><span class="o">^</span><span class="mi">29</span> <span class="o">-</span> <span class="mi">2</span><span class="o">.</span>
+<a id="L-164" name="L-164"></a><span class="kn">Definition</span> <span class="n">n5</span> <span class="o">:</span> <span class="n">nat</span> <span class="o">:=</span> <span class="mi">2</span><span class="o">^</span><span class="n">n4</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">^(</span><span class="n">n4</span><span class="o">-</span><span class="mi">2</span><span class="o">)</span> <span class="o">*</span> <span class="o">((</span><span class="mi">1292</span> <span class="o">*</span> <span class="mi">2</span><span class="o">^</span><span class="mi">30</span> <span class="o">+</span> <span class="mi">4</span><span class="o">)</span> <span class="o">/</span> <span class="mi">3</span><span class="o">).</span>
+<a id="L-165" name="L-165"></a><span class="kn">Definition</span> <span class="n">entry_current</span> <span class="o">:</span> <span class="n">nat</span> <span class="o">:=</span> <span class="o">(</span><span class="n">n5</span> <span class="o">-</span> <span class="mi">6</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">.</span>
+<a id="L-166" name="L-166"></a><span class="kn">Definition</span> <span class="n">entry_previous</span> <span class="o">:</span> <span class="n">nat</span> <span class="o">:=</span> <span class="n">n4</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">3</span><span class="o">.</span>
+<a id="L-167" name="L-167"></a><span class="c">(** The entry column, least significant digit first: 29 digits, value</span>
+<a id="L-168" name="L-168"></a><span class="c">    391,468,375. *)</span>
+<a id="L-169" name="L-169"></a><span class="kn">Definition</span> <span class="n">entry_digits</span> <span class="o">:</span> <span class="n">list</span> <span class="n">BDigit</span> <span class="o">:=</span>
+<a id="L-170" name="L-170"></a>  <span class="o">[</span><span class="n">BB</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span>
+<a id="L-171" name="L-171"></a>   <span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BB</span><span class="o">;</span><span class="n">BA</span><span class="o">;</span><span class="n">BB</span><span class="o">].</span>
+<a id="L-172" name="L-172"></a><span class="kn">Definition</span> <span class="n">entry_last</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span> <span class="o">:=</span> <span class="n">map</span> <span class="n">sdigit_of</span> <span class="n">entry_digits</span><span class="o">.</span>
+<a id="L-173" name="L-173"></a><span class="kn">Definition</span> <span class="n">entry_state</span> <span class="o">:</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">tape</span> <span class="o">:=</span>
+<a id="L-174" name="L-174"></a>  <span class="n">post_ca_tail</span> <span class="o">(</span><span class="n">round_post_unary</span> <span class="n">entry_current</span> <span class="n">entry_previous</span><span class="o">)</span>
+<a id="L-175" name="L-175"></a>    <span class="o">(</span><span class="n">round_primary_width</span> <span class="n">entry_current</span> <span class="n">entry_previous</span><span class="o">)</span> <span class="bp">[]</span> <span class="n">entry_last</span> <span class="mi">1</span> <span class="mi">4</span><span class="o">.</span>
+<a id="L-176" name="L-176"></a>
+<a id="L-177" name="L-177"></a><span class="kn">Lemma</span> <span class="n">entry_last_value</span> <span class="o">:</span> <span class="n">sdigits_value</span> <span class="n">entry_last</span> <span class="o">=</span> <span class="mi">391468375</span><span class="o">%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-178" name="L-178"></a><span class="kn">Proof</span><span class="o">.</span> <span class="k">vm_compute</span><span class="o">.</span> <span class="kp">reflexivity</span><span class="o">.</span> <span class="kn">Qed</span><span class="o">.</span>
+<a id="L-179" name="L-179"></a>
+<a id="L-180" name="L-180"></a><span class="kn">Lemma</span> <span class="n">entry_level</span> <span class="o">:</span> <span class="n">eff_level</span> <span class="n">entry_last</span> <span class="mi">4</span> <span class="o">=</span> <span class="mi">3</span><span class="o">%</span><span class="n">Z</span><span class="o">.</span>
+<a id="L-181" name="L-181"></a><span class="kn">Proof</span><span class="o">.</span> <span class="k">vm_compute</span><span class="o">.</span> <span class="kp">reflexivity</span><span class="o">.</span> <span class="kn">Qed</span><span class="o">.</span>
+<a id="L-182" name="L-182"></a>
+<a id="L-183" name="L-183"></a><span class="c">(** Exceptions 1-5 from the blank tape in SOBCv10's state D (families (a)-(d)</span>
+<a id="L-184" name="L-184"></a><span class="c">    of proof.md section 2), ending in [exception_done_ca]. *)</span>
+<a id="L-185" name="L-185"></a><span class="kn">Lemma</span> <span class="n">opening</span> <span class="o">:</span> <span class="o">(</span><span class="n">D</span><span class="o">;;</span> <span class="n">tape0</span><span class="o">)</span> <span class="o">-[</span><span class="n">tm</span><span class="o">]-&gt;*</span> <span class="n">entry_state</span><span class="o">.</span>
+<a id="L-186" name="L-186"></a><span class="kn">Admitted</span><span class="o">.</span>
+<a id="L-187" name="L-187"></a>
+<a id="L-188" name="L-188"></a><span class="kn">Lemma</span> <span class="n">entry_pre</span> <span class="o">:</span> <span class="n">tail_round_pre</span> <span class="n">entry_current</span> <span class="n">entry_previous</span> <span class="bp">[]</span> <span class="n">entry_last</span> <span class="mi">1</span> <span class="mi">4</span><span class="o">.</span>
+<a id="L-189" name="L-189"></a><span class="kn">Admitted</span><span class="o">.</span>
+<a id="L-190" name="L-190"></a>
+<a id="L-191" name="L-191"></a><span class="c">(** * 5. Composition (proved from the open statements) *)</span>
+<a id="L-192" name="L-192"></a>
+<a id="L-193" name="L-193"></a><span class="kn">Lemma</span> <span class="n">halts_back</span> <span class="n">c</span> <span class="n">c'</span> <span class="o">:</span> <span class="n">c</span> <span class="o">-[</span><span class="n">tm</span><span class="o">]-&gt;+</span> <span class="n">c'</span> <span class="o">-&gt;</span> <span class="n">halts</span> <span class="n">tm</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="n">halts</span> <span class="n">tm</span> <span class="n">c'</span><span class="o">.</span>
+<a id="L-194" name="L-194"></a><span class="kn">Proof</span><span class="o">.</span>
+<a id="L-195" name="L-195"></a>  <span class="k">intros</span> <span class="n">Hrun</span> <span class="n">Hh</span><span class="o">.</span> <span class="kp">exact</span> <span class="o">(</span><span class="n">proj1</span> <span class="o">(</span><span class="n">halts_evstep_iff</span> <span class="n">tm</span> <span class="o">_</span> <span class="o">_</span> <span class="o">(</span><span class="n">progress_evstep</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">Hrun</span><span class="o">))</span> <span class="n">Hh</span><span class="o">).</span>
+<a id="L-196" name="L-196"></a><span class="kn">Qed</span><span class="o">.</span>
+<a id="L-197" name="L-197"></a>
+<a id="L-198" name="L-198"></a><span class="kn">Theorem</span> <span class="n">sobc_D_nonhalt</span> <span class="o">:</span> <span class="o">~</span> <span class="n">halts</span> <span class="n">tm</span> <span class="o">(</span><span class="n">D</span><span class="o">;;</span> <span class="n">tape0</span><span class="o">).</span>
+<a id="L-199" name="L-199"></a><span class="kn">Proof</span><span class="o">.</span>
+<a id="L-200" name="L-200"></a>  <span class="k">intro</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-201" name="L-201"></a>  <span class="k">apply</span> <span class="o">(</span><span class="n">proj1</span> <span class="o">(</span><span class="n">halts_evstep_iff</span> <span class="n">tm</span> <span class="o">_</span> <span class="o">_</span> <span class="n">opening</span><span class="o">))</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-202" name="L-202"></a>  <span class="k">unfold</span> <span class="n">entry_state</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-203" name="L-203"></a>  <span class="c">(* exception 6: k = 1, L = 3 *)</span>
+<a id="L-204" name="L-204"></a>  <span class="k">assert</span> <span class="o">(</span><span class="n">T1</span> <span class="o">:</span> <span class="o">~</span> <span class="n">tail_triggers</span> <span class="mi">1</span> <span class="n">entry_last</span> <span class="mi">4</span><span class="o">)</span>
+<a id="L-205" name="L-205"></a>    <span class="kp">by</span> <span class="o">(</span><span class="k">unfold</span> <span class="n">tail_triggers</span><span class="o">;</span> <span class="k">rewrite</span> <span class="n">entry_level</span><span class="o">;</span> <span class="kp">lia</span><span class="o">).</span>
+<a id="L-206" name="L-206"></a>  <span class="k">destruct</span> <span class="o">(</span><span class="n">tail_round</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">entry_pre</span> <span class="n">T1</span><span class="o">)</span> <span class="k">as</span>
+<a id="L-207" name="L-207"></a>    <span class="o">[</span><span class="n">zs1</span> <span class="o">[</span><span class="n">last1</span> <span class="o">[</span><span class="n">lv1</span> <span class="o">[</span><span class="n">R1</span> <span class="o">[</span><span class="n">P1</span> <span class="o">[_</span> <span class="n">L1</span><span class="o">]]]]]].</span>
+<a id="L-208" name="L-208"></a>  <span class="k">apply</span> <span class="o">(</span><span class="n">halts_back</span> <span class="o">_</span> <span class="o">_</span> <span class="n">R1</span><span class="o">)</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-209" name="L-209"></a>  <span class="c">(* exception 7: k = 2, L = -1 *)</span>
+<a id="L-210" name="L-210"></a>  <span class="k">assert</span> <span class="o">(</span><span class="n">T2</span> <span class="o">:</span> <span class="o">~</span> <span class="n">tail_triggers</span> <span class="mi">2</span> <span class="n">last1</span> <span class="n">lv1</span><span class="o">)</span>
+<a id="L-211" name="L-211"></a>    <span class="kp">by</span> <span class="o">(</span><span class="k">unfold</span> <span class="n">tail_triggers</span><span class="o">;</span> <span class="k">rewrite</span> <span class="n">L1</span><span class="o">,</span> <span class="n">entry_level</span><span class="o">;</span> <span class="kp">lia</span><span class="o">).</span>
+<a id="L-212" name="L-212"></a>  <span class="k">destruct</span> <span class="o">(</span><span class="n">tail_round</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">P1</span> <span class="n">T2</span><span class="o">)</span> <span class="k">as</span>
+<a id="L-213" name="L-213"></a>    <span class="o">[</span><span class="n">zs2</span> <span class="o">[</span><span class="n">last2</span> <span class="o">[</span><span class="n">lv2</span> <span class="o">[</span><span class="n">R2</span> <span class="o">[</span><span class="n">P2</span> <span class="o">[_</span> <span class="n">L2</span><span class="o">]]]]]].</span>
+<a id="L-214" name="L-214"></a>  <span class="k">apply</span> <span class="o">(</span><span class="n">halts_back</span> <span class="o">_</span> <span class="o">_</span> <span class="n">R2</span><span class="o">)</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-215" name="L-215"></a>  <span class="c">(* exception 8: k = 3, L = 4 *)</span>
+<a id="L-216" name="L-216"></a>  <span class="k">assert</span> <span class="o">(</span><span class="n">T3</span> <span class="o">:</span> <span class="o">~</span> <span class="n">tail_triggers</span> <span class="mi">3</span> <span class="n">last2</span> <span class="n">lv2</span><span class="o">)</span>
+<a id="L-217" name="L-217"></a>    <span class="kp">by</span> <span class="o">(</span><span class="k">unfold</span> <span class="n">tail_triggers</span><span class="o">;</span> <span class="k">rewrite</span> <span class="n">L2</span><span class="o">,</span> <span class="n">L1</span><span class="o">,</span> <span class="n">entry_level</span><span class="o">;</span> <span class="kp">lia</span><span class="o">).</span>
+<a id="L-218" name="L-218"></a>  <span class="k">destruct</span> <span class="o">(</span><span class="n">tail_round</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">P2</span> <span class="n">T3</span><span class="o">)</span> <span class="k">as</span>
+<a id="L-219" name="L-219"></a>    <span class="o">[</span><span class="n">zs3</span> <span class="o">[</span><span class="n">last3</span> <span class="o">[</span><span class="n">lv3</span> <span class="o">[</span><span class="n">R3</span> <span class="o">[</span><span class="n">P3</span> <span class="o">[_</span> <span class="n">L3</span><span class="o">]]]]]].</span>
+<a id="L-220" name="L-220"></a>  <span class="k">apply</span> <span class="o">(</span><span class="n">halts_back</span> <span class="o">_</span> <span class="o">_</span> <span class="n">R3</span><span class="o">)</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-221" name="L-221"></a>  <span class="c">(* exception 9: k = 4, L = 0: the decode triggers *)</span>
+<a id="L-222" name="L-222"></a>  <span class="k">assert</span> <span class="o">(</span><span class="n">T4</span> <span class="o">:</span> <span class="n">tail_triggers</span> <span class="mi">4</span> <span class="n">last3</span> <span class="n">lv3</span><span class="o">)</span>
+<a id="L-223" name="L-223"></a>    <span class="kp">by</span> <span class="o">(</span><span class="k">unfold</span> <span class="n">tail_triggers</span><span class="o">;</span> <span class="k">rewrite</span> <span class="n">L3</span><span class="o">,</span> <span class="n">L2</span><span class="o">,</span> <span class="n">L1</span><span class="o">,</span> <span class="n">entry_level</span><span class="o">;</span> <span class="kp">lia</span><span class="o">).</span>
+<a id="L-224" name="L-224"></a>  <span class="k">destruct</span> <span class="o">(</span><span class="n">tail_round_trigger</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">P3</span> <span class="n">T4</span><span class="o">)</span> <span class="k">as</span> <span class="o">[</span><span class="n">c</span> <span class="o">[</span><span class="n">f</span> <span class="o">[</span><span class="n">es</span> <span class="o">[</span><span class="n">e</span> <span class="o">[</span><span class="n">R4</span> <span class="n">Hle</span><span class="o">]]]]].</span>
+<a id="L-225" name="L-225"></a>  <span class="k">apply</span> <span class="o">(</span><span class="n">halts_back</span> <span class="o">_</span> <span class="o">_</span> <span class="n">R4</span><span class="o">)</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-226" name="L-226"></a>  <span class="kp">exact</span> <span class="o">(</span><span class="n">nested_exit</span> <span class="n">c</span> <span class="n">f</span> <span class="n">es</span> <span class="n">e</span> <span class="n">Hle</span> <span class="n">H</span><span class="o">).</span>
+<a id="L-227" name="L-227"></a><span class="kn">Qed</span><span class="o">.</span>
+<a id="L-228" name="L-228"></a>
+<a id="L-229" name="L-229"></a><span class="c">(** * 6. Our machine *)</span>
+<a id="L-230" name="L-230"></a>
+<a id="L-231" name="L-231"></a><span class="kn">Definition</span> <span class="n">tm61</span> <span class="o">:=</span> <span class="kn">Eval</span> <span class="k">compute</span> <span class="k">in</span>
+<a id="L-232" name="L-232"></a>  <span class="o">(</span><span class="n">TM_from_str</span> <span class="s2">"1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF"</span><span class="o">).</span>
+<a id="L-233" name="L-233"></a>
+<a id="L-234" name="L-234"></a><span class="c">(** phi maps our states to SOBCv10's; with the mirror, our blank-tape run is</span>
+<a id="L-235" name="L-235"></a><span class="c">    SOBCv10's run from state D. *)</span>
+<a id="L-236" name="L-236"></a><span class="kn">Definition</span> <span class="n">phi</span> <span class="o">(</span><span class="n">q</span> <span class="o">:</span> <span class="n">Q</span><span class="o">)</span> <span class="o">:</span> <span class="n">Q</span> <span class="o">:=</span>
+<a id="L-237" name="L-237"></a>  <span class="k">match</span> <span class="n">q</span> <span class="k">with</span>
+<a id="L-238" name="L-238"></a>  <span class="o">|</span> <span class="n">A</span> <span class="o">=&gt;</span> <span class="n">D</span> <span class="o">|</span> <span class="n">B</span> <span class="o">=&gt;</span> <span class="n">E</span> <span class="o">|</span> <span class="n">C</span> <span class="o">=&gt;</span> <span class="n">F</span> <span class="o">|</span> <span class="n">D</span> <span class="o">=&gt;</span> <span class="n">A</span> <span class="o">|</span> <span class="n">E</span> <span class="o">=&gt;</span> <span class="n">B</span> <span class="o">|</span> <span class="n">F</span> <span class="o">=&gt;</span> <span class="n">C</span>
+<a id="L-239" name="L-239"></a>  <span class="k">end</span><span class="o">.</span>
+<a id="L-240" name="L-240"></a>
+<a id="L-241" name="L-241"></a><span class="kn">Lemma</span> <span class="n">perm</span> <span class="o">:</span> <span class="n">Perm</span> <span class="o">(</span><span class="n">flip</span> <span class="n">tm61</span><span class="o">)</span> <span class="n">tm</span> <span class="n">phi</span><span class="o">.</span>
+<a id="L-242" name="L-242"></a><span class="kn">Proof</span><span class="o">.</span>
+<a id="L-243" name="L-243"></a>  <span class="k">split</span><span class="o">.</span>
+<a id="L-244" name="L-244"></a>  <span class="o">-</span> <span class="k">intros</span> <span class="bp">[]</span> <span class="bp">[]</span> <span class="n">H</span><span class="o">;</span> <span class="n">cbn</span> <span class="k">in</span> <span class="o">*;</span> <span class="kr">try</span> <span class="kp">discriminate</span><span class="o">;</span> <span class="kp">reflexivity</span><span class="o">.</span>
+<a id="L-245" name="L-245"></a>  <span class="o">-</span> <span class="k">intros</span> <span class="bp">[]</span> <span class="bp">[]</span> <span class="n">s'</span> <span class="n">d</span> <span class="n">q'</span> <span class="n">H</span><span class="o">;</span> <span class="n">cbn</span> <span class="k">in</span> <span class="o">*;</span> <span class="k">inversion</span> <span class="n">H</span><span class="o">;</span> <span class="k">subst</span><span class="o">;</span> <span class="kp">reflexivity</span><span class="o">.</span>
+<a id="L-246" name="L-246"></a><span class="kn">Qed</span><span class="o">.</span>
+<a id="L-247" name="L-247"></a>
+<a id="L-248" name="L-248"></a><span class="kn">Lemma</span> <span class="n">nonhalt</span> <span class="o">:</span> <span class="o">~</span> <span class="n">halts</span> <span class="n">tm61</span> <span class="n">c0</span><span class="o">.</span>
+<a id="L-249" name="L-249"></a><span class="kn">Proof</span><span class="o">.</span>
+<a id="L-250" name="L-250"></a>  <span class="k">intros</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-251" name="L-251"></a>  <span class="k">apply</span> <span class="n">flip_halts</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-252" name="L-252"></a>  <span class="k">change</span> <span class="o">(</span><span class="n">halts</span> <span class="o">(</span><span class="n">flip</span> <span class="n">tm61</span><span class="o">)</span> <span class="o">(</span><span class="n">A</span><span class="o">;;</span> <span class="n">tape0</span><span class="o">))</span> <span class="k">in</span> <span class="n">H</span><span class="o">.</span>
+<a id="L-253" name="L-253"></a>  <span class="kp">exact</span> <span class="o">(</span><span class="n">sobc_D_nonhalt</span> <span class="o">(</span><span class="n">perm_halts</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">perm</span> <span class="n">H</span><span class="o">)).</span>
+<a id="L-254" name="L-254"></a><span class="kn">Qed</span><span class="o">.</span>
+<a id="L-255" name="L-255"></a>
+<a id="L-256" name="L-256"></a><span class="kn">Print</span> <span class="n">Assumptions</span> <span class="n">nonhalt</span><span class="o">.</span>
+</pre></div></td></tr></table></div>
+</div>
+</main></body></html>

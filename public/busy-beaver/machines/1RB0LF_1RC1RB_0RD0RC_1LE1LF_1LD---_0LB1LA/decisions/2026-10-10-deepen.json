@@ -1,0 +1,68 @@
+{
+ "tm": "1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA",
+ "bucket_reason": "Priority call: observe is done at medium confidence. The visit rule is exact, but the counter's digit grammar K and the reset sync are open, so proof work waits for Dennis.",
+ "question": "#37's visit, reset and halt rules are exact. What is open is the counter-word grammar K (its closure under inc and reset) and the reason every reset lands on bit 0 = 0. Spend one deepen stage pinning K, or park #37?",
+ "options": [
+  {
+   "id": "deepen",
+   "label": "Fund one ~2 h deepen stage on the counter grammar K",
+   "consequence": "The agent dumps the counter word L at every visit to 1.2e10 (all phases). It writes K as a regular grammar of digits (1 or 2 cells), 00 gaps and pass-through 1-runs, checks inc and the reset on random members of K, and derives the bit-0 sync from K plus the block length. Exit: if K is closed and the sync is derived, proof.md is next (a visit-level proof with progress_nonhalt_cond). If the layout or the sync depends on the block-length arithmetic in a non-regular way, the machine goes to STUCK."
+  },
+  {
+   "id": "park",
+   "label": "Park #37 behind the other machines",
+   "consequence": "No compute. The 10 validated rules and the visit dumps to 2.5e9 are kept."
+  },
+  {
+   "id": "proof_now",
+   "label": "Waive the med-confidence rule and start proof.md",
+   "consequence": "This writes the visit-level proof with K as a stated assumption. It is fast, but that assumption is the whole difficulty (35/36 off-sync resets halt), so a skeptic review would probably send it back."
+  }
+ ],
+ "recommended": "deepen",
+ "rationale": "This is the cleanest mechanism in the queue. The counter is a plain binary +1: the ruler sequence holds on 27,084/27,124 visits, and the 40 misses are early-phase migrations. The timer is linear (n -> n-2, g -> g+4, reset n' = g+6). The visit rule V holds on every visit to 2.5e9 with randomized block and pad sizes (54,248/54,248), and its output depends on L only. Halting has one exact cause: an odd pad (rule H, 5,425/5,425 on real L). So the proof is a closure argument on one counter language, which is structural work, not arithmetic. mxdys flagged this machine as easy to accelerate with UBRRBA, and targeting.md lists it as the last open Sync bouncer counter besides #4 (since killed) and #8. The real question is the sync. Visits per phase are odd except in phase 5, so a simple parity rule does not explain it, and it has to come out of K.",
+ "evidence": [
+  {
+   "kind": "data",
+   "text": "Visit rule V on every visit to 2.5e9, with the real L and random block/pad sizes: 54,248/54,248.",
+   "href": "work/validate_visit_2.5e9.log"
+  },
+  {
+   "kind": "rules",
+   "text": "Reset R: 600 random plus 36/36 on the 12 real resets. H (an odd pad halts): 400 random plus 5,425 on real L. R0/R1s/R1d 600/600 each; S, Z and P 400/400 each.",
+   "href": "work/validate_rules_seed7.log"
+  },
+  {
+   "kind": "data",
+   "text": "The carry depth follows the ruler sequence v2(k+c)+1 on 27,084 of 27,124 visits to 2.5e9 (one offset c per phase; the 40 misses are early-phase digit migrations).",
+   "href": "scripts/ruler_check.py"
+  },
+  {
+   "kind": "probe",
+   "text": "Off-sync variants of the 12 real reset configurations (bit 0 = 1, or a block of 1 or 3) halt on the next visit in 35 of 36 cases, so the sync must come out of the grammar.",
+   "href": "work/offsync_probe.log"
+  },
+  {
+   "kind": "data",
+   "text": "Phase starts to 1.2e10, each with its counter word. Block lengths are 6, 14, 38, ..., 53,790, 107,582, about doubling each phase. No halt to 1.2e10.",
+   "href": "work/phasestarts_1.2e10.txt"
+  },
+  {
+   "kind": "figure",
+   "text": "The left counter in phase 10, one row per visit: the flickering columns of a binary counter with 1- and 2-cell digits.",
+   "href": "img/counter_128visits_phase10.png"
+  },
+  {
+   "kind": "template",
+   "text": "No solved machine is within 3 transitions. SBCv7 TM4 and SBCv11 match at class level only (their fixed 4-cell digits do not fit), so expect a custom .v about the size of kill #4's.",
+   "href": "notes.md"
+  }
+ ],
+ "effort_if_yes": "One ~2 h deepen stage with 1-2 heavy processes (a visit dump to 1.2e10 takes under a minute with the C core); no Rocq. Next decision: proof.md go/no-go.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "deepen",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

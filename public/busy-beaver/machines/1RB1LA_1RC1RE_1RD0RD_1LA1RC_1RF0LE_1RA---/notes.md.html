@@ -1,0 +1,455 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---/notes.md · <a href="/busy-beaver/machines/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---/notes.md.html">raw</a></div>
+<h1 id="1rb1la_1rc1re_1rd0rd_1la1rc_1rf0le_1ra-">1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---</h1>
+<p>Status: CHECKPOINT_A (2026-10-10). Confidence low, so proof work waits for Dennis (priority call: Q3 on the card).
+Class guess (agent / Dennis): SO structural counter. A binary counter stored between segments of 6-cell blocks, which widens by eating a finite reservoir / _
+Spreadsheet notes / Discord thread: Results row 613, "Shift-overflow structural counter", with no status, notes or done-by. Not in dyuan01's Oct 1 longitudinal list. It is in mxdys's UBRRBA_TODO (Aug 24), which Dennis ruled fair game on 2026-10-10. No thread is linked and nobody has claimed it, so it is not SKIPPED. Pool: targeting.md reserve R5; <code>rank</code> 45 in observe.json = 40 + 5.
+Viewer: https://bbchallenge.org/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li><strong>Diagrams</strong> (every label field is in observe.json). <code>TM</code> = this machine; all were made with <code>tools/diagram.py "$TM"</code> unless noted.</li>
+<li><code>img/records_4e5.png</code>: <code>--mode records --steps 4e5</code>. Blank start, 1,162 rows, cells -59..1102.</li>
+<li><code>img/cycle_depth_256.png</code>: custom pixel art from <code>work/scripts/depthpng.py ../long_cycles.txt ../../img/cycle_depth_256.png 9.4e6 1.43e7 -60 1539 2 2</code>. There is one row per cycle (272 cycles, steps 9,406,481..14,286,019). Orange marks the cells swept in that cycle.</li>
+<li><code>img/zigzag_closeup.png</code>: <code>--mode every:1 --style explore --steps 120 --from-config @work/cfg_9848484.txt --width 56 --ox 0.8</code>. This is the real tape at step 9,848,484.</li>
+<li><code>img/blaze_1e7.png</code>: <code>--mode blaze --steps 1e7 --as-site --blaze-engine wasm</code>.</li>
+<li><code>img/every400_16cycles.png</code>: <code>--mode every:400 --steps 265000 --from-config @work/cfg_9817765.txt --max-width 1300</code>.</li>
+<li><code>img/viewer.html</code> holds all views.</li>
+<li><strong>Direct simulation</strong> (C core): 1e10 steps, no halt. The span is cells -59..152,094 (152,154 cells) with 107,017 nonzeros, and grows like t^0.5. The left edge has been fixed at -59 since step 35,809.</li>
+<li><strong>Quick_Sim</strong>:</li>
+<li>The default block finder picks 6, and that run proves 0 rules.</li>
+<li><strong>Block size 12 with <code>-r</code> accelerates well</strong>: no halt to 8.26e13 steps (steps exact, still running at that point; <code>work/qlong.txt</code>, <code>work/qleft.txt</code>; drivers in <code>work/scripts/qlong.py</code> and <code>work/scripts/qleft.py</code>).</li>
+<li>Block sizes 1, 2 and 3 died early ("lost sys.stderr").</li>
+<li><strong>Tape structure</strong> (main epoch, after ~5e4 steps):</li>
+<li>Frozen prefix: <code>0^inf 1^4 (01)^11 1 (10)^4 1^7 0 1^6 (10)^3 1^6 (10)^4 1^6 (10)^3 1^6 (10)^7 1^6</code>, then the reservoir <code>(10)^m</code>.</li>
+<li>After the reservoir comes a list of segments <code>(101110)^n_j</code> in either of two block phases, separated by short boundary gadgets of about 14 cells.</li>
+<li>At the right end: <code>G S (110101)^n 01 C&gt; 0^inf</code>, with G = <code>1^7 (01)^3 110 1^9 (01)^2 110 1^7 0</code> and S one of four states S0..S3.</li>
+<li>Example at 1e9: segment sizes 5, 23, 93, 374, 1496, ~6000 blocks.</li>
+<li><strong>Cycle</strong>:</li>
+<li>From the right edge the head zigzags left: rule Z, 20 steps per block, <code>101110 -&gt; 111110</code>, carrying the 8-cell packet <code>1^7 0</code> leftwards.</li>
+<li>It turns at the first boundary gadget that does not carry, then runs right through C/D: rule RS, 6 steps per block, <code>111110 -&gt; 101011</code>.</li>
+<li>The right edge gains 4 cells per cycle.</li>
+<li><strong>Counter</strong>:</li>
+<li>The cycle depths follow the binary ruler sequence. Levels are nested local minima of each cycle's leftmost cell, and every level is exactly every 2nd member of the level below: 37,885 of 37,885 spacings, steps 5e4..1e10, 13 levels (<code>work/scripts/ruler2.py</code>, <code>work/allcyc_1e10.txt</code>).</li>
+<li>Each boundary gadget holds 2 bits (4 visible states, e.g. <code>(10)^7 -&gt; (10)^6 1^4 -&gt; 10 1^6 (10)^4 -&gt; 10 1^6 (10)^3 1^4</code>, plus a second block phase).</li>
+<li>Every segment grows by 1 block per 2 traversals, so the sizes go x4 per segment (x2 per bit).</li>
+<li><strong>Reservoir</strong>, from the direct run to 1e10:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">step</th>
+<th style="text-align: right;">m</th>
+<th style="text-align: right;">right edge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">37,397</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">246</td>
+</tr>
+<tr>
+<td style="text-align: right;">45,549</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">342</td>
+</tr>
+<tr>
+<td style="text-align: right;">220,745</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">838</td>
+</tr>
+<tr>
+<td style="text-align: right;">2,115,721</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">2,374</td>
+</tr>
+<tr>
+<td style="text-align: right;">30,142,857</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">8,518</td>
+</tr>
+<tr>
+<td style="text-align: right;">469,407,113</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">33,094</td>
+</tr>
+<tr>
+<td style="text-align: right;">7,460,955,529</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">131,398</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>From 58 on, m drops by 5 then 2 alternately, once per new top bit. Each drop comes about x4 later in time.</li>
+<li>qsim (block 12):<ul>
+<li>At 3.39e12 the reservoir is gone and the gadget <code>(10)^7</code> to its left is down to <code>(10)^2</code>.</li>
+<li>By 7.69e12 the prefix has been eaten down to <code>1^4 (01)^11 1 (10)^4</code>, with a new top gadget <code>(11111110)^2 (10101111111010)^2 (1011111110)^3 1^12</code>.</li>
+<li>At 3.6e13 the counter is still running and <code>1^4 (01)^11 1 (10)^4</code> is intact. No halt to 8.26e13.</li>
+</ul>
+</li>
+<li><strong>Early phase</strong>: steps 0..~3.6e4 are a separate left-growing counter. Its left edge moves -10, -24, -38, -52 at steps 290, 1,358, 2,954 and 5,282, then -54 and -59. It ends by writing <code>1^120</code>, which becomes the reservoir <code>(01)^66</code> at step 37,397. This part is finite and would be covered by <code>init</code>.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All checked by <code>work/scripts/validate.py</code>, <code>validate_rc.py</code> and <code>validate_all.py</code> (seeds 1, 2, 7). Each check builds the configuration for random n (and random context words), runs the exact step count (Z, RS, H) or runs to the cycle end (RC*), and compares the trimmed tapes exactly.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to</th>
+<th>steps</th>
+<th>sims</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Z</td>
+<td><code>(101110)^n &lt;A 1^7 0 → &lt;A 1^7 0 (111110)^n</code></td>
+<td>20n</td>
+<td>90/90</td>
+</tr>
+<tr>
+<td>RS</td>
+<td><code>D&gt; (111110)^n → (101011)^n D&gt;</code></td>
+<td>6n</td>
+<td>90/90</td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>0 &lt;A 101 → halt</code> (the only route: F1 is the sole undefined transition, and F is entered only from E0)</td>
+<td>4</td>
+<td>50/50</td>
+</tr>
+<tr>
+<td>RC0</td>
+<td><code>X G S0 (110101)^n 01 C&gt; → X G S1 (110101)^n 01 C&gt;</code></td>
+<td>26n+108</td>
+<td>100/100</td>
+</tr>
+<tr>
+<td>RC1</td>
+<td><code>X G S1 (110101)^n 01 C&gt; → X G S2 (110101)^(n+1) 01 C&gt;</code></td>
+<td>26n+44</td>
+<td>100/100</td>
+</tr>
+<tr>
+<td>RC3</td>
+<td><code>X G S3 (110101)^n 01 C&gt; → X G S0 (110101)^(n+1) 01 C&gt;</code></td>
+<td>26n+44</td>
+<td>100/100</td>
+</tr>
+<tr>
+<td>RC2</td>
+<td><code>X G S2 … → X' G S3 …</code> (carry into the bits on the left)</td>
+<td>–</td>
+<td>not yet an exact rule</td>
+</tr>
+<tr>
+<td>D</td>
+<td>cycle depths = binary ruler</td>
+<td>–</td>
+<td>37,885/37,885 spacings (orbit, 5e4..1e10)</td>
+</tr>
+<tr>
+<td>M</td>
+<td>reservoir: m -&gt; m-5 -&gt; m-7 per two new top bits</td>
+<td>–</td>
+<td>11/11 changes (orbit)</td>
+</tr>
+</tbody>
+</table>
+<p>S0..S3 and G are spelled out in observe.json.</p>
+<p>The step counts were fitted as linear in n from random instances and match every instance exactly.</p>
+<p><strong>Not covered by any rule:</strong>
+- the inner boundary-gadget bit flips (the states are read off the orbit only);
+- the top gadget;
+- the early phase;
+- the post-reservoir regime (only seen through qsim snapshots).</p>
+<p><strong>Template check</strong>:
+- The nearest proved machine is <code>verify/SOC_2_4_v4.v</code> TM204 (<code>1RB1LA_1LC1RE_1RD0LC_1LA1RC_1RF0RB_1RA---</code>), 3 cells away (B0, C1, E1). It is a BinaryCounter_v2 proof with different words, so it does not apply.
+- The class templates SBCv6a, SBCv6a2, SBCv10 and SOBLv1-3 are 8-11 cells away.
+- The closest framework is <code>Longitudinal.v</code> (segRLs; SOBLv3's <code>RIncs0 k ls</code>: h^^k passes become h^^(k*2^len)), which matches our pass-halving segment list.</p>
+<p><strong>Cryptid check (ground rule 6)</strong>: none so far.
+- The counter is deterministic: binary increments with carries.
+- The reservoir drops are periodic (5, 2).
+- There is no parity- or Collatz-like branching anywhere in the observed regime.
+- Open: the epoch map, i.e. what an overflow into blank tape creates. If it turned out to depend on the arithmetic of the counter value at overflow, the machine would need re-flagging.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>Card: <code>machines/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---/card.html</code>. Q1 and Q2 are checks. Q3 is a priority call: more budget on the epoch map, or park?</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>Not started. Confidence is low, so the stage stops here until Dennis decides.</p>
+<p>Non-halting needs two arguments:
+- (a) Inside an epoch, the counter never produces <code>0 &lt;A 101</code>. This is plausible: within an epoch, the head reads A-on-0 only in rule Z's <code>&lt;A 1^7 0</code> and at gadget turns.
+- (b) Every overflow seeds a structure of the same kind. Not observed.</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>-</p>
+<h2 id="outcome">Outcome</h2>
+<p>Open (CHECKPOINT_A, low confidence).</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Before any more agent time on R5, run one niced background qsim (block 12) for up to 24 h to watch the counter reach the left prefix, and park agent work until it reports?
+Answer: <strong>watch</strong> (Background qsim to the overflow; park agent work). Dennis: go with all recommendations (2026-10-10).
+Parked by Dennis 2026-10-10 (watch): agent work waits on a niced 24 h background qsim to the overflow, work/qleft_24h.txt.</p>
+<h2 id="post-overflow-follow-up-2026-10-10">Post-overflow follow-up (2026-10-10)</h2>
+<p>Dennis approved the follow-up after the <code>watch</code> run died at loop 304M (MemoryError at 6 GB). Full write-up: <code>work/r5_followup.md</code>.
+- <strong>The overflow is now located exactly.</strong> A re-run of the same qsim configuration reproduced the 24 h run step for step (150/150 checkpoints to loop 300M).
+  - The old left end, with the 1^4 at absolute cells -59..-56, holds up to loop 288,010,300 (step 4,391,021,972,196,788).
+  - By loop 288,010,400 (step 4,391,022,056,149,912) the tape has grown to the left for the first time since step 35,809.
+  - After that qsim covers only about 1e4 steps per 100 loops.
+- <strong>The direct run starts at loop 288M, not 286M.</strong> The dump is <code>work/r5_pre_overflow.json</code>: step 4,390,707,259,988,964, 100,660,080 cells, every block plus a directed-head string. Loop 286M lies 6.1e13 steps before the overflow, out of reach of a 2e13 run; that dump is kept as <code>work/r5_loop286M.json</code>.
+- <strong>Checks</strong>:
+  - The expansion matches <code>tools/sim.py</code> run from blank at three loops.
+  - The C driver <code>work/scripts/r5run</code> matches qsim exactly on every reference tested: 19/19 early, and 3/3 over the first 1e10 steps from the dump.
+  - The long run itself verifies all 597 qsim dumps up to loop 300M, which includes the overflow.
+- <strong>Running</strong> (detached, niced, 1 core):
+  - 2e13 steps from the dump, logging every 1e10 steps to <code>work/r5_post.log</code>: step, head, span, nonzeros, leftmost 300 and rightmost 200 cells, and a <code>HALT</code> line with the exact step if it halts.
+  - Checkpoint every 1e12 steps: <code>work/r5_post_ckpt.bin</code>, resume with <code>work/scripts/r5_post_launch.sh resume</code>.
+  - ETA about 22 h: around 2026-10-11 21:30 PDT.
+- <strong>First result (23:45 PDT, rel step 4.8e11):</strong>
+  - All 597 qsim references matched exactly, across the overflow.
+  - <strong>The overflow erased the old tape.</strong> Nonzeros fell from 8.4e7 to 1,681 within 3.7e8 steps.
+  - What is left: an island near cell 2.5e7, <code>1^7</code> at the old right end (about 1.0066e8), and a new structure growing from a new left edge at absolute -62, then -67.
+  - It has 4.0e5 nonzeros by rel 4.7e11. Its left edge is still moving, as in the first epoch's early phase.
+  - Preliminary reading: a reset into a fresh epoch. This run probably shows how the new epoch is built, but not its overflow (see <code>work/r5_followup.md</code> §5).
+- Read the log with <code>python3 -B work/scripts/r5_post_view.py</code>. Agent work stays parked until the run reports.</p>
+<h2 id="halting-hunt-exact-model-2026-10-13">Halting hunt: exact model (2026-10-13)</h2>
+<p>Pick H-4 of the halting hunt (Dennis's 10-13 hunt approval). <strong>Dennis, one line: the epoch-map stage (the 10-10 option you did not pick, "for Dennis to decide" in work/r5_followup.md) was launched tonight as simulation of our own STUCK machine; nothing beyond simulation was started.</strong></p>
+<p><strong>Outcome: no halt up to step 5.636e76 (10^76.75) (exact model, validated against direct simulation on every anchor reached). Not a kill and not a halt.</strong></p>
+<h3 id="what-was-built-workexact">What was built (<code>work/exact/</code>)</h3>
+<ul>
+<li><code>xm.py</code>: an exact accelerated simulator. Nothing is fitted; every rule comes from the transition table.</li>
+<li>Tape = tokens: literal cells, or runs <code>w^n</code> (word of period 1..16, exact big-integer count).</li>
+<li>Literal cells: plain TM steps.</li>
+<li>Shift rules: when the head enters <code>w^n</code> in state q, the TM is run on one copy of w plus k context cells (k = 0..24). If the head leaves on the far side in state q and the region now reads <code>C w'</code> (resp. <code>w' C</code>), induction gives <code>w^n C -&gt; C w'^n</code> in n*s steps. Constant runs with no rule for w also try w^2..w^4.</li>
+<li>Peeling one copy when no rule exists.</li>
+<li>Memos: a symbolic run of the same engine over a suffix region <code>[b, E)</code> of the tape. Counts &gt;= 16 become symbols, the right of the region is treated as blank (E = the first long 0-run), the run starts with the head about to enter run r leftwards and ends the first time it is about to enter run b leftwards. Every peel and every nested memo adds an affine constraint. A memo stores the result tokens (affine counts), the step count (affine), the blank cells it uses and its constraints. It is applied only when the region shape matches exactly and every constraint holds; a memo whose symbolic run reaches a halting transition is discarded, so halts are always met concretely.</li>
+<li>The recursion (memo for b uses the memo for the next run right of b) is what batches the binary counter: each level costs about 4 applications of the level below.</li>
+<li>Drivers: <code>far2.py</code> (far run with JSON log + state pickle every 5 min; <code>--tm</code>, <code>--ckpt</code>, <code>--resume</code>), <code>anchors.py</code> (exact comparison with R5CFG references), <code>postcheck.py</code> (comparison with an r5run continuation), <code>loadcfg.py</code> (tokenises a 1e8-cell checkpoint exactly), <code>test_blank.py</code>.</li>
+</ul>
+<h3 id="validation-all-exact-state-head-the-whole-nonzero-tape-step-count">Validation (all exact: state, head, the whole nonzero tape, step count)</h3>
+<ul>
+<li>From the blank tape vs <code>tools/sim.py</code> (C core): 1e2 .. 1e10 steps, with and without memos.</li>
+<li>From the blank tape to the qsim pre-overflow dump (<code>work/r5_pre_overflow.cfg</code>, step 4,390,707,259,988,964): the full 100,660,080-cell tape. The model gets there in about 15 s.</li>
+<li>Across the first overflow: 99/99 qsim references (<code>work/r5_refs.cfg</code>, every 6th, loops 288,000,100 .. 298,600,000, steps up to 4,391,173,976,288,409; anchors2.jsonl) and 97/97 in an earlier pass (every 4th; anchors1.jsonl). These references were themselves verified by the direct C run (597/597).</li>
+<li>After the epoch-2 checkpoint (<code>work/r5_post_ckpt.bin</code>, rel 2e13, step 4,410,707,259,988,964): a fresh direct C continuation (<code>scripts/r5run</code>, 3e11 steps, <code>exact/r5run_post.jsonl</code>) vs the model started from the checkpoint: 30/30 log points (state, head, nonzeros, outermost 1s, every 1e10 steps) and the full tape at step 4,411,007,259,988,964 (<code>exact/r5_post_2p03e13.bin</code>). Both engine versions (the one used by the long runs, <code>xm_v1_snapshot.py</code>, and the current <code>xm.py</code>) pass (postcheck_v1/v2).</li>
+<li><strong>Blank tape to the epoch-2 checkpoint in one run</strong>: the model from the blank tape reaches step 4,410,707,259,988,964 (rel 2e13, past the overflow) in 84 s and matches the whole 100,663,701-cell checkpoint tape, head and state (<code>exact/anchors4.jsonl</code>; current engine). An earlier pass (anchors3) matched the tape and state but failed the head check because anchors.py read the packed checkpoint's head as an index instead of a position (head minus pos0); fixed, then anchors4 passed.</li>
+</ul>
+<h3 id="the-old-runs-closed">The old runs, closed</h3>
+<ul>
+<li>Direct C run from loop 288M (work/r5_post.log): finished its 2e13 steps (2026-10-11), no halt, 597/597 references.</li>
+<li>Seeded qsim <code>reports/halting-hunt/parked/r5/r5q.py</code> (block 24): hit its 4 h cap at 21:36 at loop 194.4M, step 4,969,937,411,350,948, no halt, 0 prover rules.</li>
+</ul>
+<h3 id="epoch-2-as-the-model-sees-it">Epoch 2, as the model sees it</h3>
+<ul>
+<li>At the checkpoint (rel 2e13) the tape is a static left part, several finished sub-counters separated by period-8 runs (<code>(11101010)^n</code> / <code>(11010101)^n</code>), the active counter, and the epoch-1 debris: short blocks at x4-spaced positions (zero gaps 12,819 / 73,715 / 294,899 / 1,179,635 / 4,718,579 / 18,874,355 cells) and <code>1^7</code> at the old right end.</li>
+<li>Each sub-counter is the epoch-1 kind of binary counter (segments <code>(110101)^n</code>, x4 per segment, gadgets of about 100 cells). The finished ones end with a big segment S followed by <code>(11010101)^~2S</code>: S = 196,607 / 786,421 / 3,145,733 with runs 393,167 / 1,572,810 / 6,291,263. Reading: a sub-counter runs until its right end meets the next debris block, then its last segment is converted and a new sub-counter, one level bigger, starts to its right.</li>
+<li>Past the last debris the active counter grows freely. Its fuel is the run <code>(11010101)^6,291,263</code> to its left, eaten as new top bits are made (as epoch 1 ate <code>(10)^66</code>): it went 6,291,263 -&gt; 6,291,195 -&gt; 6,291,133 -&gt; 6,291,121 -&gt; 6,291,118 at steps 10^44.95, 10^59.70, 10^73.14, 10^75.84, 10^76.61: steadily about 4.6 copies per decade of steps.</li>
+<li>The finished sub-counter to its left (segments 9 .. 3,145,739) is incremented while this happens: its low gadgets flip <code>(10)^9 &lt;-&gt; (10)^1</code> and its last segment grows 3,145,733 -&gt; 736 -&gt; 739 over the same span. So epoch 2 is a counter of counters.</li>
+<li>No overflow of the active counter happened in the run. At the measured rate its fuel lasts about 6.29e6 / 4.6 ~ 1.4e6 decades: <strong>the next decision point (the active counter's overflow) is projected near 10^(1.4e6) steps</strong> (an extrapolation, not a model result). The left counter's own overflow is also far off (ten levels; its lowest segment grows by 3 per ~14 decades).</li>
+<li>Cryptid check: none. Everything seen is binary counting with periodic fuel use; no parity- or Collatz-like branching.</li>
+</ul>
+<h3 id="far-runs">Far runs</h3>
+<ul>
+<li><code>far3.jsonl</code> (from the rel-2e13 checkpoint): 3600 s, reached step 5.636e76 = 10^76.75 exactly (77 digits, first digits 563690473834), no halt; 546 tokens at the end. Engine as of 22:13 (the current one minus LRU memo eviction; caching only). State pickles in far3_s*.pkl and far3.jsonl.state.pkl (resume: far2.py --resume). The run was left going to its 90-min cap (23:43), so its log may end a little further than this.</li>
+<li><code>farc1.jsonl</code> (first engine version, same start): 2.29e45 steps in 945 s, no halt (stopped and replaced by far3).</li>
+<li>Speed limit: each new top bit of the active counter costs a few dozen driver events and adds ~2 tokens, so the run gained about 0.05 decades per second at first and only ~0.02 decades per minute past 10^75 (500+ tokens; the memo cache is flushed every ~30k memos). Reaching 10^(1.4e6) needs a further level: a closed form for "one more top bit" (counter with k bits -&gt; k+1 bits, fuel -c), which the memo framework cannot express because the token count changes.</li>
+</ul>
+<h3 id="line-43-1rb1lf_1lc1rb_1lf1ld_1le0rd_1lb-_1la0la-claimed-2026-10-13">Line 43 (1RB1LF_1LC1RB_1LF1LD_1LE0RD_1LB---_1LA0LA, claimed 2026-10-13)</h3>
+<ul>
+<li>Same table as R5 started from D, mirrored; it has its own orbit from the blank tape. The model is generic in the table.</li>
+<li>Validation: model from blank vs <code>tools/sim.py</code> at 1e5, 1e7 and 1e9 steps: exact (<code>test_blank.py</code> with <code>TMX=&lt;43&gt;</code>).</li>
+<li><code>exact/far43.jsonl</code> (35 min from blank): step 4,689,505,113,775 (4.7e12), no halt.</li>
+<li>The tape is the mirror image of R5's epoch-1 counter: <code>(101011)</code> segments, x4 per level, growing to the left (left edge at -3.3e6), with long runs <code>(1)^1830</code> and <code>(1)^439</code> in the prefix on its right, where R5 had its <code>(10)^66</code> reservoir. Its first overflow was not reached. The model is slower on 43 (a messy start with many failed memo builds), so it needs a longer run.</li>
+</ul>
+<h3 id="certification">Certification</h3>
+<p>None possible at this depth. No halt was found, so there is nothing to certify; a nonhalting proof would need the epoch-2 counter-of-counters structure formalised, which is far beyond the current templates. The model's rules (shift rules + memos) are exact rewrites, so a found halt could be certified W5-5 style by replaying the real TM from a configuration the model reaches shortly before it (expand a window of +-N cells around the head).</p>
+</main></body></html>

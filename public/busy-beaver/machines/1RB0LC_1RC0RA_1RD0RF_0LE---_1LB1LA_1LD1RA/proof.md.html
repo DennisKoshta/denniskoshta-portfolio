@@ -1,0 +1,1605 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA/proof.md · <a href="/busy-beaver/machines/1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA/proof.md.html">raw</a></div>
+<h1 id="1rb0lc_1rc0ra_1rd0rf_0le-_1lb1la_1ld1ra-never-halts-informal-proof-stuck">1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA: never halts (informal proof, STUCK)</h1>
+<ul>
+<li>Machine: <code>1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA</code>, pilot #16, viewer https://bbchallenge.org/1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA</li>
+<li>Sheet: Results row 650, "Chaotic Fractal Others", no notes, no Discord thread.</li>
+<li>Written for the string itself, started in A on the blank tape.</li>
+<li>Status of this document (stage informal_proof, skeptic rounds 1 and 2 applied, 2026-10-12): <strong>not a proof; status STUCK.</strong> The rules are sound, but no inductive invariant is known.</li>
+<li>Rules: every rule is stated exactly. The machine-level and bouncer-level rules come with derivations, and every macro rule is checked by exact simulation (§9). An independent skeptic re-check confirmed them (422,018 right-end transitions, 2.6e10 steps; round 2: 400 more transitions of new kinds, 1.0e8 steps).</li>
+<li>Invariant: H*c4 (§5) is <strong>not inductive</strong>, on long right ends or on short ones.<ul>
+<li>Long right ends: a family of members goes to a <em>window</em> right end. The family grows with the level: 1 member at S = 83, 60 at S = 168, at least 96 at S = 339 (§8 G2).</li>
+<li>This round derives the window start: it is the Clean formula (§4.4, check L1). With it, the window cases with δ = 0 are ruled by the existing rules, except one case with two walls.</li>
+<li>One new corner rule, RightEndP2W, is validated (check M1). With it, δ = 1 for S even is ruled.</li>
+<li>The remaining cases run into a V1 right end with walls. Its restart writes a left word outside the grammar of §2 (check L3).</li>
+</ul>
+</li>
+<li>Closure, short right ends (≤ 1 real wall): <strong>open.</strong> The clause for them is a look-ahead (Hs_4), and it is not inductive. Wider boxes give at least 110 + 12 + 450 leaks (§5.5, §8 G1).</li>
+<li>Derivations: Lemma T, the growth step G, the collapse C and CP are fitted, not derived. The CP sketch only shows that CP is equivalent to H1 at the successor (§5.2).</li>
+<li>Checks: <code>check_proof.py</code>. Sections A-L: SUMMARY PASS, 36 checks, 0 fail, 1,239 s. Section M, run separately: 2 checks, 0 fail. There are also 12 OPEN lines that measure the gaps. Log: <code>check_proof_full.txt</code>. Predicate and boxes: <code>scripts/inv4.py</code>. Round-2 boxes and the window rule: <code>scripts/round2.py</code>.</li>
+</ul>
+<h2 id="0-what-the-machine-does">0. What the machine does</h2>
+<p>The tape is one bouncer that runs between two growing regions.</p>
+<ul>
+<li><strong>Left-turn frame.</strong> The head is in A, reading the 0 just left of the active word Y. To its left is either</li>
+<li>a stack of "walls" X plus a run <code>(10)^P</code>, or</li>
+<li>the blank edge.</li>
+</ul>
+<p>To its right are Y, a run <code>(010)^d</code> and a list Z of pending chunks.
+- <strong>Each round trip</strong> sweeps right across Y to the <code>(010)</code>-run, eats two <code>(010)</code> units, and sweeps back.
+  - Each trip takes <code>(10)^2</code> off P, or, at the blank edge, extends Y to the left.
+  - The run that the eaten units feed grows by 2.
+- <strong>When d runs out,</strong> the next chunk merges into Y, or (with d = 1) is eaten.
+- <strong>When P runs out at a wall,</strong> one of two things happens:
+  - the bouncer pushes its whole Y as a new chunk and restarts on the wall (Push);
+  - or it absorbs walls by a binary carry (Absorb).
+- <strong>When d and Z are both gone</strong> (a "right end"), the rightmost <code>(10)^ak</code>-run feeds a Jacobsthal staircase: busycoq's FractalType4 TM5 lemma <code>P</code>. The staircase lays out the next <code>(010)^d</code>-run, and the old Y becomes the new wall stack.</p>
+<p>Halting needs the right sweep to meet the pattern <code>B&gt; 0 0 1</code> (§6). In the grammar this happens only when an odd <code>(10)</code>-run inside a chunk gets eaten. A parity invariant excludes that, but the invariant also has to carry linear facts that link the walls to the staircase level (§5).</p>
+<h2 id="1-rule-table">1. Rule table</h2>
+<div class="highlight"><pre><span></span><code>      0     1
+A    1RB   0LC
+B    1RC   0RA
+C    1RD   0RF
+D    0LE   ---
+E    1LB   1LA
+F    1LD   1RA
+</code></pre></div>
+
+<p>This is FractalType4.v Module TM5 (<code>1RB0RE_1RC0RF_0LD---_1LA1LE_1RA0LB_1LC1RE</code>) with TM5's states A,B,C,D,E,F renamed to B,C,D,E,A,F (check A1). TM5 starts in its own A, which is our B. So TM5 is this table started in another state. Its lemmas <code>Inc1</code>, <code>Incs1</code>, <code>P</code>, <code>P_S</code> and <code>P_S'</code> carry over verbatim after the renaming (checks C1-C3).</p>
+<h2 id="2-notation-and-families">2. Notation and families</h2>
+<p>Words are written left to right. Two head markers are used:
+- <code>&lt;S</code>: the head is in state S, reading the last cell of the word to its left;
+- <code>S&gt;</code>: the head is in state S, reading the first cell of the word to its right.</p>
+<p>Block names:
+- <code>(10)</code>: pair;
+- <code>(011010)</code>: six-block;
+- <code>(010)</code>: triple;
+- <code>(101)</code>: wall cell triple.</p>
+<p><strong>Staircase levels.</strong> S_0 = 0 and S_{j+1} = 2 S_j + 3 if S_j is even, 2 S_j + 2 if S_j is odd. This gives 0, 3, 8, 19, 40, 83, 168, 339, 680, 1363, ... For n ≥ 1, <code>Sof(n)</code> is the largest level ≤ n − 1.</p>
+<p><strong>Active word.</strong> <code>Y = (10)^a0 (011010)^b1 (10)^a1 ... (011010)^bk (10)^ak</code>, with k ≥ 0. It is written <code>Y = [a0, b1, a1, ..., bk, ak]</code>. B = Σ b_i and A = Σ a_i. A "segment-less" Y is <code>[a]</code>.</p>
+<p><strong>Chunk.</strong> <code>C = (011010)^B1 (10)^A1 ... (011010)^Bm (10)^Am (010)^c</code>. Chunks are listed nearest first in Z. A chunk with c = 0 is glued to the next one. Zero inner runs glue their neighbours (<code>(011010)^b (10)^0 (011010)^b' = (011010)^(b+b')</code>). Both are tape identities.</p>
+<p><strong>Walls.</strong> <code>X = (10)^p1 (101)^q1 ... (10)^pm (101)^qm</code>, listed far to near. An interior wall with p = 0 is glued to its left neighbour (<code>normX</code>).</p>
+<p><strong>Families.</strong> Two kinds of left-turn frame:</p>
+<div class="highlight"><pre><span></span><code>P-mode  F_P(X, P, Y, d, Z) := 0^inf X (10)^P &lt;A Y (010)^d Z 0^inf      (a0 = 1, P &gt;= 1)
+edge    F_E(Y, d, Z)       := 0^inf &lt;A Y (010)^d Z 0^inf
+</code></pre></div>
+
+<p><strong>Virtual frames.</strong> These are P-mode frames with P ∈ {0, 1} next to a wall. They are not left-turn frames of the machine: the cell two left of the head is a wall cell. They occur only inside composite rules (§4.3):</p>
+<div class="highlight"><pre><span></span><code>V1 := 0^inf X (10)^p (101)^q (10)^1 &lt;A Y (010)^d Z 0^inf
+V0 := 0^inf X (10)^p (101)^q &lt;A Y (010)^d Z 0^inf
+</code></pre></div>
+
+<p><strong>Right end.</strong> A frame with d = 0 and Z empty, written <code>R = (mode, X, P, Y)</code>. Three kinds exist in the rule set:
+- an E hub <code>0^inf &lt;A Y 0^inf</code>;
+- a P-mode right end without walls, <code>0^inf (10)^P &lt;A Y 0^inf</code>;
+- a P-mode right end <strong>with</strong> walls, <code>0^inf X (10)^P &lt;A Y 0^inf</code>, X nonempty.</p>
+<p>The rules of §4.4 handle all three. The third kind does occur: from long Level hubs (e.g. <code>[35,13,30,14,18,2,40]</code>) and on the short chain from the E hub <code>[79,12,32]</code> (§8 G1). The invariant of §5 admits only the first two kinds (clause H0), so "right ends in the invariant have no walls" is a clause to be preserved, not a fact about the rules.</p>
+<p><strong>Base.</strong> <code>K0 := F_E([85, 7, 46], 0, -) = 0^inf &lt;A (10)^85 (011010)^7 (10)^46 0^inf</code>, reached at step 46,734 (§7).</p>
+<h2 id="3-machine-level-and-bouncer-level-rules">3. Machine-level and bouncer-level rules</h2>
+<h3 id="31-shift-rules-l0-each-proved-by-es-on-one-block-then-ind-n">3.1 Shift rules (L0; each proved by <code>es</code> on one block, then <code>ind n</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>rule</th>
+<th>steps</th>
+<th>check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td><code>A&gt; (01)^n  -&gt;  (10)^n A&gt;</code></td>
+<td>2n</td>
+<td>B1</td>
+</tr>
+<tr>
+<td>R2</td>
+<td><code>B&gt; (10)^n  -&gt;  (01)^n B&gt;</code></td>
+<td>2n</td>
+<td>B1</td>
+</tr>
+<tr>
+<td>R3</td>
+<td><code>B&gt; (011010)^n  -&gt;  (101101)^n B&gt;</code></td>
+<td>6n</td>
+<td>B1</td>
+</tr>
+<tr>
+<td>R4</td>
+<td><code>(01)^n &lt;A  -&gt;  &lt;A (10)^n</code></td>
+<td>4n</td>
+<td>B1</td>
+</tr>
+<tr>
+<td>R5</td>
+<td><code>(110110)^n &lt;E  -&gt;  &lt;E (011010)^n</code></td>
+<td>14n</td>
+<td>B1</td>
+</tr>
+<tr>
+<td>R6</td>
+<td><code>(101101)^n &lt;A  -&gt;  &lt;A (100110)^n</code></td>
+<td>14n</td>
+<td>B1</td>
+</tr>
+<tr>
+<td>T1</td>
+<td><code>x B&gt; 010 010  -&gt;(5)  x &lt;A 101010</code> (B0 C1 F0 D0 E1; D reads the 0 that C1 wrote)</td>
+<td>5</td>
+<td>B2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Right sweep.</strong> From a left-turn frame, A0 writes 1 and moves right. The sweep then runs R1 over <code>(10)^a0</code>, takes A0 at the last 0, then alternates R3 and R2 over Y. The swept word has the same exponents and reads <code>(10)^a0 (110110)^b1 (10)^a1 ... (10)^ak 1</code>, shifted one cell left.</p>
+<p><strong>Right turn and left sweep.</strong> The turn T1 converts two triples. The left sweep (R4, R5, R6 and boundary gadgets) restores the six-blocks.</p>
+<h3 id="32-trip-lemmas-l1-proof-right-sweep-t1-left-sweep-then-left-turn-checks-d1d2-test-that-the-target-is-the-next-left-turn-frame-and-that-the-step-count-is-exact">3.2 Trip lemmas (L1; proof: right sweep, T1, left sweep, then left turn; checks D1/D2 test that the target is the <em>next</em> left-turn frame and that the step count is exact)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>domain</th>
+<th>steps per trip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BounceE</td>
+<td><code>F_E([a0,b1,...,ak], d+2, Z) -&gt; F_E([a0+2,b1,...,ak+2], d, Z)</code></td>
+<td>any a0 ≥ 1, b_i ≥ 1, ak ≥ 0, d ≥ 0, any Z</td>
+<td>10 + 20B + 6A</td>
+</tr>
+<tr>
+<td>BounceP</td>
+<td><code>F_P(X, P+2, [1,b1,M,ak], d+2, Z) -&gt; F_P(X, P, [1,b1+1,M,ak+2], d, Z)</code></td>
+<td>P ≥ 2, any X, M, Z</td>
+<td>22 + 20B + 6(A − 1)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Edge mode.</strong> The left turn extends the blank edge by one <code>(10)</code> per trip. A trip plus the next right-sweep start gives a0 + 2.</li>
+<li><strong>P-mode.</strong> The left turn takes <code>(10)^2</code> from P and builds one more six-block in the first segment.</li>
+<li><strong>k-fold forms</strong> (<code>ind k</code>): <code>d+2k -&gt; d</code>, with a0+2k or (P−2k, b1+k), and ak+2k. The step counts add up to <code>Σ_j (10 + 20B + 6(A+4j))</code> and <code>Σ_j (22 + 20(B+j) + 6(A'+2j))</code>.</li>
+<li><strong>Merge</strong> is a tape identity, not a rule. When d = 0, the frame <code>F(…, Y, 0, C Z)</code> <em>is</em> <code>F(…, Y C', c, Z)</code>, where C' is C without its triples.</li>
+</ul>
+<h3 id="33-staircase-tm5-lemmas-renamed-checks-c1-c4">3.3 Staircase (TM5 lemmas, renamed; checks C1-C4)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inc1</td>
+<td><code>l (01)^(2+a) &lt;B 1 (011010)^b (10)^c 0 (100)^(2+d) 0^inf -&gt; l (01)^a &lt;B 1 (011010)^(1+b) (10)^(2+c) 0 (100)^d 0^inf</code></td>
+<td>es (TM5 Inc1)</td>
+</tr>
+<tr>
+<td>Incs1</td>
+<td>n-fold Inc1</td>
+<td><code>ind n Inc1</code></td>
+</tr>
+<tr>
+<td>P(a)</td>
+<td><code>l (01)^a B&gt; 0^inf --&gt;* l &lt;C 01 (010)^a 0^inf</code> (l never read)</td>
+<td>P(0), P(3) by es; P_S: P(1+2b) → P(4+4b); P_S': P(2+2b) → P(7+4b), verbatim from TM5</td>
+</tr>
+<tr>
+<td>Start</td>
+<td><code>l (01)^m &lt;C 01 (010)^S 0^inf -&gt;(9) l 0 (10)^(m-2) &lt;A (10)(011010)(010)^(S-1) 0^inf</code></td>
+<td>m ≥ 2, es</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>C1 checks that P(a) holds <strong>exactly</strong> for a ∈ {0, 3, 8, 19, 40, 83} among a ≤ 130.</li>
+<li>The recursion of P_S/P_S' is the level recursion. So P(S_j) holds for every level, by induction on j from P(3).</li>
+<li>C2 re-checks P(S) for every S ≤ 1400 in 4 left contexts, and confirms that l is never read.</li>
+</ul>
+<h2 id="4-macro-rules-exact-transitions-between-frames">4. Macro rules (exact transitions between frames)</h2>
+<p>Every rule is an exact run of the machine (no halting, ≥ 1 step). It is a composite of §3 lemmas and finite gadgets.</p>
+<p>How the rules are checked:
+- All of them at once, as <code>scripts/macro_sim3.py</code> <code>step</code> (the executable form of this section): E1 runs every frame of a small grammar box, and E2 runs random frames. In each case the exact run must visit the next ≥ 3 macro frames in order.
+- Per family, by earlier stages: notes.md, val_corner*/val_hubsweep/val_events2 and others, 1,500+ instances in total.</p>
+<p>Rules marked (k) apply k-fold. "unruled" means that no rule applies. The invariant must exclude every such frame (§5, §8).</p>
+<h3 id="41-edge-mode-f_ey-d-z">4.1 Edge mode <code>F_E(Y, d, Z)</code></h3>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>when</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BounceE (k = ⌊d/2⌋)</td>
+<td>d ≥ 2</td>
+<td>a0 + 2k, ak + 2k, d − 2k; a segment-less Y = [a] gets a + 4k</td>
+</tr>
+<tr>
+<td>RightEndE</td>
+<td>d = 1, Z empty</td>
+<td>a0 + 2, ak + 1, d = 0 (segment-less: a + 3)</td>
+</tr>
+<tr>
+<td>EatChunkE</td>
+<td>d = 1, Z = C Z', C with every A_i even, every run ≥ 1</td>
+<td>a0 + 4B + 2A, ak + B, d = c + 1, Z = Z' (segment-less: a + 5B + 2A)</td>
+</tr>
+<tr>
+<td>EatLastE</td>
+<td>d = 1, Z = one chunk with c = 0, last (10)-run odd, the others even</td>
+<td>a0 + 4B + 2A + 2, ak + B, d = 0, Z empty</td>
+</tr>
+<tr>
+<td>(unruled)</td>
+<td>d = 1 and the first chunk has an odd (10)-run that is not its last before 0^inf; or a chunk with an empty inner run</td>
+<td>see §4.5, rows U1-U2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-p-mode-f_px-p-1-b1-m-ak-d-z">4.2 P-mode <code>F_P(X, P, [1, b1, M, ak], d, Z)</code></h3>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>when</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BounceP (k = min(⌊(P−2)/2⌋, ⌊d/2⌋))</td>
+<td>k ≥ 1</td>
+<td>P − 2k, b1 + k, ak + 2k, d − 2k</td>
+</tr>
+<tr>
+<td>BounceP31</td>
+<td>P = 3, d ≥ 2, X nonempty</td>
+<td>P = 1 (V1), b1 + 1, ak + 2, d − 2; continue in §4.3</td>
+</tr>
+<tr>
+<td>BounceP31e</td>
+<td>P = 3, d ≥ 2, X empty</td>
+<td>standard P = 1 frame at the edge</td>
+</tr>
+<tr>
+<td>ToEdge1</td>
+<td>P = 1, X empty, d ≥ 2</td>
+<td>edge, a0 = 5, ak + 2, d − 2</td>
+</tr>
+<tr>
+<td>ToEdge2</td>
+<td>P = 2, X empty, d ≥ 2</td>
+<td>edge, a0 = 1, b1 + 1, ak + 2, d − 2</td>
+</tr>
+<tr>
+<td>Absorb</td>
+<td>P = 2, X nonempty, d ≥ 2</td>
+<td>BounceP 2→0 (b1 + 1, ak + 2, d − 2), then Absorb0 (§4.3)</td>
+</tr>
+<tr>
+<td>RightEndP</td>
+<td>d = 1, Z empty, P ≥ 4 (or P = 3 with X empty)</td>
+<td>P − 2, b1 + 1, ak + 1, d = 0</td>
+</tr>
+<tr>
+<td>RightEndP1</td>
+<td>P = 1, X empty, d = 1, Z empty</td>
+<td>edge, a0 = 5, ak + 1, d = 0</td>
+</tr>
+<tr>
+<td>RightEndP2</td>
+<td>P = 2, X empty, d = 1, Z empty</td>
+<td>edge, a0 = 1, b1 + 1, ak + 1, d = 0</td>
+</tr>
+<tr>
+<td>EatChunkP</td>
+<td>d = 1, Z = C Z' (as in EatChunkE), P ≥ 4B + 2A + 2</td>
+<td>P − 4B − 2A, b1 + 2B + A, ak + B, d = c + 1</td>
+</tr>
+<tr>
+<td>EatLastP</td>
+<td>d = 1, last-odd chunk (as in EatLastE), P ≥ 4B + 2A + 2</td>
+<td>P − 4B − 2A − 2, b1 + 2B + A + 1, ak + B, d = 0, Z empty; P = 0 → edge (X empty)</td>
+</tr>
+<tr>
+<td>EatToEdge</td>
+<td>d = 1, X empty, P &lt; 4B + 2A + 2</td>
+<td>see below</td>
+</tr>
+<tr>
+<td>(unruled)</td>
+<td>a0 ≠ 1; RightEndP with P &lt; 3, or P = 3 with walls; EatLast with P &lt; 4B + 2A + 2; EatLast to P = 0 at a wall; eat with X nonempty and P too small; the EatToEdge sub-cases that finish the chunk early</td>
+<td>see §4.5, rows U3-U10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>EatToEdge.</strong> Write n = ⌊(P−2)/4⌋. First eat n whole units from the front of the chunk. A unit is one six-block or two pairs, and each unit gives P − 4 and b1 + 2, plus ak + 1 for a six-block. This leaves P0 = P − 4n ∈ {2, 3, 4, 5}. Then one more unit:</p>
+<table>
+<thead>
+<tr>
+<th>P0</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>edge mode, a0 = 3, b1 + 1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>edge mode, a0 = 5, b1 + 1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>edge mode, a0 = 1, b1 + 2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>one unit gives b1 + 2, then one more unit gives edge mode with a0 = 7</td>
+</tr>
+<tr>
+<td>P = 1 at the start (X empty, Z nonempty)</td>
+<td>edge mode, a0 = 7</td>
+</tr>
+</tbody>
+</table>
+<p>Every six-block unit adds 1 to ak. If the last unit finishes the chunk, d = c + 1 ("Exact"). If it does not, the rest of the chunk stays in Z with d = 0.</p>
+<h3 id="43-virtual-frames-walls-p-q-nearest-last">4.3 Virtual frames, walls (p, q) nearest last</h3>
+<p><strong>V1</strong> (P = 1 next to the wall (p, q)):</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>when</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Push1</td>
+<td>d ≥ 2, p ≥ 1</td>
+<td>pop the wall; new chunk <code>(011010)^b1 M (10)^(ak+2) (010)^(d−2)</code> in front of Z; P = p − 1, Y = [1, 1, 0], d = q (P = 0 with X empty: edge, Y = [1, 1, 0])</td>
+</tr>
+<tr>
+<td>Push1Edge</td>
+<td>d ≥ 2, p ∈ {−1, 0}, wall leftmost</td>
+<td>same chunk; edge mode with segment-less Y = [2p + 5], d = q</td>
+</tr>
+<tr>
+<td>V1RightEnd</td>
+<td>d = 1, Z empty, q even, p − q − 1 ≥ 2</td>
+<td>P = p − q − 1, Y = [1, q/2 + 1, q, b1, M, ak + 1], d = 0</td>
+</tr>
+<tr>
+<td>Push1End</td>
+<td>d = 1, Z empty, p ≥ 1</td>
+<td>tape-end chunk <code>(011010)^b1 M (10)^(ak+1)</code> (c = 0, last run odd), P = p − 1, Y = [1, 1, 0], d = q</td>
+</tr>
+<tr>
+<td>(unruled)</td>
+<td>d = 1 with Z nonempty; d = 1, Z empty and p ≤ 0 (the wall at the edge: Push1End needs p ≥ 1, Push1Edge needs d ≥ 2); d = 0 after the merge (a V1 right end with walls); Push1 at an interior wall with p ≤ 0</td>
+<td>see §4.5, rows U11-U14</td>
+</tr>
+</tbody>
+</table>
+<p><strong>V0</strong> (P = 0 next to the wall): <strong>Absorb0</strong>, a carry chain. Number the walls nearest first, (p_1, q_1), (p_2, q_2), .... Set r_1 = 0 (r_1 = 2 for the old AbsorbChain, which is BounceP 2→0 + Absorb0). Then</p>
+<div class="highlight"><pre><span></span><code>e_j = floor((q_j + r_j) / 2),   r_{j+1} = (q_j + r_j) mod 2
+</code></pre></div>
+
+<ul>
+<li><strong>It stops</strong> at the first J with r_{J+1} = 0. Then X loses its J nearest walls, P = p_J and
+  <code>Y = [1, e_J, p_{J-1}, e_{J-1}, ..., p_1, b1 + e_1, M, ak]</code>
+  If p_J ∈ {0, 1}, resolve the virtual frame again.</li>
+<li><strong>If it never stops,</strong> the result is edge mode with a0 = p_m + 3, with the same Y body.</li>
+<li><strong>Domain:</strong> interior walls have p ≥ 1. The wall p = −1 occurs only as the leftmost wall, and the chain does not stop there. Outside this domain the rule is unruled (§4.5, rows U15-U16).</li>
+</ul>
+<h3 id="44-right-ends-the-staircase-restart">4.4 Right ends: the staircase restart</h3>
+<p>Let R = (mode, X, P, Y) with Y = [a0, b1, ..., bk, ak] and k ≥ 1. Its wall list is</p>
+<div class="highlight"><pre><span></span><code>E hub (X empty):          V = (a0 − 1, 2 b1), (a1, 2 b2), ..., (a_{k−1}, 2 bk)
+P-mode, X empty:          V = (P − 2, 2 b1 + 1), (a1, 2 b2), ...
+P-mode with walls X:      V = normX( X, (P − 2, 2 b1 + 1), (a1, 2 b2), ... ),   needs P ≥ 2
+</code></pre></div>
+
+<p>The P-mode first wall is the "collapse wall". The third line is the rule <code>PModeW*</code> of macro_sim3 (<code>right_end</code> with <code>OPTS['pmode_walls']</code>): the old walls X simply stay in front of the new ones. It was validated by exact simulation with random X in a third of the instances (val_hubsweep seed 94, 30/30 clean + 30/30 top), and it is exercised in check E1 (PModeWClean 2,338, PModeWLevel 3,357, PModeWTop 10,524 frames). Then normX. Let S = Sof(ak).</p>
+<table>
+<thead>
+<tr>
+<th>case</th>
+<th>when</th>
+<th>start frame</th>
+<th>proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Clean</td>
+<td>ak &lt; 2S − 1</td>
+<td><code>F_P(V, ak − S, [1, 1, 0], S − 1, −)</code></td>
+<td>right sweep, regroup <code>(10)^a (110110)^b = (10)^(a−1) (101)^(2b) 10</code>, P(S), Start</td>
+</tr>
+<tr>
+<td>Level</td>
+<td>ak = S_j for some j</td>
+<td><code>F_P(V, 0, [1, 1, 0], ak − 1, −)</code> (V0)</td>
+<td>as Clean, with P(ak)</td>
+</tr>
+<tr>
+<td>Top</td>
+<td>ak + 1 = S_j</td>
+<td>drop the last wall (p, q) of V: <code>F_P(V', p − 1, [1, 1, 0], q + ak, −)</code></td>
+<td>right sweep, P(ak + 1), gadget into the last wall</td>
+</tr>
+<tr>
+<td>Reflect</td>
+<td>Top with p − 1 = −1, V' empty</td>
+<td>T = q + ak, n = 2T + 4 + (T mod 2), clean start at level Sof(n): <code>F_P(−, n − S', [1,1,0], S' − 1, −)</code></td>
+<td>composite (val_corner)</td>
+</tr>
+<tr>
+<td>HubSegless</td>
+<td>E hub [a]</td>
+<td><code>F_P(−, a − S − 1, [1, 1, 0], S − 1, −)</code>, S = Sof(a), clean</td>
+<td>composite</td>
+</tr>
+<tr>
+<td>Window (round 2; not in macro_sim3, see below)</td>
+<td>2S − 1 ≤ ak ≤ S_next − 2</td>
+<td><code>F_P(V, ak − S, [1, 1, 0], S − 1, −)</code>, the Clean formula with P0 = d0 + δ, δ = ak − (2S − 1)</td>
+<td>as Clean</td>
+</tr>
+<tr>
+<td>(unruled)</td>
+<td>window, in macro_sim3; and the other cases of §4.5 rows U17-U25</td>
+<td>excluded by H2 / H0 / H0s (§4.5)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>If the start has P0 ∈ {0, 1}, it is a virtual frame, handled by §4.3.</li>
+<li>Long starts (P0 ≥ d0 + 4) just bounce on to the next P-mode right end (RightPhaseLong). That is BounceP followed by RightEndP; no new rule is needed.</li>
+</ul>
+<p><strong>Window right ends (skeptic round 2).</strong> The derivation of Clean never uses ak &lt; 2S − 1. It needs only:
+- the right sweep and the regrouping;
+- P(S) on the last S pairs of the <code>(01)^ak</code> run;
+- Start, which needs m = ak − S ≥ 2 pairs left over.</p>
+<p>So the Clean start frame also holds in the window. Check L1 confirms it by exact simulation: 60 window right ends at S ≤ 83, E hubs and P-mode right ends, with 1 or 2 segments and every δ. In the window, P0 − d0 = δ, where δ ∈ {0, 1, 2} for S even and δ ∈ {0, 1} for S odd.</p>
+<p>The bounce then ends as follows (<code>scripts/round2.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>δ</th>
+<th>S</th>
+<th>after the bounce</th>
+<th>next rule</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>odd</td>
+<td>P = 2, d = 2</td>
+<td>Absorb</td>
+<td>ruled</td>
+</tr>
+<tr>
+<td>0</td>
+<td>even</td>
+<td>P = 3, d = 3</td>
+<td>BounceP31, then V1 with d = 1 and Z empty: V1RightEnd or Push1End</td>
+<td>ruled when the wall has p ≥ 1. With two or more walls, Push1End can be followed by a V1 right end at the next wall (U13), e.g. <code>[25,6,28,13,79]</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td>odd</td>
+<td>P = 3, d = 2</td>
+<td>BounceP31, then V1 with d = 0: a V1 right end <strong>with walls</strong></td>
+<td>unruled (U13)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>even</td>
+<td>P = 2, d = 1</td>
+<td>RightEndP with P = 2 at a wall</td>
+<td>unruled in macro_sim3 (U4). <strong>New rule RightEndP2W</strong> (round 2): RightEndP to P = 0 (b1 + 1, ak + 1, d = 0), then Absorb0 at V0. Exact for 2 events on the 251 of 300 random frames with 1-3 walls that stay ruled that long (check M1, 0 misses); the negative control ak + 2 is never reached (M2)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>even</td>
+<td>P = 3, d = 1</td>
+<td>RightEndP with P = 3 at a wall, which gives a V1 right end with walls</td>
+<td>unruled (U4, U13)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Check L2 runs every ruled window hub of a random box (S ≤ 83) exactly for 3 events: 0 misses. It also counts the unruled ones (L2b): all with δ ∈ {1, 2}, and 1 of 60 with δ = 0.</li>
+<li>On the skeptic's δ = 0 examples the orbit is back in H*c4 one or two right ends later. For example, <code>[2995,29,677]</code> goes by Absorb to P = 2994, <code>[1,199,338]</code>, which is a member. <code>[1485,15,335]</code> goes by V1RightEnd to P = 1453, <code>[1,16,30,84,167]</code>, which fails H2t', and then to P = 992, <code>[1,230,353]</code>, a member.</li>
+<li>The δ ∈ {1, 2} rows are not ruled.</li>
+<li>Exact simulation shows what happens there. The restart of a V1 right end with walls writes the left word <code>(10)^p (101)^q 1 (101)^r</code>: a wall glued to a lone 1 cell.</li>
+<li>Such a word contains <code>111</code>, which never occurs in a wall stack <code>(10)^p (101)^q</code>. So this is a tape form outside the grammar of §2 (check L3, window hub <code>[21,3,38]</code>, at step 3,010).</li>
+<li>
+<p>The glued wall looks transient. In the exact run from <code>[21,3,38]</code> it appears at step 3,010 (<code>(10)^19 (101)^6 1 (101)^20 (10)^18 &lt;A ...</code>). By step 4,685 the orbit is back in the grammar at the edge-side P-mode frame <code>F_P(−, 17, [1, 4, 0], 39)</code>:</p>
+<ul>
+<li>d = 39 = (2b1 + 1) + ak, with b1 = 10 and ak = 18 at the V1 right end;</li>
+<li>the wall (20, 6) has been absorbed: b1' = 1 + 6/2 and P = 20 − 3.</li>
+</ul>
+<p>The next 6e7 steps never show the glued word again. So a composite rule for the V1 right end with walls probably exists: here ak + 1 = 19 is a level, so it is a Top-like restart whose last wall is the glued one. But it is not written, it is not validated beyond this one run, and the Clean/Level/window cases of the same corner are not explored.
+  - Free runs of 4e9 steps from the δ ∈ {1, 2} hubs <code>[21,3,38]</code>, <code>[25,3,17]</code>, <code>[3003,29,678]</code>, <code>[6101,15,1360]</code> and <code>[6109,15,1361]</code> do not halt (skeptic: 4e9 steps from the δ = 0 hub of the S = 168 family). This round has no rule for these cases.</p>
+</li>
+</ul>
+<h3 id="45-every-unruled-branch-and-what-excludes-it">4.5 Every unruled branch, and what excludes it</h3>
+<p>macro_sim3 raises <code>Unruled</code> exactly in the branches below (this list is the complete set of <code>raise Unruled</code> sites in <code>scripts/macro_sim3.py</code>). "Excluded by" names the clause of H*c4 (§5) or the argument that keeps the orbit out of the branch, and how well that is established:
+- <strong>local</strong>: the clause excludes it at the right end itself, by the definition;
+- <strong>box</strong>: no member of the exhaustive closure boxes (§5.5) reaches it within one traversal, but there is no symbolic proof;
+- <strong>refuted by box</strong>: members of H*c4 reach it, within one or a few traversals, in the wider boxes of skeptic round 2 (§5.5). The clause named does <strong>not</strong> exclude it;
+- <strong>argued</strong>: an argument is written below, but it is not a full induction.</p>
+<table>
+<thead>
+<tr>
+<th>row</th>
+<th>branch (macro_sim3 message)</th>
+<th>where</th>
+<th>excluded by</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U1</td>
+<td>eat of an odd (10)-run (halts)</td>
+<td>§4.1, §4.2</td>
+<td>chunk runs even: H1 (inner a even) + Push1 builds runs from ak + 2 with ak even at walls (§6)</td>
+<td>argued (the "ak even at walls" step is a census fact, G5)</td>
+</tr>
+<tr>
+<td>U2</td>
+<td>eat of chunk with empty run</td>
+<td>§4.1, §4.2</td>
+<td>H0 (every b ≥ 1, inner a ≥ 1); runs only grow</td>
+<td>argued</td>
+</tr>
+<tr>
+<td>U3</td>
+<td>P-mode a0 ≠ 1</td>
+<td>§4.2</td>
+<td>every P-mode frame is built with a0 = 1 (Start, Push1, Absorb)</td>
+<td>argued (by inspection of the rules)</td>
+</tr>
+<tr>
+<td>U4</td>
+<td>RightEndP P &lt; 4 (P &lt; 3, or P = 3 with walls)</td>
+<td>§4.2</td>
+<td>none: it is the next event after a window start with δ ∈ {1, 2}, S even (§4.4), and the window family reaches that start (U17). The P = 2 case at a wall now has a validated rule, RightEndP2W (§4.4, check M1; in <code>scripts/round2.py</code>, not in macro_sim3). P = 3 at a wall gives a V1 right end with walls (U13)</td>
+<td>refuted by box; P = 2 ruled</td>
+</tr>
+<tr>
+<td>U5</td>
+<td>EatLast runs out of P</td>
+<td>§4.2</td>
+<td>CP on long P-mode right ends (the skeptic's P = 23, [1,9,8,1,9] fails CP)</td>
+<td>box</td>
+</tr>
+<tr>
+<td>U6</td>
+<td>EatLast to P = 0 at a wall</td>
+<td>§4.2</td>
+<td>box</td>
+<td>box</td>
+</tr>
+<tr>
+<td>U7</td>
+<td>eat runs out of P at a wall</td>
+<td>§4.2</td>
+<td>box</td>
+<td>box</td>
+</tr>
+<tr>
+<td>U8</td>
+<td>eat_to_edge: chunk exhausted / odd run / bulk finished chunk / P0 = 5 finished chunk after one unit</td>
+<td>§4.2</td>
+<td>box</td>
+<td>box</td>
+</tr>
+<tr>
+<td>U9</td>
+<td>eat_to_edge P0 ∉ {1, ..., 5}</td>
+<td>§4.2</td>
+<td>impossible: P0 = P − 4⌊(P − 2)/4⌋ ∈ {2, 3, 4, 5} for P ≥ 2, and P = 1 is its own row</td>
+<td>proved</td>
+</tr>
+<tr>
+<td>U10</td>
+<td>P-mode stuck</td>
+<td>§4.2</td>
+<td>the branches before it cover every frame with P ≥ 1; P = 0 with X empty is turned into edge mode wherever it is created (Push1, EatLastP, ToEdge2)</td>
+<td>argued (case split of <code>step</code>)</td>
+</tr>
+<tr>
+<td>U11</td>
+<td>V1 with d = 1, Z nonempty</td>
+<td>§4.3</td>
+<td>V1 parity invariant §5.4 (d + P odd when Z is nonempty)</td>
+<td>argued</td>
+</tr>
+<tr>
+<td>U12</td>
+<td>V1 with d = 1, Z empty, p ≤ 0</td>
+<td>§4.3</td>
+<td>CP (the skeptic's P = 1, [1,41,40,1,41] fails CP); otherwise box</td>
+<td>box</td>
+</tr>
+<tr>
+<td>U13</td>
+<td>V1 right end with walls (d = 0 after merging)</td>
+<td>§4.3</td>
+<td>none: it is reached from a window start with δ = 1, S odd (e.g. <code>[3003,29,678]</code>, which a long E member at S = 168 reaches in two steps)</td>
+<td>refuted by box</td>
+</tr>
+<tr>
+<td>U14</td>
+<td>Push1 at an interior wall with p ≤ 0; interior wall with p &lt; 0</td>
+<td>§4.3</td>
+<td>normX glues p = 0 walls; p = −1 is only ever the leftmost wall (it is the collapse wall of a P = 1 right end, which has no walls in front by H0)</td>
+<td>argued</td>
+</tr>
+<tr>
+<td>U15</td>
+<td>absorb reaches an interior wall with p ≤ 0</td>
+<td>§4.3</td>
+<td>as U14</td>
+<td>argued</td>
+</tr>
+<tr>
+<td>U16</td>
+<td>absorb stops at the p = −1 wall</td>
+<td>§4.3</td>
+<td>box</td>
+<td>box</td>
+</tr>
+<tr>
+<td>U17</td>
+<td>window right end</td>
+<td>§4.4</td>
+<td>H2 excludes it at the right end itself. But H2 is not preserved: members reach a window right end in one step (long P: 1 at S = 83, 60 at S = 168, at least 96 at S = 339) or two (long E at S = 168: 60); short members as well (E1w/P1w boxes, 14 members). The start formula is derived (§4.4, L1); δ = 0 is then ruled, δ ∈ {1, 2} goes to U4/U13</td>
+<td>local at the right end; refuted by box for the successor (§8 G2)</td>
+</tr>
+<tr>
+<td>U18</td>
+<td>P-mode right end with walls (only with <code>pmode_walls</code> off)</td>
+<td>§4.4</td>
+<td>the option is on in every run</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>U19</td>
+<td>P-mode right end P &lt; 2 (P &lt; 1, or P = 1 with walls)</td>
+<td>§4.4</td>
+<td>H0 (no walls); P ≥ 1 by construction</td>
+<td>local</td>
+</tr>
+<tr>
+<td>U20</td>
+<td>segment-less hub not clean / with P0 &lt; 2</td>
+<td>§4.4</td>
+<td>H0s</td>
+<td>local</td>
+</tr>
+<tr>
+<td>U21</td>
+<td>right end with no segment / with an empty run</td>
+<td>§4.4</td>
+<td>H0</td>
+<td>local</td>
+</tr>
+<tr>
+<td>U22</td>
+<td>hub a0 &lt; 1</td>
+<td>§4.4</td>
+<td>H1 (a0 odd)</td>
+<td>local</td>
+</tr>
+<tr>
+<td>U23</td>
+<td>top P0 &lt; 0 with walls; top with the p = −1 wall</td>
+<td>§4.4</td>
+<td>H2 (P0 ≥ −1, and P0 = −1 only with m = 1)</td>
+<td>local</td>
+</tr>
+<tr>
+<td>U24</td>
+<td>reflect not clean</td>
+<td>§4.4</td>
+<td>none: 28 members of the wider short boxes reach it within 5 traversals, e.g. <code>[255,35,3]</code> → P252 <code>[1,37,2]</code> → P171 <code>[1,40,77]</code> → <code>[67,85,101]</code> → P2 <code>[1,127,82]</code> (T = 337, n = 679 is a top). The skeptic's free run of 2e9 steps from there does not halt, so a rule for Reflect into a top, a level or a window is missing</td>
+<td>refuted by box (check L7)</td>
+</tr>
+<tr>
+<td>U25</td>
+<td>E-mode top with k = 1 (only with <code>top_k1</code> off); virtual P &lt; 0; virtual loop</td>
+<td>§4.3, §4.4</td>
+<td>the option is on; P ≥ 0 in every virtual frame; the loop removes a wall or ends per pass</td>
+<td>n/a / argued</td>
+</tr>
+<tr>
+<td>U26</td>
+<td>eat runs out of P at the edge (only with <code>eat_to_edge</code> off; listed after skeptic round 2)</td>
+<td>§4.2</td>
+<td>the option is on in every run</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<p>So no unruled branch is excluded by a proof. Each is excluded locally by a clause of H*c4 (and then the question is whether the clause is preserved), or by an argument, or only by the closure boxes. Three rows (U4, U13, U24) and the successor part of U17 are reached by members. The 'box' rows are tested only on the boxes of §5.5, and their counts depend on how those boxes are cut.</p>
+<h2 id="5-invariant">5. Invariant</h2>
+<h3 id="51-hub-coordinates">5.1 Hub coordinates</h3>
+<p>Every right end R without walls (except a segment-less hub) gets a flat sequence z = (z_1, ..., z_2m) and a scale τ.</p>
+<ol>
+<li>Take the walls V of §4.4 in order.</li>
+<li>Add one virtual last pair, the start frame's fresh bouncer:
+   - Clean: (ak − S + 1, S − 1), with τ = S − 1;
+   - Level: (1, ak − 1), with τ = ak − 1;
+   - Top: replace the last pair (p, q) by (p, q + ak), with τ = ak.</li>
+<li>Define the tail sums</li>
+</ol>
+<p><code>B(k) = Σ_{l ≥ k} (−1)^l z_l</code></p>
+<p>so z_2m is counted with sign +.</p>
+<p>"Short" means m ≤ 2, that is, at most one real wall. "Long" means m ≥ 3.</p>
+<p><strong>Lemma T (traversal as a stack process). Status: fitted, not derived.</strong></p>
+<p>Hypotheses (all needed; the skeptic's counterexamples break each one that is dropped):
+- R is an E hub or a P-mode right end, with no walls;
+- R is Clean or Top. A Level right end with ≥ 2 real walls is excluded: <code>[35,13,30,14,18,2,40]</code> has B(3), B(5), B(7) ≥ 0 and still ends its traversal in a P-mode right end with a wall;
+- every restart at a wall has P odd, so the bouncer pushes or merges and never absorbs. This holds when every real wall is even/even, which is H1 (a0 odd, inner a even); a P-mode right end's collapse wall is odd/odd and gives a P-even restart, which absorbs. So in P-mode the statement covers the walls after the first one only.</p>
+<p>Statement. Write Δ = d − P. During the left traversal of the walls:
+- at a wall with Δ ≥ 1, Push stores a chunk with Δ − 1 triples and restarts with δ_i = q_i − p_i + 1;
+- with Δ ≤ 0, BounceP runs d down and the top chunk is merged or eaten.</p>
+<p>The running sum is T_i = 1 + B(2i − 1). Hence:
+- B(odd k ≥ 3) ≥ 0 means the traversal does not end while walls remain;
+- B(1) &lt; 0 means the traversal ends in a P-mode right end (a collapse).</p>
+<p>What is derived. The push step is derived from the rules: at P = 3 BounceP31 leaves d − 2 at V1, and Push1 stores d − 4 = Δ − 1 triples (§4.3). The restart value δ = q − (p − 1) is read off Push1. The merge step is a tape identity. What is not derived is the accounting through eats (EatChunkP changes P by 4B + 2A, which must cancel against the chunk's contribution to the B sums), and the identity T_i = 1 + B(2i − 1) as a whole. That is gap G2.</p>
+<h3 id="52-hc4-scriptsinv4py-hc4">5.2 H*c4 (scripts/inv4.py <code>Hc4</code>)</h3>
+<p>H*c4 is H*c3 (stage seed_clause) with three repairs, one new clause and a total implementation. H*c3's own clauses are listed first.</p>
+<p><strong>H*c2</strong> (scripts/hubinv_Hc3.py <code>Hc</code>):</p>
+<table>
+<thead>
+<tr>
+<th>clause</th>
+<th>statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H0s</td>
+<td>segment-less E hub [a]: clean, and P0 = a − Sof(a) − 1 ≥ 2</td>
+</tr>
+<tr>
+<td>H0</td>
+<td>no walls at the right end; every b_i ≥ 1; every inner a_i ≥ 1</td>
+</tr>
+<tr>
+<td>H1</td>
+<td>inner a_i even. E hub: a0 odd, unless Top with k = 1. P-mode: a0 = 1, and P odd, unless P = 2, or Top with k = 1, or an absorb start (not Top, P0 even, k = 1)</td>
+</tr>
+<tr>
+<td>H2</td>
+<td>ak is not a window value. P0 := z_{2m−1} − 1 ≥ −1, and P0 = −1 only when m = 1. P0 even and ≥ 2 implies m ≤ 2</td>
+</tr>
+<tr>
+<td>H3 + H3d</td>
+<td>0 ≤ B(k) ≤ 2τ for lo ≤ k ≤ 2m − 1 (lo = 2 for an E hub that is not an absorb start, else 3), except at most one position with B(k) ∈ {−1, 2τ + 1}</td>
+</tr>
+<tr>
+<td>HR (zipper)</td>
+<td>for k from 1 (E) or 3 (P) up to 2m − 4 (Clean/Level) or 2m − 3 (Top), with e = B(k+1) mod 2: k even ⇒ B(k) = 2B(k+1) + 4 + e; k odd ⇒ B(k) = 2B(k+1) − 2τ − 4 − e</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Added in H*c3</strong> (scripts/seed_clause.py):</p>
+<table>
+<thead>
+<tr>
+<th>clause</th>
+<th>statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CW</td>
+<td>P-mode with P odd: m ≥ 2 and B(2) = 2τ + 3 + (B(3) mod 2)</td>
+</tr>
+<tr>
+<td>PE</td>
+<td>P-mode with P even, P ≠ 2: B(2) ≥ 2τ + 3</td>
+</tr>
+<tr>
+<td>SB</td>
+<td>P-mode, P odd, m = 2, z_3 − 1 odd: B(1) + 4 z_3 ≤ −6, or B(1) + z_3/2 ≥ 1, or t' = B(2) + z_3/2 is not clean or has t' − Sof(t') even</td>
+</tr>
+<tr>
+<td>EB</td>
+<td>short R: along the chain of at most 3 consecutive P-mode right ends that follows, no P-even end outside the H1 exceptions, and every short member satisfies the clauses above</td>
+</tr>
+<tr>
+<td>Hs_4</td>
+<td>short R: the next ≤ 4 short successors (up to the first long one) are ruled and satisfy the clauses above</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Changed or added in H*c4</strong> (skeptic round 1):</p>
+<table>
+<thead>
+<tr>
+<th>clause</th>
+<th>statement</th>
+<th>why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H2t' (replaces H2t)</td>
+<td>Top with m ≥ 2: the merged tail T = z_2m = q_m + ak is clean at level ak + 1, that is ak + 1 &lt; T &lt; 2(ak + 1) − 1 (then T is not a level either)</td>
+<td>the old H2t asked only Sof(T) = ak + 1, which lets T be a window value or a level. <code>[9,20,24,2,24,20,39]</code> satisfied it, and its next right end <code>[73,4,40,12,4,12,79]</code> is a window (unruled one traversal later)</td>
+</tr>
+<tr>
+<td>HL (new)</td>
+<td>no Level right end with m ≥ 3</td>
+<td>long Level hubs break Lemma T (§5.1). They are not produced: 0 of 4,001 right ends from blank, 0 on orbits</td>
+</tr>
+<tr>
+<td>CP (new)</td>
+<td>every long P-mode right end (m ≥ 3) has P = 2B(3) − 2τ + 3, that is z_1 = 2B(3) − 2τ + 1</td>
+<td>in H*c3, P was a free parameter of long P-mode right ends, and 118,034 of 726,432 box members leaked. With CP: 0 of 15,707 at S ≤ 40</td>
+</tr>
+<tr>
+<td>total</td>
+<td>a window or unruled successor inside EB or Hs_4 is a reject, not an exception. Round 2: a degenerate tuple (a0 &lt; 1, ak &lt; 1, a negative entry, or P &lt; 0) is rejected up front as 'H0 degenerate right end'</td>
+<td>Hc3 raised TypeError on 181 of 544,000 short hubs, e.g. <code>[12,2,2]</code>. Round 2: Hc4 raised ValueError from <code>Sof</code> on ak ≤ 0 and on the segment-less hub [0] (3,883 of 60,000 fuzzed tuples). Check J2b: 0 exceptions on 60,000 fuzzed tuples</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What the CP sketch shows, and what it does not.</strong> CP is <strong>fitted</strong>. The sketch below does not derive it: it shows only that, given Lemma T, CP is equivalent to H1 (P odd) at the successor. That is not enough, because H1 at the successor is part of what closure has to prove.</p>
+<p>A long P-mode right end is the image of a long E hub R0 under a collapse; on orbits every one of them has an E-hub predecessor (2,051/2,051). Three facts enter:
+1. The traversal of R0 ends at its first wall (a0 − 1, 2b1), which restarts with P = a0 − 2. If Lemma T holds there (T_1 = 1 + B0(1) &lt; 0), BounceP and a final RightEndP consume all the remaining triples, so P' = −B0(1) − 1 − r with r = (final d) mod 2.
+2. The other walls move one position right and are reflected, as in a growth step: B'(3) = 2τ − B0(2).
+3. HR at k = 1 for R0 gives B0(1) = 2B0(2) − 2τ − 4 − e0, with e0 = B0(2) mod 2 = B'(3) mod 2.</p>
+<p>Substituting gives</p>
+<div class="highlight"><pre><span></span><code>P' = 2B'(3) − 2τ + 3 + e0 − r
+</code></pre></div>
+
+<ul>
+<li>If r = e0, this is CP, and P' is odd.</li>
+<li>If r ≠ e0, the same algebra gives an even P', which breaks H1.</li>
+</ul>
+<p>So, given Lemma T, CP ⟺ (r = e0) ⟺ H1 at the successor. An earlier version picked r = e0 <em>because</em> P' is odd, which is circular (skeptic round 2).</p>
+<p>What a derivation needs:
+- r, the parity of the final d, computed from the traversal itself (the BounceP / RightEndP count at the first wall);
+- Lemma T at the first wall (step 1), which is itself fitted (§5.1).</p>
+<p>Neither is done. As a fitted fact, CP holds on 2,051/2,051 long P-mode right ends on orbits (blank + 400 rnd_R orbits; check J3 re-checks 1,599/1,599 on another seed).</p>
+<h3 id="53-what-is-proved-about-closure">5.3 What is proved about closure</h3>
+<ol>
+<li><strong>Zipper swap (proved; check H1, exact identity).</strong> Suppose B'(k) = 2τ − B(k−1) on a range. Then the even-k zipper relation for B' at k is equivalent to the odd-k relation for B at k − 1, and vice versa. The parities agree because B'(k+1) ≡ B(k) (mod 2). For example,</li>
+</ol>
+<p><code>B'(k) = 2B'(k+1) + 4 + e
+   ⟺ 2τ − B(k−1) = 4τ − 2B(k) + 4 + e
+   ⟺ B(k−1) = 2B(k) − 2τ − 4 − e</code></p>
+<p>So a growth step G preserves HR on the shifted range. This algebra is the easy part. The hard part is that the growth step has this form at all, which is item 3.
+2. <strong>Band under G (proved, given item 3).</strong> If 0 ≤ B ≤ 2τ, then 0 ≤ 2τ − B ≤ 2τ. A unit defect −1 ↔ 2τ + 1 is carried one position deeper, which is clause H3d.
+3. <strong>Growth step G (fitted, not derived).</strong> z' = [h] + z, with the tail re-paired, B'(k) = 2τ − B(k−1) for 2 ≤ k ≤ 2m − 1, and new head h = 5 + B(1) − e with e ∈ {0, 1}. Needs B(1) ≥ 0. 352/352 growth transitions in check H2; 1,329/1,329 from blank (hubinv_bsums.py). Derivation needs Lemma T.
+4. <strong>Collapse C (fitted).</strong> B(1) &lt; 0: the head entry is replaced by the odd collapse wall (P − 2, 2b1 + 1). CW is the closed form of its B(2): 47,668/47,668 in the seed_clause stage. CP (§5.2) pins P.
+5. <strong>Short transitions S (fitted).</strong> Closed forms:
+   - First collapse of a short E hub: B'(1) = B(1) + 2τ + 6 + 2r.
+   - A short P-odd end goes to the E hub [a0', (P−1)/2, B(2) + z_3/2] (2,521/2,521).
+   - Second collapse: v1 = b1, which forces b1 odd (3,538/3,538).
+   - These are fits on the macro map. They are not derived, and they do not yet add up to an inductive clause (§8 G1).</p>
+<h3 id="54-v1-parity-invariant-excludes-v1-with-d-1-and-z-nonempty-status-induction-over-the-4-rules-conditional-on-h1-at-every-right-end">5.4 V1 parity invariant (excludes "V1 with d = 1 and Z nonempty"). Status: induction over the §4 rules, conditional on H1 at every right end.</h3>
+<p><strong>Claim.</strong> At every P-mode frame with walls (X nonempty, including V1/V0):
+- (a) every chunk in Z has an even triple count c, except possibly the deepest one;
+- (b) if Z is nonempty, d + P is odd;
+- (c) if P is even, Z is empty.</p>
+<p><strong>Wall parities (the hypothesis).</strong> Every wall of X is a wall of some earlier right end's list V (§4.4), possibly glued by normX. Under H1 at that right end:
+- an E hub gives the walls (a0 − 1, 2b1) and (a_{i−1}, 2b_i), all even/even (a0 odd, inner a even);
+- a P-mode right end gives its collapse wall (P − 2, 2b1 + 1) first. That wall is odd/odd for P odd but <strong>even/odd for P even</strong>. The rest are even/even;
+- normX glues a p = 0 wall onto its left neighbour and adds an even q = 2b_i, so it keeps both parities.</p>
+<p>By H0 the right end has no walls in front, so the collapse wall is always the <strong>leftmost</strong> wall. Hence every wall that is not leftmost is even/even. (Round 1 claimed p ≡ q for every wall; that is false for the even/odd collapse wall, as the skeptic noted. The claim is used below only for walls that are not leftmost.)</p>
+<p><strong>Induction over the rules that act on a P-mode frame with walls.</strong></p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>effect on (a), (b), (c)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>start frames (Clean, Level, Top, Window)</td>
+<td>Z is empty, so (a) and (b) hold trivially. (c) holds as well</td>
+</tr>
+<tr>
+<td>BounceP, BounceP31</td>
+<td>P and d both drop by 2k: d + P keeps its parity, Z is unchanged</td>
+</tr>
+<tr>
+<td>merge (d = 0)</td>
+<td>d becomes c, so d + P changes parity by c. If c is odd, the chunk is the deepest one by (a), so Z is empty afterwards</td>
+</tr>
+<tr>
+<td>EatChunkP</td>
+<td>P drops by 4B + 2A (even), d goes from 1 to c + 1: parity changes by c, as for merge</td>
+</tr>
+<tr>
+<td>EatLastP, RightEndP, V1RightEnd</td>
+<td>Z is empty afterwards</td>
+</tr>
+<tr>
+<td>Push1 at a wall that is not leftmost</td>
+<td>the pushed chunk has c = d − 2. If Z was nonempty, d + P = d + 1 is odd by (b), so d and c are even. If Z was empty, the new chunk is the deepest. The restart has P = p − 1 and d = q, with p, q even: P is odd and d + P is odd, so (b) and (c) hold</td>
+</tr>
+<tr>
+<td>Push1 / Push1Edge at the leftmost wall</td>
+<td>afterwards X is empty, so there is nothing to prove</td>
+</tr>
+<tr>
+<td>Push1End</td>
+<td>Z was empty; the new chunk (c = 0) is the only one. Restart as for Push1</td>
+</tr>
+<tr>
+<td>Absorb, Absorb0</td>
+<td>they start at P ∈ {0, 2}, so Z is empty by (c); Z stays empty</td>
+</tr>
+</tbody>
+</table>
+<p>Hence, at V1 with Z nonempty, d + 1 is odd, so d is even and d ≠ 1, and U11 never fires.</p>
+<p><strong>Status.</strong> This is now an induction over the rules. It still rests on H1 at every right end, which is exactly the closure that is open (G1, G2). The rows were also checked on frames: 127,020 frames with walls and Z nonempty (v1d1_parity.py).</p>
+<p><strong>"ak even at Push1" (§6).</strong> This is a different statement, and it is <strong>not</strong> derived. EatChunkP adds B (the number of six-blocks in the eaten chunk) to ak, and nothing above makes B even. It stays a census fact: parity census, 0 exceptions to 1e12 steps (G5).</p>
+<h3 id="55-closure-evidence-exhaustive-back-solved-boxes-scriptsinv4py-scriptsround2py-checks-k1-k6-l4-l7">5.5 Closure evidence: exhaustive back-solved boxes (scripts/inv4.py, scripts/round2.py; checks K1-K6, L4-L7)</h3>
+<p>The round-0 closure tests drew their right ends from random generators (rnd_R, rnd_short). rnd_R makes only clean/top E hubs at levels ≥ 19, with clean top tails, so it never produced the counterexamples above. The boxes below are exhaustive within their bounds instead.</p>
+<p>How a long box is built:
+- Take every tail of z at the given levels: for Clean and Level the last four entries, for Top the last three, with all even values up to 2τ + 4.
+- Extend the tail towards the head by the zipper relations (HR), one entry at a time, to every even length up to 2 · MMAX + 2 (MMAX = the pair bound below).
+- Read the right end off z. For P-mode, z_2 comes from CW and P from CP.
+- Keep the members of H*c4, run one traversal on macro_sim3, and test H*c4 at the next right end.</p>
+<p>Short boxes are plain grids, with the bounds given in the table. Every row is a one-step test. <strong>Leak counts are lower bounds</strong>: a box with other bounds can only find more. Round 1 reported a short E box with a0 ≤ 80, b1 ≤ 40, ak ≤ 170 (232,794 members, 3 leaks) and a short P box with P ≤ 80 (36,043, 0 leaks). Neither had a saved log or a check, so both rows are withdrawn and replaced by K4 and L6.</p>
+<table>
+<thead>
+<tr>
+<th>box (bounds)</th>
+<th>check</th>
+<th style="text-align: right;">members</th>
+<th style="text-align: right;">leaks (lower bounds)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>long E, S ∈ {3, 8, 19, 40}, ≤ 8 pairs</td>
+<td>K1</td>
+<td style="text-align: right;">22,877</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>long E, S = 83, ≤ 8 pairs</td>
+<td>K3</td>
+<td style="text-align: right;">181,934</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>long E, S = 168, ≤ 8 pairs</td>
+<td>L5</td>
+<td style="text-align: right;">1,516,903</td>
+<td style="text-align: right;">0 in one step; 60 reach a window in two (skeptic; one example in L5b)</td>
+</tr>
+<tr>
+<td>long P (CP), S ∈ {3, 8, 19, 40}, ≤ 6 pairs</td>
+<td>K2</td>
+<td style="text-align: right;">15,707</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>long P (CP), S = 83, ≤ 6 pairs</td>
+<td>K6</td>
+<td style="text-align: right;">128,043</td>
+<td style="text-align: right;">1 (window)</td>
+</tr>
+<tr>
+<td>long P (CP), S = 168, ≤ 6 pairs</td>
+<td>L4</td>
+<td style="text-align: right;">1,079,332</td>
+<td style="text-align: right;">60 (window)</td>
+</tr>
+<tr>
+<td>long P (CP), S = 339, ≤ 6 pairs, clean tails with ak ∈ [2S − 6, 2S − 2] and all top tails</td>
+<td>skeptic script t10, re-run this round (<code>scripts/round2_box339_rerun.txt</code>)</td>
+<td style="text-align: right;">4,649,851</td>
+<td style="text-align: right;">96 (window)</td>
+</tr>
+<tr>
+<td>short E [a0 ≤ 80, b1 ≤ 20, 1 ≤ ak ≤ 40]</td>
+<td>K4</td>
+<td style="text-align: right;">21,325</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>short E [a0 ≤ 401, b1 ≤ 40, 2 ≤ ak ≤ 90] (E1w)</td>
+<td>L6</td>
+<td style="text-align: right;">445,843</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr>
+<td>short P [1, b1 ≤ 40, 2 ≤ ak ≤ 90], P ≤ 301 (P1w)</td>
+<td>L6</td>
+<td style="text-align: right;">108,831</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td>Pt1: P-mode top, one real wall, S ∈ {8, 19, 40, 83}, P odd ≤ 6τ + 39 (z_2 from CW) or P = 2 with b1 &lt; 3τ</td>
+<td>L6</td>
+<td style="text-align: right;">1,202,119</td>
+<td style="text-align: right;">450</td>
+</tr>
+<tr>
+<td>Et1: E top, one real wall, S ∈ {8, 19, 40, 83}, a0 at the zipper value ± 2</td>
+<td>L6</td>
+<td style="text-align: right;">143,766</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Eseg: segment-less E hubs [a], a &lt; 3000</td>
+<td>L6</td>
+<td style="text-align: right;">2,937</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>from blank, 4,001 right ends</td>
+<td>G1</td>
+<td style="text-align: right;">4,001 in H*c4</td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<p>What the rows show:
+- The long E boxes give 0 one-step leaks up to S = 168. The skeptic also ran members for many traversals: 22,877 E and 15,707 P at S ≤ 40 for 40 traversals.
+- The long P boxes leak, and the leaks grow with the level (1, 60, ≥ 96). That is the window family of §8 G2.
+- The short boxes leak as soon as a0 and P are no longer cut at 80, and the Pt1 kind, absent in round 1, leaks the most (§8 G1).</p>
+<h2 id="6-progress-and-halting">6. Progress and halting</h2>
+<p><strong>Progress.</strong> Every rule of §3-§4 is a run of ≥ 1 step: BounceE ≥ 10 steps per trip, BounceP ≥ 22, every event gadget ≥ 1.</p>
+<p>A traversal from one right end to the next is a finite chain of rules:
+- every P-mode rule strictly decreases the left material L = P + Σ (p_i + q_i) (BounceP, Eat*P: P drops; Push1/Push1End/Absorb: walls are removed and P becomes p − 1 or p_J), or ends the traversal;
+- every edge-mode rule strictly decreases the right material d + Σ chunk sizes (merging is a tape identity), or ends at a right end;
+- edge mode never returns to P-mode before the next right end.</p>
+<p>So (mode, L, right material) decreases lexicographically, and P-mode comes first.</p>
+<p><strong>Halting needs <code>B&gt; 0 0 1</code></strong> (check A3). D is entered only by C0 and F0.
+- F is entered only by C1, which writes the 0 that F0 then sends D onto.
+- C0 returns D onto the 0 that A1 just wrote.
+- The only other entry to C is B0.</p>
+<p>So every halt is B0, C0, D1: B reads 0, C reads the next 0, and D reads the following 1.</p>
+<p>Every rule of §3-§4 is an exact run, so a rule never reads <code>B&gt; 001</code>. In the grammar the pattern comes up only when the right sweep enters a chunk on the odd alignment, that is, when it eats an odd <code>(10)</code>-run that is not at the tape end (I1: 30/30 such frames halt). H1 (inner a even) and §5.4 keep every chunk's <code>(10)</code>-runs even:
+- Push1 builds them from inner a's and ak + 2. That these runs are even needs "ak is even whenever Push1 fires at a wall". This is a census fact (parity census, 0 exceptions to 1e12 steps), not derived, and not a local parity fact: eats with an odd six-block count flip ak (75 of 163 eats from blank). It is part of G5.
+- EatLast handles the one odd last run that sits at the tape end.</p>
+<p>So "no halt" reduces to: the orbit stays inside the ruled domain (every step is a rule of §4) — which is exactly the closure of the invariant. Without the closure (G1, G2), the halting argument is incomplete. The window family (§4.4) already leaves the ruled domain, so the rule set itself has to grow before an invariant can close.</p>
+<h2 id="7-initial-segment">7. Initial segment</h2>
+<div class="highlight"><pre><span></span><code>0^inf A&gt; 0^inf  -&gt;(46,734)  K0 = 0^inf &lt;A (10)^85 (011010)^7 (10)^46 0^inf
+</code></pre></div>
+
+<p>This is a direct computation: check F1 finds K0 as a left-turn frame at exactly step 46,734.</p>
+<p>From K0, macro_sim3 and exact simulation agree:
+- F2: the first 104 macro frames in order, to 6e7 steps;
+- earlier stages: 278/278 frames to 1.02e12 (macro_vs_census.py), and 383 right ends on short-seed orbits (seed_e2e.py).</p>
+<p>K0 satisfies H*c4, and so do the first 4,001 right ends of its orbit (<code>scripts/inv4_blank_4000.txt</code>; check G1 re-checks 2,001; runs up to about 10^4000 cells). In the skeptic's census these 4,001 right ends contain 0 Level right ends and 0 P-mode right ends with walls.</p>
+<h2 id="8-gaps-why-this-is-not-a-proof">8. Gaps (why this is not a proof)</h2>
+<p>After skeptic round 2 the gaps are of two kinds:
+- <strong>two fatal gaps</strong>, where the invariant is not inductive and no candidate repair is known (G1, G2);
+- <strong>major gaps</strong>: unruled branches that members reach (G3), and derivations that are still fits or arguments (G5).</p>
+<p>All leak counts below are <strong>lower bounds</strong>. They depend on how the boxes were cut (§5.5 states every bound).</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>gap</th>
+<th>severity</th>
+<th>what would close it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G1</td>
+<td><strong>No inductive invariant for short right ends</strong> (≤ 1 real wall). H*c4 handles them with the look-ahead clause Hs_4 plus EB/SB, and that clause is not inductive. One-step leaks of H*c4 members: 3 in K4 (a0 ≤ 80, b1 ≤ 20, ak ≤ 40); ≥ 110 in E1w (a0 ≤ 401, b1 ≤ 40, ak ≤ 90), e.g. <code>[87,12,24]</code> → P = 49 <code>[1,19,24,3,18]</code>; ≥ 12 in P1w (P ≤ 301); ≥ 450 in Pt1 (P-mode top with one real wall, a kind missing from the round-1 boxes), e.g. P = 89 <code>[1,40,40,1,39]</code>, whose 5th right end P = 32 <code>[1,178,340]</code> has P even. Et1 and Eseg show 0 leaks on their boxes. Runs of consecutive short right ends reach 44 (blank) and 46 (rnd_R) in a row, so no fixed look-ahead depth can be inductive.</td>
+<td>fatal</td>
+<td>Explicit linear and congruence clauses for every short kind (Ec1, El1, Et0, Et1, Pc1, Pt0, Pt1, the P-even kinds, Eseg), tested on boxes whose a0 and P bounds come from the band (about 6τ), including the top kinds. First data: the short regime looks like a second zipper (Ec1 from Et0/Pet0 satisfy the k = 1 zipper exactly). No such clause set is known.</td>
+</tr>
+<tr>
+<td>G2</td>
+<td><strong>The window family: long right ends are not closed either.</strong> Members of H*c4 reach window right ends. Counts: 1 long P member at S = 83 (K6); 60 of 1,079,332 at S = 168 (L4); at least 96 at S = 339 (skeptic, restricted box); 60 long E members at S = 168 in two steps (L5b). The window values are 2S' − 1, 2S' and 2S' + 1 (δ = 0, 1, 2). This round derives the window start (§4.4, L1), and with it δ = 0 is mostly ruled. It also adds one validated corner rule, RightEndP2W (P = 2 at a wall, M1), which rules δ = 1 for S even. The rest runs into a V1 right end with walls (U13): δ = 1 for S odd, δ = 2, and δ = 0 after a Push1End with two or more walls. That right end's restart writes a left word outside the grammar (L3). The machine does not halt there (skeptic: 4e9 steps from a window hub).</td>
+<td>fatal</td>
+<td>Rules for RightEndP with P ∈ {2, 3} at a wall and for the V1 right end with walls, which need a new tape form (a wall glued to a lone 1). Then an invariant that admits window right ends and these frames. Or a clause that excludes the family, re-run on the S = 168 and S = 339 boxes. Neither exists. Lead: in the one δ = 1 run followed (<code>[21,3,38]</code>), the glued word appears at step 3,010, and by step 4,685 the orbit is back at <code>F_P(−, 17, [1,4,0], 39)</code> (§4.4). So composite rules for this corner probably exist.</td>
+</tr>
+<tr>
+<td>G3</td>
+<td><strong>Rows of §4.5 that are reached by members.</strong> U4, U13 (window family), U24 (Reflect into a top: <code>[255,35,3]</code> within 4 traversals, 28 members of the wider short boxes, L7), and the successor part of U17. The other "box" rows (U5-U8, U12, U16) are tested only on the boxes of §5.5.</td>
+<td>major</td>
+<td>as G1/G2; for U24, a rule for Reflect when n is a top, a level or a window</td>
+</tr>
+<tr>
+<td>G4</td>
+<td>The derivations of the event gadgets in §4 are by validated composition (E1/E2), not written step by step.</td>
+<td>minor</td>
+<td>finite gadgets around §3 lemmas; <code>es</code> should find them in Rocq</td>
+</tr>
+<tr>
+<td>G5</td>
+<td><strong>Fitted, not derived.</strong> Lemma T (§5.1, including the eat accounting); the growth step G, the collapse C and the short closed forms (§5.3); CP, whose sketch is only an equivalence with H1 at the successor (§5.2). "ak even whenever Push1 fires" (§6) is a census fact. It is also not a local parity fact: from blank, 75 of 163 EatChunk events eat a chunk with an odd number of six-blocks, which flips ak. The V1 parity invariant (§5.4) is now an induction over the rules, conditional on H1.</td>
+<td>major</td>
+<td>Derive Lemma T by induction over the wall list (push, merge, eat), then G, C, and r (the final-d parity) for CP from it. Derive "ak even at Push1" from a trip count. All of these sit on top of G1/G2.</td>
+</tr>
+<tr>
+<td>G6</td>
+<td>Hc4 raised ValueError on degenerate tuples (ak ≤ 0, <code>[0]</code>).</td>
+<td>minor, <strong>fixed</strong></td>
+<td><code>inv4.degenerate</code> rejects them up front; J2b: 0 exceptions on 60,000 fuzzed tuples</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Confidence.</strong> The mechanism is understood. The macro rules are sound where they apply: independently re-checked on 422,018 right-end transitions (2.6e10 steps), plus 400 transitions of the new kinds (1.0e8 steps), all matched by exact simulation. Every free run from a leak point (window hubs, the U24 chain, the <code>[79,12,32]</code> chain) runs on without halting, so non-halting is very likely.</p>
+<p>As a proof, though, this is <strong>stuck</strong>. The invariant has now failed two independent reviews. Each repair moved the leaks to larger boxes; it did not remove them:
+- round 1: four fatal gaps;
+- round 2: the window family grows with the level, and the short regime leaks once its boxes are cut from the band.</p>
+<p>What is missing is not a calculation. It is an inductive invariant in a vocabulary that includes the window frames and the short regime. No pseudo-random arithmetic has appeared, so this is not a cryptid.</p>
+<h2 id="9-evidence-check_proofpy">9. Evidence: check_proof.py</h2>
+<p><code>check_proof.py</code> prints PASS / FAIL for claims and OPEN for measured gaps; SUMMARY counts only PASS/FAIL and lists the OPEN lines. Log: <code>check_proof_full.txt</code> (sections A-L in one run: 36 checks, 0 fail, 11 OPEN; section M, added during that run, run on its own: 2 checks, 0 fail, 1 OPEN).</p>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>content</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1-A3</td>
+<td>TM5 renaming; one undefined transition; every 2-step history before D1 is B0, C0</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>B1-B2</td>
+<td>6 shift rules (single block and n-fold); right turn T1</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>C1-C4</td>
+<td>P(a) exactly on levels (a ≤ 130); P(S) for S ≤ 1400 in 4 contexts; Inc1/Incs1 (204); Start gadget (49)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>D1-D2</td>
+<td>BounceE 5,860 and BounceP 11,620 instances (exhaustive box with values 1-3, both alignments of Z, with/without walls, + random up to 300): next frame and exact step count</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>E1</td>
+<td>every frame of the box (X ≤ 2 walls, P ≤ 6, Y ≤ 2 segments, d ≤ 5, 5 Z shapes, edge a0 ∈ {1, 2, 3, 5}): 61,931 ruled frames, exact run visits the next 3 macro frames in order, 0 misses; 38 of macro_sim3's 41 non-bounce event names occur</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>E2</td>
+<td>715 random frames (values ≤ 60) plus targeted EatChunkP / EatLast / V1 d = 1 frames; adds the other 3 names (EatChunkP, EatLastP, V1RightEnd), so all 41 are exercised</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>E3</td>
+<td>60 negative controls (target ak + 1) never reached</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>F1-F2</td>
+<td>initial segment 46,734 steps; 104 macro frames from K0 in order</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>G1</td>
+<td>H*c4 at 2,001 right ends from blank</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>G2-G3</td>
+<td>rnd_R long orbits and rnd_short seeds × 20 traversals, H*c4 (narrow generators; supporting evidence only)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>H1-H2</td>
+<td>zipper swap identity (51,250 cases incl. 1e30 range); growth identity and e ∈ {0, 1} on 352 transitions</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>I1</td>
+<td>30/30 frames that eat an odd (10)-run halt</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>J1</td>
+<td>the skeptic's six counterexamples are in H*c3 and rejected by H*c4 (H2t', HL, HL, CP, CP, CP)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>J2</td>
+<td>Hc4 is total on 8,448 short right ends (Hc3 raised TypeError on 12 of them)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>J2b</td>
+<td>Hc4 is total on 60,000 fuzzed tuples, degenerate ones included (G6)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>J3</td>
+<td>CP on every long P-mode right end of blank + 300 rnd_R orbits (1,599/1,599)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>K1-K3</td>
+<td>exhaustive boxes: long E S ≤ 40 (22,877/22,877), long P S ≤ 40 (15,707/15,707), long E S = 83 (181,934/181,934)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>K6</td>
+<td>long P box S = 83: 128,042/128,043; the leak is the first member of the window family (G2)</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>K4</td>
+<td>short E box (a0 ≤ 80, b1 ≤ 20, ak ≤ 40): 3 leaks; the wider boxes of L6 find more (G1)</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>K5</td>
+<td>the chain from <code>[79,12,32]</code> reaches a P-mode right end with walls</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>L1</td>
+<td>window right ends (S ≤ 83, every δ, E and P-mode, 1-2 segments): the Clean start formula, exact</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>window start + existing rules, exact for 3 events wherever ruled</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>L2b</td>
+<td>the unruled window cases: δ ∈ {1, 2} (RightEndP P ≤ 3 at a wall, V1 right end with walls), and δ = 0 after a Push1End</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>the δ = 1 window hub <code>[21,3,38]</code> writes <code>(101)^q 1 (101)^r</code>, outside the grammar</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>L4</td>
+<td>long P box S = 168 (≤ 6 pairs): the window family</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>L5</td>
+<td>long E box S = 168 (≤ 8 pairs): one-step closure</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>L5b</td>
+<td>two-step window leak from a long E member at S = 168</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>L6</td>
+<td>short kinds on wider boxes: Et1 and Eseg close (pass); E1w, P1w, Pt1 leak</td>
+<td>pass / OPEN</td>
+</tr>
+<tr>
+<td>L7</td>
+<td><code>[255,35,3]</code> reaches the unruled "reflect not clean" (U24)</td>
+<td>OPEN</td>
+</tr>
+<tr>
+<td>M1-M2</td>
+<td>RightEndP2W (P = 2 at a wall = RightEndP to P = 0 + Absorb0), exact for 2 events on 251 of 300 random frames (the rest hit an unruled event later); negative control</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>window hubs with WindowStart + RightEndP2W: only the V1 right end with walls (and P = 3 at a wall, which leads to it) stays unruled</td>
+<td>OPEN</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-lemma-plan-rocq">10. Lemma plan (Rocq)</h2>
+<p><strong>Machine part.</strong> Copy FractalType4.v TM5:
+- rename the states, set <code>tm</code> to this string;
+- <code>S1</code>, <code>Inc1</code>, <code>Incs1</code>, <code>P</code>, <code>P_S</code> and <code>P_S'</code> carry over verbatim; <code>P0</code>/<code>P3</code> by <code>es</code>.
+- Add <code>P_level : forall j, P (S j)</code> by induction on j, with the case split S_j even (P_S') or odd (P_S).</p>
+<p><strong>Bouncer part</strong> (FractalType7v4 style):
+- <code>Definition F_P X P Y d Z</code> / <code>F_E Y d Z</code> as tape builders. Y and Z are lists of exponents. Use <code>&lt;*</code> for X and <code>*&gt;</code> for Y and Z, as in FractalType7v4's <code>C x d r</code> / <code>E t</code>.
+- Trip lemmas by <code>es</code> on the generic block lists: an <code>Inc</code>-style lemma per trip, then <code>Incs</code> by <code>ind</code>.
+- Each §4 event is a lemma: <code>es</code> plus <code>follow</code> of the trip lemmas. The P-mode/V1/V0 events take the walls as a list argument. Absorb0 is a <code>Fixpoint</code> over walls with a carry, proved by induction on the wall list.
+- The right-end lemmas use <code>P_level</code> + Start + the right sweep.</p>
+<p><strong>Abstract part.</strong> A record <code>R</code> for right ends with a <code>next : R -&gt; R</code> function, the composite of the §4 rules (macro_sim3's <code>step</code> iterated to the next right end). Then:
+- <code>Lemma next_spec : Inv R -&gt; conf R --&gt;+ conf (next R)</code>;
+- <code>Lemma Inv_next : Inv R -&gt; Inv (next R)</code>, which needs G1 and G2 first (no inductive <code>Inv</code> exists yet, and <code>next</code> is not total on H*c4: the window family reaches unruled frames);
+- <code>nonhalt</code> via <code>progress_nonhalt_cond</code> with <code>Inv</code>, plus an <code>esx</code> init of 46,734 steps to K0 (about 0.6 of kill #3's 78,710-step init).</p>
+<p>Following rocq-notes, any parameter search (polyhedra for the short-regime clauses) stays native; Rocq checks only the final case list. Formalization should not start before G1 and G2 are closed: the look-ahead Hs_K cannot be the <code>Inv</code> of <code>progress_nonhalt_cond</code>, and the window family needs rules for frames outside the grammar of §2 before any <code>Inv</code> can be stated.</p>
+<p>Nearest templates:
+- TM5 (FractalType4.v) for the staircase;
+- TM20 (FractalType7v4.v) for the <code>Good</code>/<code>Inv</code> architecture, about 7 of 11 transitions apart. Its rules do not transfer.</p>
+<h2 id="review-log">Review log</h2>
+<ul>
+<li>2026-10-12 (stage informal_proof, first version):</li>
+<li>Wrote this file from the stages deepen … seed_clause (notes.md).</li>
+<li>New in this stage:<ul>
+<li>the explicit shift rules and the TM5 identification (TM5 is this table started in B; P(a) holds exactly on the levels);</li>
+<li>the local halting pattern <code>B&gt; 0 0 1</code>;</li>
+<li>the soundness check of the whole macro rule set on an exhaustive small box (E1);</li>
+<li>the algebraic zipper swap.</li>
+</ul>
+</li>
+<li>Self-review findings:<ul>
+<li>(1) The first draft of check C3 used the wrong renamed state in <code>S1</code> (<code>&lt;C</code> for TM5's <code>&lt;{{A}}</code>); fixed to <code>&lt;B</code>, and it passes.</li>
+<li>(2) H2's head formula had a sign error in the check script, not in the claim; fixed.</li>
+<li>(3) The right-end lemma's derivation (right sweep + regrouping + P(S) + Start) was confirmed on one hub by hand: <code>(10)^3 (011010) (10)^10</code> gives <code>(10)^3 11011 (01)^11 B&gt; 0^inf</code> before P(8).</li>
+</ul>
+</li>
+<li>Open items are §8 G1-G5. No skeptic review yet.</li>
+<li>2026-10-12 (skeptic round 1, applied in the same stage):</li>
+<li>Skeptic verdict: not sound. Four fatal gaps, three major, two minor. Confirmed sound by the skeptic: the TM5 renaming, the halting pattern, R1-R6/T1 and BounceE/BounceP with exact step counts, the initial segment (K0 at step 46,734), the progress argument, and 422,018 right-end transitions of macro_sim3 against exact simulation. So the defect is the invariant and its closure, not the rules.</li>
+<li>Fatal 1, H2t false (<code>[9,20,24,2,24,20,39]</code> in H*c3, next right end a window): <strong>fixed</strong> by H2t' (top tail clean at level ak + 1). Re-checked: J1; long E boxes K1/K3 0 leaks.</li>
+<li>Fatal 2, long Level hubs leak and break Lemma T (<code>[35,13,30,14,18,2,40]</code>, <code>[79,2,40,1,40]</code>): <strong>fixed</strong> by HL (no Level right end with ≥ 2 real walls). Lemma T restated with its real hypotheses (clean/top, P-odd restarts) in §5.1; its derivation is still open (G2). §2 no longer claims that right ends never have walls.</li>
+<li>Fatal 3, long P-mode right ends untested and leaking (118,034 of 726,432): <strong>fixed on the S ≤ 40 box</strong> by the new clause CP, P = 2B(3) − 2τ + 3 (found on orbits, 2,051/2,051; sketched from Lemma T in §5.2). Long P box: 15,707/15,707 at S ≤ 40. At S = 83, 1 of 128,043 still leaks into a window hub (G2, open). The skeptic's V1 d = 1 (P = 1, <code>[1,41,40,1,41]</code>) and EatLast (P = 23, <code>[1,9,8,1,9]</code>) members fail CP.</li>
+<li>Fatal 4, the look-ahead clauses EB/Hs_K are not inductive (<code>[79,12,32]</code> chain of ≥ 7 short right ends, a P-mode right end with walls at depth 8): <strong>not fixed</strong>. Measured: runs of short right ends reach 44 (blank) and 46 (rnd_R) in a row, so no fixed look-ahead depth can work. Open as G1, with first data for explicit clauses.</li>
+<li>Major 1, closure evidence from narrow generators: <strong>fixed</strong>. check_proof.py has exhaustive back-solved boxes (K1-K6); the "0 leaks / high" claim is withdrawn (§8 Confidence).</li>
+<li>Major 2, §4.4 silent on P-mode right ends with walls and incomplete on unruled branches: <strong>fixed</strong>. §4.4 states the PModeW rule and its validation. New §4.5 lists every <code>raise Unruled</code> of macro_sim3 (U1-U25), each with the clause that excludes it and its status (local / argued / box / proved).</li>
+<li>Major 3, Lemma T, G/C/S closed forms, V1 parity, "ak even at walls" fitted, not derived: <strong>not fixed</strong>. Each item is now labelled with its status (§5.1, §5.3, §5.4, §6), and G2/G5 name the derivations still owed.</li>
+<li>Minor, Hc3 not total (<code>[12,2,2]</code>): <strong>fixed</strong> in Hc4 (J2: 0 exceptions on 8,448 short right ends, where Hc3 raised on 12).</li>
+<li>Minor, §4.3 unruled rows incomplete (V1 d = 1, Z empty, p ≤ 0): <strong>fixed</strong> (§4.3, §4.5 U12).</li>
+<li>New script <code>scripts/inv4.py</code> (H*c4, boxes, CP test); <code>scripts/inv4_blank_4000.txt</code>. check_proof.py: sections G (H*c4), J, K; OPEN lines for measured gaps.</li>
+<li>Result: two fatal-class items remain open (G1 fully, G2 partly: one box leak plus all derivations). Status OPEN.</li>
+<li>2026-10-12 (skeptic round 2, applied in the same stage):</li>
+<li>Skeptic verdict: not sound. Two fatal gaps, three major, one minor.</li>
+<li>Confirmed by the skeptic:<ul>
+<li>H2t', HL and CP repair round-1 fatal gaps 1-3 where tested, except for the window family;</li>
+<li>rows U1-U25 match every <code>raise Unruled</code> of macro_sim3;</li>
+<li>the initial segment;</li>
+<li>400 transitions of new kinds against exact simulation (1.0e8 steps);</li>
+<li>the progress argument and the halting pattern.</li>
+</ul>
+</li>
+<li>Fatal 1, window family (long right ends reach window hubs, 1 / 60 / ≥ 96 members at S = 83 / 168 / 339): <strong>not fixed; analysed.</strong><ul>
+<li>The window start is derived: it is the Clean formula with P0 = d0 + δ (§4.4). Check L1: exact on 60 window right ends.</li>
+<li>With it, δ = 0 is ruled by the existing rules (one exception with two walls).</li>
+<li>δ ∈ {1, 2} reaches RightEndP with P ≤ 3 at a wall or a V1 right end with walls (U4, U13). Its restart writes <code>(10)^p (101)^q 1 (101)^r</code>, outside the grammar (L3). So the rule set itself must grow before an invariant can close.</li>
+<li>The S = 168 long boxes are in check_proof (L4: 60 window leaks; L5: 0 one-step leaks among 1,516,903 E members; L5b: a two-step example). The S = 339 box was re-run with the skeptic's script (§5.5).</li>
+<li>One corner is now ruled: RightEndP2W (P = 2 at a wall = RightEndP to P = 0 + Absorb0; exact on 251 ruled random frames of 300, negative control, checks M1-M2). With it only the V1 right end with walls stays unruled in the window family (M3). In one followed run (<code>[21,3,38]</code>) the glued word is transient: the orbit is back in the grammar at step 4,685, 1,675 steps after the glued word appears.</li>
+<li>U4, U13, U17 (successor part) relabelled "refuted by box".</li>
+</ul>
+</li>
+<li>Fatal 2, short regime (Hs_4 not inductive; box cut at a0 ≤ 80; Pt1 missing): <strong>not fixed.</strong><ul>
+<li>The wider boxes are now in check_proof (L6): E1w 110, P1w 12, Pt1 450 leaks; Et1 and Eseg 0.</li>
+<li>§8 G1 states the bounds and treats the counts as lower bounds.</li>
+<li>No explicit clause set is known.</li>
+</ul>
+</li>
+<li>Major, Reflect into a top (U24): <strong>not fixed; relabelled</strong> "refuted by box". Check L7 runs the chain from <code>[255,35,3]</code>. A rule for Reflect with n a top, a level or a window is missing.</li>
+<li>Major, derivations: <strong>partly addressed.</strong><ul>
+<li>The CP sketch is restated as what it is: given Lemma T, CP ⟺ H1 at the successor. Round 1's choice of r was circular.</li>
+<li>§5.4 is rewritten as an induction over the §4 rules, conditional on H1. It now uses p ≡ q only for walls that are not leftmost; the even/odd collapse wall of a P-even right end is always leftmost.</li>
+<li>"ak even at Push1" is shown not to be a local parity fact (75 of 163 eats from blank have an odd six-block count) and stays a census fact (G5).</li>
+<li>Lemma T, G, C and CP are still fitted.</li>
+</ul>
+</li>
+<li>Major, headline numbers and box bounds: <strong>fixed.</strong><ul>
+<li>§5.5 states every box's bounds and reports leaks as lower bounds.</li>
+<li>The round-1 rows without a saved log (232,794 short E, 36,043 short P) are withdrawn.</li>
+<li>The §1 status bullets no longer say "one leak".</li>
+</ul>
+</li>
+<li>Minor, Hc4 not total on degenerate tuples: <strong>fixed</strong> (<code>inv4.degenerate</code>; J2b: 0 exceptions on 60,000 fuzzed tuples).</li>
+<li>New: <code>scripts/round2.py</code> (window and corner rule patches, chains, wider short boxes); <code>scripts/round2_box339_rerun.txt</code>; check_proof.py sections L, M and J2b.</li>
+<li>Validations re-run: check_proof.py A-L, SUMMARY PASS (36 checks, 0 fail, 11 OPEN, 1,239 s), plus M (2 checks, 0 fail, 1 OPEN). Every leak count the skeptic reported was reproduced exactly: S = 168 P 60/1,079,332, E 0/1,516,903; S = 339 96/4,649,851; E1w 110/445,843, P1w 12/108,831, Pt1 450/1,202,119, Et1 0/143,766, Eseg 0/2,937.</li>
+<li>Result: <strong>STUCK.</strong> Two fatal gaps remain, each needing new rules or a new invariant vocabulary, not a calculation (§8).</li>
+</ul>
+</main></body></html>

@@ -1,0 +1,565 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC/proof.md · <a href="/busy-beaver/machines/1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC/proof.md.html">raw</a></div>
+<h1 id="1rb0le_1lc1rd_1la0rb_1rc1rb_1lf0lc_-0rc-never-halts-conditional-stuck-at-the-edge-lemma">1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC: never halts (CONDITIONAL — STUCK at the edge lemma)</h1>
+<ul>
+<li>Machine: <code>1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC</code>, viewer https://bbchallenge.org/1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC</li>
+<li>Sheet: Results row 903, blank status, class "Bouncer + Chaotic Edge", no notes. Discord: only on mxdys's UBRRBA_TODO list (2026-08-24), which Dennis ruled fair game. Mirror-image near-twins: #34 and R6 (see notes.md).</li>
+<li>Written for: the string itself.</li>
+<li><strong>Status: STUCK at stage <code>informal_proof</code>. This is not a proof.</strong> Sections 2–5 reduce non-halting to one statement, the <strong>edge lemma (E′)</strong> in §6. Every other step is checked. (E′) is open, and it is the whole hard part. It says that a chaotic one-sided system never breaks, and no candidate invariant language for it is known (§6).</li>
+<li>Checks:</li>
+<li><code>python3 -B check_proof.py</code>: all PASS, about 10 s.</li>
+<li><code>--sft</code> adds the falsification test from §6.</li>
+<li><code>--cycles N</code> sets the orbit length.</li>
+<li><code>python3 -B scripts/edge_sft/verify_refutations.py</code> (about 10 min) re-checks the SFT refutations in §6 in pure Python.</li>
+</ul>
+<p>Transitions: A0=1RB A1=0LE · B0=1LC B1=1RD · C0=1LA C1=0RB · D0=1RC D1=1RB · E0=1LF E1=0LC · F0=<code>---</code> F1=0RC.</p>
+<h2 id="1-families">1. Families</h2>
+<p>Words (all fixed):</p>
+<div class="highlight"><pre><span></span><code>blk = 1101101101        R1 = 1011110110        G = 11110101
+X0 = 110111100110011101100100100111101100100110110111010011           (54)
+X1 = 1001001001100100100100110110110011101100100110110111010          (55)
+X2 = 11011001001100100100100110110110011101100100110110111010         (56)
+X3 = 101110100110110010011101100100100111101100100110110111010        (57)
+X4 = 1101001101100100110011101100100100111101100100110110111010       (58)
+X5 = 11011011001001100110011101100100100111101100100110110111010      (59)
+X6 = 10011100110011101100100100111101100100110110111010               (50)
+</code></pre></div>
+
+<p><code>C_k(a, D) := 0^inf &lt;A blk^a X_k D 0^inf</code>, for k = 0..6 and a ≥ 0.</p>
+<p><strong>Tails are normalized.</strong> A tail D is a finite 0/1 word that is empty or ends in 1. D and D·0 describe the same tape, so trailing 0s always belong to the <code>0^inf</code>. Every map on tails, in particular the probe map P of §6, is defined as "read the tape right of the junction and strip trailing 0s". <code>check_proof.py</code> does exactly this, and check NORM confirms that every orbit tail is nonempty and ends in 1. In Coq the issue does not arise: the tail is the side <code>D *&gt; 0inf</code>, a stream, and a language becomes a predicate on sides.</p>
+<p>One <strong>cycle</strong> is 7 bounces: C_0 → C_1 → … → C_6 → C_0. The bulk gains one block per cycle. Only the bounce out of C_0 (the <strong>probe</strong>) reads D.</p>
+<h2 id="2-rules">2. Rules</h2>
+<p>Directed-head notation: <code>&lt;X</code> reads the last cell on its left, and <code>X&gt;</code> reads the first cell on its right. Steps are exact.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>domain</th>
+<th>steps</th>
+<th>proof</th>
+<th>level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WS</td>
+<td><code>0^inf &lt;A</code> → <code>0^inf 1 B&gt;</code></td>
+<td>—</td>
+<td>1</td>
+<td>A0</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>RS</td>
+<td><code>B&gt; blk^n</code> → <code>R1^n B&gt;</code></td>
+<td>n ≥ 0</td>
+<td>12n</td>
+<td>ind n: [<code>B&gt; blk → R1 B&gt;</code> in 12 steps, IH]</td>
+<td>L0 shift</td>
+</tr>
+<tr>
+<td>LS</td>
+<td><code>R1^n G &lt;E 0</code> → <code>G &lt;E 0 blk^n</code></td>
+<td>n ≥ 0</td>
+<td>58n</td>
+<td>ind n: [<code>R1 G &lt;E 0 → G &lt;E 0 blk</code> in 58 steps, IH]</td>
+<td>L0 shift</td>
+</tr>
+<tr>
+<td>WE</td>
+<td><code>0^inf 1 G &lt;E 0</code> → <code>0^inf &lt;A blk</code></td>
+<td>—</td>
+<td>29</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>J1</td>
+<td><code>R1 B&gt; X1</code> → <code>G &lt;E 0 X2</code></td>
+<td>—</td>
+<td>37</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>J2</td>
+<td><code>R1 R1 B&gt; X2</code> → <code>G &lt;E 0 blk X3</code></td>
+<td>—</td>
+<td>559</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>J3</td>
+<td><code>R1 B&gt; X3</code> → <code>G &lt;E 0 X4</code></td>
+<td>—</td>
+<td>83</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>J4</td>
+<td><code>R1 B&gt; X4</code> → <code>G &lt;E 0 X5</code></td>
+<td>—</td>
+<td>77</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>J5</td>
+<td><code>B&gt; X5</code> → <code>G &lt;E 0 X6</code></td>
+<td>—</td>
+<td>47</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>J6</td>
+<td><code>R1 B&gt; X6 011</code> → <code>G &lt;E 0 X0</code></td>
+<td>—</td>
+<td>37</td>
+<td>execution</td>
+<td>L0</td>
+</tr>
+<tr>
+<td>P0</td>
+<td><code>R1 B&gt; X0 D 0^inf</code> → <code>G &lt;E 0 X1 011 P(D) 0^inf</code></td>
+<td><strong>D ∈ L, edge lemma (E′), §6</strong></td>
+<td>j0(D)</td>
+<td><strong>open</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td>B_k (k=1..4)</td>
+<td><code>C_k(a, D)</code> → <code>C_{k+1}(a, D)</code></td>
+<td>a ≥ m_k (m = 1,2,1,1)</td>
+<td>70a + β_k</td>
+<td>[WS, RS(a), J_k, LS(a−m_k), WE]</td>
+<td>L1</td>
+</tr>
+<tr>
+<td>B5</td>
+<td><code>C_5(a, D)</code> → <code>C_6(a+1, D)</code></td>
+<td>a ≥ 0</td>
+<td>70a + 77</td>
+<td>[WS, RS(a), J5, LS(a), WE]</td>
+<td>L1</td>
+</tr>
+<tr>
+<td>B6</td>
+<td><code>C_6(a, 011 D)</code> → <code>C_0(a, D)</code></td>
+<td>a ≥ 1</td>
+<td>70a + 9</td>
+<td>[WS, RS(a), J6, LS(a−1), WE]</td>
+<td>L1</td>
+</tr>
+<tr>
+<td>B0</td>
+<td><code>C_0(a, D)</code> → <code>C_1(a, 011 P(D))</code></td>
+<td>a ≥ 1, D ∈ L</td>
+<td>70a + j0(D) − 28</td>
+<td>[WS, RS(a), P0, LS(a−1), WE]</td>
+<td>L1</td>
+</tr>
+<tr>
+<td>CYC</td>
+<td><code>C_0(a, D)</code> → <code>C_0(a+1, P(D))</code></td>
+<td>a ≥ 2, D ∈ L</td>
+<td>490a + 714 + j0(D)</td>
+<td>[B0, B1, …, B5, B6]</td>
+<td>L2</td>
+</tr>
+</tbody>
+</table>
+<p>β = (β1..β6) = (9, 473, 55, 49, 77, 9), where β_k = 1 + j_k + 29 − 58·m_k (with m_5 = 0 and m_6 = 1).</p>
+<p><strong>Every rule except P0 is a context-free fact.</strong> Each finite rule (WS, WE, J_k, and the one-block bodies of RS and LS) was executed with every cell outside the displayed window set to UNKNOWN. Reading an unknown cell would fail the check, and none of them does. So each rule holds in every context, and RS and LS hold for all n by induction. J1–J4 and J6 do need their R1 context blocks: with one block fewer, they read an unknown cell. That is where the domain lower bounds on a come from. J5 needs none.</p>
+<p><strong>Composition for B_k</strong> (k = 1..6), written out:
+- Start: <code>0^inf &lt;A blk^a X_k D</code>.
+- →WS→ <code>0^inf 1 B&gt; blk^a X_k D</code>.
+- →RS(a)→ <code>0^inf 1 R1^a B&gt; X_k D</code>.
+- →J_k→ <code>0^inf 1 R1^(a−m_k) G &lt;E 0 Y_k D</code>.
+- →LS(a−m_k)→ <code>0^inf 1 G &lt;E 0 blk^(a−m_k) Y_k D</code>.
+- →WE→ <code>0^inf &lt;A blk^(a−m_k+1) Y_k D</code>.</p>
+<p>Here Y_1 = X2, Y_2 = blk X3, Y_3 = X4, Y_4 = X5, Y_5 = X6 and Y_6 = X0 (J6 eats the leading <code>011</code> of its D). This gives C_{k+1}(a, D) for k ≠ 5, C_6(a+1, D) for k = 5, and C_0(a, D′) for k = 6, where D = 011 D′. B0 is the same composition with P0 in the J slot.</p>
+<p><strong>D is untouched</strong> by B1–B5. B6 reads only the <code>011</code>. The probe touches nothing outside the R1 block and the cells to its right.</p>
+<h2 id="3-coverage">3. Coverage</h2>
+<p>The family is visited in the fixed order C_0 → C_1 → … → C_6 → C_0, and each C_k has exactly one rule. Each phase holds the tail its predecessor produced. C_1 to C_6 all hold <code>011 P(D)</code>, so B6's <code>011</code> precondition always holds. a never decreases and starts at 59, so every domain bound (a ≥ 0, 1 or 2) holds.</p>
+<p>The only uncovered case is C_0(a, D) with D ∉ L. The invariant is <code>Inv(C_0(a, D)) := a ≥ 2 ∧ D ∈ L</code>. CYC preserves the a-part, and (E′) preserves the L-part.</p>
+<h2 id="4-initial-segment">4. Initial segment</h2>
+<p><code>0^inf A&gt; 0^inf</code> →(784,041 steps)→ <code>C_0(59, D_0)</code>, where D_0 = <code>work/D_cycle0.txt</code> (261 cells, starting <code>0110010011011011…</code>). This was checked by direct simulation from the blank tape in <code>check_proof.py</code> (INIT).</p>
+<p>There is an earlier entry: the run is at <code>C_1(58, 011 D_0)</code> at step 758,939 (check INIT1). From there, B1–B6 lead to C_0(59, D_0) at step 784,041, matching the step formulas exactly (758,939 + 4·70·58 + 9+473+55+49 + 70·58+77 + 70·59+9 = 784,041). This is the earliest left-record moment at which the tape has the full C_k shape. The J rules read only short prefixes of the X_k (the skeptic reports 3 cells of X1 for J1 and 2 of X6 for J6), so trimming the X_k would probably allow an even earlier entry. That is not needed.</p>
+<p>The initial segment is <strong>routine</strong>, not an open issue. <code>Bouncer_v3.v</code> proves <code>c0 --&gt;* S' 23</code> over 2,964,716,529 steps with <code>eapply without_counter with (n:=…); eapply multistep_c'_spec; native_check_eq</code>, where <code>multistep_c'_spec</code> is a lemma local to that file. 784,041 steps is far below that.</p>
+<h2 id="5-conclusion-conditional-on-e">5. Conclusion (conditional on E′)</h2>
+<p>From C_0(59, D_0), CYC applies forever: C_0(59+n, D_n), with D_{n+1} = P(D_n) ∈ L. Each cycle takes at least 490·59 steps, so progress holds. Hence, <strong>if (E′) holds</strong>, the machine never halts (<code>progress_nonhalt_cond</code>).</p>
+<p><strong>Halting transition.</strong> F0 is the only undefined transition, and only E0 (1LF) enters F. So the machine halts exactly when E reads a 0 whose left neighbour is 0 (<code>0 E&gt; 0</code>), for example via <code>001 C&gt; 0</code> (C0→A1→E0→F0, as in notes.md). Every rule except P0 is an exact, fully defined run, so it never executes F0. For P0, (E′) itself demands that every excursion return, so the probe never halts either. The whole question of halting therefore sits inside the edge lemma.</p>
+<h2 id="6-the-open-piece-the-edge-lemma">6. The open piece: the edge lemma</h2>
+<h3 id="61-what-e-says-honestly">6.1 What (E) says, honestly</h3>
+<p>The first version stated:</p>
+<blockquote>
+<p><strong>(E)</strong> There is a set L of normalized tails with D_0 ∈ L such that, for every D ∈ L, the run from <code>R1 B&gt; X0 D 0^inf</code> reaches <code>G &lt;E 0 X1 011 P(D) 0^inf</code> in finitely many steps, never reads left of the R1 block, never halts, and P(D) ∈ L.</p>
+</blockquote>
+<p>(E) is not a reduction: it restates the problem. Take L = {D_n : n ≥ 0}, the orbit. It satisfies (E) exactly when the orbit never breaks, and that is non-halting itself. What §2–§5 actually establish is narrower. Non-halting reduces to (E), every other step is routine and checked, and the open content is a closed language L, which nobody has.</p>
+<h3 id="62-the-sharper-form-a-one-sided-protocol-system-e">6.2 The sharper form: a one-sided protocol system (E′)</h3>
+<p>The probe splits cleanly at the boundary <strong>one cell left of the X0|D cut</strong>, between the last two cells of X0:
+- The <strong>left part</strong> is <code>R1 X0[0..52]</code> (63 cells; left of that, the context is unknown).
+- The <strong>right part</strong> is <code>X0[53] D 0^inf</code> = <code>1 D 0^inf</code>. Call its cells 0, 1, 2, …</p>
+<p><strong>Check IFACE.</strong> On every one of 3,000 orbit cycles, the head crosses this boundary in the same sequence: 32 crossings, i.e. 16 round trips. As (state entering the right part, state leaving it) pairs, the sequence is:</p>
+<p><code>(B,C)(D,E)(C,A)(D,C)(B,C)(D,F)(C,A)(B,E)(D,E)(B,C)(B,E)(B,C)(D,A)(C,A)(C,A)(B,C)</code></p>
+<p>At the cut itself (between X0's last cell and D), the sequence is <em>not</em> fixed: there are 2 distinct sequences over the same 3,000 cycles. (notes.md previously said "crosses exactly 16 times"; that was wrong and is now corrected to 16 round trips.)</p>
+<p>The left part's content is the same at every probe. It is deterministic, and it hears from the right part only through the states in which the head leaves the right part. So if the right part always answers with the out-states above, the left part always behaves exactly as on the orbit:
+- it sends the same in-states;
+- it never reads left of R1;
+- after the 16th return, it ends at <code>G &lt;E 0 X1[0..53]</code>, with the right part's cells 0..3 forming the last 4 cells of <code>X1 011</code>.</p>
+<p>That leaves a statement about the right part alone.</p>
+<blockquote>
+<p><strong>(E′) edge lemma.</strong> Let <code>in = BDCDBDCBDBBBDCCB</code> and <code>out = CEACCFAEECECAAAC</code>. There is a set L of normalized tails with D_0 ∈ L such that, for every D ∈ L:
+- Start from the half-tape <code>1 D 0^inf</code> (cells 0, 1, …). For p = 1..16 in turn, put the head on cell 0 in state in_p and run. The head eventually steps left off cell 0, in state out_p, without halting.
+- Afterwards, cells 0..3 read <code>0011</code>.
+- P(D) := cells 4, 5, … with trailing 0s stripped, and P(D) ∈ L.</p>
+</blockquote>
+<p>So (E′) implies (E). The left part's half is one finite execution, the same for every D, and the orbit run already performs it with the context left of R1 UNKNOWN (<code>edge()</code> in check_proof.py). Check E′ confirms that the right-part system with this protocol reproduces P exactly on the first 500 orbit tails. In busycoq this is exactly the Longitudinal split:
+- the left part's response to the fixed crossing list is a <code>sideRLs</code> fact (finite, <code>vsideRLs_es_spec</code> + <code>native_check_eq</code>);
+- the right part's response is (E′);
+- <code>sideRLs_concat_v2</code> glues the two, as <code>BigStep</code> does in <code>Bouncer_v3.v</code>.</p>
+<p>(E′) is still not proved. It isolates the open problem in a system with no bulk and no unknown context.</p>
+<h3 id="63-what-is-known-about-p-evidence-not-proof">6.3 What is known about P (evidence, not proof)</h3>
+<ul>
+<li><strong>Orbit</strong> (<code>scripts/edgemap.c</code>, 5.5·10⁶ cycles; re-run here for 3,000):</li>
+<li>no break, no halt, no repeated D (exact hash);</li>
+<li>|D| ∈ [144, 564] with no drift;</li>
+<li>j0 ∈ [2257, 28813] over 3,000 cycles (the skeptic's independent 5.6·10⁶-cycle run: [2251, 39467]).</li>
+<li><strong>Length.</strong> |D_n| is always a multiple of 3, and |D_n| + 3n ≡ 21 (mod 30) on 3,000 cycles (check NORM).</li>
+<li><strong>Prefix.</strong> The first 24 cells of D take only 8 values. Deeper cells are chaotic: 3,786 distinct per-cell crossing sequences over 120 cycles, with no saturation. So a Bouncer/crossing-sequence argument on D is out.</li>
+<li><strong>No arithmetic counter has been observed.</strong> The deep excursions (depths of 24, 56 and 80+ cells, and up to the end of D) look like zig-zag fronts that rewrite D locally. <strong>Whether any regular (finite-state) invariant exists is unknown.</strong> The data fit equally well with none:</li>
+<li>k-factor counts grow about 1.6^k with no saturation;</li>
+<li>every SFT_k tested is refuted (below);</li>
+<li>plain CPS does not close;</li>
+<li>D does not repeat in 5.5·10⁶ cycles.</li>
+</ul>
+<p>So this is not a cryptid in the ground-rule-6 sense (no pseudo-random arithmetic has been seen), but nothing shows that it is tractable either.</p>
+<h3 id="64-what-has-been-ruled-out">6.4 What has been ruled out</h3>
+<p><strong>1. SFT_k invariants: refuted for every k ≤ 36 tested.</strong> The SFT_k language is L(F<em>, P</em>) = {D : D[:k−1] ∈ P<em>, every k-factor of D·0^k ∈ F</em>}. For it to be an invariant containing the orbit, F<em> must contain all orbit k-factors and P</em> all orbit (k−1)-prefixes.</p>
+<ul>
+<li><strong>k ≤ 22.</strong> Random tails built only from orbit factors break the cycle:</li>
+<li>with 200 samples per k (<code>check_proof.py --sft</code>), there are 30, 2 and 10 breaks at k = 8, 12 and 16 (this run; an earlier run gave 34, 7 and 11, because the sampling order depends on Python's string hashing, but both runs found breaks at every k);</li>
+<li>with 1,000 samples per k (<code>scripts/edge_sft/sfttest.py</code>), there are 74, 54, 125 and 3 breaks at k = 10, 14, 18 and 22.</li>
+<li><strong>k = 24, 26, 28, 30, 32, 36</strong> (new, this revision). The earlier "no breaks at k = 26" came from sampling <em>with the orbit's prefixes only</em>. A closed L(F<em>, P</em>) must also contain the prefixes of P(D) for every non-breaking D in it. <code>scripts/edge_sft/sftgrow.c</code> builds such a chain, and <code>work/sft_refutations/refute_k&lt;k&gt;.txt</code> records it for each k:</li>
+<li>link₁ ∈ L(orbit factors, orbit prefixes), so it lies in any such L.</li>
+<li>link₁ completes a cycle, so P(link₁) lies in L, and so does its prefix.</li>
+<li>D<em> has only orbit k-factors and that prefix, so D</em> ∈ L.</li>
+<li>D* breaks the cycle. Contradiction.</li>
+</ul>
+<p>For k = 36 the chain has two links. The breaking tails are 195–693 cells long, comparable to orbit tails (144–564). <code>scripts/edge_sft/verify_refutations.py</code> re-checks every chain in pure Python: it regenerates the 200,001-tail orbit, checks factor membership, and checks that each link cycles and D<em> breaks. In the sampling, the share of tails drawn this way that break falls only slowly with k: 6–9% at k = 24–30, and 2.5–3.5% at k = 32–36. So no SFT with window ≤ 36 is an invariant, and nothing points to a threshold k.
+- </em><em>The observer's SFT</em>* (avoiding {000, 0101, 01101111}) is not closed either (notes.md).</p>
+<p><strong>2. Plain n-gram CPS: does not close.</strong> These are scratch native tools, <code>scripts/edge_cps/</code>, written this revision and checked only on toy machines. A failure here means only that this abstraction is too coarse.
+- <strong>Whole machine</strong> (<code>ngcps.cpp</code>; no history, no LRU). It reaches an abstract halt for radii n = 4, 8, 12, 14, …, 26, and for (left, right) = (8,24), (12,24), (24,12) and (6,28). Radius 28 and (28,8) hit the 6 GB memory cap.
+- <strong>Edge system (E′)</strong> (<code>edgecps.cpp</code>). The left side is exact (the protocol), and the right side is an n-gram CPS with a wall-aware left window. It reaches an abstract protocol break for n = 4, 6, …, 24, for (26,24), and for left radius 6–20 with right radius 30 or 40.</p>
+<p><strong>3. busycoq CTL62 <code>Nsolve_cert</code> (whole machine): no result.</strong> I ran it twice, once with <code>CPS_LRU 10001 2e6 2e6 10 3200 1 3 0 0</code> and once with <code>NG 0 2e6 2e6 12 1 12 0 true</code>. Each grew to about 10 GB RSS within 5 minutes and was killed to protect the host. That is not evidence either way.</p>
+<h3 id="65-routes-with-honest-costs">6.5 Routes, with honest costs</h3>
+<ol>
+<li><strong>A whole-machine CTL certificate</strong> (preferred, if one exists). It plugs into <code>CTL62</code>'s <code>Nsolve_cert</code> / <code>decide_nonhalt_spec</code> as is: the conclusion is <code>~halts tm c0</code>, and §2–§5 would become unnecessary.
+   - Cost: a native reimplementation of busycoq's stronger CTL modes (NG with history/LRU, RWL_mod, MITMDFA) to search parameters beyond what mxdys's sweeps already tried. This machine is a holdout, so the standard ranges failed. Expect days of agent time, with an unknown chance of success.</li>
+<li><strong>An edge-only closed set, plus custom Coq glue.</strong> busycoq has no interface for this. <code>CTL.v</code>'s <code>decide_nonhalt_spec</code> concludes only <code>~DHTMFromTM.TM.halts' tm DHTMFromTM.TM.c0</code>, and <code>CTL_decide_nonhalt_spec</code> concludes <code>~halts tm config_init</code>. Both are about a closed run from the blank tape; neither takes a custom start, an accept condition, or a protocol. Using an edge-only certificate therefore needs one of:
+   - (a) a new checker for the (E′) protocol system (finite closed set of right-part configurations, with the start "1 D 0^inf, D ∈ L" and the 16 in/out transitions as side conditions), together with its soundness proof, giving (E′) as a Coq lemma;
+   - (b) an adapted CTL closure check with a start-and-target pair.</li>
+</ol>
+<p>Either is a new decider-sized development: estimate 1–3 weeks of agent time on top of <em>finding</em> the closed set, which nobody has (6.4).
+3. <strong>Hand analysis toward a grammar.</strong> Treat the probe's excursions as particle rewrites and look for a non-SFT description of L, for example a context-free or counter-like constraint coupling D's prefix to its body.
+   - The refutations hint at the coupling: in every chain, D* is built from orbit factors and fails only through a prefix/body mismatch.
+   - Cost: open-ended research.</p>
+<p><strong>Priority call for Dennis.</strong> Should more budget go into (E′)? None of the routes is cheap, and whether a regular invariant exists at all is unknown.</p>
+<h2 id="7-mapping-to-busycoq">7. Mapping to busycoq</h2>
+<table>
+<thead>
+<tr>
+<th>proof.md</th>
+<th>busycoq</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>family C_k</td>
+<td><code>Definition C k a D := const 0 &lt;{{A}} …</code> with lists written outward from the head (left lists reversed, Appendix A). The tail is the side <code>D *&gt; 0inf</code> (§1, normalization)</td>
+</tr>
+<tr>
+<td>RS, LS</td>
+<td>Shift lemmas proved by <code>ind n H</code> (Ltac at <code>Individual62.v</code> line 612) over a one-block lemma proved by <code>es</code> (<code>Individual62.v</code> line 606). Template: <code>1RB0LD_1RC1RF_1LA0RA_0LA0LE_1LD1LA_0RB---.v</code> (in atlas/examples.jsonl): <code>Inc</code> by <code>es</code>, <code>Incs</code> by <code>ind n Inc</code>. LS is a left-moving gadget rule of the same shape</td>
+</tr>
+<tr>
+<td>WS, WE, J1–J6</td>
+<td><code>Proof. es. Qed.</code> (finite; J2 takes 559 steps)</td>
+</tr>
+<tr>
+<td>B1–B6, CYC</td>
+<td><code>follow WS; follow RS; follow J_k; follow LS; follow WE</code>, using <code>follow</code> (Tactic Notation, <code>Individual.v</code> line 120), plus <code>lpow</code> rewrites of <code>blk^^(a−m+1)</code>. Same template file (<code>R0</code>: <code>follow Incs; follow Rst0</code>)</td>
+</tr>
+<tr>
+<td>P0 / (E′)</td>
+<td><strong>New; no template covers it.</strong> The split is at the boundary one cell left of the X0|D cut (§6.2). The left part's response to the fixed 16-round-trip crossing list is a Longitudinal <code>sideRLs</code> lemma, proved like <code>Bouncer_v3.v</code>'s <code>RInc</code> (<code>rw_sideRLs</code> + <code>vsideRLs_es_spec</code> + <code>native_check_eq</code>) or <code>LIncs</code> (<code>sideRLs_wall; esx; st; er</code>). It is glued to the right part by <code>sideRLs_concat_v2</code>, as in <code>BigStep</code>. The right part's response is (E′) and needs L. Note that in <code>Bouncer_v3.v</code>, <code>RInc</code>/<code>LIncs</code>/<code>BigStep</code> are Longitudinal sideRLs lemmas, <strong>not</strong> <code>ind</code>/<code>es</code>/<code>follow</code> lemmas; the earlier draft cited them wrongly. The two styles coexist: <code>Bouncer_v3.v</code> imports <code>Individual62</code> and <code>Longitudinal</code> together</td>
+</tr>
+<tr>
+<td>init</td>
+<td><code>Lemma init: c0 --&gt;* C 0 59 D0</code> (784,041 steps) by the <code>Bouncer_v3.v</code> pattern: copy its local <code>multistep_c'</code> / <code>multistep_c'_spec</code>, then <code>eapply without_counter with (n:=7840*100+41); eapply multistep_c'_spec; native_check_eq</code>. Optionally start at <code>C 1 58 (011 D0)</code> (758,939 steps). Routine</td>
+</tr>
+<tr>
+<td>nonhalt</td>
+<td><code>multistep_nonhalt</code> with init, then <code>progress_nonhalt_cond</code> with P := <code>a ≥ 2 ∧ D ∈ L</code>. Blocked on L</td>
+</tr>
+</tbody>
+</table>
+<p>What is new relative to <code>Bouncer_v3.v</code>: the bounce rules have seven junction phases instead of one, and the probe phase is chaotic. Everything except (E′) is routine.</p>
+<h2 id="8-evidence-check_proofpy-2026-10-10-all-pass">8. Evidence (check_proof.py, 2026-10-10, all PASS)</h2>
+<ul>
+<li>RS, LS, WS and WE with unknown context.</li>
+<li>J1–J6 with unknown context, plus minimality of their R1 context.</li>
+<li>B1–B6 by full simulation, with D UNKNOWN and the exact step formula, for 21 values of a each, from the domain minimum up to about 2,800. The skeptic independently checked up to about 3,800.</li>
+<li>P0 on a 3,000-cycle orbit from D_0. The junction stays intact, nothing halts, and the run reproduces <code>work/D_edgemap_1951.txt</code> at cycle 1951.</li>
+<li>NORM: orbit tails are normalized, and |D_n| + 3n ≡ 21 (mod 30).</li>
+<li>IFACE: the 32-crossing (16-round-trip) sequence one cell left of the cut is identical on all 3,000 cycles. The cut itself has 2 distinct sequences (info).</li>
+<li>E′: the right-part protocol system reproduces P on 500 orbit tails.</li>
+<li>B0 on 25 random pairs (a ∈ [1, 800], orbit D).</li>
+<li>CYC on 6 random pairs.</li>
+<li>INIT1 at 758,939 steps and INIT at 784,041 steps.</li>
+<li>HALT: only F0 is undefined, and only E0 enters F.</li>
+<li>Separately, <code>scripts/edge_sft/verify_refutations.py</code> confirms the SFT_k refutations for k = 24, 26, 28, 30, 32 and 36.</li>
+</ul>
+<p>Not proved: (E′).</p>
+<h2 id="9-review-log-skeptic-review-2026-10-10">9. Review log (skeptic review, 2026-10-10)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>gap (skeptic)</th>
+<th>resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Fatal.</strong> (E) unproved, so non-halting is conditional. (E) is not a real reduction: L = orbit satisfies it exactly when the edge never breaks. No candidate L; SFT_k for k ≤ 22 refuted</td>
+<td><strong>Accepted; not resolved. Status stays STUCK.</strong> §6.1 now says plainly that (E) restates the problem. §6.2 sharpens it to (E′), a statement about a one-sided system with a fixed 16-round-trip protocol, with the left half reduced to one finite execution (checks IFACE, E′). Within this stage's budget I tried to find L. (i) The SFT refutation now covers k = 24–36: chains in <code>work/sft_refutations/</code>, re-checked in pure Python, which also corrects the old "k = 26 open". (ii) Plain whole-machine n-gram CPS does not close for n ≤ 26. (iii) Edge-system CPS with the exact protocol does not close for n ≤ 24 (right radius up to 40). No closed language and no certificate exist. The skeptic's fix (an explicit L with a finite closure check, or a whole-machine CTL62 certificate) remains the only way forward (§6.5)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>§7: RInc/LIncs/BigStep are Longitudinal sideRLs lemmas, not ind/es/follow</td>
+<td><strong>Fixed.</strong> Verified in <code>vendor/busycoq/verify/Bouncer_v3.v</code>: RInc = <code>rw_sideRLs</code> + <code>vsideRLs_es_spec</code> + <code>native_check_eq</code>; LIncs = <code>sideRLs_wall; esx; st; er</code>; BigStep = <code>sideRLs_concat_v2</code>. §7 now cites <code>Individual62.v</code> (<code>Ltac es</code> line 606, <code>Ltac ind</code> line 612), <code>Individual.v</code> (<code>follow</code> line 120), and the template <code>1RB0LD_1RC1RF_1LA0RA_0LA0LE_1LD1LA_0RB---.v</code> (<code>ind n Inc</code>, <code>follow Incs</code>). The rules use ind/es/follow, and only the probe split uses sideRLs</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Init called heavy and open; it is routine (Bouncer_v3's <code>without_counter</code> + <code>multistep_c'_spec</code> + <code>native_check_eq</code> handles about 3·10⁹ steps); earlier entry C_1(58, ·) at step 758,939</td>
+<td><strong>Fixed.</strong> §4 and §7 adopt the Bouncer_v3 pattern, and "init" is dropped from the open issues. The earlier entry <code>C_1(58, 011 D_0)</code> at 758,939 was verified by new check INIT1 and by a scan of all left records up to 784,041 (it is the earliest full-word entry). The step arithmetic to 784,041 matches the β formulas</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Route 2 (edge-only CTL with an accept condition) presented as if busycoq supports it; CTL.v concludes only about the closed run from c0</td>
+<td><strong>Fixed.</strong> Verified: <code>decide_nonhalt_spec</code> concludes <code>~DHTMFromTM.TM.halts' tm DHTMFromTM.TM.c0</code> (CTL.v line 4705), and <code>CTL_decide_nonhalt_spec</code> concludes <code>~halts tm config_init</code> (line 1555). §6.5 route 2 now says it needs a new checker plus a soundness proof or an adapted closure check, estimated at 1–3 weeks on top of finding the closed set, and prefers route 1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>"Not a cryptid / missing piece is a closed language" asserted without evidence that a finite-state invariant exists</td>
+<td><strong>Fixed.</strong> §6.3 now reads: no arithmetic counter observed; whether a regular invariant exists is unknown; the data fit equally well with none. The question whether to spend more budget on (E′) is raised with Dennis as a priority call (§6.5, status.json)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>D vs D·0 ill-posed; check_proof strips trailing 0s silently</td>
+<td><strong>Fixed.</strong> §1 defines tails as normalized (empty or ending in 1), P(D) as the output with trailing 0s stripped, and the Coq view as sides. <code>edge()</code>'s docstring says so, and check NORM asserts it on the orbit</td>
+</tr>
+<tr>
+<td>7</td>
+<td>"Fixed 16-crossing interface" misstated: it is 16 round trips (32 crossings) one cell left of the cut, and the cut itself has 2 sequences</td>
+<td><strong>Fixed.</strong> Confirmed by new check IFACE (identical 32-crossing sequence on all 3,000 cycles; 2 distinct sequences at the cut). §6.2, §7, notes.md and the card text (card.html, observe.json, scripts/make_observe.py) corrected. The sideRLs split is placed at that boundary</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

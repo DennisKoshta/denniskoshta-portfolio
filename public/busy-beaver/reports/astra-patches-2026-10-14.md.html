@@ -1,0 +1,842 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>astra-patches-2026-10-14.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/astra-patches-2026-10-14.md · <a href="/busy-beaver/reports/astra-patches-2026-10-14.md.html">raw</a></div>
+<h1 id="astras-audit-patches-applied-2026-10-14">Astra's audit patches: applied 2026-10-14</h1>
+<p>Dennis (2026-10-14): apply Astra's patches. Source: <code>coord/patches/astra-audit-public/</code> (17 patch files, READMEs, validation JSON).
+All target machines are Claude-owned (coord/claims.tsv, latest line per tm). Nothing under an Astra claim, tools/ or vendor/ was touched.
+Backups of every original are in the session scratchpad (<code>astra-patches/orig/</code>).</p>
+<h2 id="how-each-patch-was-handled">How each patch was handled</h2>
+<ul>
+<li><code>git apply --check</code> against the current files: 11 of 17 applied cleanly. The 6 W4-3-family patches (3 public, 3 header) failed, as expected: PR #17's text was already corrected on 10-13 and merged upstream on 10-14.</li>
+<li>Clean patches were applied as-is. Every resulting file matched Astra's recorded draft sha256 byte for byte (validation JSONs) before the disclosure edit below.</li>
+<li>W4-3 family: reconciled by a 3-way merge (<code>git merge-file</code>), base = the pre-fix originals saved by the 10-13 PR #17 fix (sha 02a8d63c / bb3d65c6 / 2b096112 and the old .v files), theirs = Astra's drafts rebuilt from them (they reproduce Astra's draft hashes 7c9b27be / e8469c12 / 19d0855d), ours = current. Every substantive hunk conflicted because the current text already carries that correction in our own wording. Astra's addendum <code>coord/audits/2026-10-14-pr17-revision-addendum.md</code> confirms each correction is present. The only non-conflicting hunk left in each write-up was the disclosure line. The W4 .v files were not changed (their bytes are upstream).</li>
+<li>Disclosure: Astra's line "... Claude (Anthropic) and GPT-6 Astra (OpenAI)." was replaced everywhere by the house dual line:
+  <code>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic); corrections from an independent audit by GPT-6 Astra (OpenAI).</code>
+  tools/writeup_lint.py does not prescribe an exact disclosure form, so the tool was not involved.</li>
+<li>W5-5 .v header: in the comment, Astra's <code>AI assistance: Claude (Anthropic) and GPT-6 Astra (OpenAI).</code> became <code>Formalized with Claude Code (Anthropic, AI-assisted); corrections from an independent audit by GPT-6 Astra (OpenAI).</code> (wrapped over two comment lines). This keeps the formalization statement and uses the house wording. The 4,942,482 -&gt; 4,942,483 iteration fix was applied as written. Side effect, fixed in the fix round below: the .v grew from 2,975 to 2,976 lines, so every line after 25 moved down by one.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>patch</th>
+<th>machine</th>
+<th>files</th>
+<th>action</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>1RB0RF_..._1LA---.public.patch</code></td>
+<td>W4-3</td>
+<td>submission/proof.md; parent copies in W4-3b, W4-3c; family/attachments (3)</td>
+<td>reconciled</td>
+<td>All substantive changes (7 merge-conflict regions) already present (finite active region, cells vs defects, u -&gt; 9u affine with 74844u-36 example, 17 formal block cases + unused 18th, cancellations allowed, section-10 list). Applied: the disclosure line only (house format). Parent copies and the family attachment re-synced byte-identical.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>1RB0RF_..._1LA---.header-suggested.patch</code></td>
+<td>W4-3</td>
+<td>.v (not changed)</td>
+<td>skipped (.v merged upstream)</td>
+<td>The 17-case claim is already in the merged header. Its remaining hunk, the disclosure ("Formalized with Claude Code (AI-assisted)" -&gt; naming Anthropic and Astra), is listed under open issues.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>1RB0RA_..._1LE---.public.patch</code></td>
+<td>W4-3b</td>
+<td>submission/proof.md, submission/parent-proof.md</td>
+<td>reconciled</td>
+<td>Explicit target mapping (code-block formula) and record-exit invariant with finite positive progress were already present. Applied: the disclosure. Also reworded the line-19 sentence to "Row q of this machine becomes the parent's row phi(q) when every destination state in it is renamed by phi.", which makes the direction of the map explicit (Astra's intent). The family attachment was re-synced.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>1RB0RA_..._1LE---.header-suggested.patch</code></td>
+<td>W4-3b</td>
+<td>.v (not changed)</td>
+<td>skipped (.v merged upstream)</td>
+<td>The 17-case claim and the parent sha (13db03a7, current) are fine. Open: map wording and disclosure (see open issues).</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>1RB---_1LC0LA_..._1LC0RD.public.patch</code></td>
+<td>W4-3c</td>
+<td>submission/proof.md, submission/parent-proof.md</td>
+<td>reconciled</td>
+<td>The verbatim-library claim was already limited to the simulator and invariant library. Applied: the disclosure. The family attachment was re-synced.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>1RB---_1LC0LA_..._1LC0RD.header-suggested.patch</code></td>
+<td>W4-3c</td>
+<td>.v (not changed)</td>
+<td>skipped (.v merged upstream)</td>
+<td>As #4 (mirror map wording, disclosure).</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>1RB1LD_..._0RB0LF.public.patch</code></td>
+<td>W5-8</td>
+<td>submission/proof.md</td>
+<td>applied</td>
+<td>Rows 24, 36, 48; coverage per DC application; minimum 15,630; disclosure added (house).</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>1RB1LE_..._0LC0RF.public.patch</code></td>
+<td>W5-8b</td>
+<td>submission/proof.md, submission/parent-proof.md</td>
+<td>applied</td>
+<td>Direction of <code>Perm (flip tm) tmP phi</code>; parent copy = W5-8 parent.</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>1RB0RD_0RC0LB_..._---1LA.public.patch</code></td>
+<td>W5-8c</td>
+<td>submission/proof.md, submission/parent-proof.md</td>
+<td>applied</td>
+<td>Direction of <code>Perm tm tmP phi</code>; parent copy = W5-8 parent.</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>1RB1RA_..._---0RC.patch</code></td>
+<td>W5-3</td>
+<td>submission/proof.md</td>
+<td>applied</td>
+<td>"a later eat configuration"; endpoint claim limited to checked runs; positive reachability. Propagated: discord.md "to the next eat" -&gt; "to a later eat".</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>1RB0RC_..._---0RB.patch</code></td>
+<td>W5-4</td>
+<td>submission/proof.md</td>
+<td>applied</td>
+<td>Overflow summaries at lines 5, 18, 64 (O0-O2, zone width mod 3); disclosure added. Propagated: the same wrong overflow sentence in submission/README.md and discord.md.</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>1RB0LA_..._1RC---.patch</code></td>
+<td>#4</td>
+<td>submission/proof.md</td>
+<td>applied</td>
+<td>Spectral radius below 1; limits as N tends to infinity; parity sequence from k = 4.</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>1RB---_0LC1RF_..._0RC1RA.patch</code></td>
+<td>#4b</td>
+<td>submission/parent-proof.md</td>
+<td>applied</td>
+<td>The same #4 corrections in the attached parent copy (byte-identical to #4's proof.md).</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>1RB1LC_..._0LA1LF.patch</code></td>
+<td>#12</td>
+<td>submission/proof.md</td>
+<td>applied</td>
+<td>aff = -1 merged-marker case; INT/EXT boundary cases; alpha = m cases.</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>1RB1LA_..._1RF1LB.patch</code></td>
+<td>#12b</td>
+<td>submission/proof.md, submission/parent-proof.md</td>
+<td>applied</td>
+<td>sigma -&gt; sigma^-1 where applied to the parent; parent copy = #12 proof.</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>1RB0RD_1LC1RE_..._0LE---.patch</code></td>
+<td>W5-7</td>
+<td>submission/proof.md</td>
+<td>applied</td>
+<td>Tower height ~195 marked as an informal estimate; the far run ends at F1 after 1,368 steps. Propagated: README.md "Halting time" and discord.md "Step count" now say informal estimate, neither computed nor proved.</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>1RB0RE_..._0LC---.header-comment-REQUIRES-FRESH-GATE.patch</code></td>
+<td>W5-5</td>
+<td>.v and submission/.v (comment only), rocq/test/header.txt</td>
+<td>applied (disclosure adapted)</td>
+<td>4,942,483 iterations; disclosure as above. Both copies are identical. A fresh <code>check_kill.sh --halt</code> was run on the new bytes (below). rocq/test/header.txt was synced so re-assembly reproduces the shipped header.</td>
+</tr>
+</tbody>
+</table>
+<p>Propagation edits outside Astra's patch files: W5-4 README.md and discord.md, W5-3 discord.md and README.md (disclosure only), W5-7 README.md and discord.md, the W4-3b sentence. Each one carries an Astra correction into a sibling text of the same package that held the same wrong statement. The discord drafts' character counts and "same wording as the README" notes were updated to match.</p>
+<h2 id="fresh-gate-w5-5">Fresh gate (W5-5)</h2>
+<p><code>tools/check_kill.sh --halt</code> on <code>machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---.v</code>. It ran one coqc at a time, under <code>ulimit -s unlimited</code>, <code>ulimit -v 8000000</code> and <code>nice -n 10</code>.</p>
+<ul>
+<li><strong>Result:</strong> PASS, exit 0, checked_at 2026-10-14T16:37:56Z, on sha256 <code>5b83f5b1511a76ab796413c74d7789dfe120faeec07f57a4aa07e271cf833f39</code>.</li>
+<li><strong>Compile:</strong> 607.1 s, native.</li>
+<li><strong>Assumptions:</strong> 0 (closed).</li>
+<li><strong>coqchk:</strong> timed out at the 600 s cap. This is advisory under policy A.</li>
+<li><strong>Integrity:</strong> the input hash and the framework were unchanged during the run.</li>
+<li><strong>Comment-only:</strong> with nested comments stripped, the new file equals the old one (866a5226...27f4). The submission copy is byte-identical.</li>
+<li><strong>Receipt:</strong> <code>submission/check_kill.txt</code>, now sha256 ed2c1b24108ede0cc0ec185bc09183ba303e15ac51fcff27bf0ef403fbfa1c01. The old receipt is in the scratchpad.</li>
+<li><strong>status.json kill block:</strong> sha256 updated, with <code>previous_sha256</code> and <code>astra_audit_sha256</code> set to 866a5226, a <code>header_note</code>, and the new check_kill record. The previous run moved to <code>earlier_runs</code>.</li>
+<li><strong>coord/audits/queue.tsv:</strong> the W5-5 row's sha256 is updated, and a <code>note</code> column was added (filled only on that row). The note says that Astra's audit record stays on 866a5226.</li>
+</ul>
+<h2 id="hash-changes">Hash changes</h2>
+<p>The original audited hashes remain Astra's audit record (coord/audits/results.json, reviewed-artifacts.json). The W4 .v hashes (13db03a7, 909abd2a, 6182b097) did not change.</p>
+<table>
+<thead>
+<tr>
+<th>machine</th>
+<th>file</th>
+<th>old sha256</th>
+<th>new sha256</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#4b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td><code>6a70ff95e05e392b984b347c83de09f1d23cddafc93d4a3fff831d7cf3ed2c52</code></td>
+<td><code>01e444e3f57417981f827d1ef01a87342b4b97c6ff40d76b326b8a895897a3fa</code></td>
+</tr>
+<tr>
+<td>W4-3c</td>
+<td><code>submission/parent-proof.md</code></td>
+<td><code>00ed8b42e10fde77d5b76ffa129236e99a5d864aee29cc8e91854d2f42cf1ed9</code></td>
+<td><code>e123ee566d9efd3102c6265463e1ae9820657ba46cb7b4cdc36a29ab0d17a165</code></td>
+</tr>
+<tr>
+<td>W4-3c</td>
+<td><code>submission/proof.md</code></td>
+<td><code>dd898af87977f08f66d1e24137fc346df07de9cfb1d6c04360942e088f7b7f04</code></td>
+<td><code>85a5d791d3fe508849ed2e6c6a4213e6275506ec74866f9596295a351effa977</code></td>
+</tr>
+<tr>
+<td>#4</td>
+<td><code>submission/proof.md</code></td>
+<td><code>6a70ff95e05e392b984b347c83de09f1d23cddafc93d4a3fff831d7cf3ed2c52</code></td>
+<td><code>01e444e3f57417981f827d1ef01a87342b4b97c6ff40d76b326b8a895897a3fa</code></td>
+</tr>
+<tr>
+<td>W4-3b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td><code>00ed8b42e10fde77d5b76ffa129236e99a5d864aee29cc8e91854d2f42cf1ed9</code></td>
+<td><code>e123ee566d9efd3102c6265463e1ae9820657ba46cb7b4cdc36a29ab0d17a165</code></td>
+</tr>
+<tr>
+<td>W4-3b</td>
+<td><code>submission/proof.md</code></td>
+<td><code>f0e2ed9ac5d43d755ea43b844ab6f9c51cdd3d5d8f385c8d8a0c571d5a000b3e</code></td>
+<td><code>b7eabd1d92ad1d7858c83afca6990a546e1e853c7392b9c68afbdee78461aba1</code></td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/proof.md</code></td>
+<td><code>790ab97f17dc2351484e4f2d44be7803bb71ac7d37096290e521c2ac598f58a4</code></td>
+<td><code>cd0f0c26e4388628062e85672bfc7305dbc1c3bdc616b6464d5283862a8aa7cd</code></td>
+</tr>
+<tr>
+<td>W5-8c</td>
+<td><code>submission/parent-proof.md</code></td>
+<td><code>2b1a1562ae87ad189bd539445e9221c92481878e299ad6879587d94a99dedc64</code></td>
+<td><code>f6552aec1e14c4706e7aa587dacaafa2702a6018f30b737f3194a426854e69fb</code></td>
+</tr>
+<tr>
+<td>W5-8c</td>
+<td><code>submission/proof.md</code></td>
+<td><code>0806a2fcf5e14327afeaed77f618903f512eea80d7c92337d056618cc43af4db</code></td>
+<td><code>0aec9f0e2e92ccdc98eba2121e070f404caa407f97ff1e152d43a4a68059dd85</code></td>
+</tr>
+<tr>
+<td>W5-7</td>
+<td><code>submission/proof.md</code></td>
+<td><code>368e6f9263f6e05d1be8041cb3230e93e7a3c084462d149c4b7b13ed2afdd12e</code></td>
+<td><code>0898aaa4cc1944dc773850c3ee3b8425207376c335093a9e712c017b63ec7b55</code></td>
+</tr>
+<tr>
+<td>W5-5</td>
+<td><code>1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---.v</code></td>
+<td><code>866a52260022e4db64dfe3a3eaedb666441e097d4b1ed1af9ac1c01450a027f4</code></td>
+<td><code>5b83f5b1511a76ab796413c74d7789dfe120faeec07f57a4aa07e271cf833f39</code></td>
+</tr>
+<tr>
+<td>W5-5</td>
+<td><code>submission/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---.v</code></td>
+<td><code>866a52260022e4db64dfe3a3eaedb666441e097d4b1ed1af9ac1c01450a027f4</code></td>
+<td><code>5b83f5b1511a76ab796413c74d7789dfe120faeec07f57a4aa07e271cf833f39</code></td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/proof.md</code></td>
+<td><code>00ed8b42e10fde77d5b76ffa129236e99a5d864aee29cc8e91854d2f42cf1ed9</code></td>
+<td><code>e123ee566d9efd3102c6265463e1ae9820657ba46cb7b4cdc36a29ab0d17a165</code></td>
+</tr>
+<tr>
+<td>#12b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td><code>cd758508d32070627593745235d5a19e917824217b33d421e065e33fc0d09f6a</code></td>
+<td><code>c147f33ade03a02775be42b79a4c0d50e2013f82724a79cd55243e8334c74b81</code></td>
+</tr>
+<tr>
+<td>#12b</td>
+<td><code>submission/proof.md</code></td>
+<td><code>40b98b8b8be84a55f58bb0b9787f2c02d2b41707ecebd575fe528d71523bcfd3</code></td>
+<td><code>4f432739d553b3d49fc0c82635d96322c40ac0184888de69490b8240b53f8745</code></td>
+</tr>
+<tr>
+<td>#12</td>
+<td><code>submission/proof.md</code></td>
+<td><code>cd758508d32070627593745235d5a19e917824217b33d421e065e33fc0d09f6a</code></td>
+<td><code>c147f33ade03a02775be42b79a4c0d50e2013f82724a79cd55243e8334c74b81</code></td>
+</tr>
+<tr>
+<td>W5-8</td>
+<td><code>submission/proof.md</code></td>
+<td><code>2b1a1562ae87ad189bd539445e9221c92481878e299ad6879587d94a99dedc64</code></td>
+<td><code>f6552aec1e14c4706e7aa587dacaafa2702a6018f30b737f3194a426854e69fb</code></td>
+</tr>
+<tr>
+<td>W5-8b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td><code>2b1a1562ae87ad189bd539445e9221c92481878e299ad6879587d94a99dedc64</code></td>
+<td><code>f6552aec1e14c4706e7aa587dacaafa2702a6018f30b737f3194a426854e69fb</code></td>
+</tr>
+<tr>
+<td>W5-8b</td>
+<td><code>submission/proof.md</code></td>
+<td><code>a8af699aae7237eb3a8953394ae5e3607ad0541bdcc7b0997ec133fc7cc3b4e2</code></td>
+<td><code>01a9777a8b97e588fc0866754a3ca974985ad5d39cb73682360f5bc8f3a8d70f</code></td>
+</tr>
+<tr>
+<td>W5-3</td>
+<td><code>submission/proof.md</code></td>
+<td><code>cc30e991ba89ba19b56ff81064bbc1cdcd8a5075c779d45ffee709828f546fc3</code></td>
+<td><code>a0867ab101628b6cf74025b9e78a2ee9b3c6c76b809b0f48c1853ce7ec99ec53</code></td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/README.md</code></td>
+<td><code>f50dccb81067d24f757aadfd53195c2da617ecf606a775f6540df4d095068186</code></td>
+<td><code>edcf8e04a3520c8094d5a9b7e1c6d80c3c744f4d89fc3d09a0348fee2ecb714f</code></td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/discord.md</code></td>
+<td><code>8ce53cb4a7023e2783ae98734528732af4ecae0b469d55dc17eb7cde52f1c774</code></td>
+<td><code>503523051a6f426d0633893868d96c1a51e541c519b4e806039b73f0ce6feca3</code></td>
+</tr>
+<tr>
+<td>W5-3</td>
+<td><code>submission/discord.md</code></td>
+<td><code>bceb29d1a90eaaac6ac08f4455434230aafca6e8409237dc8334adf28b7d6f01</code></td>
+<td><code>293553f5c3d5f7422d9e52e2c34790bbbb1c9bd60b24d18a768e8e853d38fa4a</code></td>
+</tr>
+<tr>
+<td>W5-7</td>
+<td><code>submission/README.md</code></td>
+<td><code>0a676dedd68bbcb8350a7975fbad6edf9c99d68db794a00af61426baa26fb9d2</code></td>
+<td><code>a29d381d450cd6aac4238b39eac572c6785211e7779ed096ff8481ed879158c2</code></td>
+</tr>
+<tr>
+<td>W5-7</td>
+<td><code>submission/discord.md</code></td>
+<td><code>4c8082c7f1feb292c8bdb8cc87f430df7e88d5182ca4381e746ed333f35709c7</code></td>
+<td><code>cb2a249222ff80c6d8ee24256200991183be6b66cb1d94cb0a45b7c1f6406b88</code></td>
+</tr>
+<tr>
+<td>W5-3</td>
+<td><code>submission/README.md</code></td>
+<td><code>b1a75e177a9932f43f550efcef8227573ab8d84104feefce1e1091842a3267f4</code></td>
+<td><code>57829fefed01592d4e4246d7ddb1880035fd4a00b0bd0acce4ccd19896468442</code></td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/family/attachments/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---_writeup.md</code></td>
+<td><code>00ed8b42e10fde77d5b76ffa129236e99a5d864aee29cc8e91854d2f42cf1ed9</code></td>
+<td><code>e123ee566d9efd3102c6265463e1ae9820657ba46cb7b4cdc36a29ab0d17a165</code></td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/family/attachments/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---_writeup.md</code></td>
+<td><code>f0e2ed9ac5d43d755ea43b844ab6f9c51cdd3d5d8f385c8d8a0c571d5a000b3e</code></td>
+<td><code>b7eabd1d92ad1d7858c83afca6990a546e1e853c7392b9c68afbdee78461aba1</code></td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/family/attachments/1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD_writeup.md</code></td>
+<td><code>dd898af87977f08f66d1e24137fc346df07de9cfb1d6c04360942e088f7b7f04</code></td>
+<td><code>85a5d791d3fe508849ed2e6c6a4213e6275506ec74866f9596295a351effa977</code></td>
+</tr>
+<tr>
+<td>W5-5</td>
+<td><code>submission/check_kill.txt</code> (receipt)</td>
+<td><code>870649e5faf3c5c9e2ed54249b642884081fb37d22c8bbf96c929aacae749667</code></td>
+<td><code>ed2c1b24108ede0cc0ec185bc09183ba303e15ac51fcff27bf0ef403fbfa1c01</code></td>
+</tr>
+</tbody>
+</table>
+<p>Also changed: W5-5 <code>status.json</code>, <code>coord/audits/queue.tsv</code> (W5-5 row + note column).</p>
+<p>Also synced (internal, not public): <code>machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/rocq/test/header.txt</code> (assembly header for the W5-5 .v).</p>
+<h2 id="lint-python3-b-toolswriteup_lintpy">Lint (<code>python3 -B tools/writeup_lint.py</code>)</h2>
+<p>Every changed proof.md, parent copy and README has 0 errors. One changed file has a lint error: the W5-3 discord.md pasting checklist (item 4, rule <code>checkpoint</code>). It was there before and sits outside the block that gets posted. The fix round below adds its own lint results.</p>
+<table>
+<thead>
+<tr>
+<th>machine</th>
+<th>file</th>
+<th>errors</th>
+<th>warnings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#4b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td>0</td>
+<td>11</td>
+</tr>
+<tr>
+<td>W4-3c</td>
+<td><code>submission/parent-proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W4-3c</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>#4</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>11</td>
+</tr>
+<tr>
+<td>W4-3b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W4-3b</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-8c</td>
+<td><code>submission/parent-proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-8c</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-7</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>#12b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td>0</td>
+<td>49</td>
+</tr>
+<tr>
+<td>#12b</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>21</td>
+</tr>
+<tr>
+<td>#12</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>49</td>
+</tr>
+<tr>
+<td>W5-8</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-8b</td>
+<td><code>submission/parent-proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-8b</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-3</td>
+<td><code>submission/proof.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/README.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/discord.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-3</td>
+<td><code>submission/discord.md</code></td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>W5-7</td>
+<td><code>submission/README.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W5-7</td>
+<td><code>submission/discord.md</code></td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr>
+<td>W5-3</td>
+<td><code>submission/README.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/family/attachments/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---_writeup.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/family/attachments/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---_writeup.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/family/attachments/1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD_writeup.md</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The warnings are preexisting density warnings: the same rule counts as before the patches (#4/#4b 5 dense-paragraph + 3 dense-bullet + 3 inline-formulas; #12 and #12b's parent 28 + 12 + 9; #12b 11 + 6 + 4). The discord.md drafts begin with a pasting checklist for Dennis that trips the linter (W5-3: 1 <code>checkpoint</code> ERROR in checklist item 4; W5-7: 3 warnings). These are preexisting and outside the message block that gets posted.</p>
+<h2 id="fix-round-after-the-independent-verifier-2026-10-14-1012">Fix round after the independent verifier (2026-10-14, 10:12)</h2>
+<p>The verifier found one blocking issue and six minor ones. No .v file changed in this round. W5-5 stays at 5b83f5b1 with its 16:37:56Z PASS, and the W4 .v files are unchanged. So no new check_kill was needed.</p>
+<ul>
+<li><strong>Blocking, W5-5 line map: fixed (option A, no new gate).</strong> The two-line disclosure made the .v 2,976 lines long (it was 2,975), so every line after 25 moved down by one. I checked this two ways: the old file from line 27 on equals the new file from line 28 on, and <code>Definition tm</code> / <code>s751</code> / <code>halt</code> now sit on lines 35 / 2202 / 2954. Every bound in the ".v map" table went up by one (34-36 -&gt; 35-37, ..., 2202-2953 -&gt; 2203-2954). I also changed "2,975 lines" -&gt; "2,976 lines" in submission/proof.md, in the internal machines/<W5-5>/proof.md (with the same table, and its provenance line now names 5b83f5b1), and in submission/README.md. In status.json, <code>kill.lines</code> is now 2976, <code>kill.audited_note</code> covers the 851ca695 -&gt; 866a5226 -&gt; 5b83f5b1 chain, and <code>updated</code> is 2026-10-14. notes.md's "2,975-line .v" is a dated 10-13 record and was left as is.</li>
+<li><strong>W5-4 README, Template sentence: fixed.</strong> "a 3-cell lattice that grows at each overflow" -&gt; "whose overflow rule depends on the zone width modulo 3".</li>
+<li><strong>W4-3 family READMEs, older than the PR #17 fix: fixed by rewording them from the merged write-ups.</strong> The .v files were not touched.</li>
+<li>W4-3: "every long block is 9 times longer" -&gt; u -&gt; 9u with affine lengths (74844u - 36 -&gt; 673596u - 36). "18 single-block runs with symbolic gaps" -&gt; the 17 runs the proof uses (11 symbolic, m = 3; 6 of block 1 with concrete lengths). The tape is alternating "between two blank ends", and a sweep complements the cells it crosses, so the defect pattern changes only when the head meets a defect.</li>
+<li>W4-3c: the same u -&gt; 9u wording. "Its whole development is kept verbatim" -&gt; "Its simulator and invariant library is kept verbatim". It also gets "between two blank ends".</li>
+<li>W4-3b: "The parent's whole development is kept" -&gt; "The parent's simulator and invariant library is kept". The verifier did not flag this one; I changed it to match W4-3c.</li>
+<li>The three READMEs carry the dual disclosure line now. The W4-3 family discord.md is the record of the message posted on 10-13, so it was not edited (open issue 10).</li>
+<li><strong>#4b proof.md line 144: fixed.</strong> "different points of the same contracting map" -&gt; "different orbits of the same affine maps (spectral radius below 1)". This matches the #4 correction. The file now carries the dual disclosure line.</li>
+<li><strong>W5-8b / W5-8c .v comments, reversed map: not changed.</strong> They are outside the 17 patches, and the fix needs fresh gates (open issue 9).</li>
+<li><strong>Mailbox:</strong> the 094000 message overstated the lint result. It also left out the W5-5 line-map side effect. Follow-up: coord/mailbox/to-astra/20261014-101245-claude-fix-round-hashes.md, with the new hashes and corrected lint wording. It also explains the W5-4 README hash mismatch that Astra reported in 20261014-100839 (the edit from this round). I re-checked the 30 hashes announced in 094000 against the current bytes: 29 match, and the 30th is that W5-4 README.</li>
+<li><strong>Record:</strong> open issues 7 and 8 are updated, and 9 and 10 are added. The W5-5 bullet and the lint summary above are corrected.</li>
+</ul>
+<p>Backups of the pre-fix-round files are in the session scratchpad (<code>fix2/orig/</code>).</p>
+<table>
+<thead>
+<tr>
+<th>machine</th>
+<th>file</th>
+<th>old sha256</th>
+<th>new sha256</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>W5-5</td>
+<td><code>submission/proof.md</code></td>
+<td><code>42ed17185dd435c53656cdd07e2cdd0ffa2b6f9f6e81fd921de17c3c5730b99a</code></td>
+<td><code>e369fa915accbeb830ed60928eb4ef08eceb794f95f362c33bc172397a5e77ea</code></td>
+</tr>
+<tr>
+<td>W5-5</td>
+<td><code>submission/README.md</code></td>
+<td><code>f570115cf368847cf17c63d0132925f50a2c97ed20ee4ec0f1d4967fa3ca82c0</code></td>
+<td><code>aee8baf1910f00e17eaded6463022e1eb7eb5607a7c2cd0824b85fc09896a9c7</code></td>
+</tr>
+<tr>
+<td>W5-5</td>
+<td><code>proof.md</code> (internal)</td>
+<td><code>cc2f83d1dad0cfc49cc42e31538ee6fb1c0ca561de3dbaae4ff352c1a3a06667</code></td>
+<td><code>3041221ea3a0733b946c99d29f483b5f3f941e994b7009f6e366841646e03f0f</code></td>
+</tr>
+<tr>
+<td>W5-5</td>
+<td><code>status.json</code></td>
+<td><code>5c0bcb2f0f8cdbd28640a1385d346e704fa782b1c6a49a71292525f6002f71d9</code></td>
+<td><code>bda042aaabcb13ccd25b3ff4e0f0999c704aa0e13255cd14c4139e6af32933a1</code></td>
+</tr>
+<tr>
+<td>W5-4</td>
+<td><code>submission/README.md</code></td>
+<td><code>edcf8e04a3520c8094d5a9b7e1c6d80c3c744f4d89fc3d09a0348fee2ecb714f</code></td>
+<td><code>216d385279a920d0b4b94648ec37c1aaf363a7f1d49d508803ed5a80e2f416a1</code></td>
+</tr>
+<tr>
+<td>W4-3</td>
+<td><code>submission/README.md</code></td>
+<td><code>57d994d583fbeaedbcc459e0c07b3c875e55646cf39ca8892bdbff92072f2c86</code></td>
+<td><code>3adf8ce25846b7905db7081eb14e82a4d736c17a80f0b33ecd0cdc13d8f4f0b3</code></td>
+</tr>
+<tr>
+<td>W4-3b</td>
+<td><code>submission/README.md</code></td>
+<td><code>be810b41680c38a07e9805e4a3b312b5282a1899eb8a563a18b5db01f75c6922</code></td>
+<td><code>a747403facf02a5527314246c73dc41287086b544fa90fcda728a60419950c4c</code></td>
+</tr>
+<tr>
+<td>W4-3c</td>
+<td><code>submission/README.md</code></td>
+<td><code>57ae590442e69e76e7913f20d97be2c717dff7ec792a9452a431b5ad7b5cc79a</code></td>
+<td><code>9a7f1743ef23ed8abc8569fbb7c10868201d33b218cda13a7c6611718fe4a38a</code></td>
+</tr>
+<tr>
+<td>#4b</td>
+<td><code>submission/proof.md</code></td>
+<td><code>0c60b143a5ed43b74aa26213376d40186690ffb378c8793fda614fef82628710</code></td>
+<td><code>9565e86b24649054e71d76ab07bf877f20ebb0437e2b59b805242b677ee1eaca</code></td>
+</tr>
+</tbody>
+</table>
+<p>No other file in any submission/ dir carried a copy of these files (checked by sha256 and by searching for the old phrases).</p>
+<p>Lint for this round (<code>python3 -B tools/writeup_lint.py</code>): W5-5 submission/proof.md 0/0, W5-5 submission/README.md 0/0, W5-4 README 0/0, W4-3 / W4-3b / W4-3c README 0/0 each, #4b proof.md 0 errors / 9 warnings (the same 9 as before the edit, all preexisting density warnings). The internal W5-5 proof.md is not public. It keeps its 14 preexisting internal-path errors (same count as before) and gains one <code>edit-date</code> warning from its dated provenance line.</p>
+<h2 id="open-issues">Open issues</h2>
+<ol>
+<li><strong>W4-3 family .v headers (merged upstream, unchanged here).</strong> All three still say "Formalized with Claude Code (AI-assisted)." Astra's header suggestions name Anthropic and Astra's comment review. The line is accurate but incomplete. A comment-only upstream follow-up is Dennis's call.</li>
+<li><strong>W4-3b and W4-3c merged headers, map wording.</strong> "row q of this machine = parent row phi q, with every target state renamed by phi" is ambiguous. Read literally, it renames the parent's targets, which is the wrong direction. Astra's wording is exact: "mapping both source and target states by phi gives the parent entry". The theorem is unaffected (<code>perm_phi</code> is checked by Coq), and the public write-ups state the map exactly. An upstream follow-up is Dennis's call.</li>
+<li><strong>PR #17 body (merged) and the local draft <code>family/pr_body.md</code> credit only Claude.</strong> Astra asked for its name there too (mailbox 20261014-091339). Editing a merged PR body is a public action, so it is Dennis's call. The draft is left as the record of what was posted.</li>
+<li><strong>coord/audits/queue.tsv W4 rows.</strong> They still carry the pre-fix shas (64d69ff2 / a3afc5e3 / 530d9788), because they were not updated after the 10-13 PR #17 fix. Only the W5-5 row was updated here, as asked.</li>
+<li><strong>Internal informal proofs</strong> (<code>machines/&lt;tm&gt;/proof.md</code>, not public) of W5-3, W5-4, W5-8, #4 and #12b still carry the old wording of the statements Astra corrected. Only the submission/ texts were in scope.</li>
+<li><strong>Preexisting density warnings</strong> keep #4, #4b, #12, #12b and #12b's parent copy short of the zero-warning standard: 11 / 11 / 49 / 21 / 49.</li>
+<li><strong>Disclosure is mixed inside some bundles (Dennis's call).</strong> The rule applied: a text that carries a correction from Astra's audit gets the dual line. In the W5-3, W5-4 and W5-7 bundles every text is dual. W5-3's README got it by a disclosure-only edit, which is the one exception to that rule. In the W4-3, W4-3b, W4-3c, W5-8, W5-8b, W5-8c, #4, #4b, #12 and #12b bundles, the corrected write-ups and READMEs are dual, and the discord drafts and the uncorrected READMEs keep the Claude-only line. In the W5-5 bundle only the .v header is dual. Pick one rule per bundle: all-dual, or dual only where corrected. Then align the drafts. The W4-3 family discord.md is the record of the message posted on 10-13, so it should not be edited.</li>
+<li><strong>Mailbox.</strong> coord/mailbox/to-claude/READ lists 20261014-091339 now, so that item is closed. 20261014-100839 (Astra's hash correction) is answered by 20261014-101245-claude-fix-round-hashes.md and appended to READ. 20261014-100821 (three mechanism studies funded, patch identities acknowledged) is left unread in READ for the orchestrator, because its study and decision items are the orchestrator's.</li>
+<li><strong>W5-8b and W5-8c .v comments state the map in the reversed direction.</strong> This is the same wrong statement Astra corrected in their write-ups. The W5-8b submission .v, lines 347-349, says "Every cell (q, s) of flip tm ... is tmP's cell (phi q, s) with every target state t replaced by phi t". The W5-8c submission .v, lines 399-402, says the same for tm, and so do the source copies. Astra's audit flagged only the write-ups, and there is no header patch for these files, so they were not changed. A comment-only fix would match the write-ups: "tm(q,s) = (w,d,t) -&gt; tmP(phi q,s) = (w,d,phi t)". It would change both shas and need a fresh check_kill each, new hashes in queue.tsv and status.json, and a note to Astra. These files are not upstream yet, so the fix can still go in before submission. Dennis's or the orchestrator's call.</li>
+<li><strong>The W4-3 family's posted Discord message (10-13) says "every long gap 9x longer".</strong> The READMEs, write-ups and PR body are corrected. A correction draft is in machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/submission/family/discord_correction.txt. Posting it is Dennis's call.
+- 2026-10-14 orchestrator: W4-3 family local write-ups/READMEs: .v line counts 2,583-&gt;2,584 and 2,621-&gt;2,622 (after the 10-13 comment-only header fix); copies kept byte-identical; pr_body.md (posted) left as the record.</li>
+</ol>
+</main></body></html>

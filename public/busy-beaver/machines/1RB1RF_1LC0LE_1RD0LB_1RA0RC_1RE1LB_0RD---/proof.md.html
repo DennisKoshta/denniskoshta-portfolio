@@ -1,0 +1,518 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---/proof.md · <a href="/busy-beaver/machines/1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---/proof.md.html">raw</a></div>
+<h1 id="1rb1rf_1lc0le_1rd0lb_1ra0rc_1re1lb_0rd-delta-proof-from-kill-3-checkpoint-b">1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---: delta proof from kill #3 (Checkpoint B)</h1>
+<ul>
+<li>Machine: <code>1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---</code>, viewer https://bbchallenge.org/1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---</li>
+<li>Holdout list: line 293 of <code>data/holdouts/2026-10-07_778.txt</code>, byte for byte. Sheet: Results row 1280 and the Classifications tab, both "Skelet 1-like Class 2", class only (no status, notes, sources or "done by"). Not in <code>data/discord/*</code>. So it is unclaimed.</li>
+<li>Parent: kill #3, <code>1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---</code> (KILLED_NONHALT, check_kill PASS). This file uses the parent's <code>proof.md</code> (revision 3, §3.8 authoritative) and its <code>.v</code>. Section numbers like "P§3.8" refer to the parent's proof.md.</li>
+<li>Written for: the string itself.</li>
+<li><strong>Result.</strong> The twin is the parent's machine with its states renamed by σ = (A C)(B D), with no mirror. It starts in the parent's state C, not A. So it runs a <em>different orbit of the same macro map</em>:</li>
+<li>The rules, the outside cases, the invariant INV+(e) and the period theorem carry over unchanged.</li>
+<li>Only the initial segment and the base E-start change. The base differs from the parent's in one number: the far q is 26, not 24.</li>
+<li><strong>Adjusted invariant: none.</strong></li>
+<li>Evidence: <code>check_proof.py</code>, SUMMARY PASS (§6).</li>
+<li>Status: CHECKPOINT_B (informal delta complete and validated). Not formalized yet; the <code>.v</code> delta is listed in §5.</li>
+<li>AI assistance: written by Claude (Anthropic) under Dennis's direction.</li>
+</ul>
+<h2 id="0-the-map">0. The map</h2>
+<table>
+<thead>
+<tr>
+<th>twin state</th>
+<th>0</th>
+<th>1</th>
+<th>= σ(parent state)</th>
+<th>parent 0</th>
+<th>parent 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1RB</td>
+<td>1RF</td>
+<td>σ(C)</td>
+<td>1RD</td>
+<td>1RF</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1LC</td>
+<td>0LE</td>
+<td>σ(D)</td>
+<td>1LA</td>
+<td>0LE</td>
+</tr>
+<tr>
+<td>C</td>
+<td>1RD</td>
+<td>0LB</td>
+<td>σ(A)</td>
+<td>1RB</td>
+<td>0LD</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1RA</td>
+<td>0RC</td>
+<td>σ(B)</td>
+<td>1RC</td>
+<td>0RA</td>
+</tr>
+<tr>
+<td>E</td>
+<td>1RE</td>
+<td>1LB</td>
+<td>σ(E)</td>
+<td>1RE</td>
+<td>1LD</td>
+</tr>
+<tr>
+<td>F</td>
+<td>0RD</td>
+<td><strong>---</strong></td>
+<td>σ(F)</td>
+<td>0RB</td>
+<td><strong>---</strong></td>
+</tr>
+</tbody>
+</table>
+<p>σ: A↦C, B↦D, C↦A, D↦B, E↦E, F↦F. It is an involution. Twin row σ(s) equals parent row s with every target state t replaced by σ(t). For example, parent A1 = 0LD becomes 0Lσ(D) = 0LB, which is twin C1. Symbols and directions are unchanged.</p>
+<p><code>check_proof.py</code> §S searches all 720 renamings, each with and without mirroring. σ is the only map that works.</p>
+<p><strong>Lemma R (relabelling).</strong> For a configuration c, let σc be c with its head state renamed by σ; the tape and head position stay the same. Then c → c′ in the parent if and only if σc → σc′ in the twin, and c is halted exactly when σc is. So every parent run c →ⁿ c′ gives a twin run σc →ⁿ σc′ of the same length, and the converse also holds.</p>
+<p><strong>Start.</strong> The twin's c0 is <code>0^inf A&gt; 0^inf</code> = σ(<code>0^inf C&gt; 0^inf</code>). The parent's own run starts in A, and after two steps (A0 = 1RB, B0 = 1RC) it is at <code>0^inf 1 1 C&gt; 0^inf</code>. So the twin's run is the parent's machine run from <code>0^inf C&gt; 0^inf</code>: the parent's run without the two 1s its first two steps write. It is <em>not</em> the parent's run. §S checks the twin from blank against the relabelled parent from <code>0^inf C&gt; 0^inf</code> in lockstep: 2·10⁶ steps, identical at every step.</p>
+<p><strong>Halting cell.</strong> Only A1 enters F in the twin, and only D0 enters A. So the twin halts exactly when it reaches <code>D&gt; 0 1 1</code>, which is σ of the parent's <code>B&gt; 0 1 1</code>.</p>
+<h2 id="1-what-carries-over-unchanged">1. What carries over unchanged</h2>
+<table>
+<thead>
+<tr>
+<th>parent item</th>
+<th>twin</th>
+<th>reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P§1 family K(h; P; T)</td>
+<td>K_C(h; P; T) := σK(h; P; T) = <code>0^inf &lt;C (10)^h 11001 [p_1,q_1,d_1] … [p_L,q_L,d_L] T 0^inf</code>: the same words, with head state C</td>
+<td>Lemma R</td>
+</tr>
+<tr>
+<td>P§2 rules Dec, DecMerge, DecMergeTail, DecMergeEmpty, End, EndLast, Ov, X1, X2 and outside cases (o1)–(o7)</td>
+<td>identical (table below), with <code>&lt;A</code> read as <code>&lt;C</code>; step counts unchanged</td>
+<td>Lemma R. Also re-checked on the twin's own table: §A, 405/405 random instances</td>
+</tr>
+<tr>
+<td>P§3.1 reduction (domain D, chain of rule applications)</td>
+<td>identical</td>
+<td>uses only the rules</td>
+</tr>
+<tr>
+<td>P§3.2 counter lemmas L1–L6</td>
+<td>identical</td>
+<td>statements about the abstract map</td>
+</tr>
+<tr>
+<td>P§3.3 INV+(e) (statement P§3.8.1) and the <strong>period theorem</strong></td>
+<td>identical</td>
+<td>statement and proof read only (h, P, T) and the rules, never the start</td>
+</tr>
+<tr>
+<td>P§3.4–3.6, P§3.8.2–3.8.5 (one cycle pair, preservation)</td>
+<td>identical</td>
+<td>same</td>
+</tr>
+<tr>
+<td>P§2 halting demonstrations (o1), (o3), (o6) (1,480 / 1,554 / 1,684 steps)</td>
+<td>identical, from σK</td>
+<td>Lemma R</td>
+</tr>
+<tr>
+<td><strong>P§3.7 initial segment and base</strong></td>
+<td><strong>changed: §2</strong></td>
+<td>different start</td>
+</tr>
+</tbody>
+</table>
+<p>The rules in busycoq comment style, for the twin (Z := pairs 1..k−1, all d = 0, q ≥ 2; touch (p,q,d) := (p+1, q−1, 1−d)):</p>
+<div class="highlight"><pre><span></span><code>1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---       (= sigma of 1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---, sigma = (A C)(B D))
+
+[p,q,d] := (10)^p (01)^q s(d),  s(1) = 0001, s(0) = 0010
+K(h; P; T) := 0^inf &lt;C (10)^h 11001 [p_1,q_1,d_1] ... [p_L,q_L,d_L] T 0^inf,   T in { -, (10)^t 1, (101)^2 (01)^k }
+
+Dec            K(h; Z ++ (p,q+2,1) :: R; T)             --&gt;+ K(h+4; touch Z ++ (p+1,q+1,0) :: R; T)
+DecMerge       K(h; Z ++ (p,1,1) :: (p',q',d') :: R; T)  --&gt;+ K(h+4; touch Z ++ (p+p'+3,q',d') :: R; T)
+DecMergeTail   K(h; Z ++ [(p,1,1)]; (10)^t 1)           --&gt;+ K(h+4; touch Z; (10)^(p+t+3) 1)
+DecMergeEmpty  K(h; Z ++ [(p,1,1)]; -)                  --&gt;+ K(h+4; touch Z; (10)^(p+2) 1)
+End            K(h; Z ++ [(p,q+2,0)]; -)                --&gt;+ K(h+4; touch Z ++ [(p+1,q+1,0)]; (10)^1 1)
+EndLast        K(h; Z ++ [(p,1,0)]; -)                  --&gt;+ K(h+4; touch Z; (10)^(p+4) 1)
+X2             K(h; Z ++ [(p,q+2,0)]; (101)^2 (01)^(k+1)) --&gt;+ K(h+4; touch Z ++ [(p+1,q+1,0); (3,k+1,1)]; -)
+Ov             K(h; (p1+2,q1,0) :: Y; (10)^t 1)         --&gt;+ K(2; (h+5,p1+1,0) :: ovp q1 Y t; -)
+X1             K(h; (p1+2,q1,0) :: Y ++ [(pa+1,1,0); (pb,1,0)]; -)
+                                                        --&gt;+ K(2; (h+5,p1+1,0) :: ovpX q1 Y (pa+1); (101)^2 (01)^(pb+3))
+               (Ov, X1: Y all d = 0, all p,q &gt;= 1, q1 &gt;= 1; ovp/ovpX as in the parent's .v)
+
+start: c0 --&gt;(1,088) K(2; (11,13,0); -) --&gt;(78,026) K(2; (95,68,0),(34,33,1),(10,15,1),(1,26,1); -)
+</code></pre></div>
+
+<h2 id="2-what-changes-initial-segment-and-base-replaces-p37">2. What changes: initial segment and base (replaces P§3.7)</h2>
+<p>Direct simulation of the twin from the blank tape (§C, §D). A <em>canonical configuration</em> is state C on a new leftmost cell, with the tape to its right parsing as a K.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">twin step</th>
+<th>twin K</th>
+<th style="text-align: right;">parent step</th>
+<th>parent K</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">20</td>
+<td>K(2; −; −), L = 0</td>
+<td style="text-align: right;">8</td>
+<td>K(0; −; −)</td>
+</tr>
+<tr>
+<td style="text-align: right;">359</td>
+<td>K(2; (9,1,0); −), in D: EndLast predicts the next one exactly</td>
+<td style="text-align: right;">275</td>
+<td>K(2; (7,1,0); −)</td>
+</tr>
+<tr>
+<td style="text-align: right;">551</td>
+<td>K(6; −; T1(13)), L = 0, outside D</td>
+<td style="text-align: right;">451</td>
+<td>K(6; −; T1(11))</td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>1,088</strong></td>
+<td><strong>K0′ = K(2; (11,13,0); −)</strong></td>
+<td style="text-align: right;">956</td>
+<td>K0 = K(2; (11,11,0); −)</td>
+</tr>
+</tbody>
+</table>
+<p>As in the parent, the run passes through L = 0 before K0′, so the argument starts at K0′. From K0′ on, every canonical transition is the one the rules predict: 1,534 of 1,534 to step 3·10⁷. Re-pairings (Ov/X1) happen at steps 2,009, 4,822, 8,579, 19,744, 34,493 and <strong>79,114</strong>; the parent's are 1,845, 4,610, 8,319, 19,436, 34,137 and 78,710. The base is the E-start right after re-pairing 6:</p>
+<div class="highlight"><pre><span></span><code>B' = K(2; (95,68,0), (34,33,1), (10,15,1), (1,26,1); -)      at step 79,114
+B  = K(2; (95,68,0), (34,33,1), (10,15,1), (1,24,1); -)      the parent's base, at step 78,710
+</code></pre></div>
+
+<p><strong>INV+(e) at B′</strong>, clause by clause, as stated in P§3.8.1 (L = L* = 4, regular start, θ = 5):
+- (a) h = 2, every block ≥ 1, p_1 = 95 ≥ 7; T = −, digits (0,1,1,1), far pair (p_4, q_4) = (1, 26) with p_4 ≥ 1 and q_4 ≥ 6;
+- (b) q_1 + 1 = 69 ≥ 40, q_2 = 33 ≥ 20, q_3 = 15 ≥ 10;
+- (c) p_j + d_j = 95, 35, 11, all odd;
+- (d) L* = 4 ≥ 3;
+- (e) p_1 + 1 = 96 ≥ 64 and p_2 = 34 ≥ 16.</p>
+<p>Only clause (a) reads q_4, and only as the lower bound q_4 ≥ 6. Every other number is the parent's.</p>
+<h2 id="3-the-argument-complete">3. The argument (complete)</h2>
+<p><strong>Theorem.</strong> <code>1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---</code> does not halt from the blank tape.</p>
+<ol>
+<li><strong>Initial segment.</strong> The twin runs from c0 to B′ in exactly 79,114 steps without halting. This is a finite exact computation (§C, §D); in Rocq it is one <code>esx</code>.</li>
+<li><strong>Base.</strong> INV+(e)(B′) holds (§2).</li>
+<li><strong>Transfer.</strong> The parent's period theorem (P§3.8.1, proof P§3.8.4) says: from an E-start satisfying INV+(e), every K up to the next E-start is in D, INV+(e) holds again there, and there are at least two macro steps, each of at least one machine step. Its statement and proof use only the rules of P§2 and arithmetic on (h, P, T). By Lemma R, each rule instance K →⁺ K′ of the parent is a twin run σK →⁺ σK′ of the same length. So the theorem holds verbatim for the twin's configurations σK.</li>
+<li><strong>Conclusion.</strong> By induction from B′, the twin's run is an infinite chain of rule applications, each taking at least one step, so it never halts. This is the parent's P§3.1 reduction with K0, B replaced by K0′, B′. A rule application never presents the halting cell <code>D&gt; 0 1 1</code>, because each rule is an exact computation from one K to the next. ∎</li>
+</ol>
+<p>Nothing in the parent's argument depended on the parent's own orbit beyond P§3.7. The orbit-specific statistics in P§3.3 and P§5 (r values, merge counts, X1 count) are evidence, not premises.</p>
+<h2 id="4-how-the-twins-orbit-relates-to-the-parents-the-coupling-explanation-not-a-premise">4. How the twin's orbit relates to the parent's (the coupling; explanation, not a premise)</h2>
+<p><strong>Observation.</strong> At every macro step from the first canonical configuration on, the twin's K is the parent's K with exactly one exponent larger by 2, and the two orbits apply the same rule. The larger exponent is always the <strong>far block</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>where the +2 sits</th>
+<th>when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q_L, the far pair's q</td>
+<td>regular E-starts and through the E-cycle</td>
+</tr>
+<tr>
+<td>p_L, the last pair's p (P§3.4's t₀)</td>
+<td>L-starts, until EndLast</td>
+</tr>
+<tr>
+<td>t in T1(t)</td>
+<td>after EndLast / DecMergeTail, until Ov</td>
+</tr>
+<tr>
+<td>k in T2(k)</td>
+<td>after X1, until X2, whose new pair (3, k, 1) puts it back on q_L</td>
+</tr>
+<tr>
+<td>h</td>
+<td>only at step 20, where twin h = 2 and parent h = 0; at step 359 it is already on p_1 = p_L</td>
+</tr>
+</tbody>
+</table>
+<p>Checked at every macro step to L = 16 (539,656 steps) and at every re-pairing to L = 300 (§X2, 1,089 re-pairings, including 3 X1/X2 detours). It was also checked to L = 600 (2,209 re-pairings; <code>check_proof.py --lmax 600</code>, output in <code>check_proof_l600.out</code>). Each cycle has the same rule sequence and the same number of decrements.</p>
+<p><strong>Why it persists</strong> (Lemma C, a corollary of P§3.4).
+- Take a parent E-start K that satisfies INV+(e), and let K⁺ be K with q_L (or k, at a T2 start) raised by 2. Then the cycle pair from K⁺ applies the same rules, and it ends at the parent's next E-start with q_L raised by 2.
+- In the E-cycle, the far pair (or the pair X2 appends, whose q is k) gets exactly two touches (P§3.4 S1: q_L ≥ 6, or k ≥ 4, and it loses 2). Its q is at least 3 at each touch in the parent, so also in the twin. The only branch either touch reads is "q = 1 or q ≥ 2": the borrow touch is a Dec (not DecMergeTail or DecMergeEmpty), and at V = 0 the rule is End (not EndLast or X1). The Ov then copies q_L into the new last pair's p.
+- In the L-slot, that p (t₀) is never compared. It enters only additively, with coefficient 1, in these places:
+  - EndLast's t = p + 4;
+  - the fused p of a DecMerge at M−1;
+  - X1's T2 parameter;
+  - DecMergeTail's t.
+- t and k likewise enter only additively: Ov's last-pair q = t + 1, and X2's new q = k.
+- So the +2 never changes a branch, and it never reaches an interior pair. That is why INV+(e) needs no change.</p>
+<p>This also accounts for the size difference at 10⁹ steps:
+- twin: 67,347 cells (−67,163..183) and 33,668 nonzeros;
+- parent: 67,343 cells and 33,665 nonzeros.</p>
+<p>The twin lags the parent by a slowly growing number of steps: 132 steps at K0′ and 404 at the base, because every sweep over the far block is 4 cells longer. The trajectories are therefore not identical, but they are coupled exactly.</p>
+<h2 id="5-formalization-delta-for-the-rocq-stage-not-done-here">5. Formalization delta (for the Rocq stage; not done here)</h2>
+<p>Copy the parent's <code>.v</code> (sha256 <code>91861259…fcbf</code>) and change only the following:
+1. <code>TM_from_str "1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---"</code>.
+2. Rename states in the statements of the 14 sweep lemmas and in <code>K</code>, applying σ simultaneously: <code>{{A}}</code> → <code>{{C}}</code> (4 occurrences), <code>{{B}}</code> → <code>{{D}}</code> (12), <code>{{D}}</code> → <code>{{B}}</code> (19). The parent never names C, E or F. The <code>es</code> proofs should go through unchanged, because σ maps transitions to transitions (Lemma R).
+3. <code>init0 : c0 --&gt;* K 2 [(11,13,false)] TN</code> (1,088 steps); <code>base</code> with last pair <code>(1%nat, 26%nat, true)</code>; <code>init</code> by <code>esx</code> (79,114 steps; the parent's 78,710-step <code>esx</code> took about 30 s).
+4. <code>J_base</code>: the same script (<code>cbn … repeat split; lia</code>). The only changed clause is PN E1 at n = 0 for the last pair, <code>q ≥ tv + 2^0 + 1 = 3</code>, and 26 satisfies it. §B evaluates the transcribed PC E1 clauses at B′, all true. The parent's <code>rocq/jcheck.py</code> J holds at every macro step from B′ for 34 re-pairings.
+5. <code>Jstep</code>, every <code>ob_*</code>/<code>inv_*</code> lemma and <code>nonhalt</code>: verbatim. Update the closing comment's start line.</p>
+<p>Then run <code>tools/check_kill.sh</code>. Only that PASS makes it a kill.</p>
+<h2 id="6-evidence-python3-b-check_proofpy-defaults-about-1-min-output-in-check_proofout">6. Evidence (<code>python3 -B check_proof.py</code>, defaults; about 1 min; output in <code>check_proof.out</code>)</h2>
+<p>The script imports the parent's <code>check_proof.py</code> read-only, for its abstract map and checkers. Everything that depends on the machine or the start is re-run on the twin's own table and orbit.</p>
+<table>
+<thead>
+<tr>
+<th>§</th>
+<th>what</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S</td>
+<td>σ unique over 720 × 2 maps, involution; lockstep 2·10⁶ steps twin vs σ(parent from C); parent's step 2 = <code>11 C&gt;</code></td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>A</td>
+<td>all 9 parent rules, 45 random instances each, simulated on the twin's table with head state C; halting cell <code>D&gt; 0 1 1</code></td>
+<td>PASS 405/405</td>
+</tr>
+<tr>
+<td>C</td>
+<td>blank → K(2; (11,13,0); −) at step 1,088; earlier canonical configs as in §2</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>D</td>
+<td>direct simulation to 3·10⁷: 1,534/1,534 transitions rule-predicted; base B′ at step 79,114</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>B</td>
+<td>INV+(e) at B′ (parent's <code>inv_violations</code>); Rocq PC E1 clauses at B′ (and at B, sanity); only q_4 differs</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>G</td>
+<td>parent's G2 (every P§3.8 lemma at every cycle pair) and F (every INV clause at every cycle) on the twin's orbit to L* &gt; 300 (542 cycle pairs, 245 L-slot merges, x ∈ {3,4,5} all seen); parent's jcheck J for 34 re-pairings</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X</td>
+<td>coupling: every macro step to L = 16, every re-pairing to L = 300; one exponent +2, far block, same rules</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>G, X at L = 600</td>
+<td><code>--lmax 600 --steps 2000000</code> (6.5 min, <code>check_proof_l600.out</code>): G2 and F over 1,102 cycle pairs (2,209 overflows, 3 X1), X2 over 2,209 re-pairings</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+<p>Start-independent checks of the parent (P§5: G1 skeptic counterexamples, G3 1,027,584 exhaustive starts, G4 random chains, E2 endgame table) test the abstract map only, so they apply unchanged and are not repeated.</p>
+<h2 id="7-checkpoint-b-dennis">7. Checkpoint B (Dennis)</h2>
+<p><em>pending</em>. One question for the reviewer: is "same table up to σ, new init and base, invariant unchanged" acceptable as the informal proof for the submission, or does the maintainer want the parent's proof restated in full?</p>
+</main></body></html>

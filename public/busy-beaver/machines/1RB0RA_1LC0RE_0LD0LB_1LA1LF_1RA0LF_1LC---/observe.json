@@ -1,0 +1,591 @@
+{
+ "tm": "1RB0RA_1LC0RE_0LD0LB_1LA1LF_1RA0LF_1LC---",
+ "rank": 156,
+ "class_sheet": "Unknown",
+ "class_guess": "defect-list counter: left-end carry transducer + eat phase over a 1010 background (multi-level, no template)",
+ "confidence": "low",
+ "summary": "1010 tape with 00/11 defects; a carry transducer and an eat rule cover 99.3% of bounces; the macro level is open.",
+ "mechanism": [
+  "The tape is 1010... with isolated extra symbols (00 = extra 0, 11 = extra 1), and every sweep complements what it crosses. So the state is a list (10)^n0 x1 (10)^n1 ... of segment lengths n_i and extra bits x_i. It halts iff it reaches 1 1 0 <C (window W5 with 11 directly left of 00).",
+  "Two exact rules cover 99.3% of record moves to 1e10. L (31%) is a left-end bounce acting as a 4-state carry transducer on (n_i mod 2, x_{i+1}), with deltas 0, +-1, +2, +3, +4 (30,720/30,720 real, 900/900 random). E (68%) is a 000 marker eating the segment to its left, one pair per bounce, and adding 2 pairs at the right end; it is exact iff every segment to its right is even.",
+  "Open: 668 moves (end rules, full sweeps, 3 merges) and the macro level. It has 2-13 separators, recurring tail motifs and left digits growing at power-of-3 rates per pair, so it looks hierarchical. Siblings 188/450/564 (starts D/B/E) show the same coverage, as near-twin orbits that never merge."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site_1e4.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge Default view, first 10,000 steps",
+   "title": "First 10,000 steps (site view)",
+   "why": "The site's own picture. Look at the fine vertical stripes (the 1010 background) and where their phase breaks (the defects).",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step, steps 0..10,000 squeezed into 500 rows (site canvas, bilinear: about 20 steps per row)",
+   "window": "cells -200..199, 1 px = 1 cell (cell 0 = start cell, at column 200)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:20",
+   "png": "img/every20_17k.png",
+   "html": null,
+   "steps": 17000,
+   "caption": "Every 20th step to 17,000: left bounces, then eat phases",
+   "title": "Left-end bounces and two eat phases",
+   "why": "Rows 495-790: bounces off the left edge, turning points creeping right. Rows 31-55, 456-480: short right-end bounces.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every 20 steps, steps 0..17,000 (851 rows)",
+   "window": "cells -260..79, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "default",
+   "png": "img/eat_rule_E.png",
+   "html": null,
+   "steps": 640,
+   "caption": "Rule E from a constructed tape, every step",
+   "title": "Eat rule E, seven bounces",
+   "why": "Each zigzag is one bounce from the right end. Compare successive left turning points and the right edge.",
+   "primary": true,
+   "start": "constructed: 0^inf (10)^3 0 (10)^7 0 0 (10)^4 0 (10)^6 A> 0^inf",
+   "rows": "every step, steps 0..639 (the right-end returns are at steps 54, 116, 186, 264, 350, 444, 546)",
+   "window": "cells -56..15, 1 px = 1 cell (cell 0 = the start head cell, at column 56)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_4e5.png",
+   "html": null,
+   "steps": 425442,
+   "caption": "Left/right records to step 425,442",
+   "title": "Records view: defects as lines",
+   "why": "Defects show as lines in the stripe texture: slanted lines are 000 markers walking left during eat phases.",
+   "primary": false,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new leftmost or rightmost cell (1,500 rows, steps 0..425,442)",
+   "window": "cells -892..607, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:500000",
+   "png": "img/every5e5_7.6e8.png",
+   "html": null,
+   "steps": 760000000,
+   "caption": "Every 500,000th step to 7.6e8, every 64th cell",
+   "title": "Long run to 7.6e8 (sampled)",
+   "why": "Solid bands are alternating segments seen through 64-cell sampling. Rows 800-1260: a long eat phase (frozen left block).",
+   "primary": false,
+   "start": "blank",
+   "rows": "every 500,000 steps, steps 0..760,000,000 (1,521 rows; stopped at the image cell cap)",
+   "window": "cells -46836..18972, 1 px = 64 cells (every 64th cell sampled; the head is always drawn)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head; with 64-cell sampling a 1010 segment shows as solid white or solid black (its phase), so each white/black edge marks a defect",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "at each eat-phase start (RA record, gap form): d1 |3 d2 |3 ... a |4 q1 |3 ... |3 c A> 0^inf  (|3 = 00, |4 = 000)",
+  "vars": [
+   "d1 (leftmost digit)",
+   "separators",
+   "a (digit left of the 000)",
+   "000 markers"
+  ],
+  "rows": [
+   {
+    "step": 620,
+    "values": [
+     14,
+     2,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 9124,
+    "values": [
+     56,
+     4,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 23383,
+    "values": [
+     92,
+     5,
+     44,
+     1
+    ]
+   },
+   {
+    "step": 142090,
+    "values": [
+     188,
+     2,
+     130,
+     1
+    ]
+   },
+   {
+    "step": 325742,
+    "values": [
+     230,
+     4,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 779559,
+    "values": [
+     466,
+     7,
+     44,
+     1
+    ]
+   },
+   {
+    "step": 1453639,
+    "values": [
+     690,
+     7,
+     54,
+     1
+    ]
+   },
+   {
+    "step": 2400088,
+    "values": [
+     886,
+     6,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 4437392,
+    "values": [
+     1270,
+     8,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 7684176,
+    "values": [
+     1718,
+     8,
+     876,
+     1
+    ]
+   },
+   {
+    "step": 14311149,
+    "values": [
+     1908,
+     7,
+     54,
+     1
+    ]
+   },
+   {
+    "step": 19484294,
+    "values": [
+     2416,
+     8,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 25385730,
+    "values": [
+     2936,
+     9,
+     885,
+     1
+    ]
+   },
+   {
+    "step": 50875119,
+    "values": [
+     3942,
+     8,
+     324,
+     1
+    ]
+   },
+   {
+    "step": 50875573,
+    "values": [
+     3942,
+     8,
+     324,
+     1
+    ]
+   },
+   {
+    "step": 59950500,
+    "values": [
+     4298,
+     7,
+     24,
+     2
+    ]
+   },
+   {
+    "step": 95752744,
+    "values": [
+     5846,
+     10,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 122228137,
+    "values": [
+     6818,
+     11,
+     44,
+     1
+    ]
+   },
+   {
+    "step": 215147510,
+    "values": [
+     9446,
+     8,
+     130,
+     1
+    ]
+   },
+   {
+    "step": 265795226,
+    "values": [
+     10598,
+     10,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 402388632,
+    "values": [
+     13206,
+     11,
+     5386,
+     1
+    ]
+   },
+   {
+    "step": 402451521,
+    "values": [
+     13206,
+     11,
+     5383,
+     1
+    ]
+   },
+   {
+    "step": 906280329,
+    "values": [
+     17920,
+     12,
+     69,
+     1
+    ]
+   },
+   {
+    "step": 1000142676,
+    "values": [
+     19180,
+     10,
+     14,
+     1
+    ]
+   },
+   {
+    "step": 1691110423,
+    "values": [
+     22530,
+     11,
+     886,
+     1
+    ]
+   },
+   {
+    "step": 1810671854,
+    "values": [
+     22958,
+     10,
+     18,
+     1
+    ]
+   },
+   {
+    "step": 1866253024,
+    "values": [
+     23414,
+     8,
+     10782,
+     1
+    ]
+   },
+   {
+    "step": 2437611296,
+    "values": [
+     23486,
+     7,
+     11116,
+     1
+    ]
+   },
+   {
+    "step": 2437699472,
+    "values": [
+     23486,
+     7,
+     11116,
+     1
+    ]
+   },
+   {
+    "step": 4062847899,
+    "values": [
+     24250,
+     9,
+     1920,
+     1
+    ]
+   },
+   {
+    "step": 4497716228,
+    "values": [
+     25038,
+     9,
+     52,
+     1
+    ]
+   },
+   {
+    "step": 4556800202,
+    "values": [
+     25590,
+     8,
+     56,
+     1
+    ]
+   },
+   {
+    "step": 4663094521,
+    "values": [
+     26554,
+     10,
+     4667,
+     1
+    ]
+   },
+   {
+    "step": 5865924971,
+    "values": [
+     28076,
+     10,
+     4179,
+     1
+    ]
+   },
+   {
+    "step": 6155413068,
+    "values": [
+     28504,
+     8,
+     14,
+     1
+    ]
+   },
+   {
+    "step": 6967957433,
+    "values": [
+     29476,
+     9,
+     344,
+     1
+    ]
+   },
+   {
+    "step": 7045484290,
+    "values": [
+     29736,
+     8,
+     8462,
+     1
+    ]
+   },
+   {
+    "step": 8212699050,
+    "values": [
+     31160,
+     9,
+     16,
+     2
+    ]
+   },
+   {
+    "step": 8399666536,
+    "values": [
+     32348,
+     10,
+     8,
+     1
+    ]
+   },
+   {
+    "step": 9510822139,
+    "values": [
+     38720,
+     13,
+     44,
+     1
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "S shifts",
+   "from": "A> (10)^(2n)  |  B> (10)^(2n)  |  (10)^n <B",
+   "to": "(01)^(2n) A>  |  (01)^(2n) B>  |  <B (01)^n",
+   "steps": "4n, 4n, 2n",
+   "cases": "n >= 1",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   },
+   "source": "manual"
+  },
+  {
+   "name": "W1-W4 rightward windows",
+   "from": "A> 100 | B> 100 | A> 1011 | B> 101",
+   "to": "<C 101 | 011 B> | <C 1010 | 010 A>",
+   "steps": "5 | 3 | 7 | 3",
+   "cases": "A-mode pair before an extra symbol: turn (W1, W3); B-mode pair: pass (W2, W4)",
+   "validated": {
+    "instances": 4,
+    "passed": 4
+   },
+   "source": "manual"
+  },
+  {
+   "name": "W5-W6 leftward windows",
+   "from": "0100 <B | 110 <B",
+   "to": "<C 1101 | 010 A>",
+   "steps": "4 | 5",
+   "cases": "W5: 00 is crossed and lands 2 cells left as 11; with 11 directly left (1100 <B) the same steps halt. W6: turn at 11",
+   "validated": {
+    "instances": 2,
+    "passed": 2
+   },
+   "source": "manual"
+  },
+  {
+   "name": "E eat bounce",
+   "from": "0^inf L 0 (10)^(a+1) 0 0 [(10)^q_i 0]_(i<=k) (10)^c A> 0^inf",
+   "to": "0^inf L 0 (10)^a 0 0 [(10)^q_i 0]_(i<=k) (10)^(c+2) A> 0^inf",
+   "steps": "4c + 4 sum q_i + 2k + 12",
+   "cases": "a >= 1, every q_i even, c even (any odd q_i or c: fails, 0/n in all 24 parity classes)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "L left-end bounce (carry transducer)",
+   "from": "0^inf <A (10)^n0 x1 (10)^n1 ... xk (10)^nk 1 0^inf",
+   "to": "the same list with deltas from the transducer S/T/Z+/Z-/Q read on (n_i mod 2, x_(i+1)), see notes.md",
+   "steps": null,
+   "cases": "STOP rows of the transducer; undefined rows (e.g. Z- on (odd, end)) leave for the right end",
+   "validated": {
+    "instances": 900,
+    "passed": 900
+   },
+   "source": "manual"
+  },
+  {
+   "name": "L on the real run",
+   "from": "every LA record to the next LA record, to 1e10",
+   "to": "transducer prediction",
+   "steps": null,
+   "cases": "30,720 moves; 58 parity-signature classes at 1e8, 0 inconsistent",
+   "validated": {
+    "instances": 30720,
+    "passed": 30720
+   },
+   "source": "manual"
+  },
+  {
+   "name": "unruled moves",
+   "from": "end rules, LA>RA, RA>LA, merges",
+   "to": "(no rule yet)",
+   "steps": null,
+   "cases": "668 of 98,334 record moves to 1e10",
+   "validated": {
+    "instances": 0,
+    "passed": 0
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---.v",
+  "module": null,
+  "machine": "1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---",
+  "diff": "6 cells differ from #11b (= #11's table renamed); architecture differs",
+  "applies": "partly",
+  "note": "Kill #11's .v: shifts S1-S6, windows T1-T14, K(ds; a, b) over d0/d1 digits, carry M, drop, overflow O, one INV. Reusable: the list-of-digits K-config and the list-sweep induction lemmas. Not reusable: our carry is a parity transducer that changes digit lengths, plus a separate eat phase E and a multi-level macro, so the rules and the invariant are new."
+ },
+ "strategy": "Rule the 5 unruled event families (0.7% of record moves) to get an exact abstract list machine for all four starts. Then find the macro hierarchy and an invariant that keeps 11 from sitting directly left of 00 when a leftward sweep crosses it. The formal side can reuse #11's list-sweep lemmas.",
+ "risks": [
+  "The macro level is a hierarchical counter with no template (like the parked R4/#32), so an invariant may be out of reach.",
+  "Every branch is decided by parities of large transferred numbers. A pseudo-random parity sequence would make it cryptid-like (no sign of this so far).",
+  "668 record moves to 1e10 have no validated rule yet, and the observed parity law fails at 17 of 60 eat starts."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "every20_17k: in rows 495-790, does the head bounce off the left edge with turning points creeping right, and do rows 456-480 show short bounces at the right end?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "eat_rule_E: does each bounce turn one block further left while the right edge moves right by a fixed amount?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Low confidence: fund one ~2 h rules stage for the 5 unruled event families and a test of the macro hierarchy, or park the family (156/188/450/564) with R4/#32?",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 10000000000,
+  "cells": 76685,
+  "nonzeros": 38338,
+  "growth": "span ~ t^0.48 (25,552 at 1e8, 76,685 at 1e9); no halt to 1e10"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Observe done at LOW confidence: exact window, eat and carry rules cover 99.3% of record moves to 1e10; 5 event families unruled; no macro rule or non-halting argument. Priority call in decision.json."
+}

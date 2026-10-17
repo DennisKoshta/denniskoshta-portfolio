@@ -1,0 +1,358 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>log.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/rocq/log.md · <a href="/busy-beaver/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/rocq/log.md.html">raw</a></div>
+<h1 id="machine-3-formalization-log-rocq">Machine #3 formalization log (rocq/)</h1>
+<h2 id="round-1-2026-10-10">Round 1 (2026-10-10)</h2>
+<h3 id="layout">Layout</h3>
+<ul>
+<li><code>rocq/cc.sh FILE.v</code>: compiles a copy in a temp dir (ulimit -s unlimited, -v 8000000, native on).</li>
+<li><code>rocq/rules.v</code>: low-level sweeps + K-level macro rules (compiles, ~6 s).</li>
+<li><code>rocq/trace*.py</code>: tape tracers used to find the sweep milestones.</li>
+</ul>
+<h3 id="low-level-structure-found-all-proved-by-plain-es-symbolic-powers">Low-level structure found (all proved by plain <code>es</code>, symbolic powers)</h3>
+<p>A macro step = Start (3 short bounces; A -&gt; B entering pair 1) + one long rightward sweep in
+state B + a turnaround + one leftward sweep + an end phase at the left edge.
+- Rightward sweep over a pass pair [p,q+1,0] leaves the region <code>0 (01)^p 110 (01)^q 11</code>
+  (left list <code>reg p (q+1) l</code>), the leading 0 being the boundary cell.
+- Two leftward modes:
+  - Dec mode (state D arrives reading the region's trailing 0): <code>PassL</code> turns the region into
+    [p+1,q,1]; <code>EndPh</code> rebuilds <code>(10)^(h+4) 11001</code>.
+  - Ov mode (D arrives reading the region's last 1, its boundary 0 already on the right):
+    <code>OvL</code> turns <code>reg (p+1) q</code> into <code>(01)^(p+1) 0001 (10)^q</code> (needs p&gt;=1); <code>OvEnd</code> builds
+    <code>(10)^2 11001 (10)^(h+5) (01)^(p1-1) 0010</code> (needs p1&gt;=2).
+- Turnarounds: <code>Borrow</code> (d=1, q&gt;=2), <code>MergeB</code> (d=1, q=1, any continuation r: covers DecMerge and
+  DecMergeTail with one lemma), <code>MergeE</code> (q=1, then 0^inf), <code>EndT</code>, <code>EndLastT</code>, <code>OvT</code>, <code>X2T</code>
+  (needs k&gt;=1), and <code>X1Sw</code> (Dec-mode milestone over a q=1 region switches to Ov mode).
+- List lemmas <code>PassesR</code>, <code>PassesL</code>, <code>OvPasses</code> by induction on the pair list, with
+  <code>LP</code> = left fold of <code>reg</code>, <code>RP</code> = right fold of pair words, <code>OvR</code> = Ov-mode output.</p>
+<h3 id="k-level-rules-proved-proofmd-section-2-numbering">K-level rules proved (proof.md section 2 numbering)</h3>
+<p>Dec, DecMerge, DecMergeTail, DecMergeEmpty, EndR (End), EndLast, X2, Ov, X1: every rule of the
+table, each as <code>K h P T --&gt;+ K h' P' T'</code>. Ov/X1 outputs are <code>ovp</code>/<code>ovpX</code> (re-pairing functions).
+<code>init : c0 --&gt;* K 2 [(11,11,false)] TN</code> by <code>esx</code> (956 steps), compiles.</p>
+<h3 id="pitfalls-hit">Pitfalls hit</h3>
+<ul>
+<li><code>es</code> overshoots a target whose right side differs only by a power rotation
+  (<code>[1;0]^^(S t) *&gt; [0;0;1]</code> vs <code>1 &gt;&gt; [0;1]^^t *&gt; [0;0;0;1]</code>): it keeps stepping and gets stuck
+  later. Fix: pick the milestone/form <code>es</code> reaches (or the next natural stop).</li>
+<li><code>es</code> stops when the head must read a power <code>w^^n</code> whose first period is not a shift-rule period
+  (e.g. E entering <code>[1;0]^^p</code>): state such lemmas with <code>^^(S p)</code>.</li>
+<li>Under the sym scope, tuples <code>(p,1,true)</code> parse 1 as a symbol: write <code>1%nat</code>.</li>
+<li><code>okR x</code> (a let-pattern Definition) cannot be destructed by an <code>as [..]</code> pattern after
+  <code>inversion</code>: use <code>hnf in Hx; destruct Hx</code>.</li>
+</ul>
+<h3 id="kill-file-state-at-end-of-round-1">Kill file state at end of round 1</h3>
+<p><code>1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---.v</code> = rules.v + <code>init0</code> (c0 -&gt; K0, 956 steps) +
+<code>init</code> (c0 -&gt; base E-start K(2;(95,68,0),(34,33,1),(10,15,1),(1,24,1);-), 78,710 steps, <code>esx</code>,
+~30 s) + rule-table comment. <strong>No <code>nonhalt</code> yet</strong> (check_kill cannot pass). Everything compiles.
+So the "finite chain K0 -&gt; overflow-6 base" of proof.md 3.7 is not needed: direct execution works.</p>
+<h3 id="high-level-plan-rounds-2-4-a-per-step-invariant-j-not-a-per-cycle-period-lemma">High-level plan (rounds 2-4): a PER-STEP invariant J, not a per-cycle <code>period</code> lemma</h3>
+<p>Use <code>progress_nonhalt_cond</code> with index i = (h, P, T, phase, c4) and C i = K h P T, so every
+macro rule is one <code>--&gt;+</code> step and J only has to be preserved by single rules. Ghost <code>phase</code>:
+E1 (regular E-cycle before End), E1t (after X2), T0 (T2 start, before X2), E2/E2t (after End),
+L1 (EndLast-type L-slot before EndLast), LX (X1-type L-slot), L2 (after EndLast); ghost <code>c4</code>
+(L-slot after a T2 start, before its DecMergeTail).</p>
+<p>Key quantities (all per pair j, N = #pairs, n = N - j = #pairs to the right):
+- tv_j := value of digits d_j..d_N (d_j least significant) = touches left in this countdown.
+  <code>dv</code> of the suffix starting at j. Dec_k: tv_j -1 for j &lt;= k, unchanged for j &gt; k.
+- extra(phase,n) := 2^n (E1, E1t, L1), 5<em>2^n (T0), 0 (E2, E2t, L2, LX).
+- Rt_j := tv_j + extra = touches pair j still gets before the cycle's re-pairing.
+- Phat_j := p_j + Rt_j, Qhat_j := q_j - Rt_j (as integers). A touch keeps both, and keeps
+  p+d and q+d mod 2. End/X2 touch the last pair without flipping its digit, and End/EndLast/X2
+  match the extra-term switch exactly (checked by hand: Phat, Qhat unchanged).
+- hhat := h + 4</em>Rt_1 (every step touches pair 1, so h grows 4 per touch of pair 1).
+- DecMerge at k (H := tv_{k+1}): fused pair inherits pair k+1's Rt (Qhat_fused = Qhat_{k+1},
+  Phat_fused = Phat_{k+1} + p_k + 3); pairs j &gt; k+1 unchanged; pairs j &lt; k:
+  Phat drops by 2^(k-j) H + [phase 1] 2^(N-1-j), Qhat rises by the same.</p>
+<p>J clauses (validated in rocq/jcheck.py + jrand.py: base orbit 26 overflows incl. X1/X2, and
+1,900 random INV+(e)-style starts, many at the thresholds, 4 overflows each: 0 failures):
+- all p,q &gt;= 1; h = 2 mod 4.
+- E phases (L<em> = N, or N+1 in T0; interior = j &lt;= N-1, all j in T0):
+  Eq: Qhat_j &gt;= 2</em>2^n + 1 (E1,E2,T0) / 2^n + 1 (E1t,E2t);  Ep: p_j + d_j odd (T0 top pair: even),
+  Phat_j &gt;= 3<em>2^(L</em>-j);  far pair Qhat_N &gt;= 1;  (e1) Phat_1 &gt;= 2^(L<em>+2) + 3</em>2^(L<em>-1) - 3;
+  (e2) Phat_2 &gt;= 2^L</em> + 3<em>2^(L</em>-2) - 1;  hhat &gt;= 3<em>2^(L</em>+1) - 6;  L<em> &gt;= 3; T = TN / TA 1 / TB k&gt;=3.
+- L phases (Lproj = N (L1, LX) or N+1 (L2); f_j = N-j (L1, LX) or N+1-j (L2); c = 4 if c4 or LX
+  else 5): Eq p-blocks: Phat_j &gt;= c</em>2^(f_j); Ep q-blocks (j &gt;= 3): Qhat_j &gt;= 1 or q_j+d_j even;
+  in L1 while the last digit d_N = 1: q_j &gt;= tv_j - 2^(N-j) + 2 (no run-out in the first half);
+  pairs 1,2: Qhat_1 &gt;= 2^Lproj, Qhat_2 &gt;= 1;  hhat + 6 &gt;= 2^(Lproj+2);  far end: L1 last pair
+  Qhat_N = 0, x-pair Qhat in {-2, 0} or &gt;= 1; LX: Qhat_{N-1} = Qhat_N = 1.
+Why it closes: merges to the right keep Phat_j &gt;= c<em>2^f for any c &gt;= 3 (loss &lt; 2</em>2^(f-1)+2^(f-1));
+merges only happen in the second half of L1 (d_N = 0), so H &lt;= 2^(N-k-1) and hhat loses
+&lt; 2^(N+1) = the drop of 2^(Lproj+2) (this replaces the reviewer's missing "pair 1 gets</p>
+<blockquote>
+<p>= 2^(L*')-2 touches" lemma); the fused block inherits Phat_{k+1}. Ov/X1 map the L2/LX
+clauses onto the E1/T0 clauses exactly (worked out per pair: new q_{j+1} = old p_{j+1} etc.).
+Note: this per-step J does NOT need proof.md's r' &gt;= 2r-3 (G3) nor the fusion bound.</p>
+</blockquote>
+<p>Rocq plan: <code>Fixpoint dv</code>, <code>AllSuf</code> (predicate on every suffix: per-pair clauses only depend on
+the suffix: n = length-1, tv = dv, last digit), lemmas dv_touch, dv_merge, dv_lt (dv S &lt; 2^|S|);
+then <code>Jstep : J i -&gt; exists i', K.. --&gt;+ K.. /\ J i'</code> by phase/rule case analysis with lia
+(introduce 2^n as variables + doubling facts), and <code>nonhalt</code> from <code>init</code> + base satisfies J.</p>
+<h3 id="also-in-round-1">Also in round 1</h3>
+<ul>
+<li><code>rocq/dv.v</code> (compiles, standalone): <code>dv</code> (digit value, pair 1 least significant), <code>dv_lt</code>
+  (dv P &lt; 2^|P|), <code>dv_dec</code> (a Dec lowers every touched suffix value by 1), <code>dv_merge</code>
+  (dv before = dv after + 1 + 2^|Z| * dv(next pair :: R)), <code>dv_ones</code>, <code>AllSuf</code>. To be pasted into
+  the kill file when J is formalized (needs <code>touch</code> unified with rules.v's).</li>
+<li>Random J tests exercise every rule: over 200 starts x 4 overflows, DecMerge 603,
+  DecMergeTail 135, X1 15, X2 112, EndLast 385.</li>
+<li>check_kill on the round-1 file: FAIL, only <code>theorem_text</code> (no <code>nonhalt</code>); forbidden tokens,
+  structure, tm string all PASS.</li>
+</ul>
+<h3 id="next-steps-round-2">Next steps (round 2)</h3>
+<ol>
+<li>Define J in Rocq (per-suffix clauses via <code>AllSuf</code>; use nat inequalities like
+   <code>q + 2 &gt;= tv + ex</code> instead of negative Qhat), index type, <code>C i := K h P T</code>.</li>
+<li>Decomposition lemma: J -&gt; one of the 9 rules applies (split at the first digit 1).</li>
+<li>Preservation per rule (touch/merge lemmas on suffix clauses, Ov/X1 re-pairing by induction
+   on the list), then <code>nonhalt</code> = <code>multistep_nonhalt</code> + <code>init</code> + <code>progress_nonhalt_cond</code>, with
+   <code>J base</code> by <code>vm_compute</code>/<code>lia</code>.</li>
+</ol>
+<h2 id="round-2-2026-10-10">Round 2 (2026-10-10)</h2>
+<h3 id="j-formalized-rocqjv-standalone-compiles-in-28-s">J formalized (rocq/J.v, standalone, compiles in ~28 s)</h3>
+<ul>
+<li>Per-pair clause <code>PC ph c4 h i p q n tv</code> = <code>1&lt;=p /\ 1&lt;=q /\ PN ph c4 p q n tv /\ PI ph h i p q n tv</code>:
+  <code>PN</code> matches on n (0 / 1 / &gt;=2), <code>PI</code> on the index i (1 / 2 / other). Parity is stated on p+tv and
+  q+tv (tv = d mod 2), so no digit case split is needed. <code>AllI Pr i P</code> = Pr on every element with its
+  1-based index and the list to its right; <code>PCx = Lift PC</code> computes n = length, tv = dv.</li>
+<li>Per-rule arithmetic obligations <code>ob_*</code> (touch, merge, merge-tail, fuse, far, End, EndLast, X2, Ov
+  head/step/base, X1 head/step/base); list-level lemmas <code>inv_Dec</code>, <code>inv_Merge</code>, <code>inv_MT</code>, <code>inv_End</code>,
+  <code>inv_X2</code>, <code>inv_EndLast</code>, <code>inv_Ov</code> (generic <code>AllI_ovp</code>), <code>inv_X1</code> (<code>AllI_ovpX</code>); shape helpers
+  <code>Z_okL</code>, <code>borrow1</code> (a q=1 run-out only in L phases, index &gt;= 3, L1 second half, LX n&gt;=2), <code>q2_V0</code>,
+  <code>p1_V0</code>, <code>L2_c4_V0</code>, <code>AllI_okRO</code>, <code>AllI_len</code>.</li>
+<li>Differences from the round-1 Python J: the E far pair also has <code>p + Rt &gt;= 3</code> (needed so x &gt;= 3 at
+  the Ov); L1's first-half clause is stated unconditionally as <code>q + 2^n &gt;= tv + 2</code> (equivalent given
+  q &gt;= 1); L-phase q-blocks at n &gt;= 2 (L1/LX) or n &gt;= 1 (L2) must have good parity (the Qhat &gt;= 1
+  alternative is only for the x-pair / top pair). All proved, so these are the real clauses.</li>
+<li>Tactics that mattered: <code>ZifyNat</code> must be imported for lia to handle <code>mod 2</code>; lia with many
+  implications + mod is 3-5 s per goal, so clauses are <code>match</code>es on n and i and every obligation
+  destructs n/i first (<code>cr</code> = cbn -[Nat.modulo]; split hyps; repeat split; lia): 25 s for all.
+  <code>|-&gt;</code> lexes as <code>|-</code> <code>&gt;</code> in intro patterns: write <code>[-&gt; | [-&gt; | -&gt;]]</code>. Make <code>tri</code> a Notation, not a
+  Definition, or <code>rewrite</code> misses <code>@cons tri</code> vs <code>@cons (nat*nat*bool)</code> terms.</li>
+</ul>
+<h3 id="step-lemma-and-nonhalt-rocqjtmv">Step lemma and nonhalt (rocq/Jtm.v)</h3>
+<ul>
+<li>State <code>st = (h, P, T, phase, c4)</code>, <code>Cf s = K h P T</code>, <code>J s = P &lt;&gt; [] /\ TC phase c4 T /\
+  AllI (PCx phase c4 h) 1 P</code>. <code>TC</code>: E1/E1t/LX: TN (c4 = false); L1: TN; E2/E2t: TA 1; T0: TB k, k &gt;= 3;
+  L2: TA t, t &gt;= 2.</li>
+<li><code>Jstep : J s -&gt; exists s', Cf s --&gt;+ Cf s' /\ J s'</code>, by <code>split1</code> (first digit 1, or all 0):
+  digit 1 with q &gt;= 2: Dec (all phases); q = 1: <code>borrow1</code> restricts to L phases, then DecMerge,
+  DecMergeTail (L2 only), DecMergeEmpty impossible; all digits 0: E1/E1t End, E2 Ov to LX (x = 4,
+  decided by <code>lastOK_dec</code>) or L1, E2t Ov to L1 with c4, T0 X2, L1 EndLast, L2 Ov to E1 (c4 = true
+  impossible: top pair would have q = 0), LX X1.</li>
+<li><code>J_base</code> by <code>cbn; repeat split; lia</code>; <code>nonhalt</code> = <code>multistep_nonhalt init</code> + <code>progress_nonhalt_cond</code>.</li>
+<li>Assembly: <code>rocq/assemble.py OUT [--dev]</code> = round-1 rules (<code>rocq/rules_r1.v</code>, a copy of the round-1
+  kill file) + J.v body (standalone header and copies of ovp/ovpX/okL/okR/okO/touch dropped) +
+  Jtm.v + rule table. <code>--dev</code> drops <code>init</code>/<code>nonhalt</code> (no 30 s <code>esx</code>). Dev compile 36 s (native off).</li>
+<li>Pitfalls: <code>String</code> shadows <code>length</code> (bridge does <code>Import Coq.Init.Datatypes.</code>); BusyCoq's
+  notation <code>c -[ tm ]-&gt;* c'</code> makes <code>-[</code> a token, so <code>cbn -[Nat.modulo]</code> breaks parsing of the
+  NEXT sentence: write <code>cbn - [Nat.modulo]</code>; <code>eapply</code> on a lemma whose first premise mentions a
+  not-yet-instantiated phase (<code>?ph &lt;&gt; LX</code>): solve that premise last.</li>
+</ul>
+<h3 id="result-round-2">Result (round 2)</h3>
+<ul>
+<li><code>tools/check_kill.sh</code> on the kill file: <strong>RESULT: PASS, exit 0</strong> (report in <code>rocq/kill.out</code>):
+  compile 67 s with native on; coqchk -norec finished in 24 s (no timeout); Print Assumptions of
+  <code>nonhalt</code>: closed (0 assumptions). sha256 91861259c71ce3338425a86a465c4af5b854f63f071737b8cd7feaa36713fcbf.</li>
+<li>No flaw found in proof.md's argument. The formal proof uses a per-step invariant rather than
+  proof.md's per-cycle INV+(e) and lemmas L5'/L6. L6 (pair-1 touches) is replaced by the projected-h
+  clause (h + 4*Rt_1 + 6 &gt;= 2^(Lproj+2)) plus "merges in L1 only in the second half" (the first-half
+  clause q + 2^n &gt;= tv + 2), and L5' by the Phat bounds <code>p + Rt &gt;= c*2^f</code> (c = 4 or 5).</li>
+<li>To rebuild: edit <code>rocq/J.v</code> / <code>rocq/Jtm.v</code>, then <code>python3 rocq/assemble.py OUT</code> (round-1 rules come
+  from <code>rocq/rules_r1.v</code>).</li>
+</ul>
+<h2 id="kill-packaging-2026-10-10">Kill packaging (2026-10-10)</h2>
+<ul>
+<li>Independent audit: check_kill <code>--json</code> PASS at 14:04:09Z (17/17, compile 69.4 s, coqchk 24.4 s, 0 assumptions); holdout line 53 of the 778 list.</li>
+<li>Fresh human-readable run for the submission: PASS at 14:06:34Z, compile 69.3 s (native on), coqchk 24.3 s, closed. sha256 unchanged (<code>91861259...fcbf</code>) before and after.</li>
+<li>status.json = KILLED_NONHALT / done. Package: <code>submission/</code> (.v, proof.md copy with a §4 map from sections to lemma names, check_kill.txt, README.md, discord.md: 1,752 chars + <code>&lt;LINK&gt;</code>, not posted). notes.md <code>## Kill</code>, STATUS.md line, atlas/rocq-notes.md packaging datapoint.</li>
+</ul>
+</main></body></html>

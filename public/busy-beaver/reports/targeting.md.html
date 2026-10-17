@@ -1,0 +1,1165 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>targeting.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/targeting.md · <a href="/busy-beaver/reports/targeting.md.html">raw</a></div>
+<h1 id="track-b-targeting-memo">Track B targeting memo</h1>
+<p><em>2026-10-09. Inputs: <code>reports/kill-forensics.md</code> (busycoq git history), <code>reports/landscape.md</code> (wiki, sheet, GitHub), <code>data/crossref.md</code>, <code>atlas/examples_summary.md</code> and <code>atlas/tooling-notes.md</code>. Holdouts: <code>data/holdouts/2026-10-07_778.txt</code> and <code>2026-10-07_eqv_1590.txt</code>. Proofs: busycoq BB6 @ <code>0940bb9</code>, <code>data/solved_index.tsv</code>. New for this memo: a simulation sweep of all 778 holdouts and of the 563 machines proof-killed since Dec 2025 (§2.5). Discord was not readable, so every "is someone on this?" question is listed for Dennis to check.</em></p>
+<p><strong>Dennis's brief:</strong> be calculated and targeted. Compute and time are plentiful but none should be wasted. Learn from the recent, largely AI-assisted kills which areas are vulnerable, which are picked clean, and which are tarpits.</p>
+<hr />
+<h2 id="1-executive-summary">1. Executive summary</h2>
+<ol>
+<li><strong>Easy machines get absorbed within weeks.</strong> The list fell from 1,094 to 778 holdouts since June. There were 297 proof kills since Jun 29, and 44–64% of them came from files with AI-assistant markers. mxdys, the maintainer, uses LLMs himself and opens a new family file almost every week.</li>
+<li><strong>Picked clean (avoid):</strong> 7 classes have nothing left, for example Counter Class 1 and Skelet 17-like. The decider routes are exhausted: FAR/CTL, LongAcc/LongLoop, RWLAcc/UBRRBA certificates, and equivalence merging.</li>
+<li><strong>Actively mined by others (avoid):</strong> shift-overflow counters (128), Skelet 1-like Class 1 (101), Cubic Mess (50), SO bouncer counter (33), and the Bell-like and Quadratic Mess halting route. Chaotic Fractal Type 1, Monotone list, Counter Class 3, Translated Counter and the 21 mira-quine PR machines are also taken.</li>
+<li><strong>Targets:</strong> classes that cooled off in Jul–Aug and have reusable templates. These are Bell eats counter, Bouncer + Chaotic Edge, Skelet 1-like Class 2, SO structural counter, Structural counter + chaotic edge and Sync bouncer counter. Two counter classes nobody has touched since Dec are also targets: Structural counter + counter and Counter Class 4.</li>
+<li><strong>Tarpits (avoid):</strong> the 20 cryptids and 7 potential cryptids, the open BMO problems (including BMO 11's 20-machine group), and Machines at the Edge. Also avoid the chaotic Bell, 1dCA, Spaghetti and Ack-like classes (no hand proof ever; their only 2026 kills were decider certificates, the last in February), the 4 "probably incorrect" claims, and families where recent proofs cost 100–300 KB.</li>
+<li><strong>New evidence from a sweep.</strong> I ran all 778 holdouts and all 563 recent kills to 1e9 steps, ran Quick_Sim on the 778, and did a Hamming-≤2 neighbour search (up to symmetry) against 235,762 proved machines.
+   - 47 groups of holdouts follow identical tape trajectories, and every group stays within one class. One proof idea should therefore cover several machines.
+   - As a check, the method independently rediscovers 6 of mira-quine's 10 claimed equivalence pairs.</li>
+<li><strong>The best leverage is these families:</strong>
+   - 3 Structural counter + counter machines with identical trajectories, out of 5 left in the class;
+   - an identical-trajectory triple in Skelet 1-like Class 2, all three eligible;
+   - nine Bell eats counter machines one transition from a proof already in busycoq (SOMDCv6.v TM7/TM8, the BECv1/FractalBEC instances, BMO7.v);
+   - one Sync bouncer counter that differs from three SBCv7.v proofs only in F0.</li>
+<li><strong>Candidate pool:</strong> 40 machines across 11 classes plus 11 in reserve. All are byte-exact entries of the 778 list and have no row in <code>solved_index.tsv</code> in any tier, not even as a mention. The top 20 are one lead machine per mechanism (11 classes) and form the recommended pilot. Ranks 21–40 are mostly cheap follow-ons once a lead is proved.</li>
+<li><strong>Submission:</strong> post a per-machine Discord thread with a rule table, one short house-style <code>.v</code> and an AI disclosure. Expect mxdys to fold the idea into his own family files. Do not open large PRs: mira-quine's 8 open PRs have had no response.</li>
+<li><strong>Before compute starts,</strong> Dennis should get dyuan's Oct 1 list of 24 and mxdys's Aug 24 list of 86. He should also ask mxdys one question that covers 12 pool machines: did the templates in his SOMDCv6, SBCv7, SBCv2, BECv1, FractalBEC, IndBEC and BMO7 files fail on these one-transition variants, and why? (§5)</li>
+</ol>
+<hr />
+<h2 id="2-the-map">2. The map</h2>
+<p>Columns: <strong>left</strong> = representatives on the 778 list. <strong>eligible</strong> = left after our gate (§4.1): no row in <code>solved_index.tsv</code> in any tier, no claim or tarpit flag, not on the Level 1 or Category 1 tabs, blank sheet status. 430 of 778 pass.</p>
+<h3 id="21-picked-clean-nothing-to-find">2.1 Picked clean (nothing to find)</h3>
+<table>
+<thead>
+<tr>
+<th>class / method</th>
+<th>evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Counter Class 1 (16 → 0)</td>
+<td>Cleared 09-05 by the parameterized family <code>verify/CounterClass1/</code> (mxdys, "using an LLM", Aug 15 per TMBR).</td>
+</tr>
+<tr>
+<td>Skelet 17-like (8 → 0), Quadratic Skelet 17-like (6 → 0)</td>
+<td><code>Sk17.v</code> and <code>SqrtSk17Like_v2..v5.v</code> (09-08). Sk17.v is the first file with an assistant-style header.</td>
+</tr>
+<tr>
+<td>List merging (6), Bouncer + Complex Counter (8), Bouncer + Translated Counter (3), Structural counter + bouncer (5)</td>
+<td>Cleared Jul–Sep: <code>LMv1–v3</code>, FAR + <code>BCv2</code>, <code>BTCv3/v4</code> (M-Abozaid), <code>BLECv3</code> + <code>InfiniteRect_v2</code>.</td>
+</tr>
+<tr>
+<td>Nearly clean</td>
+<td>Chaotic Fractal Type 1 (4), Sync bouncer counter (4), Counter Class 2 (3, none eligible) and Counter Class 3 (3), Fractal in Bouncer (3, none eligible), Chaotic Fractal Others (4). The leftovers are the machines the batch template did not cover. Take one only when the reason the template failed can be named.</td>
+</tr>
+<tr>
+<td>Exhausted methods</td>
+<td>mxdys's FAR/CTL DFA generator (73 kills Dec–Jul, none since 07-29), LongAcc/LongLoop (91 kills, last 09-23), RWLAcc/UBRRBA halting certificates (last 08-30). Equivalence merging (75) is bookkeeping, and an AI agent (mira-quine) is already mining it.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-actively-mined-by-others-avoid-duplicate-work-risk">2.2 Actively mined by others (avoid: duplicate-work risk)</h3>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>left / eligible</th>
+<th>why we think someone is on it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shift-overflow counter</td>
+<td>128 / 75</td>
+<td>130 proof kills since 08-30, in three batches of consolidated assistant-style files (09-16, 09-30, 10-07). The headers cite numbered sub-lists (<code>SOC_FT7_CONSOLIDATION.md</code>, "SOC_ex rows 8–14").</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 1</td>
+<td>101 / 65</td>
+<td><code>Sk1Machines.v</code> (09-30) works through a numbered "Sk1 Class1 TM1..TM105" list.</td>
+</tr>
+<tr>
+<td>Cubic Mess</td>
+<td>50 / 21</td>
+<td><code>CubicMachines.v</code> (10-07) records "completed machines from cubic.txt". mxdys also has 6 unfinished <code>Cert_WF</code> stubs in <code>CubicCap.v</code>.</td>
+</tr>
+<tr>
+<td>Shift-overflow bouncer counter</td>
+<td>33 / 17</td>
+<td><code>SOBCv9..v12</code> plus univerz's CounterRegular PR (Aug–Sep).</td>
+</tr>
+<tr>
+<td>Bell-like and Quadratic Mess, <strong>halting</strong> side</td>
+<td>80 / 36, 51 / 18</td>
+<td><code>Bell60.v</code> and <code>QuadraticMess30.v</code> (10-07) are RLE-accelerator halting certificates "from the halting-proof archive supplied by the user".</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Type 1</td>
+<td>4 / 3</td>
+<td>18 of 22 killed 09-16 by <code>FractalType7v2..v4.v</code> (assistant-style).</td>
+</tr>
+<tr>
+<td>Monotone list; Counter Class 3; Translated Counter</td>
+<td>8 / 7; 3 / 2; 5 / 3</td>
+<td><code>Loop4Mono_v2..v6</code> (09-05); <code>CounterClass3v2.v</code> (10-07, "M1"); <code>SOTCv2.v</code> (M-Abozaid, 09-30).</td>
+</tr>
+<tr>
+<td>Claimed machines</td>
+<td>24</td>
+<td>21 in mira-quine's open PRs #6–#13; M-Abozaid's Lean proof of <code>1RB0RA_0LC0LA_1RF1LD_1LE0LD_1LC1LF_---1RA</code>; Racheline's "started a proof" machine; Albert's 1e14 simulation Group 21 (one machine still listed).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-stalled-but-plausible-targets">2.3 Stalled but plausible (targets)</h3>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>left / eligible</th>
+<th>last proof kill</th>
+<th>evidence</th>
+<th style="text-align: right;">in pool (+reserve)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bell eats counter</td>
+<td>40 / 24</td>
+<td>08-15</td>
+<td>4 hand proofs in Jul–Aug (<code>SOMDCv6.v</code>, <code>BECv7.v</code>), none since. 9 eligible members are 1 transition from a hand-written proof. All grow as t^0.31–0.36 (the same bell).</td>
+<td style="text-align: right;">10 (+2)</td>
+</tr>
+<tr>
+<td>Bouncer + Chaotic Edge</td>
+<td>20 / 16</td>
+<td>07-29</td>
+<td>The certificate routes took 7 (FAR, RWLAcc). The rest need hand proofs, as in July (<code>Bouncer_v3.v</code>, 3.5 KB). Contains one exact twin pair and a near-twin triple.</td>
+<td style="text-align: right;">6 (+1)</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 2</td>
+<td>14 / 9</td>
+<td>08-15</td>
+<td>One kill in 2026 (<code>SBCv6.v</code> TM21). Two 3-machine identical-trajectory clusters.</td>
+<td style="text-align: right;">6 (+1)</td>
+</tr>
+<tr>
+<td>Structural counter + counter</td>
+<td>5 / 4</td>
+<td>none since Dec</td>
+<td>Untouched while every sibling counter class was cleared. 3 of the 5 have identical trajectories.</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td>SO structural counter</td>
+<td>11 / 4</td>
+<td>08-30</td>
+<td>8 hand proofs Jul–Aug (<code>SBCv10</code>, <code>SBCv6a2</code>, <code>SOBLv1–v3</code>), none since.</td>
+<td style="text-align: right;">2 (+1)</td>
+</tr>
+<tr>
+<td>Structural counter + chaotic edge</td>
+<td>11 / 3</td>
+<td>08-30</td>
+<td>6 hand proofs Jul–Aug (<code>BLv2</code>, <code>BLv3</code>, <code>Bouncer_v4</code>), 4 of them HALT. Contains a near-twin pair.</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>Sync bouncer counter</td>
+<td>4 / 3</td>
+<td>08-15</td>
+<td>Nearly clean. Proved neighbours in <code>SBCv7.v</code>, <code>SBCv11.v</code> and <code>SBCv2_6x2_solved.v</code> lie 1–2 transitions away.</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>Counter Class 4</td>
+<td>2 / 1</td>
+<td>none since Dec</td>
+<td>Both members are exact trajectory twins. Pure counter (134 cells after 1e9 steps).</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Others</td>
+<td>4 / 4</td>
+<td>09-16</td>
+<td><code>FractalMisc.v</code> took 2. Three of the 4 share one Quick_Sim signature.</td>
+<td style="text-align: right;">2 (+1)</td>
+</tr>
+<tr>
+<td>Unknown (selective)</td>
+<td>93 / 55</td>
+<td>scattered</td>
+<td>Mostly unanalysed. Only twins and machines with a template neighbour were taken.</td>
+<td style="text-align: right;">2 (+2)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-tarpits-no-track-b-time">2.4 Tarpits (no Track B time)</h3>
+<table>
+<thead>
+<tr>
+<th>tarpit</th>
+<th>evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cryptids (20) and potential cryptids / open BMO problems (BMO 1, 5 and its two variants, 8, 8-like, 10, 11, the last with its 20-machine group)</td>
+<td>By definition open mathematics (PLAN §8). Formal tracking is DrDisentangle's; AI provers (DeepMind formal-conjectures) may also target the BMOs.</td>
+</tr>
+<tr>
+<td>Bell-like nonhalting (80) and Quadratic Mess nonhalting (51)</td>
+<td>15 of the 18 sheet CRYPTIDs. 18 + 5 machines are on the "worked on extensively" tab. 1 Bell-like proof kill in 3 months, and that was a halt.</td>
+</tr>
+<tr>
+<td>Chaotic Bell Class 1 (19), Class 3 (22), Class 4 (5); Spaghetti (18); Chaotic 1dCA-like in bouncer (14) and in bell (9); Chaotic Ack-like Bell (11)</td>
+<td>No mechanism found by anyone, human or AI, and no hand proof ever. Their only 2026 kills were decider certificates (FAR, IndBGAS) or equivalences, the last in February; Class 3's 9 kills were all FAR in 2025. The 1e14 simulation backlog sits here, so treat these as a halting lottery for the simulators, not proof targets.</td>
+</tr>
+<tr>
+<td>Chaotic Bell Class 2 (7)</td>
+<td>The recent kills were <code>TranslatedBellv5–v7.v</code> at 23–280 KB <strong>per machine</strong>.</td>
+</tr>
+<tr>
+<td>Cost blow-up families</td>
+<td><code>BLECv3z.v</code> (772 KB for 2 machines), <code>SOBCv10.v</code> (152 KB for 1), Loop4 (26 KB per machine). The cheap members of these families are gone.</td>
+</tr>
+<tr>
+<td>Known traps</td>
+<td>4 "NONHALT (?) unlikely to be correct" claims. The two-undefined-transition machines, including the 9-group <code>1RB1LA_1RC0RF_1RD---_0LE1RB_---0LA_1LD1RF</code> that DrDisentangle already "analysed thoroughly using formal proofs from Claude Opus 4.6". Machines at the Edge (4). The Category 1 tab (16) and Level 1 tab (41). Discarded-tab "looks like hell" / "seems hard".</td>
+</tr>
+<tr>
+<td>Mirror trap</td>
+<td>39% of upstream proofs state the machine mirrored (<code>1LB…</code>). A copied template fails our byte-exact gate until it is re-targeted. This affects <code>FractalBEC.v</code> and <code>SBCv2_6x2_solved.v</code> instances that we use below.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="25-what-the-sweep-adds">2.5 What the sweep adds</h3>
+<p><strong>What was run</strong> (all on this box, about 15 minutes wall time on 12–16 cores; outputs are in the session scratchpad, see Appendix):
+- <code>tools/sim/tmsim</code>: every holdout to 1e9 steps, sampling the visited width every 1e7 steps. Then the same run on the 563 machines proof-killed since Dec.
+- <code>tools/qsim.py</code> (sligocki Quick_Sim, 20k loops): rules proven, steps reached, block size.
+- A neighbour search: every variant within 2 transition changes (about 38k per machine) was keyed by <code>holdouts.equiv_key</code> (mirror + state renaming) and looked up among the 235,762 proved 6x2 machines and among the other 777 holdouts.</p>
+<p><strong>Growth signatures are class-consistent:</strong>
+- Bell eats counter grows as t^0.31–0.36.
+- Bouncer + Chaotic Edge, Skelet 1-like Class 2, SO structural counter and Structural counter + chaotic edge grow as ~t^0.5.
+- Structural counter + counter grows as t^0.33.
+- Counter Class 3/4 barely grow (≤ 140 cells after 1e9 steps).
+- Translated Counter grows linearly.</p>
+<p>That makes a cheap first check at Checkpoint A: a machine whose growth exponent disagrees with its sheet class is misclassified or special.</p>
+<p><strong>Trajectory twins:</strong> two holdouts count as twins when their visited width agrees to within 0.3% + 3 cells at every 1e7-step checkpoint up to 1e9 and their nonzero count at 1e9 agrees to within 0.5% + 3.
+- 47 twin groups were found, and every one lies within a single sheet class.
+- Validation: the detector flags 4 of mira-quine's 10 claimed equivalence pairs as exact twins, and 6 of 10 within 2%.
+- Twins that differ in 5–11 transitions are either non-obvious equivalences or the same mechanism under a different encoding. Either way, one proof idea serves the whole group.</p>
+<p><strong>Template neighbours:</strong> 95 of the 430 eligible holdouts are within 2 transitions of a machine with a hand-written proof (not a decider certificate). The pool uses the best of these.</p>
+<p><strong>What it does not tell us:</strong> a neighbour that is proved does not guarantee that its template transfers. For the one-transition variants, mxdys's own family search evidently ran and failed, so Checkpoint A has to name what the changed transition does.</p>
+<hr />
+<h2 id="3-reusable-proof-templates-and-techniques-per-target-class">3. Reusable proof templates and techniques per target class</h2>
+<p>All paths are under <code>vendor/busycoq/verify/</code> at the pin. "Framework" means the module is built by <code>make</code> (its <code>.vo</code> exists), so a proof may <code>Require</code> it.</p>
+<table>
+<thead>
+<tr>
+<th>target class</th>
+<th>start from</th>
+<th>what it shows</th>
+<th>how to use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bell eats counter</td>
+<td><code>SOMDCv6.v</code> (<code>Module TM7</code> line 1626, <code>TM8</code> line 1874; 48 KB, 8 machines); <code>BECv7.v</code> (2 machines, 08-15; uses framework <code>Longitudinal</code>, <code>DivModCases</code>, <code>ES_v3</code>); <code>BMO7.v</code> (441 lines, single machine); <code>BECv1.v</code> + <code>BECv1_6x2_solved.v</code>; <code>FractalBEC.v</code> (5.8 KB); <code>IndBECv1.v</code> (certificate shape, <code>UnaryCounter</code>)</td>
+<td>mxdys's hand style: <code>es</code> low-level rules, <code>ind</code> repeats, <code>follow</code> chains, <code>multistep_nonhalt</code> + <code>progress_nonhalt_cond</code>. BECv7 adds an explicit <code>Inductive</code> encoding of the counter digits.</td>
+<td>Copy the nearest module and change the one transition. Re-derive only the rules that use it. <code>BECv1.v</code> and <code>FractalBEC.v</code> are <code>Section … Hypothesis tm</code> templates and are not built by <code>make</code>, so inline the needed lemmas as top-level, Hypothesis-free lemmas (ground rule 1). Do not <code>Require</code> them.</td>
+</tr>
+<tr>
+<td>Bouncer + Chaotic Edge</td>
+<td><code>Bouncer_v3.v</code> (3.5 KB, the July kill in this class, stated mirrored); <code>InfiniteRect_v1.v</code> + framework <code>InfiniteRect.v</code>; <code>LongNv1.v</code> + framework <code>LongN.v</code></td>
+<td>Bouncer with an edge region described by a finite set of local configurations (InfiniteRect / LongN).</td>
+<td>Start with Bouncer_v3's shape. If the edge is genuinely chaotic, use LongN/InfiniteRect closed-set lemmas.</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 2</td>
+<td><code>SBCv6.v</code> <code>Module TM21</code> (line 3702, the class's only 2026 kill); <code>Sk1like_TC_v1.v</code>, <code>Sk1like_TC_v2.v</code> (14 KB each); <code>TCv3.v</code></td>
+<td>Counter riding on a Skelet-1-like translated structure</td>
+<td>Expect 15–50 KB (the Skelet1*.v files are 48 KB). Prove one member of a triple and re-target the others.</td>
+</tr>
+<tr>
+<td>SO structural counter</td>
+<td><code>SBCv6a.v</code> (3 machines, 18.6 KB); <code>SBCv10.v</code> (2, 50 KB); <code>SOBLv1.v</code>–<code>SOBLv3.v</code> (SOBLv1 is HALT); <code>SBCv6a2.v</code></td>
+<td>Shift-overflow counter inside a sync-bouncer frame</td>
+<td>Mirror forms are common here; re-target to the list string.</td>
+</tr>
+<tr>
+<td>Structural counter + chaotic edge</td>
+<td><code>BLv3.v</code> (2 nonhalt, 08-30; uses framework <code>LongN</code>, <code>InfiniteRect</code>); <code>BLv2.v</code> (3 HALT, <code>halts_evstep</code>); <code>Bouncer_v4.v</code> (HALT)</td>
+<td>Recent kills were mostly long halters</td>
+<td>Run a deeper or accelerated simulation before writing nonhalt rules. A HALT proof via <code>halts_evstep</code> is also a kill.</td>
+</tr>
+<tr>
+<td>Sync bouncer counter</td>
+<td><code>SBCv7.v</code> (<code>Module TM4</code> line 610, ~170 lines; 37 machines); <code>SBCv11.v</code> (6 kills 08-15, shared Section); <code>SBCv2.v</code> + <code>SBCv2_6x2_solved.v</code></td>
+<td>Sync bouncer counter <code>C'(a,b,n)</code></td>
+<td><code>SBCv2.v</code> is a Section/Hypothesis template like <code>BECv1.v</code>: inline, don't <code>Require</code>. Copy TM4 together with the shared preamble (lines 1–57: <code>sideRLs_wall</code> and the <code>ss</code>/<code>esc</code>/<code>am</code> tactics; imports <code>Longitudinal</code>, <code>ES_v2</code>), then change F0.</td>
+</tr>
+<tr>
+<td>Structural counter + counter, Counter Class 4</td>
+<td><code>CounterCmp_v1.v</code> (7.6 KB; framework <code>BinaryCounter_v2</code>, <code>Longitudinal</code>; <code>sigma_score_unbounded_nonhalt</code>); <code>CounterClass1/CounterClass1.v</code> + <code>CounterClass1Common.v</code> (parameterized family; ~44 KB per machine including shared files); <code>CounterClass2v1.v</code> (99 KB, single machine); <code>CounterClass3v2.v</code> (verified-checker style)</td>
+<td>Binary or other counters, by hand or as a family record</td>
+<td>No template within 2 transitions exists. This is new-mechanism work, so budget for a family proof from the start (one record of rules, three instances).</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Others / Type 1</td>
+<td><code>FractalMisc.v</code> (19 machines, 64 KB; 2 kills in class 09-16); <code>FractalType7v4.v</code> (6.4 KB single machine); <code>FractalType6.v</code> (smallest fractal units, ~120 lines each)</td>
+<td>Fractal (parity-recursive) rules</td>
+<td>Quick_Sim's parity-split ("Collatz") rules are the low-level rules. They need mod-2 case splits (<code>DivModCases</code>).</td>
+</tr>
+<tr>
+<td>Unknown twins</td>
+<td><code>Bouncer_v3.v</code>, <code>LongNv1.v</code></td>
+<td>–</td>
+<td>Classify first (Checkpoint A).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cross-cutting techniques</strong> (from forensics §6.4, ranked by fit for us):
+1. <strong>Copy-and-modify a module</strong> of mxdys's batch style. This is the default for any machine 1 transition from a proof. The smallest complete examples are <code>Bouncer_v2.v</code> (1.6 KB), <code>TCv3.v</code> TM3 and <code>FIBv2.v</code> TM2 (about 60–100 lines each).
+2. <strong>Shared-lemma batch:</strong> one generic phase lemma plus per-machine instances, as in <code>SOMDC_Class1.v</code> (31 machines) and <code>LongAccv1.v</code> (17 in 6.7 KB). Use it for the twin groups.
+3. <strong>Verified checker:</strong> a <code>Fixpoint</code> generator/interpreter, a soundness lemma, then <code>vm_compute</code>. Examples are <code>SOC_4_3_Halt.v</code>, <code>Queue_v1.v</code> and <code>CounterClass3v2.v</code>. This is what the AI-assisted files use. Reach for it only when the rule table explodes into many finite cases.
+4. <strong>Proved accelerator for halting:</strong> <code>LongAccHaltv1.v</code> (23 halts in 4.6 KB) and <code>Bell60.v</code> (RLE + BigUint). Keep it in reserve for Structural counter + chaotic edge machines that turn out to halt.</p>
+<p><strong>Hygiene, enforced by <code>check_kill.sh</code> but worth knowing up front:</strong>
+- Imports from framework modules (<code>Longitudinal</code>, <code>DivModCases</code>, <code>ES_v3</code>, <code>LongN</code>, <code>InfiniteRect</code>, <code>BinaryCounter*</code>, <code>UnaryCounter</code>, <code>SimplTape</code>) are fine. Never import <code>BBinf</code>, <code>TMLR</code>, <code>TMAddOneSymbol</code>, <code>TMLocalHistory</code> or <code>Inductive_inf</code>, which carry unsound <code>Admitted</code> lemmas (zero-context's PR #3).
+- Keep each file to one machine (or one twin family), in house style, under about 15 KB where possible. mxdys's July hand proofs are 3.5–25 KB.</p>
+<hr />
+<h2 id="4-candidate-pool-for-the-20-machine-pilot">4. Candidate pool for the 20-machine pilot</h2>
+<h3 id="41-how-the-pool-was-selected">4.1 How the pool was selected</h3>
+<p><strong>The gate</strong> (applied to every representative and to every member of its equivalence group):
+1. <strong>Index:</strong> <code>holdouts.py solved</code> verdict <code>absent</code>. There must be no row in <code>data/solved_index.tsv</code> in any tier (exact, halt notation, or equivalent up to mirror/renaming). This is stricter than "no proof": it also drops the 299 representatives that appear only as <code>tm'</code> in <code>Eqv*.v</code> lemmas.
+2. <strong>Flags:</strong> not on any claim or tarpit list in §2.2/§2.4 (83 representatives).
+3. <strong>Sheet tabs:</strong> not on the Level 1 (41) or Category 1 (16) tab.
+4. <strong>Status:</strong> blank sheet Results status (excludes the 18 CRYPTIDs and the SOCSSv5 anomaly).</p>
+<p>That leaves 430 eligible. Within the target classes of §2.3 they were ranked by:
+- <strong>(a) family leverage:</strong> trajectory twins, and open machines 1 transition apart;
+- <strong>(b) template distance:</strong> a hand-written proof 1–2 transitions away, preferably from 2026;
+- <strong>(c) class temperature:</strong> cooled or untouched beats hot;
+- <strong>(d) cost signals:</strong> slow growth, no 100 KB-class precedent.</p>
+<p><strong>Ranks 1–20 are leads</strong>, one per independent mechanism, spanning 11 classes; this is the recommended pilot. <strong>Ranks 21–40</strong> are follow-ons (same mechanism as a lead, so cheap once the lead is proved) plus second-wave picks. If a lead dies at Checkpoint B, skip its follow-ons. <strong>R1–R11</strong> are reserves.</p>
+<p>Every machine in the pool and reserve is a singleton equivalence group, so each kill removes exactly one list entry.</p>
+<p><strong>Discord check codes</strong> (Dennis):
+- <strong>A</strong>, for every machine: search the string in #bb6 and the sheet. Confirm it is not in dyuan's Oct 1 list of 24 (message <code>1555244959840337973</code>) or mxdys's Aug 24 UBRRBA list of 86 (<code>1541486462330085496</code>), and not claimed in a thread.
+- <strong>B:</strong> ask mxdys whether the named family template (SOMDCv6, SBCv7/v11, SBCv2, BECv1, FractalBEC, IndBEC, BMO7, SBCv6a/SOBL) was tried on this machine and why it failed. One message covers all of them.
+- <strong>C:</strong> who holds the numbered Skelet 1-like list behind <code>Sk1Machines.v</code> ("TM1..TM105"), and does it cover Class 2?
+- <strong>D:</strong> has anyone run FAR with larger DFA parameters, or a new edge decider, on Bouncer + Chaotic Edge since July?
+- <strong>E:</strong> has anyone simulated it past 1e15 or found it halting? 4 of the class's 6 recent kills were halts.
+- <strong>F:</strong> any informal analysis of Structural counter + counter or Counter Class 4? Both classes have been untouched all year.
+- <strong>G:</strong> who is behind the FractalType7/FractalMisc batch (<code>SOC_FT7_CONSOLIDATION.md</code> numbering), and are the remaining fractal holdouts on that list?</p>
+<h3 id="42-ranks-120-recommended-pilot-lead-machines">4.2 Ranks 1–20: recommended pilot (lead machines)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>machine</th>
+<th>class</th>
+<th>why it is promising</th>
+<th>nearest template</th>
+<th>risk</th>
+<th>Discord</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td><code>1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---</code></td>
+<td>Structural counter + counter</td>
+<td>Trio with identical tape trajectories to 1e9 steps (2,457 cells, 1,464 nonzeros); one proof idea covers 3 of the class's 5. Class has had no kill since the Dec 2025 classification. Growth ~t^0.33.</td>
+<td>none within 2 transitions; <code>verify/CounterCmp_v1.v</code>, <code>verify/CounterClass1/CounterClass1.v</code>, <code>verify/BECv7.v</code> (layout)</td>
+<td>Med-high: no proof ever in this class; the 3 are correlated</td>
+<td>A, F</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code></td>
+<td>Bell eats counter</td>
+<td>Differs only in A1 from two machines mxdys proved in SOMDCv6.v (TM7 <code>…1RB0RC…</code>, TM8 <code>…1RB0LC…</code>, 07-02); the two open variants also differ from each other only in A1.</td>
+<td><code>verify/SOMDCv6.v</code> <code>Module TM7</code> (line 1626) / <code>TM8</code> (line 1874)</td>
+<td>Medium: mxdys stopped short of these two, so A1 probably breaks his rule set</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><code>1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Trio with identical trajectories (67,343 cells, 33,665 nonzeros at 1e9), so one idea covers 3 of the 14 in the class. Only one class kill in 2026.</td>
+<td><code>verify/SBCv6.v</code> <code>Module TM21</code> (line 3702, the class's 08-15 kill); <code>verify/Sk1like_TC_v1.v</code>, <code>verify/Sk1like_TC_v2.v</code></td>
+<td>Medium: next to the actively mined Skelet 1-like Class 1</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><code>1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---</code></td>
+<td>Sync bouncer counter</td>
+<td>Differs only in F0 (<code>1RC</code> vs <code>0RA</code>/<code>0RD</code>/<code>0LA</code>) from SBCv7.v TM2–TM4; 10 proved machines within 1 transition; 2 transitions from SBCv11.v kills (08-15). Class nearly clean (4 left).</td>
+<td><code>verify/SBCv7.v</code> <code>Module TM4</code> (line 610, ~170 lines); <code>verify/SBCv11.v</code></td>
+<td>Medium: a leftover the batch did not cover</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><code>1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Exact twin pair (32,607 cells at 1e9; nonzeros 31,695 / 31,699), so one proof gives 2 kills. Bouncer growth (t^0.5). Class cooled since 07-29; the decider routes are exhausted, so the rest need hand proofs like Bouncer_v3.v.</td>
+<td><code>verify/Bouncer_v3.v</code> (3.5 KB, July kill in this class); <code>verify/InfiniteRect_v1.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Medium: chaotic edge needs a regular-language invariant</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><code>1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD</code></td>
+<td>Structural counter + chaotic edge</td>
+<td>Near-twin pair (36,471 / 36,489 cells; 18,331 / 18,333 nonzeros). Class got 6 hand proofs in Jul–Aug (BLv2, BLv3, Bouncer_v4), none since 08-30.</td>
+<td><code>verify/BLv3.v</code> (2 nonhalt kills in class), <code>verify/BLv2.v</code> (3 HALT kills); weak hint: trajectory within 3% of <code>verify/SOBCv11.v</code></td>
+<td>Medium: 4 of the class's 6 recent kills were HALT proofs</td>
+<td>A, E</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA</code></td>
+<td>Bell eats counter</td>
+<td>1 transition (E1) from an instance in BECv1_6x2_solved.v (line 88); #7 and #28 are 1 transition apart.</td>
+<td><code>verify/BECv1.v</code> (Section template) + <code>verify/BECv1_6x2_solved.v</code>; <code>verify/BECv7.v</code></td>
+<td>Medium: the BECv1 / IndBECv1 parameter search failed on it</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><code>1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB</code></td>
+<td>Sync bouncer counter</td>
+<td>1 transition (up to mirror/relabel) from an instance in mxdys's SBCv2 family (SBCv2_6x2_solved.v line 1195).</td>
+<td><code>verify/SBCv2.v</code> (Section template) + <code>verify/SBCv2_6x2_solved.v</code>; <code>verify/SBCv11.v</code></td>
+<td>Medium: the family's parameter search already failed on it</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><code>1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---</code></td>
+<td>SO structural counter</td>
+<td>Exact trajectory twin of the open holdout <code>1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC</code> (gate-excluded: Eqv mention). Trajectory within 1% of a Bouncer_v1.v kill. Class cooled since 08-30.</td>
+<td><code>verify/SBCv6a.v</code>, <code>verify/SBCv10.v</code>, <code>verify/SOBLv1.v</code>; look-alike <code>verify/Bouncer_v1.v</code> (line 187)</td>
+<td>Medium: shift-overflow is mxdys's home turf</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><code>1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC</code></td>
+<td>Bell eats counter</td>
+<td>1 transition (C1) from a FractalBEC.v instance (5.8 KB file); 1 transition from #30. Exact trajectory twin of the open holdout <code>1RB0RE_1RC1RE_1LD1RA_1LA0LD_0RA0LF_1LD---</code> (gate-excluded: Eqv mention).</td>
+<td><code>verify/FractalBEC.v</code> (instance near line 269)</td>
+<td>Medium (template search failed)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Trajectory twin of two Skelet 1-like Class 2 holdouts that fail our gate (one Eqv mention, one on the Level 1 tab). #11 and #32 are 1 transition apart.</td>
+<td><code>verify/SBCv6.v</code> <code>Module TM21</code>; <code>verify/Sk1like_TC_v2.v</code></td>
+<td>Med-high: a twin is on the "worked on extensively" tab</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><code>1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF</code></td>
+<td>Counter Class 4</td>
+<td>Both Counter Class 4 machines are exact trajectory twins (134 / 133 cells at 1e9; the other is an Eqv representative). Log growth, a pure counter. Class untouched since Dec.</td>
+<td><code>verify/CounterClass1/CounterClass1.v</code>, <code>verify/CounterClass2v1.v</code>, <code>verify/CounterClass3v2.v</code></td>
+<td>Med-high: Quick_Sim finds 0 rules; not simulated to 1e14</td>
+<td>A, F</td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><code>1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Near-twin group #13/#34/R6 (trajectories within 1.6%: 20,564 cells, 14,332 nonzeros at 1e9), so likely one mechanism. Bouncer growth (t^0.5).</td>
+<td><code>verify/Bouncer_v3.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Medium</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><code>1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB</code></td>
+<td>Structural counter + counter</td>
+<td>4th open member of the same untouched class; own trajectory (4,258 cells at 1e9), ~t^0.33.</td>
+<td>as #1; <code>verify/CounterCmp_v1.v</code></td>
+<td>Med-high: new mechanism likely</td>
+<td>A, F</td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><code>1RB1RF_1LC1RE_---0LD_1LE0LD_1RA0RF_0RE0LB</code></td>
+<td>Bell eats counter</td>
+<td>Open 1-transition pair (#15/#31); proved neighbours exist only as IndBECv1 certificates. Exact trajectory twin of the open holdout <code>1RB1RE_1LC1RD_1LD0LC_1RA0RF_0RD---_0RD0LB</code> (gate-excluded: Eqv mention).</td>
+<td><code>verify/BECv7.v</code>; <code>verify/IndBECv1.v</code> (certificate shape, UnaryCounter)</td>
+<td>Medium</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><code>1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA</code></td>
+<td>Chaotic Fractal Others</td>
+<td>#16, #39 and R7 share a Quick_Sim signature (block size 6, 76–77 rules, all parity-split, ~1e7 steps), so probably one fractal rule set. All 4 left in the class are eligible.</td>
+<td><code>verify/FractalMisc.v</code> (2 kills in class, 09-16); <code>verify/FractalType7v4.v</code> (6.4 KB)</td>
+<td>Med-high: may be on the fractal batch's list</td>
+<td>A, G</td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td><code>1RB0LF_0RC0RB_1LC1LD_1RE0RD_---0RA_1LA0LF</code></td>
+<td>Unknown</td>
+<td>Exact twin pair (65,134 cells at 1e9; nonzeros 34,220 / 34,221). Quick_Sim proves ~10 rules. Nobody has classified the mechanism.</td>
+<td>none within 2 transitions; <code>verify/Bouncer_v3.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Med-high: unknown mechanism</td>
+<td>A</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><code>1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</code></td>
+<td>Bell eats counter</td>
+<td>Differs only in C1 (<code>1RE</code> vs <code>1RC</code>) from BMO 7, which BMO7.v proves in 9 KB (Dec 2025).</td>
+<td><code>verify/BMO7.v</code> (single machine, 441 lines)</td>
+<td>Med-high: BMO 7 was itself a hard problem</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><code>1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF</code></td>
+<td>SO structural counter</td>
+<td>Trajectory within 1.6% of the open holdout <code>1RB1LF_1LC1RB_1LE1LD_1LB0RD_1LF---_1LA0LA</code> (gate-excluded: Eqv mention); same cooled class.</td>
+<td><code>verify/SBCv6a.v</code>, <code>verify/SBCv10.v</code>, <code>verify/SOBLv2.v</code></td>
+<td>Medium</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><code>1RB1LE_0RC1RC_0RD0RB_1RE0RF_1LA0LE_---1RB</code></td>
+<td>Chaotic Fractal Type 1</td>
+<td>The only eligible holdout the sheet calls easy ("Appears to be solvable", "Looks like a solvable fractal"). Included because PLAN §6 asks for a few such machines.</td>
+<td><code>verify/FractalType7v4.v</code>, <code>verify/FractalType7v2.v</code></td>
+<td>High: class went 22 → 4 in 10 weeks via the FractalType7 batch</td>
+<td>A, G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-ranks-2140-follow-ons-and-second-wave">4.3 Ranks 21–40: follow-ons and second wave</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>machine</th>
+<th>class</th>
+<th>why it is promising</th>
+<th>nearest template</th>
+<th>risk</th>
+<th>Discord</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">21</td>
+<td><code>1RB0LC_1LA0RE_0RD0LA_1RE1RA_0LD1RF_0RB---</code></td>
+<td>Structural counter + counter</td>
+<td>Follow-on to #1. Trio with identical tape trajectories to 1e9 steps (2,457 cells, 1,465 nonzeros); one proof idea covers 3 of the class's 5. Class has had no kill since the Dec 2025 classification. Growth ~t^0.33.</td>
+<td>none within 2 transitions; <code>verify/CounterCmp_v1.v</code>, <code>verify/CounterClass1/CounterClass1.v</code>, <code>verify/BECv7.v</code> (layout)</td>
+<td>Med-high: no proof ever in this class; the 3 are correlated</td>
+<td>A, F</td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td><code>1RB1RC_0LA1RF_1RD0LE_1LC0RB_0RA0LC_0RD---</code></td>
+<td>Structural counter + counter</td>
+<td>Follow-on to #1. Trio with identical tape trajectories to 1e9 steps (2,457 cells, 1,468 nonzeros); one proof idea covers 3 of the class's 5. Class has had no kill since the Dec 2025 classification. Growth ~t^0.33.</td>
+<td>none within 2 transitions; <code>verify/CounterCmp_v1.v</code>, <code>verify/CounterClass1/CounterClass1.v</code>, <code>verify/BECv7.v</code> (layout)</td>
+<td>Med-high: no proof ever in this class; the 3 are correlated</td>
+<td>A, F</td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td><code>1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code></td>
+<td>Bell eats counter</td>
+<td>Follow-on to #2. Differs only in A1 from two machines mxdys proved in SOMDCv6.v (TM7 <code>…1RB0RC…</code>, TM8 <code>…1RB0LC…</code>, 07-02); the two open variants also differ from each other only in A1.</td>
+<td><code>verify/SOMDCv6.v</code> <code>Module TM7</code> (line 1626) / <code>TM8</code> (line 1874)</td>
+<td>Medium: mxdys stopped short of these two, so A1 probably breaks his rule set</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td><code>1RB0RE_1LC0RA_1LD0LB_1LA1LF_1LE1RA_0LC---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Follow-on to #3. Trio with identical trajectories (67,345 cells, 33,665 nonzeros at 1e9), so one idea covers 3 of the 14 in the class. Only one class kill in 2026.</td>
+<td><code>verify/SBCv6.v</code> <code>Module TM21</code> (line 3702, the class's 08-15 kill); <code>verify/Sk1like_TC_v1.v</code>, <code>verify/Sk1like_TC_v2.v</code></td>
+<td>Medium: next to the actively mined Skelet 1-like Class 1</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">25</td>
+<td><code>1RB1RF_1LC0LE_1RD0LB_1RA0RC_1RE1LB_0RD---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Follow-on to #3. Trio with identical trajectories (67,347 cells, 33,668 nonzeros at 1e9), so one idea covers 3 of the 14 in the class. Only one class kill in 2026.</td>
+<td><code>verify/SBCv6.v</code> <code>Module TM21</code> (line 3702, the class's 08-15 kill); <code>verify/Sk1like_TC_v1.v</code>, <code>verify/Sk1like_TC_v2.v</code></td>
+<td>Medium: next to the actively mined Skelet 1-like Class 1</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">26</td>
+<td><code>1RB1RA_1LC1RE_---0LD_1LE1LD_0RA0LF_1LF0LB</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Follow-on to #5. Exact twin pair (32,607 cells at 1e9; nonzeros 31,695 / 31,699), so one proof gives 2 kills. Bouncer growth (t^0.5). Class cooled since 07-29; the decider routes are exhausted, so the rest need hand proofs like Bouncer_v3.v.</td>
+<td><code>verify/Bouncer_v3.v</code> (3.5 KB, July kill in this class); <code>verify/InfiniteRect_v1.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Medium: chaotic edge needs a regular-language invariant</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">27</td>
+<td><code>1RB0RA_1RC0RF_1RD1LE_1RE---_1LF1LE_1RA0LE</code></td>
+<td>Structural counter + chaotic edge</td>
+<td>Follow-on to #6. Near-twin pair (36,471 / 36,489 cells; 18,331 / 18,333 nonzeros). Class got 6 hand proofs in Jul–Aug (BLv2, BLv3, Bouncer_v4), none since 08-30.</td>
+<td><code>verify/BLv3.v</code> (2 nonhalt kills in class), <code>verify/BLv2.v</code> (3 HALT kills); weak hint: trajectory within 3% of <code>verify/SOBCv11.v</code></td>
+<td>Medium: 4 of the class's 6 recent kills were HALT proofs</td>
+<td>A, E</td>
+</tr>
+<tr>
+<td style="text-align: right;">28</td>
+<td><code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA</code></td>
+<td>Bell eats counter</td>
+<td>Follow-on to #7. 1 transition (E1) from an instance in BECv1_6x2_solved.v (line 88); #7 and #28 are 1 transition apart. Exact trajectory twin of the open holdout <code>1RB0RA_1LC0LD_1LE1LD_0LB0RF_1RA1LB_1RA---</code> (gate-excluded: Eqv mention).</td>
+<td><code>verify/BECv1.v</code> (Section template) + <code>verify/BECv1_6x2_solved.v</code>; <code>verify/BECv7.v</code></td>
+<td>Medium: the BECv1 / IndBECv1 parameter search failed on it</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">29</td>
+<td><code>1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC</code></td>
+<td>Bell eats counter</td>
+<td>1 transition (E1) from BECv1_6x2_solved.v (line 872); open 1-transition sibling (#29/R2).</td>
+<td><code>verify/BECv1.v</code> + <code>verify/BECv1_6x2_solved.v</code></td>
+<td>Medium (as #7)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">30</td>
+<td><code>1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC</code></td>
+<td>Bell eats counter</td>
+<td>Follow-on to #10. 1 transition (C1) from a FractalBEC.v instance (5.8 KB file); 1 transition from #10.</td>
+<td><code>verify/FractalBEC.v</code> (instance near line 269)</td>
+<td>Medium (template search failed)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">31</td>
+<td><code>1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB</code></td>
+<td>Bell eats counter</td>
+<td>Follow-on to #15. Open 1-transition pair (#15/#31); proved neighbours exist only as IndBECv1 certificates.</td>
+<td><code>verify/BECv7.v</code>; <code>verify/IndBECv1.v</code> (certificate shape, UnaryCounter)</td>
+<td>Medium</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">32</td>
+<td><code>1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Follow-on to #11. Different trajectory from #11 (90,039 vs 77,685 cells at 1e9), so a related but not identical mechanism. #11 and #32 are 1 transition apart.</td>
+<td><code>verify/SBCv6.v</code> <code>Module TM21</code>; <code>verify/Sk1like_TC_v2.v</code></td>
+<td>Med-high: sibling of #11, whose twin is on the Level 1 tab</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">33</td>
+<td><code>1RB0RE_1LC0RE_1LD0LD_1RA0LC_1RA1RF_1RA---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Open 1-transition pair (#33/R4). Sheet: "machine with the most common transitions".</td>
+<td><code>verify/SBCv6.v</code>; <code>verify/TCv3.v</code></td>
+<td>Medium</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">34</td>
+<td><code>1RB0LC_1LC0RE_1RA1LD_1LA1LC_1RF0RA_---0LA</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Follow-on to #13. Near-twin group #13/#34/R6 (trajectories within 1.6%: 20,561 cells, 14,319 nonzeros at 1e9), so likely one mechanism. Bouncer growth (t^0.5).</td>
+<td><code>verify/Bouncer_v3.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Medium</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">35</td>
+<td><code>1RB0LF_1LC0LA_---1RD_1RF1RE_1LF1RD_1LB0RE</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Near-twin pair (21,748 / 21,745 cells; 15,177 / 15,171 nonzeros at 1e9).</td>
+<td><code>verify/Bouncer_v3.v</code>, <code>verify/InfiniteRect_v1.v</code></td>
+<td>Medium</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">36</td>
+<td><code>1RB1RF_1LC0RF_1LE0LD_1RC0LB_---1RA_1LB1RA</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Near-twin pair (21,748 / 21,745 cells; 15,177 / 15,171 nonzeros at 1e9).</td>
+<td><code>verify/Bouncer_v3.v</code>, <code>verify/InfiniteRect_v1.v</code></td>
+<td>Medium</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">37</td>
+<td><code>1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA</code></td>
+<td>Sync bouncer counter</td>
+<td>Last open Sync bouncer counter besides #4/#8; Discarded tab: "mentioned but no work done".</td>
+<td><code>verify/SBCv11.v</code>, <code>verify/SBCv7.v</code></td>
+<td>Medium</td>
+<td>A</td>
+</tr>
+<tr>
+<td style="text-align: right;">38</td>
+<td><code>1RB0RA_1LC0RC_1LF0RD_1RA1LE_0LC---_1LD0LA</code></td>
+<td>Structural counter + chaotic edge</td>
+<td>Third eligible member of the same cooled class (50,604 cells at 1e9).</td>
+<td><code>verify/BLv3.v</code>, <code>verify/BLv2.v</code>, <code>verify/Bouncer_v4.v</code></td>
+<td>Medium: may halt</td>
+<td>A, E</td>
+</tr>
+<tr>
+<td style="text-align: right;">39</td>
+<td><code>1RB0RF_0LC---_1LE1LD_1RE0LA_1RA0RD_1LB1RD</code></td>
+<td>Chaotic Fractal Others</td>
+<td>Follow-on to #16. #16, #39 and R7 share a Quick_Sim signature (block size 6, 76–77 rules, all parity-split, ~1e7 steps), so probably one fractal rule set. All 4 left in the class are eligible.</td>
+<td><code>verify/FractalMisc.v</code> (2 kills in class, 09-16); <code>verify/FractalType7v4.v</code> (6.4 KB)</td>
+<td>Med-high: may be on the fractal batch's list</td>
+<td>A, G</td>
+</tr>
+<tr>
+<td style="text-align: right;">40</td>
+<td><code>1RB0RA_1LC0RA_0LD0LC_1RD1RE_1LF0LE_---0LB</code></td>
+<td>Unknown</td>
+<td>Follow-on to #17. Exact twin pair (65,135 cells at 1e9; nonzeros 34,220 / 34,221). Quick_Sim proves ~10 rules. Nobody has classified the mechanism.</td>
+<td>none within 2 transitions; <code>verify/Bouncer_v3.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Med-high: unknown mechanism</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<h3 id="44-reserve">4.4 Reserve</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">R</th>
+<th>machine</th>
+<th>class</th>
+<th>why it is promising</th>
+<th>nearest template</th>
+<th>risk</th>
+<th>Discord</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">R1</td>
+<td><code>1RB0LF_1LC0RB_0LD1LA_0RA1LE_0LA0RA_1LA---</code></td>
+<td>Chaotic Fractal Type 1</td>
+<td>Sheet class Chaotic Fractal Type 1, but 2 transitions from three SBCv7.v machines and 1 from a FARv1 kill.</td>
+<td><code>verify/SBCv7.v</code>, <code>verify/SBCv11.v</code></td>
+<td>High (as #20)</td>
+<td>A, G</td>
+</tr>
+<tr>
+<td style="text-align: right;">R2</td>
+<td><code>1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LD0RC</code></td>
+<td>Bell eats counter</td>
+<td>2 transitions from BECv1_6x2_solved.v (line 872); 1 transition from #29.</td>
+<td><code>verify/BECv1.v</code> + <code>verify/BECv1_6x2_solved.v</code></td>
+<td>Medium (as #7)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">R3</td>
+<td><code>1RB0RF_1RC0RE_1LD1RA_1LA0LD_1RA---_0RA0LB</code></td>
+<td>Bell eats counter</td>
+<td>1 transition (C1) from a FractalBEC.v instance (5.8 KB file); 1 transition from another open holdout.</td>
+<td><code>verify/FractalBEC.v</code> (instance near line 269)</td>
+<td>Medium (template search failed)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">R4</td>
+<td><code>1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---</code></td>
+<td>Skelet 1-like Class 2</td>
+<td>Open 1-transition pair (#33/R4).</td>
+<td><code>verify/SBCv6.v</code>; <code>verify/TCv3.v</code></td>
+<td>Medium</td>
+<td>A, C</td>
+</tr>
+<tr>
+<td style="text-align: right;">R5</td>
+<td><code>1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---</code></td>
+<td>SO structural counter</td>
+<td>Another eligible SO structural counter (class cooled since 08-30); 48,282 cells at 1e9 (t^0.5); trajectory within 3% of a FARv1.v kill.</td>
+<td><code>verify/SBCv6a.v</code>, <code>verify/SBCv10.v</code>, <code>verify/SOBLv3.v</code></td>
+<td>Medium</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">R6</td>
+<td><code>1RB1LD_1RC0LA_1LA0RE_1LB1LA_1RF0RB_---0LB</code></td>
+<td>Bouncer + Chaotic Edge</td>
+<td>Near-twin group #13/#34/R6 (trajectories within 1.6%: 20,511 cells, 14,314 nonzeros at 1e9), so likely one mechanism. Bouncer growth (t^0.5).</td>
+<td><code>verify/Bouncer_v3.v</code>, <code>verify/LongNv1.v</code></td>
+<td>Medium</td>
+<td>A, D</td>
+</tr>
+<tr>
+<td style="text-align: right;">R7</td>
+<td><code>1RB1LF_0RC---_1RD1RF_1LE0LF_1LB0LA_1LD0RE</code></td>
+<td>Chaotic Fractal Others</td>
+<td>#16, #39 and R7 share a Quick_Sim signature (block size 6, 76–77 rules, all parity-split, ~1e7 steps), so probably one fractal rule set. All 4 left in the class are eligible.</td>
+<td><code>verify/FractalMisc.v</code> (2 kills in class, 09-16); <code>verify/FractalType7v4.v</code> (6.4 KB)</td>
+<td>Med-high: may be on the fractal batch's list</td>
+<td>A, G</td>
+</tr>
+<tr>
+<td style="text-align: right;">R8</td>
+<td><code>1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD</code></td>
+<td>Unknown</td>
+<td>1 transition (F1 <code>0RD</code> vs <code>0RE</code>) from SBCv8.v TM31; odd growth (t^0.85).</td>
+<td><code>verify/SBCv8.v</code> <code>Module TM31</code> (line 9675)</td>
+<td>Medium</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td style="text-align: right;">R9</td>
+<td><code>1RB1RF_1LC0RB_1RD0LC_1LE1RA_0RC1LB_---1RE</code></td>
+<td>Unknown</td>
+<td>Only 1,538 cells at 1e9 (counter-like); Peacemaker flagged its low cell count.</td>
+<td><code>verify/CounterCmp_v1.v</code></td>
+<td>Med-high: not simulated to 1e14</td>
+<td>A</td>
+</tr>
+<tr>
+<td style="text-align: right;">R10</td>
+<td><code>1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA</code></td>
+<td>Counter Class 3</td>
+<td>1 transition from a CounterClass3v1.v machine (which halts); tiny counter.</td>
+<td><code>verify/CounterClass3v1.v</code>, <code>verify/CounterClass3v2.v</code></td>
+<td>High: class hot (CounterClass3v2.v, 10-07)</td>
+<td>A, G</td>
+</tr>
+<tr>
+<td style="text-align: right;">R11</td>
+<td><code>1RB1RA_1RC1LB_0LD0RA_1RF1LE_---1LF_1LC0LF</code></td>
+<td>Counter Class 3</td>
+<td>1 transition from a CounterClass3v1.v machine (which halts); tiny counter.</td>
+<td><code>verify/CounterClass3v1.v</code>, <code>verify/CounterClass3v2.v</code></td>
+<td>High: class hot (CounterClass3v2.v, 10-07)</td>
+<td>A, G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="45-watchlist-good-looking-machines-that-the-strict-gate-excluded">4.5 Watchlist: good-looking machines that the strict gate excluded</h3>
+<p>These are not in the pool because they appear in <code>solved_index.tsv</code> as <code>Eqv*.v</code> mentions (§4.1, rule 1), not because they are solved. A proof of any of them would still be a kill. Relaxing the gate is question 9 in §5.
+- <code>1RB---_1LC0RF_1RF0LD_0LE1LC_0RC0LC_1RB0RA</code> (Unknown): "Possible bouncer with high params".
+- <code>1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF</code> (Unknown): nerdyjoe's "Binary counting + bouncing".
+- <code>1RB0LB_0LC0RE_1LA1LD_0LB1LD_1RA0RF_1RA---</code> (Chaotic Bell Class 4): "possible bouncer".
+- <code>1RB1LA_1LC0RA_0LD1RC_---0LE_0LF1LE_1RF1LB</code>: the Counter Class 4 twin of #12, which a #12 proof should carry over to.
+- All 3 Counter Class 2 and all 3 Fractal in Bouncer leftovers.
+- <code>1RB1LC_0RC0RB_1LD0LA_1LE---_1LF1RA_1LA1LC</code>: the SOCSSv5 sheet anomaly. Its sibling <code>…_1LA1LA</code> is proved in <code>SOCSSv5.v</code>.</p>
+<h3 id="46-verification-record-run-2026-10-09-on-all-51-pool-and-reserve-machines">4.6 Verification record (run 2026-10-09 on all 51 pool and reserve machines)</h3>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>command</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte-exact entry of the 778 list</td>
+<td><code>python3 -B tools/holdouts.py contains data/holdouts/2026-10-07_778.txt '&lt;tm&gt;'</code>, one call per machine</td>
+<td>exit 0 for <strong>51 / 51</strong></td>
+</tr>
+<tr>
+<td>not in <code>solved_index.tsv</code>, any tier</td>
+<td><code>python3 -B tools/holdouts.py solved --json &lt;51 tms&gt;</code></td>
+<td>verdict <code>absent</code> for <strong>51 / 51</strong>; <strong>0</strong> rows across the exact, notation and equivalent tiers (exit 1 is expected: "not all proved")</td>
+</tr>
+<tr>
+<td>equivalence-group members</td>
+<td><code>SolvedIndex.lookup</code> on every member of each group in <code>2026-10-07_eqv_1590.txt</code></td>
+<td>51 members (all singleton groups), 0 non-absent</td>
+</tr>
+<tr>
+<td>independent raw check</td>
+<td><code>grep -rlF</code> of the 51 strings, and of their mirror images, over <code>vendor/busycoq/verify/*.v</code></td>
+<td>0 files, 0 files</td>
+</tr>
+<tr>
+<td>claims and tarpits</td>
+<td>membership in the §2.2/§2.4 lists (matched by <code>equiv_key</code>), Level 1, Category 1, sheet status</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-questions-for-dennis">5. Questions for Dennis</h2>
+<ol>
+<li><strong>Fetch two Discord lists before we spend compute:</strong>
+   - dyuan's 24 "easy by longitudinal analysis" machines (Oct 1, message <code>1555244959840337973</code>);
+   - mxdys's 86 "easy to accelerate with UBRRBA" machines (Aug 24, <code>1541486462330085496</code>).</li>
+</ol>
+<p>Paste them into <code>data/</code> and I will intersect them with the pool in seconds. Any overlap means someone else's pipeline will probably absorb that machine.
+2. <strong>One message to mxdys covering pool #2, #4, #7, #8, #10, #15, #18, #23, #28–#31:</strong> each is 1 transition from a machine proved in a file he committed (SOMDCv6, SBCv7, SBCv2, BECv1, FractalBEC, IndBEC, BMO7). Did he try those templates on them, and does he know why they fail? His answer either hands us the obstacle or tells us to skip the machine.
+3. <strong>Skelet 1-like Class 2:</strong> is the numbered list behind <code>Sk1Machines.v</code> (Class 1, TM1..TM105) also covering Class 2? If yes, drop #3, #11 and their follow-ons.
+4. <strong>Structural counter + counter and Counter Class 4:</strong> no kill all year. Is that because they were tried and found hard, or because nobody looked? This decides whether #1, #12, #14 lead the pilot or move down.
+5. <strong>Pilot composition:</strong> do you accept ranks 1–20 as the pilot (11 classes, one lead per mechanism)? Or would you rather swap in follow-ons for faster first kills, for example #21–#22, which only need the #1 argument re-targeted?
+6. <strong>Halting outcomes:</strong> do HALT proofs count as pilot successes? This matters for #6, #27 and #38 (Structural counter + chaotic edge), where 4 of the class's 6 recent kills were halts. If yes, I would run an accelerated simulation on those three before Checkpoint A.
+7. <strong>Fractal batch:</strong> do you know who produced the FractalType7/FractalMisc files (the <code>SOC_FT7_CONSOLIDATION.md</code> numbering)? If the remaining Chaotic Fractal Others (4) and Type 1 (4) are on their list, #16, #20, #39, R1 and R7 should go.
+8. <strong>Submission format:</strong> a Discord thread per machine, or one per twin family? Is a single <code>.v</code> proving 2–3 twin machines welcome, given that mxdys prefers to fold results into his family files? What disclosure line should we use? The proposal is "Found and formalized with Claude Code; reviewed by Dennis."
+9. <strong>Gate:</strong> should we relax rule 1 to let in holdouts that are only <code>tm'</code> mentions in <code>Eqv*.v</code>? That adds 299 machines, including the §4.5 watchlist (the "possible bouncer" notes, the Counter Class 4 twin, Counter Class 2 and Fractal in Bouncer). They are not solved; the strict reading of "not in solved_index in any tier" just excludes them.
+10. <strong>Low-hanging but claimed:</strong> do you want to ask M-Abozaid whether anyone is porting his Lean proof of <code>1RB0RA_0LC0LA_1RF1LD_1LE0LD_1LC1LF_---1RA</code> to Rocq? With permission and credit it could be the cheapest first kill, though it is outside the pool by our "nothing claimed" rule.
+11. <strong>Budget:</strong> keep the default 2 h per stage? I propose a stop rule for correlated groups: if a lead stalls at Checkpoint B, mark its follow-ons SKIPPED rather than trying them separately.</p>
+<hr />
+<h2 id="appendix-method-notes-and-reproduction">Appendix: method notes and reproduction</h2>
+<ul>
+<li><strong>Sweep commands.</strong> The direct simulation ran as <code>tools/sim/tmsim '&lt;tm&gt;' --max-steps 1000000000 --every 10000000</code>. Quick_Sim ran as <code>.venv/bin/python -B tools/qsim.py '&lt;tm&gt;' --max-loops 20000 --max-seconds 45 --every 0 --no-tape</code>. Both were driven by <code>xargs -P 12</code> over <code>data/holdouts/2026-10-07_778.txt</code>. The 563 killed machines are the <code>reason=proof</code> rows of <code>reports/forensics/kills.tsv</code> with list windows from Dec 2025.</li>
+<li><strong>Where the outputs live.</strong> The scratch scripts (features, twin clustering, neighbour search, pool tables) are in the session scratchpad, not the repo, because this task scoped writes to this memo. Saving them as <code>tools/analysis/targeting_*.py</code> and the per-machine features as <code>reports/targeting/*.tsv</code> is a 10-minute follow-up if wanted.</li>
+<li><strong>Neighbour search.</strong> For each holdout, all 1- and 2-transition variants (25 options per transition: {0,1} × {L,R} × {A..F} or <code>---</code>) were normalized with <code>holdouts.equiv_key</code> and looked up. Proved = <code>proves ≠ -</code> in <code>solved_index.tsv</code>. A neighbour counts as "hand-written" unless its file is a <code>decider_certificate</code> or an <code>equivalence</code> file.</li>
+<li><strong>Twin rule.</strong> Visited width (hi − lo + 1) agrees within 0.3% + 3 cells at all 101 samples (every 1e7 steps, 0 to 1e9), and nonzeros at 1e9 agree within 0.5% + 3. "Near-twin" in the tables means the maximum log-ratio over checkpoints 1e8..1e9 is below 0.02.</li>
+<li><strong>Behavioural look-alikes</strong> to killed machines (same metric) are weak evidence, since many bells and bouncers share growth constants. They are cited only below 3% and only as hints.</li>
+<li><strong>Caveats.</strong> Class labels come from the sheet's Classifications tab (Dec 2025), which has a few misfits. For example, R1 looks more like a sync bouncer counter than a fractal. "Hot", "cooling" and "untouched" come from commit dates and file headers, not from Discord.</li>
+<li><strong>Vendor hygiene.</strong> <code>vendor/</code> was used read-only, and <code>find vendor -name __pycache__</code> is empty.</li>
+</ul>
+<hr />
+<h2 id="update-2026-10-09-late-discord-lists-from-dennis">Update 2026-10-09 (late): Discord lists from Dennis</h2>
+<p>Dennis pasted two Discord threads; saved verbatim in <code>data/discord/</code> with context notes.</p>
+<table>
+<thead>
+<tr>
+<th>List</th>
+<th style="text-align: right;">Size</th>
+<th style="text-align: right;">Still holdouts (778)</th>
+<th>Overlap with our 51 pool+reserve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dyuan01 longitudinal filter, 2026-10-01</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">24</td>
+<td>#4, R1 (R1 = the machine Sheep said he "might be analyzing", then gave up)</td>
+</tr>
+<tr>
+<td>mxdys <code>UBRRBA_TODO.txt</code> ("easy to accelerate by UBRRBA, block size 1–12, flipped/not"), 2026-08-24</td>
+<td style="text-align: right;">86</td>
+<td style="text-align: right;">79</td>
+<td>#4, #5, #6, #8, #9, #13, #19, #26, #27, #34–#38, R5, R6 (16 machines)</td>
+</tr>
+</tbody>
+</table>
+<p>Reading:
+- The UBRRBA list covers exactly our bouncer-like targets (Sync bouncer counter, Bouncer + Chaotic Edge, Structural counter + chaotic edge, SO structural counter). Those machines can fall to anyone's compute run (q64 offered ~500 cores; mxdys: 1e9 simulator step limit and corner-case early exits explain the failures). Hand-proving them risks duplicate work, so they leave the pilot unless Dennis learns the list was run and failed.
+- dyuan01 is developing longitudinal analysis on his 24 ("I don't think I have yet used this technique to its full potential"), so treat that list as claimed.
+- q64's warning on the same thread ("current LLMs are highly likely to make subtle mistakes in these informal reductions ... formalization before claiming") matches our check_kill-only rule. Flintt's AI-assisted halting certificate was confirmed in Rocq by mxdys within ~3.5 h: a clear, auditable artifact gets formalized fast.</p>
+<p><strong>Revised pilot (ranks 1–20 minus both lists, refilled from 21–29):</strong> #1, #2, #3, #7, #10, #11, #12, #14, #15, #16, #17, #18, #20, #21, #22, #23, #24, #25, #28, #29.
+Classes: Bell eats counter 8, Structural counter + counter 4, Skelet 1-like Class 2 4, Counter Class 4 1, Chaotic Fractal Others 1, Chaotic Fractal Type 1 1, Unknown 1 (7 classes).
+Dependencies: 8 of the 20 (#2, #7, #10, #15, #18, #23, #28, #29) hinge on the mxdys template question (§5 Q2); #16 and #20 on the fractal-batch question (Q7); #3, #11, #24, #25 on the Sk1Machines question (Q3).</p>
+<h3 id="denniss-decisions-2026-10-10">Dennis's decisions (2026-10-10)</h3>
+<ul>
+<li>UBRRBA_TODO machines: treat as tried-and-failed, <strong>fair game</strong>. Of the 86, 7 are solved; prurq's screenshot (UBRRBA block 12 on <code>1RB1LC_0LA0RD_1LA0LA_0RF1RE_1LA1RB_---0RB</code>, halts) is one of them. q64's ~1e6427 halter <code>1RB1RF_1RC1RB_1LD0RA_1LA1LE_---0LF_0LC1LF</code> was not on the list (solved by 2026-08-31).</li>
+<li>mxdys template neighbours: <strong>fair game; we check the templates ourselves.</strong></li>
+<li>Fractal thread (Discord, Dec 2025 to Sep 2026): every machine named there is already solved. mxdys 2026-09-21: the "Chaotic Fractal Type 1" batch (18 solved) was done by LLM ("simulate them further, and they all fall into some kind of self-similar loop"). The 4 Type 1 left therefore probably resisted that approach: fair game, likely harder.</li>
+<li><strong>Final pilot = the original ranks 1–20 (§4.2).</strong> #4 is also on dyuan01's longitudinal list (a technique filter, not a claim): keep it, but check the Discord thread before submitting.</li>
+</ul>
+</main></body></html>

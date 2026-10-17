@@ -1,0 +1,606 @@
+{
+ "tm": "1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---",
+ "rank": 3,
+ "class_sheet": "Skelet 1-like Class 2",
+ "class_guess": "Skelet 1-like Class 2: binary down-counter on a list of (10)^p(01)^q pairs with overflow re-pairing (SBCv6 TM21 family)",
+ "confidence": "high",
+ "summary": "Binary down-counter on a list of (10)^p(01)^q pairs; overflow re-pairs the list (TM21-like). 7 rules validated.",
+ "mechanism": [
+  "Tape: (10)^h, marker 11001, then pairs (10)^p (01)^q, each ending in a digit block 0001 (=1) or 0010 (=0).",
+  "Each cycle (3 short bounces + 1 long sweep) subtracts 1 from that binary number; pairs the borrow passes get p+1, q-1.",
+  "At 0, End adds a tail; at the next 0, Overflow re-pairs the list and adds a pair (net ~1 per 2 epochs: width ~ t^0.5)."
+ ],
+ "diagrams": [
+  {
+   "mode": "custom rows: one per decrement",
+   "png": "img/cycles_phase_1e7.png",
+   "html": null,
+   "steps": 10000000,
+   "caption": "One row per decrement: edges swap fixed/drifting at most overflows",
+   "title": "One row per decrement, every 4th cell",
+   "why": "One row per counter decrement, every 4th cell drawn. Watch the vertical and slanted colour edges, and where they kink.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per counter decrement: each time A reaches a new left edge with the tape reading (10)^h 11001... (902 rows, steps 8..9,982,476); not evenly spaced in time",
+   "window": "cells -7,305..132, 1 px = 4 cells (only every 4th cell is drawn; all drawn cells are odd)",
+   "legend": "white = 1, black = 0 on the drawn cells. The tape is 1010... almost everywhere, so each band is one phase of it and each colour edge is a pair boundary: vertical edge = digit block (fixed), slanted edge = (10)|(01) split (moves 2 cells per borrow). Green = head",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "explore --fit",
+   "png": "img/explore_3dec.png",
+   "html": null,
+   "steps": 1676,
+   "caption": "Three decrements: 3 short bounces, then sweep to first 0001",
+   "title": "Three decrements up close, every step",
+   "why": "Every step from counter value 12. Compare how far each long sweep reaches over three decrements.",
+   "primary": true,
+   "start": "constructed: 0^inf <A (10)^10 11001 (10)^12 (01)^9 0010 (10)^6 (01)^7 0010 (10)^5 (01)^6 0001 (10)^4 (01)^6 0001 0^inf (counter value 12)",
+   "rows": "every step, 0..1,676 (1 step = 2 px tall)",
+   "window": "cells -24..151, 1 px = 0.5 cells (1 cell = 2 px)",
+   "legend": "slate = 0, white = 1; head cell coloured by state: A red, B orange, C blue, D green, E magenta, F cyan",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "blaze (speed)",
+   "png": "img/blaze_1e8_speed.png",
+   "html": null,
+   "steps": 100000000,
+   "caption": "Blaze, sampled: the pair list as orange/white phase bands, 1e8 steps",
+   "title": "Blaze (speed mode), 100M steps",
+   "why": "Sampling every 16th cell turns the pair list into orange/white bands; band edges are pair boundaries.",
+   "start": "blank",
+   "rows": "one snapshot every 131,072 steps (763 rows, steps 0..1e8), stretched to 500 px (Blaze speed mode)",
+   "window": "cells -21,952..159, 1 px = 27.6 cells (one sampled cell per px; samples are every 16th cell)",
+   "legend": "orange = 1, white = 0 at the sampled cell. Sampling every 16th cell turns the 1010... tape into solid bands, so each colour edge is a pair boundary; thin horizontal streaks = snapshots caught mid-sweep (a stretch shifted by one cell)",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "every:1000000",
+   "png": "img/every1e6_1e9.png",
+   "html": null,
+   "steps": 1000000000,
+   "caption": "Snapshot every 1e6 steps to 1e9: same bands, left edge ~ sqrt(t)",
+   "title": "Snapshot every 1M steps, to 1 billion",
+   "why": "The same band picture out to 1e9 steps; the left edge grows like sqrt(t).",
+   "start": "blank",
+   "rows": "every 1,000,000 steps (1,001 rows, steps 0..1,000,000,000): big jumps between rows",
+   "window": "cells -67,161..181, 1 px = 16 cells (only every 16th cell is drawn; all drawn cells are odd)",
+   "legend": "white = 1, black = 0 on the drawn cells, red/green = head. Sampling every 16th cell turns the 1010... tape into solid bands, so each colour edge is a pair boundary; thin horizontal streaks = rows caught mid-sweep (a stretch shifted by one cell)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10k steps",
+   "title": "bbchallenge default view, first 10,000 steps",
+   "why": "The site's view: the tape grows mainly to the left; the right end barely moves.",
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 px rows (1 px row = 20 steps; the site blends steps 20y+9 and 20y+10)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom rows: one per decrement, every cell, annotated",
+   "png": "img/zoom_cycles_annotated.png",
+   "html": "img/zoom_cycles_annotated.html",
+   "steps": 24668,
+   "caption": "Every cell around two re-pairs, tinted by role",
+   "title": "Every cell across two re-pairs, annotated",
+   "why": "The top-right corner of Fig 1, every cell drawn. Follow purple blocks and blue/orange borders down the rows.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per counter decrement: each time A reaches a new left edge with the tape reading (10)^h 11001... (22 rows, steps 4,610..24,668, which are rows 11-32 of Fig 1); not evenly spaced in time; a yellow band marks each re-pair",
+   "window": "cells -152..47, 1 px = 1/3 cell (1 cell = 3 px wide, 1 row = 14 px tall); from step 8,963 on, the (10)^h run at the left end continues past the left edge",
+   "legend": "white = 1, black = 0, blue = (10)-run of a pair, orange = (01)-run of a pair, purple = digit block, grey = (10)^h run at the left end, gold = marker 11001, teal = tail, green = head, black dashes = old (10)|(01) border carried down across a re-pair band, purple dots = middle of an old digit block carried down the same way. Both lines run only across the yellow bands, never over a cell. The tints are translucent over the raw cells and come from parsing each row; every row parses completely. The inset magnifies the red box; the viewer can hide the tints",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf <A (10)^h 11001 (10)^p1 (01)^q1 s(d1) (10)^p2 (01)^q2 s(d2) ... (10)^pL (01)^qL s(dL) T 0^inf   [s(1)=0001, s(0)=0010; T = '' | (10)^t 1 | (101)^2 (01)^k]",
+  "vars": [
+   "h",
+   "L",
+   "V=sum d_j 2^(j-1)",
+   "p1",
+   "q1",
+   "p2",
+   "q2",
+   "pL",
+   "qL",
+   "T"
+  ],
+  "rows": [
+   {
+    "step": 1845,
+    "values": [
+     2,
+     2,
+     2,
+     11,
+     11,
+     10,
+     2,
+     10,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 4610,
+    "values": [
+     2,
+     2,
+     2,
+     23,
+     14,
+     7,
+     16,
+     7,
+     16,
+     "-"
+    ]
+   },
+   {
+    "step": 8319,
+    "values": [
+     2,
+     3,
+     6,
+     23,
+     26,
+     10,
+     9,
+     14,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 19436,
+    "values": [
+     2,
+     3,
+     6,
+     47,
+     32,
+     16,
+     15,
+     4,
+     20,
+     "-"
+    ]
+   },
+   {
+    "step": 34137,
+    "values": [
+     2,
+     4,
+     14,
+     47,
+     56,
+     22,
+     21,
+     18,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 78710,
+    "values": [
+     2,
+     4,
+     14,
+     95,
+     68,
+     34,
+     33,
+     1,
+     24,
+     "-"
+    ]
+   },
+   {
+    "step": 137547,
+    "values": [
+     2,
+     5,
+     30,
+     95,
+     116,
+     46,
+     45,
+     22,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 276384,
+    "values": [
+     2,
+     4,
+     14,
+     159,
+     132,
+     78,
+     65,
+     6,
+     43,
+     "-"
+    ]
+   },
+   {
+    "step": 368693,
+    "values": [
+     2,
+     5,
+     30,
+     95,
+     180,
+     110,
+     89,
+     41,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 598490,
+    "values": [
+     2,
+     5,
+     30,
+     191,
+     140,
+     134,
+     133,
+     3,
+     47,
+     "-"
+    ]
+   },
+   {
+    "step": 868551,
+    "values": [
+     2,
+     6,
+     62,
+     191,
+     236,
+     94,
+     157,
+     45,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 1637772,
+    "values": [
+     2,
+     5,
+     30,
+     383,
+     284,
+     142,
+     141,
+     14,
+     84,
+     "-"
+    ]
+   },
+   {
+    "step": 2053945,
+    "values": [
+     2,
+     6,
+     62,
+     191,
+     428,
+     238,
+     165,
+     82,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 3050262,
+    "values": [
+     2,
+     6,
+     62,
+     383,
+     284,
+     334,
+     285,
+     11,
+     88,
+     "-"
+    ]
+   },
+   {
+    "step": 4178299,
+    "values": [
+     2,
+     7,
+     126,
+     383,
+     476,
+     190,
+     381,
+     86,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 7335144,
+    "values": [
+     2,
+     7,
+     126,
+     767,
+     572,
+     286,
+     285,
+     8,
+     92,
+     "-"
+    ]
+   },
+   {
+    "step": 11309893,
+    "values": [
+     2,
+     8,
+     254,
+     767,
+     956,
+     382,
+     381,
+     90,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 23109954,
+    "values": [
+     2,
+     8,
+     254,
+     1535,
+     1148,
+     574,
+     573,
+     5,
+     96,
+     "-"
+    ]
+   },
+   {
+    "step": 38479639,
+    "values": [
+     2,
+     9,
+     510,
+     1535,
+     1916,
+     766,
+     765,
+     94,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 84867492,
+    "values": [
+     2,
+     9,
+     510,
+     3071,
+     2300,
+     1150,
+     1149,
+     2,
+     100,
+     "-"
+    ]
+   },
+   {
+    "step": 145833457,
+    "values": [
+     2,
+     10,
+     1022,
+     3071,
+     3836,
+     1534,
+     1533,
+     98,
+     2,
+     "-"
+    ]
+   },
+   {
+    "step": 252225526,
+    "values": [
+     2,
+     9,
+     254,
+     4095,
+     4092,
+     2814,
+     2045,
+     28,
+     63,
+     "(101)^2 (01)^102  [X1]"
+    ]
+   },
+   {
+    "step": 277337206,
+    "values": [
+     1022,
+     10,
+     767,
+     4350,
+     3837,
+     2942,
+     1917,
+     3,
+     102,
+     "-  [X2]"
+    ]
+   },
+   {
+    "step": 466254879,
+    "values": [
+     2,
+     11,
+     2046,
+     6143,
+     5628,
+     2558,
+     3581,
+     100,
+     2,
+     "-"
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "Dec",
+   "from": "0^inf <A (10)^h 11001 Π_{i<k}[(10)^a_i (01)^(b_i+1) 0010] (10)^p (01)^(q+1) 0001 R",
+   "to": "0^inf <A (10)^(h+4) 11001 Π_{i<k}[(10)^(a_i+1) (01)^b_i 0001] (10)^(p+1) (01)^q 0010 R",
+   "steps": null,
+   "cases": "k=0..L-1 (borrow chain); b_i>=1, q>=1; any h mod 4; R = remaining pairs + any tail",
+   "validated": {
+    "instances": 48,
+    "passed": 48
+   },
+   "source": "manual"
+  },
+  {
+   "name": "DecMerge",
+   "from": "0^inf <A (10)^h 11001 Π_{i<k}[(10)^a_i (01)^(b_i+1) 0010] (10)^p (01) 0001 (10)^p2 (01)^q2 s R",
+   "to": "0^inf <A (10)^(h+4) 11001 Π_{i<k}[(10)^(a_i+1) (01)^b_i 0001] (10)^(p+p2+3) (01)^q2 s R",
+   "steps": null,
+   "cases": "q hits 0 on a 1->0 digit: fuse with next pair; last pair fuses into tail: (10)^p (01) 0001 (10)^t 1 -> (10)^(p+t+3) 1",
+   "validated": {
+    "instances": 36,
+    "passed": 36
+   },
+   "source": "manual"
+  },
+  {
+   "name": "End",
+   "from": "0^inf <A (10)^h 11001 Π_{i<L}[(10)^a_i (01)^(b_i+1) 0010] (10)^p (01)^(q+1) 0010 0^inf",
+   "to": "0^inf <A (10)^(h+4) 11001 Π_{i<L}[(10)^(a_i+1) (01)^b_i 0001] (10)^(p+1) (01)^q 0010 101 0^inf",
+   "steps": null,
+   "cases": "all digits 0, no tail; b_i>=1, q>=1. q=0 (EndLast): last pair becomes tail (10)^(p+4) 1, validated 36/36",
+   "validated": {
+    "instances": 36,
+    "passed": 36
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Ov",
+   "from": "0^inf <A (10)^h 11001 (10)^(a_1+1) (01)^b_1 0010 Π_{j=2..L}[(10)^a_j (01)^b_j 0010] (10)^t 1 0^inf",
+   "to": "0^inf <A (10)^2 11001 (10)^(h+5) (01)^a_1 0010 Π_{j<L}[(10)^b_j (01)^a_(j+1) 0001] (10)^b_L (01)^(t+1) 0001 0^inf",
+   "steps": null,
+   "cases": "all digits 0, tail present; a_1>=1; new counter value 2^(L+1)-2",
+   "validated": {
+    "instances": 36,
+    "passed": 36
+   },
+   "source": "manual"
+  },
+  {
+   "name": "X1",
+   "from": "0^inf <A (10)^h 11001 (10)^(a_1+1) (01)^b_1 0010 Π_{j=2..L-2}[(10)^a_j (01)^b_j 0010] (10)^a (01) 0010 (10)^b (01) 0010 0^inf",
+   "to": "0^inf <A (10)^2 11001 (10)^(h+5) (01)^a_1 0010 Π_{j<L-2}[(10)^b_j (01)^a_(j+1) 0001] (10)^b_(L-2) (01)^a 0010 (101)^2 (01)^(b+3) 0^inf",
+   "steps": null,
+   "cases": "End with the last two q = 1 (seen once, step 251,973,021)",
+   "validated": {
+    "instances": 30,
+    "passed": 30
+   },
+   "source": "manual"
+  },
+  {
+   "name": "X2",
+   "from": "0^inf <A (10)^h 11001 Π_{j<L}[(10)^a_j (01)^(b_j+1) 0010] (10)^p (01)^(q+1) 0010 (101)^2 (01)^k 0^inf",
+   "to": "0^inf <A (10)^(h+4) 11001 Π_{j<L}[(10)^(a_j+1) (01)^b_j 0001] (10)^(p+1) (01)^q 0010 (10)^3 (01)^k 0001 0^inf",
+   "steps": null,
+   "cases": "all digits 0 with tail (101)^2(01)^k; returns to the normal family",
+   "validated": {
+    "instances": 30,
+    "passed": 30
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "vendor/busycoq/verify/SBCv6.v",
+  "module": "TM21",
+  "machine": "1RB1LB_0LC1RD_0RA1LC_0RB1RE_0RD0LF_---1LE",
+  "diff": "8 of 11 defined transitions differ under the best state renaming (no mirror); Sk1like_TC_v1/v2 machines differ in 8-9",
+  "applies": "partly",
+  "note": "Same architecture (pair list + counter sweeps + overflow re-pairing + finite tail states = TM21's LIncs/Ov/LH1-3), but not its shapes: from TM21's init config this machine halts in 4,539 steps. Sk1like_TC (eventual cycler via native_compute) doesn't fit."
+ },
+ "strategy": "Copy TM21's skeleton: pair-list datatype with digit tags; Dec/End/Ov/merge/X1/X2 as follow-chains of es/ind sweep lemmas over (10)^p(01)^q blocks (Longitudinal sideRLs like TM21's LIncs if sweeps are batched).\nNonhalt via multistep_nonhalt + progress_nonhalt_cond with an LWF-style invariant: every q_j exceeds the borrows it gets before its digit next flips 0->1, plus a 3-state tail automaton (none / (10)^t 1 / (101)^2(01)^k).",
+ "risks": [
+  "Invariant: the far end has small margins (a far q shrinks by 3 per 2 epochs); excluding a bad merge (q->0 on a 0->1 digit) needs exact far-end bookkeeping. Simulation only so far (2^48 abstract cycles).",
+  "Size: TM21-style proof plus a tail automaton and 7 rule shapes, probably 15-30 KB.",
+  "Class 1 neighbour is being mined from a numbered Sk1 list; unknown whether that list covers Class 2 (memo Q3)."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "zoom_cycles_annotated: rows 8,319 to 17,139 (between the yellow RE-PAIR bands); each row is the tape at the start of one count-down step. A pair = a run of 10s (blue) then a run of 01s (orange); its digit block = the next 4 cells (purple), 0001 = 1, 0010 = 0. Expected: each purple block stays on the same 4 cells all the way down; only its one light (1) cell moves, one cell left or right, when the digit flips (0001 ↔ 0010): in pair 1's block every row (the zigzag), in pair 2's every other row, and in pair 3's once, at row 10,419. At row 13,983 pair 3 turns into the teal tail. Meanwhile each blue→orange border jumps 2 cells right on some rows: pair 1's on every row, pair 2's on every other row. The magnified box at the top shows one such step cell by cell. Is that what you see? (In Fig 1, zoomed far out, the purple blocks are the vertical edges and the borders the slanted ones.)",
+   "figs": [
+    5
+   ],
+   "kind": "check",
+   "answer": "yes",
+   "date": "2026-10-10",
+   "note": "The purple block is a coherent column, but it shifts internally (light vs dark purple) and translates by one cell partway down; the single-cell checkerboard columns are what Q2 explains. So 'keeps its columns' is not literally true."
+  },
+  {
+   "text": "zoom_cycles_annotated: the two yellow RE-PAIR bands, above rows 8,319 and 19,436. Re-pairing = the tape is regrouped into new pairs and the counter restarts (here at 6); it happens when the counter (right margin) hits 0 for the second time. At the first 0 the step is End instead: it raises the counter (0 → 1 at row 6,366; 0 → 3 at row 13,983) and changes the right end, and the two Ends differ: '+ tail' (row 6,366) adds a 3-cell teal tail after the last pair, while 'pair 3 → tail' (row 13,983) absorbs pair 3 into the tail. Across each band, black dashed lines carry the old blue→orange borders down and purple dotted lines the middles of the old purple blocks. Expected: the dashed lines end on the new purple blocks of pairs 1 and 2, and the dotted lines end 1 cell left of the new borders of pairs 2 and 3 (pair 1's starts next to the old gold marker), so the two kinds of column swap roles. Re-pairing also adds a pair: the new pair 3's orange run takes over the old teal tail, and its purple block (the rightmost) sits just past where the tail ended, so no line leads to it. Is that what you see? (In Fig 1 each swap is a row where the vertical and slanted edges kink.)",
+   "figs": [
+    5
+   ],
+   "kind": "check",
+   "answer": "yes",
+   "date": "2026-10-10",
+   "note": "Black dashed lines carry the old blue→orange borders down; purple dotted lines carry the old purple blocks down: that explains the checkerboard."
+  },
+  {
+   "text": "Fig 2: the long sweeps go deep, shallow, then medium as the counter goes 12 → 11 → 10 → 9. Does the sweep depth read as the borrow chain of a binary down-counter?",
+   "figs": [
+    1
+   ],
+   "answer": "yes",
+   "date": "2026-10-10"
+  }
+ ],
+ "discord_check": "see reports/discord-drafts.md message 2",
+ "stats": {
+  "simulated_steps": 1000000000,
+  "cells": 67343,
+  "nonzeros": 33665,
+  "growth": "left edge ~2.1*t^0.5 (doubling epochs); right edge almost static (157 -> 181 cells, 1e8 -> 1e9)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism found: 7 rules, 252/252 random-config checks; they reproduce all 8,374 canonical transitions to 1e9. Not a cryptid (linear arithmetic)."
+}

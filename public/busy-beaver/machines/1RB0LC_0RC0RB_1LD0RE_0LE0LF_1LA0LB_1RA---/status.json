@@ -1,0 +1,22 @@
+{
+ "tm": "1RB0LC_0RC0RB_1LD0RE_0LE0LF_1LA0LB_1RA---",
+ "label": "P-64",
+ "status": "SKIPPED",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 64,
+ "class": "Skelet 1-like Class 1 (K42 core)",
+ "parent": "Sk1like_TC_v1.v Module TM1 (1LB0RC_0LC0LB_1RD0LE_0RE1RF_1RA0RB_1RA---), nonhalt",
+ "relation": "flip(64) = 1LB0RC_0LC0LB_1RD0LE_0RE0RF_1RA0RB_1LA--- = TM1 with D1 0RF (vs 1RF) and F0 1LA (vs 1RA); same states, same start A; init to x0 identical (1699 steps, D1-free)",
+ "reason": "Twin port refuted. In TM1's digit representation D1 fires in exactly 3 RInc cases; there 64f writes the word 0011001 where TM1 writes 0000101 (2 steps fewer). The exact 64f map RIncF (44 obligations, symbolically derived) differs from RInc only there plus a Tp3 return. A direct re-read heals the defect (+12 steps), but a neighbour read by D0011 0 does not: TM1 makes D0011_000101 -> ... -> D0011101 (a new exit), 64f makes D0011_011001 -> ... -> D00101001 (carries on). Exits 1-6 coincide (Inc 109 ... 528,713); the orbits split at Inc 529,337 (374,704 cells differ); TM1's exit 7 (Inc 529,462) has no 64f counterpart; TM1 reaches upstream's S' at Inc 1,333,817, 64f does not (11 exits by Inc 1e8, counter-like regime, no inr). Critical Inc steps re-run on the list strings.",
+ "checks": {
+  "check_twin": "check_twin.py SUMMARY PASS (17 checks, ~20 s; logs/check_twin_full.log)",
+  "orbit_1e8": "logs/rincf_orbit_1e8.log (orbit_long.py twin 1e8)"
+ },
+ "siblings": [
+  "1RB0LC_0RC0RF_1RD0RE_1LE0RA_0LA0LE_1LD---"
+ ],
+ "sibling_note": "740 line 124 (P-124) is the same table started in TM1-state C (TM3's renaming); against TM3 it splits at Inc 529,352 the same way (check_twin.py T). Line 305 is the third start of this table per reports/strategy/equivalence-candidates.tsv.",
+ "next": "No port. Back to the K42 pool (strategy direction 2). Asset for the K42 atlas: RIncF, an exact case-by-case accelerator in Sk1like_TC_v1's representation (Coq: copy RD/RC/RInc/Inc, change 3 exit branches, add Tp3 and its 2 callers; untested in coqc). A kill needs an invariant on RIncF's counter regime."
+}

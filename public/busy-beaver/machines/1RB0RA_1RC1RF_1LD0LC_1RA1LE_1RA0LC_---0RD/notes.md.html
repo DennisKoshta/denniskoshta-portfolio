@@ -1,0 +1,533 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD/notes.md · <a href="/busy-beaver/machines/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD/notes.md.html">raw</a></div>
+<h1 id="1rb0ra_1rc1rf_1ld0lc_1ra1le_1ra0lc_-0rd">1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD</h1>
+<p>Status: CHECKPOINT_A (observe done; confidence low, so proof work waits for Dennis)
+Class guess (agent / Dennis): Sync bouncer counter, an SBCv8 TM31 cousin (binary counter left, ternary throttle right, nested overflow pause) / —
+Spreadsheet notes / Discord thread: sheet <code>results</code> row 106 = Unknown, no status/notes/links/strikethrough; <code>classifications</code> col AK (Unknown). Not in dyuan's Oct 1 list of 24 or mxdys's Aug 24 UBRRBA list of 86 (<code>data/discord/</code>). Present in all 26 holdout snapshots, including the newest (2026-10-07_778). Not claimed, so not skipped.
+Viewer: https://bbchallenge.org/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD
+Pool: reserve R8 (<code>reports/targeting.md</code> §4.4): 1 transition from SBCv8.v TM31 (F1 <code>0RD</code> vs <code>0RE</code>), "odd growth (t^0.85)", risk Medium.</p>
+<h2 id="observation">Observation</h2>
+<p>Simulations (all from blank):
+- <code>tools/sim.py</code> to 1e9 (span -92..53186, 32,920 nonzeros) and 1e10 (span -99..191426, 126,623 nonzeros, 191,526 cells; <code>records_1e10.jsonl</code>); no halt.
+- Own C trackers (<code>scripts/sweeps.c</code>, <code>scripts/ovf.c</code>; they match <code>sim.py</code> and the Python tracker exactly to 3e8) to 2e11: no halt, right edge 886,362 (<code>sweeps_1e10.txt</code>, <code>sweeps_2e11.txt</code>, <code>ovf_1e10.txt</code>, <code>ovf_2e11.txt</code>).
+- <code>tools/compress.py track</code> to 1e9: <code>compress_track_1e9.txt</code>. qsim/rulefit not used: the structure was decoded directly (rulefit's sweep row in <code>reports/rulefit-sweep.tsv</code> is "partial").</p>
+<p>Layout at the canonical point (the head steps from cell 300 to 301, moving right; positions absolute, after step ~3e8):</p>
+<div class="highlight"><pre><span></span><code>cell  -87      -86 .. 3             4..15          16..21   22..300 | 301..618          619..622  623+4j   marker  (0011)^e .. right end
+      1(wall)  D_15 .. D_1 (6 each) 110111 011101  D_0      (1110)^70 D&gt; (0011)^79 ...  s3        t_j      1011    big region
+</code></pre></div>
+
+<ul>
+<li><strong>Left counter:</strong> binary, MSB on the left; digit 0 = <code>001101</code>, 1 = <code>101101</code> (in -130 alignment these read <code>010011</code>/<code>011011</code>; <code>011011</code> is TM31's <code>d</code>). The LSB sits at 16..21 behind a fixed <code>110111 011101</code>. The wall is a 3-state top digit, so the capacity is 3·2^m trips (measured between overflows: 3062, 6133, 12272, 24563, 49129, 98230, 196597 = 3·2^10..3·2^16 minus the previous residual).</li>
+<li><strong>Middle:</strong> 150 four-cell blocks, transparent. A rightward pass turns <code>0011</code> into <code>1110</code> (aligned at cell ≡ 1 mod 4) and the leftward pass turns them back. The head zigzags inside each block, as in TM31's segRLs passes.</li>
+<li><strong>Right throttle:</strong> with P=<code>1001</code>, Q=<code>1011</code>, R=<code>1000</code> (cells read one cell later than the 4-cell groups <code>1100/1101/0100/0101</code>):</li>
+<li>s3 cycles P→Q (bounce), Q→R (carry), R→P (carry), so it forwards 2 of every 3 trips.</li>
+<li>The K ternary digits use P=0, R=1, Q=2: 0 and 1 absorb a trip, 2 carries.</li>
+<li>The carry-out of the top digit runs the head to the right end, which appends one block (right edge +4).</li>
+<li>Penetration fractions measured to 3e8 are exactly 1, 2/3, 2/9, 2/27, 2/81. Round trips per record alternate 40/41 (K=3, 81/2) until step 1.474e8, then 13/14 (K=2, 27/2) for all 216,000 records up to 2e11.</li>
+<li><strong>Growth:</strong> right edge ~t^0.70 over 1.3e8..1e10 and tending to t^0.5, because every record trip also sweeps the whole right region. The left edge grows like log t.</li>
+</ul>
+<p>Overflow events (the left counter is full):</p>
+<table>
+<thead>
+<tr>
+<th>step</th>
+<th>m</th>
+<th>pause steps</th>
+<th>K after</th>
+<th>right edge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3,664,343</td>
+<td>9 (start-up)</td>
+<td>42,030</td>
+<td>3</td>
+<td>898</td>
+</tr>
+<tr>
+<td>7,645,681</td>
+<td>10</td>
+<td>81,564</td>
+<td>3</td>
+<td>1,198</td>
+</tr>
+<tr>
+<td>15,759,543</td>
+<td>11</td>
+<td>161,928</td>
+<td>3</td>
+<td>1,806</td>
+</tr>
+<tr>
+<td>32,542,539</td>
+<td>12</td>
+<td>320,582</td>
+<td>3</td>
+<td>3,018</td>
+</tr>
+<tr>
+<td>68,335,917</td>
+<td>13</td>
+<td>639,884</td>
+<td>3</td>
+<td>5,442</td>
+</tr>
+<tr>
+<td><strong>148,780,415</strong></td>
+<td><strong>14</strong></td>
+<td><strong>1,299,366</strong></td>
+<td><strong>2</strong></td>
+<td>10,294</td>
+</tr>
+<tr>
+<td>626,342,411</td>
+<td>15</td>
+<td>2,550,784</td>
+<td>2</td>
+<td>39,374</td>
+</tr>
+<tr>
+<td>2,854,429,677</td>
+<td>16</td>
+<td>5,099,496</td>
+<td>2</td>
+<td>97,622</td>
+</tr>
+<tr>
+<td>12,401,584,363</td>
+<td>17</td>
+<td>~10.19M</td>
+<td>2</td>
+<td>214,130</td>
+</tr>
+<tr>
+<td>51,855,760,947</td>
+<td>18</td>
+<td>~20.39M</td>
+<td>2</td>
+<td>447,142</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>The pause (each overflow):</strong> the head stays left of about cell 50 for about 80·2^m steps. The left turnaround depths run through a ruler sequence (-17, -23, -29, …, a recount of the 6-cell digits). The right turnarounds (13, 23, 27, 31, …) build an inner counter of 4-cell digits at the start of the middle. Its digits use the same P/Q/R alphabet as the throttle (<code>data/left_records_1.5e8.txt</code>).</li>
+<li><strong>Ordinary ending:</strong> the pause ends with a new left record, a few repair trips (turnarounds at 39, 51, 48, 48, 52, 52), and then normal trips through the middle. The residual counter value is 10..23.</li>
+<li><strong>m = 14 ending (the only one in m = 9..18):</strong> the right turnaround restarts at cell 28 and creeps right 4 cells per round trip (47, 55, 59, …, 299, 303, …, 622). This rebuilds all 150 middle blocks, about 150 trips (Fig: <code>img/creep_special_1.487e8.png</code>). Afterwards the throttle's top digit is gone: the marker moves from cell 635 to 631 and the big region starts 4 cells earlier, so K goes from 3 to 2. That period's record gaps were 121 (= 80 creep trips past cell 300 + 41) and then 28. The left residual was 77.</li>
+<li><strong>Robustness (<code>scripts/kdrop.py</code>, <code>kdrop_m1.py</code>):</strong> from the real configuration at 3e8, removing digits by hand still runs the same regime. K=1 gives gaps 4/5 and K=0 gives 1/2 (2e8 steps each); K=-1 (s3 removed too) gives a record every trip (1e8 steps). No halts.</li>
+<li><strong>Halting:</strong> halting needs A to read <code>0 1 0</code> (A0=1RB, B1=1RF, F0=---). Every validated rule avoids this. Any halt would have to come from the unruled pause or creep.</li>
+</ul>
+<p>Diagrams (<code>img/</code>, all <code>tools/diagram.py</code>, Default colours; mid-run starts use <code>data/cfg_&lt;step&gt;.txt</code>):
+<code>default_site_1e4.png</code> (site view), <code>records_1e8.png</code> (records to 2.28e7), <code>overflow_ordinary_3.6e6.png</code> (every 50 steps, cells -80..119), <code>creep_special_1.487e8.png</code> (every 250 steps, cells -100..699), <code>right_counter_3e8.png</code> (every 10 steps, cells 590..669), plus <code>viewer.html</code> (all site views).</p>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>Canonical point C = the head steps from cell 300 to 301 (state D). One rule application = one round trip, from C to the next C.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from</th>
+<th>to</th>
+<th>cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RL</td>
+<td>V = (D_15..D_0)_2</td>
+<td>V+1</td>
+<td>V &lt; 2^16 − 1</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>s3 ∈ {P, Q, R}</td>
+<td>P→Q (c=0), Q→R (c=1), R→P (c=1)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>RT</td>
+<td>T = Σ t_j 3^j (P=0,R=1,Q=2), K digits</td>
+<td>T+c; at 3^K: T=0, right edge +4 (e+1)</td>
+<td>carry-out or not</td>
+</tr>
+<tr>
+<td>RM</td>
+<td>cells 22..618</td>
+<td>unchanged</td>
+<td>—</td>
+</tr>
+<tr>
+<td>OV (empirical)</td>
+<td>V full (3·2^m trips)</td>
+<td>pause ~80·2^m steps, residual 10..23, middle and throttle unchanged</td>
+<td>fails at m=14: creep + K−1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Validation</strong> (<code>scripts/validate_rules.py</code>): the real configuration at the first canonical point after 3e8 was edited with random V &lt; 2^16 − 1, random s3, random K ∈ 0..5 (the marker and big region shifted) and random digits (a quarter of the instances all-2, to force carry-outs). One round trip was then simulated.
+- Seed 1: RL/RS/RT/record 300/300 (<code>validation.json</code>).
+- Seed 2: the same four rules plus RM (middle unchanged) (<code>validation_seed2.json</code>).
+- OV holds as stated for 9 of the 10 real events.</p>
+<p><strong>Template check (SBCv8.v TM31, line 9675; diff F1 <code>0RD</code> vs <code>0RE</code>).</strong> TM31 has the same vocabulary: the <code>10</code> wall, d=<code>011011</code>, w=<code>0011</code>/<code>0110</code>, and a <code>(1110)^e</code> right region. Simulated, its tape at right records reads <code>0^inf 10 … (1011)^30 0 (1101)^451 … (1110)^4416</code>. But its right edge grows in bursts (no right record from 4.65e8 to 1e9), and its proof's invariant (<code>P ls i c</code>, <code>BigStep312</code>) does not match our steady ternary throttle or our overflow pauses. What is reusable is the Longitudinal machinery: <code>segRLs_addmul_v2</code> transfer lemmas, <code>Incs_d</code>/<code>Incs_w</code> style, and <code>DivModCases</code> for the mod-3 digits.</p>
+<p><strong>Cryptid check (ground rule 6).</strong> No pseudo-random arithmetic in the normal regime: the counters and the throttle are exact. Open point: the creep trigger. Only m = 14 of m = 9..18 crept. If the trigger depends on, say, the base-3 digits of ~2^m (the pause feeds about 2^m trips into a ternary inner counter), then <em>when</em> K drops is pseudo-random. The robustness tests suggest the drops are harmless down to K = −1. The behaviour of a creep with no digits left is untested. Verdict: not a cryptid candidate yet; flagged as a risk.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>Questions are on the card: (1) the creep picture, (2) the ordinary pause picture, (3) a priority call: decode the pause/creep in a deepen stage, or park. Confidence is low, so no proof work starts before his answer.</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>Not started (blocked on Checkpoint A, low confidence).</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>—</p>
+<h2 id="outcome">Outcome</h2>
+<p>Open. Observe stage done 2026-10-10 (about 2 h). Next, if Dennis says go: rules for the pause (the inner P/Q/R counter fed by the left recount), its exit condition (creep or not), and a creep at K ≤ 0.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Spend one deepen stage, with a stop rule, decoding the overflow pause and the creep, or park R8?
+Answer: <strong>deepen</strong> (One deepen stage (2 h): the pause's inner counter, both endings, and creeps at K &lt;= 0). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-deepen">Funded stage (2026-10-10, deepen)</h2>
+<p>Scope (decision <code>deepen</code>): rules for the overflow pause and both of its endings, and creeps at K &lt;= 0; stop with CRYPTID_CANDIDATE if a branch that matters for halting depends on the trigger arithmetic. New scripts are in <code>scripts/funded/</code> (C runner <code>runcfg.c</code> and dumper <code>cfgdump.c</code>; Python test drivers), and new data in <code>data/funded/</code>.</p>
+<p><strong>What the pause is.</strong>
+- <strong>Universal start.</strong> At every overflow the left counter is all ones and the inner zone is fixed. At the 8 real pause starts m = 9..16, cells -10..90 at the canonical point are identical, and the left zone is (011011)^(m-2). So the pause and its ending depend on m alone. A pause start built for any m from the m = 10 right part (<code>cfg.set_left</code>) reproduces the real endings: for m = 9..18 only m = 14 creeps, as in the 2e11 run.
+- <strong>Inner throttle.</strong> The inner zone at cells 2..17 is a second throttle in the same P/Q/R alphabet: s3' (2..5), digits t0 t1 (6..13), marker Q (14..17). Normal trips pass it unchanged. In the pause, a pause-mode binary counter (digits 011010/011011 in -130 alignment, wall 000001) sends every trip into it.
+  - <strong>PJ.</strong> s3' works as a rotor together with the junction cells -10..1. (J, s3') -&gt; (J', s3', passes?) is a deterministic table with 20 entries.
+  - <strong>PI.</strong> A trip that passes s3' adds 1 to the ternary pair t0 t1 (P=0, R=1, Q=2). The trip carries out iff both digits are Q.
+- <strong>Middle-start counter MS.</strong> Inner carry-outs feed a third counter that grows into the middle from cell 22 (4-cell blocks <code>.</code>=0110, <code>1</code>=1110, <code>2</code>=0010 in 2-mod-4 alignment).
+  - <strong>PM.</strong> d1 is an s3-type rotor: <code>.</code>-&gt;<code>1</code> stops, <code>1</code>-&gt;<code>2</code> carries, <code>2</code>-&gt;<code>.</code> carries. The digits d2.. are ternary (<code>.</code>=0, <code>2</code>=1, <code>1</code>=2, LSB first). A carry past the last digit appends one.
+  - PI and PM: <strong>23,495/23,495</strong> trips on 16 random-start pauses (m = 9..11, random t0 t1 and MS word; <code>pausetrips.py M SEED</code> + <code>checkpause.py</code>), plus <strong>3,810/3,810</strong> on the real m = 10, 11 pauses. The only mismatches are trips after the final left record, which belong to the ending.
+- <strong>Phases and length.</strong> The pause has three left records: the start pair, one in the middle, and the end pair. m = 10: trips 1, 508 and 1524 of 1531; m = 14: trips 1, 8128 and 24382 of 24412. The inner state at the pause end has period 6 in m (t0 t1 = QQ, RQ, QR, RP, QP, RR for m = 9..14, then repeating to m = 20). The MS word does not repeat: m = 10 <code>2.211</code>, m = 14 <code>22111122</code>, m = 20 <code>.1.1122211.2</code>. It grows about 0.63 digits per m.
+- <strong>Scan.</strong> Constructed pauses m = 3..27 never halt. Creeps happen at m = 5, 14 and 22; m = 5 lies in the start-up range, where the creep overlapped a wall step. All other m end ordinarily.</p>
+<p><strong>The endings.</strong>
+- <strong>The sweep (CL).</strong> After the final overflow left record, normal-mode trips clean the inner digits (R -&gt; P stops a trip, Q -&gt; P lets it pass). They then sweep the MS word back to <code>.</code> from the left, one segment per trip.
+  - <strong>Ordinary ending.</strong> The sweep dissolves; any remnant (<code>?2</code>) is gone after one more trip.
+  - <strong>Creep.</strong> The sweep leaves exactly one <strong>glider</strong> <code>12</code> (1110 0010). Each later trip bounces off the glider and pushes it 4 blocks right, so crossing the 150-block middle takes 31..37 trips. This is the creep of the observe stage.
+  - <strong>Validation.</strong> 1,700 random MS words (<code>cleantest.py</code>): 600 of length &lt;= 14 with the real throttle, 600 with random throttles K = -1..5, and 500 of length &lt;= 60. Results: 0 halts, 1,700/1,700 with the middle clean afterwards (cells 22..618 equal a normal canonical point). Every creep was a single glider; no instance had two. Mid-pause closure (<code>pausetest.py</code>): 550 instances (random m = 8..16, random point in the pause, random t0 t1 and MS word; 150 also with random throttles) gave 0 halts, 550/550 clean, 48 creeps.
+- <strong>Absorption (AB).</strong> The glider merges into the right throttle and the run returns to the normal regime with K' = K or K' = K - 1.
+  - Exhaustive over every throttle state with K = 0..4 (<code>absorbgrid.py</code>, 363 states): 0 halts, 363/363 clean. K stays in 307 states and drops by one in 56; it never drops for K &lt;= 1.
+  - Across all tests with random throttles, K never rose and never fell by more than one.
+  - Forced repeated creeps (<code>creepiter.py</code>): 3 -&gt; 2 -&gt; 2 -&gt; 2 -&gt; 2 -&gt; 2. K = -1, 0, 1, 2 and 5 stay unchanged over 4 creeps each.
+  - In the real run the throttle at arrival is Q RQQ, which loses a digit. That is why m = 14 took K from 3 to 2.
+- <strong>K = -1 (no s3, marker at 619).</strong> Normal trips there: RL, RM and the marker hold, and every round trip is a record with right edge <strong>+8</strong>: <strong>300/300</strong> (<code>validate_km1.py</code>). This is a fixed point of every ending and of MO (below).
+- <strong>Wall step RW.</strong> In normal mode, wall 001011 -&gt; 010011 and all-ones digits -&gt; zeros; RS, RT and the record rule are unchanged. <strong>400/400</strong> over two seeds, with 3..20 digits and random throttles (<code>validate_wall.py</code>). This was the one normal-regime event that had no validated rule.</p>
+<p><strong>A new far-future regime (MO).</strong> MS grows about 0.63 digits per m, so near m ~ 236 (~10^72 steps) it fills the 149 middle blocks and carries into the right throttle. After that it does so many times per pause. Constructed tests (MS = d1 + 148 maximal digits):
+- 120 single overflows with random throttles: 0 halts, 120/120 clean. K stays or drops by one: K = 0 -&gt; -1 in 6/16, K = 1 -&gt; 0 in 11/27, and K = -1 stays in 22/22.
+- 60 pauses with 5 forced overflows each: 0 halts, 60/60 clean. K stays in 58 and drops by one in 2.
+- An overflow can leave a transient 0000 digit in the throttle; the next trips clear it.
+- K = -1 with overflows: 70 more runs (30 pauses with 5 overflows, 40 single overflows) all end with the marker Q at 619 and the big region right after it (<code>msrepeat_km1_seed2.jsonl</code>, <code>pausetest_fullms_km1_seed5.jsonl</code>).</p>
+<p><strong>Verdict on the stop rule.</strong> Which m creep (14 and 22 in 9..27) depends on the MS word at the pause end, which is pseudo-random in m. But no tested branch that matters for halting depends on it: ordinary ending, creep, absorption and MS overflow all return to the normal regime with K' in {K, K-1}, and K = -1 is a fixed point. Not a cryptid candidate. In all 2,863 logged constructed runs of this stage (<code>data/funded/*.jsonl</code>) there was no halt, and every run ended with a clean middle.</p>
+<p><strong>Still open (why confidence is med, not high).</strong>
+- CL, AB and MO are validated only as set-valued macro rules (ordinary or one glider; K' in {K, K-1}), not as exact block rules. Which words leave a glider, and which throttle states lose a digit, is not decoded.
+  - A per-block transducer for the sweep, using the entry state of each block as the signal (<code>transducer.py</code>), is not a function: the leftward pass and the zigzags carry extra context.
+  - The digit loss does not follow from the number of trips left before the next record (<code>absorbgrid</code> data).
+- The pause-mode left counter, with its wall 000001 and three left records, is validated only end-to-end.
+- MO is covered only by constructed probes.
+- The proof needs exact rules for these three events, or a closed regular-language invariant over the decoded block grammar that is checked natively.</p>
+<p><strong>Next.</strong> One stage to turn CL, AB and MO into exact block rules (enumerate short words with two-sided context), then proof.md. A new decision.json asks Dennis to choose between that, proof.md now, and parking.</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: Spend one more stage deriving exact block rules for the sweep, the glider absorption and the MS overflow before proof.md, start proof.md now, or park?
+Answer: <strong>exact_rules</strong> (One stage (2 h): exact rules for the sweep, the absorption and the overflow). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-exact_rules">Funded stage (2026-10-10, exact_rules)</h2>
+<p>Scope (decision <code>exact_rules</code>): exact rules for the ending sweep (CL), the glider absorption (AB) and the MS overflow (MO), plus the pause-mode counter as a per-trip rule. Stop rule: if an event still has no exact rule after 2 h, proof.md takes it as a validated lemma and flags the gap. New scripts are in <code>scripts/exact/</code> and new data in <code>data/exact/</code>.</p>
+<p><strong>The key change of view: visits, not trips.</strong> Count <em>visits</em> at a fixed block boundary, as busycoq's Longitudinal <code>segRLs</code> does (TM31 in SBCv8.v uses the same machinery). A visit is the head crossing the boundary rightward and coming back. Blocks are 4 cells in 2-mod-4 alignment (block k = cells 2+4k..5+4k). The boundary at cell 18 sits between the inner zone and the MS word. After a pause ends, the visits there are exactly <code>DC^a AC AC AC ...</code> (D or A in, C out). Every rule below is per visit.</p>
+<p><strong>Inner zone (exact, finite table).</strong> At the pause end the inner zone (s3', t0, t1) emits <code>a</code> DC visits at cell 18, then only AC visits. <code>a</code> is a fixed 27-entry table (<code>scripts/exact/validate_cl_tab.py</code>; for example PRQ -&gt; 4, PQR -&gt; 5, PRR -&gt; 0). It does not depend on the MS word: 27/27 states, 8 random words each (<code>data/exact/innertable.txt</code>).</p>
+<p><strong>CL, the sweep (exact).</strong> Read the word from cell 18 as ternary digits, LSB first, with <code>.</code>=0, <code>2</code>=1, <code>1</code>=2. <code>0</code> = 0000 is a transient junk block. The frontier is the first non-<code>.</code> block.
+- A <strong>DC</strong> visit adds 2 to the word, with the LSB at cell 22 (d1).
+- An <strong>AC</strong> visit acts on the frontier:
+  - frontier <code>0</code> -&gt; <code>.</code>
+  - frontier <code>2</code> -&gt; <code>0</code>
+  - frontier <code>1</code> -&gt; <code>.</code>, and the rest of the word gets <strong>+4</strong>. Inside the visit the <code>1</code> block cycles x -&gt; v -&gt; P -&gt; d -&gt; <code>.</code>, sending four B signals right, and a B signal is a ternary increment (<code>.</code>-&gt;<code>2</code> stop, <code>2</code>-&gt;<code>1</code> stop, <code>1</code>-&gt;pass).
+  - an all-<code>.</code> word passes the visit on into the middle.
+- <strong>Glider = <code>12</code></strong>, the only fixed point: <code>12</code> -&gt; <code>.12</code> (1 + 4 = 5 = <code>12</code>). It moves one block per AC visit.
+- <strong>Closed-form outcome.</strong> Let v = value(MS word) + 2a. Iterate g: strip factors of 3 (free); v ≡ 1 (mod 3) -&gt; (v-1)/3 (2 visits); v ≡ 2 -&gt; (v+10)/3 (1 visit). Since g decreases for v &gt; 5, it always ends at 0 (<strong>ordinary</strong>) or at 5 (<strong>glider</strong>). Of v &lt; 3^10, exactly 3^8 give a glider.
+- <strong>Validation</strong> (<code>validate_cl.py</code>): <strong>800/800</strong> random pause ends. 500 had words of length &lt;= 14 (seed 2); 300 had length &lt;= 60 with random right throttles K = -1..5 (seed 3), plus random s3' and t0 t1.
+  - <strong>19,732/19,732</strong> visits matched the predicted block word (blocks 4..150) exactly.
+  - The predicted outcome matched in 800/800 (92 gliders, 708 ordinary), and the DC count matched the table in 800/800.
+  - There were 0 halts, and no visit other than DC/AC appeared.
+  - The glider runs check the one-block-per-visit move across about 140 blocks.</p>
+<p><strong>The creep trigger is now an exact formula.</strong> <code>trigger.py</code> runs pauses to their final left record and applies the formula:
+- m = 9..16: the 8 real pauses. m = 17..26: constructed from the m = 10 start (m = 27 was still running at write-up and appends to the same file).
+- The prediction matched the actual ending at <strong>18/18</strong> pause ends: gliders at m = 14 and m = 22, ordinary otherwise (<code>data/exact/trigger_m9-27.jsonl</code>).
+- The MS value at the pause end follows v_m = 2·v_{m-1} + 2ε_m, where ε_m has period 6 (+2, +2, +2, 0, 0, 0), like the inner state (112, 226, 454, 910, 1820, 3640, …, 14,913,080 at m = 26).
+- So the trigger is "the ternary map g applied to about c·2^m". This is pseudo-random in m, but both outcomes are safe, so it is still not a cryptid.</p>
+<p><strong>Glider transport (exact, Longitudinal form).</strong> In the visit list at each middle boundary, the glider is the prefix G = [BC, BE, BC, BC, BE]. A <code>.</code> block maps G ++ AC^(n+1) to G ++ AC^n: each <code>.</code> absorbs exactly one AC visit (<code>scripts/exact/visits.py 22111122 PP 2e5 4 30</code>, blocks 13..30; <code>macro.py</code> is the 4-cell block macro table, <code>pervisit.py</code>/<code>rules.py</code> the per-visit rewrite search). This is a TM31-style <code>segRLs</code> lemma (<code>segRLs_addmul_v2</code> shape).</p>
+<p><strong>AB, absorption: the B phase is exact.</strong> The glider reaches the throttle as exactly five visits (B in, E out) at cell 618, followed by the normal (A in, E out) visits. Each B visit acts on the throttle word s3 d0 .. d_{K-1} (P=0, R=1, Q=2; the marker Q ends it) with the same frontier rule as CL:
+- frontier Q -&gt; P, and the later digits get +4 (carry out of the top digit dropped);
+- frontier R -&gt; P over two visits, with the next block turned to junk in between (P -&gt; 0001, R -&gt; 0000, Q -&gt; 0011);
+- all P: the visit passes the marker into the big region, leaving junk there that a later carry-out run sweeps away.</p>
+<p>Checked exhaustively for K = 0..4 (<code>bvisit.py</code> + <code>check_bvisit.py</code>, <code>data/exact/bvisit_K*.jsonl</code>):
+- all 363 throttle states: 363/363 visit lists, and <strong>1,815/1,815</strong> B visits exact;
+- <strong>K-drop predicate:</strong> K' = K-1 exactly when an R step is still half done after the fifth B visit. It matches the observed K after in <strong>363/363</strong> states (56 drops, 307 stays; <code>data/funded/absorbgrid_*.jsonl</code>). This is why K never falls by two.</p>
+<p><strong>Still open (why confidence stays med).</strong>
+- <strong>AB tail.</strong> How the first normal AE visits finish a half-done R step, and remove the marker, is not written as a rule. The K outcome is exact; the resulting digits are validated only for K &lt;= 4 (exhaustive) and on random throttles.
+- <strong>MO.</strong> Not decoded in this stage. The expected form is that an MS overflow carry reaches cell 618 as B visits and follows the same B-visit throttle rule. That is untested; MO stays a validated set-valued lemma (190 constructed probes, funded deepen stage).
+- <strong>Pause-mode counter.</strong> Still validated end-to-end only (no per-trip rule written).
+- Stop-rule outcome: proof.md comes next, with the AB tail, MO and the pause counter as validated lemmas, flagged.</p>
+<p><strong>Next.</strong> proof.md (informal, TM31-style visit counts) using: RL/RS/RT/RM/RW; PI/PM; the inner table; CL with g; the glider <code>segRLs</code> rule; the AB B phase and K-drop predicate; flagged lemmas for the AB tail, MO and the pause counter.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: Write proof.md now with the absorption tail, the MS overflow and the pause counter as flagged lemmas, spend one more stage making them exact, or park?
+Answer: <strong>proof_now</strong> (Write proof.md now (the stop rule)). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-proof_now">Funded stage (2026-10-10, proof_now)</h2>
+<p>Scope (decision <code>proof_now</code>): write proof.md with the absorption tail, the MS overflow and the pause counter as explicitly flagged lemmas, validated in <code>check_proof.py</code>. New: <code>proof.md</code>, <code>check_proof.py</code>, <code>scripts/proof/</code> (<code>zones.py</code> zone drivers; C trackers <code>rle2.c</code>, <code>vis.c</code>), <code>data/proof/</code> (visit runs to 1.3e10, check logs).</p>
+<p><strong>New structure: three zones that only talk through fixed answers.</strong> Split the tape at cells 18 and 618 (busycoq Longitudinal style).
+- In the run from blank to 1.3e10, b18 sees only AC/DC visits (833,504) and b618 only AE/BE (803,803).
+- So zone L (cells &lt;= 17) is autonomous: its visit word at b18 is fixed, <code>A^N D^c A^N D^c ...</code>, with one D-run per counter overflow.
+- Zone M (18..617) and zone T (&gt;= 618) only consume visit words.</p>
+<p>This turns the old trip rules into per-visit rules:
+- <strong>M is an exact ternary word</strong> (blocks 4..153, <code>.</code>=0 <code>2</code>=1 <code>1</code>=2, junk <code>0</code>):
+  - D: +2 at block 5;
+  - A: the CL frontier rule, or a pass to T as an A when blank;
+  - a carry of c out of block 153: c B visits at b618. This covers the glider exit (1 + 4 = 5 B) and the MS overflow MO (1 B per overflow carry).
+  - Check ZM: 160 random instances, <strong>14,428/14,428</strong> visits exact. The ending takes at most 300 A visits, so T gets one B-burst per epoch, followed by at least 2,700 A's.
+- <strong>T:</strong> TA (A visit = s3 rotor + ternary increment, carry-out e+1; K = -1: e+2) <strong>4,800/4,800</strong>. TB (B frontier rule on the throttle) <strong>1,200/1,200</strong>.
+- <strong>Epoch table from the full run</strong> (m = 9..17): c_m = 58, 117, 232, 455, 911, 1820, 3642, 7285, 14568. N_m = 3·2^m - δ (δ in {2,4,6,8}). B-bursts of exactly 5 only at m = 5 and m = 14.
+- <code>check_proof.py --long</code> (seed 1, <code>data/proof/check_proof_long_seed1.txt</code>) reruns the C trackers from blank and the cfgdump to 3e8, and compares them with the stored files.</p>
+<p><strong>Flagged lemmas (proof.md §8):</strong>
+- <strong>F1, zone L per epoch</strong> (the pause counter): D^{c_m} A^{N_m}, N_m &gt;= 3000, pause m -&gt; pause m+1. Validated only.
+- <strong>F2, the absorption tail:</strong> B^5 A^2600 -&gt; canonical T with K' in {K, K-1}.
+  - 40/40 throttles with K &lt;= 2. This is the whole reachable range: K = 2 at S0, and no rule raises K.
+  - <strong>New negative finding:</strong> for K = 3, 3 of 81 throttles (RRRP/RRRQ/RRRR) end in a non-canonical "dead slot" form. A 0011/0000 block sits between the digits and the marker, and the marker does not move. The earlier full-machine grid did not check the throttle's form. Not reachable from S0, but the old claim "K' in {K, K-1} always" was too strong.
+- <strong>F3, MO:</strong> B^j A^2600 for all j. 40/40 random tests (K &lt;= 2, j &lt;= ~2,700) never halt and answer E, but <strong>only 34/40 end canonical</strong>. The rest end with a dead slot (e.g. T(RRQ), j = 3) or leftover big-region blocks. So F3 is false in its canonical form and needs a wider closed family (<code>data/proof/check_proof_long_seed1_before_F3_restatement.txt</code> has the original failing statement).
+  - <strong>New:</strong> in the MO regime (m &gt;~ 236), j_m roughly doubles each epoch, so it is unbounded.
+  - For j beyond the throttle value, B visits pass into the big region and build a third counter there (digits 0011/0111/0001), which the throttle's carry-outs then dismantle. This is the weakest point.
+- <strong>TNEG:</strong> T is not safe for arbitrary visit words. T(RR) on <code>B A^7 B A^8 B</code> answers C, which breaks the decomposition. The proof therefore depends on the burst shape (one burst per epoch, then &gt;= 2,700 A's), which M guarantees.</p>
+<p><strong>Outcome.</strong> proof.md is a conditional proof: section 6 (Inv(m) -&gt; Inv(m+1) for m &gt;= 15, start at S0 = step 300,032,133) is complete given F1-F3. Confidence stays <strong>med</strong>: F1 and F2 are labour, but F3 is a genuine third nesting level with no rule and is unbounded in j. Next: a decision (F3 first, F1/F2 first, or park).</p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: Spend the next stage on F3 (the unbounded overflow bursts into the throttle), on F1 and F2 (the pause counter and the absorption tail), or park?
+Answer: <strong>f3_first</strong> (One stage (2 h) on F3, the riskiest lemma). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="funded-stage-2026-10-10-f3_first">Funded stage (2026-10-10, f3_first)</h2>
+<p>Scope (decision <code>f3_first</code>): find a closed invariant family for zone T under the MO bursts B^j A^n, decode the big-region counter (0011/0111/0001), and test j up to 1e6 natively. Stop rule: if no closed family emerges, the far-future regime (m ~ 236 on) is open, so park or make a priority call. New scripts are in <code>scripts/f3/</code>. <code>tzone.c</code> is a C zone-T driver with a per-visit step cap (TZCAP); <code>tz.py</code> wraps it and has the tower parser. New data is in <code>data/f3/</code>.</p>
+<p><strong>Result: no closed family.</strong> The big region is a fourth zone with the same shape as M. Its gliders build new throttle levels at the right end, so the far future is an unbounded tower of levels. A T level is safe for the burst shapes tested so far, but not for every shape the deeper levels can receive. The stop rule applies.</p>
+<p><strong>1. The big region BR is an M-type ternary word (exact).</strong> Read the region after the marker as 4-cell blocks (3-mod-4 alignment, LSB next to the marker): s = 0011 (0), y = 0001 (1), x = 0111 (2), _ = 0000 (junk). Its left boundary sees only <strong>AC and DC</strong>, the same alphabet as b18.
+- <strong>BA:</strong> an A visit adds 1 at block 0.
+- <strong>BD:</strong> a D visit follows the frontier rule: <code>_</code> -&gt; s, y -&gt; <code>_</code>, x -&gt; s with +4 at the next block. If the word is all s, the visit runs to the end and appends one s (a record).</p>
+<p>This is M with the roles relabelled: BR's A is half of M's D, and BR's D is M's A. So CL's map g, the glider <code>xy</code> (value 5) and the length bound all carry over. Validation (<code>validate_br.py</code>, 2 seeds × 300 random words, <code>--nojunk</code>): <strong>40,766/40,766</strong> visits exact, every answer C (<code>data/f3/validate_br.txt</code>).</p>
+<p><strong>2. Interface T -&gt; BR (exact).</strong>
+- <strong>IA:</strong> an A visit sends D^c to BR, where c is the carry out of the throttle. At K = -1 it sends D D (that is the e+2).
+- <strong>IB:</strong> a B visit on an all-P throttle passes as A A (+2). The throttle is unchanged.</p>
+<p>Validation (<code>validate_iface.py</code>, 2 seeds × 400 random throttles K = -1..4 with random BR words): <strong>IA 16,971/16,971, IB 2,637/2,637</strong>, with answers E at 618 and C at the BR boundary (<code>data/f3/validate_iface.txt</code>). So an MO burst B^j becomes +2j' on BR, where j' is j minus the B's the throttle frontier absorbs. The A-run then sweeps it with g, using one D per throttle carry-out.</p>
+<p><strong>3. New levels (exact in tests).</strong>
+- <strong>GX:</strong> a BR glider leaves the end of BR as exactly five B visits (<strong>BE^5</strong>). Later passes through a clean BR arrive there as A visits (AE).
+- <strong>NB:</strong> five B's on blank tape build a new throttle level <code>1 θ2 Q (0011)^e2</code> with <strong>K2 = 3</strong>. In general, B^j on blank tape builds K = j-2 (checked for j = 1..10). From then on BR1 stops growing. Each level hands the next one the same {A, B} -&gt; E interface that M hands T.</p>
+<p><code>validate_gx.py</code> seed 2 (300 random bursts with small e): 33 runs built a second level, <strong>GX 33/33 and NB 33/33 (K2 = 3 in all 33)</strong>. 256 runs kept one level and 11 ended in a dead slot (<code>data/f3/validate_gx_seed2.txt</code>). So the closed family has to be a <strong>tower</strong> [θ1 | BR1] [θ2 | BR2] ... (<code>tz.parse_levels</code>). A new level is added each time the last BR emits a glider, so the tower is unbounded.</p>
+<p><strong>4. B^j A^n with j up to 1e6 (<code>bigburst.py</code>, C).</strong>
+- <strong>Small e:</strong> 300 runs, K = -1..2, e = 30..60, j up to 991,164, A^2600 (<code>data/f3/bigburst_small_e_seed11.jsonl</code>). Results: 0 halts, every answer E. 250 runs end with one canonical level, 48 with a two-level tower (K2 = 3), and 2 with a dead slot. Both dead slots came from j = 1.
+- <strong>Large e:</strong> 85 runs (stopped at the time limit), e = 2000..4000, A^20000, j up to 864,393 (<code>data/f3/bigburst_large_e_seed12.jsonl</code>): 0 halts, all E, every run in the tower family. 76 runs keep one level, sometimes with a glider still in flight in BR1, and 9 have a second level.</p>
+<p><strong>5. What a level is safe against (<code>multiburst.py</code>, <code>twoburst.py</code>; <code>data/f3/multiburst*.txt</code>, <code>twoburst.txt</code>).</strong>
+- <strong>Safe for glider bursts:</strong>
+  - B^5 A^n B^5 A^2600 on every canonical throttle with K &lt;= 3, n = 0..30: 3,751/3,751 safe.
+  - 4 bursts of B^5 with random gaps 0..8 or 0..40: 400/400 safe.
+  - 5 bursts of B^4 with gaps 0..6: 200/200 safe.
+- <strong>Not safe for small bursts with short gaps:</strong>
+  - B^1 (6 bursts, gaps 0..3): <strong>15/200 halt</strong>, and 28 more answer C or D.
+  - B^2 (5 bursts, gaps 0..6): 1/200 halts.
+  - B^3 (5 bursts, gaps 0..6): <strong>2/200 halt</strong>. One example is T(RP; 34) on B3 A4 B3 B3 A6 B3 A4 B3, which halts in the 5th burst.
+  - An interleaved word with junk on BR (A on junk, item 6) also halts (<code>data/f3/halt_interleaved_example.txt</code>).</p>
+<p>These are real halts of zone T on constructed input words. They are not halts of the machine.</p>
+<p><strong>6. Further non-canonical modes.</strong>
+- <strong>JA (A on junk):</strong> an A visit that meets a junk frontier turns it into a permanent 0110 block. After that, BR only counts up (A +1, D +6) and never sweeps again.
+- <strong>Dead slots:</strong> a single B (j = 1) on some throttles leaves a dead slot, as in F2 at K = 3, and it can persist. Dead slots were reached in 2/300 runs with j up to 1e6 and 11/300 with j up to 1e4.
+- <strong>Dead slot plus short A-runs:</strong> <code>epochs.py</code> runs repeated level-1 epochs B^j A^2600, with up to 8 rounds and j up to 3,000 (<code>data/f3/epochs_seed31.jsonl</code>). Of 60 runs, 0 halted, but <strong>11 answered C or D</strong> on a later burst. Every failure came after a j = 1 round: 11 of the 34 runs that had a j = 1 round failed, and none of the others did. Two of them were replayed: RQP e=40 with j = 169, 5, 1, 14, 14, and QPP e=33 with j = 20, 9, 4, 1, 2, 1019. Before the failing burst both are in a dead-slot variant <code>Q [1101] P Q</code> with an unswept BR word. With A^100000 per round, the same j sequences stay canonical and safe (11/11 rounds). So level 1 also needs a quantitative "the A-run is long enough" lemma, plus a rule for what a single-B epoch does. j_m = 1 epochs can occur when MO starts.</p>
+<p><strong>7. Burst sizes the deeper levels can receive (BR arithmetic, <code>exitsizes.py</code>).</strong>
+- A glider exit is 1 + 4 units, contiguous because BR is not clean in between.
+- If new units reach BR while the glider is between its two carries, the rest of the exit is 4 units (2,637/3,000 cases) or 1 + 1 (363/3,000), so the next level gets B^5 or B^3.
+- Gaps between bursts at level k+1 are the clean passes of BR_k, and they can be anything from 0 up.</p>
+<p>At level 1, M guarantees one burst per epoch followed by &gt;= 2,700 A's. Below level 1 nothing guarantees a shape: B^3 bursts and short gaps each need a level-1 burst to land within a few D visits of a BR1 event. In the MO regime that is heuristically a chance of about 2^-m per epoch, from m ~ 236 on. The machine almost surely never meets the unsafe patterns, but a proof has to exclude them. That needs control of pseudo-random timing (burst times against glider exits), which is cryptid-like for a formal proof.</p>
+<p><strong>Verdict.</strong> F3 has no closed family; the stop rule applies.
+- The near-term argument (m &lt; ~236, proof.md section 6 given F1 and F2) is unchanged.
+- From m ~ 236 on, the regime opens an unbounded tower of levels with K = 3 births, dead slots, JA and short-gap bursts. The zone tests show that T levels are not robust to all of these.
+- 0 halts of the full machine in any test. The zone T halts above come from constructed input words that the level-1 burst shape excludes and that the deeper levels could only receive through timing coincidences.</p>
+<p>Confidence in non-halting stays med, on heuristic grounds. Confidence in a proof along this route is <strong>low</strong>.</p>
+<p><strong>Still open.</strong>
+- A tower invariant that includes dead slots, JA, K = 3 births and the input languages between levels.
+- A timing lemma: bursts never land in a sweep or exit window. It may be unprovable without number theory.
+- The safe input language of a T level. It is finite-state in the throttle head and could be computed, but that is a research stage.
+- Recommendation: <strong>park R8</strong>. A new decision.json asks for that priority call.</p>
+<h2 id="decision-2026-10-12">Decision (2026-10-12)</h2>
+<p>Question: Park R8, spend one research stage on the tower (the safe input language of a level plus a burst-timing lemma), or flag it as a cryptid candidate?
+Answer: <strong>park</strong> (Park). Dennis: apply recommendations (2026-10-12).</p>
+</main></body></html>

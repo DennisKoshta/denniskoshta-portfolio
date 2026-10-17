@@ -1,0 +1,542 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA/notes.md · <a href="/busy-beaver/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA/notes.md.html">raw</a></div>
+<h1 id="1rb0ra_1lc0ld_1le1ld_0lb0re_1rf1lb_-0ra">1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA</h1>
+<p>Status: CRYPTID_CANDIDATE (funded stage prove_l9, 2026-10-11): L9 cannot be closed by a local invariant; #28 is #10 started in E, and the two orbits merge; see decision.json
+Class guess (agent / Dennis): Bell eats counter. It is BECv1 tm10 with E1 = 1LB: a binary counter in 3-cell blocks with fillers, plus tm10's unary run and marker. Eats shift the counter one cell (phase debris). / –
+Spreadsheet notes / Discord thread: Results row 1026, "Bell eats counter", no status/notes/sources/done-by. Also listed in the Classifications tab ("Bell eats counter" column). Not in links, strikethrough, levels, categories, archive, discarded, unverified tabs, nor in either data/discord list. No claim, so it is fair game.
+Byte-exact: line 632 of data/holdouts/2026-10-07_778.txt.
+Viewer: https://bbchallenge.org/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA
+Pool: #28 (reports/targeting.md §4.3), follow-on to #7 (<code>…_1RF0LA_---0RA</code>, E1 differs). We only read #7's directory; we never write there.
+Exact trajectory twin: <code>1RB0RA_1LC0LD_1LE1LD_0LB0RF_1RA1LB_1RA---</code>. Both give identical pos/lo/hi/nonzeros at 1e9 (gate-excluded: Eqv mention).</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li><strong>Simulation</strong> (C core): no halt to 1e10. At 1e10 the span is 11,492 cells (-10,352..1,139) with 5,201 nonzeros; at 1e9 it is 5,197 cells. Growth is about t^0.34.</li>
+<li><strong>qsim</strong> (block 3, 200k loops, 2.4e7 steps): 0 rules proved, so no acceleration.</li>
+<li><strong>compress</strong> (<code>scripts/compress_track.txt</code>, aligned at E:L): 299 skeletons in 300 snapshots. Not useful directly; the block view below is the one that works.</li>
+<li><strong>rulefit</strong>: not run. The block predictor below replaces it.</li>
+<li><strong>Diagrams</strong> (img/, labels in observe.json):</li>
+<li><code>default_site.png</code>: bbchallenge view.</li>
+<li><code>stateEL_left_4e4.png</code>: one row per left entry into E, left frame. This is the best view: left band = counter, diagonal = 00 marker.</li>
+<li><code>eat1_explore.png</code>: constructed EAT1 close-up.</li>
+<li><code>blaze_1e8.png</code>, <code>recordsL_left_1e9.png</code>.</li>
+<li><code>viewer.html</code>: all views.</li>
+<li><strong>Round start</strong> (scripts/dump_rounds.py): E entered moving left (from C0) with the right side exactly <code>11 (011)^n [00 (011)^m] 0^inf</code>.</li>
+<li><code>RS(W,b,n,m) = 0^inf W b &lt;E 11 (011)^n 00 (011)^m 0^inf</code></li>
+<li><code>NM(W,b,n) = 0^inf W b &lt;E 11 (011)^n 0^inf</code> (no marker)</li>
+<li>b is the LSB cell. W is cut into 3-cell blocks from the right. Only 4 blocks ever occur (1,008,131 round starts to 1e10): <code>1</code>=100, <code>0</code>=000, <code>f</code>=010, <code>s</code>=001.</li>
+<li>Note: <code>rounds_*.tsv</code> stores NM rows with g = n+1, and <code>predict.read()</code> converts.</li>
+<li><strong>Unary half = tm10's.</strong> These are the same micro rules as BECv1 HR1-HR3/HE2:</li>
+<li>A-sweep <code>A&gt; 011 -&gt; 010 A&gt;</code></li>
+<li>marker step <code>A&gt; 011 00 011 -&gt; &lt;B 00 011 011</code></li>
+<li>B-sweep <code>010 &lt;B -&gt; &lt;B 011</code></li>
+<li>birth <code>010 A&gt; 0^inf -&gt; &lt;B 00 011 0^inf</code></li>
+</ul>
+<p>A round is INC + marker one block left, about 8n+16 steps.
+- <strong>Counter = binary in 3-cell digits.</strong> The carry walk goes left one cell per state: E reads a digit, then B and C read the two filler cells.
+  - E1 = 1LB, B0 = 1LC, C0 = 1LE: so <code>001&lt;E -&gt; &lt;E111</code>, a digit 1 carries.
+  - E0 stops the carry, and A sweeps back right clearing the 1s.
+  - A block <code>010</code> is walked as B0 C1 D0, so carries skip it (filler).
+  - This is where tm10's 1-cell digit (HL2: E1 = 1LE) changes.
+- <strong>Eats.</strong> When the marker reaches the counter (n = 0), the case depends on b and the low end of W (EAT0f / EAT0z / EAT1).
+  - EAT0z and EAT1 absorb the marker. They also move every counter block one cell right: <code>phi: 1-&gt;f (100-&gt;010), 0-&gt;0, f-&gt;s (010-&gt;001)</code>. The marker is then reborn at the right end (BIRTH), and the next epoch lasts about n = m+1 rounds.
+  - Read from b in phase 0, a phi-shifted word reads <code>f</code> as filler, <code>0</code> as digit 0 and <code>s</code> as a phase shift. So a new counter starts at 0 in the low part, and the old value sits left of the first <code>s</code> as <strong>debris</strong> (phase C: <code>f</code>=1, <code>0</code>=0, <code>s</code>=filler).
+  - A carry that reaches an <code>s</code> runs a second pass (the A clean-up hits a 0 and restarts a walk, then an E-walk crosses the unary and back). The net effect is CARRY_S: <code>X s Y -&gt; inc(incC X) f Y0</code>, recursive if inc meets another s.
+- <strong>Epochs late in the run</strong> (1e10): about 3,800 rounds each, unary growing by 1-4 blocks per epoch. W has about 20 blocks, e.g. <code>1 1 1 0 1 1 0 1 1 f f f 0 f…</code>. The eats seen are EAT0f 498, EAT1 495, EAT0z 73.</p>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All of them are validated by direct simulation from random concrete instances. Random W over {1,0,f} (INC0/BIRTH also with s; CARRY_S with Z over {f,0,s}, Y over {1,f}), random b, n, m up to 60. Script: <code>scripts/validate.py</code>, results in <code>scripts/validation.json</code>. The micro rules come from <code>scripts/template_check.py</code> (<code>scripts/template_check.json</code>).</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from -&gt; to</th>
+<th>passed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 A-sweep (=HR1)</td>
+<td><code>l A&gt; 011 r -&gt; l 010 A&gt; r</code> (5 steps per block)</td>
+<td>25/25</td>
+</tr>
+<tr>
+<td>R2 marker (=HR2)</td>
+<td><code>l A&gt; 011 00 011 r -&gt; l &lt;B 00 011 011 r</code></td>
+<td>25/25</td>
+</tr>
+<tr>
+<td>R3 B-sweep (=HR3)</td>
+<td><code>l 010 &lt;B r -&gt; l &lt;B 011 r</code></td>
+<td>25/25</td>
+</tr>
+<tr>
+<td>INC0</td>
+<td><code>RS(W,0,n+1,m) -&gt; RS(W,1,n,m+1)</code>, 8n+16 steps</td>
+<td>100/100</td>
+</tr>
+<tr>
+<td>CARRY</td>
+<td><code>RS(W,1,n+1,m) -&gt; RS(inc W,0,n,m+1)</code>. inc: from the right, f skip, 1-&gt;0, 0-&gt;1 stop, overflow prepends 1</td>
+<td>100/100</td>
+</tr>
+<tr>
+<td>CARRY_S</td>
+<td>at an <code>s</code>: <code>X s Y -&gt; inc(incC X) f Y0</code>. Y in {1,f}*, Y0 = Y with 1-&gt;0; incC: f=1, 0=0, s skipped, overflow prepends f</td>
+<td>200/200 (S1 special case X = Z f: <code>incC(Z) 1 f Y0</code>, 100/100)</td>
+</tr>
+<tr>
+<td>BIRTH</td>
+<td><code>NM(W,0,n+1) -&gt; RS(W,1,n,1)</code>, 8n+16 steps; BIRTHC <code>NM(W,1,n+1) -&gt; RS(inc W,0,n,1)</code> (never fires from blank)</td>
+<td>200/200</td>
+</tr>
+<tr>
+<td>EAT0f</td>
+<td><code>RS(W' d f^k 1^j,0,0,m) -&gt; RS(W',d,k-1,m+2+j)</code>, k &gt;= 1, d in {0,1}</td>
+<td>100/100</td>
+</tr>
+<tr>
+<td>EAT0z</td>
+<td><code>RS(W' 0 1^j,0,0,m) -&gt; NM(phi W',0,m+2+j)</code>; <code>W = 1^j</code>: W' empty</td>
+<td>200/200</td>
+</tr>
+<tr>
+<td>EAT1</td>
+<td><code>RS(W,1,0,m) -&gt; NM(phi(inc W),0,m+1)</code></td>
+<td>100/100</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Coverage from the blank tape.</strong> Scripts: <code>scripts/predict.py</code> on <code>scripts/rounds_1e10.tsv</code>, written by <code>scripts/dump_rounds.py 1e10</code>, about 5 min.
+- Init: the first round start is <code>NM([],0,1)</code> at step 6.
+- After that, all <strong>1,008,130</strong> round transitions to 1e10 are predicted exactly by the rules above: <strong>100.0000 %, 0 mismatches</strong>.
+- By rule: INC0 503,071; CARRY 503,424, of which 1,293 are CARRY_S; BIRTH 569; EAT0f 498; EAT1 495; EAT0z 73.
+- Nothing is left uncovered.</p>
+<p><strong>Invariant facts on the blank run</strong> (to 1e10):
+- (I1) W only ever uses the blocks {1,0,f,s}.
+- (I2) No <code>1</code> lies left of an <code>s</code> (0 / 7,246 round starts with s).
+- (I3) <strong>No eat ever sees an s</strong> (0 / 1,066 eats).</p>
+<p>On words satisfying (I1)+(I2), inc/incC are total and stay in the language (argument sketch in the strategy below). The eat rules need (I3).</p>
+<p><strong>Flush slack</strong> (<code>scripts/slack.py</code>): the epoch counts rounds from the end of one eat to the next. The debris is gone after a fraction of the epoch:
+- worst 0.44 (the epoch at step 664);
+- worst 0.107 after 1e9;
+- median 0.005.</p>
+<p><strong>Fuzz</strong> (<code>scripts/fuzz.py</code>):
+- Reachable-like starts, W = (debris over {f,0,s}) s (counter over {1,0,f}), random b/n/m, stopping when a word leaves the alphabet: 300 samples, 13,651 rounds, <strong>0 halts, 0 mismatches</strong>.
+- Every off-alphabet word (102) comes from an eat with s present. That is exactly what (I3) excludes.
+- Continued past the alphabet: 26 halts in 1,200 samples (random + reachable-like). So (I3) is necessary, and the invariant must carry it.</p>
+<h2 id="template-check">Template check</h2>
+<p>Nearest proved neighbour: <code>verify/BECv1_6x2_solved.v</code> tm10 (line 88), <code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LE_---0RA</code>, with E1 = 1LE vs our 1LB. Its proof is <code>solve_BECv1</code> with cert <code>B A E A [0] [1] [1] [0] [1] [0;1;1] [0;1;0] [0;0] [] [] [0;0] [1] [1;0;1;1;0;1;1] [0;1;0;0;0] 1 0 0</code> on the BECv1.v Section template.
+- I simulated our TM on every cert hypothesis from random l/r: 10/11 hold (HL1, HL3, HL4/5, HR1-3, HE0-3; 25/25 each). <strong>HL2 fails 0/25.</strong> As a control, tm10 itself passes 11/11.
+- HL2 is the 1-cell binary carry. With E1 = 1LB our carry goes through B and C, so the digits are 3 cells apart, there are fillers, and eats shift the counter.
+- <strong>Applies: partly.</strong> The unary half (RDec, HE0-HE3 shapes) carries over. <code>LeftBinaryCounter</code> (positive -&gt; d0/d1 cells) and <code>EatDigit</code>/<code>BigStep</code> do not; tm10 only ever eats a 0-digit (<code>Counter(2k)</code>), while we have three eat cases plus debris.
+- Structural template for the counter: <code>verify/BECv7.v</code>. It has an inductive <code>RIncs</code> carry relation over lists of 3-cell blocks <code>110/000/100</code> (<code>toRC</code>), a <code>canonical</code> shape invariant and <code>progress_nonhalt_cond</code>. Our counter is the same kind of object: a block list with a mutually recursive carry (inc / incC).
+- #7 (E1 = 0LA) has a different counter (swept tokens, stale-1 cascades), so its rules do not transfer. Its closure stage found that no bounded k-gram/CTL window works there.</p>
+<h2 id="cryptid-check-ground-rule-6">Cryptid check (ground rule 6)</h2>
+<p>Not cryptid-like:
+- Every round is one of 6 local block rewrites over a 4-letter alphabet, and the rules are exact on all 1e10 rounds.
+- The counter arithmetic only chooses which eat fires: b and the trailing digits at the moment the marker arrives.
+- Every eat branch is validated non-halting on s-free words.
+- The one quantitative condition is (I3): the debris is flushed before the marker returns. That is a size bound (about 2^(digits right of the leftmost s) vs the epoch length, about the unary length), not a parity or Collatz condition, and it holds with large slack.
+- No halt to 1e10.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>(open: see card.html Q1-Q3 and decision.json)</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>(not started: med confidence, waiting on the decision)</p>
+<p>Plan for proof.md:
+- (1) the rule table above, with step counts;
+- (2) the invariant: (I1)+(I2) as a regular language of W, plus (I3) via a flush lemma. The lemma bounds the number of rounds to clear all s blocks by the length of the phase-0 part right of the leftmost s, and compares that with the epoch length m+1. The epoch length is the unary length, which only grows.
+- (3) closure of the language under every rule (inc/incC total on it);
+- (4) init (6 steps) and <code>progress_nonhalt_cond</code>.</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>(none yet)</p>
+<h2 id="outcome">Outcome</h2>
+<p>CRYPTID_CANDIDATE (2026-10-11, stage prove_l9). The chain case is closed given L9 (C0-C5), and L9 is reduced to the hard case H (W1-W5). But L9 cannot be closed by a local invariant: #10's counter-family, translated, satisfies INV and still reaches an eat with an s block. #28 is #10 (CRYPTID_CANDIDATE) mirrored and started in E, and the orbits merge by epoch 350,328. proof.md is the conditional write-up.</p>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>scripts/dump_rounds.py</code>: round starts to TSV.</li>
+<li><code>scripts/rounds_1e8.tsv</code>, <code>scripts/rounds_1e10.tsv</code>: 1,008,131 rows.</li>
+<li><code>scripts/blocks.py</code>, <code>scripts/decode.py</code>: block view, and a walk decoder (exploration only).</li>
+<li><code>scripts/predict.py</code>: rules + coverage.</li>
+<li><code>scripts/validate.py</code>: random-instance validation, writes <code>validation.json</code>.</li>
+<li><code>scripts/eats.py</code>, <code>scripts/carry_s.py</code>, <code>scripts/categorize.py</code>: case studies.</li>
+<li><code>scripts/slack.py</code>: flush slack.</li>
+<li><code>scripts/fuzz.py</code>: closure fuzz.</li>
+<li><code>scripts/template_check.py</code>: BECv1 cert hypotheses.</li>
+<li><code>scripts/micro.py</code>: tiny simulator used by <code>validate.py</code>.</li>
+<li><code>scripts/qsim.jsonl</code>, <code>scripts/compress_track.txt</code>.</li>
+<li><code>scripts/flush_check.py</code>, <code>scripts/flush_random.py</code>: flush lemmas L1-L8 (stage flush_proof).</li>
+<li><code>scripts/chain_check.py</code>: chain lemmas C0-C5 and L9 checks (stage close_chain).</li>
+<li><code>scripts/l9_check.py</code>: debris-weight lemmas W1-W5, Lemma G, orbit and escape runs (stage prove_l9).</li>
+<li><code>scripts/conj10.py</code>: conjugacy with #10 (table + lock-step). <code>scripts/family10.py</code>: #10's counter-family in #28's rules. <code>scripts/tm_family.py</code>: the family on the real machine.</li>
+</ul>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: Fund one stage for the flush lemma and proof.md (hand route, BECv7-style carry relation), run a native CTL search first, or park?
+Answer: <strong>flush_proof</strong> (One stage: prove the flush lemma informally, then write proof.md (rule table, invariant, closure)). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-flush_proof">Funded stage (2026-10-10, flush_proof)</h2>
+<p><strong>What was done.</strong> I worked out the flush exactly on the abstract round system (the 9 validated rules), proved it for every case but one, and narrowed the open part to one arithmetic case. Stop rule applied: no clean bound covers that case yet, so proof.md is not written.
+- New scripts: <code>scripts/flush_check.py</code> (epoch simulation with lemma checks; <code>exact</code> = round by round, <code>fast</code> = flush round by round, then each sub-epoch as one arithmetic jump) and <code>scripts/flush_random.py</code> (random instances, writes <code>scripts/flush_random.json</code>).
+- Data: <code>data/flush_fast_200k.json</code>.</p>
+<p><strong>Notation.</strong>
+- At a phi-eat (EAT1 or EAT0z), U is the s-free word before the shift: <code>inc W</code> for EAT1, W' for EAT0z. Then V = phi(U), and N is the new n (the epoch length in rounds).
+- d = number of digit blocks (0/1) of U; val(U) = its phase-0 value (f skipped); v(W,b) = 2 val(W) + b.
+- The f-runs of U are (e_i, p_i), where p_i = digits right of run i. r is the leftmost run, Q = p_r.
+- X = val(U) + sum_{i&lt;r} e_i 2^p_i, and PC = X + e_r 2^Q.</p>
+<p><strong>Lemmas</strong> (short proofs, all checked below):
+- <strong>L0.</strong> (I2) holds at every round start: phi outputs no 1, and inc puts its 1 right of every remaining s. So incC only ever sees {f,0,s}.
+- <strong>L1, flush counter.</strong> While s blocks remain, the part right of the rightmost s (with b) has phase-0 value t = the number of increments since the phi-eat.
+  - Proof: it starts at 0, since phi outputs no 1. CARRY_S, unrolled over a run of e s blocks, is <code>X' s^e Y -&gt; inc(incC^e X') f^e Y0</code>. inc puts its 1 at the lowest 0 of the segment just left of the run, or recurses into the next run, which is bit position t either way.
+- <strong>L2, flush time.</strong> F = 2^(1+D_F), with D_F = Q - popcount(X mod 2^Q). So F &lt;= 2^(1+Q).
+  - Proof: in phase C the non-s blocks of V read as U's digits. Clearing run i adds e_i at bit p_i, and inc and Y0 leave the phase-C reading unchanged. So the digits right of the leftmost run when it clears are the zero bits of X mod 2^Q, and by L1 it clears at t = 2^(1+D_F).
+- <strong>L3, after the flush.</strong> v(W,b) = t = m. The filler/digit pattern on U's digit positions (plus any new top) is binary PC (1 = f), and the old f-runs stay f.
+- <strong>L4.</strong> v(W,b) &lt;= m at every later round start of the epoch. INC/CARRY add 1 to both. EAT0f gives v' = 2 val(W') + d &lt; v and m' = m + 2 + j.
+- <strong>L5, generic flush bound.</strong> If U starts with 1: F &lt;= 2^(1+Q) &lt;= 2^d &lt;= 2 val(U) &lt;= N.
+  - For EAT1: 2 val(U) = v + 1 &lt;= m + 1 = N.
+  - For EAT0z: N &gt;= 4 val(U).
+- <strong>L6.</strong> At an EAT0z phi-eat, N &gt; m &gt;= v &gt;= 4 val(U) &gt;= 2^(d+1) &gt;= F, whatever U starts with.
+- <strong>L7, leading digit.</strong> If U_k starts with 1, then U_{k+1} has leading digit 1. After the flush, the capacity right of the leading f is C = 2^(1+zeros(PC)) &lt;= 2 val(U_k) &lt;= N_k, unless PC = 2^d exactly ("top exact carry"). In that case t still reaches C/2 = 2^d &lt;= N_k, so the digit under the leading f is 1, and EAT0f right-shifts keep it.
+- <strong>L8.</strong> U_{k+1} starts with f only after an epoch with no overflow. When U_k started with 1, that requires a top exact carry.</p>
+<p><strong>Case analysis when U_k starts with f at an EAT1</strong> (d = d_k):
+- (iii) X mod 2^d != 0: F &lt;= 2^d &lt;= N.
+- (iv-1) X = 0 mod 2^d ("bottom exact"), epoch k-1 had an EAT0f, and U_{k-1} started with 1: N_k &gt; N_{k-1} &gt;= 2^(d_{k-1}) &gt;= 2^(d_k+1) &gt;= F.
+- (iv-2) Bottom exact, epoch k-1 had no EAT0f, and U_{k-1} started with 1: impossible. The runs of U_k are those of U_{k-1} at the same positions and val(U_k) = (N_{k-1}+1)/2, so bottom exact forces N_{k-1} = 2 val(U_{k-1}) - 1, which contradicts L4.
+- <strong>(iv-3) U_{k-1} also started with f (a chain): OPEN.</strong> L7 inside a chain is open too.
+  - Sketch for closing it: the chain's top run has e = 1, and the carry floor(X/2^d) is at most 1 at the chain's first step (because sum_lower = 2^d - val(U_{k-1}) &lt; 2^(d-1)). That bound has to be carried along the chain.</p>
+<p><strong>Checks.</strong>
+- Exact mode against <code>rounds_1e10.tsv</code> (567 epochs, 1,004,198 rounds identical, 0 mismatches):
+  - L1-L5 hold at every round and phi-eat.
+  - U never starts with f.
+  - 8 top exact carries; 1 epoch without overflow (step 314), rescued by an EAT0f and the EAT1's inc.
+- Fast mode (identical to exact mode on those 567 epochs): <strong>200,000 epochs, 2.2e11 rounds</strong> (far past 1e10 steps).
+  - 0 lemma violations, 0 s at an eat. Worst F/N is 0.505 (epoch 1115); on the 1e10 run it is 0.444.
+  - U starts with f in 4 epochs: 1115, 1116, 2061 and 2062, which are two chains of length 2.
+  - Bottom exact occurs twice: 1115 is case iv-1 and 2061 is an EAT0z (L6), both at F/N 0.505.
+  - <strong>Case iv-3 never occurs.</strong> 17 top exact carries in all.
+- Random instances (<code>flush_random.py 20000 300 2810</code>):
+  - Abstract level, 19,236 random U with an f (up to 24 blocks): L1, L2 and L3 hold 19,236/19,236.
+  - TM level, <strong>256/256</strong> random small U: the real machine's flush takes exactly F rounds and ends in the predicted word.</p>
+<p><strong>Still open.</strong>
+- The chain case: (iv-3), plus L7 for a step whose U starts with f. It is one narrow arithmetic case: a phi-eat whose word starts with f right after another one. Chains of length 2 occur twice from blank in 200k epochs (epochs 1115-1116 and 2061-2062, flush F/N 0.002 at the second step), but the bad sub-case iv-3 never does.
+- proof.md and the formal side are not started.
+- Confidence stays med, but the gap is now one stated case, not the whole flush lemma.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: Fund one more stage to close the chain case and then write proof.md, write proof.md now with the chain case as a stated open lemma, or park?
+Answer: <strong>close_chain</strong> (One stage: prove the chain case (two phi-eats in a row whose word starts with f), then write proof.md). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-close_chain">Funded stage (2026-10-10, close_chain)</h2>
+<p><strong>What was done.</strong> I closed the chain case on the abstract round system. Every phi-eat whose word U starts with f now flushes in time, chains of them included. The proof needs one bound on words that start with 1 (L9 below). Last stage's L7 already used L9 without stating it. L9 holds at every phi-eat checked, but it is not proved. So the open part moved from the chain case to L9. proof.md is not written; the stop rule and the scope of this stage put it in the next stage.
+- New script: <code>scripts/chain_check.py</code>. Its modes are <code>blank</code>, <code>exh</code>, <code>rand</code>, <code>chainrand</code> and <code>tm</code>.
+- Data: <code>data/chain_blank_1M.json</code>, <code>scripts/chain_exh.json</code>, <code>scripts/chain_rand.json</code>, <code>scripts/chain_chainrand.json</code> and <code>scripts/chain_tm.json</code>.</p>
+<p><strong>Notation (new).</strong>
+- S1: U starts with a digit 1. S2: U starts with f.
+- sigma(U) = sum over the f blocks of 2^(digits right of the block). PC = val + sigma, the same PC as in L3.
+- For S2, e is the leading f-run. Y = val(U) + sigma(U) - e 2^D, c = Y div 2^D and P = Y mod 2^D.
+  - By L2, F = 2^(1+zeros(P)), with zeros counted over D bits.
+  - Bottom exact means P = 0.
+- Z_k is the number of digits right after flush k. "Overflow in epoch k" means a new top digit appears.
+- tau_k = 0 when epoch k ends with EAT1 at its first eat. tau_k &gt;= 1 when digits are cut, by an EAT0f or by a closing EAT0z.</p>
+<p><strong>Lemmas</strong> (proved by hand on the abstract system, by induction on k, assuming F &lt;= N for earlier phi-eats):
+- <strong>C0.</strong> N_{k+1} &gt;= N_k + 1. At the first eat m = N_k, an EAT0f only adds, and N' = m+1 or m+2+j.
+- <strong>C1.</strong> tau_k = 0 implies N_{k+1} = N_k + 1 = 2 val(U_{k+1}). At the first eat v = m = N_k with b = 1, and U = inc W.
+- <strong>C2.</strong> tau_k = 0 implies tau_{k+1} &gt;= 1. N_{k+1} is even, so the first eat of epoch k+1 has v = m = N_{k+1} and b = 0, which makes it an EAT0f or EAT0z. So two uncut epochs never come in a row.
+- <strong>C3, capacity.</strong> If epoch k has no overflow, then 2^(Z_k) &lt;= N_k.
+  - U_k in S1: Z_k &lt;= D_k by L9, because a number below 2^(D+1) with a 1 bit has at most D zeros. Also 2^(D_k) &lt;= 2 val(U_k) &lt;= N_k.
+  - U_k in S2 with c = 1: the word after the flush is <code>f 1 f ...</code> and Z_k = 1 + zeros(P_k). So 2^(Z_k) = F_k &lt;= N_k.
+  - c in {0, 2}: the word after the flush starts with a digit 1 (<code>1 f ...</code> or <code>1 f f ...</code>). So U_{k+1} is in S1 and C3 is not needed.
+- <strong>C4, shape.</strong> Every S2 word is <code>f 1 ...</code>: one leading f, then the leading digit 1, with c &lt;= 2.
+  - From S1, no overflow plus L9 force PC = 2^D (a top exact carry). The word after the flush is then f followed by U's own pattern: the same f blocks, with the digits holding the counter.
+    - The counter passes N_k &gt;= 2^(D_k) during the first N_k rounds, so the top digit is 1.
+    - Cuts only remove the bottom, so it stays 1.
+    - sigma_low(U_{k+1}) &lt;= sigma(U_k)/2^tau &lt; 2^(D_{k+1}), so c &lt;= 1.
+  - From S2 with c_k = 1, the word after the flush is <code>f 1 f ...</code>, so U_{k+1} = <code>f 1 f ...</code>.
+    - No overflow together with N_k &gt;= 2^(D_k) forces zeros(P_k) to be D_k - 1 or D_k.
+    - So sigma_low(U_{k+1}) &lt;= 0.75 * 2^(D_{k+1}) when P_k = 0 (c &lt;= 1), and &lt;= 2 * 2^(D_{k+1}) when P_k = 2^q (c &lt;= 2).
+- <strong>C5, the chain case.</strong> F_{k+1} &lt;= N_{k+1} whenever U_{k+1} is in S2.
+  - tau_k &gt;= 1: F_{k+1} &lt;= 2^(1+D_{k+1}) &lt;= 2^(Z_k) &lt;= N_k &lt; N_{k+1}, by C3 and C0.
+  - tau_k = 0 and U_k in S1: this is the old iv-2 argument. Y_{k+1} = val(U_{k+1}) - val(U_k) mod 2^D, and val(U_{k+1}) = (N_k+1)/2 &gt; val(U_k). So the word is not bottom exact, and F &lt;= 2^D &lt;= 2 val = N.
+  - <strong>tau_k = 0 and U_k in S2</strong> (old iv-3):
+    - By C2, tau_{k-1} &gt;= 1, so N_k &gt; N_{k-1} &gt;= 2^(Z_{k-1}) &gt;= 2^(D_k+1).
+    - No overflow then forces P_k = 0, which gives Y_{k+1} = 2^(D_{k+1}) + val(U_{k+1}) - val(U_k).
+    - Also val(U_{k+1}) &gt;= 2^(D_k) &gt; val(U_k), so the word is not bottom exact.
+- <strong>State form</strong>, used for the exhaustive checks. INV(U,N) says:
+  - N &gt;= 2 val(U);
+  - S1 implies L9;
+  - S2 implies the shape <code>f 1 ...</code>, c &lt;= 2, and either N &gt;= 2^(D+1) or (N = 2 val(U) and P != 0).</p>
+<p>INV implies F &lt;= N. One epoch maps INV to INV, except possibly for L9 at an S1 successor.</p>
+<p><strong>Open: L9, the S1 bound.</strong> PC(U) &lt; 2^(D+1) at every phi-eat whose word starts with 1.
+- C3 and C4 use it, and so did last stage's L7.
+- It holds on the blank run: max PC/2^D = 1.5625 (epoch 22) over 1,000,000 epochs, and at most 1.4994 after epoch 100 (200k-epoch scan)
+- It is not closed by INV alone. Small hand-made words break it. For example <code>1 f 0 f</code> with N = 5 gives <code>1 f 1 f f f</code>, where PC = 2^(D+1). So does an S2 word with c in {0,2} and many low f's.
+- So the proof needs an invariant that ties sigma of the word after a flush to N. The needed form is sigma(after flush k) &lt; 2^(floor(log2 N_k)), less what the counter holds. It holds with slack on the run (epoch 62442 is the tightest case seen) but is not proved.</p>
+<p><strong>Checks</strong> (all on the abstract rules unless marked TM):
+- <strong>Blank run,</strong> <code>chain_check.py blank 1000000</code> (N reaches 1.26e7):
+  - 0 violations of C1-C5, L9 or F &lt;= N.
+  - 337,508 uncut epochs (tau = 0), never two in a row.
+  - 6 S2 phi-eats in 3 chains of length 2: epochs 1115-1116, 2061-2062 and 350330-350331.
+  - Each chain opens with a bottom-exact word that has N &gt;= 2^(D+1) (F/N 0.505, 0.505, 0.500). It closes with a short flush (F = 16, 32, 64), then an overflow.
+  - Worst 2^Z/N over the 6 epochs without overflow: 0.506.
+- <strong>Exhaustive,</strong> <code>chain_check.py exh 9 40</code>: every U with up to 9 blocks, each with 41 values of N near 2 val(U) and near 2^(D+1).
+  - 758,058 states satisfy INV; one epoch each.
+  - Of these, 2,985 are S1 -&gt; S2 and 3,512 are S2 -&gt; S2 transitions.
+  - 0 breaks of C1, C2, C3, C5 or F &lt;= N, and the S2 part of INV is never broken.
+  - The only breaks are L9 at an S1 successor: 7,880, all from small hand-made words.
+- <strong>Random,</strong> <code>rand 20000 2810</code>: words of up to 24 blocks. 0 chain-lemma breaks; L9 breaks 1,247.
+- <strong>Chain range,</strong> <code>chainrand 20000 2811</code>: S2 words built to sit in the chain-continuing range (L9 breaks at S1 successors: 9,909, from the f-heavy sampling).
+  - 6,262 have P = 0 with N &gt;= 2^(D+1), 6,803 have P = 2^q with N = 2 val, and 6,935 have P = 2^q with N &gt;= 2^(D+1).
+  - This gives 3,345 S2 -&gt; S2 epochs, all of them inside INV. 0 chain-lemma breaks.
+- <strong>TM level,</strong> <code>tm 1000 2812</code>: the real machine runs one whole epoch from NM(phi U, 0, N), for random small U and N &lt;= 48.
+  - <strong>1,000/1,000</strong> end in exactly the predicted next phi-eat: 553 S1, 372 S2 and 75 other f-start words.
+  - 37 degenerate draws were skipped. In those, the word is eaten down to <code>f^k 1^j</code>, which uses the untested "d from 0^inf" EAT0f branch. That never happens on the blank run.
+- I fixed a helper bug along the way. For W = 1^j at EAT0z, the U cut must be empty. <code>chain_check.py</code> has the fix. <code>flush_check.py</code> has the same slip but only uses it for the flush prediction, so its results stand.</p>
+<p><strong>Still open.</strong>
+- L9, stated above.
+- proof.md and the formal side.
+- The degenerate small-word edge (EAT0f with d from 0^inf) has to be excluded in proof.md. It cannot happen once the word has digits above the eaten run.
+- Confidence stays med. The chain case is closed, but it rests on L9.</p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: Fund one more stage to prove L9 (PC &lt; 2^(D+1) for words that start with 1) and then write proof.md, write proof.md now with L9 as an open lemma, or park?
+Answer: <strong>prove_l9</strong> (One stage: prove L9, then write proof.md). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="funded-stage-2026-10-10-prove_l9">Funded stage (2026-10-10, prove_l9)</h2>
+<p><strong>What was done.</strong> I tried to prove L9 on the abstract round system. I proved it everywhere except in one arithmetic case (the hard case H) and at S2 -&gt; S1 steps. I then found why no local invariant can close those: #28 is #10 mirrored and started in #10's state E, and #10's counter-family breaks L9 and the flush in #28's own rules. Outcome: <strong>CRYPTID_CANDIDATE</strong>, the same verdict as #10. The stop rule applies, so proof.md is written with L9 as the one open lemma (conditional, flagged).
+- New scripts: <code>scripts/l9_check.py</code> (modes arith, reduce, blank, escape, perturb), <code>scripts/conj10.py</code>, <code>scripts/family10.py</code>, <code>scripts/tm_family.py</code>.
+- Data: <code>scripts/l9_arith.json</code>, <code>scripts/l9_reduce.json</code>, <code>scripts/l9_escape.json</code>, <code>scripts/conj10.json</code>, <code>scripts/family10.json</code>, <code>scripts/tm_family_B8.json</code>, <code>data/l9_blank_400k.json</code>.</p>
+<p><strong>Notation.</strong>
+- s(U) = sigma(U)/2^D is the normalized debris weight.
+- X = PC(U), with top bit T, popcount q and zero bits Z0 = T + 1 - q. L = floor(log2 N).
+- g(X) = sum over the 1-bits i of X of 2^(zeros of X below i).
+- h(U) = sum over U's f blocks at p of 2^(zeros of X below p).</p>
+<p><strong>Proved</strong> (proof.md §6). U and U' are consecutive S1 phi-eat words, and L9 holds at U.
+- <strong>W1.</strong> After the flush, s never grows. Increments keep it, an overflow halves it exactly, and EAT0f, EAT0z and EAT1 do not raise it.
+- <strong>W2.</strong> sigma(W_post) = g(X) + h(U), and digits(W_post) is Z0 or Z0 + 1.
+- <strong>Lemma G.</strong> g(X) &lt;= q 2^(T+1-q) &lt;= 2^T, and g(X) &lt;= X.
+- <strong>W3.</strong> s(U') &lt;= sigma(W_post)/2^max(L, Z0+1).
+- <strong>W4.</strong> Three cases give a bound:
+  - (a) T = D-1 gives s(U') &lt; 1.
+  - (b) T = D and L &gt;= D+1 give s(U') &lt;= 1/2 + s(U)/2.
+  - (c) X = 2^D gives s(U') &lt;= 3/4.
+  - (H) the hard case, T = D, L = D, q &gt;= 2, has no bound.
+- <strong>W5.</strong> s(U') &lt; 1 implies L9 at U'.
+- <strong>Reduction.</strong> s &lt; 1 propagates along S1 -&gt; S1 steps outside case H. So L9 holds on the orbit unless a case-H epoch, or an S2 epoch with an S1 successor, leaves s &gt;= 1 behind (Lemma H, open).</p>
+<p><strong>Why it cannot close locally.</strong>
+- <strong>Conjugacy</strong> (<code>conj10.py</code>). Map A..F -&gt; E,A,B,F,C,D and mirror. All 12 table entries match, and 3,000,000 steps run in lock-step from the blank tape.
+- <strong>Merge.</strong> #28's first-eat state at epoch 350,328 is (4,193,605, [3,15,3,0,11,0,0,1]), which is #10's cascade state at t = 350,272. From there the orbits coincide, with an offset of 56 epochs. Before that they differ: our N are 2, 5, 6, 9, 10, 19, ... and #10's n are 2, 5, 6, 11, 12, 18, ...
+- <strong>Family</strong> (<code>family10.py 8 18 6</code>). #10's sigma0(B) = (3*2^(B-2) - 7, [3, 0^(B-6), 10, 0, 2]), read as #28's eat state RS(W, n mod 2, 0, n). For every B = 8..18:
+  - the first phi-eat satisfies all of INV, L9 included (PC/2^D = 1.875; s = 1.13-1.15);
+  - the next two phi-eats break L9 (PC/2^D = 2.125, then 2.0);
+  - the third is f-start with the wrong shape and a late flush (B = 8: F = 256 &gt; N = 194; B = 18: F = 262,144 &gt; N = 196,610);
+  - so an eat sees an s block, and no rule applies.</p>
+<p>The eats for B = 8 are N = 186, 191, 192, 194, the same as #10 reports for its own TM.
+- <strong>TM</strong> (<code>tm_family.py 8 3000</code>). #28's own table matches the abstract rules on 779/779 round starts up to that eat (W = fs11f100fffffff, b = 1, m = 206). It then leaves the block alphabet for one round (a 110 block) and recovers: phi-eats come at N = 207, 208, 222, ... with no halt in 2.8e6 steps.</p>
+<p><strong>Checks.</strong>
+- <code>l9_check.py arith 20</code>: Lemma G holds for every X &lt; 2^20 (0 violations).
+- <code>l9_check.py reduce 100000 2810</code>: 100,000 random S1 states with L9 (up to 31 blocks; N = 2val+0..3, N in [2val, 2^(D+1)), or N &gt;= 2^(D+1)).
+  - <strong>W1, W2, W3, W4(a)-(c) and W5: 0 violations.</strong>
+  - Cases: a 47,348; b 15,268; c 2,402; H 34,982.
+  - In case H, 1,836 of 34,699 S1 successors have s &gt;= 1.
+- <code>l9_check.py escape 20000 2812</code>: 20,000 random case-H S1 starts with s &lt; 1 and INV (6-18 extra blocks), 12 epochs each.
+  - s &gt;= 1 is reached in 982 runs, and L9 fails at some later phi-eat many times (431 at the first successor).
+  - <strong>No eat with an s block appears within 12 epochs.</strong>
+  - So L9 is much more fragile than the flush itself. The rule-level failure needs the sharper coincidences of #10's super-cascade.
+  - The first run with words up to 31 blocks (<code>l9_escape_big.json</code>) timed out on 254 huge-N samples, because the flush is simulated round by round; it was replaced by this one.
+- Blank orbit: <code>l9_check.py blank 400000</code> -&gt; <code>data/l9_blank_400k.json</code>. This passes the merge point and the S2 chain at 350,330.
+  - <strong>0 violations</strong> of INV, L9, F &lt;= N or s &lt; 1 at S1.
+  - S1 cases: a 398,224; b 1,208; c 16; H 544.
+  - Max s at S1 is 0.875 (epoch 22). Max s after a case-H epoch is 0.875 (epoch 21). Max s after S2 -&gt; S1 is 0.0145 (epoch 2062).
+  - A 3,000,000-epoch run did not finish within the stage and was stopped: its round-by-round flush of the rare S2 chains is slow.
+  - The last stage's 1,000,000-epoch run had max PC/2^D = 1.5625 (epoch 22).
+  - On 100,000 epochs, case H occurs 319 times. Its max successor bound S/2^D is 0.754 after epoch 100 and 0.501 after epoch 1,000.
+  - Max s at S1 is 0.875 (epoch 22), and 0.688 at epoch 62,443, where Y is dense and the successor bound is 0.0009.</p>
+<p><strong>Still open / next.</strong>
+- L9 (equivalently Lemma H), and with it the unconditional non-halting. That is #10's Lemma X on the shared orbit. #10's funded stage showed the entry patterns form an infinite family, so a finite case analysis cannot work: ground rule 6.
+- The cryptid-protocol deliverable: an AntiHydra-style Rocq rule reduction, best done once for #10, its twin and #28 (decision.json).</p>
+<h2 id="decision-2026-10-12">Decision (2026-10-12)</h2>
+<p>Question: #28 is #10 mirrored and started in E, and the two orbits merge: park it with #10 as one cryptid candidate, fund the shared Rocq rule reduction now, or fund research on the shared Lemma X?
+Answer: <strong>park_with_10</strong> (Park with #10 as one cryptid candidate). Dennis: apply recommendations (2026-10-12).</p>
+</main></body></html>

@@ -1,0 +1,15 @@
+I believe I have proofs for 3 more holdouts (identified and proved non-halting with AI-assistance): one transition table started in A, B and F. One proof idea, three .v files, Skelet 1-like Class 2 again! :skull_crossbones:
+
+`1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---` (start A): https://github.com/DennisKoshta/busycoq/blob/nonhalt-skelet1like-c2-1RB0RF-family/verify/Skelet1LikeC2_1RB0RF_1RC0RB.v
+`1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---` (start B): https://github.com/DennisKoshta/busycoq/blob/nonhalt-skelet1like-c2-1RB0RF-family/verify/Skelet1LikeC2_1RB0RA_1LC0RE.v
+`1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD` (start F, mirrored): https://github.com/DennisKoshta/busycoq/blob/nonhalt-skelet1like-c2-1RB0RF-family/verify/Skelet1LikeC2_1RB1RZ_1LC0LA.v
+PR: https://github.com/ccz181078/busycoq/pull/17
+Informal write-ups: attached
+
+The tape alternates except at defects (two equal neighbours), and the defects are a base-3 counter: a left word counting to 81, a chain of digit blocks bumped once per visit, and two growing blocks at the right end keeping pace with it. Every 81·3^K visits the left word overflows and the chain regroups; after six of these K is 2 larger and every long gap 9x longer.
+
+The A file carries one invariant from overflow to overflow, with every finite piece run by a verified symbolic run-length simulator (lengths are linear forms, so one run covers every gap). B and F keep its lemmas verbatim for the A table and add their own base case plus busycoq's perm_halts (and flip_halts for F).
+
+All three compile against unmodified busycoq and Print Assumptions is closed. The base case is ~2.6e12 steps in 38 native_compute pieces, so coqchk doesn't finish in 10 min.
+
+AI disclosure: the informal proofs and the Coq formalizations were produced with Claude Code (Opus 5.5) and checked by compiling against unmodified busycoq, with Print Assumptions. The results rest on the Coq files; extra verification and feedback are very welcome!

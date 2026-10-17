@@ -1,0 +1,482 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF/submission/proof.md · <a href="/busy-beaver/machines/1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF/submission/proof.md.html">raw</a></div>
+<h1 id="1rb1lc_1rc1lb_1ld0rb_0le1rd_-0lf_0la1lf-never-halts">1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF: never halts</h1>
+<ul>
+<li>Machine: <code>1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF</code>, viewer https://bbchallenge.org/1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF</li>
+<li>Holdout: on the current BB(6) holdout list. Class "Counter Class 4".</li>
+<li>Written for: the string itself. Its twin <code>1RB1LA_1LC0RA_0LD1RC_---0LE_0LF1LE_1RF1LB</code> is <code>tm'</code> of <code>verify/Eqv.v</code> Module TM113, whose <code>tm</code> is this table with the states renamed, started in our state B. §6.1 shows that the same Theorem settles the twin, but the accompanying .v does not cover it.</li>
+<li>Template: none close. The .v has the overall shape of <code>verify/CounterClass2v1.v</code>, which is a different machine (its table shares only A0 = <code>1RB</code> with ours): <code>multistep_nonhalt</code> after an initial segment, then <code>progress_nonhalt_cond</code> over an index type with a predicate, with nested calls read by an inductive big-step relation (there <code>ClosedCall</code>, here <code>Life</code>). Everything machine-specific is new: the run-model encoding, <code>Life</code>, the epoch rules, the marker-word combinatorics and the invariant (§7).</li>
+<li>Status: <strong>formalized</strong> in the accompanying <code>1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF.v</code> (876 lines). It proves <code>Lemma nonhalt: ~halts tm c0.</code> in Coq 8.20.1 against unmodified busycoq BB6 (commit <code>0940bb9c</code>), imports only <code>Individual62</code> and the Coq standard library, and compiles in about 4 s. <code>Print Assumptions nonhalt</code> reports "Closed under the global context", and coqchk passes.</li>
+<li>Where each section lives in the .v: §0–§1.1 <code>tR1</code>, <code>tR3</code>, <code>tR3c</code>, <code>tR2</code>, <code>conf</code>, <code>updt</code>, <code>updt_shape</code>, <code>push_ok</code>, <code>push0_ok</code>, <code>pop_ok</code>, and the frame semantics <code>Life</code>, <code>Life_tm</code>; §2 <code>Ep</code>, <code>Ep_tm</code>, <code>U0</code>, <code>U1</code>, <code>U2</code>, <code>ruleS</code>, <code>TRF</code>, <code>Xin0</code>/<code>Xin1</code>, <code>TRX0</code>/<code>TRX1</code>, TL as <code>Life_shape</code> and <code>frame_step</code>, Rule T as <code>replay</code> and <code>ruleT</code>, Rule X as <code>ruleX</code>; §3 <code>mw</code>, <code>valid</code>, <code>cnt</code>, <code>ind</code>, <code>Orb</code>, <code>Core</code>, <code>Inv</code>, <code>stepU</code>, <code>stepS</code>, <code>stepT_nabs</code>, <code>stepT_abs</code>, <code>step_lemma</code>, <code>main</code>; §5 <code>init</code>; §6 <code>nonhalt</code>. The full table is §7.1.</li>
+</ul>
+<p><strong>Summary.</strong> The tape is a stack of runs of 1s, and the machine is a recursive counter. One "epoch" starts and ends with the head at the left edge, and the leftmost frame has a budget of 3 child creations per epoch. The machine halts exactly when that budget runs out. An epoch on a word <code>T(a,b)+N</code> replays the machine's own history one level down, on the marker word <code>N</code>, for <code>a-1</code> epochs. Each inner epoch costs 2, or 3 when it absorbs a marker. The <em>absorption law</em> (§3) says exactly when the cost is 3. Its proof is an induction on (epoch index + number of markers), carried by an invariant on the shape and positions of the markers. The top level is the marker-free orbit, so every top-level epoch costs 2 and the budget never runs out.</p>
+<hr />
+<h2 id="0-notation">0. Notation</h2>
+<p>Tape notation: <code>l &lt;A r</code> means A is reading the <strong>last cell of <code>l</code></strong>.</p>
+<p><strong>Run configurations.</strong> For <code>L = [a_1..a_p]</code> (a stack, top = <code>a_p</code>) and <code>R = [c_1, g_1, c_2, g_2, ..., c_r]</code>:</p>
+<div class="highlight"><pre><span></span><code>conf(L, R) := 0^inf 1^a_1 0 1^a_2 0 ... 0 1^a_p &lt;A 0 1^c_1 0^g_1 1^c_2 0^g_2 ... 1^c_r 0^inf
+domain:  every a_i &gt;= 1, c_i &gt;= 1, g_i &gt;= 1, and g_1 &gt;= 2.   (p = 0 means 0^inf &lt;A 0 1^c_1 ...)
+</code></pre></div>
+
+<p><code>R</code> always has odd length and ends with a run. I call the entries of <code>L</code> <em>frames</em> and <code>a_p</code> the <em>top frame</em>.</p>
+<p><strong>Words.</strong> A <em>word</em> is an <code>R</code>-shaped list. The edge configuration of a word is <code>Edge(W) := conf([], [3,2]+W)</code>.
+- <em>Marker word</em>: <code>M = [g_1,1, g_2,1, ..., g_m,1]</code> (lone 1s), with every <code>g_i &gt;= 2</code> <strong>even</strong>. Write <code>#M = m</code>.
+- <em>Absorption indices</em>: <code>I_j(M) := sum_{i&lt;=j} (g_i - 1)</code> for <code>j = 1..m</code>, and <code>I_0 := 0</code>. They are strictly increasing, and <code>I_j ≡ j (mod 2)</code> because each <code>g_i - 1</code> is odd. Write <code>I(M) = {I_1..I_m}</code>.
+- <em>Tail</em>: <code>N = []</code>, or an even-length list <code>N = [g_1, c_2, g_2, c_3, ..., g_k, c_(k+1)]</code> (a gap first, then run and gap alternating) with every entry <code>&gt;= 1</code> and <code>g_1 &gt;= 2</code>. For every <code>x &gt;= 1</code>, <code>[x]+N</code> is then a word in the domain. Every marker word is a tail. The epoch rules of §2 are stated for tails; the invariant of §3 uses marker words.
+- <code>T(a,b)+N := [a,2,b]+N</code>, a <em>T-word</em>. <code>S(a,b)+N := [2,2,a,2,b]+N</code>, an <em>S-word</em>. In §3, <code>N</code> is a marker word; in §2's rules it may be any tail. <code>S(a,b)+N</code> is also <code>T(2,a)+[2,b]+N</code>, where <code>[2,b]+N</code> is a tail but not a marker word when <code>b &gt;= 2</code>. On orbit words the invariant says which reading is meant, and Rule S (§2) handles the S reading directly.
+- For a T- or S-word, <code>aff := b + 1 - a</code>. For <code>aff &gt;= 0</code>, this counts the <em>internal</em> markers the next replay will absorb; <code>aff = -1</code> denotes the merged-marker case.</p>
+<h2 id="1-tm-level-rules">1. TM-level rules</h2>
+<p>The <code>---</code> is E0. Shift rules (each by induction on <code>n</code>):</p>
+<div class="highlight"><pre><span></span><code>CW   C&gt; 1^n 1        --&gt;  1^n C&gt; 1        3n steps   [C1 B1 B0 per cell: 0RB, 1LB, 1RC]
+DW   D&gt; 1^n          --&gt;  1^n D&gt;          n steps    [D1]
+FW   1^n &lt;F          --&gt;  &lt;F 1^n          n steps    [F1]
+</code></pre></div>
+
+<p>Macro rules. <code>l</code> and <code>r</code> are arbitrary. All parameters are <code>&gt;= 0</code>.</p>
+<div class="highlight"><pre><span></span><code>R1   l 1^(n+2) &lt;A 0 1^(m+1) 0 0 1^x 0 r  --&gt;  l 1^(n+1) 0 1^(m+1) &lt;A 0 1^(x+1) 0 0 r      3m+2x+15
+     = A1 C1 B1 B0 C1 B0 · CW(m) · C1 B0 C0 · DW(x+2) · D0 E1 · FW(x+1) · F0
+R3   0^inf &lt;A 0 1^(k+1) 0 0 1^m 0 r       --&gt;  0^inf 1^(k+2) &lt;A 0 1^(m+1) 0 0 r           3k+2m+11
+     = A0 B0 · CW(k) · C1 B0 C0 · DW(m+2) · D0 E1 · FW(m+1) · F0
+R2   l 1^(j+1) 0 1^(k+1) 0 1 &lt;A 0 r       --&gt;  l 1^(j+1) &lt;A 0 1^(k+2) 0 0 r               k+10
+     = A1 C0 · DW(3) · D0 E1 · FW(k+2) · F0
+R2e  0^inf 1^(k+1) 0 1 &lt;A 0 r             --&gt;  0^inf &lt;A 0 1^(k+2) 0 0 r                   k+10   (same transitions)
+HALT 0^inf 1 &lt;A 0 r                       --&gt;  A1 C0 D0, then E reads 0: halt (3 steps)
+</code></pre></div>
+
+<p>Inside R1 and R3: after <code>C1 B0 C0</code> the tape reads <code>... 0 1^(m+1) 0 D&gt; 1 1 1^x 0 r</code>. DW walks over the <code>x+2</code> ones, <code>D0</code> writes 0 and turns, <code>E1</code> erases the last 1, FW walks back, and <code>F0</code> lands A on the last 1 of <code>1^(m+1)</code>. In the .v these are <code>tR1</code>, <code>tR3</code> and <code>tR2</code>, each proved by one <code>es</code>, and <code>tR3c</code> (R3 at the left edge), proved by one <code>const_unfold</code> rewrite of <code>const 0</code> followed by <code>es</code>; R2e is <code>tR2</code> with <code>l = const 0</code>.</p>
+<h3 id="11-the-run-model-lemma-rm">1.1 The run model (Lemma RM)</h3>
+<p>Every <code>conf(L,R)</code> in the domain moves by exactly one rule below. The result is again in the domain.</p>
+<div class="highlight"><pre><span></span><code>push   (p = 0, or a_p &gt;= 2):   R3 if p = 0, pushing c_1+1;  R1 if p &gt;= 1, setting a_p := a_p - 1 and pushing c_1.
+       In both cases R becomes:  g_1 = 2:  [c_2+1, g_2+1, c_3, ...]   (just [c_2+1] if r = 2)
+                                 g_1 &gt;= 3: [1, g_1-1, c_2, g_2, ...]  (just [1] if r = 1)
+pop    (a_p = 1, p &gt;= 2):      L := [a_1..a_(p-2)],  R := [a_(p-1)+1, 2] + R      (R2, or R2e when p = 2)
+halt   (a_p = 1, p = 1):       HALT
+</code></pre></div>
+
+<p>Matching against §1: with <code>g_1 = 2</code>, R1/R3 take <code>x = c_2</code>, and the <code>0</code> after <code>1^x</code> is the first cell of <code>0^g_2</code>. With <code>g_1 &gt;= 3</code> they take <code>x = 0</code>, so <code>0 0 1^0 0 = 0^3</code> is the start of <code>0^g_1</code>. With <code>r = 1</code>, the rest is <code>0^inf</code>. The pop rule needs a single 0 between frames, which the domain gives. The constraints are preserved: a new first gap is <code>g_1-1 &gt;= 2</code>, <code>g_2+1 &gt;= 2</code> or <code>2</code>.</p>
+<p><strong>Frame reading.</strong> A push decrements the top frame (its <em>payment</em>) and creates a child frame. A frame is top only when it has just been created, or right after its child and grandchild were popped together (the grandchild finished). In both cases it then pays for one child (re)creation. When a frame is top with value 1, it <em>finishes</em>: it is popped together with its parent, and the parent goes back into <code>R</code> with value +1. The grandparent then pays to re-create the parent. HALT is a depth-1 frame that has to pay with value 1.</p>
+<h2 id="2-epoch-rules">2. Epoch rules</h2>
+<p><strong>Epoch.</strong> Run from <code>Edge(W)</code> until <code>L = []</code> again. The run ends at <code>conf([], [5-c, 2]+W')</code>. Write <code>Ep(W) = (c, W')</code>, with <em>cost</em> <code>c ∈ {1,2,3}</code>. The first step R3 creates the edge frame <code>E</code> with value 4. <code>E</code> pays once for each child it creates, and the epoch ends when <code>E</code>'s current child finishes (the R2e step). So <code>c</code> is the number of children <code>E</code> created, and <strong>HALT happens exactly when an epoch would need a 4th</strong>. For a tail <code>N</code>, put <code>W_0(N) := [1]+N</code> and, as long as the epochs exist, <code>(c_i, W_(i+1)(N)) := Ep(W_i(N))</code>. The orbit of a marker word <code>M</code> is <code>O_n(M) := W_n(M) = Ep^n([1]+M)</code> (the cost is dropped).</p>
+<p>Every rule below is an exact run of the run model. Macro-step lists are in order.</p>
+<div class="highlight"><pre><span></span><code>U0   Ep([1])           = (2, [2,2,1])                    R3 R1 R1 R2 R1 R1 R1 R2 R2e      (9)
+U1   Ep([1,g]+rest)    = (2, [2,2,1,g-2]+rest)           g &gt;= 4, rest arbitrary           (9)
+U2   Ep([1,2,b]+N)     = (2, [b+2,2,1]+N)                b &gt;= 1, N a tail                 (9)
+TR   Edge(T(a,b)+N)  --&gt;  conf([2,a], [b+2,2,1]+N)       a &gt;= 2, b &gt;= 1, N a tail         (8: R3 R1 R1 R2 R1 R1 R1 R2)
+TL   conf(L0+[y], [z,2]+W)  --&gt;  conf(L0+[y-1], [z-c+1,2]+W')
+         if Ep(W) = (c,W') in k macro steps, y &gt;= 2, z &gt;= c+1, L0 arbitrary                  (k)
+TF   conf([2,1], [z,2]+W)  --&gt;  conf([], [3,2,z,2]+W)                                        (1: R2e)
+X    conf([2,2], [2,2,a'',2,b'']+rest)  --&gt;  conf([], [2,2,a''+2,2,b''+2]+rest+)
+         a'' &gt;= 2, b'' &gt;= 1, rest arbitrary; rest+ = rest with its first gap +2               (10)
+</code></pre></div>
+
+<p>U1 trace (<code>rest = [c_2, ...]</code>): <code>([4],[2,g+1,..])</code>, <code>([3,2],[1,g,..])</code>, <code>([3,1,1],[1,g-1,..])</code>, <code>([3],[2,2,1,g-1,..])</code>, <code>([2,2],[2,g,..])</code>, <code>([2,1,2],[1,g-1,..])</code>, <code>([2,1,1,1],[1,g-2,..])</code>, <code>([2,1],[2,2,1,g-2,..])</code>, <code>([],[3,2,2,2,1,g-2,..])</code>. U0 is the same with <code>R = [2]</code>, <code>[1]</code>, .... U2 goes <code>([4],[2,3,b,..])</code>, <code>([3,2],[1,2,b,..])</code>, <code>([3,1,1],[b+1,g_1+1,..])</code>, <code>([3],[2,2,b+1,..])</code>, <code>([2,2],[b+2,g_1+2,..])</code>, <code>([2,1,b+2],[1,g_1+1,..])</code>, <code>([2,1,b+1,1],[1,g_1,..])</code>, <code>([2,1],[b+2,2,1,g_1,..])</code>, <code>([],[3,2,b+2,2,1,g_1,..])</code>.</p>
+<p>TR trace (<code>N = [g_1, ...]</code>): <code>([4],[a+1,3,b,g_1,..])</code>, <code>([3,a+1],[1,2,b,g_1,..])</code>, <code>([3,a,1],[b+1,g_1+1,..])</code>, <code>([3],[a+1,2,b+1,g_1+1,..])</code>, <code>([2,a+1],[b+2,g_1+2,..])</code>, <code>([2,a,b+2],[1,g_1+1,..])</code>, <code>([2,a,b+1,1],[1,g_1,..])</code>, <code>([2,a],[b+2,2,1,g_1,..])</code>. The frame <code>Y</code> with value <code>a</code> now sits on <code>E = 2</code>, and the word right of the head is <code>[b+2,2] + W_0(N)</code>. The trace reads nothing of <code>N</code> beyond <code>g_1</code>, and it needs <code>g_1 &gt;= 2</code> only at the seventh step (the <code>g_1+1 &gt;= 3</code> push case). So <code>N</code> can be any tail. The same holds for U2 (its seventh step), and U1 and X allow an arbitrary <code>rest</code>.</p>
+<p>X trace (<code>rest = [g'', ...]</code>): <code>([2,1,2],[a''+1,3,b'',g'',..])</code>, <code>([2,1,1,a''+1],[1,2,b'',g'',..])</code>, <code>([2,1,1,a'',1],[b''+1,g''+1,..])</code>, <code>([2,1,1],[a''+1,2,b''+1,g''+1,..])</code>, <code>([2],[2,2,a''+1,2,b''+1,g''+1,..])</code>, <code>([1,2],[a''+2,3,b''+1,g''+1,..])</code>, <code>([1,1,a''+2],[1,2,b''+1,g''+1,..])</code>, <code>([1,1,a''+1,1],[b''+2,g''+2,..])</code>, <code>([1,1],[a''+2,2,b''+2,g''+2,..])</code>, <code>([],[2,2,a''+2,2,b''+2,g''+2,..])</code>. In frame terms: <code>Y = 2</code> creates <code>Z = 2</code>. Z's first child finishes at once, but Z has value 1 and cannot pay, so Z finishes too. <code>E</code> re-creates <code>Y</code> with value 2, <code>Y</code>'s child finishes, and the epoch ends with <code>E = 1</code>. That is cost 3.</p>
+<p><strong>Proof of TL (translation).</strong> Run both sides one macro step. <code>Edge(W)</code> does R3 and pushes 4. <code>conf(L0+[y], [z,2]+W)</code> does R1 (<code>y &gt;= 2</code>): it sets <code>y := y-1</code> and pushes <code>z</code>. Both leave the same <code>R = [W_0+1, W_1+1, W_2, ...]</code>, because the <code>R</code>-update of a push depends only on <code>R</code>. Call the pushed frame the <em>bottom frame</em> <code>B</code>, and let <code>i</code> be the number of children <code>B</code> has created so far. Claim: until the edge run's last step, the edge run is at <code>([4-i] + S, R)</code> and the other run is at <code>(L0 + [y-1, z-i] + S, R)</code>, with the same <code>S</code> and <code>R</code>.</p>
+<p>What a macro step reads (Lemma RM):
+- A <strong>push</strong> reads the top value and <code>R</code>, and whether the depth <code>p</code> is 0 (R3 or R1). Here <code>p &gt;= 1</code> in both runs before the end.
+- A <strong>pop</strong> (<code>a_p = 1</code>, <code>p &gt;= 2</code>) also reads the frame beneath the top, <code>a_(p-1)</code>, which goes back into <code>R</code> as <code>[a_(p-1)+1, 2]</code>. Whether <code>p = 2</code> (R2e) or not (R2) changes only the TM step count, not the model.
+- <strong>HALT</strong> is <code>a_p = 1</code> with <code>p = 1</code>. The other run has <code>p &gt;= |L0| + 2 &gt;= 2</code> throughout, so it never halts.</p>
+<p>Cases, by the length of <code>S</code>:
+1. <code>S</code> non-empty, top of <code>S</code> <code>&gt;= 2</code>: both runs push the same value with the same <code>R</code>-update, so <code>S</code> grows.
+2. <code>|S| &gt;= 2</code>, top of <code>S</code> = 1: both runs pop. The frame beneath the top is inside <code>S</code>, so it is the same in both runs, and so is the new <code>R</code>.
+3. <code>S = []</code>, so <code>B</code> is top. In the edge run its value is <code>4-i</code>, and <code>4-i &gt;= 2</code> because the epoch does not halt. So <code>B</code> pushes (R1), and <code>i</code> grows by 1. <code>B</code> creates <code>c</code> children in all, so <code>i &lt;= c-1</code> before this push. Then <code>z-i &gt;= z-(c-1) &gt;= 2</code>, and the other run pushes too (R1), with the same <code>R</code>-update.
+4. <code>|S| = 1</code>, top of <code>S</code> = 1: the pop reads <code>B</code>'s value. In the edge run this is R2e: <code>[4-c, 1] -&gt; []</code>, <code>R := [5-c, 2]+W'</code>. It is the epoch's final step, because <code>L = []</code> for the first time, and <code>i = c</code> here. The other run does R2: <code>L0+[y-1, z-c, 1] -&gt; L0+[y-1]</code>, <code>R := [z-c+1, 2]+W'</code>, and <code>z-c &gt;= 1</code>.</p>
+<p>So before the last step every pop has <code>|S| &gt;= 2</code> and reads only frames inside <code>S</code>. Case 3 depends on <code>B</code>'s value only through "<code>&gt;= 2</code>", which holds in both runs. The single pop with <code>|S| = 1</code> is the epoch's final step (case 4). Both runs take the same <code>k</code> macro steps. ∎ In the .v, TL is <code>frame_step</code>. Its core is <code>Life_shape</code>, which proves the same fact in big-step form, by induction on the frame semantics <code>Life</code> (§7).</p>
+<p><strong>Rule T (replay).</strong> Let <code>a &gt;= 2</code>, <code>b &gt;= 1</code>, and <code>N</code> a tail. Put <code>ζ_0 := b+2</code>, <code>(c_i, W_{i+1}(N)) = Ep(W_i(N))</code> and <code>ζ_{i+1} := ζ_i - c_i + 1</code>. For a marker word, <code>W_i(N) = O_i(N)</code>.
+- If the epochs <code>Ep(W_i(N))</code> exist and <code>ζ_i &gt;= c_i + 1</code> for <code>i = 0..a-2</code>, then <strong><code>Ep(T(a,b)+N) = (2, [ζ_{a-1}, 2] + W_{a-1}(N))</code></strong>. Proof: TR, then TL <code>a-1</code> times, then TF. The <code>i</code>-th TL use has <code>y = a-i</code>, <code>z = ζ_i</code> and <code>W = W_i(N)</code>. None of TR, TL or TF uses marker structure.
+- <strong>Rule X (exhaustion).</strong> Suppose the epochs exist, <code>ζ_i &gt;= c_i + 1</code> for <code>i = 0..a-3</code>, <code>ζ_{a-2} = 2</code>, and <code>W_{a-2}(N) = [a'',2,b'']+N''</code> with <code>a'' &gt;= 2</code>, <code>b'' &gt;= 1</code>, and <code>N''</code> arbitrary. Then <strong><code>Ep(T(a,b)+N) = (3, T(a''+2, b''+2) + N''+)</code></strong>, where <code>N''+</code> is <code>N''</code> with its first entry increased by 2 (<code>[]</code> stays <code>[]</code>). Proof: TR, then TL <code>a-2</code> times (<code>Y</code> goes from <code>a</code> to 2), which gives <code>conf([2,2], [2,2]+W_{a-2}(N))</code>, then X.
+- <strong>Rule S.</strong> For <code>a, b &gt;= 1</code> and <code>N</code> a tail: <strong><code>Ep(S(a,b)+N) = (2, T(a+1, b+2) + [2,1] + N)</code></strong>, in 18 macro steps. Proof: <code>S(a,b)+N = T(2,a)+N_S</code> with <code>N_S := [2,b]+N</code>, a tail with first gap 2. Rule T at <code>(2, a, N_S)</code> needs one inner epoch. <code>W_0(N_S) = [1,2,b]+N</code>, and U2 gives <code>Ep(W_0(N_S)) = (2, [b+2,2,1]+N)</code>. Then <code>ζ_0 = a+2 &gt;= 3 = c_0+1</code>, and Rule T gives <code>(2, [a+1,2] + [b+2,2,1]+N)</code>. The count is TR (8) + U2 replayed by TL (9) + TF (1) = 18. As a standalone computation (the form <code>ruleS</code> proves in the .v), the macro steps are <code>R3 R1 R1 R2 R1 R1 R1 R2 | R1 R1 R1 R2 R1 R1 R1 R2 R2 | R2e</code>. The middle block is U2 with its first R3 read as R1 and its last R2e read as R2. Every case split in it is decided by the literal entries <code>2</code>, <code>a+1 &gt;= 2</code> and so on, and by <code>N</code>'s first gap <code>&gt;= 2</code>.</p>
+<p>Unrolled to the tape, <code>ζ_i</code> is the value of the <code>[ζ,2]</code> run right of the head when the replay frame <code>Y</code> creates its <code>i</code>-th child. "Cost 3" at an inner level means "<code>ζ</code> drops by 2" at the level above. Since <code>ζ_{i+1} = ζ_i - c_i + 1</code>, the condition <code>ζ_i &gt;= c_i + 1</code> is the same as <code>ζ_{i+1} &gt;= 2</code>, and <code>ζ</code> is non-increasing (every cost is <code>&gt;= 1</code>). So, given that the inner epochs exist, the conditions of Rule T for all <code>i</code> follow from <code>ζ_{a-1} &gt;= 2</code>, and those of Rule X from <code>ζ_{a-2} = 2</code>. These are the hypotheses of <code>ruleT</code> and <code>ruleX</code> in the .v.</p>
+<h2 id="3-the-orbit-invariant-and-the-absorption-law">3. The orbit invariant and the absorption law</h2>
+<p>Fix an even-gap marker word <code>M</code> with <code>m</code> markers and <code>n &gt;= 1</code>. Let <code>α := #{j &gt;= 1 : I_j(M) &lt; n}</code> (markers already absorbed), and let <code>j* := α+1</code> be the first unabsorbed marker if <code>α &lt; m</code>. Call <code>n</code> an <strong>absorption step</strong> when <code>α &lt; m</code> and <code>I_{j*} = n</code>.</p>
+<p><strong>Inv(M, n).</strong> <code>W := O_n(M)</code> has one of the following two forms. The <strong>type rule</strong> decides which: T when <code>n - I_α</code> is odd, S when it is even.</p>
+<p><em>T case.</em> <code>W = T(a,b)+N</code> with <code>a &gt;= 2</code>, <code>b = n + α</code>, and <code>N</code> an even-gap marker word. Let <code>aff := b+1-a</code>. Then:
+- (count) <code>#N = aff + (m - α)</code>, and <code>aff &gt;= -1</code>. <code>aff = -1</code> happens only at an absorption step (the marker has merged into the head).
+- (INT) If <code>aff&gt;=0</code>, <code>I_aff(N)&lt;=a-2</code> (<code>I_0=0</code>); vacuous for <code>aff=-1</code>.
+- (EXT) For every <code>j</code> with <code>j* &lt;= j &lt;= m</code>, put <code>t := aff + 1 + (j - j*)</code>, the index in <code>N</code> of original marker <code>j</code>. If <code>t &gt;= 1</code> then <code>I_t(N) = a - 3 + I_j(M) - n</code>. There is one exception: at an absorption step, for <code>j = j*</code>, the claim is only <code>I_t(N) &lt;= a-3</code> (within strict reach).</p>
+<p><em>S case.</em> <code>W = S(a,b)+N</code> with <code>a &gt;= 2</code>, <code>b = n - 1 + α</code>, <code>aff := b+1-a</code>. Everything is as in the T case with <code>a-3</code> replaced by <code>a-4</code> in EXT. The exception now applies when <code>n+1 = I_{j*}</code>: the claim is then <code>I_t(N) &lt;= a-3</code>, and <code>aff = -1</code> is allowed only then.</p>
+<p>When <code>α = m</code> there are no external markers: <code>N</code> has exactly <code>aff</code> markers, all within reach.</p>
+<p>Read with an arbitrary word <code>W</code> in place of <code>O_n(M)</code>, the clauses define a predicate "<code>W ∈ Inv(M, n)</code>". The induction step below uses nothing about <code>W = O_n(M)</code> except these clauses and the IH on the inner orbits <code>O_i(N)</code> of <code>W</code>'s own marker tail. In the .v the step lemmas <code>stepS</code>, <code>stepT_nabs</code> and <code>stepT_abs</code> are stated this way, for any word whose marker tail satisfies the clauses (<code>Core</code>, §7).</p>
+<p><strong>AL(M, n).</strong> Epochs <code>0..n-1</code> of the orbit exist (no halt), and epoch <code>i</code> costs 3 iff <code>i ∈ I(M)</code>. Otherwise it costs 2.</p>
+<p><strong>Theorem.</strong> For every even-gap marker word <code>M</code> and every <code>n &gt;= 0</code>, AL(M, n) holds, and so does Inv(M, n) when <code>n &gt;= 1</code>.</p>
+<p><strong>Parity facts.</strong> (P1) <code>I_i ≡ i (mod 2)</code>. (P2) At a T-word, <code>b = n+α</code> is <strong>odd</strong>: <code>n - I_α</code> is odd and <code>I_α ≡ α</code>. At an S-word, <code>b = n-1+α</code> is also odd.</p>
+<p><strong>Proof.</strong> Strong induction on <code>Λ := n + m</code>. For <code>Λ = 0</code> (<code>M = []</code>, <code>n = 0</code>) there is nothing to prove. Assume the claim for every <code>(M', n')</code> with <code>n' + #M' &lt; n + 1 + m</code>, and in particular for <code>(M, n)</code>. We prove it for <code>(M, n+1)</code> by cases on <code>O_n(M)</code>.</p>
+<p><strong>Case n = 0 (U-words).</strong> <code>O_0 = [1]+M</code>.
+- <code>M = []</code>: by U0, <code>O_1 = T(2,1)</code> with <code>α = 0</code> and <code>aff = 0</code>.
+- <code>M = [g_1,1]+M'</code> with <code>g_1 &gt;= 4</code>: by U1, <code>O_1 = T(2,1)+[g_1-2,1]+M'</code>. Here <code>aff = 0</code> and <code>I_t(N) = I_t(M) - 2 = a-3+I_t-1</code> (EXT with <code>n = 1 &lt; I_1</code>).
+- <code>M = [2,1]+M'</code>: by U2, <code>O_1 = T(3,1)+M'</code>. Here <code>aff = -1</code> and <code>n = 1 = I_1</code> is an absorption step; the marker merged into the head. EXT holds for <code>j &gt;= 2</code>: <code>I_{j-1}(M') = I_j - 1 = a-3+I_j-1</code>.</p>
+<p>The epoch costs 2, and <code>0 ∉ I(M)</code> because every <code>I_j &gt;= 1</code>. The type is T since <code>1 - I_0 = 1</code> is odd, and <code>b = 1 = n + α</code>.</p>
+<p><strong>Case S-word</strong>, <code>O_n = S(a,b)+N</code>. Rule S needs <code>a &gt;= 2</code>, <code>b &gt;= 1</code> (S-words occur only at <code>n &gt;= 2</code>) and <code>N</code>'s first gap <code>&gt;= 2</code>. It gives <code>O_{n+1} = T(a+1, b+2) + [2,1] + N</code> at cost 2. Here <code>n ∉ I(M)</code>: <code>I_α &lt; n</code>, and, when <code>α &lt; m</code>, <code>I_{j*} - n</code> is odd (because <code>n ≡ I_α ≡ α</code> and <code>I_{j*} ≡ α+1</code>), so <code>n+1 &lt;= I_{j*}</code>.
+- <code>α</code> is unchanged, the type is T (<code>n+1-I_α</code> is odd), and <code>b+2 = (n+1)+α</code>.
+- The new <code>aff_T = aff_S + 1 &gt;= 0</code>, and the marker count goes up by 1 (the new <code>[2,1]</code>) ✓.
+- INT: For <code>aff_S &gt;= 0</code>, <code>I_{aff_S+1}([2,1]+N) = 1 + I_{aff_S}(N) &lt;= (a+1)-2</code>. For <code>aff_S=-1</code>, <code>aff_T=0</code>, so <code>I_0=0 &lt;= (a+1)-2</code>.
+- EXT: indices shift by 1 and positions by +1, so <code>1 + (a-4+I_j-n) = (a+1)-3+I_j-(n+1)</code> ✓.
+- Absorption exception (<code>n+1 = I_{j*}</code>): for a marker already present in <code>N</code> (<code>t &gt;= 1</code>), <code>1 + I_t(N) &lt;= (a+1)-3</code>. If <code>aff_S = -1</code>, the new <code>[2,1]</code> at position 1 is the <code>(aff_T+1)</code>-th marker, and <code>1 &lt;= a-2</code> because a merged S-word has <code>b = a-2 &gt;= 1</code>.</p>
+<p><strong>Case T-word, not an absorption step</strong> (<code>n &lt; I_{j*}</code>, or <code>α = m</code>), <code>O_n = T(a,b)+N</code>.
+1. <em>Inner costs.</em> <code>I_1(N) .. I_aff(N) &lt;= a-2</code> by INT. If <code>α &lt; m</code>, the next one is <code>I_{aff+1}(N) = a-3 + I_{j*} - n &gt;= a-1</code>, because <code>I_{j*} - n</code> is even and positive. This uses the type rule, the P1 parity of <code>I_{j*}</code>, and <code>n - I_α</code> odd. If <code>α=m</code>, all markers are internal. Take the IH AL(N, a-1). Its measure is <code>Λ = (a-1) + #N = (a-1) + aff + m - α = b + m - α = n + m</code>, which is smaller. It gives <code>c_i = 2 + [i ∈ I(N)]</code> for <code>i &lt;= a-2</code>, with exactly <code>aff</code> threes.
+2. <em>ζ-accounting.</em> <code>ζ_i = b+2-i-#(I(N)∩[0,i-1])</code>, so <code>ζ_i - (c_i+1) = b-1-i-#(I(N)∩[0,i]) &gt;= b-1-(a-2)-aff = 0</code>. Also <code>ζ_{a-1} = b+2-(a-1)-aff = 2</code>. Rule T gives <code>Ep(O_n) = (2, [2,2] + O_{a-1}(N))</code>. The cost is 2, and <code>n ∉ I(M)</code> ✓.
+3. <em>Shape.</em> By the IH Inv(N, a-1), <code>α_N = aff</code> (the same count as in step 1), and <code>(a-1) - I_aff(N) ≡ a-1-aff ≡ b ≡ 1</code>, so the inner word is a T-word: <code>O_{a-1}(N) = T(a',b')+N'</code> with <code>b' = (a-1)+aff = b</code>. Therefore <code>O_{n+1} = S(a', b) + N'</code>. Check the S clauses at <code>n+1</code>:
+   - <code>b = (n+1)-1+α</code> ✓.
+   - <code>#N' = aff' + (#N - aff) = aff' + m - α</code> ✓.
+   - INT is inherited.
+   - EXT: original marker <code>j = j*+s</code> is <code>N</code>-marker <code>aff+1+s</code>, at <code>a-3+I_j-n</code>. Inner EXT puts it at <code>a'-3 + (a-3+I_j-n) - (a-1) = a'-4+I_j-(n+1)</code> in <code>N'</code> ✓.
+   - If <code>I_{j*} = n+2</code>, the inner word is at its own absorption step, so the inner exception gives <code>&lt;= a'-3</code> (or <code>aff' = -1</code>). This is exactly the S exception at <code>n+1</code>.
+   - The type is S because <code>n+1-I_α</code> is even ✓.</p>
+<p><strong>Case T-word at an absorption step</strong> (<code>n = I_{j*}</code>). Here <code>a &gt;= 3</code>: if <code>aff &gt;= 0</code> then <code>1 &lt;= I_{aff+1}(N) &lt;= a-3</code>, and if <code>aff = -1</code> then <code>a = b+2 &gt;= 3</code>.
+1. <em>Inner costs.</em> The first <code>aff+1</code> markers of <code>N</code> are <code>&lt;= a-3</code>; when <code>aff = -1</code> there are none. If <code>j* &lt; m</code>, the next one is <code>a-3+I_{j*+1}-n &gt;= a-2</code>; otherwise no markers remain beyond those first <code>aff+1</code>. The IH AL(N, a-2) has measure <code>n+m-1</code>. It gives exactly <code>aff+1</code> threes among <code>c_0..c_{a-3}</code>.
+2. <em>ζ-accounting.</em> For <code>i &lt;= a-3</code>: <code>ζ_i-(c_i+1) &gt;= b-1-(a-3)-(aff+1) = 0</code>. Then <code>ζ_{a-2} = b+2-(a-2)-(aff+1) = 2</code>.
+3. <em>Shape for rule X.</em> By Inv(N, a-2): <code>α_N = aff+1</code>, and <code>(a-2) - I_{aff+1}(N) ≡ a-3-aff ≡ b ≡ 1</code> (when <code>aff = -1</code>: <code>a-2 = b</code>, odd). So <code>O_{a-2}(N) = T(a'',b'')+N''</code> with <code>b'' = (a-2)+(aff+1) = b &gt;= 1</code> and <code>a'' &gt;= 2</code>. Rule X gives <code>Ep(O_n) = (3, T(a''+2, b+2)+N''+)</code>. The cost is 3 at <code>n = I_{j*}</code> ✓.
+4. <em>Clauses at <code>n+1</code>.</em> Now <code>α' = α+1</code>, the type is T (<code>n+1-I_{j*} = 1</code>), <code>b+2 = (n+1)+α'</code> and <code>a''+2 &gt;= 4</code>.
+   - <code>aff_new = aff''</code>, and <code>#N''+ = aff'' + (#N-aff-1) = aff'' + m - α'</code> ✓.
+   - INT: For <code>aff'' &gt;= 1</code>, <code>I_{aff''}(N''+) = I_{aff''}(N'')+2 &lt;= a'' = (a''+2)-2</code>. For <code>aff''=0</code>, the bound is <code>I_0=0 &lt;= a''</code>. For <code>aff''=-1</code>, INT is vacuous.
+   - EXT for <code>j &gt;= j*+1</code>: inner EXT gives <code>a''-3 + (a-3+I_j-n) - (a-2) = a''-4+I_j-n</code>. Adding 2 gives <code>(a''+2)-3+I_j-(n+1)</code> ✓.
+   - If <code>I_{j*+1} = n+1</code>, the inner exception carries over: <code>&lt;= a''-3</code>, plus 2, gives <code>&lt;= a_new-3</code>, or the marker has merged (<code>aff'' = -1</code>).</p>
+<p><strong>Measure.</strong> Every inner call uses <code>(N, i)</code> with <code>i &lt;= a-1</code> and <code>#N = aff + m - α</code>, so <code>i + #N &lt;= n + m &lt; (n+1) + m</code>. The outer call uses <code>(M, n)</code>. So the induction is well-founded. Epochs are finite because each is a finite composition of rules. ∎</p>
+<p><strong>Remarks.</strong>
+- Odd gaps never occur: every gap the rules create is 2, <code>g+2</code> or <code>g-2</code> starting from even values. The Theorem is stated only for even gaps, and that is all the proof needs.
+- A T-word epoch ends in one of exactly two ways: <code>ζ_{a-1} = 2</code> with Rule T (not an absorption step), or <code>ζ_{a-2} = 2</code> with Rule X (absorption step). A third ending with <code>ζ = 3</code> at the last replay does not arise: at an absorption step the absorbed marker sits at <code>&lt;= a-3</code>, never at <code>a-2</code> (the exception clause), so <code>ζ_{a-2} = 2</code> exactly.</p>
+<h2 id="4-coverage">4. Coverage</h2>
+<ul>
+<li><strong>Edge level.</strong> The run reaches <code>Edge(O_0([]))</code> (§5). By the Theorem with <code>M = []</code>, every epoch from <code>Edge(O_n([]))</code> exists and costs 2, because <code>I([])</code> is empty. The epoch ends at <code>conf([], [5-2, 2] + O_{n+1}([])) = Edge(O_{n+1}([]))</code>. Every <code>O_n([])</code> is a U-word (<code>n = 0</code>), a T-word or an S-word, and each epoch is covered by U0, T or S. For <code>M = []</code> no absorption step ever occurs, so rule X is never used at the top.</li>
+<li><strong>Inside epochs.</strong> Rules U0–U2, TR, TL, TF and X are exact macro-step runs, and each macro step is a TM rule from §1. RM covers every in-domain configuration, so nothing is left uncovered.</li>
+<li><strong>Case splits used.</strong> These are: <code>p = 0</code> / <code>a_p &gt;= 2</code> / <code>a_p = 1</code> with <code>p &gt;= 2</code> / <code>p = 1</code>; <code>g_1 = 2</code> / <code>g_1 &gt;= 3</code> / <code>r = 1</code>; for words, U (with the three forms) / S / T, and T as "not an absorption step" / "absorption step"; and inside the Theorem, <code>aff = -1</code> versus <code>aff &gt;= 0</code> and <code>α = m</code> versus <code>α &lt; m</code>.</li>
+</ul>
+<h2 id="5-initial-segment">5. Initial segment</h2>
+<div class="highlight"><pre><span></span><code>c0 = 0^inf A&gt; 0^inf
+ --10--&gt;   0^inf &lt;A 0 1^2 0^inf          = conf([], [2])        A0 B0 C0 D1 D1 D0 E1 F1 F1 F0
+ --14--&gt;   0^inf 1^3 &lt;A 0 1 0^inf        = conf([3], [1])       R3 (k=1, m=0)
+ --15--&gt;   0^inf 1^2 0 1 &lt;A 0 1 0^inf    = conf([2,1], [1])     R1 (n=1, m=0, x=0)
+ --11--&gt;   0^inf &lt;A 0 1^3 0^2 1 0^inf    = conf([], [3,2,1]) = Edge([1]) = Edge(O_0([]))   R2e (k=1)
+</code></pre></div>
+
+<p>That is 50 steps in total. In the .v this is <code>init : c0 --&gt;* conf [] [3; 2; 1]</code>, by <code>solve_init</code>.</p>
+<h2 id="6-conclusion">6. Conclusion</h2>
+<p>Every top-level epoch costs 2, so the edge frame <code>E</code> creates exactly 2 children per epoch. It is never asked for a 4th, which is the only way HALT can happen (§2). Each epoch takes at least 9 macro steps, and so at least 9 TM steps. The run therefore passes through <code>Edge(O_n([]))</code> for every <code>n</code> and never halts.</p>
+<p><strong>Why <code>---</code> (E0) is never read.</strong> E is entered only by D0 (<code>0LE</code>). In R1 and R3, D0 fires just right of the <code>1^(x+2)</code> block, so E reads a 1. In R2 and R2e, D0 fires just right of the lone 1, so E reads that 1. E reads 0 only in the HALT pattern <code>0^inf 1 &lt;A 0</code>, where <code>C0, D0</code> run off the left edge. That pattern is a depth-1 frame with value 1 on top, which the cost-2 argument excludes.</p>
+<h3 id="61-the-twin-eqvv-tm113">6.1 The twin: <code>Eqv.v</code> TM113</h3>
+<p><code>verify/Eqv.v</code> Module TM113 has <code>tm = 1RB1LA_1LC0RA_0LD1RC_---0LE_0LF1LE_1RA1LB</code>. That is this machine with the states renamed: TM113's A..F are our B, C, D, E, F, A. So <code>TM113.tm</code> from <code>c0</code> is our machine on a blank tape started in <strong>state B</strong>. <code>TM113.eqv</code> proves <code>halts tm c0 &lt;-&gt; halts tm' c0</code> for <code>tm' = 1RB1LA_1LC0RA_0LD1RC_---0LE_0LF1LE_1RF1LB</code>, the twin, which is on the current BB(6) holdout list.</p>
+<p><strong>Claim.</strong> <code>TM113.tm</code> never halts. Hence, by <code>TM113.eqv</code>, neither does the twin.
+- <em>Initial segment.</em> From blank in our state B: <code>B0 C0 D1 D1 D0 E1 F1 F0</code> (8 steps) gives <code>conf([], [1])</code>. Then R3 (k=0, m=0; 11 steps) gives <code>conf([2],[1])</code>, R1 (n=0, m=0, x=0; 15 steps) gives <code>conf([1,1],[1])</code>, and R2e (k=0; 10 steps) gives <strong><code>conf([], [2,2,1]) = conf([], [2,2]+O_0([]))</code> at step 44</strong>.
+- <em>Budget-2 edge lemma.</em> If <code>Ep(W) = (c, W')</code> with <code>c &lt;= 2</code>, then <code>conf([], [2,2]+W) --&gt; conf([], [4-c, 2]+W')</code> in the same <code>k</code> macro steps, with <code>L ≠ []</code> in between. The proof is TL's argument with an empty context. R3 pushes <code>2+1 = 3</code> instead of 4, so the stacks are <code>[3-i]+S</code> and <code>[4-i]+S</code> with the same <code>S</code> and <code>R</code>. The bottom frame is top only to create child <code>i+1 &lt;= c &lt;= 2</code>, so its value is <code>3-i &gt;= 2</code>. The final step is R2e: <code>[3-c, 1] -&gt; []</code>, <code>R := [4-c, 2]+W'</code>, with <code>3-c &gt;= 1</code>. In terms of the .v's lemmas, it is <code>Life_shape</code> applied to the edge frame with value 3 in place of 4 (<code>c &lt;= 2</code> gives <code>c + 1 &lt;= 3</code>), followed by <code>push0_ok</code> and <code>Life_tm</code>.
+- <em>Top level.</em> With <code>M = []</code>, the Theorem says every <code>Ep(O_n([]))</code> costs exactly 2. So <code>conf([], [2,2]+O_n([])) --&gt; conf([], [2,2]+O_{n+1}([]))</code> for every <code>n</code>, with at least 9 TM steps each. The edge frame starts each epoch at 3, a budget of 2 children, and every epoch spends exactly 2. There is zero slack: a single cost-3 top epoch would halt the twin, and the Theorem rules that out.
+- <em>Formal route (not in the accompanying .v).</em> A separate file whose <code>TM_from_str</code> is the twin's string proves <code>~halts TM113.tm c0</code> and transfers it through <code>TM113.eqv</code>, either imported or as a copy of its <code>solve_eqv</code> call. It shares the model layer and the Theorem (<code>Life</code> and its lemmas, the epoch rules, <code>main</code>; §7). Only these differ: the TM-level rules (the same R1/R2/R2e/R3 with renamed states), the 44-step init, and the top-level step (the budget-2 edge lemma in place of <code>Ep_tm</code>).</p>
+<h2 id="7-the-v-file">7. The .v file</h2>
+<p>The .v proves <code>Lemma nonhalt: ~halts tm c0.</code> for <code>tm := TM_from_str "1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF"</code>. It imports <code>Individual62</code> and the stdlib <code>Lia</code>, <code>String</code>, <code>List</code> and <code>Arith</code>. Every lemma is top level (no Section, Module or Hypothesis). It follows §1–§6 with the choices below.</p>
+<ul>
+<li><strong>TM layer.</strong> <code>tR1</code>, <code>tR3</code> and <code>tR2</code> are R1, R3 and R2 for arbitrary sides <code>l</code> and <code>r</code>, each proved by one <code>es</code>, which also runs the shift rules CW, DW and FW; they are not separate lemmas. <code>tR3c</code> is R3 with <code>l = const 0</code>, proved by one <code>const_unfold</code> rewrite of <code>const 0</code> followed by <code>es</code>, and R2e is <code>tR2</code> with <code>l = const 0</code> (through <code>lsep_eq</code>).</li>
+<li><strong>Sides.</strong> <code>lsep</code>, <code>lside</code> and <code>rside</code> encode the two lists, and <code>conf L R := lside L &lt;{{A}} [0] *&gt; rside R</code>, with <code>L</code> stored top first.</li>
+<li><strong>Run model (§1.1).</strong> <code>updt R'</code> is the push update of the word right of the head (<code>None</code> outside the domain), and <code>updt_shape</code> rewrites <code>rside</code> into the <code>0 0 1^x 0 r</code> shape that R1 and R3 need, by the case split <code>g_1 = 2</code> / <code>g_1 &gt;= 3</code> / <code>r = 1</code>. <code>push_ok</code> (R1), <code>push0_ok</code> (R3 at the left edge) and <code>pop_ok</code> (R2, R2e) lift the run model's moves to the TM.</li>
+<li><strong>Frame semantics.</strong> The run model is read frame by frame, as in §1.1's frame reading. <code>Life x R o</code> says that a frame of value <code>x</code> is on top with right word <code>R</code>, and either</li>
+<li><code>o = Fin Rf</code>: it comes back on top with value 1 and right word <code>Rf</code> (it finishes; its parent is popped with it next), or</li>
+<li><code>o = Pop c Rf</code>: it creates <code>c</code> children, its last child finishes, which pops it, and <code>Rf</code> is the right word after that pop.</li>
+</ul>
+<p>The constructors are <code>L_fin</code> (value 1: the frame finishes), <code>L_cf</code> (the frame pays and creates a child that finishes, so the frame is popped with it: <code>Pop 1</code>), and <code>L_cpf</code>, <code>L_cpp</code> (the frame pays and creates a child whose own life ends in <code>Pop</code>, then lives on with its value reduced by 1; the outcome is that of the rest of its life, <code>Fin</code> for <code>L_cpf</code>, and <code>Pop</code> with one more child for <code>L_cpp</code>). <code>Life_tm</code> lifts <code>Life</code> to the TM for every stack <code>L</code> below the frame: <code>Fin Rf</code> gives <code>conf (x::L) R --&gt;* conf (1::L) Rf</code>, and <code>Pop c Rf</code> gives <code>conf (x::L) R --&gt;+ conf L Rf</code>.
+- <strong>Epochs (§2).</strong> <code>Ep W c W' := exists R0, updt (2::W) = Some R0 /\ Life 4 R0 (Pop c ((5-c)::2::W'))</code> is the life of the edge frame, which R3 creates with value 4. <code>Ep_tm</code> gives <code>conf [] (3::2::W) --&gt;+ conf [] ((5-c)::2::W')</code>.
+- <strong>Translation (TL).</strong> <code>Life_shape</code>: if <code>Life x R (Pop c Rf)</code>, then <code>c + 1 &lt;= x</code>, <code>Rf = (x-c+1)::2::W'</code> for some <code>W'</code>, and <code>Life z R (Pop c ((z-c+1)::2::W'))</code> for every <code>z &gt;= c + 1</code>. So a <code>Pop</code> outcome depends on the frame's value only through <code>z &gt;= c + 1</code>, which is case 3 of the proof of TL; the proof is by induction on <code>Life</code>, with no case split on <code>|S|</code>. <code>frame_step</code> combines it with <code>Ep</code>: a frame of value <code>y &gt;= 2</code> over <code>[z,2]+W</code>, with <code>Ep W c W'</code> and <code>z &gt;= c + 1</code>, creates a child of value <code>z</code> whose life is the translated epoch, and then continues with value <code>y-1</code> over <code>[z-c+1,2]+W'</code>.
+- <strong>Concrete rules.</strong> <code>U0</code>, <code>U1</code>, <code>U2</code>, <code>ruleS</code> (the standalone 18-step form of Rule S), <code>TRF</code> (TR, then a given life of the replay frame <code>Y</code> that ends in <code>Fin</code>, then TF), <code>Xin0</code>/<code>Xin1</code> (the inner part of X, with <code>rest</code> empty or not) and <code>TRX0</code>/<code>TRX1</code> (TR, then a given life of <code>Y</code> that ends in <code>Pop</code>, then the rest of X) are closed by the tactics <code>ep</code> and <code>lf</code>; <code>lf</code> searches the four <code>Life</code> constructors, with each <code>updt</code> computed by <code>reflexivity</code>. The tail hypothesis is <code>tail_ok N</code>: <code>N = []</code> or its first gap is <code>&gt;= 2</code>.
+- <strong>Marker words and orbits (§0, §3).</strong> A marker word is stored by its absorption indices: <code>mw P</code> for <code>P = [I_1; ..; I_m]</code>, with gaps <code>g_j = I_j - I_(j-1) + 1</code>, each followed by a lone 1. <code>valid P</code> says every gap is even (each index is odd above the previous one). <code>cnt P n = #{p ∈ P : p &lt; n}</code> is <code>α</code>, <code>ind P n = [n ∈ P]</code>, and <code>cost P n = 2 + ind P n</code>. <code>Orb Q n W</code> is the orbit with AL built in: <code>O0 : Orb Q 0 (1 :: mw Q)</code>, and <code>OS</code> extends <code>Orb Q n W</code> by an epoch <code>Ep W (cost Q n) W'</code>. So an orbit word exists only if every earlier epoch exists at the cost AL predicts.
+- <strong>Rules T and X.</strong> <code>replay</code> iterates <code>frame_step</code> along an orbit, by induction on <code>Orb</code>. <code>ruleT</code> is Rule T for a marker tail, with hypothesis <code>a - 1 + cnt Q (a-1) &lt;= b</code>, which is <code>ζ_{a-1} &gt;= 2</code>, and result <code>ζ_{a-1} = b + 3 - a - cnt Q (a-1)</code>. <code>ruleX</code> is Rule X for a marker tail, with <code>b = a - 2 + cnt Q (a-2)</code> (that is, <code>ζ_{a-2} = 2</code>); <code>N''+</code> is <code>mw (map (+2) Q'')</code>, since adding 2 to every index adds 2 to the first gap only. The .v uses Rule T and Rule X only on marker tails, and Rule S in its standalone form.
+- <strong>Invariant.</strong> <code>Core P k a b Q</code> holds when <code>valid Q</code>, <code>a &gt;= 2</code>, and <code>Q = Qi ++ Qe</code> with
+  - <code>|Qi| + a = b + 1 + ind P k</code> (count),
+  - every <code>q</code> in <code>Qi</code> has <code>q + 2 + ind P k &lt;= a</code> (INT, together with the absorption exception), and
+  - <code>Sh (k+3) a Qe (filter (k &lt;?) P)</code>, that is, <code>Qe</code> lists the indices of <code>P</code> above <code>k</code>, each shifted by <code>a - k - 3</code> (EXT, as an exact shifted copy).</p>
+<p><code>Inv P n W</code>, with <code>α = cnt P n</code>: either <code>n + α</code> is odd and <code>W = T(a, n+α) + mw Q</code> with <code>Core P n a (n+α) Q</code>, or <code>n + α</code> is even and <code>W = S(a, n+α-1) + mw Q</code> with <code>Core P (n+1) a (n+α-1) Q</code>. The parity of <code>n + α</code> is the type rule of §3, since <code>I_α ≡ α</code>. The merged case <code>aff = -1</code> and the case <code>α = m</code> need no separate branch.
+- <strong>Theorem.</strong> <code>stepU</code> (<code>n = 0</code>), <code>stepS</code>, <code>stepT_nabs</code> and <code>stepT_abs</code> (rule X) are the four cases of §3, and <code>step_lemma</code> dispatches on the word's shape and on <code>n ∈ P</code>. <code>Claim Lm</code> says that every <code>(Q, k)</code> with <code>k + |Q| &lt;= Lm</code> and <code>valid Q</code> has an orbit word <code>W</code> (<code>Orb Q k W</code>) that is in <code>Inv Q k</code> when <code>k &gt;= 1</code>. <code>main : forall Lm, Claim Lm</code> is proved by induction on <code>Lm</code>, which is the measure <code>Λ = n + m</code> of §3. The EXT bookkeeping is the shifted-copy relation <code>Sh</code> and its lemmas, and the parity facts are <code>parity_in</code>.
+- <strong>Top level.</strong> <code>nonhalt</code> applies <code>multistep_nonhalt</code> with <code>init</code>, then <code>progress_nonhalt_cond</code> with
+  - index type <code>nat * list nat</code> and start <code>(0, [1])</code>,
+  - configuration map <code>(n, W) ↦ conf [] (3 :: 2 :: W)</code>, so that the start is <code>conf [] [3; 2; 1]</code>,
+  - predicate <code>Orb [] n W /\ (1 &lt;= n -&gt; Inv [] n W)</code>.</p>
+<p>The step obligation is <code>step_lemma</code> at <code>P = []</code>, where <code>cost [] n = 2</code>, lifted to the TM by <code>Ep_tm</code>.</p>
+<h3 id="71-where-each-part-lives-in-the-v">7.1 Where each part lives in the .v</h3>
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>lemma(s) in the .v</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§0 <code>conf(L,R)</code></td>
+<td><code>lsep</code>, <code>lside</code>, <code>rside</code>, <code>conf</code> (<code>L</code> stored top first), <code>lsep_eq</code></td>
+</tr>
+<tr>
+<td>§1 R1, R3, R2, R2e</td>
+<td><code>tR1</code>, <code>tR3</code>, <code>tR2</code> (each one plain <code>es</code>, so CW/DW/FW are not separate lemmas), <code>tR3c</code> (R3 at the left edge: one <code>const_unfold</code> rewrite of <code>const 0</code>, then <code>es</code>). R2e is <code>tR2</code> with <code>l = const 0</code> (through <code>lsep_eq</code>)</td>
+</tr>
+<tr>
+<td>§1.1 Lemma RM</td>
+<td><code>updt</code> (the push R-update, <code>None</code> outside the domain), <code>updt_shape</code>, <code>push_ok</code>, <code>push0_ok</code>, <code>pop_ok</code></td>
+</tr>
+<tr>
+<td>§1.1 frame reading</td>
+<td><code>Inductive Life x R o</code> with constructors <code>L_fin</code>, <code>L_cf</code>, <code>L_cpf</code>, <code>L_cpp</code>; <code>Life_tm</code> lifts it to the TM</td>
+</tr>
+<tr>
+<td>§2 epoch <code>Ep</code></td>
+<td><code>Ep W c W'</code> (the life of the edge frame, value 4), <code>Ep_tm</code></td>
+</tr>
+<tr>
+<td>§2 U0, U1, U2, Rule S</td>
+<td><code>U0</code>, <code>U1</code>, <code>U2</code>, <code>ruleS</code> (the standalone 18-step form), each closed by <code>ep</code> (the search tactic <code>lf</code>)</td>
+</tr>
+<tr>
+<td>§2 TR, TF</td>
+<td><code>TRF</code> (the TR prefix, then a finishing continuation)</td>
+</tr>
+<tr>
+<td>§2 TL</td>
+<td><code>Life_shape</code>, <code>frame_step</code></td>
+</tr>
+<tr>
+<td>§2 Rule T</td>
+<td><code>replay</code> (induction on <code>Orb</code>), <code>ruleT</code></td>
+</tr>
+<tr>
+<td>§2 X, Rule X</td>
+<td><code>Xin0</code>, <code>Xin1</code>, <code>TRX0</code>, <code>TRX1</code>, <code>ruleX</code></td>
+</tr>
+<tr>
+<td>§0 marker words, <code>I_j</code>, tails</td>
+<td><code>mw</code>/<code>mwf</code> (the word built from its index list <code>P = [I_1; ..; I_m]</code>), <code>valid</code>/<code>valid_from</code> (even gaps), <code>tail_ok</code></td>
+</tr>
+<tr>
+<td>§3 <code>α</code>, <code>[n ∈ I(M)]</code>, cost, orbit, AL</td>
+<td><code>cnt P n</code>, <code>ind P n</code>, <code>cost P n = 2 + ind P n</code>, <code>Inductive Orb</code></td>
+</tr>
+<tr>
+<td>§3 Inv(M, n)</td>
+<td><code>Inv</code>, <code>Core</code></td>
+</tr>
+<tr>
+<td>§3 parity facts</td>
+<td><code>parity_in</code></td>
+</tr>
+<tr>
+<td>§3 cases</td>
+<td><code>stepU</code> (n = 0), <code>stepS</code>, <code>stepT_nabs</code>, <code>stepT_abs</code> (rule X); <code>step_lemma</code> dispatches</td>
+</tr>
+<tr>
+<td>§3 Theorem</td>
+<td><code>main : forall Lm, Claim Lm</code></td>
+</tr>
+<tr>
+<td>§3 EXT bookkeeping</td>
+<td><code>Sh</code>, <code>Sh_filter</code>, <code>Sh_in</code>, <code>Sh_trans</code>, <code>Sh_map</code>, <code>Sh_ge</code>, <code>sh_compose</code>, <code>in_transfer</code>, <code>filter_cnt_len</code></td>
+</tr>
+<tr>
+<td>§5 initial segment</td>
+<td><code>init : c0 --&gt;* conf [] [3; 2; 1]</code> (50 steps, <code>solve_init</code>)</td>
+</tr>
+<tr>
+<td>§6</td>
+<td><code>nonhalt</code></td>
+</tr>
+</tbody>
+</table>
+<p>The twin of §6.1 is not in this file.</p>
+<h2 id="8-numerical-sanity-checks">8. Numerical sanity checks</h2>
+<p>These were checked by direct simulation of the transition table and of the run model. They are independent of the .v, and the result rests on the .v alone.</p>
+<ul>
+<li><strong>TM rules (§1).</strong> R1, R3, R2, R2e and HALT: 500 random instances each (parameters 0..25, random <code>l</code> and <code>r</code>), with exact tape, head, state and step count.</li>
+<li><strong>Run model (§1.1).</strong> The run model equals the TM at every macro step for 40,000 macro steps from step 50. The raw TM, checked at every step up to 4·10^8 for left-edge configurations (state A, every cell at or left of the head blank), reaches exactly 42 of them: blank (step 0), <code>conf([],[2])</code> (step 10), and <code>Edge(O_n([]))</code> for n = 0..39 (the last at step 330,296,494), each at the step count the run model predicts. The model's next edge return is at step 660,596,506.</li>
+<li><strong>Epoch rules (§2).</strong> U0, U1, U2, TR, TF and X: 600 random instances each (TR half on marker tails, half on arbitrary tails). TL: 706 cases, on orbit words and on arbitrary words, with random <code>L0</code>, <code>y</code>, <code>z</code>; the frames in <code>L0</code> are never touched. Rules T and X at the epoch level: 654 random T-words, 259 of them with arbitrary tails, 45 through rule X. Rule S: 1,200 instances (<code>a, b</code> in 1..20, half with arbitrary tails), all in 18 macro steps.</li>
+<li><strong>Theorem along orbits (§3).</strong> 2,500 random even-gap marker words (<code>m &lt;= 6</code>, gaps 2..14, <code>n</code> up to 28) plus every word with gaps in {2,4,6,8} and <code>m &lt;= 3</code>: 49,420 orbit words satisfy every clause of Inv, and all 52,005 epochs (6,828 of cost 3) have the cost AL gives.</li>
+<li><strong>The induction step alone (§3).</strong> Words built directly from the Inv(M, n) clauses, orbit words or not, each cost <code>2 + [n ∈ I(M)]</code> and land in Inv(M, n+1): every such word with <code>a &lt;= 14</code> for all 85 <code>M</code> with gaps in {2,4,6,8} and <code>m &lt;= 3</code> (93,113 words: 50,036 T, 43,077 S; 9,564 at the absorption exception; 306 merged, <code>aff = -1</code>), 2,000 random words (<code>a &lt;= 26</code>, <code>m &lt;= 6</code>, gaps 2..14), and 3,000 extreme placements (<code>a &lt;= 22</code>, <code>m &lt;= 7</code>). The clauses are tight: moving the INT, reach or EXT bound by 2 adds words outside Inv, and the step fails on every one of them (1,748/1,748, 37/37, 34/34, 18/18).</li>
+<li><strong>Top level (§4).</strong> <code>O_n([])</code> for <code>n &lt;= 37</code>: every epoch costs 2 and Inv holds.</li>
+<li><strong>E0 (§6).</strong> In the first 2·10^6 steps, E is entered 100,132 times, always reading 1. The HALT pattern <code>0^inf 1 &lt;A 0</code> halts in exactly 3 steps, reading E0.</li>
+<li><strong>Twin (§6.1).</strong> The state relabeling to <code>Eqv.v</code> TM113's <code>tm</code> is exact. From blank in state B, 44 steps reach <code>conf([],[2,2,1])</code>. The budget-2 edge lemma holds in 380/380 cases (top orbit, marker orbits, arbitrary words with cost <code>&lt;= 2</code>). The raw TM from blank in state B, checked at every step up to 4·10^8, reaches exactly <code>conf([],[1])</code> (step 8) and <code>conf([],[2,2]+O_n([]))</code> for n = 0..39 (the last at step 330,296,332) as left-edge configurations, at the model's step counts.</li>
+</ul>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic); corrections from an independent audit by GPT-6 Astra (OpenAI).</p>
+</main></body></html>

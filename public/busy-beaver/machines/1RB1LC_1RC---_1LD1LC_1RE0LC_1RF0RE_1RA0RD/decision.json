@@ -1,0 +1,66 @@
+{
+ "tm": "1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD",
+ "bucket_reason": "Priority call on a CRYPTID_CANDIDATE. Halting reduces exactly to a 5-stage chain, and the phases of its stages behave like unforced coin flips.",
+ "question": "Stop work on #6 and its twin #27: keep #6 flagged CRYPTID_CANDIDATE and park proof work, rather than spend a stage decoding the mixed zone?",
+ "options": [
+  {
+   "id": "stop",
+   "label": "Stop: keep CRYPTID_CANDIDATE and park",
+   "consequence": "No more agent time now. The cryptid write-up (the coin-model heuristic plus the halting-chain reduction, as ground rule 6 asks) joins #5's in the low-priority queue. Twin #27 (1RB0RA_1RC0RF_1RD1LE_1RE---_1LF1LE_1RA0LE, the same table started in state E) is parked with it."
+  },
+  {
+   "id": "decode",
+   "label": "One more stage: decode the mixed zone",
+   "consequence": "About 2 h of agent time and 1-2 processes, spent looking for an exact rule by which the counter's signal stream forces stage 2 = x, or stage 3/4 = E, at every seed. Only such a rule would refute the flag. The data so far give no lead toward one."
+  }
+ ],
+ "recommended": "stop",
+ "rationale": "Round 2 made the halting condition exact. The machine halts only when the cluster 11.01.00 meets arrivals in the phases x,E,x,x,E. That sequence halts in 60 of 60 instances, and every other phase prefix dissolves the cluster harmlessly. Seeds of this chain keep forming: 11 by 2.45e10 steps, about 0.7 per doubling. Stages 2-5 read only the left context, and their phases match the generic rates seen anywhere on the tape (about 50%, 35%, 13% and 50%). Two candidate invariants were ruled out (a global phase gauge and gap mod 4), and the 70 cells left of each seed differ in every seed. A non-halting proof would need hidden structure that the data do not show. Under the coin model the machine halts only around 2^100 steps or later, so neither a proof nor a halting search is in reach. This is the obstacle the cryptid protocol is for. Another stage would gain little: 11 seeds are too few to test events that happen 1% of the time.",
+ "evidence": [
+  {
+   "kind": "validation",
+   "text": "The halting chain on cluster 11.01.00: x,E,x,x,E halts 60/60, and x,E,x,x,x ends in a safe 1^5 60/60. All 30 phase prefixes of length 1-4 give a single outcome each (40 instances each).",
+   "href": "scripts/deepen2_chainval.py"
+  },
+  {
+   "kind": "sim",
+   "text": "Direct simulation to about 4e10 steps found 11 seeds (steps 1.93e6 to 2.45e10). Stage 2 was E in 4 of 10. Seed #3 is the near miss at step 12,975,111, which got through x,E,x.",
+   "href": "scripts/deepen2_chain_seeds_4e10.txt"
+  },
+  {
+   "kind": "analysis",
+   "text": "Generic next-arrival rates (3e8 and 1e9 runs) are 49.7%, 34.7% and 12.7%, which match the seeds; nothing forces them. The coin model gives about a 1% halt chance per seed.",
+   "href": "deepen.json"
+  },
+  {
+   "kind": "analysis",
+   "text": "Invariants ruled out. Phase gauge: takes all 4 values in 5,175 of 5,180 wall cycles. Gap mod 4: k = 0 mod 4 in 10,472 cases and k = 2 mod 4 in 76, and the seeds are among the k = 2 exceptions.",
+   "href": "notes.md"
+  },
+  {
+   "kind": "validation",
+   "text": "The solid part: the left counter G16 (32/32, locked from step 190,860 and matching on 193/193 visits) and the 1,440/1,440 head/defect interaction table.",
+   "href": "notes.md"
+  },
+  {
+   "kind": "sim",
+   "text": "No halt to 1e11 steps (C core)."
+  },
+  {
+   "kind": "risk",
+   "text": "Against stopping: the mixed zone is undecoded, so hidden (for example 2-automatic) structure coming from the counter is not excluded. That is what the 'decode' option would look for."
+  },
+  {
+   "kind": "figure",
+   "text": "Fig 2: the dense band at the right edge that emits defects.",
+   "href": "img/defects_recordsR_right_1e9.png"
+  }
+ ],
+ "effort_if_yes": "None now. Later, at low priority alongside #5: about one stage for the cryptid write-up (the coin-model heuristic and the halting-chain reduction).",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "stop",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

@@ -1,0 +1,506 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---/proof.md · <a href="/busy-beaver/machines/1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---/proof.md.html">raw</a></div>
+<h1 id="1rb0rb_1lc0ra_1le0ld_1lc1lf_1ra0ld_1lc-delta-proof-from-kill-11-11b-checkpoint-b">1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---: delta proof from kill #11 (#11b, Checkpoint B)</h1>
+<ul>
+<li>Machine: <code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code>, viewer https://bbchallenge.org/1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</li>
+<li>Holdout list: line 511 of <code>data/holdouts/BB6_holdouts_740.txt</code> (the current list), byte for byte (<code>tools/holdouts.py contains</code>: exit 0; <code>grep -x -F</code>; <code>od -c</code>). Also line 541 of the 778 list and on all 27 snapshots. Its <code>eqv_1590</code> group has no other member. It is not in busycoq: no entry in <code>data/solved_index.tsv</code>, and no file in <code>vendor/busycoq</code> names it.</li>
+<li><strong>Existing work: there may be some, by hipparcos.</strong> The community sheet credits this string to hipparcos:</li>
+<li>Results row 1276: "Skelet 1-like Class 2", Sources: one link, Done By: hipparcos, no status, no notes.</li>
+<li>Level 1 tab, row 44: Sources: one link, Done By: hipparcos, no status, no notes.</li>
+<li>Both links go to the Discord thread https://discord.com/channels/960643023006490684/1432566675533992019 (started 2025-10-28). We could not read the thread.</li>
+</ul>
+<p>The live sheet, re-fetched on 2026-10-10, is byte-identical to the 2026-10-09 export on these tabs. The row just below, Results 1277, is kill #33 <code>1RB0RE_1LC0RE_1LD0LD_1RA0LC_1RA1RF_1RA---</code>, with the note "Machine with the most common transitions" and no claim. Dennis reads the claim as being on #33; the sheet puts it on this string (notes.md has the details). Either way we prove this machine as part of the #11 family (Dennis, 2026-10-10). The submission must say plainly that hipparcos may already have worked on it.
+- Parent: kill #11 <code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code> (KILLED_NONHALT, check_kill PASS). "P§n" means section n of #11's <code>proof.md</code>; sections 1–5 have the same numbers in its submission copy. The formal delta (§5) starts from #11's <code>.v</code> (sha256 <code>8bca47b1…53c0</code>, 694 lines).
+- Written for: the string itself.
+- <strong>Result.</strong> This machine is #11's machine with its states renamed by τ = (A,B,C,D,E,F) ↦ (E,A,B,C,D,F), with <strong>no mirror</strong>. It starts in #11's state B, not A. So it runs a <em>different orbit of the same macro map</em>:
+  - the window lemmas, the rules M and O, the invariant INV and its closure carry over unchanged, with the K head state renamed B ↦ A;
+  - only the initial segment and the base change: 732 steps to <code>K((1,1,10); 8, 1)</code> (class A), instead of 483 steps to <code>K((1,1,2); 8, 5)</code>;
+  - <strong>adjusted invariant: none.</strong>
+- Evidence: <code>check_proof.py</code>, SUMMARY PASS (§6). The formal delta of §5 compiles as a scratch file (<code>rocq/delta_check.v</code>, 8.4 s, closed under the global context). <code>tools/check_kill.sh</code> has <strong>not</strong> been run, so this is not a kill.
+- Status: CHECKPOINT_B (informal delta complete and validated).
+- AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</p>
+<h2 id="0-the-map">0. The map</h2>
+<table>
+<thead>
+<tr>
+<th>this state</th>
+<th>0</th>
+<th>1</th>
+<th>= τ(#11 state)</th>
+<th>#11 0</th>
+<th>#11 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1RB</td>
+<td>0RB</td>
+<td>τ(B)</td>
+<td>1RC</td>
+<td>0RC</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1LC</td>
+<td>0RA</td>
+<td>τ(C)</td>
+<td>1LD</td>
+<td>0RB</td>
+</tr>
+<tr>
+<td>C</td>
+<td>1LE</td>
+<td>0LD</td>
+<td>τ(D)</td>
+<td>1LA</td>
+<td>0LE</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1LC</td>
+<td>1LF</td>
+<td>τ(E)</td>
+<td>1LD</td>
+<td>1LF</td>
+</tr>
+<tr>
+<td>E</td>
+<td>1RA</td>
+<td>0LD</td>
+<td>τ(A)</td>
+<td>1RB</td>
+<td>0LE</td>
+</tr>
+<tr>
+<td>F</td>
+<td>1LC</td>
+<td><strong>---</strong></td>
+<td>τ(F)</td>
+<td>1LD</td>
+<td><strong>---</strong></td>
+</tr>
+</tbody>
+</table>
+<p>τ: A↦E, B↦A, C↦B, D↦C, E↦D, F↦F (a 5-cycle on A–E). Row τ(s) of this table is #11's row s with every target state t replaced by τ(t). Symbols and directions are unchanged. For example, #11's C1 = 0RB becomes 0Rτ(B) = 0RA, which is this machine's B1. <code>check_proof.py</code> §S checks the 12 cells and searches all 720 renamings with and without the mirror: τ is the only map from #11's table to this one. (From #33's table the only map is CEABDF with the mirror, start #33's C; from #33b's, BCEADF with the mirror, start #33b's D.)</p>
+<p><strong>Lemma R (relabelling).</strong> For a configuration c, let τc be c with its head state renamed by τ; the tape and head position stay the same. Then c → c′ under #11 if and only if τc → τc′ under this machine, and c is halted exactly when τc is (F1 is the only undefined cell, and τ fixes F). So every #11 run c →ⁿ c′ gives a run τc →ⁿ τc′ here, of the same length, and conversely.</p>
+<p><strong>Start.</strong> This machine's c0 is <code>0^inf A&gt; 0^inf</code> = τ(<code>0^inf B&gt; 0^inf</code>). So its run is τ of #11's machine run from <code>0^inf B&gt; 0^inf</code>. It is <em>not</em> #11's own run, which starts in A. §R checks this in lockstep for 2·10⁶ steps (2·10⁷ in the long run): state = τ(#11's state), same symbol written, same move, identical tapes at the end.</p>
+<p><strong>Halting cell.</strong> Only D1 = 1LF enters F (it is τ of #11's E1), and F1 is <code>---</code>. So the machine halts exactly when D reads <code>1</code> with a <code>1</code> to its left.</p>
+<h2 id="1-what-carries-over-unchanged">1. What carries over unchanged</h2>
+<table>
+<thead>
+<tr>
+<th>#11 item</th>
+<th>this machine</th>
+<th>reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P§1 family <code>K(d_1..d_m; a, b)</code></td>
+<td><code>K_A := τK = 0^inf 10 01 d_1 .. d_m (10)^a 000 (10)^b A&gt; 0^inf</code>, the same words with head state A, the same digits <code>(u,0,v) = (10)^u 00 (01)^v</code>, <code>(u,1,v) = (10)^u (01)^v</code>, and the same derived quantities (U_j, R_j, R1_j, ubar, vbar, S, T)</td>
+<td>Lemma R</td>
+</tr>
+<tr>
+<td>P§2.1 window lemmas S1–S6, T1–T14 and digit lemmas Lb, Lf, Rb, Ro</td>
+<td>identical words and step counts, states renamed by τ (list below)</td>
+<td>Lemma R. Also re-run on this table: §L, 21/21, transitions = τ of #11's</td>
+</tr>
+<tr>
+<td>P§2.2–2.3 the chains for M and O; P§2 rules <strong>M</strong> and <strong>O</strong> with their step formulas and domains</td>
+<td>identical, <code>B&gt;</code> read as <code>A&gt;</code></td>
+<td>Lemma R. Also re-run on this table: §A (M 700/700, O 350/350, random INV states 2,846/2,846) and §H (every link of #11's chains, renamed, 47,216/47,216)</td>
+</tr>
+<tr>
+<td>P§3 invariant INV = Common ∧ (A ∨ B ∨ C), facts F0–F3, coverage, closure</td>
+<td>identical</td>
+<td>stated on the triples <code>(u, β, v)</code> and <code>a, b</code> only; never reads the start or the state names</td>
+</tr>
+<tr>
+<td>P§5 conclusion, "why F reading 1 is never used"</td>
+<td>identical (D1 occurs only in T4, T9, T13, where F then reads 0; §L)</td>
+<td>Lemma R</td>
+</tr>
+<tr>
+<td>P§6 Rocq: <code>M_spec</code>, <code>Mdrop_spec</code>, <code>O_spec</code>, their supports, the abstract part (<code>INV</code>, F1–F3, <code>step</code>)</td>
+<td>identical text, <code>{{X}}</code> renamed by τ</td>
+<td>§5</td>
+</tr>
+<tr>
+<td><strong>P§4 initial segment and base</strong></td>
+<td><strong>changed: §2</strong></td>
+<td>different start</td>
+</tr>
+</tbody>
+</table>
+<p>The window lemmas on this table (<code>X&gt;</code> = head in state X on the next cell, <code>&lt;X</code> = on the previous cell):</p>
+<div class="highlight"><pre><span></span><code>S1 A&gt;01 -2-&gt; 10A&gt;        S2 B&gt;10 -2-&gt; 01B&gt;        S3 01&lt;C -2-&gt; &lt;C10        S4 10&lt;D -2-&gt; &lt;D01
+S5 B&gt;1101 -6-&gt; 10B&gt;11    S6 0A&gt;10 -6-&gt; 100A&gt;      T1 A&gt;00 -3-&gt; &lt;D01        T2 000&lt;D -5-&gt; 100A&gt;
+T3 100&lt;D -3-&gt; &lt;D011      T4 01&lt;D -2-&gt; &lt;C11        T5 10&lt;C -2-&gt; &lt;D01        T6 00&lt;C -3-&gt; 10B&gt;
+T7 B&gt;11 -2-&gt; 00B&gt;        T8 B&gt;11011 -9-&gt; 10000A&gt;  T9 0^inf 1001&lt;D -13-&gt; 0^inf 1001000A&gt;   T10 A&gt;11 -2-&gt; 00A&gt;
+T11 A&gt;0 -1-&gt; 1B&gt;         T12 B&gt;11000 -13-&gt; &lt;D01101   T13 101&lt;D -3-&gt; &lt;D011   T14 A&gt;1101 -4-&gt; 0010A&gt;
+</code></pre></div>
+
+<p>The digit lemmas become: Lb <code>(10)^u (01)^v &lt;D → &lt;D (01)^u (10)^(v−1) 11</code>; Lf <code>(10)^u 00 (01)^v &lt;D → (10)^(u+1) (01)^(v−1) B&gt; 11</code>; Rb <code>B&gt; 11 (01)^u (10)^(v−1) 11 → (10)^u 00 (01)^(v−1) B&gt; 11</code>; Ro <code>A&gt; (01)^u (10)^(v−1) 11 → (10)^(u−1) 1 (10)^(v−1) 000 A&gt;</code>. Steps and side conditions are #11's.</p>
+<p>The rules in busycoq comment style, for this machine:</p>
+<div class="highlight"><pre><span></span><code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---     (= tau of 1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---, tau = EABCDF)
+
+K(d_1 .. d_m; a, b) := 0^inf 10 01 d_1 .. d_m (10)^a 000 (10)^b A&gt; 0^inf
+digit (u,0,v) := (10)^u 00 (01)^v,   (u,1,v) := (10)^u (01)^v      (d_m least significant)
+
+start from K((1,1,10); 8, 1)                                  (step 732, section 2)
+
+M  (carry; some bit is 0; j* = index of the LAST bit-0 digit):
+   K(.., (u,0,v), (u_j,1,v_j)_{j*&lt;j&lt;=m}; a, b) --&gt; K(.., (u+1,1,v-1), (u_j,0,v_j-1)_{j*&lt;j&lt;=m}; a+1, b+2)
+   steps 32 + 8a + 8b + 4v + sum_{j&gt;j*} (8 u_j + 4 v_j);  needs v &gt;= 1, u_j, v_j &gt;= 1 (j &gt; j*), a, b &gt;= 0
+   if v = 1, the digit (u+1,1,0) drops (re-reading, P section 1)
+O  (overflow; all bits 1):
+   K((u_1,1,v_1) .. (u_m,1,v_m); a, b) --&gt; K((0,0,u_1), (v_1-1,0,u_2), .., (v_{m-1}-1,0,u_m), (v_m,1,a); b+3, 1)
+   steps 89 - 4m + 8a + 20b + 4 sum u_j + 8 sum v_j;  needs m &gt;= 1, all u_j, v_j &gt;= 1, a &gt;= 1, b &gt;= 0
+</code></pre></div>
+
+<h2 id="2-what-changes-initial-segment-and-base-replaces-p4">2. What changes: initial segment and base (replaces P§4)</h2>
+<p>Direct simulation of this machine from the blank tape (§C). A <em>K-configuration</em> is state A on a cell with only blanks from there to the right, only blanks left of the leading <code>1001</code>, and the text in between parsing as a K. Up to step 732 they occur exactly at these steps (and #11 from <code>0^inf B&gt; 0^inf</code> gives the same list, as Lemma R says):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">step</th>
+<th>K-configuration</th>
+<th>in INV?</th>
+<th>next macro step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">122</td>
+<td><code>K((1,1,2); 2, 1)</code></td>
+<td>no: S = 0 (class A needs S ≥ 1; the top is not B's <code>(0,0,1)</code>; C needs ubar_1 ≥ 2, here 1)</td>
+<td>O, 141 steps</td>
+</tr>
+<tr>
+<td style="text-align: right;">263</td>
+<td><code>K((0,0,1), (2,1,2); 4, 1)</code></td>
+<td>no: LSB vbar = 2 − 2 = 0</td>
+<td>M1 with the top falling, 100 steps</td>
+</tr>
+<tr>
+<td style="text-align: right;">363</td>
+<td><code>K((3,0,1); 5, 3)</code></td>
+<td>no: its only digit is bit 0 with v = 1, so vbar = 0</td>
+<td>M0 with an <strong>LSB drop</strong>, 100 steps</td>
+</tr>
+<tr>
+<td style="text-align: right;">463</td>
+<td><code>K(; 10, 5)</code></td>
+<td>no: m = 0</td>
+<td>O at m = 0 (P§2.3 with no digits), 269 steps</td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>732</strong></td>
+<td><strong><code>K((1,1,10); 8, 1)</code></strong></td>
+<td><strong>yes, class A</strong></td>
+<td>O, 253 steps, to <code>K((0,0,1),(10,1,8); 4, 1)</code> (class B)</td>
+</tr>
+</tbody>
+</table>
+<p>Two legs of the init use rule cases the invariant argument never needs (the LSB drop, and O at m = 0). That does not matter: the proof only uses the 732-step run as one finite computation. The table just explains it. (§H still checks the last leg link by link with #11's O chain at m = 0.)</p>
+<p>Compare #11 from A: K-configurations at 142, 283 and 383 (not in INV), then its base <code>K((1,1,2); 8, 5)</code> at 483. The third start of the same table, kill #33b (start C, mirrored), reaches <code>K((1,1,9); 8, 1)</code> at 687.</p>
+<p><strong>INV at the base</strong> <code>K((1,1,10); 8, 1)</code> (P§3; derived quantities as in P§1):
+- top <code>(1,1,10)</code>: bit 1, <code>u_1 = 1</code>; <code>m = 1</code>;
+- <code>V = 1</code>, <code>R_tot = R_1 = 0</code>, <code>R1_1 = 0</code>;
+- <code>ubar_1 = 1</code> (odd), <code>vbar_1 = 10 ≥ 1</code> (also the LSB condition);
+- <code>S = 8 + 0 − 2 = 6 ≥ 1</code>, <code>T = 1 − 1 = 0 ≥ 0</code>;
+- <code>a = 8 ≥ 1</code>, <code>b = 1</code> odd, <code>a + R_tot = 8</code> even;
+- Common holds, and class A holds (top <code>(1,1,v)</code>, every <code>vbar ≥ 1</code>, every <code>ubar</code> odd, <code>S ≥ 1</code>).</p>
+<p>In the additive Rocq form of #11's <code>.v</code> (<code>INV</code>, <code>PA</code>, <code>Rof</code>, <code>LSBok</code>, at <code>([d1 1 10], 8, 1)</code>): <code>Rof = 0</code>; <code>a + R + 2 = 10 ≥ 4</code>; <code>b + 3 + 2R = 4 ≥ 4</code> (tight); <code>a + R + 1 = 9 ≥ 4</code>; <code>v_m = 10 ≥ R + 1</code>; <code>(a + R) mod 2 = 0</code>; <code>b mod 2 = 1</code>; <code>PA (d1 1 10) 0 0</code>: canon, <code>10 ≥ 1</code>, <code>ub = 1</code> odd and <code>= 1</code>. §B evaluates all 12 clauses. Every clause is linear arithmetic on constants, so #11's base tactic line closes it (§5).</p>
+<h2 id="3-the-argument-complete">3. The argument (complete)</h2>
+<p><strong>Theorem.</strong> <code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code> does not halt from the blank tape.</p>
+<ol>
+<li><strong>Initial segment.</strong> The machine runs from c0 to <code>K((1,1,10); 8, 1)</code> in exactly 732 steps without halting. This is a finite exact computation (§C); in Rocq it is <code>solve_init</code>.</li>
+<li><strong>Base.</strong> <code>INV([(1,1,10)], 8, 1)</code> holds, in class A (§2).</li>
+<li><strong>Transfer.</strong> P§3.2 (coverage) and P§3.3 (closure): every INV state has a macro step M or O, of at least 32 machine steps, to an INV state. These statements are about the triples and <code>a, b</code>, and the macro steps are #11's rule instances <code>K → K′</code>. By Lemma R, each instance is a run <code>τK →⁺ τK′</code> of this machine, of the same length. So coverage and closure hold verbatim for the configurations <code>K_A = τK</code>.</li>
+<li><strong>Conclusion.</strong> By induction from the base, the run is an infinite chain of macro steps, each of at least one machine step, so it never halts (<code>progress_nonhalt_cond</code> with <code>P := INV</code>, as in P§5). No macro step presents the halting cell: each is an exact computation from one K to the next, composed of window lemmas in which F reads only 0. ∎</li>
+</ol>
+<p>Nothing in #11's argument after its init depends on #11's own orbit. Its orbit statistics (P§7) are evidence, not premises.</p>
+<h2 id="4-how-this-orbit-relates-to-its-siblings-explanation-not-a-premise">4. How this orbit relates to its siblings (explanation, not a premise)</h2>
+<p>Three of the four holdouts with this table (#11, #33b and this machine) run orbits of the same macro map that lock together in the shared triple notation:
+- <strong>With kill #33b</strong> (same table mirrored, started in #11's C; base <code>K((1,1,9); 8, 1)</code> at step 687): from macro step 0 on, the two states are equal except for <strong>one exponent, larger by 1 here, on the top digit</strong>, and the same rule fires at every macro step.
+- <strong>With kill #11</strong> (base <code>K((1,1,2); 8, 5)</code> at step 483): from macro step 54 on (step 25,851 here, 25,618 in #11), the states are equal except for one top-digit exponent, <strong>larger by 4 here</strong>, with the same rule at every step. This is #33b's +3 against #11, plus 1.
+- Where the extra exponent sits: <code>v_1</code> in class A, <code>u_2</code> in class B (the top is <code>(0,0,1)</code> there), <code>u_1</code> in class C. O sends it from <code>v_1</code> to digit 2's <code>u</code> (A → B), the top fall merges it into the new top's <code>u</code> (B → C), and the next O sends it to the new top's <code>v</code> (C → A).
+- Checked for 3·10⁵ macro steps (to t ≈ 2.2·10¹¹, 80 overflows; §X) and for 1.2·10⁶ in the long run (t ≈ 3.7·10¹²).</p>
+<p>It explains the "exact trajectory twin of #11" seen at 10⁹ steps in the family sweep: 77,693 cells and 38,841 nonzeros here, against #11's 77,685 and 38,836 (+8 cells = four extra blocks) and #33b's 77,691 and 38,839 (+3 blocks). Kill #33 (the fourth start) runs a different orbit: 76,245 cells at 10⁹.</p>
+<h2 id="5-formalization-delta-validated-as-a-scratch-compile-check_kill-not-run">5. Formalization delta (validated as a scratch compile; check_kill not run)</h2>
+<p>Copy #11's <code>.v</code> (sha256 <code>8bca47b193b15a0cbd664fcbafa9bf6a39dfc4c9ca261e1d8f95cb0f425553c0</code>, 694 lines) and change only the following:
+1. <code>TM_from_str "1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---"</code>.
+2. Rename every state name <code>{{X}}</code> by τ, simultaneously: <code>{{B}}</code> → <code>{{A}}</code> (22 occurrences), <code>{{C}}</code> → <code>{{B}}</code> (18), <code>{{D}}</code> → <code>{{C}}</code> (5), <code>{{E}}</code> → <code>{{D}}</code> (18). #11's file never names A or F. This covers the window lemmas, digit lemmas, sweeps (<code>LbS</code>, <code>RbS</code>, <code>RoS</code>), chunks and <code>K</code>. The <code>es</code>/<code>follow</code> proofs go through unchanged, because τ maps transitions to transitions (Lemma R).
+3. <code>Lemma init: c0 --&gt;* K [d1 1 10] 8 1.</code> (732 steps, the same <code>unfold K, L0. cbn. solve_init.</code>) and, in <code>nonhalt</code>, <code>change (K [d1 1 10] 8 1) with (Kc ([d1 1 10], 8, 1)).</code> #11's own tactic line closes the base goal (§2).
+4. The header comment, the three chunk comments that name head states, and the rule block at the end.</p>
+<p>Everything else is #11's text: every proof script, <code>M_spec</code>/<code>Mdrop_spec</code>/<code>O_spec</code> and their statements, <code>dg</code>, <code>map0</code>, <code>map1</code>, <code>Oz</code>, <code>Oout</code>, <code>INV</code>, <code>step</code>, and the structure of <code>nonhalt</code>.</p>
+<p><strong>Done as a scratch check.</strong> <code>check_proof.py</code>'s <code>delta_text</code> applies exactly these edits (each one asserted to match the expected number of times). <code>rocq/make_delta.py</code> writes its output to <code>rocq/delta_check.v</code> (696 lines), and <code>rocq/compile.sh</code> compiles it (Coq 8.20.1, <code>-native-compiler no</code>): 8.4 s, exit 0, <code>nonhalt : ~ halts tm c0</code>, <code>Print Assumptions nonhalt</code>: Closed under the global context. The record is <code>rocq/delta_check.out</code> (it starts with the sha256 of the file). It compiled on the first try, with no tactic changes. §V checks that the file is the delta of #11's pinned <code>.v</code>, byte for byte; that with comments stripped it differs from #11's code only by the substitutions above; and that the compile record is clean and belongs to this exact file. This is evidence for Checkpoint B, not a kill: the kill stage copies the file to <code>machines/&lt;tm&gt;/&lt;tm&gt;.v</code> and runs <code>tools/check_kill.sh</code>. Only that PASS counts.</p>
+<h2 id="6-evidence-python3-b-check_proofpy-defaults-about-23-s-output-in-check_proofout">6. Evidence (<code>python3 -B check_proof.py</code>, defaults, about 23 s; output in <code>check_proof.out</code>)</h2>
+<p>The script imports #11's <code>check_proof.py</code> read-only, for its abstract model, its invariant, its random-INV generator, its window-lemma table, its chain builders and its abstract checks. Everything that depends on the machine or the start is re-run on this machine's own table with its own simulator.</p>
+<table>
+<thead>
+<tr>
+<th>§</th>
+<th>what</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S</td>
+<td>line 511 of the 740 list byte-exact and once; 740 entries; line 541 of the 778 list; 27/27 snapshots; eqv group of one; not in <code>solved_index.tsv</code>; sheet: Results 1276 and Level 1 row 44 (Done By hipparcos), the thread linked from exactly those two rows, Results 1277 = #33 with no claim, #33 not on Level 1; not in <code>data/discord/</code>; τ = EABCDF the only map (720 × 2), start = #11's B; 12/12 cells; maps from #33 and #33b (unique); only D1 enters F, F1 the only undefined cell</td>
+<td>PASS 18/18</td>
+</tr>
+<tr>
+<td>R</td>
+<td>lockstep, this machine from blank vs τ(#11 from <code>0^inf B&gt; 0^inf</code>), 2·10⁶ steps</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>L</td>
+<td>#11's 20 window lemmas renamed by τ, exact on this table, never reading outside the window, transitions = τ of #11's; F entered only in T4/T9/T13 (by D1), reading 0</td>
+<td>PASS 21/21</td>
+</tr>
+<tr>
+<td>A</td>
+<td>M 700/700 (k = 0..6, 292 drops, 245 with u* = 0, a, b ≥ 0; leftmost cell read = first 0 of the flipped <code>00</code>), O 350/350 (m = 1..7; leftmost read 3 left of the leading <code>1001</code>), random INV states one macro step on this table 2,846/2,846</td>
+<td>PASS 3,896/3,896</td>
+</tr>
+<tr>
+<td>H</td>
+<td>#11's M chain (box + 500 random) and O chain (box m = 0..4 + 300 random), every link renamed by τ and checked on this table (whole tape, head, state; step formula; leftmost cell), plus the init leg <code>K(;10,5) → K((1,1,10);8,1)</code></td>
+<td>PASS 47,216/47,216</td>
+</tr>
+<tr>
+<td>C</td>
+<td>blank: K at 122, 263, 363, 463 (none in INV, reasons as in §2), 732 = <code>K((1,1,10);8,1)</code>; the legs O, M1 (top drop), M0 (LSB drop), O at m = 0; #11 from B gives the same list; #11 from A gives its own init (142/283/383/483); derived quantities; next O (253 steps) to class B, also run on the machine</td>
+<td>PASS 18/18</td>
+</tr>
+<tr>
+<td>D</td>
+<td>the real machine from blank vs the model at every macro boundary from step 732 to 3·10⁷ (whole tape, head, state; INV at each)</td>
+<td>PASS 3,384/3,384 (long run: 19,332/19,332 to 10⁹)</td>
+</tr>
+<tr>
+<td>B</td>
+<td>INV at the base, set form (class A) and the 12 clauses of the Rocq additive form</td>
+<td>PASS 13/13</td>
+</tr>
+<tr>
+<td>G</td>
+<td>INV along the abstract orbit from the base, 3·10⁵ macro steps (80 overflows, t ≈ 2.2·10¹¹); #11's induction on random INV states (1.5·10⁵) and drop algebra (2·10⁴), abstract map only</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>X</td>
+<td>coupling with #11's orbit and #33b's (§4), informational</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>V</td>
+<td><code>rocq/delta_check.v</code> = §5 delta of #11's pinned <code>.v</code>, byte for byte; code differs only by the substitutions (42 code lines); compile record clean</td>
+<td>PASS 6/6</td>
+</tr>
+</tbody>
+</table>
+<p>Long run, <code>--seed 2026 --tm-steps 1e9 --orbit 1.2e6 --induct 6e5 --lockstep 2e7 --no-rocq</code> (122 s, <code>check_proof_long.out</code>): SUMMARY PASS. It includes:
+- §R lockstep for 2·10⁷ steps;
+- §D, the real machine against the model at <strong>all 19,332/19,332 macro boundaries to step 999,838,005</strong> (O 53, M0 9,639, M1 4,846, M2 2,422, M3 1,209, M4 602, M5 298, M6+ 262; drops: 30 top, 12 mid; INV classes A 7,523, B 6,307, C 5,502);
+- §G, INV along 1.2·10⁶ macro steps of the abstract orbit (t ≈ 3.7·10¹², 16 digits, 93 overflows) and 600,000 random-INV induction steps;
+- §X, the couplings for 1.2·10⁶ macro steps.</p>
+<h1 id="11s-skeptic-review-covered-the-rules-and-inv-p-review-log-it-applies-unchanged-because-both-are-the-same-statements-here">11's skeptic review covered the rules and INV (P, Review log). It applies unchanged, because both are the same statements here.</h1>
+<h2 id="7-checkpoint-b-dennis">7. Checkpoint B (Dennis)</h2>
+<p><em>pending</em>. Nothing needs a decision. The format is #33b's: this delta, with #11's proof attached as the parent. If you would rather have #11's proof restated in full for this machine, say so.</p>
+</main></body></html>

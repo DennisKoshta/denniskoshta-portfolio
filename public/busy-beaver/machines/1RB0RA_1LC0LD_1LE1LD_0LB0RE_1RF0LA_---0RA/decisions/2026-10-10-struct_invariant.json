@@ -1,0 +1,57 @@
+{
+ "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA",
+ "bucket_reason": "Medium confidence after the closure stage: L4, and every k-gram language up to k = 10, contains halting words. No CTL certificate turned up in the native sweep.",
+ "question": "Fund one stage for a hand-written structural invariant (at most one transient, plus the cascade rules, checked exhaustively), run only a bigger background CTL sweep, or park?",
+ "options": [
+  {
+   "id": "struct_invariant",
+   "label": "One stage: a hand-written structural invariant (at most one transient) plus the cascade rules, checked exhaustively",
+   "consequence": "Uses the new rsim exhaustive-closure tools, so an escape shows up within minutes. If the invariant closes with 0 halts (every word of at most 14 symbols plus random long words), proof.md follows with it as the invariant. Stop rule: if it still escapes at the end of the stage, park."
+  },
+  {
+   "id": "ctl_more",
+   "label": "Background CTL sweep only (larger RWL_mod / NG / RNGS parameters), no agent work",
+   "consequence": "Costs only compute: 1-2 processes of at most 6 GB, each re-checked by Coq only if it returns true. The odds are low, because CTL's abstractions are bounded windows and every bounded token window up to k = 10 already contains a halting word."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "The mechanism is understood: the round-2 rules gave exact predictions on all 759,169 exhaustive rule checks. A proof, though, needs a non-local invariant plus a formal treatment of the cascade, which likely takes several stages."
+  }
+ ],
+ "recommended": "struct_invariant",
+ "rationale": [
+  "All 324 halting L4 words have 2-4 transients in combinations the real run never shows (it has at most 2).",
+  "That is a global count. It is regular, but neither k-gram windows nor CTL windows can see it.",
+  "A small hand-made DFA can carry the count, and the exhaustive checker settles it in one stage."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Fig 5: a word whose 4-grams are all in L4 runs its stale-1 cascade and halts at step 197",
+   "href": "card.html#fig-5"
+  },
+  {
+   "kind": "fact",
+   "text": "Exhaustive L4 to 14 symbols: 1,000,548 concretizations; 248,016 escape and 324 halt. The 759,169 covered by a rule are predicted exactly, yet 14.5% of them leave L4.",
+   "href": "scripts/closure/summary.json"
+  },
+  {
+   "kind": "fact",
+   "text": "Least closed k-gram language over the blank run: it halts at iteration 1 for k = 4, 5, 6, at iteration 3 for k = 8 and at iteration 5 for k = 10 (21,009 10-grams).",
+   "href": "scripts/closure/summary.json"
+  },
+  {
+   "kind": "fact",
+   "text": "CTL62 decider extracted to OCaml (known certificates come out true). 118 native runs on this machine (NG, RWL_mod with block length 3, CPS_LRU): none returned true.",
+   "href": "scripts/ctl_extract/README.txt"
+  }
+ ],
+ "effort_if_yes": "One stage (2 h of agent time) with light compute; each rsim closure check takes seconds to minutes. A closed invariant then needs proof.md and a hand-written Coq closure proof: several more stages.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "struct_invariant",
+  "note": "auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.",
+  "date": "2026-10-10"
+ }
+}

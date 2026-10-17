@@ -1,0 +1,19 @@
+{
+ "tm": "1RB1RE_1LC0RC_0RA0LD_1LB1LE_0RC1LF_---1RA",
+ "label": "P-145/276",
+ "status": "SKIPPED",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 145,
+ "class": "Chaotic Bell Class 4",
+ "partner": "1RB1LA_0LB1LC_1RD0LD_0LA0RE_1RC1RF_0LD--- (740 line 276), same verdict",
+ "upstream_twin": "RWLAccHaltv6.v tm161 = 1RB1RE_1LC0RC_0RA0LD_1LB1LE_0RC1RF_0LA---, halts_at_trans c0 (F,1) by solve_halt' 48 20000 true 2%N (10^8)%N (RWLAcc62_BigUint evaluation)",
+ "relation": "identity (same names, start A, no mirror); only E1, F0, F1 differ; F is entered only by E1. E reading 1 at p: tm161 continues (t[p]=1, A at p, 2 steps) iff t[p+1]=0, 145 iff t[p-1]=1, else each halts. E is entered only by A1 (leaves t[p-1]=1: 145 never halts there) and D1 (leaves t[p+1]=1: tm161 always halts there when E reads 1). So every 145 halting event is a tm161 halting event and the runs are equal up to tm161's halting step.",
+ "reason": "Twin port refuted at the halting event. The native RWLAcc62_BigUint replay of upstream's exact call halts tm161 at F1 after 733,223 iterations (counts around 1e33); the pre-halt window shows the last E was entered by A1 (A> 1 1 1), so 145's F reads the 1 that A just wrote and 145 runs on: the runs split exactly at tm161's halting step and 145 does not halt there. 145 is still running at 740,000 iterations (just past the split; 15 of tm161's 16 large counts present), and the direct native call gave no verdict in 900 s (tm161: halt in 128 s).",
+ "checks": {
+  "twin_check": "scripts/twin_check.py SUMMARY PASS, 10 checks (T, R145, M145, K145, L145 1e8-step lockstep, H161 halting window, R276 radius-7 merge/split lemmas, L276 3e5-step alignment, H158 halting window, X past-the-split runs); output scripts/twin_check.out; dumps in logs/"
+ },
+ "formalization_route": "None for the port. RWLAccHaltv6.v's lemmas for tm161 and tm158 prove only that the twins halt, and the holdouts split from the twins exactly at those halting steps, so no module transfers (no Perm or Flip, no new init). Any later halting proof would have to use the standard RWLAcc62 checker under vm_compute (closed assumptions; Astra's tm1193 calibration passed the unchanged gate), not RWLAcc62_BigUint, whose soundness lists Uint63 primitives outside the baseline.",
+ "next": "Not funded. Only open lead: longer native RWLAcc runs past the split (direction 3, halting pipeline), counted only if the standard RWLAcc62 call reproduces them. Nonhalting would need a Chaotic Bell Class 4 invariant (W6-5, line 333, same family, parked as a cryptid candidate)."
+}

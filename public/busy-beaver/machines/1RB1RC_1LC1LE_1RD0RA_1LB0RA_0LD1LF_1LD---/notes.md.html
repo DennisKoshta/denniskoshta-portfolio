@@ -1,0 +1,509 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---/notes.md · <a href="/busy-beaver/machines/1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---/notes.md.html">raw</a></div>
+<h1 id="w7-1-table-of-line-75-1rb1rc_1lc1le_1rd0ra_1lb0ra_0ld1lf_1ld-observation">W7-1: table of line 75 (<code>1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---</code>), observation</h1>
+<p>Wave 7 pick W7-1 (reports/wave7/plan.md). Claimed 2026-10-14 (coord/claims.tsv). Observe stage, about 2 h.</p>
+<h2 id="the-four-listed-starts">The four listed starts</h2>
+<table>
+<thead>
+<tr>
+<th>740 line</th>
+<th>string</th>
+<th>= line-75 table started in</th>
+<th>at 1e10 (first real field)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>75 (representative)</td>
+<td><code>1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---</code></td>
+<td>A</td>
+<td>20</td>
+</tr>
+<tr>
+<td>597</td>
+<td><code>1RB1RE_1LC0LD_1RA0LD_1LA1LB_0RC1RF_1RC---</code></td>
+<td>B (mirrored)</td>
+<td>24</td>
+</tr>
+<tr>
+<td>265</td>
+<td><code>1RB0RE_1LC0RE_1LA1LD_0LB1LF_1RC1RA_1LB---</code></td>
+<td>C</td>
+<td>46</td>
+</tr>
+<tr>
+<td>179</td>
+<td><code>1RB0LD_1RC1RE_1LA0LD_1LB1LC_0RA1RF_1RA---</code></td>
+<td>D (mirrored)</td>
+<td>44</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Byte-exact: line 75 of <code>data/holdouts/BB6_holdouts_740.txt</code> is the string, byte for byte. The start map comes from <code>canon(tm, s)</code> (scratchpad <code>starts.py</code>).</li>
+<li>Direct runs of every listed string to 1e10 (C core): no halt. Spans (in table order 75 / 597 / 265 / 179) 266,777 / 266,785 / 266,829 / 266,825 cells. At 1e10 the four tapes are identical except the far-left field (20 / 24 / 46 / 44) and the head phase. Logs: <code>data/direct_&lt;line&gt;_1e10.jsonl</code>.</li>
+<li>qsim and compress for 75 were already run by the planner and the critic (<code>reports/wave7/plan-data/critic/</code>). They are not repeated here, because the exact simulator below replaces them. qsim at block 2 gives 951/951 parity-flagged rules. The reason is below: the parity of each field is a counter bit.</li>
+</ul>
+<h2 id="notation-tokens">Notation (tokens)</h2>
+<p>At every <code>D:R</code> event (transition C0 -&gt; 1RD at the right end), the tape is</p>
+<div class="highlight"><pre><span></span><code>0^inf  [f_1] s_1 [f_2] s_2 ... s_{k-1} [f_k]  00 11 D&gt; 0^inf        [f] := (10)^f 1
+</code></pre></div>
+
+<ul>
+<li>A <strong>field</strong> <code>f</code> is a run of 1s with single 0s between them: <code>1 (01)^f</code>.</li>
+<li>A <strong>separator</strong> <code>s</code> is the gap between two fields:</li>
+<li><code>|</code> is <code>00</code> (gap 2), the normal one;</li>
+<li><code>+</code> is no extra 0 (gap 0, <code>11</code>); these appear after a bounce;</li>
+<li><code>#</code> is <code>000</code> (gap 3); this is a dead field.</li>
+<li>The last field <code>L = f_k</code> is the growing end; <code>P = f_{k-1}</code>.</li>
+<li>Tools: <code>work/tokens.py</code> (build/parse) and <code>work/fields.py</code>.</li>
+</ul>
+<h2 id="mechanism-a-binary-counter-whose-digits-are-field-parities">Mechanism: a binary counter whose digits are field parities</h2>
+<ul>
+<li>Each half-cycle runs from one <code>D:R</code> to the next. The head walks left from the right end, over even fields joined by <code>|</code>, and stops at the first <strong>odd</strong> field (or at a <code>+</code> or <code>#</code>). Then:</li>
+<li><strong>ODD:</strong> the field just left of the stopping point loses 1;</li>
+<li><strong>PLUS:</strong> at a <code>+</code>, the field left of it loses 2 and the <code>+</code> becomes <code>|</code>.</li>
+<li>In both cases <code>L</code> grows by 3, so the parity of <code>L</code> flips every half-cycle.</li>
+<li>So the parities of the fields are the bits of a binary counter. <code>L</code>'s parity is the clock, <code>P</code> loses 1 every second half-cycle, the next field every fourth, and so on: a ruler sequence.</li>
+<li>Fig <code>counter_parity_3e8</code> shows this.</li>
+<li>The turning depths of the head at 3e8 follow the same ruler pattern (positions 13.2k / 10.9k / 10.5k / 3.5k / 2.5k).</li>
+<li>Fields are budgets. They decrease, except <code>L</code> and the +1/+2 that a bounce gives.</li>
+</ul>
+<h2 id="rules-exact-random-instance-validated-steps-fitted-with-0-residual">Rules (exact; random-instance validated; steps fitted with 0 residual)</h2>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>before -&gt; after (<code>e</code> = even field, all separators shown)</th>
+<th>steps</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ODD</td>
+<td><code>.. f_d \| f_j(odd) \| e .. \| L</code> -&gt; <code>f_d - 1</code>, <code>L + 3</code> (left separator of <code>f_d</code> may be <code>\|</code> or <code>+</code>; <code>f_d &gt;= 1</code>, so 1 -&gt; 0 is included)</td>
+<td><code>6S + 12n + 12</code></td>
+<td>365 + 300 random</td>
+</tr>
+<tr>
+<td>PLUS</td>
+<td><code>.. f + e_j \| e .. \| L</code> -&gt; <code>f - 2</code>, <code>+</code> -&gt; <code>\|</code>, <code>L + 3</code> (<code>f &gt;= 3</code>)</td>
+<td><code>6S + 12n + 10</code></td>
+<td>300 random</td>
+</tr>
+<tr>
+<td>death</td>
+<td><code>a \| 0 \| b(odd) \| e ..</code> -&gt; <code>a # b ..</code>, <code>L + 3</code></td>
+<td><code>6S + 12n + 12</code></td>
+<td>150 random</td>
+</tr>
+<tr>
+<td>death-merge</td>
+<td><code>a + 0 \| b(odd) \| e ..</code> -&gt; <code>(a+b+1) \| e ..</code>, <code>L + 3</code></td>
+<td><code>6S + 12n + 12</code></td>
+<td>150 random</td>
+</tr>
+<tr>
+<td><code>#</code> acts odd</td>
+<td><code>a # e \| .. \| L</code> -&gt; <code>a - 1 # ..</code>, <code>L + 3</code></td>
+<td><code>6S + 12n + 18</code></td>
+<td>150 random</td>
+</tr>
+<tr>
+<td><code>#</code> bounce (re-pairing + birth)</td>
+<td><code>a # b(odd) \| e_1 .. \| e_m</code> -&gt; <code>a + (b+2) + (e_1+1) + .. + (e_m+1) \| 1</code></td>
+<td><code>6S + 6n + 28</code></td>
+<td>150 random</td>
+</tr>
+<tr>
+<td>overflow, all even (far end)</td>
+<td><code>e_1 \| .. \| e_m</code> -&gt; <code>1 + (e_1+1) + .. + (e_m+1) \| 1</code></td>
+<td><code>6S + 6n + 28</code></td>
+<td>150 random</td>
+</tr>
+<tr>
+<td>overflow, first field odd</td>
+<td><code>o \| e_2 ..</code> -&gt; <code>(o+2) + (e_2+1) + .. \| 1</code></td>
+<td><code>6S + 6n + 28</code></td>
+<td>150 random</td>
+</tr>
+<tr>
+<td>ODD across <code>+</code></td>
+<td><code>d + j(odd) \| e ..</code> -&gt; <code>(d-1) \| (j-1) \| e ..</code>, <code>L + 3</code></td>
+<td><code>6S + 12n + 8</code></td>
+<td>150 random</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In the steps column, <code>S</code> is the sum of the fields from the stopping point to <code>L</code>, and <code>n</code> is their count.</li>
+<li>Evidence: <code>work/validate_events.py</code>, <code>data/validate_events.json</code>. ODD and PLUS were checked in-session; their scripts are inline in the session.</li>
+<li>Not yet fitted as closed rules. They occur only near the far end, and the oracle handles them exactly:</li>
+<li>PLUS with left field 1: <code>1 + x</code> -&gt; <code>x</code> at the far end, or a merge <code>a + 1 + b</code> -&gt; <code>a + (a+b+1)</code>-style inside;</li>
+<li>the first field decremented (<code>d = 0</code>);</li>
+<li>a 0-field with nothing to its left (<code>0 | x</code> -&gt; <code>x</code>).</li>
+</ul>
+<h3 id="events-classified-orbit-of-75-oracle-calls-to-237e14-workclassifypy-datafar_ajsonl">Events, classified (orbit of 75, oracle calls to 2.37e14; <code>work/classify.py data/far_A.jsonl</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>count</th>
+<th>class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>42</td>
+<td>ODD with <code>#</code> left of the decremented field</td>
+</tr>
+<tr>
+<td>34</td>
+<td>death (<code>\| 0 \|</code> -&gt; <code>#</code>)</td>
+</tr>
+<tr>
+<td>34</td>
+<td><code>#</code> acts odd</td>
+</tr>
+<tr>
+<td>34</td>
+<td><code>#</code> bounce = re-pairing + birth of a new <code>L = 1</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>first field decremented (far end)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>overflow, all even (far-end bounce, new <code>1 +</code> prefix, birth)</td>
+</tr>
+<tr>
+<td>9 + 7 + 7</td>
+<td>ODD across <code>+</code> (interior / far end)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>overflow, first field odd</td>
+</tr>
+<tr>
+<td>4 + 4 + 1</td>
+<td>far-end prefix consumption: <code>0 \| x</code> -&gt; <code>x</code>, <code>1 + x</code> -&gt; <code>x</code>, interior merge</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>This answers the plan's four events:</li>
+<li>(a) <strong>Interior death, both parity cases.</strong> A death is <code>| 0 |</code> -&gt; <code>#</code> when the left separator is <code>|</code>, and an immediate merge when it is <code>+</code>. A <code>#</code> then works as a counter digit: it acts odd once, and then the next carry into it is the uniform re-pairing bounce. These are the two zero events the critic saw at about 1.35e9 (<code>237 # 247</code>) and 1.75e9 (<code>2990 # 9593</code>).</li>
+<li>(b) <strong>Pair birth.</strong> A new <code>L = 1</code> is born at every bounce, both the <code>#</code> bounce and the far-end overflow. The old <code>L</code> becomes an ordinary field.</li>
+<li>(c) <strong>Far-end death.</strong> See below.</li>
+<li>(d) <strong>Halt.</strong> Not reached anywhere: direct runs to 1e10, the exact simulator to 2.37e14, and 35 × 12 hand-built far-end events.</li>
+</ul>
+<h2 id="exact-accelerated-simulator-workaccelpy">Exact accelerated simulator (<code>work/accel.py</code>)</h2>
+<ul>
+<li>It applies the ODD and PLUS fast rules. Every other half-cycle goes to the <strong>oracle</strong>: the real TM (C core) runs from the rebuilt tape to the next parseable <code>D:R</code>. The simulator is exact by construction.</li>
+<li><strong>Validated:</strong> for all four starts, the token list at the first <code>D:R</code> at or after 1e10 equals the direct simulation at that exact step, with state D moving R (<code>data/validate_1e10.jsonl</code>, 4/4 match).</li>
+<li><strong>Far runs</strong> (A = 75 and C = 265): 2.367e14 steps, no halt, 203 oracle events each. The runs stopped on a MemoryError, because the oracle builds the full tape (39 M cells at 2.4e14). Logs: <code>data/far_A.jsonl</code>, <code>data/far_C.jsonl</code>.</li>
+<li><strong>A and C go through exactly the same events at the same times.</strong> Their first fields always differ by exactly 26 (the four starts differ by even amounts at 1e10). At the 2.4e14 end they have the same 24 fields; only <code>2</code> vs <code>28</code> after the prefix <code>1 + 0 |</code> differs.</li>
+</ul>
+<h3 id="history-line-75">History (line 75)</h3>
+<table>
+<thead>
+<tr>
+<th>step</th>
+<th>fields</th>
+<th>far-end prefix, first field</th>
+<th>L</th>
+<th>max field</th>
+<th>cells</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0e9</td>
+<td>13</td>
+<td>25</td>
+<td>16,639</td>
+<td>16,639</td>
+<td>81,673</td>
+</tr>
+<tr>
+<td>1.0e10</td>
+<td>16</td>
+<td><code>1 +</code> 20</td>
+<td>51,508</td>
+<td>51,508</td>
+<td>266,748</td>
+</tr>
+<tr>
+<td>1.0e11</td>
+<td>19</td>
+<td><code>1 + 1 +</code> 16</td>
+<td>73,819</td>
+<td>132,074</td>
+<td>908,321</td>
+</tr>
+<tr>
+<td>1.0e12</td>
+<td>19</td>
+<td><code>1 +</code> 10</td>
+<td>231,499</td>
+<td>443,941</td>
+<td>2.88 M</td>
+</tr>
+<tr>
+<td>1.0e13</td>
+<td>20</td>
+<td>8</td>
+<td>174,283</td>
+<td>2,072,876</td>
+<td>8.83 M</td>
+</tr>
+<tr>
+<td>1.0e14</td>
+<td>24</td>
+<td><code>1 + 1 +</code> 5</td>
+<td>5,027,266</td>
+<td>5,027,266</td>
+<td>26.9 M</td>
+</tr>
+<tr>
+<td>2.367e14</td>
+<td>24</td>
+<td><code>1 + 0 \|</code> 2</td>
+<td>8,737,531</td>
+<td>8,737,531</td>
+<td>39.3 M</td>
+</tr>
+</tbody>
+</table>
+<h2 id="far-end-event-c">Far end (event c)</h2>
+<ul>
+<li>The far end loses about 1 unit of the first field per factor of about 1.5 in time. Each far-end bounce adds 1 or 2.</li>
+<li>Line 75's first field reaches 2 at 2.4e14, so its natural far-end death is due soon after. 265 is 26 units behind, 179 is 24 and 597 is 4.</li>
+<li><strong>Hand-built far-end deaths</strong> (<code>work/farend_small.py</code>, <code>data/farend_small_{a,b}.txt</code>):</li>
+<li>Setup: the real far-end block at 2.4e14 (<code>122 | 292 | 34 | 2114</code>), with prefix ∈ {none, <code>1 +</code>, <code>0 |</code>, <code>1 + 1 +</code>, <code>1 + 0 |</code>} and first field v = 0..6, followed by a short right part (<code>3000 | 3001 | 2000</code>) so that overflows come quickly.</li>
+<li>All 35 variants ran 12 far-end events each: <strong>no halt</strong>.</li>
+<li>The dead first field disappears and the next field (122) becomes the first field, eaten one unit at a time.</li>
+<li>Prefix shapes seen: <code>1 +</code>, <code>0 |</code>, <code>1 + 1 +</code>, <code>1 + 1 + 1 +</code>, <code>1 + 0 |</code>, <code>0 # x</code>, <code>0 + x</code>, <code>0 | 0 |</code>, <code>1 + 2 |</code>, <code>x + y</code>. A small set, but not yet shown to be closed.</li>
+<li>The far end eats fields one at a time, and births at the right replace them. It does not glue new structure the way K42's escapes do.</li>
+</ul>
+<h2 id="halting">Halting</h2>
+<ul>
+<li>The machine halts only via <code>B</code> reading 1 with <code>11</code> to its left (B1 -&gt; E, E1 -&gt; F, F1 halts).</li>
+<li>Random tiny token lists (4,000 lists, fields 0..8, separators <code>| + #</code>) halt in 255 cases (<code>3 | 4</code>, <code>4 | 1</code>, <code>0 + 0 + 4 | 6</code>, ...). So a proof needs an invariant that excludes the bad local patterns. Tiny far-left fields alone are not bad; the hand-built deaths above survive.</li>
+</ul>
+<h2 id="cryptid-check-stop-rule">Cryptid check (stop rule)</h2>
+<ul>
+<li><strong>Not a cryptid stop.</strong></li>
+<li>Every event is a fixed affine map on the field list with a case split on parities.</li>
+<li>The parities are the digits of a binary counter. <code>L</code>'s parity alternates deterministically, and the other fields' parities flip only when they are decremented or bounced.</li>
+<li>Nothing branches on a residue other than mod 2 of a counter digit. There is no x·m/k growth law; the only growth is <code>L + 3</code> per half-cycle.</li>
+<li>The four starts share every event through 2.37e14.</li>
+<li>The qsim "Collatz" flags are this counter, which is the critic's point (1).</li>
+<li>Points (2)-(4) of the critic are answered above: far-end deaths are built by hand and survive; birth = bounce; the word set is the same as W4-6 but the mechanism is now explicit.</li>
+</ul>
+<h2 id="template-check">Template check</h2>
+<ul>
+<li>Nearest kill: <strong>#3</strong> <code>1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---</code> (Skelet 1-like Class 2). It is a binary down-counter on explicit digit blocks <code>s(d)</code>, with merges and a re-pairing overflow. Its proof uses one macro rule per decrement and a per-step invariant J.</li>
+<li><strong>Applies partly.</strong> The architecture carries over: a rule per half-cycle, merges, a re-pairing bounce, and an invariant on budgets with the parity defects held by the slow blocks.</li>
+<li><strong>Differences:</strong> here the digits are the field parities (no digit blocks); there are 3 separator kinds plus far-end prefixes; and births happen at every bounce.</li>
+<li>Upstream <code>Sk1Machines.v</code> (mxdys, Sk1Counter with 6-phase digit words) and <code>Sk1like_TC_v*.v</code> (K42's) are not templates: different word sets and digits.</li>
+<li><strong>One start-parametric argument covers all four lines.</strong> The starts merge into one orbit up to the first field (all even offsets, identical event times through 2.37e14). Each extra start is a #24-style delta: its own base segment to a common token-list family.</li>
+</ul>
+<h2 id="attempts">Attempts</h2>
+<ul>
+<li>2026-10-14 claude observe (table, lines 75/179/265/597): mechanism found; 9 token rules random-validated; exact accelerated simulator validated at 1e10 on all 4 starts; no halt to 2.367e14 (A, C); far-end deaths built by hand survive. Not a cryptid stop. Ledger rows added.</li>
+<li>2026-10-14 claude hand-proof (table, all four starts): proof.md revision 1, OPEN. Proved: sweep lemmas, 15 macro rules with exact steps, outside-case list, region counter calculus (C1-C6), opening runs to K(c) = c | 66 | 18 | 64 (c = 47/51/73/71 at steps 30379/30722/32795/32668), start-parametric lemma SP, legal-event lemma (J =&gt; a rule applies). Open O1: J is not inductive (budget clauses B1-B5, nested deaths, far-end prefix table). check_proof.py PASS (data/check_proof.out); abstract map to 1e16 on all four starts with no outside case (data/abstract_runs.md). Ledger row added.</li>
+<li>2026-10-14 claude hand-proof revision 2 (after the skeptic review of revision 1; table, all four starts): fixed both major gaps (C3 merged state for every merge event, two-mode climb automaton C5, reflection C6 with D-end/U-end branches; far-end rules FAR-0-PLUS-EVEN 6S+6n+30 and FAR-0-PLUS-ODD 6S+12n+8, checked exhaustively and on 400 random instances; J3 relaxed) and all minor gaps. Fatal gap O1 stays open. New: an exact fast map (C1/C2 jumps, exact step counts, equal to the plain map event for event to 1e11) runs the four starts to 1e100 (check_proof.py §I) and 1e150 (work/rev2/far.py) with no outside case; but 24 of 300 perturbations of line 75's 1e13 configuration leave the rule set (22 at the far end) between 1e14 and 1e85 steps (3 reach the halting + 0 +), the 22 far-end exits are (o4) 14, (o7) 5 and the halting (o1) 3; the other 2 are bulk (o5) from a planted small L. So the far end decides halting by a race on history-dependent parities: cryptid-protocol stop, status STUCK, decision.json (recommended: bounded halting search toward 1e1000). check_proof.py PASS A-I (data/check_proof.out). Ledger row added.</li>
+</ul>
+</main></body></html>

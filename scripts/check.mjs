@@ -17,7 +17,9 @@ for(const p of projects)for(const s of p.related||[])if(!slugs.has(s))errors.pus
 for(const n of notes){if(!n.sections?.length||!n.sources?.length)errors.push(`${n.slug}: article missing evidence`);for(const s of n.related||[])if(!slugs.has(s))errors.push(`${n.slug}: unknown related project ${s}`);}
 const pages=[];
 function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())walk(f);else if(e.name.endsWith('.html'))pages.push(f);}}
+// The imported research site has its own export/link validation.
 walk(root);
+for(let i=pages.length-1;i>=0;i--)if(path.relative(root,pages[i]).startsWith('busy-beaver/'))pages.splice(i,1);
 const decode=s=>s.replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'");
 let localLinks=0;
 for(const file of pages){

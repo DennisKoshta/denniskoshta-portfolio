@@ -1,0 +1,589 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>ranking.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/halting-hunt/ranking.md · <a href="/busy-beaver/reports/halting-hunt/ranking.md.html">raw</a></div>
+<h1 id="halting-hunt-ranking-2026-10-13">Halting hunt: ranking (2026-10-13)</h1>
+<p>None of the four scouts (deep, margins, parked, hints) saw an in-scope machine halt. So no pick has a halt to replay; nothing here is a kill. Only <code>tools/check_kill.sh --halt</code> PASS counts.</p>
+<p>The ranking follows the brief:</p>
+<ol>
+<li>a halt seen in simulation (none this round);</li>
+<li>a shrinking margin with a model route;</li>
+<li>machines whose exact models can run much further.</li>
+</ol>
+<p>Picks are deduplicated by table family. Table identity was checked here by relabeling and mirroring states.</p>
+<p>Scout tables: <code>scout-deep.tsv</code>, <code>scout-margins.tsv</code>, <code>scout-parked.tsv</code>, <code>scout-hints.tsv</code> (same folder).</p>
+<h2 id="picks">Picks</h2>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>740 line</th>
+<th>Machine</th>
+<th>Family (same table)</th>
+<th>Why</th>
+<th>Model route</th>
+<th>Main risk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>H-1</strong></td>
+<td>686</td>
+<td><code>1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB</code></td>
+<td>347's table: 347 (A), 441 (B), 686 (D, mirrored)</td>
+<td>Closest margin approach in any family: k_align/(M-1) = 0.9755 at phase 1572 (324 incs spare). In this table halting comes only from margin breaks.</td>
+<td>347's validated fast phase map (<code>deepen3_fast.py</code>), already 30/30 on 686's phase starts</td>
+<td>Mild breaks are harmless in 347's tests. A halt would sit at 1e14+ steps.</td>
+</tr>
+<tr>
+<td><strong>H-2</strong></td>
+<td>244</td>
+<td><code>1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA</code></td>
+<td>CounterClass3v1 halter tables: 244, 216, 701</td>
+<td>After startup each one runs the table of a certified upstream HALT (CounterClass3v1). That module's accelerator holds for our tables.</td>
+<td><code>hints/cc3acc.py</code> (port of upstream astep/P0_n), plus a new wave-level macro step</td>
+<td>Already 70x past TM4's halting point. The class is busy upstream.</td>
+</tr>
+<tr>
+<td><strong>H-3</strong></td>
+<td>269</td>
+<td><code>1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---</code></td>
+<td>R5's table: 269 (A), 43 (D, mirrored)</td>
+<td>Ours (STUCK). Halting is decided at counter overflows. The first overflow (4.391e15) did not halt, and the next one is still unreached.</td>
+<td><code>parked/r5/r5q.py</code> (seeded qsim, validated), plus a new epoch/overflow model</td>
+<td>The next overflow is probably far beyond any certificate. Epochs look self-similar.</td>
+</tr>
+<tr>
+<td><strong>H-4</strong></td>
+<td>362</td>
+<td><code>1RB0LF_0RC1RD_0LD0RA_1RC0RE_1RF---_1LA0LB</code></td>
+<td>One table: 362 (A), 433 (C)</td>
+<td>qsim keeps up: a Collatz lottery still drawing (10^145.8 steps in 180 s). The same table has a certified halt from start B (RWLAccHaltv6.v).</td>
+<td>qsim exactly as the deep scout ran it (k=4, backsymbol + prover + recursive), longer</td>
+<td>A pure lottery with no margin trend. Upstream's RWLAcc sweep has probably already tried these starts.</td>
+</tr>
+</tbody>
+</table>
+<p>All four are outside Astra's claims: lines 443/533/615 and the class 'Bouncer + Chaotic Edge'. None is in an open busycoq PR (#3, #4, #13, #17, #18 checked today) or in an excluded mined class.</p>
+<p><strong>Claims still needed</strong> before anyone creates <code>machines/&lt;tm&gt;/</code>: 686, 244, 216, 701, 362, 433 and 43. Only 269 is already ours.</p>
+<hr />
+<h2 id="h-1-line-686-347s-table-bell-eats-counter">H-1: line 686 (347's table, Bell eats counter)</h2>
+<p><strong>Signal.</strong></p>
+<ul>
+<li>On 686's own orbit the margin reached k_align/(M-1) = 0.9755 at phase 1572 (M = 13,204, k_align = 12,879).</li>
+<li>347's own orbit never went above 0.467 (to phase 16,800), and 441's stayed at or below 0.42.</li>
+<li>The fast map has run 686 to phase 15,304 (M = 153,097, about 2e14 steps) without a halt.</li>
+<li>The only other phase above 0.5 is phase 725 (0.73).</li>
+<li>In this table halting comes only from margin breaks. From 347's notes: 3 halts in 380 phases with M-1 &lt; k_align, and 7 in 3,293 with M forced below k_align.</li>
+</ul>
+<p><strong>Model route.</strong></p>
+<ol>
+<li>Resume <code>reports/halting-hunt/margins/scripts/t347fam.py</code>, which drives the fast map in <code>machines/1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---/scripts/deepen3_fast.py</code>, from phase 15,304 on 686's start. <code>reports/halting-hunt/parked/l347_resume.py</code> shows how to resume from a full-counter dump.</li>
+<li>Log every phase with a ratio above 0.9.</li>
+<li>Whenever the ratio reaches 1 or more, save that phase start and run that one phase by direct simulation (<code>tools/sim</code> C core: about 2M² steps, roughly 1 to 3 minutes at M ≈ 1e5).</li>
+<li>Cost: about 0.3 s per phase at M ≈ 1.6e5 (347's extension). The cost per phase grows with M, so 5e4 phases take about 6 h and 1e5 phases about a day.</li>
+<li>Cheaper extension: derive a J-rule-level phase map from 347's rule table (J-rule, aligned walk, k_align as a sum of carries over chain heads). It runs in O(digits) per phase instead of O(M).</li>
+</ol>
+<p><strong>Certification if it halts.</strong></p>
+<ul>
+<li>First choice: <code>RWLAcc62_BigUint</code> <code>solve_halt'</code> with raised budgets (the RWLAccHaltv6.v route). The bell <code>(10)^M</code> and the counter blocks are run-length friendly.</li>
+<li>Fallback: a W5-5-style chunk replay of the phase model (<code>machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/*.v</code>).</li>
+</ul>
+<p><strong>Risks.</strong></p>
+<ul>
+<li>347's tests show that mild breaks do not halt: 0 of 1,100 with M in [3k/4, k]. 6 of the 7 forced halts had M &lt; k_align/3, so a halt needs a severe break.</li>
+<li>The 0.9755 spike may be a one-off: only 2 of 15,000 phases went above 0.5.</li>
+<li>686 is not ours. It falls under our 'Bell eats counter' class claim, but it still needs its own claims line.</li>
+</ul>
+<h2 id="h-2-line-244-with-216-and-701-counter-class-3-counterclass3v1-halter-tables">H-2: line 244, with 216 and 701 (Counter Class 3, CounterClass3v1 halter tables)</h2>
+<p><strong>Signal.</strong></p>
+<ul>
+<li>244 is 1 transition from both CounterClass3v1 halting tables (the TM4 table, and the TM5/TM6 table, which are one table from two starts). 216 and 701 are 1 transition from the TM4 table. Checked here.</li>
+<li>Per the hints scout, the differing transition fires only during startup: 4 to 6 times, all before step 787,288. After that each machine runs a halter's table from its own configuration.</li>
+<li>The upstream accelerator (<code>astep</code>/<code>skip_lr</code>, <code>P0_n</code>) checks out empirically on our tables.</li>
+<li>The Python port reproduces TM4's own halt at 1.016e7 msteps.</li>
+<li>Ours run to 5.9e8 to 6.9e8 msteps without halting.</li>
+<li>Halting needs a consumption wave to leave the last tail block at 1. TM4 halted with tail <code>[..,118,16,1]</code>. Our tails cycle through <code>[..,23,12]</code>, <code>[..,74,11]</code> (244) and <code>[..,40,14,5]</code> (216/701).</li>
+</ul>
+<p><strong>Model route.</strong></p>
+<ol>
+<li>Reuse <code>reports/halting-hunt/hints/cc3acc.py</code> and <code>cc3trace.py</code>.</li>
+<li>Derive one consumption wave as one macro step: the tail-rebuild map.</li>
+<li>Validate it wave by wave against <code>cc3acc.py</code> for every wave up to 6.9e8 msteps.</li>
+<li>Run all three machines in one driver and log the tail at every wave.</li>
+<li>Keep a guard that the differing transition never fires again after startup. If it does, the model is no longer our machine.</li>
+</ol>
+<p><strong>Certification if it halts.</strong></p>
+<ul>
+<li>Copy the CounterClass3v1 module (<code>P0_n</code>, <code>astep_spec</code>, <code>msteps_halt</code>) with our TM string, a startup init and a larger <code>msteps</code> budget.</li>
+<li>This works while the halt is within roughly 1e9 msteps of <code>vm_compute</code>. Beyond that, the wave step needs its own Rocq lemma.</li>
+</ul>
+<p><strong>Risks.</strong></p>
+<ul>
+<li>Already 70x past TM4's halting point, and the tails are not trending toward 1.</li>
+<li><code>reports/targeting.md</code> marks Counter Class 3 as taken. Upstream's CounterClass3v2.v (10-07, "M1") is a macro-inductive nonhalting proof. Its machine is 7 transitions from ours and is not on the 740 list, but someone may be preparing nonhalting proofs for these three.</li>
+<li>Upstream had this accelerator (with an <code>msteps</code> budget of 10^10) and did not certify these three. Either they were never tried or they did not halt within that budget.</li>
+<li>These three are kept despite the "taken" note for three reasons: the brief's exclusion list does not name Counter Class 3, the upstream work there is on the nonhalting side, and the signal is exceptional.</li>
+</ul>
+<h2 id="h-3-line-269-with-43-r5-so-structural-counter-ours-stuck">H-3: line 269, with 43 (R5, SO structural counter, ours STUCK)</h2>
+<p><strong>Signal.</strong></p>
+<ul>
+<li>The first counter overflow, at 4.391e15, did not halt. It reset the machine to an almost blank new epoch.</li>
+<li>Halting is decided at overflows. The halting path there is <code>0 &lt;A 101</code>, which halts in 4 steps (<code>machines/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---/work/r5_followup.md</code>).</li>
+<li>43 is the same table from D, mirrored (checked here).</li>
+</ul>
+<p><strong>Model route.</strong></p>
+<ol>
+<li>The seeded qsim (<code>reports/halting-hunt/parked/r5/r5q.py</code>, from <code>work/r5_post_ckpt.bin</code>) matches direct simulation on the full 1.0066e8-cell tape.</li>
+<li>Its 4 h run (<code>r5q_long.jsonl</code>) is at 4.615e15 steps (loop 62M) with 0 prover rules, so it only does chain moves and cannot reach the next overflow.</li>
+<li>Derive an epoch model: the counter's per-cycle consumption, the reservoir size and the overflow trigger. Fit it on epoch 1 (blank to 4.391e15) and on the start of epoch 2.</li>
+<li>Validate it against the r5q dumps and <code>scripts/r5run</code> (direct C).</li>
+<li>Fast-forward to the next overflow and apply the overflow rule, then repeat. Run 43 on the same model.</li>
+</ol>
+<p><strong>Certification if it halts.</strong> No template reaches that depth. It would need an epoch-level certified replay (in the style of C2-552's <code>Sk1Auto</code> certificate runner) or <code>solve_halt'</code>, if run-length acceleration happens to suffice.</p>
+<p><strong>Risks.</strong></p>
+<ul>
+<li>The next overflow is probably exponentially later than the first.</li>
+<li>If the epochs are self-similar, R5 is probably nonhalting.</li>
+<li><code>r5_followup.md</code> lists the epoch-map stage as Dennis's call. Today's hunt approval covers exact models, but this should be stated when it is launched.</li>
+</ul>
+<h2 id="h-4-line-362-with-433-chaotic-bell-class-2">H-4: line 362, with 433 (Chaotic Bell Class 2)</h2>
+<p><strong>Signal.</strong></p>
+<ul>
+<li>The k=4 qsim run reached 10^145.8 steps in 180 s.</li>
+<li>It found 1,885 Collatz rules, each used once (one fresh epoch per rule). The log-steps gain per time doubling held at about 39, so the run is keeping up.</li>
+<li>433 is the same table from C (checked here). Its run reached 10^135.7.</li>
+<li>RWLAccHaltv6.v certifies a halt of this table from 362's start B, so the halting branch is reachable from these dynamics.</li>
+</ul>
+<p><strong>Model route.</strong></p>
+<ol>
+<li>Run <code>tools/qsim.py</code> (<code>.venv/bin/python -B</code>, k=4, backsymbol + prover + recursive) as in the deep scout's <code>worker.py</code>: 1 to 2 h per start, with progress lines, <code>nice -n 10</code> and <code>ulimit -v 6000000</code>.</li>
+<li>Add a k=2 run as a cross-check.</li>
+<li>On a HALT, re-derive the halt with an independent run-length simulator before any proof work.</li>
+</ol>
+<p><strong>Certification if it halts.</strong> <code>RWLAcc62_BigUint</code> <code>solve_halt'</code>, the generic certified run-length executor already used on this exact table.</p>
+<p><strong>Risks.</strong></p>
+<ul>
+<li>A lottery with no trend to watch.</li>
+<li>Upstream's RWLAcc sweep has probably already run these starts to some budget.</li>
+<li>qsim's prover rules reach further than run-length shifts. A halt at about 10^300 steps may therefore be out of <code>solve_halt'</code>'s reach, and there is no template for replaying qsim's rules in Rocq.</li>
+<li>qsim can blow its memory limit (518's k=2 run died at the cap).</li>
+</ul>
+<hr />
+<h2 id="notable-rejections">Notable rejections</h2>
+<table>
+<thead>
+<tr>
+<th>Line(s)</th>
+<th>Why not a pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>561 / 372 (Skelet 1-like Class 2, our cryptid candidates)</td>
+<td>Strongest proof route of all, through C2-552's certificate runner, and R4's top cycle sits at the halting residue N = 27 ≡ 2 (mod 5). But Dennis's 10-12 decision was stop_cryptid, "no more compute", and he declined exactly this recursive-model option. Held for a priority call, not auto-launched. Lower digits switch the outcome irregularly, and the frozen levels have not released between 4.8e17 and 1e80.</td>
+</tr>
+<tr>
+<td>358 / 478 (Structural counter + chaotic edge)</td>
+<td>Best probabilistic signal (a 5-stage halting chain, about 1% per seed), but there is no model. Building the mixed-zone accelerator is the stage Dennis stopped on 10-10. The coin model puts a halt near 1e49 steps.</td>
+</tr>
+<tr>
+<td>602, 730, 577, 338, 412, 299 (Chaotic Bell Class 1)</td>
+<td>Same tables as the certified halts in ChaoticBell1Halt.v, but qsim cannot see this class and ccz181078's RLE executor has been active on it since 10-11. A race, so a priority call for Dennis.</td>
+</tr>
+<tr>
+<td>486 (our cryptid candidate)</td>
+<td>Margins grow: 3 to 5 bits per octave from 2^23 to 2^28, after the 1-bit miss at 2^22. Two scouts already extended it to 4e7 phases.</td>
+</tr>
+<tr>
+<td>239 (B-4)</td>
+<td>No exact model (the residue map is open). Every overflow residue at a = 7 and a = 8 survives (margins scout). Its 30-min qsim run is in chain B.</td>
+</tr>
+<tr>
+<td>659 (R2), 202 (R3), 191 (#29)</td>
+<td>Exact C models already run far (N = 2e9, N = 2^35.1 and N = 1.6e8), and the margins are growing: R2's t-clear margin went from 8 to 16, R3 has at least 3 bits at every octave, and #29's minimum slack is 4. The R2/R3 extensions continue in chain B.</td>
+</tr>
+<tr>
+<td>347, 441</td>
+<td>The same family as H-1, and their orbits stay at or below 0.467 / 0.42. H-1 covers the table.</td>
+</tr>
+<tr>
+<td>99 / 612 (W4-6), 317 / 707 (W4-7), 409</td>
+<td>No events in their exact models: 0 A-zero-gap events to 2^30.1, 0 FLAGs in 1e9 passes, and an exhaustion distance of 13 or more.</td>
+</tr>
+<tr>
+<td>556 (#19), 162</td>
+<td>Same overflow blocker as R5 with no exact rebuild rule. Dennis parked #19 on 10-10. 162 is #19's relative and 3 transitions from R5.</td>
+</tr>
+<tr>
+<td>110</td>
+<td>Four human hints, and the same table halts from B at 27.2M steps. But it is possibly tetrational, qsim finds no rules, and a level accelerator would be new work, with any halt probably beyond certificate reach.</td>
+</tr>
+<tr>
+<td>1, 45, 52, 152, 291 (explosive Collatz)</td>
+<td>10^1440 to 10^19415 steps with no halt. Any halt would be astronomically late.</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Sensitive to -1 changes (8 of 120 halt) and seen by three scouts, but fragility is not a shrinking margin, and there is no model.</td>
+</tr>
+<tr>
+<td>126, 26, 122, 139, 234, 554, 595, 618, 720 (SC+CE)</td>
+<td>Class prior only. All are on mxdys's UBRRBA list.</td>
+</tr>
+<tr>
+<td>625 (ours, STUCK)</td>
+<td>A halting route exists in the defect algebra, but the next dirty events are exponentially far away and need a new counter model. 1 of 64 ±1 changes halts.</td>
+</tr>
+<tr>
+<td>211, 635, 96</td>
+<td>Their Collatz-like phase maps are incomplete. 635's qsim run mostly stalls.</td>
+</tr>
+<tr>
+<td>32, 262, 351, 616</td>
+<td>Their table halts from another start at 17.8M steps, but these are chaotic 1D CA with no accelerator, so a late halt is uncertifiable.</td>
+</tr>
+<tr>
+<td>151, 515</td>
+<td>151 has only "may halt" with no mechanism. 515 is Bell-like (a mined class), and its halt needs about 1e12 Hydra iterations.</td>
+</tr>
+<tr>
+<td>79, 611 (our cryptid candidates)</td>
+<td>79's hit probability per birth converges. 611's slack margin is never approached on the orbit.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="running-processes-when-the-next-stage-starts">Running processes (when the next stage starts)</h2>
+<p>Both of our heavy slots are taken:</p>
+<ul>
+<li><strong>R5 seeded qsim</strong> (<code>r5slot.sh</code>, 4 h cap from 17:36). This is H-3's validation baseline.</li>
+<li><strong>Chain B.</strong> The 239 qsim run until about 19:01, then R2 to 3e10 (up to 3 h), then R3 to 1e10 (up to 2 h).</li>
+</ul>
+<p>The W4-6 <code>hybx</code> (pid 509176) is paused with SIGSTOP and resumes when R5's run ends.</p>
+<p>Recommendation: end chain B after the 239 run, since the R2/R3 extensions were rejected as picks above. That frees a slot for H-1 or H-2. Keep <code>hybx</code> paused or end it.</p>
+<hr />
+<h2 id="critic-2026-10-13-1915">Critic (2026-10-13, 19:15)</h2>
+<p>The critic re-checked every pick for claims, ownership, cryptid status and settlement, and re-read the four scout tables for signals that fell through. Nothing here is a kill.</p>
+<p><strong>Verdict.</strong> All four picks stay, but the order changes and each one gets corrections:</p>
+<ul>
+<li>H-1 stays 686, with a corrected signal: the near-miss was an early transient.</li>
+<li>362 moves up to H-2. The frame labels in its write-up were wrong.</li>
+<li>The Counter Class 3 family moves down to H-3. Upstream works this class for halting, 216 is on the sheet's Level 1 tab, and the cheap certificate's reach is nearly used up.</li>
+<li>R5 moves down to H-4. Both of its starts are on mxdys's UBRRBA to-do list, and its epoch-map stage was left for Dennis to decide.</li>
+</ul>
+<p>No strong signal fell through.</p>
+<h3 id="checks-run-table-level-any-start-state-mirror-and-renaming">Checks run (table level: any start state, mirror and renaming)</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>coord/claims.tsv</code></td>
+<td>No pick table is owned by astra. Astra's tables on the 740 list are lines 443/463/638, 533/615, 6/348, 282, 465, 593 and 715, and none of them meets a pick family. 269 is ours (STUCK). 347 is ours (STUCK, "cryptid-margin suspect"). 686 falls under our 'Bell eats counter' class claim. <strong>Claims still needed:</strong> 686, 362, 433, 244, 216, 701 and 43.</td>
+</tr>
+<tr>
+<td>Cryptid status</td>
+<td>No pick family has a CRYPTID_CANDIDATE member. 347's table is STUCK, not a cryptid candidate, so simulation and a halting certificate are both allowed.</td>
+</tr>
+<tr>
+<td>Open busycoq PRs #3, #4, #13, #17, #18 (fetched now; #17's files read from its branch)</td>
+<td>No pick table appears in any of them.</td>
+</tr>
+<tr>
+<td>Upstream after our pin, 0940bb9..d026880 (14 new files: ChaoticBell1Halt, Cubic50, CubicMachines_v2, Eqv_WordPairs, Eqv_RegularPairs and our merged PRs)</td>
+<td>No pick table appears. Nothing is settled.</td>
+</tr>
+<tr>
+<td><code>data/solved_index.tsv</code></td>
+<td>All picks are absent. 43 and 433 are only "mentioned": they are the representatives in Eqv_v2.v equivalences.</td>
+</tr>
+<tr>
+<td>Vendor (pin)</td>
+<td>The ranking's "no vendor file contains the strings of the picks" is slightly wrong: Eqv_v2.v contains 43's and 433's own strings, as equivalence representatives, so nothing is settled. Same-table hits from other starts: RWLAccHaltv6.v (362's table, halts), RWL_mod_v3.v (R5's table from 269's B, C and E, all <strong>nonhalting</strong>), RWLAccHaltv3.v (561/372's table, halts) and RWLAccHaltv1.v (110's table, halts).</td>
+</tr>
+<tr>
+<td>Sheet</td>
+<td><strong>216 is on the Level 1 tab</strong> ("worked on extensively", done by nickdrozd). 701 is on Level 0 ("least common transitions"). The other picks appear only in the classifications and results tabs, with no status or notes.</td>
+</tr>
+<tr>
+<td>Saved Discord lists</td>
+<td><strong>269 and 43 are both on mxdys's UBRRBA_TODO list</strong> (2026-08-24: holdouts "easy to accelerate by UBRRBA", for halting runs; q64 offered about 500 cores). 358/478 and 110 are on it too. The hipparcos and dyuan lists contain no pick.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="corrections-per-pick">Corrections per pick</h3>
+<p><strong>H-1, line 686: keep, with the signal restated.</strong></p>
+<ul>
+<li>Both phases above 0.5 are early: phase 725 (0.73) and phase 1572 (0.9755).</li>
+<li>Over the 10,300 phases from 5,000 to 15,304, the maximum is 0.424. That is the level of 347's own orbit (0.467) and 441's (0.42).</li>
+<li>Tail counts over 15,000 phases:</li>
+</ul>
+<p><code>ratio &gt; 0.2: 102   &gt; 0.3: 24   &gt; 0.4: 5   &gt; 0.5: 2</code></p>
+<ul>
+<li>An exponential fit to that tail gives a mild break (ratio above 1) about once per 10^6 to 10^7 phases. The 0.9755 outlier itself sits above that fit, so the true tail may be heavier. A halt needs a severe break.</li>
+<li>It is still H-1 for two reasons: it has the only validated exact model whose halting mechanism (a margin break) is known, and resuming costs one existing driver and no new code. Expect a low yield per day of compute.</li>
+</ul>
+<p><strong>H-2 (was H-4), line 362 with 433: move up, and fix the start labels.</strong></p>
+<ul>
+<li>In 362's own labels, the upstream halter (RWLAccHaltv6.v <code>tm128</code>, halting at <code>(F,1)</code>) is this table started from <strong>F</strong>, not B. (B is 362's start in the halter's labels.)</li>
+<li>433 is this table started from 362's <strong>E</strong>. (C is 362's start in 433's labels.) Eqv_v2.v's partner of 433 starts from 362's D.</li>
+<li>Only one start of this table halts upstream. The deep scout's "433 @D;@F" counts the same halter twice.</li>
+<li>It moves up because it is the cheapest pick: existing qsim, 1 to 2 h per start, no new model. It is also the only pick whose certificate route (<code>solve_halt'</code>) has already been used on this exact table.</li>
+<li>Optional: run 428 (Chaotic Bell Class 2, 10^115.8 at k=2 in 180 s) in the same slot.</li>
+</ul>
+<p><strong>H-3 (was H-2), line 244 with 216 and 701: move down.</strong></p>
+<ul>
+<li>Counter Class 3 is a class worked by others for halting. CounterClass3v1.v (mxdys, 08-15) holds three halting certificates built with exactly this accelerator, and <code>reports/targeting.md</code> §2.2 lists the class as taken. The brief's "exceptional signal" bar applies, and the class's own author had these machines and this tool.</li>
+<li>216 is on the Level 1 tab (nickdrozd).</li>
+<li>The cheap certificate (copy CounterClass3v1 with a bigger <code>msteps</code> budget) reaches about 1e9 msteps. Our runs already sit at 5.9e8 to 6.9e8. So nearly any halt found from here on needs a new Rocq lemma for the wave step.</li>
+<li>Run the wave map only as a short first stage, with an exit rule: if the last tail block (11 to 12 for 244, 5 for 216/701) is invariant under the wave map, stop and write it up. That is nonhalting evidence, and nonhalting is the side upstream is working on (CounterClass3v2.v).</li>
+</ul>
+<p><strong>H-4 (was H-3), line 269 with 43 (R5): move down.</strong></p>
+<ul>
+<li>mxdys listed both starts for UBRRBA halting runs in August.</li>
+<li>Upstream proves the table nonhalting from three other starts (RWL_mod_v3.v).</li>
+<li>The epoch-map stage was the 10-10 option Dennis did not pick (he picked <code>watch</code>). <code>work/r5_followup.md</code> line 100 still lists it "for Dennis to decide". Launching it under the 10-13 hunt approval is defensible because it is simulation of our own STUCK machine, but tell Dennis in one line when it starts.</li>
+<li>The seeded qsim run continues to its 4 h cap (about 21:36). At 19:14 it was at 4.629e15 steps, still with 0 prover rules.</li>
+</ul>
+<h3 id="fell-through-the-record-none-displaces-a-pick">Fell through the record (none displaces a pick)</h3>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Signal</th>
+<th>Why not a pick</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>623 (Unknown)</td>
+<td>±1 on small exponents near the edge halts in 12 of 62 cases (margins scout)</td>
+<td>Fragility, not a shrinking margin, and there is no model (same reason as 21).</td>
+</tr>
+<tr>
+<td>534 (Unknown)</td>
+<td>Zone T halts on constructed short-gap bursts</td>
+<td>Never on the machine's own orbit.</td>
+</tr>
+<tr>
+<td>440 (Chaotic Fractal Others)</td>
+<td>Leaks only in perturbed frames</td>
+<td>Never on the orbit.</td>
+</tr>
+<tr>
+<td>33 (Translated Counter)</td>
+<td>Sheet note: "Has to halt in the counting phase"</td>
+<td>That says where a halt would happen, not that one happens. M-Abozaid works the class (SOTCv2).</td>
+</tr>
+<tr>
+<td>3 (Chaotic 1dCA in bouncer)</td>
+<td>1 transition from an RWLAccHaltv3 halter</td>
+<td>The differing D0 keeps firing (86 times in 1e8 steps), so the halter's run does not carry over.</td>
+</tr>
+<tr>
+<td>428, 518, 61, 11</td>
+<td>Collatz lotteries in the deep scout (0.06)</td>
+<td>No same-table halter. 428 is the optional add-on to H-2. 11 is in Chaotic Fractal Type 1, which others work (FractalType7).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="processes-1914">Processes (19:14)</h3>
+<ul>
+<li><strong>Slot 1:</strong> r5q (H-4's baseline) runs to about 21:36. Then <code>r5slot.sh</code> resumes the W4-6 <code>hybx</code>.</li>
+<li><strong>Slot 2:</strong> chain B has moved on. The 239 qsim ended at 18:58 (1.08e14 steps, 12 rules, 0 Collatz rules, no halt), and R2 to 3e10 has been running since 18:58 (cap 3 h), with R3 next (cap 2 h). The ranking's advice to end chain B after the 239 run is overtaken. It stays as is.</li>
+<li><strong>Orphan, a third heavy process on our side (the limit is 2):</strong> a <code>tmsim</code> on line 469 (W4-5) with <code>--max-steps inf</code>, started at about 18:07 by the margins scout (cwd <code>scratchpad/mh</code>). Its parent is gone, and nothing holds the other end of its stdin/stdout/stderr pipes. Its output cannot be read, and a halt would kill it with SIGPIPE before anything is recorded. <strong>Not stopped by the critic.</strong> It is the orchestrator's call: stop it, or rerun it with a log file.</li>
+<li>Load is 3.0 and MemAvailable is 21 GB, so the per-agent slot rule is the limit, not the machine. No pick can start until a slot frees.</li>
+</ul>
+</main></body></html>

@@ -1,0 +1,34 @@
+{
+  "tm": "1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF",
+  "label": "W6-8",
+  "status": "STUCK",
+  "stage": "deepen",
+  "updated": "2026-10-14",
+  "holdout_line_740": 9,
+  "confidence": "med",
+  "reason": "Wave 6 stage 2: no invariant yet; the obstacle is now specific. Each block is a six-state transducer (A-F = (gap, parity)). Halting in the body needs an R to reach a fresh gap-1 odd block F. In the real run every F has a gap-3 right neighbour and every E a gap-2 one, and a gap-3 block never sends R, so F is safe while this pairing holds. It breaks only if a later phase defect catches the F before F's first N: the small-refill halts of stage 1 are exactly that. Refill fuzz with refills >= 24+r never breaks it. Window languages (k = 7, 10) neither close nor fail; the invariant needs a non-local timing comparison between each F and the next defect.",
+  "siblings": [],
+  "eqv_reductions": [
+    "1LB0RA_0LC1RE_1RD0LA_1RB1RC_0RF---_0RD0RF (busycoq Eqv_v2.v TM238)",
+    "1RB0LD_1RC1RA_0LA1RE_1LC0RD_0RF---_0RB0RF (busycoq Eqv_v2.v TM536)"
+  ],
+  "claim_note": "Sheet note by nerdyjoe (Results row 24: 'Code. Binary counting + bouncing') is an analysis note with no status; no Discord mention. Drop if Dennis says it is nerdyjoe's.",
+  "next_goal": "If funded: a right-to-left automaton over the six-state chain that carries, for each pending F or live wave, the digits up to the next defect (cut off where the defect provably arrives late), with size classes only in the last 2-3 blocks; check closure with a winfix4-style product search.",
+  "confidence_note": "Medium-high that it never halts (exact rules, no halt to 4e9 steps, robust to fuel and block fuzz, refills >= 24+r never break the F pairing). Low that one more 2 h stage closes a proof: the needed invariant is a timing property between travelling defects, not a local one, and a Coq proof would follow as a separate multi-stage effort.",
+  "wave6_stage1": {
+    "left_edge": "Lodd: y odd -> new block 3, 0^2, y+3; Leven: y even -> new block 3, 0^3, y (work/macro2.py, work/vleft.py)",
+    "small_refill": "refill fuel 2/4/6 halts in 199/200 runs; >= 8+r: 0/200 (work/fuzz4.py)",
+    "transducer": "block = (gap, parity); N = +3, R = carry; steady cycle (3,6)(3,1)(2,4)(2,7) mod 8; phase-consistent pairs 98% (work/cons.py)",
+    "windows": "least k-window closed languages k=2..5, D=2..3, T=12/16 all contain halting words (work/winfix2.py, winfix4.py, winfix4o.py)",
+    "race": "2-11 insertions per epoch; carry reach <= 24 blocks from the right end; 10 -> 97 blocks over 27 epochs (work/race.py)",
+    "cryptid": "no: halting does not depend on the a -> ceil(3a/2)+1 orbit, only on refills >= 8 and the counter's local structure"
+  },
+  "wave6_stage2": {
+    "transducer": "A=(3,e) B=(3,o) C=(2,e) D=(2,o) E=(1,e) F=(1,o); N: A<->B, C<->D, E<->F; R: A ins D, B->C sends N, C->A ins F, D->A sends R, E->A sends N, F halts",
+    "pairing": "real run: gap-1 pairs only (F,A),(F,B),(E,C),(E,D) (work/s2_p12.py); refills 24-56+r: never broken, 0 halts; 16-48+r: (E,F) appears, 0 halts; 2/4/6: (F,C),(F,D) and halts (work/s2_p12b.py)",
+    "waves": "lifetimes 1/24/192/>200 cycles, depths 2/5/8/11/13 (about 3 blocks and x8 time per level); <= 2 clusters right of the prefix; particles >= 9 blocks apart (work/s2_wave.py, s2_wave2.py, s2_particles.py)",
+    "windows": "winfix4 k=7 (730k windows, 67 rounds) and k=10 (2.17M windows, 22 rounds), D=2 T=16: no bad word, no closure; stopped",
+    "cryptid": "no: safety needs refills >= 24+r (real >= 62) and the defect-timing property, not the a -> ceil(3a/2)+1 orbit"
+  },
+  "parked": "Dennis 2026-10-14: park (needs a non-local timing invariant)"
+}

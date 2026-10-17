@@ -1,0 +1,772 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/proof.md · <a href="/busy-beaver/machines/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/proof.md.html">raw</a></div>
+<h1 id="1rb0lc_1rc0rc_1ld0rb_1la0le_1ld1lf_1ld-informal-proof-incomplete-invariant-open">1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---: informal proof (INCOMPLETE: invariant open)</h1>
+<ul>
+<li>Machine: <code>1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code>, viewer https://bbchallenge.org/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</li>
+<li>Sheet: Results and Classifications tabs, class only (<code>Skelet 1-like Class 2</code>); no status, notes, links or Discord thread. Not claimed (<code>notes.md</code>).</li>
+<li>Parent: kill #11 <code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code>. The tables differ only in A1 (twin <code>0LC</code>, parent <code>0LE</code>).</li>
+<li>Written for: the string itself (no mirror, no renaming).</li>
+<li><strong>Status: incomplete, STUCK at the invariant (§5).</strong> Revised after the skeptic review (Review log at the end).</li>
+<li>Done: the window lemmas (§2); M, O, P (§3.1–3.3); one general macro rule G that covers every transition of the run, the 45 that M/O/P left out included (§3.5); a complete case analysis of the sweep (§3.6); the exact initial segment (§4); the lemma plan (§7).</li>
+<li>§3.6 reduces non-halting to one statement. Every K-configuration either takes a G step, or halts inside the macro step (classes H1, H2), or has left text in one of four classes that no rule covers (U0–U3).</li>
+<li>Missing: a family of configurations, closed under G, that contains a reachable configuration and has no member in H1, H2 or U0–U3. Without it there is no non-halting proof.</li>
+<li>Evidence: <code>check_proof.py</code> (§8), 12 checks, all pass.</li>
+<li>AI assistance: written by Claude (Anthropic) under Dennis's direction.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>     0    1
+A   1RB  0LC        (parent: 0LE)
+B   1RC  0RC
+C   1LD  0RB
+D   1LA  0LE
+E   1LD  1LF
+F   1LD  ---        halting transition: F reads 1
+</code></pre></div>
+
+<h2 id="1-notation-and-two-exact-facts">1. Notation and two exact facts</h2>
+<h3 id="11-k-configurations">1.1 K-configurations</h3>
+<div class="highlight"><pre><span></span><code>K(L; a, b) := 0^inf L (10)^a 0^3 (10)^b B&gt; 0^inf          L an arbitrary finite word (the "left text")
+digit d = (u, beta, v):   (u,0,v) := (10)^u 00 (01)^v      (u,1,v) := (10)^u (01)^v
+K(d_1 .. d_m; a, b) := K(10 01 d_1 .. d_m; a, b)           as in the parent
+</code></pre></div>
+
+<ul>
+<li><code>a</code> and the <code>(10)</code> run before <code>0^3</code> are maximal, so <code>L</code> never ends in <code>10</code>.</li>
+<li>The parent's family has <code>L = 10 01 d_1 .. d_m</code>. In the twin the left text leaves that shape at step 428 (§4). After that it is a word that ends in digits but starts with irregular text, sometimes at odd parity.</li>
+<li>Window-lemma notation is the parent's: <code>X&gt;</code> means state X on the next cell, <code>&lt;X</code> means state X on the previous cell. A window lemma runs inside its window, so it holds in every tape context.</li>
+</ul>
+<h3 id="12-table-facts-check-1">1.2 Table facts (check 1)</h3>
+<ul>
+<li>The only halting transition is F reading 1.</li>
+<li>F is entered only by E1 (<code>1LF</code>).</li>
+<li>In the twin, E is entered only by D1 (<code>0LE</code>). In the parent, A1 also enters E. This is the one change.</li>
+<li>So a halt needs a leftward run D, E, F reading 1, 1, 1: the pattern <code>111 &lt;D</code>.</li>
+</ul>
+<h3 id="13-token-machine-check-2">1.3 Token machine (check 2)</h3>
+<p>Pair the cells in the head's parity: the head stands between tokens <code>z = 00</code>, <code>o = 01</code>, <code>a = 10</code> and <code>X = 11</code>. Every visit of the head to a token starts and ends on a token boundary. So the machine is exactly the following 4-symbol machine, with 5 left-moving states and 2 right-moving states (<code>C'</code> is C entered from the left). Each entry lists the new token, the exit state and the direction. All 28 entries are checked against the cell machine.</p>
+<div class="highlight"><pre><span></span><code>left-moving (enters the token on its left)
+E:  a-&gt;o E   z-&gt;X A   o-&gt;X D   X-&gt;HALT
+D:  o-&gt;a D   X-&gt;a F   a-&gt;o C   z-&gt;a C' (turns right)
+F:  a-&gt;o E   z-&gt;X A   o-&gt;HALT  X-&gt;HALT
+A:  o-&gt;a D   X-&gt;o C'  z-&gt;o B   a-&gt;X B      (the last three turn right)
+C:  a-&gt;o E   z-&gt;X A   o-&gt;z B   X-&gt;a B      (the last two turn right)
+right-moving (enters the token on its right)
+B:  o-&gt;a B   X-&gt;z B   z-&gt;o E   a-&gt;X A      (the last two turn left)
+C': a-&gt;o C'  X-&gt;z C'  z-&gt;a D   o-&gt;X D      (the last two turn left)
+</code></pre></div>
+
+<p>The blank start is the entry (A, <code>z</code>): cell 0 is the right cell of its token. So the token machine describes the whole run. Halting therefore needs E to meet an <code>X</code>, or F to meet an <code>o</code> or an <code>X</code>, and F comes only from D meeting an <code>X</code>. "Misaligned" left text is not a special case for the machine. It only breaks the digit <em>description</em>. §3.6 states the same hazards in cell terms, at the one place where they can occur.</p>
+<h2 id="2-window-lemmas-checks-3-4">2. Window lemmas (checks 3, 4)</h2>
+<p>These are the parent's 20 lemmas (parent proof.md §2.1) under the twin's table, plus four new ones:</p>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>window</th>
+<th>steps</th>
+<th>status in the twin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1–S6, T1, T2, T4, T6–T8, T10, T11, T13, T14</td>
+<td>as in the parent</td>
+<td>as in the parent</td>
+<td>verbatim (16)</td>
+</tr>
+<tr>
+<td>T9</td>
+<td><code>0^inf 1001 &lt;E → 0^inf 1001000 B&gt;</code></td>
+<td>13</td>
+<td>same window and result. The trace is <code>E1 F0 D0 A1 C0 D0 A0 B1 C1 B0 C1 B1 C1</code>: C0 replaces the parent's E0, because A1 now enters C</td>
+</tr>
+<tr>
+<td>T3</td>
+<td><code>100 &lt;E → &lt;C 011</code></td>
+<td>3</td>
+<td>exits C, not E</td>
+</tr>
+<tr>
+<td>T5</td>
+<td><code>10 &lt;D → &lt;C 01</code></td>
+<td>2</td>
+<td>exits C, not E</td>
+</tr>
+<tr>
+<td>T12</td>
+<td><code>C&gt; 11 0^inf → &lt;C 01101 0^inf</code></td>
+<td>13</td>
+<td>exits C, not E</td>
+</tr>
+<tr>
+<td>S4c</td>
+<td><code>10 &lt;C → &lt;E 01</code></td>
+<td>2</td>
+<td>new: C0 D1, the C-entry copy of S4's first block</td>
+</tr>
+<tr>
+<td>T2c</td>
+<td><code>000 &lt;C → 100 B&gt;</code></td>
+<td>5</td>
+<td>new: the C-entry copy of T2</td>
+</tr>
+<tr>
+<td>T5b</td>
+<td><code>110 &lt;D → 010 B&gt;</code></td>
+<td>5</td>
+<td>new: D0 A1 C1 B0 C1, the <strong>bounce</strong></td>
+</tr>
+<tr>
+<td>T3j</td>
+<td><code>0100 &lt;E → &lt;D 1011</code></td>
+<td>4</td>
+<td>new: E0 D0 A1 C0, i.e. T3 followed by C reading 0</td>
+</tr>
+</tbody>
+</table>
+<p>C0 = E0 = <code>1LD</code>. So any window whose first step is E reading 0 has an exact copy entered in C, with the same steps and result. S4c and T2c are two such copies, and §3.5 uses the C-entry copies of T3 and T3j in the same way. The C exits of T3, T5 and T12 therefore differ from the parent only when the next cell read is a 1. F is entered only in T4, T9 and T13, each time reading 0 (check 3).</p>
+<p>Composite lemmas:
+- <strong>Lb</strong> (twin, <code>u ≥ 2</code>): <code>(10)^u (01)^v &lt;E → &lt;E (01)^u (10)^(v−1) 11</code>, in 2u+2v steps (T4, S3^(v−1), T5, S4c, S4^(u−2)). It has the parent's shape and step count.
+- <strong>Lb1</strong> (new, <code>u = 1</code> with a 0 on its left): <code>0 10 (01)^v &lt;E → 0 &lt;C 01 (10)^(v−1) 11</code>, in 2v+2 steps (T4, S3^(v−1), T5). The C that follows reads that 0, so it acts as E.
+- <strong>Lf, Rb, Ro</strong>: verbatim. They use no changed lemma.
+- <strong>Lt</strong> (new, the bounce on a bit-1 digit with <code>u = 1</code> whose left neighbour cell is 1): <code>1 10 (01)^v &lt;E → 01 (10)^(v−1) 000 B&gt;</code>, in 8v+1 steps (T4, S3^(v−1), T5b, S6^(v−1), T10). Check 4 runs it for v = 1..40 and checks the step sum.</p>
+<h2 id="3-macro-rules">3. Macro rules</h2>
+<h3 id="31-m-carry-the-parents-m-with-a-narrower-domain">3.1 M (carry): the parent's M, with a narrower domain</h3>
+<div class="highlight"><pre><span></span><code>K(L, (u,0,v), (u_j,1,v_j)_{j*&lt;j&lt;=m}; a, b) --&gt; K(L, (u+1,1,v-1), (u_j,0,v_j-1)_j; a+1, b+2)
+steps 32 + 8a + 8b + 4v + sum_j (8u_j + 4v_j)
+needs v &gt;= 1, a &gt;= 1, and u_j &gt;= 2, v_j &gt;= 1 for every trailing bit-1 digit; L arbitrary
+</code></pre></div>
+
+<p>The twin's chain, with <code>X</code> the never-read text left of <code>d_{j*} = (u*,0,v*)</code>, <code>Y = Π_i (10)^u_i (01)^v_i</code> the trailing bit-1 digits, and <code>Y' = Π_i (01)^u_i (10)^(v_i−1) 11</code>, <code>Y'' = Π_i (10)^u_i 00 (01)^(v_i−1)</code> as in the parent:</p>
+<div class="highlight"><pre><span></span><code>                                                                                        steps
+    X (10)^u* 00 (01)^v* Y (10)^a 000 (10)^b B&gt; 0^inf
+ Phase 1 (verbatim: T1 S4 T2 S1)                                                         4b+10
+    .. Y (10)^(a+1) 0 (10)^(b+1) B&gt; 0^inf
+ Phase 2 (changed: T3 exits C, so S4c takes the last 10 of (10)^a)                       2a+2b+9+4v*+Σ(2u_i+2v_i)
+T1  .. Y (10)^(a+1) 0 (10)^(b+1) &lt;E 01                                                   3
+S4  .. Y (10)^(a+1) 0 &lt;E (01)^(b+2)                                                      2b+2
+T3  .. Y (10)^a &lt;C 011 (01)^(b+2)                                                        3
+S4c .. Y (10)^(a−1) &lt;E 01 011 (01)^(b+2)                                                 2      needs a &gt;= 1
+S4  X (10)^u* 00 (01)^v* Y &lt;E (01)^a 011 (01)^(b+2)                                      2a−2
+Lb  X (10)^u* 00 (01)^v* &lt;E Y' (01)^a 011 (01)^(b+2)      (i = k down to 1)              Σ(2u_i+2v_i)   twin Lb, u_i &gt;= 2
+Lf  X (10)^(u*+1) (01)^(v*−1) C&gt; 11 Y' (01)^a 011 (01)^(b+2)                             4v*+1
+ Phase 3 (verbatim: Rb per digit, S5, T8, S1)                                            6a+2b+13+Σ(6u_i+2v_i)
+    X (10)^(u*+1) (01)^(v*−1) Y'' (10)^(a+1) 000 (10)^(b+2) B&gt; 0^inf
+</code></pre></div>
+
+<p>The step totals equal the parent's: S4c costs 2, like the S4 block it replaces. <code>a ≥ 1</code> is needed because of S4c. With <code>a = 0</code>, the C after T3 would read the swept digit's last <code>1</code> and bounce. Checked on random K-configs with arbitrary left text (check 5).</p>
+<h3 id="32-o-overflow-at-the-far-left-the-parents-o-with-a-narrower-domain">3.2 O (overflow at the far left): the parent's O, with a narrower domain</h3>
+<p><code>K(d_1..d_m; a, b) → K((0,0,u_1), (v_1−1,0,u_2), .., (v_m,1,a); b+3, 1)</code>, in <code>89 − 4m + 8a + 20b + 4Σu + 8Σv</code> steps. It needs all bits 1, every <code>u_j ≥ 2</code>, <code>v_j ≥ 1</code>, <code>a ≥ 1</code>, and the plain wall <code>0^inf 10 01</code>. The chain is the parent's §2.3. Two phases change, with <code>Y'''</code> as in the parent:</p>
+<div class="highlight"><pre><span></span><code> Phases 1–2 as in M (§3.1), with Lb on all m digits and no Lf                             (4b+10)+(2a+2b+8)+Σ(2u_i+2v_i)
+    0^inf 10 01 &lt;E Y' (01)^a 011 (01)^(b+2)
+ Phase 3: T9 (twin trace, §2)                                                             13
+ Phase 4: Ro per digit (verbatim)                                                         Σ(2u_i+6v_i−4)
+ Phase 5 (changed: T12 exits C, so S4c takes the last 10 of (10)^(b+2))                   2a+8b+30
+S1  .. Y''' (10)^a B&gt; 011 (01)^(b+2)                                                      2a
+T11 .. Y''' (10)^a 1 C&gt; 11 (01)^(b+2)                                                     1
+S5  .. Y''' (10)^a 1 (10)^(b+2) C&gt; 11 0^inf                                               6b+12
+T12 .. Y''' (10)^a 1 (10)^(b+2) &lt;C 01101 0^inf                                            13
+S4c .. Y''' (10)^a 1 (10)^(b+1) &lt;E 01 01101                                               2
+S4  .. Y''' (10)^a 1 &lt;E (01)^(b+2) 01101                                                  2b+2
+ Phases 6–7 (verbatim: T13 S4, then T2 S1 S6 T14)                                         (2a+1)+(2a+6b+27)
+</code></pre></div>
+
+<p>Checked in check 5. §3.5 shows that O is one case of a more general overflow O*, and that the wall condition <code>v = 1</code> is not needed.</p>
+<h3 id="33-p-partial-overflow-new">3.3 P (partial overflow): new</h3>
+<p>The leftward sweep meets its first bit-1 digit with <code>u = 1</code>, <code>d_p = (1,1,v_p)</code>, and the left text <code>L</code> ends in 1. Then:</p>
+<div class="highlight"><pre><span></span><code>K(L, (1,1,v_p), (u_i,1,v_i)_{p&lt;i&lt;=m}; a, b)
+  --&gt; L[:-1] 01 (10)^(v_p-1) 00 (01)^u_{p+1} [(10)^(v_i-1) 00 (01)^u_{i+1}]_{p&lt;i&lt;m} (10)^v_m (01)^a (10)^(b+3) 000 10 B&gt; 0^inf
+      (k = 1:  L[:-1] 01 (10)^v_p (01)^a (10)^(b+3) 000 10 B&gt; 0^inf)
+steps 77 - 4k + 8a + 20b + 4 sum_{i&gt;=p} u_i + 8 sum_{i&gt;=p} v_i          (k = m - p + 1)
+needs u_i &gt;= 2 and v_i &gt;= 1 for i &gt; p, v_p &gt;= 1, a &gt;= 1
+</code></pre></div>
+
+<p>Read with <code>L' = L[:-1] 01</code>, the result is <code>K(L', (v_p−1,0,u_{p+1}), .., (v_{m−1}−1,0,u_m), (v_m,1,a); b+3, 1)</code>. This is the parent's O output on the suffix <code>d_p..d_m</code> without its top digit <code>(0,0,u_p) = (0,0,1)</code>.</p>
+<p>Derivation as a chain. Check 6 confirms each link on the real machine, as the full tape, head and state after the cumulative step count, on a 405-case box plus 150 random cases. Here <code>Y' = Π_{i&gt;p} (01)^u_i (10)^(v_i−1) 11</code> and <code>Y''' = Π_{i&gt;p} (10)^(u_i−1) 1 (10)^(v_i−1) 000</code>.</p>
+<div class="highlight"><pre><span></span><code>                                                                           cumulative steps
+  L 10 (01)^v_p Y (10)^a 000 (10)^b B&gt; 0^inf
+phase 1 (T1 S4 T2 S1, as in M)        .. (10)^(a+1) 0 (10)^(b+1) B&gt; 0^inf               4b+10
+phase 2 (T1 S4 T3 S4c S4, Lb_i&gt;p)     L 10 (01)^v_p &lt;E Y' (01)^a 011 (01)^(b+2)         + 2a+2b+8 + Σ_{i&gt;p}(2u_i+2v_i)
+Lt on d_p (L ends in 1)               L[:-1] 01 (10)^(v_p−1) 000 B&gt; Y' (01)^a 011 (01)^(b+2)   + 8v_p+1
+Ro_i&gt;p                                L[:-1] 01 (10)^(v_p−1) 000 Y''' B&gt; (01)^a 011 (01)^(b+2)  + Σ_{i&gt;p}(2u_i+6v_i−4)
+phases 5-7 of O (§3.2)                the P result                                       + 6a+14b+58
+</code></pre></div>
+
+<p>The total equals the P formula. Compared with O on the suffix, "T9 + Ro on d_p + Lb on d_p" (13 + (6v_p−2) + (2v_p+2) steps) is replaced by Lt (8v_p+1), which is 12 steps cheaper.</p>
+<p><strong>What moves.</strong> P's leftmost read is the last cell of <code>L</code>, a 1, and Lt rewrites it as <code>0 1</code>. So <code>L' = L[:-1] 01</code> is one cell longer than <code>L</code>, and <code>L[:-1]</code> stays where it is on the tape. The right part grows by an odd number of cells: from step 283 to step 428 the text grows from 30 to 37 cells, and the leftmost 1 is at cell −12 at both steps. What flips is the parity of <code>L[:-1]</code> relative to the head and to the digits on its right.</p>
+<h3 id="34-what-m-o-and-p-leave-out">3.4 What M, O and P leave out</h3>
+<p>To 10^9 there are 22,435 K→K transitions (check 8). M, O and P predict 22,390 of them exactly (M 22,349, P 35, O 6). The other 45 fall outside their domains:</p>
+<table>
+<thead>
+<tr>
+<th>reason M/O/P do not apply</th>
+<th>to 1e9</th>
+<th>what it is under G (§3.5)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the carry reaches a bit-0 digit with <code>v = 0</code></td>
+<td>33</td>
+<td>turn T2 (23: a junction <code>(u,0,0)</code>, <code>u ≥ 1</code>, or the misaligned <code>..1 000</code>), T3S2 (8: <code>(0,0,0)</code> after <code>11</code>), Jc (2: <code>(0,0,0)</code> after a bit-0 digit, at the far left)</td>
+</tr>
+<tr>
+<td>the sweep runs into non-digit left text</td>
+<td>9</td>
+<td>turn T2 on the blank (5: leading digit <code>u ≥ 2</code>, no wall), Lf on the blank (4: text <code>0^inf 1 ..</code> = <code>0^inf 00 01 ..</code>, a bit-0 digit <code>(0,0,1)</code> whose <code>00</code> is blank)</td>
+</tr>
+<tr>
+<td>the far-left wall is <code>10 (01)^v</code> with <code>v ≥ 2</code></td>
+<td>3</td>
+<td>turn T2 on the blank, after Lb1 on the wall digit <code>(1,1,v)</code></td>
+</tr>
+</tbody>
+</table>
+<p>So all 45 are single applications of one rule, with exact domains, outputs and step counts. They are not new local behaviour.</p>
+<h3 id="35-the-general-rule-g-checks-8-11">3.5 The general rule G (checks 8, 11)</h3>
+<p>Let <code>K(L; a, b)</code> with <code>a ≥ 1</code>.</p>
+<p><strong>Swept suffix.</strong> Read <code>L</code> from the right and peel off maximal digits <code>(10)^u (01)^v</code> (<code>u, v ≥ 1</code>, bit 1):
+- a digit with <code>u ≥ 2</code> is swept by Lb, and peeling continues;
+- a digit with <code>u = 1</code> and a 0 on its left (a blank counts as 0) is swept by Lb1, and peeling stops, because the cell on its left is 0 and not the end of a digit;
+- a digit with <code>u = 1</code> and a 1 on its left is the bounce digit. It is not swept, and the turn is Lt.</p>
+<p>What remains is the text <code>X</code>, so <code>L = X d_p .. d_m</code> with <code>d_p .. d_m</code> the swept digits (<code>k = m − p + 1 ≥ 0</code>). <code>X</code> does not end in <code>10</code> and does not end in a digit, by maximality.</p>
+<p><strong>Phases 1–2.</strong> As in M (§3.1). Phase 1 reads only the a/b block. Phase 2 sweeps the a block and then Lb or Lb1 on <code>d_m, .., d_p</code>. The head is then at <code>X &lt;E</code>, or at <code>X &lt;C</code> before a 0 after Lb1, which acts the same (§2).</p>
+<p><strong>Turn.</strong> On the last cells of <code>X</code> (or on the bounce digit), with <code>X'</code> never read:</p>
+<table>
+<thead>
+<tr>
+<th>turn</th>
+<th>the text</th>
+<th>becomes</th>
+<th>steps</th>
+<th>exits</th>
+<th>made of</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lf</td>
+<td><code>X' 00 (01)^v</code>, v ≥ 1</td>
+<td><code>X' 10 (01)^(v−1) C&gt; 11</code></td>
+<td>4v+1</td>
+<td>C</td>
+<td>T4 S3^(v−1) T6 S2^(v−1)</td>
+</tr>
+<tr>
+<td>T3S2</td>
+<td><code>X' 1100</code></td>
+<td><code>X' 01 C&gt; 11</code></td>
+<td>5</td>
+<td>C</td>
+<td>T3 S2</td>
+</tr>
+<tr>
+<td>Jc</td>
+<td><code>X' 00 (01)^v 00</code>, v ≥ 1</td>
+<td><code>X' 10 (01)^v C&gt; 11</code></td>
+<td>4v+5</td>
+<td>C</td>
+<td>T3j S3^(v−1) T6 S2^(v−1) S2</td>
+</tr>
+<tr>
+<td>T2</td>
+<td><code>X' 000</code></td>
+<td><code>X' 100 B&gt;</code></td>
+<td>5</td>
+<td>B</td>
+<td>T2 (T2c after Lb1)</td>
+</tr>
+<tr>
+<td>Lt</td>
+<td><code>X' 1 10 (01)^v</code> (bounce digit)</td>
+<td><code>X' 01 (10)^(v−1) 000 B&gt;</code></td>
+<td>8v+1</td>
+<td>B</td>
+<td>T4 S3^(v−1) T5b S6^(v−1) T10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Return and right end.</strong>
+- <strong>M*</strong> (C exit). Rb on <code>d_p, .., d_m</code>, then M's phase 3 tail (S5^a, T8, S1^(b+2)):
+  <code>K(X'·t, d_p..d_m; a, b) --&gt; K(X'·w, (u_i,0,v_i−1)_{i=p..m}; a+1, b+2)
+  steps 31 + 8a + 8b + c + Σ_i (8u_i + 4v_i)          c = 4v+1 (Lf), 5 (T3S2), 4v+5 (Jc)
+  (t, w) = (00 (01)^v, 10 (01)^(v−1)) for Lf,   (1100, 01) for T3S2,   (00 (01)^v 00, 10 (01)^v) for Jc</code>
+  Lf with <code>X' = X'' (10)^u</code> is M: the digit <code>(u,0,v)</code> becomes <code>(u+1,1,v−1)</code>. T3S2 turns <code>.. 1 1 00</code> into <code>.. 0 1</code>. Jc removes a junction <code>(0,0,0)</code> after a bit-0 digit <code>(u,0,v)</code> and flips that digit to <code>(u+1,1,v)</code> without spending a <code>01</code>.
+- <strong>O*</strong> (B exit). Ro on <code>d_p, .., d_m</code>, then O's phases 5–7 (§3.2). Phase 6 sweeps left over <code>(10)^(a−1)</code> and turns (T2) in the <code>000</code> that the last Ro left, or that Lt left when there is no swept digit:
+  <code>T2:  K(X' 000, d_p..d_m; a, b) --&gt; K(X', (1,1,u_p), (v_p−1,0,u_{p+1}), .., (v_{m−1}−1,0,u_m), (v_m,1,a); b+3, 1)
+       steps 81 − 4k + 8a + 20b + 4 Σ_{i&gt;=p} u_i + 8 Σ_{i&gt;=p} v_i,  needs k &gt;= 1
+  Lt:  the P rule of §3.3 (k counts the bounce digit there)</code>
+  On the tape, the T2 result is <code>X' 10 (01)^u_p (10)^(v_p−1) 00 (01)^u_{p+1} .. (10)^v_m (01)^a (10)^(b+3) 000 10 B&gt;</code>. T2 needs <code>k ≥ 1</code>. With <code>k = 0</code> the turn leaves <code>100</code> where phase 6 expects <code>000</code> (class U0 below).</p>
+<p><strong>Special cases.</strong>
+- M is Lf with every swept digit <code>u ≥ 2</code>.
+- O is T2 with <code>d_p</code> = the wall digit <code>(1,1,1)</code> (swept by Lb1) and <code>X' = 0^inf</code>. The formula then gives O's output and O's step count. T9 is exactly "Lb1 on <code>10 01</code>, T2c on the blank, Ro on <code>(1,1,1)</code>": its trace splits as <code>E1 F0 | D0 A1 | C0 D0 A0 B1 C1 | B0 C1 B1 C1</code>.
+- The far-left wall <code>10 (01)^v</code> with <code>v ≥ 2</code> is the same T2 case with <code>d_p = (1,1,v)</code>. It gives <code>K((v−1,0,u_1), ..)</code> on a plain <code>10 01</code> wall.
+- P is Lt.</p>
+<p><strong>Derivation.</strong> Every piece is a composition of the windows of §2.
+- Phases 1–2 and the two right ends are those of §3.1 and §3.2. They read only the a/b block and the <code>000</code> next to it.
+- Lb, Lb1, Rb and Ro each read one digit.
+- Each turn reads only the cells in its row.</p>
+<p>So G holds in every tape context left of <code>X'</code>. The step counts are the chain sums. Two checks confirm it:
+- Check 11: 400 random K-configs per turn, with random text left of the turn (<code>X'</code>) and an optional Lb1 digit, give the exact tape, head, state and step count.
+- Check 8: G predicts every one of the 22,435 transitions to 10^9 exactly: Lf 22,353, T3S2 8, Jc 2, T2 37, Lt 35. A scratch run of the same code in this stage did the same for all 67,856 transitions to 10^10: Lf 67,757, T3S2 9, Jc 3, T2 44, Lt 43, with 0 unpredicted and 0 mismatches.</p>
+<p>The halting example of §5 is predicted by G up to its last K-config (check 10).</p>
+<h3 id="36-case-analysis-of-the-sweep-check-12">3.6 Case analysis of the sweep (check 12)</h3>
+<p>The left-moving part of the table is a deterministic automaton. It reads one cell, writes, and moves one cell left; <code>R</code> means it turns right into B:</p>
+<div class="highlight"><pre><span></span><code>E: 0 -&gt; 1, D    1 -&gt; 1, F          D: 0 -&gt; 1, A    1 -&gt; 0, E          F: 0 -&gt; 1, D    1 -&gt; HALT
+A: 0 -&gt; 1, R    1 -&gt; 0, C          C: 0 -&gt; 1, D    1 -&gt; 0, R          (C0 = E0)
+</code></pre></div>
+
+<p>Read right to left, <code>(01)^v</code> takes E to D (T4, S3), and <code>(10)^u</code> takes D to C (<code>u = 1</code>, T5) or to E (<code>u ≥ 2</code>, T5 S4c S4). From C, a 0 continues as from E, and a 1 is the bounce (T5b, i.e. Lt). So after the swept suffix the head is in E at the end of <code>X</code>, or in C before a 0. Since <code>X</code> ends neither in <code>10</code> nor in a digit, its ending falls in exactly one class:</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th><code>X</code> ends in</th>
+<th>automaton path, right to left</th>
+<th>outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lf</td>
+<td><code>00 (01)^v</code></td>
+<td>E1 F0 (D1 E0)^(v−1) D0 A0 R</td>
+<td>G (M*)</td>
+</tr>
+<tr>
+<td>T2</td>
+<td><code>000</code></td>
+<td>E0 D0 A0 R</td>
+<td>G (O*) if <code>k ≥ 1</code></td>
+</tr>
+<tr>
+<td>T3S2</td>
+<td><code>1100</code></td>
+<td>E0 D0 A1 C1 R</td>
+<td>G (M*)</td>
+</tr>
+<tr>
+<td>Jc</td>
+<td><code>00 (01)^w 0100</code> (= <code>00 (01)^(w+1) 00</code>)</td>
+<td>E0 D0 A1 C0 (D1 E0)^w D0 A0 R</td>
+<td>G (M*)</td>
+</tr>
+<tr>
+<td>H1</td>
+<td><code>11</code></td>
+<td>E1 F1</td>
+<td><strong>halts</strong></td>
+</tr>
+<tr>
+<td>H2</td>
+<td><code>111 (01)^v</code></td>
+<td>E1 F0 (D1 E0)^(v−1) D1 E1 F1</td>
+<td><strong>halts</strong></td>
+</tr>
+<tr>
+<td>U1</td>
+<td><code>011 (01)^v</code></td>
+<td>.. D1 E1 F0, then D goes on left</td>
+<td>not analysed</td>
+</tr>
+<tr>
+<td>U2</td>
+<td><code>10 (01)^w 0100</code></td>
+<td>E0 D0 A1 C0 (D1 E0)^w D0 A1, then C goes on</td>
+<td>not analysed (C bounces on a 1, goes on over a 0)</td>
+</tr>
+<tr>
+<td>U3</td>
+<td><code>11 (01)^w 0100</code></td>
+<td>E0 D0 A1 C0 (D1 E0)^w D1 E1, then F</td>
+<td>halts if the next cell is 1, else not analysed</td>
+</tr>
+<tr>
+<td>U0</td>
+<td><code>000</code> with <code>k = 0</code></td>
+<td>T2, then phase 6 meets <code>100</code></td>
+<td>not analysed</td>
+</tr>
+</tbody>
+</table>
+<p>(Lt is decided before <code>X</code>, in the swept suffix. The bounce digit is never part of <code>X</code>.)</p>
+<p><strong>Statement (relative to an invariant).</strong> For every K-configuration <code>K(L; a, b)</code> with <code>a ≥ 1</code>, exactly one of the following holds:
+- G applies, and its macro step, a composition of non-halting windows, ends in a K-configuration with <code>a' = a+1</code> or <code>a' = b+3</code>, both ≥ 1;
+- the macro step halts (H1, H2);
+- <code>X</code> is in U0–U3.</p>
+<p>So the run never halts if every reachable K-configuration is in one of the covered classes (Lf, T2 with <code>k ≥ 1</code>, T3S2, Jc, or Lt). That is the open §5.</p>
+<p>Check 12 confirms three things:
+- the automaton against the table;
+- the partition on all 21,852 texts <code>X</code> of length ≤ 14 that end neither in <code>10</code> nor in a digit (H1 8,191, H2 1,359, Jc 694, Lf 2,744, T2 4,098, T3S2 2,047, U1 1,365, U2 677, U3 677);
+- the behaviour on 4,300 K-configs built from them: G is exact on Lf/T2/T3S2/Jc/Lt, and H1/H2 halt inside the macro step.</p>
+<p>In token terms, H1 is the review's "E meets an X token". H2, U1 and U3 contain its "D meets an X, then F" step. F halts when it then reads a 1: always in H2, and in U3 when the next cell is 1. In the run to 10^10, no K-configuration is in H or U (check 8, and the 10^10 scratch run).</p>
+<h2 id="4-initial-segment-check-7">4. Initial segment (check 7)</h2>
+<div class="highlight"><pre><span></span><code>0^inf A&gt; 0^inf --142--&gt; K((3,1,1); 2, 1) --O, 141--&gt; K((0,0,3),(1,1,2); 4, 1)        (step 283)
+               --P, 145--&gt; K(1001000 (2,1,1)(2,1,4); 4, 1)                            (step 428)
+               --O* (T2), 181--&gt; K((1,1,2),(0,0,2),(4,1,4); 4, 1)                     (step 609)
+</code></pre></div>
+
+<ul>
+<li>Up to step 283 the twin runs the parent's trajectory (<code>notes.md</code>: the states first differ at step 28, but C0 = E0, so the paths stay together).</li>
+<li>The transition 283→428 is an M-type P: <code>(1,1,2)</code> bounces, with <code>L = 10 01 00 (01)^3</code> ending in 1. The parent goes on to its INV start at step 483. The twin does not.</li>
+<li>At step 428 the left text is <code>1001000</code>. The next step is O* with turn T2: <code>X' = 10 01</code>, the turn reads <code>000</code>, and the swept digits are <code>(2,1,1)(2,1,4)</code>. It gives <code>K(10 01, (1,1,2), (0,0,2), (4,1,4); 4, 1)</code> in 81 − 8 + 32 + 20 + 16 + 40 = 181 steps.</li>
+<li>From step 609 on, the run is no longer the parent's.</li>
+</ul>
+<h2 id="5-invariant-open">5. Invariant: OPEN</h2>
+<p><strong>What a proof still needs</strong> (sharper after §3.5–§3.6). A family <code>F</code> of K-configurations such that:
+1. <code>F</code> contains the step-609 configuration (or a later one);
+2. no member of <code>F</code> has <code>a = 0</code> or a left text in H1, H2 or U0–U3;
+3. G maps <code>F</code> into <code>F</code>.</p>
+<p>Then, by induction over macro steps and §3.6, the machine never halts.</p>
+<p>Why this is hard:
+- <strong>Shape alone fails</strong> (check 10). <code>K((1,0,2); 2, 1)</code> has a plain wall, <code>a ≥ 1</code> and <code>b</code> odd, and it halts at step 2535. G predicts all 13 of its macro steps. Its last K-config (step 2384) is <code>1001 1101 0101 0010 1010 1</code> + <code>(10)^19 000 (10)^13</code>. Its swept suffix ends at <code>X = 10011</code>, which is H1: an all-ones sweep passes the <code>u = 4</code> digit and E reads <code>11</code>. In the box <code>m ≤ 2</code>, <code>u, v ∈ 1..3</code>, <code>beta ∈ {0,1}</code>, <code>a, b ∈ 0..3</code>, 807 of 5,472 canonical K-configs halt within 2·10^6 steps. So <code>F</code> has to carry quantitative constraints, as the parent's parities and <code>2^j</code> bounds did.
+- <strong><code>X</code> tokens are present in the left text.</strong> 5,259 of 22,436 K-configs to 10^9 have an <code>X</code> token in their left text, always with <code>z</code> or <code>o</code> to its right and never an <code>a</code>-run (review count). <code>F</code> must show that no sweep ever reaches one of them in a hazardous state: in E (H1), or in D followed by a 1 (H2, U3).
+- <strong>The parent's INV does not survive.</strong> The parent's class-A overflow (top <code>(1,1,v)</code>) is always a P in the twin. P and T2-turns realign the left text, so the family must allow left text at both parities, together with junctions <code>(u,0,0)</code>, <code>(0,0,0)</code> and walls <code>10 (01)^v</code>.
+- <strong>The left text is a hierarchical counter.</strong> These leads come from <code>notes.md</code> and from the R4 observation; <code>check_proof.py</code> does not check them:
+  - The left edge barely moves (−69 at 10^9, −81 at 10^10).
+  - The 6-token left prefix takes 113 shapes to 10^10, each reused in long runs with counts near <code>2^k</code> or <code>2^k − 1</code>.
+  - R4 <code>1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---</code> is this table mirrored and renamed. Its observation shows nested "fossil-K" walls whose fuel drops by exactly 1 per level-1 overflow, and walls that dissolve and re-form when the fuel runs out. In head-parity tokens (§1.3), a bit-0 digit <code>(u,0,v)</code> reads <code>o^(u−1) z z a^(v−1)</code>, and the K block <code>(10)^a 000 (10)^b</code> reads <code>o^(a−1) z z a^b</code>. So a K block has the token shape of a digit <code>(a,0,b+1)</code>. The deep digits look like frozen K blocks of a slower counter, and the T2/T3S2/Jc turns look like the places where a lower level hands a carry to a higher one.</p>
+<p>Which turns the run uses, to 10^10: Lf 67,757, Lt 43, T2 44, T3S2 9, Jc 3. Lf is the ordinary carry into a bit-0 digit. The other 99 events are the turns at a junction, a bounce point or the blank, and these are where the invariant has to control the left text.</p>
+<p>Suggested route (unchanged in spirit, now with exact rules):
+1. Describe a configuration as a list of levels. Each level is a parent-style digit counter, delimited by a junction (<code>(u,0,0)</code>, <code>(0,0,0)</code>, <code>000</code>) or by a bounce point (left cell 1 before a <code>u = 1</code> digit).
+2. For one level, lift the parent's F0–F3 arithmetic to G: Lf is the carry; Lt, T2, T3S2 and Jc are the level's overflows.
+3. Find the inter-level invariant: what a level's overflow writes into the level above, and why that never produces an H or U ending. A solution here carries over to R4 by mirroring, as #33 did for #11.</p>
+<p>Not assessed as a cryptid: no pseudo-random arithmetic has been seen, and the counts are powers of 2. Budget for this stage is used.</p>
+<h2 id="6-halting-unreachable-relative-to-the-rules">6. Halting unreachable, relative to the rules</h2>
+<ul>
+<li>Every G step is a composition of the windows of §2, so a G step never halts: halting is F reading 1, and the only F entries in the windows (T4, T9, T13) read 0 (check 3).</li>
+<li>By §3.6, a K-configuration with <code>a ≥ 1</code> that is in none of H1, H2, U0–U3 takes a G step to another such K-configuration with <code>a' ≥ 1</code>. Whether that one is again outside H and U is exactly §5.</li>
+<li>So non-halting follows from an invariant as in §5, by induction over macro steps. <strong>Without §5 there is no proof.</strong></li>
+</ul>
+<p>About the coverage check (check 9). The window set contains 1–2-step windows (T11 = B0, S1–S4, S4c, T4, T7, T10). So a full greedy cover mostly says "did not halt", plus a few local bans: A0 is always followed by B1, and C0 D0 is never followed by A1. The review's own DP over the 23 windows also covers 1,024 of 1,342 random 150-step non-halting traces from random tapes. Check 9 shows only that the observed run uses no other local patterns. It is not evidence that unanalysed events are rule-like or safe, and not evidence for non-halting. The earlier sentence "any run that decomposes into these windows does not halt" was true but trivial, because F1 is in no window. The "other" events are now covered by the closed forms of §3.5, not by check 9.</p>
+<h2 id="7-lemma-plan-reuse-of-the-parents-v">7. Lemma plan: reuse of the parent's .v</h2>
+<p>The parent's .v is <code>machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---.v</code>, 694 lines.
+- <strong>Verbatim</strong> (machine part): <code>rot01</code>, <code>lshift</code>, <code>S1_1</code>–<code>S6_1</code>, <code>S1</code>–<code>S6</code>, <code>S5</code>, <code>T1</code>, <code>T2</code>, <code>T4</code>, <code>T6</code>–<code>T11</code>, <code>T13</code>, <code>T14</code>, <code>p01</code>, <code>p10</code>, <code>rot10</code>, <code>fin</code>, <code>Lf</code>, <code>Rb</code>, <code>Ro</code>, <code>chunkC</code>, <code>dg</code>, <code>dl</code>, <code>app_ds</code>, <code>app_ds_app</code>, <code>map0</code>, <code>rw</code>, <code>RbS</code>, <code>ro_out</code>, <code>RoS</code>, <code>Oz</code>, <code>Oout</code>, <code>Ozeq</code>. <code>T9</code> keeps its statement. Its proof only simulates 13 steps, so it should re-run unchanged on the twin's trace (§2).
+- <strong>Changed statement, same proof idea:</strong>
+  - <code>T3</code>, <code>T5</code>, <code>T12</code> with <code>&lt;{{C}}</code> exits, plus <code>S4c_1 : l &lt;* [0;1] &lt;{{C}} r --&gt;* l &lt;{{E}} [0;1] *&gt; r</code> (es).
+  - <code>Lb</code> for <code>u ≥ 2</code>: <code>[0;1]^^(S (S u))</code>, proof <code>follow T4. follow S3. follow T5. follow S4c_1. follow S4.</code>
+  - <code>map1</code> becomes <code>map2 := d1 (S (S u)) (S v)</code>, and <code>LbS</code> likewise.
+  - <code>chunkA</code> needs <code>[0;1]^^(S a)</code>.
+  - <code>chunkO</code> puts <code>S4c_1</code> before its first <code>S4</code>.
+  - <code>K</code> takes a left side: <code>K' l ds a b := app_ds l ds &lt;* [0;1]^^a &lt;* [0;0;0] &lt;* [0;1]^^b {{B}}&gt; 0inf</code>, with <code>K = K' L0</code>.
+  - <code>M_spec</code>, <code>Mdrop_spec</code>: the same proofs over <code>K' l</code>, since <code>l</code> is never read.
+  - <code>O_spec</code> over <code>map2</code>. It becomes a corollary of <code>G_T2</code> below.
+- <strong>New:</strong>
+  - <code>T5b : l &lt;* [0;1;1] &lt;{{D}} r --&gt;* l &lt;* [0;1;0] {{B}}&gt; r</code> (es; lists nearest cell first).
+  - <code>T3j : l &lt;* [0;0;1;0] &lt;{{E}} r --&gt;* l &lt;{{D}} [1;1;0;1] *&gt; r</code> (es), and the C-entry copies <code>T2c</code>, <code>T3c</code>, <code>T3jc</code> (same scripts: C0 = E0).
+  - <code>Lb1</code> (T4, S3, T5; exits C before a 0).
+  - <code>Lt v : l &lt;* [1] &lt;* [0;1] &lt;* [1;0]^^(S v) &lt;{{E}} r --&gt;* l &lt;* [1;0] &lt;* [0;1]^^v &lt;* [0;0;0] {{B}}&gt; r</code> (follow T4, S3, T5b, S6, T10).
+  - Turns <code>TT3S2</code> (T3, S2) and <code>TJc v</code> (T3j, S3, T6, S2, S2).
+  - <code>G_M</code> (one lemma per C-exit turn: Lf, T3S2, Jc) and <code>G_T2</code>, <code>G_Lt</code> (<code>= P_spec</code>), each as <code>phase12; LbS; [Lb1]; turn; RbS/RoS; tail</code>. The O-type tails reuse <code>chunkO</code> and <code>Ozeq</code> (minus its top digit for Lt).
+  - The class split of §3.6 as a lemma on the left list. It covers the G cases only; H and U are what the invariant must exclude.
+  - <code>init : c0 --&gt;* K' ...</code> by <code>solve_init</code> (609 steps, or as far as the family of §5 needs).
+- <strong>Abstract part:</strong> none reusable until §5 is solved. The parent's <code>Rof</code>, <code>INV</code>, F0–F3 lemmas are a template for one level only.</p>
+<h2 id="8-evidence-from-check_proofpy">8. Evidence (from <code>check_proof.py</code>)</h2>
+<p><code>check_proof.py</code> is self-contained: a Python simulator, plus two embedded C helpers (a K-config dumper and a batch halting checker) compiled with gcc into a temp dir. Run 2026-10-10 with the default seed and with <code>--seed 2026 --n 1000 --quick</code> (T2 = 10^8). Both print <code>SUMMARY PASS 12/12</code> (times in the Review log). Results:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>table: halting only F1, F entered only by E1, E only by D1</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>2</td>
+<td>token machine (§1.3): 28 entries against the cell machine</td>
+<td>28/28</td>
+</tr>
+<tr>
+<td>3</td>
+<td>24 atomic windows (§2), exact finite runs; F entered only in T4/T9/T13, reading 0</td>
+<td>24/24</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Lt, v = 1..40, plus its chain step sum</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>5</td>
+<td>M, O, P on random K-configs (arbitrary left text for M and P): exact tape, head, state</td>
+<td>400/400 each (default seed)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>P chain link by link (§3.3)</td>
+<td>555/555</td>
+</tr>
+<tr>
+<td>7</td>
+<td>initial segment to step 609 (§4); 428→609 is O* with turn T2</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>8</td>
+<td>census to 10^9: M 22,349 / P 35 / O 6 / other 45, 0 mismatches; <strong>G: all 22,435 exact</strong> (Lf 22,353, T3S2 8, Jc 2, T2 37, Lt 35)</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>9</td>
+<td>coverage by 23 windows (T3j left out): all transitions before 10^7 (1,810), all non-M to 10^9. Weak evidence only (§6)</td>
+<td>0 uncovered steps</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>K((1,0,2);2,1)</code> halts at step 2535; G predicts its 13 macro steps, last K-config (2384) in H1; box: 807 of 5,472 halt within 2·10^6</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>11</td>
+<td>G on random K-configs, per turn, random unread text left of the turn, optional Lb1 digit (§3.5)</td>
+<td>400/400 per turn (default seed)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>sweep automaton = table; partition of all 21,852 <code>X</code> of length ≤ 14 into the §3.6 classes; G exact / H halts on 4,300 K-configs</td>
+<td>pass</td>
+</tr>
+</tbody>
+</table>
+<p>Gaps: §5 (the invariant). Everything in §1–§4 and §6 is derived from finite window runs or checked exactly. §3.5–§3.6 now give closed forms for every transition the run makes, with explicit domains.</p>
+<h2 id="review-log">Review log</h2>
+<p>Skeptic review, 2026-10-10. Verdict: <strong>not sound</strong>, with 1 fatal, 1 major and 3 minor gaps. The reviewer independently re-checked the finished parts with their own code: the 28 token entries; the 23 windows with exact traces; Lt for v = 1..30; M/O/P on 3,000 random configs; the K-configs at 142, 283, 428 and 609; their own C dumper and classifier to 10^9 (M 22,349 / P 35 / O 6 / other 45, 0 mismatches, no halt); the halt of <code>K((1,0,2);2,1)</code> at 2535; and the 807/5,472 box. All held.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>where</th>
+<th>gap</th>
+<th>resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 (fatal)</td>
+<td>§5, so the whole non-halting claim</td>
+<td>No family closed under the macro step and no invariant, so nothing proves non-halting. The family must say what the left text looks like next to <code>X</code> tokens, so that no sweep reaches E-on-X, or F-on-o/X after D-on-X.</td>
+<td><strong>Not fixed; narrowed.</strong> §3.5 and §3.6 reduce non-halting to one statement: every reachable K-configuration has its left text in a covered class (Lf, T2 with <code>k ≥ 1</code>, T3S2, Jc, Lt), i.e. never in H1, H2 or U0–U3. The review's E-on-X hazard is H1. D-on-X-then-F is H2, U1 and U3. The review's halting example ends in H1 (check 10). No family with that property was found in this stage. §5 lists what it must contain and a route. <strong>Status stays OPEN, stage STUCK.</strong></td>
+</tr>
+<tr>
+<td>2 (major)</td>
+<td>§3.4</td>
+<td>45 transitions to 10^9 had no closed form, so the case analysis was incomplete.</td>
+<td><strong>Fixed.</strong> All 45 are single applications of the general rule G (§3.5), whose domain is an explicit ending of the left text: turn T2 31, T3S2 8, Jc 2, Lf 4 (§3.4 table). G is derived from the §2 windows (one new window, T3j; one new composite, Lb1). It is checked per turn on random configs with random unread text (check 11), and on every transition of the run (check 8: 22,435 of 22,435 to 10^9; scratch run: 67,856 of 67,856 to 10^10). §3.6 adds the complete case analysis the review asked for. Every covered domain excludes the hazard entries, which are exactly H1/H2 (and the F step inside U1/U3).</td>
+</tr>
+<tr>
+<td>3 (minor)</td>
+<td>§6, §3.4</td>
+<td>The coverage evidence (check 9) is weak, and "any run that decomposes into these windows does not halt" is trivial.</td>
+<td><strong>Fixed.</strong> §6 is reworded along the review's lines, and check 9's output says it is weak evidence. §3.4 no longer cites coverage as evidence.</td>
+</tr>
+<tr>
+<td>4 (minor)</td>
+<td>§3.3</td>
+<td>"Everything left of the bounce point moves one cell to the left" is wrong in absolute coordinates.</td>
+<td><strong>Fixed</strong> with the review's wording. <code>L[:-1]</code> stays in place; the leftmost 1 is at cell −12 at steps 283 and 428, and the text grows from 30 to 37 cells. What flips is the parity relative to the head and digits.</td>
+</tr>
+<tr>
+<td>5 (minor)</td>
+<td>§3.1, §3.2, §2</td>
+<td>The twin's M and O chains were only stated as a delta, and T9 was listed as verbatim though its trace changes.</td>
+<td><strong>Fixed.</strong> §3.1 writes M's phase 2 (T1 S4 T3 S4c S4^(a−1) Lb Lf). §3.2 writes O's phase 5 (T12 → S4c) and the phase-2 change. §2 gives T9's twin trace (C0 for E0), and §3.5 splits T9 into Lb1, T2c and Ro. §7's <code>chunkA</code>/<code>chunkO</code>/<code>T9</code> items point to these.</td>
+</tr>
+</tbody>
+</table>
+<p>Validations re-run after the revision (2026-10-10): <code>check_proof.py</code> default seed <code>SUMMARY PASS 12/12</code> (79 s); <code>--seed 2026 --n 1000 --quick</code> <code>SUMMARY PASS 12/12</code> (52 s). Scratch: G on the run to 10^10 (67,856 transitions) with 0 unpredicted and 0 mismatches.</p>
+</main></body></html>

@@ -1,0 +1,798 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/proof.md · <a href="/busy-beaver/machines/1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/proof.md.html">raw</a></div>
+<h1 id="1rb0ra_1lc0re_0lc0ld_1rd1lb_0rf1ra_0rb-informal-non-halting-proof-incomplete-one-lemma-open">1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---: informal non-halting proof (incomplete: one lemma open)</h1>
+<ul>
+<li>Machine: <code>1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code>, viewer https://bbchallenge.org/1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</li>
+<li>Holdout lists: in all 26 snapshots in <code>data/holdouts/</code>, 2024-06-14 (12,325) through 2026-10-07 (778), where it is line 663. <code>tools/holdouts.py contains</code> confirms a byte-exact match.</li>
+<li>Sheet: Results row 1048, class "Bell eats counter" (also on the Classifications tab, row 6). Status, Notes, Sources and Done By are blank, and there are no links. It is not in either Discord file in <code>data/discord/</code>. Unclaimed.</li>
+<li>Parent: <code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code> (KILLED_NONHALT; <code>proof.md</code> and the passing <code>.v</code> are in its directory). The two machines differ in one transition: A1 is <code>0RA</code> here and <code>0RF</code> in the parent. SOMDCv6 TM7 has <code>0RC</code>.</li>
+<li>Written for the string itself. There is no mirror or state permutation.</li>
+<li><strong>Status: STUCK on one lemma (fatal gap: there is no inductive invariant yet).</strong></li>
+<li>Done and compiling in Rocq: every clause is an exact pass-level run (§3.1), including the new re-parse constructor <code>RIncs_eq</code> and the canonical end identities; the sweep step (§3.2); the start (§4). File <code>scripts/TwinSpec.v</code>, run by <code>python3 -B check_proof.py --rocq</code>.</li>
+<li>Done informally: the domain question reduces to a single predicate G on boundary words and a single inequality per sweep (§3.3.1–§3.3.4, Lemmas A–D and U).</li>
+<li><strong>Open:</strong> G is not closed under the sweep by itself (§3.3.5). An inductive strengthening has not been found. Five candidates are refuted by explicit counterexamples: J0, J2, J3, J3 with any lower bound on N, and J4 (§3.3.5). Pass 3 adds a weighted value V* under which the sweep is exactly affine; this reduces the domain to one conjectured inequality (Lemma T) plus a bound on one number c(x) (§3.3.5). Without a closed invariant there is no proof.</li>
+</ul>
+<p><strong>Summary.</strong> The sweep boundary is <code>S(w) = 0^inf 11 D&gt; &lt;w&gt; 0^inf</code>, as in the parent. The parent's tokens and passes carry over, with two changes:
+1. At an L, this machine sends +1 to the rest but adds no pass.
+2. There is a one-cell stray token <code>S = 1</code>, a drain suspended with 0 passes.</p>
+<p>Call a boundary word w = <code>L^n t</code> <em>good</em>, G(w), if the n increments sent by its own leading L's turn t into a word with no stray. Then:
+- the sweep of a good word is defined and leaves at most one stray (Lemma C);
+- the next word is good exactly when the current sweep would leave no stray if it were given n' extra passes, where n' is the next word's L-run. That is one inequality, θ(x) ≤ n', for a threshold θ of an S-free word x (Lemma D).</p>
+<p>What is missing is an invariant that implies this inequality at every sweep and is preserved by the sweep. On the first 3,000 sweeps of the abstract orbit (and at the 278 boundaries from blank to 1e9) the inequality holds with 2θ ≤ 0.962 n' at worst. But none of the candidates tried so far is preserved by the sweep for all words: not the bare inequality, not its factor-2 version, not that plus the orbit's value bound (with or without a lower bound on N), and not the V*-based J4 of §3.3.5.</p>
+<h2 id="1-families-and-notation">1. Families and notation</h2>
+<ul>
+<li><strong>Tokens:</strong> <code>L = 110</code>, <code>0 = 000</code>, <code>1 = 100</code> (3 cells each, as in the parent) and the <strong>stray</strong> <code>S = 1</code> (one cell). For a word w over {L,0,1,S}, <code>&lt;w&gt;</code> is its cells in order. A word followed by <code>0^inf</code> denotes the same tape with or without trailing <code>0</code> tokens.</li>
+<li><strong>Canonical form:</strong> of a tape, the token word with the fewest S (<code>parse</code> in <code>check_proof.py</code>). It differs from a word produced by the clauses only at the right end: <code>S 0^j 0^inf = 1 0^inf</code> and <code>S 1 0^inf = L 0^inf</code>.</li>
+<li><strong>Value:</strong> <code>V(x)</code> is the little-endian binary number formed by the 0/1 tokens of an S-free word x. L tokens are skipped.</li>
+<li><strong>Family:</strong> <code>S(w) := 0^inf 11 D&gt; &lt;w&gt; 0^inf</code> (busycoq <code>S' r</code>, with the token <code>DS</code> for S and <code>toRC (DS::r) = [1] *&gt; toRC r</code>).</li>
+<li><strong>Passes</strong> (busycoq <code>sideRLs</code>), as in the parent:</li>
+<li><code>h</code>: <code>B&gt; X -&gt;+ &lt;C X'</code>;</li>
+<li><code>h'</code>: <code>1 D&gt; X -&gt;+ &lt;C X'</code>, where the <code>1</code> belongs to the pass.</li>
+<li>A pass never reads a cell left of where it exits, so it holds for every left part.</li>
+<li><strong>Relations:</strong></li>
+<li><code>Inc(r,r')</code>: the pass <code>[h]</code> turns <code>&lt;r&gt;</code> into <code>&lt;r'&gt;</code>.</li>
+<li><code>R(hx,k,r,r')</code>: the passes <code>[h', h^k]</code> turn <code>&lt;r&gt;</code> into <code>&lt;r'&gt;</code> (the eater plus k queued passes).</li>
+<li><code>R(h1,k,r,r')</code>: the passes <code>[h^k]</code> turn <code>1 &lt;r&gt;</code> into <code>&lt;r'&gt;</code> (k passes draining over a stray 1).</li>
+<li><strong>Re-parse constructor</strong> (<code>RIncs_eq</code>, pass 3): <code>R(tp,k,r0,r') /\ toRC r = toRC r0 -&gt; R(tp,k,r,r')</code>. It lets a derivation read its input in another token form of the same tape. Its spec case is one <code>rewrite</code> (§3.1). It is used in one place only, Lemma C (§3.3.3).</li>
+<li><strong>Functional shorthand</strong> (§3.3): <code>E_k(r)</code> is the r' of <code>R(hx,k,r,r')</code> and <code>D_k(r)</code> is the r' of <code>R(h1,k,r,r')</code>, when they exist. This is justified by <strong>Lemma U</strong> (§3.3.1), not by determinism of the machine. Under the convention "R0, not Z, on <code>[]</code>", every instance without <code>RIncs_eq</code> has at most one derivation. A derivation that uses <code>RIncs_eq</code> is never compared with another one. "S-free" always refers to the canonical form.</li>
+</ul>
+<h2 id="2-rule-table">2. Rule table</h2>
+<div class="highlight"><pre><span></span><code>1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---      (parent with A1 = 0RA instead of 0RF)
+
+S(w) = 0^inf 11 D&gt; &lt;w&gt; 0^inf        L = 110, 0 = 000, 1 = 100, S = 1 (one cell)
+start: 0^inf A&gt; 0^inf  -(5)-&gt;  S(1)                                   (A0 B0 C1 D0 D0; A1 never fires)
+sweep: S(w) -+-&gt; S(w')  if R(hx,0,w,w')     (w' starts one cell further left; then re-parse canonically)
+domain: G(w) (section 3.3.3); G(1) holds; closure under the sweep is OPEN (section 3.3.5)
+
+Inc (one h pass):
+  I1  Inc(1::r, 0::r') &lt;- Inc(r,r')        I3  Inc(L::r, L::r') &lt;- Inc(r,r')
+  I2  Inc(0::r, 1::r)                      I4  Inc([], [1])
+  IS  Inc(S::r, r')    &lt;- R(h1,1,r,r')                                 NEW (mutual with R)
+
+R (k &gt;= 0):                                        parent                     Rocq (TwinSpec.v)
+  X1  R(hx,k,   L::r, L::r') &lt;- Inc(r,r1), R(hx,k,r1,r')    R(hx,k+1,r1,r')  CHANGED  RIncs_hx_ld
+  X2  R(hx,k,   0::r, L::r') &lt;- R(hx,k+1,r,r')                                       RIncs_hx_d0
+  X3  R(hx,k,   1::r, L::r') &lt;- R(h1,k,r,r')                                         RIncs_hx_d1
+  C1  R(h1,k+1, L::r, L::r') &lt;- Inc(r,r1), R(hx,k,r1,r')    R(hx,k+1,r1,r')  CHANGED  RIncs_h1_ld
+  C2  R(h1,k+1, 1::r, L::r') &lt;- R(h1,k,r,r')                                         RIncs_h1_d1
+  C3  R(h1,2k+1,0::r, 0::r') &lt;- R(h1,k,r,r')                                         RIncs_h1_d0_0
+  C4  R(h1,2k+2,0::r, 1::r') &lt;- R(h1,k,r,r')                                         RIncs_h1_d0_1
+  R0  R(h1,0,[],[1])     R1  R(h1,2k+1,[],0::r') &lt;- R(h1,k,[],r')    R2  R(h1,2k+2,[],1::r') &lt;- R(h1,k,[],r')
+  Z   R(h1,0, r, S::r)   for every r                        Z0, Z1 only       NEW      RIncs_z
+  EQ  R(tp,k, r, r')     &lt;- toRC r = toRC r0, R(tp,k,r0,r')  none             NEW (p3) RIncs_eq
+      end identities: toRC [S;1] = toRC [L] (s1_eq), toRC (S::0^j) = toRC [1] (s0_eq)
+  (no clause: hx on [] or on S::r; h1 with k &gt;= 1 on S::r; EQ only re-reads, it reaches nothing new on a tape)
+
+per-token transduction (one pass in; the passes it sends right, assuming each comes back as &lt;C):
+            L               0             1                S0          S1          SL
+  h      [h]  L        []  1         [h]  0           [] 0 S      [] L S      [h,h'] L
+  h'     [h,h'] L      [h',h] L      []  L S
+         parent: (L,h') and (SL,h) give [h,h',h];  TM7: (L,h') gives [h',h]
+
+machine level, j = number of digits of X before its first 0 digit:
+  eater enters L:  1 D&gt; 110 &lt;X&gt;  -(6j+9)-&gt;   0 111 D&gt; &lt;X+1&gt;     parent: -(6j+13)-&gt; 1 111 D&gt; &lt;X+1&gt;
+  drain enters L:  B&gt; 1 110 &lt;X&gt;  -(6j+8)-&gt;   0 111 D&gt; &lt;X+1&gt;     parent: -(6j+12)-&gt; 1 111 D&gt; &lt;X+1&gt;
+  then, when the eater's pass returns:  0 11 &lt;C -(3)-&gt; &lt;C 110    (the parent bounces one more h pass here)
+  wall:  0^inf 1 &lt;C &lt;w'&gt;  -(3)-&gt;  0^inf 11 D&gt; &lt;w'&gt;                 (C1, D0, D0; unchanged)
+</code></pre></div>
+
+<p>In words:
+- <strong>Where A1 fires.</strong> As in the parent, A1 fires once for each L entered, on the middle cell of the 110.
+  - <code>A1 = 0RA</code> writes 0 there and steps onto the last cell (a 0) in state A.
+  - <code>A0 = 1RB</code> writes a 1 there and starts the same h pass over the rest as the parent's <code>F0 = 0RB</code>.
+  - On return, C reads that 1, where the parent's C read a 0. So <code>C1 = 0LD, D0, D0</code> restarts the eater one cell left of the parent's position, with <code>0 111</code> behind it.
+  - When the eater's pass returns, <code>0 11 &lt;C</code> closes up to <code>&lt;C 110</code> directly.
+  - Net effect: the L sends +1 to the rest but adds no pass.
+- <strong>Eater (hx, k).</strong> It eats L's (each one is +1 on the rest; k unchanged) and 0's (each one adds a pass). It stops at the first 1 and drains from there.
+- <strong>Drain (h1, k).</strong> A 1 absorbs a pass and becomes L. A 0 halves the count and keeps one bit of it. An L restarts the eater with k-1 and sends +1 to the rest. At the right end the count is written in bijective binary.
+  - <strong>With 0 passes left, the drain stops wherever it is (Z) and leaves the stray</strong> in front of the untouched rest.
+  - In the parent this could happen only at a last digit, which is why its Z0/Z1 identities sufficed.
+- <strong>Next sweep.</strong> The eater's n leading L's send n +1 passes to the tail <code>u S v</code>. Each one that carries through u resumes the suspended drain on v by one pass (IS). G (§3.3.3) says that these n passes always finish that drain.</p>
+<p><strong>Worked example</strong> (the start of the run from blank; §7 checks every boundary to 1e9):
+- <code>S(L1)</code>.
+  - Parent: X1 gives k = 1 and +1 makes <code>1</code> into <code>01</code>; X2 gives k = 2; X3 drains 2 passes at the right end (R2). Result <code>S(LLL11)</code> at step 91.
+  - Here: X1 keeps k = 0; X2 gives k = 1; X3 drains 1 pass (R1). Result <code>S(LLL01)</code> at step 69.
+- <code>S(LLL01)</code> gives <code>S(L^4 S01)</code> at step 146. The 3 +1s turn <code>01</code> into <code>101</code>. The eater then hits the 1 with k = 0, and Z leaves the stray in front of <code>01</code>.
+- <code>S(L^4 S01)</code> gives <code>S(L^5 SL1)</code> at step 259. The 4 +1s turn <code>S01</code> into <code>0S1</code> (IS, C3, Z), then <code>1S1</code>, then <code>0L1</code> (IS, C2, R0), then <code>1L1</code>. The eater stops at the 1 with k = 0, and Z gives <code>S L1</code>.
+- <code>S(L^5 SL1)</code> gives <code>S(L^9 S001)</code> at step 600.
+  - The first +1 hits <code>SL</code> (IS, then C1). That starts a nested eater with k = 0 on <code>Inc(1) = 01</code>, so this +1 pass alone turns <code>SL1</code> into <code>LLL01</code>.
+  - The other four +1s give <code>LLL011</code>.
+  - The eater then eats <code>LLL</code>, doing 3 more +1s (<code>011</code> becomes <code>1001</code>), and Z leaves <code>S001</code>.</p>
+<h2 id="3-the-argument">3. The argument</h2>
+<h3 id="31-every-clause-is-an-exact-pass-level-run-spec_both-rocq-checked">3.1 Every clause is an exact pass-level run (<code>spec_both</code>): Rocq-checked</h3>
+<p>Claim, as in the parent:
+- <code>Inc(r,r')</code> implies <code>sideRLs [h] &lt;r&gt; &lt;r'&gt;</code>;
+- <code>R(hx,k,r,r')</code> implies <code>sideRLs ([h'] ++ h^k) &lt;r&gt; &lt;r'&gt;</code>;
+- <code>R(h1,k,r,r')</code> implies <code>sideRLs (h^k) (1 &lt;r&gt;) &lt;r'&gt;</code>.</p>
+<p>The proof is by mutual induction on Inc and R (<code>Scheme ... Combined Scheme Inc_RIncs_mut</code>). Case by case:
+- <strong>I1–I4, X2, X3, C2–C4, R0–R2.</strong> None of these runs fires A1, the only transition where this machine differs from the parent and TM7. So the scripts are the parent's (= TM7's), unchanged.
+- <strong>X1.</strong> <code>seg_hx_ld k: segRLs (h' ++ h^k) (h ++ h' ++ h^k) ld ld</code>. The parent has <code>h^(1+k)</code> on the right. It is followed by <code>sideRLs_trans</code> with the Inc premise (+1) and the R premise (<code>[h'] ++ h^k</code> on r1).
+- <strong>C1.</strong> <code>seg_h1_ld k: segRLs (h^1 ++ h^k) (h ++ h' ++ h^k) w1ld ld</code>, with the same change.
+- <strong>IS.</strong> <code>toRC (S::r) = [1] *&gt; toRC r</code>, so the premise <code>sideRLs ([] ++ h^1) ([1] *&gt; toRC r) (toRC r')</code> is the goal, by conversion.
+- <strong>Z.</strong> It uses zero passes, so it holds by <code>sideRLseq_O</code>, because <code>toRC (S::r) = [1] *&gt; toRC r</code> holds by definition.
+- <strong>EQ (<code>RIncs_eq</code>, pass 3).</strong> <code>rewrite</code> with <code>toRC r = toRC r0</code> turns the goal into the induction hypothesis.
+- <strong>End identities.</strong> <code>s1_eq: toRC [S;1] = toRC [L]</code> and <code>s0_eq j: toRC (S::0^j) = toRC [1]</code> are the parent's <code>z1_eq</code>/<code>z0_eq</code>, by <code>const_unfold</code>. With them, <code>Example sweep_LS01: R(hx,0, LS01, LLLL01)</code> compiles. That is the word for which the 16 clauses alone have no derivation (§3.3.3).</p>
+<p>This compiles (<code>scripts/TwinSpec.v</code>, 3.7 s), with closed <code>Print Assumptions</code> for <code>Inc_spec</code>, <code>RIncs_spec</code>, <code>BigStep</code>, <code>init</code> and <code>sweep_LS01</code>. On the real machine every derivation also checks out directly (§7).</p>
+<h3 id="32-sweep-bigstep-rocq-checked">3.2 Sweep (<code>BigStep</code>): Rocq-checked</h3>
+<p><code>S(w) = 0^inf 1 · 1 D&gt; &lt;w&gt;  -+-&gt;  0^inf 1 &lt;C &lt;w'&gt;  -(3)-&gt;  S(w')</code>, by <code>sideRLs_1</code> and then the wall rule. This is the parent's proof verbatim; it compiles.</p>
+<p>The canonical re-parse that follows is a tape identity: <code>S(w') = S(w'')</code> whenever <code>&lt;w'&gt; 0^inf = &lt;w''&gt; 0^inf</code>.</p>
+<h3 id="33-the-domain">3.3 The domain</h3>
+<h4 id="331-semantic-reading-lemma-a-and-lemma-u">3.3.1 Semantic reading, Lemma A and Lemma U</h4>
+<p>R and Inc are pass compositions (§1), so <code>E_k = Inc^k ∘ E_0</code> and <code>D_k(r) = Inc^k(S r)</code> as tapes. The clauses then read as follows:
+- <code>Inc(S 1 r) = L S r</code>, <code>Inc(S 0 r) = 0 S r</code>, <code>Inc(S L r) = L E_0(Inc r)</code> and <code>Inc(S) = 0 1</code>. So a +1 pass moves the stray right by one token, or absorbs it at an L by starting a nested eater.
+- <code>E_k(L r) = L E_k(Inc r)</code>, <code>E_k(0 r) = L E_{k+1}(r)</code> and <code>E_k(1 r) = L D_k(r)</code>.
+- There is no clause for <code>E_k([])</code>, <code>E_k(S..)</code> or <code>D_{k+1}(S..)</code>. These are the three failure modes. In the two stray cases, unless an L follows the stray, the machine leaves the token form.</p>
+<p><strong>Lemma A</strong> (one more pass is +1 on the result): <code>R(tp,k,r,r') /\ Inc(r',r'') -&gt; R(tp,k+1,r,r'')</code>.
+- Proof by induction on R, exactly as the parent's <code>RIncs_Inc</code>.
+- X1 and C1 use the IH at k+1. C3 and C4 swap (carry). R0 -&gt; R1, R1 -&gt; R2, R2 -&gt; R1.
+- The new case Z: <code>Inc(S::r, r'')</code> can only be IS, whose premise is <code>R(h1,1,r,r'')</code>. (There is no re-parse constructor for Inc, so this inversion stays valid.)
+- The new case EQ: the IH on <code>R(tp,k,r0,r')</code> gives <code>R(tp,k+1,r0,r'')</code>, and EQ with the same tape identity gives <code>R(tp,k+1,r,r'')</code>.
+- If the given derivation does not use EQ, neither does the one built, and neither does any Inc derivation it consumes.</p>
+<p><strong>Lemma U</strong> (uniqueness, pass 3). <strong>Convention:</strong> at k = 0 on <code>[]</code>, every derivation built in this proof uses R0, never Z. (Z on <code>[]</code> would give <code>[S]</code>, the same tape as R0's <code>[1]</code> by <code>s0_eq 0</code>, so nothing is lost.) Under this convention, Inc and the EQ-free R are partial functions: every instance <code>Inc(r,·)</code> or <code>R(tp,k,r,·)</code> has at most one derivation, whatever the input, strays included.
+- Proof by mutual induction on derivations, inverting the second one. Every clause is fixed by (tp, k, first token):
+  - Inc: L gives I3, 0 gives I2, 1 gives I1, <code>[]</code> gives I4, and S gives IS.
+  - hx: L gives X1, 0 gives X2, 1 gives X3.
+  - h1 with k = 0: Z, or R0 on <code>[]</code> (the convention).
+  - h1 with k ≥ 1: L gives C1, 1 gives C2, 0 gives C3 or C4 by the parity of k, and <code>[]</code> gives R1 or R2 by parity.
+- The Inc premise of X1/C1 and the R premise of IS are unique by the IH. So the next premise's input is the same word in both derivations.
+- <strong>Lemmas A and B respect the convention.</strong> Lemma A turns R0 into R1 with premise R0. Its Z case reuses the premise of the given IS. Its other cases recurse. Lemma B uses R0 on <code>[]</code>.
+  - So Lemma A's output is <em>the</em> output of <code>R(tp,k+1,r,·)</code>, syntactically.
+  - This is what the shorthand <code>E_k</code>, <code>D_k</code>, the chain in §3.3.3 and the threshold θ below rely on. The parent used only Inc's functionality; here IS embeds R in Inc, so U covers both.
+- EQ is outside U. It is used once per sweep (Lemma C), on a derivation that is never compared with another.
+- Determinism of the machine is not used. <code>sideRL</code> quantifies over all left halves, so it is not obviously functional.</p>
+<p><strong>End identities commute with Inc</strong> (pass 3). For any u: <code>Inc(u S 0^j)</code> and <code>Inc(u 1)</code> are the same tape, and so are <code>Inc(u S 1 0^j)</code> and <code>Inc(u L)</code>.
+- If the carry stops inside u, the right ends are untouched.
+- Otherwise the carry reaches the end:
+  - IS with C3 then Z gives <code>0 S 0^(j-1)</code>, the same tape as <code>0 1</code>, which is I1 then I4. For j = 0 it is R1 then R0, giving <code>0 1</code>.
+  - IS with C2 then Z gives <code>L S 0^j</code>, the same tape as <code>L 1</code>, which is I3 then I4.
+- So "S-free" (always the canonical form) does not depend on whether an Inc chain is re-parsed before or after.</p>
+<h4 id="332-lemma-b-s-free-words-are-safe">3.3.2 Lemma B: S-free words are safe</h4>
+<p>For an S-free word r:
+- (B1) <code>R(h1,k,r,·)</code> exists for every k.
+- (B2) <code>R(hx,k,r,·)</code> exists for every k if and only if r contains a 1 or an L (r is not in <code>0*</code>).
+- (B3) Each such output has at most one stray.
+- (B4) <code>Inc</code> of a word with at most one stray exists and has at most one stray.</p>
+<p>Proof:
+- B1–B3 are proved by well-founded induction on the pair (|r|, number of L tokens in r), ordered lexicographically, together with an inner induction on k for <code>R(h1,k,[])</code> (TM7's <code>RIncs_nxt_1</code>).
+- <strong>X2, X3, C2, C3, C4</strong> recurse on a strictly shorter word.
+- <strong>X1 and C1</strong> recurse on <code>Inc(r)</code> from <code>L::r</code>:
+  - If the carry stops inside r, <code>|Inc r| = |r| &lt; |L::r|</code>.
+  - If it runs off the end, then <code>r</code> is over {L,1}, <code>|Inc r| = |L::r|</code>, and <code>Inc r</code> has one L fewer than <code>L::r</code>.
+- <strong>No stuck case.</strong> With no stray, the only clause-less case is the eater at the right end. <code>E_k(0 r) = L E_{k+1}(r)</code> reaches it exactly when r is in <code>0*</code>. After an L the rest is <code>Inc(..)</code>, which always contains a 1.
+- <strong>Stray count.</strong> Every clause emits one non-S token before its recursive output, except Z (<code>S::r</code> with r S-free) and R0.
+- <strong>B4.</strong> If the carry reaches the stray, Inc becomes IS, <code>R(h1,1,v,·)</code> on the S-free rest v, and B1 and B3 apply.</p>
+<h4 id="333-the-predicate-g-and-lemma-c">3.3.3 The predicate G and Lemma C</h4>
+<p>Let <code>w = L^n t</code> be a boundary word with n maximal. Assume <strong>w is canonical and has at most one stray</strong>; B4 needs both. Let <code>t_n</code> be the output of the chain <code>Inc(t, t_1), Inc(t_1, t_2), …, Inc(t_(n-1), t_n)</code>. B4 says the chain exists, and U says it is unique (under the R0 convention). Let <code>x(w)</code> be the canonical form of <code>t_n</code>.</p>
+<p><strong>Definition.</strong> <code>G(w)</code> holds when w is canonical, #S(w) ≤ 1, and x(w) is S-free and contains a 1 or an L.</p>
+<p><strong>Lemma C.</strong> If G(w), then <code>R(hx,0,w, L^n E_0(x))</code> is derivable with exactly one use of EQ, at the place given below. The output has at most one stray.</p>
+<p>Proof (the derivation, in order):
+1. X1, n times: <code>R(hx,0,L^n t, L^n o) &lt;- Inc(t, t_1), R(hx,0, L^(n-1) t_1, L^(n-1) o)</code> and so on. The Inc premise of the i-th X1 is <code>Inc(L^(n-i) t_(i-1), L^(n-i) t_i)</code>, by I3 over the remaining L's and then the chain above. This leaves the goal <code>R(hx,0, t_n, o)</code>.
+2. <strong>EQ here, once:</strong> <code>R(hx,0, t_n, o) &lt;- toRC t_n = toRC x, R(hx,0, x, o)</code>. This is the point after the eater's n increments and before it reads the tail.
+   - t_n and x differ only at the right end. x is S-free, so the stray of t_n (if any) stands in <code>S 0^j</code> or <code>S 1 0^j</code> at the end (§1).
+   - So the identity is <code>s0_eq</code> or <code>s1_eq</code> behind a common prefix, plus <code>d0s_eq</code> for trailing 0 tokens.
+3. <code>R(hx,0, x, o)</code> exists by B2, because x is S-free and not in <code>0*</code>. That B-derivation does not use EQ, and o has at most one stray by B3.</p>
+<p>Why EQ is needed here, and not only between sweeps: take w = <code>LS01</code>, for which G holds (x = <code>0L</code>). The only derivation of <code>Inc(S01,·)</code> is IS, C3, Z, which gives <code>0S1</code>. The eater then eats the 0 (X2) and meets the S with k = 1, and no clause applies. With EQ, <code>0S1</code> is re-read as <code>0L</code> and the sweep gives <code>LLLL01</code>, which matches the real machine. This derivation is the compiled <code>Example sweep_LS01</code> in TwinSpec.v. Without EQ, 75 of the 15,593 G words with tails of at most 6 tokens and n ≤ 15 have no derivation; with EQ, all of them do (check 9a). None of the 3,000 orbit boundaries needs it, but the proof cannot rely on that.</p>
+<p>After the sweep, the output <code>L^n o</code> is re-parsed canonically at the configuration level: <code>S(L^n o) = S(w')</code> with w' canonical, a tape identity (§3.2). w' has at most one stray by B3, so the first two conjuncts of G(w') hold automatically.</p>
+<p>G(1) holds: n = 0 and x = <code>1</code>.</p>
+<h4 id="334-lemma-d-the-domain-reduces-to-one-inequality-per-sweep">3.3.4 Lemma D: the domain reduces to one inequality per sweep</h4>
+<p>Let G(w), let x = x(w), and let a be the number of leading L's of <code>E_0(x)</code>. Then the next boundary word is <code>w' = L^(n+a) t'</code>, where <code>E_0(x) = L^a t'</code>.</p>
+<p><strong>Lemma D.</strong> <code>G(w')</code> holds if and only if <code>E_(n+a)(x)</code> is S-free.</p>
+<p>Proof:
+- Apply Lemma A n+a times: <code>E_(n+a)(x) = Inc^(n+a)(L^a t') = L^a Inc^(n+a)(t')</code>, the second step by I3.
+  - The Inc steps here are w''s own chain (§3.3.3), behind a prefix of L's (I3). So x(w') is, up to the canonical re-parse, the tail of this E_(n+a)(x).
+  - By U, this is the (unique) derivation of <code>R(hx,n+a,x,·)</code>.
+- <code>E_(n+a)(x)</code> exists by B2.
+- w' is canonical with at most one stray (§3.3.3). So G(w') is equivalent to: x(w') is S-free and contains a 1 or an L. The S-free part is the claim.
+- <strong>The "1 or L" part holds automatically</strong> (needed for B2 at the next sweep):
+  - a ≥ 1, because X1, X2 and X3 all emit L as their first token. So n' = n + a ≥ 1, and x(w') is the output of at least one Inc.
+  - Every Inc output contains a 1 or an L:
+    - I2 and I4 write a 1, and I3 keeps its L.
+    - I1 outputs <code>0 ::</code> followed by an Inc output, so the claim holds by induction.
+    - IS runs <code>R(h1,1,r,·)</code>. Its first clause is C1 or C2, which emit L. Otherwise it is C3 followed by Z, giving <code>0 S r</code>, whose re-parse, when S-free, is <code>0 1 0^j</code> or <code>0 L 0^j</code>. Otherwise (r = []) it is R1 then R0, giving <code>0 1</code>. C4 needs k ≥ 2.
+  - Canonical re-parsing does not change the tape, and an S-free word whose tape has a 1-cell has a token 1 or L.
+  - Check 9b confirms this on every word of check 9a.</p>
+<p><strong>Threshold.</strong> For S-free x not in <code>0*</code>, let <code>θ(x)</code> be the least M such that <code>E_M(x)</code> is S-free.
+- <strong>It exists.</strong> Until the first Z, the sequence of clauses and remaining inputs does not depend on the counts: only the bits written by C3/C4 and the end digits do. By the measure of Lemma B this sequence has finitely many steps, and each step maps a count c to at least (c-2)/2. So a large enough M never reaches 0.
+- <strong>It is monotone.</strong> <code>E_(M+1) = Inc ∘ E_M</code> (Lemma A, with U for "the" output). Inc maps S-free words to S-free words (I1–I4), and it commutes with the canonical re-parse (§3.3.1).
+- <strong>It is well defined.</strong> By U, E_M(x) is a single word. The check scripts compute θ by doubling and binary search, which relies on monotonicity. Check 9c also computes it by brute-force linear search for its family.</p>
+<p>So <strong><code>G(w') &lt;-&gt; θ(x) &lt;= n'</code></strong> with <code>n' = n + a</code>. The next tail is <code>x' = x(w') = drop_a(E_(n')(x))</code>.</p>
+<p>Writing <code>N_s := n_(s+1)</code> for the sweep s with S-free word x_s, the whole domain question is this. For the dynamical system</p>
+<div class="highlight"><pre><span></span><code>(N, x)  |-&gt;  (N + a(x'), x')      with   x' := E_N(x) minus its first a(x) L's,   a(y) := leading L's of E_0(y)
+</code></pre></div>
+
+<p>started from the orbit, show <code>θ(x) &lt;= N</code> at every step.</p>
+<h4 id="335-open-an-inductive-invariant">3.3.5 Open: an inductive invariant</h4>
+<p>What is needed is a predicate J(N, x) that:
+- holds at some reachable boundary (the start can be moved later by computation);
+- implies <code>θ(x) &lt;= N</code>;
+- satisfies <code>J(N, x) -&gt; J(N + a(x'), x')</code>.</p>
+<p><strong>Refuted candidates</strong> (each counterexample is checked in §7, checks 8f, 9c and 9i):
+- <strong>G itself, as a predicate on words.</strong> <code>1001</code> satisfies G, and its sweep <code>LS001</code> does not: <code>Inc(S001) = 0S01</code>, and then the eater meets the stray. Among words with G (tails of at most 5 tokens, n ≤ 13), 181 of 1,893 sweep to a word without G.
+- <strong>J0 := θ(x) ≤ N.</strong> Take x = <code>00010001</code> and N = 5. Then θ(x) = 4, <code>E_0(x) = LLLL 00S01</code>, x' = <code>100L</code>, N' = 6 and θ(x') = 7.
+  - With a margin, one step is fine: if N - θ(x) ≥ 4, then θ(x') ≤ N' (every S-free x of at most 7 tokens, margins 4 to 39; check 8f).
+  - But the margin can fall below half in one step. Take x = <code>L11111L</code> and N = 26: the margin is 26, x' = <code>100001</code>, and the new margin is 12. So a count-only margin is not inductive either.
+- <strong>J2 := 2θ(x) ≤ N and x ends with the token 1.</strong> Take x = <code>L1111</code> and N = 60. Then θ(x) = 0, x' = <code>1000001</code>, N' = 61 and θ(x') = 31, so 62 &gt; 61. Here V(x') = 65 exceeds N'. The orbit never does this (below).
+- <strong>J3 := J2 and V(x) + (leading L's of x) ≤ 5N/4</strong>, which adds the orbit's value bound. Take x = <code>L11</code> and N = 4. Then θ(x) = 0, V(x) + 1 = 4, x' = <code>111</code> and N' = 5, but V(x') = 7 &gt; 25/4.
+  - <strong>J3 with a lower bound N ≥ N0 is refuted for every N0</strong> (pass 3, check 9c). For m ≥ 4, take (N, x) = (2^(m+1) − 4, <code>00001</code>).
+    - It satisfies J3: θ = 0, x ends with 1, and V + lead = 16 ≤ 5N/4.
+    - One step gives x' = <code>1 0^m 1</code>, N' = 2^(m+1) − 3 and θ(x') = 2^m − 1. So 2θ' = N' + 1, and the 2θ ≤ N conjunct fails.
+    - Checked for m = 4..20 (for example N = 252 → 253 with θ' = 127). θ' is found by brute-force linear search for m ≤ 10, and for larger m by binary search with both sides of the threshold checked.
+    - In this family V(x)/N → 0, while the orbit has V(x_s)/N_s ≥ 0.507 for s ≥ 27. So a J that bounds θ through N, as J2 and J3 do, must also bound V from below against N. J4 below avoids this by bounding θ through V* instead.
+  - Replacing 2θ ≤ N by θ ≤ N does not rescue J3 (reviewer's examples):
+    - <code>(428, 10000000LLL1)</code> breaks the value bound: V' = 557 &gt; 5/4 · 429.
+    - <code>(439, LL11111111LLL1)</code> gives x' = <code>0001110LLLL0L</code>, which does not end with 1.
+    - In every one of these counterexamples θ(x') ≤ N' still held; only the extra conjuncts broke. The reviewer's random search found the same: about 25,000 sampled states, none violating θ' ≤ N'.</p>
+<p><strong>Pass 3: a weighted value that makes the sweep affine.</strong> For an S-free word y, define <strong>V*(y)</strong>: the little-endian binary value of its 0/1 tokens, plus 2^p for every L that stands after exactly p digit tokens. So an L counts as the +1 it sends to the rest when eaten. For example, V<em>(<code>1L01</code>) = 1 + 2 + 0 + 4 = 7.
+- </em><em>(V1, proved.) Inc adds exactly 1 to V*</em><em> on S-free words.
+  - I1/I2 are binary +1 on the digit tokens. I3 does not change how many digits stand before any L. I4 appends a 1 after all the L's, at position p (the number of digits): every earlier digit was a 1 and turned to 0, so the total gains 2^p − (2^p − 1) = 1 in digits, and the L weights are unchanged.
+  - Check 9e: exhaustive, words up to 8 tokens.
+- </em><em>(V2, proved from Lemma A, U and V1.) The sweep is affine.</em><em> For S-free x not in <code>0*</code>, let y(x) be the canonical form of E_θ(x) without its first a(x) L's (an S-free word), and let c(x) := V</em>(y(x)) − θ(x). Then for every N ≥ θ(x):</p>
+<p><code>V*(x') = N + c(x),        x' = Inc^(N−θ)(y(x)),     and the L's of x' are exactly the L's of y(x), at the same digit positions</code></p>
+<ul>
+<li>Lemma A gives E_N = Inc^(N−θ) ∘ E_θ. I3 carries every Inc past the a leading L's. The canonical re-parse of the tail can be done before the Incs (end identities commute with Inc, §3.3.1). Then apply V1.</li>
+<li>Check 9f: exhaustive up to 7 tokens, 12 values of N each. Along the orbit the law holds on all 2,999 sweeps (9h).</li>
+<li><strong>(Lemma T, CONJECTURE.) 2θ(x) ≤ V*(x) − 1 for every S-free x that ends with the token 1.</strong></li>
+<li>Exhaustive up to 11 tokens (check 9g, all 88,573 such words).</li>
+<li>It is tight: <code>1 0^m 1</code> has 2θ = V* − 3.</li>
+<li>It is false for words ending with L, for example <code>100000000L</code> has θ = 511 and V* = 513. So "ends with 1" is part of any J built on T.</li>
+<li>At every x_s of the orbit, T holds (9h).</li>
+<li>Plausible proof route, not done: induction on the clause chain of E_θ(x). Track Φ := (current count) · 2^(digit position) plus the V* of the unread rest. A drain step on a 0 halves the count while the position moves up by one, a 1 costs one pass, and an L hands over to the eater, which only gains.</li>
+<li><strong>Consequence.</strong> Under T, the domain inequality θ(x) ≤ N follows from <strong>J4(N, x) := x ends with 1 and V*(x) ≤ 2N + 1</strong>. By V2, J4 is preserved exactly when c(x) ≤ N + 2a(x') + 1 and x' still ends with 1.</li>
+<li><strong>J4 is not inductive (check 9i).</strong> Take (N, x) = (257, <code>10000000L1</code>): V* = 513 ≤ 515 and θ = 255.</li>
+<li>The drain reaches the L with 1 pass. The eater restarted there turns every remaining token into an L at digit position 7.</li>
+<li>So c(x) = 385, x' = <code>0100000LLL01</code>, N' = 259, and V*(x') = 642 &gt; 519.</li>
+<li>But θ(x') = 94 ≤ N', and the system goes on: the domain itself is not violated.</li>
+<li><strong>But J4 is a strong attractor (check 9j).</strong> From 400 random J4 states (N ≥ 131, biased to V* ≈ 2N, many with an L just below the top bit), the system ran 25 sweeps each, and θ ≤ N held at every one of the 10,000 steps.</li>
+<li>From the third state on, V*/N stayed below about 1.45.</li>
+<li>Along the orbit, for s ≥ 27: 0.952 ≤ V*(x_s)/N_s ≤ 1.193, and c(x_s) ≤ 0.215 N_s (9h).</li>
+<li><strong>Where c(x) comes from.</strong></li>
+<li>For pure binary x (no L), c(x) ≤ |x|: every one of the 2,047 such words up to 11 tokens (check 9g).</li>
+<li>Large c comes only from L's that the drain reaches with few passes left. There the restarted eater turns the rest into L's at that position. Examples: <code>10000000L1</code> has c = 385 with V<em> = 513, and <code>L0000LLL1</code> has c = 57 with V</em> = 65 (check 9g).</li>
+<li>No bound of the form c ≤ k·Λ(x) + |x| holds for k = 2, 3 or 4, where Λ(x) is the L part of V*. For example, <code>1000L11111</code> has c = 89 with Λ = 16. A fixed linear bound in Λ is not enough, because the 1's after the L matter too.</li>
+</ul>
+<p><strong>What is open, precisely.</strong> Find a shape condition K(N, x), such that:
+1. K(N, x) and x ends with 1 imply c(x) ≤ N + 3. With V2, this keeps V* ≤ 2N + 1.
+2. K and J4 together give "x' ends with 1" and K(N', x').
+3. K holds at some reachable boundary.</p>
+<p>Then <strong>J := J4 ∧ K</strong>, together with a proof of Lemma T, closes the domain.
+- K can only talk about where the L's of x sit relative to its top digit and how many passes reach them. By V2, the L's of x' are those of y(x), and the digits of x' are y(x)'s plus N − θ.
+- So K is a statement about the threshold output y(x) against the count N − θ that is added to it.
+- Two-step or "eventually" forms (J4 ∪ sweep(J4)) are an alternative. In all 400 samples of 9j, two sweeps brought the state back to V* ≤ 1.45 N.</p>
+<p><strong>What the orbit does</strong> (checked in §7, check 8e; these are the first 3,000 sweeps, not the whole orbit):
+- G holds at every boundary of the 3,000-sweep abstract orbit and at all 278 from-blank boundaries to 1e9.
+- x_s always ends with the token 1, so the top bit slot is filled.
+- <code>2θ(x_s) ≤ 0.962 N_s</code>. The worst case is sweep 27: N = 131 and θ = 63.
+- <code>V(x_s) + (leading L's of x_s) ≤ 1.25 N_s</code>. <strong>The bound is attained with equality at sweep 2</strong> (N = 4, x = <code>101</code>: V = 5), so J3's constant 5/4 has no slack at all (check 9d). Any reuse needs a slack constant or a start after sweep 27.
+- <code>V(x_(s+1)) = N_s - θ(x_s)</code> exactly on 2,813 of 2,999 sweeps. Equivalently, the threshold output <code>E_θ(x_s)</code> has value 0, since Inc is +1 on V for S-free words. So each sweep "adds N and eats from the bottom".
+- V2 is the exact form of this, with the L's counted: <code>V*(x_(s+1)) = N_s + c(x_s)</code> on all 2,999 sweeps.</p>
+<p><strong>Why the parent's method does not transfer directly.</strong> The parent's <code>key</code> lemma tracks only counts <code>(tp, k, j, tq, q)</code> and works for every input word.
+- Here the second sweep's count does not grow when it eats an L. The first sweep's view count (k + j) grows instead.
+- So a second-sweep drain that starts from a 1 bit can meet a view count far larger than its own, and run out.
+- Whether that happens depends on how many 0 tokens lie ahead, which is a property of the word, not of the counts.
+- Any working J must therefore bound the shape of the tail, not only counts. Pass 3 narrows this: under V2 and Lemma T, the counts reduce to the single inequality V* ≤ 2N + 1. What remains of the shape is the condition K on the L's.</p>
+<p>This is the remaining mathematics. It is not a cryptid: every rule is counter arithmetic (+1, halving, bijective binary), and V2 makes the counts exactly affine. But the closing argument is a new invariant (K plus a proof of Lemma T), not a delta of the parent's.</p>
+<h3 id="34-progress">3.4 Progress</h3>
+<p>R is inductive (mutually with Inc), so every derivation is finite, and Lemma B's measure bounds the clause sequence. Each sweep is a finite run of at least 4 steps: h' takes at least 1 and the wall takes 3.</p>
+<h3 id="35-the-halting-transition-f1">3.5 The halting transition F1</h3>
+<p>Every rule is a proved exact run, so no step reaches F1. Here F is entered only by <code>E0 = 0RF</code>, because A1 no longer enters F. In every clause run of §7, F never read a 1.</p>
+<h2 id="4-initial-segment">4. Initial segment</h2>
+<p><code>0^inf A&gt; 0^inf</code> reaches S(1) in 5 steps. A1 is never fired, and <code>init: c0 -[tm]-&gt;* S' [D1]</code> compiles by <code>esx</code>:
+- <code>-A0-&gt;  0^inf 1 B&gt; 0^inf</code>
+- <code>-B0-&gt;  0^inf 1 &lt;C 1 0^inf</code>
+- <code>-C1-&gt;  0^inf &lt;D 0 1 0^inf</code>
+- <code>-D0-&gt;  0^inf 1 D&gt; 0 1 0^inf</code>
+- <code>-D0-&gt;  0^inf 11 D&gt; 100 0^inf = S(1)</code></p>
+<p>G(1) holds (§3.3.3). If the closing invariant J needs a margin that S(1) lacks, the start can be moved to a later boundary S(w_s). Every boundary to 1e9 is known exactly (§7), and its derivation can be produced by <code>esx</code> or by the clauses.</p>
+<h2 id="5-conclusion-blocked-on-335">5. Conclusion: blocked on §3.3.5</h2>
+<p>Given J, the assembly is the parent's:
+1. <code>multistep_nonhalt</code> to the starting boundary (§4).
+2. <code>progress_nonhalt_cond</code> with</p>
+<p><code>P(w) := w canonical /\ #S(w) &lt;= 1 /\ G(w) /\ J(n(w) + a(x(w)), x(w))</code></p>
+<p>The first two conjuncts are also inside G (§3.3.3). They are written out because B4, x(w) and the S-free test all need them, and P must carry them from one sweep to the next.
+3. Each step:
+   - Lemma C gives <code>R(hx,0,w,L^n o)</code>, with exactly one EQ, placed after the eater's L-run.
+   - <code>BigStep</code> then gives <code>S(w) -+-&gt; S(L^n o)</code>.
+   - The configuration-level re-parse <code>S(L^n o) = S(w')</code> makes w' canonical. w' has at most one stray by B3, which re-establishes the first two conjuncts.
+4. Lemma D (the "if" direction, with its "1 or L" part) and J's closure give <code>G(w')</code> and <code>J(n(w') + a(x(w')), x(w'))</code>, so <code>P(w')</code>.</p>
+<p>Without J, the machine is not shown to run forever. The candidate from pass 3 is <code>J := J4 /\ K</code> with Lemma T (§3.3.5). In it, J4 is a pure count condition and K is the still-unknown condition on where the L's sit.</p>
+<h2 id="6-lemma-plan-reusing-the-parents-v-and-scriptstwinspecv">6. Lemma plan (reusing the parent's .v and <code>scripts/TwinSpec.v</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>piece</th>
+<th>source</th>
+<th>change</th>
+<th>state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tm</code>, digits, <code>RD</code> + <code>DS</code>, <code>toRC</code>, <code>h</code>/<code>h'</code></td>
+<td>TwinSpec.v</td>
+<td>none</td>
+<td>compiles</td>
+</tr>
+<tr>
+<td><code>Inc</code>/<code>RIncs</code> (16 clauses + <code>RIncs_eq</code>, mutual), <code>spec_both</code>, <code>seg_hx_ld</code>, <code>seg_h1_ld</code></td>
+<td>TwinSpec.v</td>
+<td><code>RIncs_eq</code> added in pass 3</td>
+<td>compiles</td>
+</tr>
+<tr>
+<td><code>BigStep</code>, <code>init</code></td>
+<td>parent, verbatim</td>
+<td>none</td>
+<td>compiles</td>
+</tr>
+<tr>
+<td>canonical end identities <code>s1_eq: toRC [DS;D1] = toRC [LD]</code>, <code>s0_eq j: toRC (DS::D0^j) = toRC [D1]</code>, <code>d0s_eq</code></td>
+<td>parent's <code>z1_eq</code>/<code>z0_eq</code> (<code>const_unfold</code>)</td>
+<td>none</td>
+<td><strong>compiles (pass 3)</strong></td>
+</tr>
+<tr>
+<td><code>RIncs_eq</code> constructor (re-parse an input up to <code>toRC</code>); spec case = one <code>rewrite</code>; <code>Example sweep_LS01</code></td>
+<td>new</td>
+<td>the only place it is used is Lemma C, after the eater's L-run</td>
+<td><strong>compiles (pass 3)</strong></td>
+</tr>
+<tr>
+<td>Lemma A <code>RIncs_Inc</code></td>
+<td>parent's <code>RIncs_Inc</code></td>
+<td>X1/C1 counts as in the twin; drop z1/z0; new Z case by inversion to IS; new EQ case from the IH</td>
+<td>to do (direct port)</td>
+</tr>
+<tr>
+<td><strong>Lemma U</strong> (with the R0-on-<code>[]</code> convention, Inc and EQ-free RIncs have at most one derivation per instance; Lemmas A and B respect the convention)</td>
+<td>none</td>
+<td>new: mutual induction, inverting the second derivation. In Rocq, the convention is easiest as a predicate on derivations, or as a variant <code>RIncs'</code> without Z on <code>[]</code></td>
+<td>to do</td>
+</tr>
+<tr>
+<td>Lemma B: totality on S-free words, at most one stray</td>
+<td>parent's <code>Inc_total</code>, <code>RIncs_nxt_1</code></td>
+<td>new: well-founded induction on (length, #LD)</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>Lemma C <code>good_sweep</code>, Lemma D <code>good_next_iff</code></td>
+<td>none</td>
+<td>new; C: n × X1, one EQ, B2; D iterates Lemma A, uses <code>Inc_ld</code> and the "1 or L" lemma for Inc outputs</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>threshold θ (existence, monotone, well defined by U)</td>
+<td>none</td>
+<td>new; or avoided if J is stated relationally, on the derivation that Lemma A builds</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>V<em> and V1/V2 (Inc is +1 on V</em>; affine law)</td>
+<td>none</td>
+<td>new, elementary</td>
+<td>to do (informal proof in §3.3.5)</td>
+</tr>
+<tr>
+<td>Lemma T <code>2θ ≤ V* − 1</code> (x ends with 1)</td>
+<td>none</td>
+<td><strong>conjecture</strong>, exhaustive to 11 tokens</td>
+<td>open</td>
+</tr>
+<tr>
+<td>closure of J = J4 ∧ K (the parent's <code>key</code>/<code>domain</code>)</td>
+<td>parent's <code>key</code> does <strong>not</strong> transfer (§3.3.5)</td>
+<td>K not found; J4 alone is refuted</td>
+<td><strong>open (fatal)</strong></td>
+</tr>
+<tr>
+<td><code>nonhalt</code></td>
+<td>parent's skeleton</td>
+<td><code>P := canonical ∧ #S ≤ 1 ∧ G ∧ J</code>, possibly a later start</td>
+<td>blocked</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-evidence">7. Evidence</h2>
+<p>Run <code>python3 -B check_proof.py</code> in this directory. The default run takes about 23 s and goes from blank to 1e8. <code>--full</code> (about 10 min) goes to 1e9, uses bigger samples, runs the abstract orbit for 3,000 sweeps and adds the Rocq check. All numbers below are from <code>--full</code> (pass 3, 2026-10-10: ALL PASS, and the default run is ALL PASS too). Simulation is evidence only.</p>
+<table>
+<thead>
+<tr>
+<th>claim</th>
+<th>instances</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-token transduction (h/h' on L, 0, 1, and h on S0, S1, SL), compared with the parent and TM7</td>
+<td>9 rows</td>
+<td>the twin differs from the parent exactly at (L,h') and (SL,h): <code>[h,h']</code> vs <code>[h,h',h]</code></td>
+</tr>
+<tr>
+<td>L entry, eater and drain, twin (6j+9, 6j+8) and parent (6j+13, 6j+12): every X ≤ 5 digits plus 150 random</td>
+<td>514 each, 4 cases</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>§3.1: each R/Inc derivation's pass list on the real machine (exhaustive w ≤ 3 tokens over {L,0,1,S}, k ≤ 6, plus 3,000 random)</td>
+<td>2,829 derivations</td>
+<td>all pass; F never reads 1</td>
+</tr>
+<tr>
+<td>BigStep: <code>S(w) -+-&gt; S(sweep w)</code> on the real machine, random w</td>
+<td>1,243 (1,088 leave a stray)</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>From blank to 1e9: consecutive boundaries follow <code>sweep</code> (canonical re-parse)</td>
+<td>277 sweeps</td>
+<td>277/277; last boundary 991,375,720 = <code>S(L^2009 1LS1111)</code>; the parent's rules reproduce 1</td>
+</tr>
+<tr>
+<td>Initial segment <code>c0 -(5)-&gt; S(1)</code></td>
+<td>1</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>8a Lemma A, same tape (exhaustive r ≤ 5 tokens with ≤ 1 S, k ≤ 8, plus random)</td>
+<td>14,379</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>8b Lemma B (B1–B3 exhaustive S-free r ≤ 8 tokens, k ≤ 10; B4 all words ≤ 6 tokens with ≤ 1 S)</td>
+<td>111,349</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>8c Lemma C: G(w) gives <code>L^n E_0(x)</code> with ≤ 1 S, equal to the real machine's sweep (tails ≤ 5 tokens, n ∈ {0,1,2,3,5,8,13})</td>
+<td>1,893</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>8d Lemma D: <code>G(w') &lt;-&gt; E_(n+a)(x)</code> S-free (same words)</td>
+<td>1,893</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>8d threshold monotone: <code>E_M(x)</code> S-free implies <code>E_(M+1)(x)</code> S-free (S-free x ≤ 7 tokens, M &lt; 48)</td>
+<td>157,056</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>8e G at every boundary: abstract orbit / from blank to 1e9</td>
+<td>3,000 / 278</td>
+<td>all hold</td>
+</tr>
+<tr>
+<td>8e along the orbit: x_s ends with token 1; <code>2θ(x_s) ≤ N_s</code> (max ratio 0.962, sweep 27, N = 131, θ = 63); <code>V + leading L's ≤ 1.25 N_s</code></td>
+<td>3,000</td>
+<td>all hold</td>
+</tr>
+<tr>
+<td>8e along the orbit: <code>V(x_(s+1)) = N_s - θ(x_s)</code></td>
+<td>2,999</td>
+<td>holds on 2,813</td>
+</tr>
+<tr>
+<td>8f G is not closed: <code>1001 -&gt; LS001</code>; 181 of 1,893 words with G lose it</td>
+<td>1 + 1,893</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>8f J0, J2 and J3 not inductive: counterexamples <code>(00010001, 5)</code>, <code>(L1111, 60)</code> and <code>(L11, 4)</code> of §3.3.5</td>
+<td>3</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>8f one J0 step with margin ≥ 4 keeps θ(x') ≤ N' (S-free x ≤ 7 tokens, margins 4–39)</td>
+<td>117,792</td>
+<td>all hold</td>
+</tr>
+<tr>
+<td>8f the margin can drop below half: <code>(L11111L, 26)</code> gives margin 12</td>
+<td>1</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>Abstract orbit from S(1)</td>
+<td>3,000 sweeps</td>
+<td>stays in the domain, at most 1 stray</td>
+</tr>
+<tr>
+<td>9a Lemma C with EQ: every G word (tails ≤ 6 tokens, n ≤ 15) sweeps with ≤ 1 S; without EQ the 16 clauses have no derivation for 75 of them (first <code>LS01</code>)</td>
+<td>15,593</td>
+<td>all pass; the 75 strict failures equal the real machine with EQ (75/75)</td>
+</tr>
+<tr>
+<td>9a <code>LS01</code>: strict derivation fails, EQ gives <code>LLLL01</code> = real machine = <code>Example sweep_LS01</code></td>
+<td>1</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>9b Lemma D: an S-free x(w') contains a 1 or an L, and n' ≥ 1 (the words of 9a)</td>
+<td>14,528</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>9c J3 + (N ≥ N0) refuted by <code>(2^(m+1)−4, 00001)</code> → <code>1 0^m 1</code>, 2θ' = N'+1 (m = 4..20; brute-force θ for m ≤ 10)</td>
+<td>17</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>9d orbit: max (V + lead)/N = 1.25 exactly, at sweep 2 (N = 4, x = <code>101</code>)</td>
+<td>3,000</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>9e V1: Inc adds 1 to V* (S-free words ≤ 8 tokens, exhaustive)</td>
+<td>9,841</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>9f V2: V*(drop_a E_N(x)) = N + c(x) for N = θ..θ+11 (S-free x ending with 1, ≤ 7 tokens, exhaustive)</td>
+<td>13,116</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>9g Lemma T (conjecture): 2θ(x) ≤ V*(x) − 1 (S-free x ending with 1, ≤ 11 tokens, exhaustive)</td>
+<td>88,573</td>
+<td>all hold; 68 tight (2θ = V* − 3)</td>
+</tr>
+<tr>
+<td>9g T tight on <code>1 0^m 1</code>; false for <code>100000000L</code>; pure-binary c(x) ≤ |x| (≤ 11 tokens); L-driven c examples</td>
+<td>1 + 2,047 + 1</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>9h orbit: V<em>(x_(s+1)) = N_s + c(x_s); T at every x_s; for s ≥ 27, 0.952 ≤ V</em>/N ≤ 1.193 and c ≤ 0.215 N</td>
+<td>2,999 / 3,000</td>
+<td>all hold</td>
+</tr>
+<tr>
+<td>9i J4 not inductive: <code>(257, 10000000L1)</code> → <code>(259, 0100000LLL01)</code>, V* = 642 &gt; 519, θ' = 94</td>
+<td>1</td>
+<td>as stated</td>
+</tr>
+<tr>
+<td>9j 400 random J4 states (N ≥ 131, biased to V* ≈ 2N), 25 sweeps each: θ ≤ N throughout</td>
+<td>400 (10,000 steps)</td>
+<td>all hold; max V*/N from the third state on 1.437</td>
+</tr>
+<tr>
+<td><strong>Rocq</strong> (not simulation): <code>scripts/TwinSpec.v</code>: <code>Inc_spec</code> + <code>RIncs_spec</code> (mutual, 16 clauses + <code>RIncs_eq</code>), <code>s1_eq</code>/<code>d0s_eq</code>/<code>s0_eq</code>, <code>BigStep</code>, <code>init</code>, <code>Example sweep_LS01</code>; Coq 8.20.1, unmodified busycoq</td>
+<td>1 file</td>
+<td>compiles (3.7 s); 5/5 <code>Print Assumptions</code> closed</td>
+</tr>
+</tbody>
+</table>
+<p>Gaps: the closure of §3.3.5 (fatal: Lemma T is a conjecture and K is not found) and therefore <code>nonhalt</code>. Ground rule 3 applies: nothing here is a kill.</p>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</p>
+<h2 id="review-log">Review log</h2>
+<h3 id="2026-10-10-skeptic-review-of-pass-2-answered-in-pass-3">2026-10-10: skeptic review of pass 2, answered in pass 3</h3>
+<p>Verdict received: <strong>not sound</strong>: 1 fatal gap and 5 minor ones. Each gap, and what changed:</p>
+<ol>
+<li><strong>FATAL. There is no inductive invariant (§3.3.5, §5). Still open; the status is STUCK.</strong>
+   - The line "J3 with N ≥ N0 is untested" is replaced by its refutation, <code>(2^(m+1)−4, 00001)</code>. Check 9c covers m = 4..20, with brute-force θ for m ≤ 10. The reviewer's θ ≤ N variants are recorded too: <code>(428, 10000000LLL1)</code> and <code>(439, LL11111111LLL1)</code>, re-run here.
+   - Following the reviewer's advice, the next candidate was tested by starting inside it at large N (check 9j), not only along the orbit.
+   - New in this pass, the weighted value V*:<ul>
+<li>V1 (Inc is +1 on V<em>) and V2 (the sweep is affine, V</em>(x') = N + c(x)) are proved.</li>
+<li>Lemma T (2θ ≤ V* − 1 for words ending with 1) is a conjecture, exhaustive to 11 tokens.</li>
+<li>J4 (ends with 1 and V* ≤ 2N+1, a count-only condition under T) is refuted at <code>(257, 10000000L1)</code>. It is a strong attractor, though: 400 starts × 25 sweeps never leave the domain.</li>
+<li>The open problem is now stated as: prove T, and find a shape condition K on the L positions that bounds c(x) and is preserved.</li>
+<li>J4 does not need the reviewer's suggested lower bound V ≥ N/2.</li>
+<li>The 9c family stays inside J4: V<em>(x') = 2^(m+1)+1 ≤ 2N'+1. The reason is that J4 bounds θ through V</em>, not through N.</li>
+<li>V2 also gives V*(x') = N + c(x) &gt; N after every sweep, because c ≥ 1 on every word up to 9 tokens.</li>
+<li>What breaks J4 is the shape, not the size: an L near the top.</li>
+</ul>
+</li>
+<li><strong>Minor. Lemma C's re-parse is needed inside the derivation.</strong> Fixed.
+   - <code>RIncs_eq</code> added to TwinSpec.v. Its spec case is one <code>rewrite</code>. Also added: <code>s1_eq</code>, <code>s0_eq</code>, <code>d0s_eq</code> and <code>Example sweep_LS01</code>; all compile, with 5/5 <code>Print Assumptions</code> closed.
+   - Lemma C now gives the derivation step by step, with EQ exactly once, after the n X1's and before the tail. Lemma A has the EQ case.
+   - Check 9a reproduces the reviewer's count, 75 of 15,593 strict failures. With EQ, all 15,593 G words sweep, and the 75 failures match the real machine.</li>
+<li><strong>Minor. Lemma D did not show that x(w') contains a 1 or an L.</strong> Fixed.
+   - The argument is added: a ≥ 1, and every Inc output contains a 1 or an L.
+   - Check 9b.</li>
+<li><strong>Minor. G and P did not carry "canonical" and "at most one stray".</strong> Fixed.
+   - Both are now conjuncts of G (§3.3.3) and are written out in P (§5).
+   - The configuration-level re-parse and B3 re-establish them after each sweep.</li>
+<li><strong>Minor. "Functional" R and Inc lacked a determinism lemma.</strong> Fixed by <strong>Lemma U</strong> (§3.3.1).
+   - Under the convention "R0, not Z, on <code>[]</code>", Inc and the EQ-free R have at most one derivation per instance, strays included. The proof is syntactic.
+   - Lemmas A and B respect the convention, so "the" output is meant syntactically. EQ is used once per sweep, on a derivation that is never compared.
+   - §1 and §6 are updated. The machine's own determinism is not used: <code>sideRL</code> quantifies over all left halves, so it is not obviously functional.</li>
+<li><strong>Minor. The orbit claims overstated the evidence.</strong> Fixed.
+   - The text now says "the first 3,000 sweeps (and 278 from-blank boundaries)".
+   - The 1.25 bound is attained exactly at sweep 2 (N = 4, x = <code>101</code>), so J3's constant has no slack (check 9d).</li>
+</ol>
+<p>Also changed: the AI-assistance line now uses the standard disclosure wording.</p>
+<p>Validation (pass 3): <code>python3 -B check_proof.py</code> (23 s) and <code>--full</code> (10 min) are both ALL PASS, including Rocq with 5/5 closed. The numbers are in §7. Status: <strong>STUCK</strong>, because the fatal gap remains.</p>
+</main></body></html>

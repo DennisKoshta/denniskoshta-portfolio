@@ -1,0 +1,320 @@
+{
+ "tm": "1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB",
+ "pass": "deepen round 3 (2026-10-10, deepen3_oracle_free)",
+ "confidence": "high",
+ "recommend": "proof",
+ "mechanism": "A binary counter whose digits sit at unary gaps inside a bouncer; each bounce is +1. At each overflow the carry runs into the right counter RC (gap-1 R digits plus a tail). The tail counts overflows and decides each one: a 2-bit front unit cycles 10->01->11->{00 | 10}. The 11->10 wrap is a SILENT overflow: the counter wraps, the lead gains 1 and there is no pause. Every other overflow starts a pause (the wall/zone process of round 1), and the 0->1 flips of the front bit add one R digit. The tail is five fixed units plus an end unit (0?)^m 01. The end unit changes only at long, Fibonacci-like intervals, and it gains one '0?' (right edge +2) when it fills. With the true tail sequence the macro model is perfectly regular: silent overflows land only in normal mode, and after each one the pause has POs at p = 2^x+5, 2^y+2, 8 (new gap 7). Round 3: the proof does not need the silent schedule. The tail stays in a regular language L* (closed for every bit setting) whose front unit follows TAILFRONT, and under every TAILFRONT outcome sequence the macro arithmetic keeps the interval invariant above, so no degenerate parameter appears.",
+ "closed_gaps": [
+  "Pause internals: 7 local rules (P100, WX, P010, ZX, ZXN, ZXP1, ZXP2) validated 1050/1050 (scripts/deepen_rules.py seed 7) with exact whole-tape match; exact step formulas 12p+6S+24j+19 (P100/P010) and 12p+6S+24j+39 (ZX), 60/60 each",
+  "Overflow transitions NO and PO (zones built from every large gap; lead or inner lead goes into the wall) validated 260/260 on the 13 real tail states up to 6e8 (scripts/deepen_ovf.py)",
+  "Exact bits after a pause: v follows +2 per wall cycle and 2v+4 / 2v+6 at each digit insertion",
+  "Gap formula: each new gap equals p_ovf - 1, where p_ovf is the inner lead at a P-mode overflow",
+  "Multi-insert pause at 1.14e8: three P-mode overflows in one pause (1028, 4097, then remainder 7)",
+  "Ovf-short is the WX branch: the outer wall runs out before the next overflow",
+  "R growth: the tail emits one gap-1 digit at alternate overflows; the emission bit equals the new low bit of the tail's first 2-bit unit (12/12 non-silent events)",
+  "1.45e7 event identified as a silent overflow (counter wraps, no pause), which explains a = 1849 + 4096 = 5945 at the 1.14e8 pause",
+  "Tail transition is independent of overflow type (NO vs PO): 13/13 (scripts/deepen_tail_typeindep.py)",
+  "Macro model (scripts/deepen_abstract.py) with tail oracle e0,e1,e0,e1,S,e0,e1,e0,e1 reproduces every normal-mode entry from step 36,124 to 555,048,797 exactly (a, v bits, all gaps, R count)",
+  "R2: The tail driver is fixed. Round 1's synthetic chain had no gap-2 digit and produced a wrong tail sequence. scripts/deepen2_rc_chain.c drives RC (everything right of the gap-2 digit) one overflow at a time by direct simulation and reproduces all 12 real RC transitions from step 8,109 to 400,944,248 exactly",
+  "R2: Tail decision rule decoded, 40,000/40,000 overflows. The front unit (cells c-78, c-76) cycles 10->01->11->00->10. SILENT <=> 11->10, R-digit emission <=> c-78 flips 0->1 (00->10 or 01->11); there is no other kind. Totals: 34,984 NO (17,492 emitting) and 5,016 SILENT, with no halt and no other outcome. Every NO left part checked exactly as (100)^a 101001...; every SILENT checked as lead a+1 with the gap-2 digit kept",
+  "R2: The tail is a counter. Over 9,057 overflows the number of silent events so far is an exact linear function of the tail bits (weights 1,2,3,6,10,16,32,52,64,104,128,256,464,720)",
+  "R2: Tail shape. Five fixed units, 0?0?0?10001 | 0?0?10001 | 0?1000?10001 | 0?0?1000?10001 | 0?1000?1000?1000?1000?10001, then an end unit (0?)^m 01. m grows by 1 (right edge +2) at overflows 9,057 and 24,241. All other cells are constant",
+  "R2: Silent overflow inside a pause (SILENTP): (100)^(n+1) 1 A>(001)^p 00 D(2^N-2) T_s -> (100)^n 1 A>(001)^(p+1) 00 D(0) T_s', i.e. P100 with wrap. Validated 60/60 (n>=1, p>=0, 0-3 large gaps). The macro model never reaches it",
+  "R2: Degenerate parameters are not reached. With the true tail oracle, the macro model runs 8,000 overflows (2,495 NO, 1,004 SILENT, 4,501 PO) with min p at PO = 8, min wall at PO = 50, min a at NO = 121, min gap = 7, no zone under 3 blocks, no overflow during a zone rebuild and no silent in a pause",
+  "R2: The NO/PO transition forms also hold at tiny parameters: NO with a in {0,1}, PO with p in {0,1,2} or wall n in {0,1,2} (scripts/deepen2_edge_s3.result.jsonl, 12 probes)",
+  "R2: Step counts. ZXN = 12p+6S+24j+39 and ZXP1 = 12p+6S+24j+19 (exact, 60/60 each). ZXP2 = 6p'+23 with p' = p+1 (60/60). For a fixed RC: NO = 3a+3*sum(G)+7|G|+C_NO(RC) and PO = 9p+3*sum(G)+7|G|+C_PO(RC) (60/60 each; C = 248/258 for the RC before overflow 7)"
+ ],
+ "remaining_gaps": [
+  "The L* fixed-part table (16,384 states) needs a token-level decomposition (words over 00/01/100) for Rocq",
+  "Parametric proofs of Inc, the R-digit carry, ENDCARRY and the pause rules (validated on random instances only)",
+  "C_NO / C_PO step constants (only for accounting); .v size large"
+ ],
+ "evidence": [
+  "scripts/deepen_rules_s7.result.json: P100 150/150, WX 150/150, P010 150/150, ZX 150/150, ZXN 150/150, ZXP1 150/150, ZXP2 150/150",
+  "scripts/deepen_ovf_s11.result.json: NO x6, PO x6 and SILENT x1 events, 20/20 each = 260/260",
+  "scripts/deepen_abstract.py: predicted a=800, bits 01110100011000001, G=[7,4097,1028,260,68,28], NR=10 at the 5.55e8 normal entry, which matches the direct simulation exactly",
+  "Inner-record dump to 6e8 steps (scripts/deepen_irec.c + scripts/deepen_phases.py): 28,658 records; every phase change fits the rule set",
+  "scripts/deepen_tail_chain.py: 675+ rounds (about 7,500 synthetic overflow events), no HI/HALT/OOB, tail never grew past 79 cells",
+  "Future macro run with strict e0/e1 alternation: 40 normal-mode cycles, perfectly regular (one PO per NO, gaps 32778, 131076, 524292, ...), no degenerate case",
+  "scripts/deepen2_rc_chain.c (+ .py reference): 12/12 exact match against real RC states; 40,000-overflow run summarised in scripts/deepen2_rc_chain_40k.summary.json",
+  "scripts/deepen2_validate_s5.result.json: SILENTP 60/60, SILENTN 60/60, ZXN 60/60, ZXP1 60/60, ZXP2 60/60 + exact step fits",
+  "scripts/deepen2_macro_8000.result.json: macro model with the chain oracle, 8,000 overflows, degenerate=null, n_S_in_pause=0, remainders {8: 1003, 69: 1, 261: 1}",
+  "scripts/deepen2_ovf_steps_s2.result.json: NO/PO step fits, max error 0 on 60 instances each",
+  "scripts/deepen2_edge_s3.result.jsonl: NO a<2, PO p<=2, PO n<=2 and silent-PO probes"
+ ],
+ "rules": [
+  {
+   "name": "P100",
+   "from": "0^inf (100)^(n+1) 1 A>(001)^p 00 D(v) T",
+   "to": "0^inf (100)^n 1 A>(001)^(p+1) 00 D(v+2) T",
+   "steps": "12p + 6(g1+..+gj) + 24j + 19",
+   "cases": "b0=0, v+2<2^N; j = lowest index>=1 with bit 0",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   }
+  },
+  {
+   "name": "WX",
+   "from": "0^inf 1 A>(001)^p 00 D(v) T",
+   "to": "0^inf A>(001)^(p+1) 00 D(v+2) T (normal mode)",
+   "steps": null,
+   "cases": "b0=0",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   }
+  },
+  {
+   "name": "P010",
+   "from": "0^inf Y (010)^(m+1) 01 A>(001)^p 00 D(v) T",
+   "to": "0^inf Y (010)^m 01 A>(001)^(p+1) 00 D(v+2) T",
+   "steps": "12p + 6(g1+..+gj) + 24j + 19",
+   "cases": "Y any wall prefix seen in the run",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   }
+  },
+  {
+   "name": "ZX",
+   "from": "0^inf Y (010)^h 1001 01 A>(001)^p 00 D(v) T",
+   "to": "0^inf Y (010)^(h-3) 01 A> 00 0010001 (100)^(p+2) D(v+2) T",
+   "steps": "12p + 6(g1+..+gj) + 24j + 39",
+   "cases": "h>=3",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   }
+  },
+  {
+   "name": "ZXN",
+   "from": "0^inf (100)^n 10100101 A>(001)^p 00 D(v) T",
+   "to": "0^inf (100)^(n-2) 1 A> 00 0010001 (100)^(p+2) D(v+2) T",
+   "steps": "12p + 6S + 24j + 39",
+   "cases": "n>=2",
+   "validated": {
+    "instances": 150,
+    "passed": 150
+   }
+  },
+  {
+   "name": "ZXP",
+   "from": "0^inf (100)^n 01 A>(001)^p 00 D(v) T",
+   "to": "0^inf (100)^(n-1) 10 A>(001)^(p+1) 00 D(v+2) T, then 0^inf (100)^(n-3) 1 A> 00 0010001 (100)^(p+1) D(v+3) T",
+   "steps": "12p + 6S + 24j + 19, then 6(p+1) + 23",
+   "cases": "n>=3",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   }
+  },
+  {
+   "name": "NO",
+   "from": "0^inf A>(001)^a 00 D(2^N-1) T",
+   "to": "0^inf (100)^a 101001 [ (010)^(g+1) 1001 for g in G ] 01 A> 00 D_R(0) T'",
+   "steps": null,
+   "cases": "T not the silent state; D_R(0) T' depends only on T",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   }
+  },
+  {
+   "name": "PO",
+   "from": "0^inf (100)^n 1 A>(001)^p 00 D(2^N-2) T",
+   "to": "0^inf (100)^n (010)^(p+1) 1001 [ (010)^(g+1) 1001 for g in G ] 01 A> 00 D_R(0) T'",
+   "steps": null,
+   "cases": "same tail dependence as NO",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   }
+  },
+  {
+   "name": "SILENT",
+   "from": "0^inf A>(001)^a 00 D(2^N-1) T_s",
+   "to": "0^inf A>(001)^(a+1) 00 D(0) T_s'",
+   "steps": null,
+   "cases": "only the tail state seen at step 1.45e7",
+   "validated": {
+    "instances": 20,
+    "passed": 20
+   }
+  },
+  {
+   "name": "TAILFRONT",
+   "from": "front unit (c-78,c-76) of the tail at an overflow",
+   "to": "10->01 (NO, e0), 01->11 (NO, e1), 11->00 (NO, e0), 00->10 (NO, e1), 11->10 (SILENT, e0); which of 11->00 / 11->10 happens depends on the rest of the tail",
+   "steps": null,
+   "cases": "all overflows",
+   "validated": {
+    "instances": 40000,
+    "passed": 40000
+   }
+  },
+  {
+   "name": "SILENTP",
+   "from": "0^inf (100)^(n+1) 1 A>(001)^p 00 D(2^N-2) T_s",
+   "to": "0^inf (100)^n 1 A>(001)^(p+1) 00 D(0) T_s'",
+   "steps": null,
+   "cases": "tail in a silent state; n>=0, p>=0",
+   "validated": {
+    "instances": 60,
+    "passed": 60
+   }
+  },
+  {
+   "name": "SILENT (re-check)",
+   "from": "0^inf A>(001)^a 00 D(2^N-1) T_s",
+   "to": "0^inf A>(001)^(a+1) 00 D(0) T_s'",
+   "steps": null,
+   "cases": "a>=0, 0-3 large gaps",
+   "validated": {
+    "instances": 60,
+    "passed": 60
+   }
+  },
+  {
+   "name": "ZXN steps",
+   "from": "see ZXN",
+   "to": "see ZXN",
+   "steps": "12p + 6S + 24j + 39",
+   "cases": "n>=2",
+   "validated": {
+    "instances": 60,
+    "passed": 60
+   }
+  },
+  {
+   "name": "ZXP steps",
+   "from": "see ZXP",
+   "to": "see ZXP",
+   "steps": "first half 12p + 6S + 24j + 19; second half 6p' + 23 (p' = p+1)",
+   "cases": "n>=3",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   }
+  },
+  {
+   "name": "NO/PO steps",
+   "from": "see NO / PO",
+   "to": "see NO / PO",
+   "steps": "NO: 3a + 3*sum(G) + 7|G| + C_NO(RC); PO: 9p + 3*sum(G) + 7|G| + C_PO(RC)",
+   "cases": "RC fixed (C = 248 / 258 for the RC before overflow 7)",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   }
+  },
+  {
+   "name": "L*-CLOSURE",
+   "from": "RC = (0110001100)^r [01100 iff y=1] W(m), W = 0x0y0z10001 0?0?10001 0?1000?10001 0?0?1000?10001 0?1000?1000?1000?1000?10001 (0?)^m 01, x=1",
+   "to": "N or S, new RC in L* with m or m+1; front unit (y,z) and emission follow TAILFRONT",
+   "steps": null,
+   "cases": "every bit setting, m=0..8 (exhaustive)",
+   "validated": {
+    "instances": 8372224,
+    "passed": 8372224
+   }
+  },
+  {
+   "name": "ENDCARRY",
+   "from": "fixed bits all 1, end bits 1^j 0 rest (or 1^m)",
+   "to": "j even: N, (10)^(j/2) 1 rest; j odd: S, (01)^((j+1)/2) rest; 1^m as j=m+1 with growth",
+   "steps": null,
+   "cases": "m=9..60, random r, a, large gaps",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   }
+  },
+  {
+   "name": "NOCARRY",
+   "from": "fixed bits not all 1",
+   "to": "as the m=3 table; end bits unchanged (head stays >= 6 cells left of the end unit)",
+   "steps": null,
+   "cases": "m=9..60, random r, a, large gaps",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   }
+  },
+  {
+   "name": "TAIL-PO-CONTEXT",
+   "from": "PO / SILENTP start with an L* tail",
+   "to": "same new RC as the NO / SILENT start",
+   "steps": null,
+   "cases": "random L* tails, m=0..30",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   }
+  },
+  {
+   "name": "MACRO-INV",
+   "from": "normal-mode overflow in the invariant set",
+   "to": "next normal-mode overflow in the invariant set via S / P1 / P1S / P3",
+   "steps": null,
+   "cases": "front-unit-language outcomes, S free",
+   "validated": {
+    "instances": 61089,
+    "passed": 61089
+   }
+  }
+ ],
+ "round2_remaining_gaps": [
+  "General tail rule. The carry through the five fixed units is finite: it has been observed for 40,000 overflows but not enumerated over all unit states. The end unit (0?)^m 01 has no parametric rule. Its changes come at overflows 3313, 5361, 7009, 9057 | 14801, 18497, 20545, 22193, 24241 | 33681, 39425, with gaps 2048, 1648, 2048 | 5744, 3696, 2048, 1648, 2048 | 9440, 5744. These gaps satisfy F(n) = F(n-1) + F(n-2), which suggests a Zeckendorf-style counter. Its growth rule (m -> m+1) is seen only twice",
+  "No closed form yet for the macro dynamics as a function of the tail count. Observed (8,000 overflows, not proven): silent overflows are 7 or 11 apart, and after each silent the pause has exactly three POs with p = 2^x+5, 2^y+2 and 8. A proof needs this as an induction over super-cycles",
+  "The pause rules (ZX/ZXP) at small parameters are unvalidated: a zone of 1 or 2 blocks, or ZXP with n < 3. They are unreachable per the macro model, which is evidence but not a proof",
+  "C_NO(RC) and C_PO(RC), the tail-dependent constants in the NO/PO step counts, have no formula. They are needed only for Rocq step accounting"
+ ],
+ "updated": "2026-10-10",
+ "rounds": [
+  {
+   "round": 3,
+   "date": "2026-10-10",
+   "option": "deepen3_oracle_free",
+   "stage": "funded stage: oracle-free proof route (macro model under any tail outcomes + tail-shape closure)",
+   "confidence": "high",
+   "outcome": "CHECKPOINT_A (deepen3, high): both tests pass, test (1) only with the front-unit rule; proof.md is next",
+   "closed_gaps": [
+    "Test (1), arbitrary outcome sequences: FAIL as stated. 200/200 random e0/e1/S seeds degenerate within 400 events (150 PO with p<=2, 50 rebuild overflow). The cause is arithmetic: an e0 PO right after a NO rebuild leaves 2 cycles.",
+    "Test (1), front-unit-language sequences (TAILFRONT automaton, S free at every 11 slot incl. inside pauses): PASS. 400 random seeds x 1,500 events (16,053 SILENTP) and an exhaustive DFS of all 2,265,815 sequences of 72 events (12.5 M nodes) from the step-36,124 state: 0 degenerate; min p at PO 8, min wall at a PO slot 34, min a at NO 121",
+    "Macro invariant, proved by interval arithmetic from the macro model: at every normal-mode overflow (M=2^N, c=D(G,R)-4, s=a-c, f=front unit), f=11 and 24<=s<=M/4+2, or f=10 and s in [8,M-14] or [M+24,2M]; c=M/4+kappa, kappa in {2,8}. Only four paths between normal-mode overflows (P1 from either f): S (s+M), P1 (4M, M+10-s), P1S (4M, 5M+10-s), P3 (32M, 9M+32-s). Checked 61,269/61,269 slots and 61,089/61,089 transitions exactly; true orbit 3,497/3,497",
+    "Test (2), tail closure: PASS. All 33,488,896 bit settings of the template for m=0..8 give N or S and stay in the shape. On L* (x=1, H=y; 8,372,224 inputs) the image stays in L* and TAILFRONT plus the emission hold exactly. Tables are identical for (r,a) in {(1,2),(2,2),(5,7),(9,30)} and reproduce 9,299/9,299 true chain transitions, incl. the m=3->4 growth",
+    "Locality: for the 16,383 L* fixed states that are not all-1, the head stays >= 6 cells left of the end unit, so the finite table holds for every m",
+    "ENDCARRY (fixed bits all 1): end bits 1^j 0 rest -> j even N (10)^(j/2) 1 rest, j odd S (01)^((j+1)/2) rest; 1^m acts as j=m+1 and grows the unit; fixed bits become 100100010001010 / 110000100100101, e0. 300/300 at m=9..60 (r<=12, a<=40, 0-2 large gaps, R-digit reset checked); NOCARRY 300/300",
+    "The tail transition is the same in PO/SILENTP context as in NO/SILENT context: 200/200 random L* tails (176 N, 24 S)"
+   ],
+   "remaining_gaps": [
+    "The L* fixed-part table (16,384 states) needs a token-level decomposition (words over 00/01/100) for Rocq",
+    "Parametric proofs of Inc, the R-digit carry, ENDCARRY and the pause rules (validated on random instances only)",
+    "C_NO / C_PO step constants (only for accounting); .v size large"
+   ],
+   "evidence": [
+    "scripts/deepen3_rand_any.result.json",
+    "scripts/deepen3_rand_fu_0.05.result.json",
+    "scripts/deepen3_rand_fu_0.3.result.json",
+    "scripts/deepen3_rand_fu_0.7.result.json",
+    "scripts/deepen3_rand_fuN_0.3.result.json",
+    "scripts/deepen3_dfs72.result.json",
+    "scripts/deepen3_inv.result.jsonl",
+    "scripts/deepen3_closure.result.json",
+    "scripts/deepen3_closure_runs.log",
+    "scripts/deepen3_closure_vs_chain.result.txt",
+    "scripts/deepen3_endunit_s11.result.json",
+    "scripts/deepen3_po_context_s5.result.json"
+   ],
+   "scripts": [
+    "scripts/deepen3_macro.py",
+    "scripts/deepen3_closure.c",
+    "scripts/deepen3_closure_check.py",
+    "scripts/deepen3_closure_vs_chain.py",
+    "scripts/deepen3_endunit_validate.py",
+    "scripts/deepen3_po_context.py"
+   ]
+  }
+ ]
+}

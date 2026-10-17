@@ -1,0 +1,912 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF/proof.md · <a href="/busy-beaver/machines/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF/proof.md.html">raw</a></div>
+<h1 id="1rb1lf_0rc0rb_0ld1la_1lc0le_0la-_1la1lf-w4-2-never-halts-informal-proof">1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF (W4-2): never halts (informal proof)</h1>
+<ul>
+<li>Machine: <code>1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF</code> (740 list, line 224; on every list since 2024-06-14), viewer https://bbchallenge.org/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF</li>
+<li>Sheet: "Bell eats counter", no claim, no Discord thread. Written for the string itself (no mirror, no renaming). Its only undefined transition is E1.</li>
+<li>Template: <code>verify/BECv5.v</code>, <code>Module TM1</code> (<code>...1LA0RB</code>) and <code>Module TM2</code> (<code>...1LA1LB</code>). They differ from this machine only in F1. The right side <code>R n m</code>, the right step <code>RIncs</code>, the standard counter <code>LC0</code> with its increments, and the standard overflow <code>ROv</code> carry over word for word (§8).</li>
+<li>Machine 349 <code>1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---</code> is the <code>tm'</code> of Eqv_v3 TM518. That module's <code>tm</code> is this table <strong>mirrored</strong> (L↔R) and renamed F→A, A→B, B→C, C→D, D→E, E→F, then started in its A, which is this table's F. The same mathematics covers 349 (§7.3). Its Rocq proof needs a short reduction (flip, then renaming, then TM518.eqv) on top of this machine's lemmas (§8).</li>
+<li>Status: informal proof, complete. Finite claims (low-level rules, initial segment) are executed exactly. Parametric claims are derived by hand in §3–§4, and <code>check_proof.py</code> checks each one, exhaustively on small cases and on random large ones (§9). Not yet formalized.</li>
+<li>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</li>
+</ul>
+<h2 id="0-summary">0. Summary</h2>
+<p>The tape is <code>0^inf w &lt;A 1 (10)^(1+n) 0 (10)^m 0^inf</code>. The left part <code>w</code> is a word read as two interleaved binary numbers (even cells E, odd cells O). The right part is BECv5's <code>R n m</code>.
+- <strong>Bounce.</strong> Each bounce applies one map <code>phi</code> to <code>w</code> and moves one <code>10</code> from the n-block to the m-block.
+- <strong>Overflow.</strong> At n = 0 the right side eats the low end of <code>w</code> (an <em>overflow</em>), and n is refilled from what it ate.
+- <strong>Counter.</strong> Most of the time <code>w</code> is a binary counter, alternating between two encodings: standard <code>std</code> and packed <code>pk</code>.
+- <strong>Halting.</strong> The machine can halt (and meets the one branch with no rule) only if an overflow finds the lowest 1 of <code>phi(w)</code> on an odd cell and the two cells above it are not <code>00</code>. That can only happen while <code>w</code> is still <em>dirty</em> after the previous overflow.</p>
+<p>The proof is an invariant <code>I</code> on the clean overflow states <code>(typ, N, m)</code>. It consists of linear bounds on <code>N</code> in terms of <code>m</code>, chosen by the parities of <code>N</code> and <code>m</code>. Under <code>I</code>, every cycle is one of eleven macro rules (§3.4). None of them meets a halting overflow, and each maps <code>I</code> into itself (§4).</p>
+<table>
+<thead>
+<tr>
+<th>piece</th>
+<th>status</th>
+<th>where checked (§9)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>low-level rules L0, L1, RS, OV (exact runs, every case)</td>
+<td>proved (finite runs and shift rules)</td>
+<td>LS, RS, OV, K</td>
+</tr>
+<tr>
+<td><code>phi</code> in E/O coordinates: lemma SW, increments, orbit lemmas O3–O6</td>
+<td>proved by hand (§3.3)</td>
+<td>PHI, ORB</td>
+</tr>
+<tr>
+<td>macro rules S0–S3, P0–P4</td>
+<td>derived from the above (§3.4)</td>
+<td>X, B (abstract and direct TM)</td>
+</tr>
+<tr>
+<td>coverage (Lemma S) and closure (Lemma C) of <code>I</code></td>
+<td>proved by hand (§4)</td>
+<td>INV</td>
+</tr>
+<tr>
+<td>initial segment, 32 steps</td>
+<td>exact</td>
+<td>Z</td>
+</tr>
+<tr>
+<td>step formulas</td>
+<td>exact on the stored direct run to 1e10 steps</td>
+<td>Z</td>
+</tr>
+<tr>
+<td>349: TM518 <code>tm</code> = mirror + renaming of this table, started in F</td>
+<td>exact (string identity and transition table)</td>
+<td>F</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-rule-table-busycoq-comment-block-style">1. Rule table (busycoq comment-block style)</h2>
+<div class="highlight"><pre><span></span><code>1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF          (only E1 is undefined)
+
+words: w = ... c2 c1 c0 (offset 0 = the cell A reads); W(e,o): bit d of e at offset 2d, bit d of o at offset 2d+1
+std(N) = W(N,0);   pk(N) = W(N-2^(P+1), 2^P) for 2^(P+1) &lt;= N &lt; 2^(P+2)
+K(w,n,m) = 0^inf w &lt;A 1 (10)^(1+n) 0 (10)^m 0^inf   (= BECv5's  w &lt;| R n m);   S(typ,N,m) = K(typ(N),0,m)
+phi(w): last cell 0 -&gt; 1;  else (e,e+1) := lowest pair of adjacent 0 cells: cell e+1 := 1, cells 0..e := 0
+
+R1  K(w,n,m) --&gt; K(phi(w), n-1, m+1)       n &gt;= 1                                    steps L(w) + 10n+7
+R2  K(w,0,m) --&gt; K(x, m+1+u, 0)            phi(w) = x 1 0^(2u)                       steps L(w) + 2u+8
+R3  K(w,0,m) --&gt; K(x', 0, m+u+2)           phi(w) = x' 0 0 1 0^(2u+1)  (x'00 may be 0^inf)   L(w) + 2u+15
+R4  K(w,0,m) --&gt; halt (E1)                 phi(w) = x 1 1 0^(2u+1)
+R5  K(w,0,m) --&gt; nested scan, no rule      phi(w) = x 1 0 1 0^(2u+1)
+    L(w) = 1 if c0 = 0, else 2e+3 with (e,e+1) as in phi
+
+N+1 = (2k+1) 2^i,  b = m+1+i,  L = bitlen(k),  r = k - 2^(L-1),  tz = number of trailing 0 bits
+S0  S(std,N,m) --&gt; S(std, b, b)                k = 0
+S1  S(std,N,m) --&gt; S(pk, 2k+b, b)              k &gt;= 1, and k = 2^(L-1) or 2k+b &gt;= 2^(L+1)
+S2  S(std,N,m) --&gt; S(std, b+L+3, b+L+3)        k not a power of 2, 2k+b+1 = 2^(L+1)
+S3  S(std,N,m) --&gt; S(std, D+n, n)              k not a power of 2, k &lt; 3*2^(L-2), 3*2^(L-1) &lt; 2k+b+1 &lt; 2^(L+1)
+P0  S(pk,N,m)  --&gt; S(std, b+1, b+1)            k = 0
+P1  S(pk,N,m)  --&gt; S(std, k+b, b)              k &gt;= 1, k = 2^(L-1)
+P2  S(pk,N,m)  --&gt; S(std, 2r+b, b)             r &gt;= 1, 2r+b &gt;= 2^L
+P3  S(pk,N,m)  --&gt; S(std, b+L+1, b+L+1)        r &gt;= 1, 2r+b+1 = 2^L
+P4  S(pk,N,m)  --&gt; S(pk, D+n, n)               1 &lt;= r &lt; 2^(L-2), 2^(L-1) &lt; 2r+b+1 &lt; 2^L
+    S3/P4: v = 2k+b+1-3*2^(L-1) (S3) or 2r+b+1-2^(L-1) (P4); u = tz(v), h = L-2-u, g = v &gt;&gt; (u+1), n = b+1+u;
+           D = 3*2^h if g = 0 (S3a/P4a);  D = 2^(h+1)+2g if g &gt;= 1 and n &gt;= 2^(h+1)-2g (S3b/P4b)
+    each rule runs to the FIRST overflow state K(w',0,m') with w' clean and N' &gt;= 1;  S2 and P0 pass through
+    K(0^inf,0,M) = S(std,0,M) on the way (M = b+L+2 / b; not in I), and leave it by S0
+
+invariant I(typ,N,m):   1 &lt;= m &lt;= N (pk: N &gt;= 2), and
+  N = m (mod 2):   std: 2N &lt;= 3m+6 (N even), N &lt;= 2m+3 (N odd);   pk: N &lt;= 2m+3 (N even), 2N &lt;= 5m+6 (N odd)
+  N != m (mod 2):  N &lt;= m+3
+I(s) -&gt; exactly one of S0..S3, P0..P4 applies to s, and I holds at its result
+
+start: c0 --&gt;(32) K(1,0,1) = S(std,1,1), which satisfies I
+</code></pre></div>
+
+<h2 id="2-notation-and-families">2. Notation and families</h2>
+<ul>
+<li><strong>Words.</strong> A word <code>w</code> is the finite nonzero part of the tape left of the head, plus the cell under it. It is written highest cell first and read as a number: bit d is the cell at offset d, offset 0 = the cell A reads. Even offsets are <em>E-cells</em>, odd offsets <em>O-cells</em>.</li>
+<li><strong><code>W(e, o)</code></strong> is the word with bit d of <code>e</code> on E-cell 2d and bit d of <code>o</code> on O-cell 2d+1. Every word is <code>W(e,o)</code> for exactly one pair. <code>Hi·W_h(c, o)</code> means the high word <code>Hi</code> shifted up by 2h cells, above a low part of 2h cells holding <code>c, o &lt; 2^h</code>.</li>
+<li><strong>Counters.</strong></li>
+<li>Standard: <code>std(N) = W(N, 0)</code>. Its digits are <code>00</code> = 0 and <code>01</code> = 1, and this is BECv5's <code>LC0 N = BinInc &lt;[0;1] N</code>.</li>
+<li>Packed: <code>pk(N) = W(N - 2^(P+1), 2^P)</code>, for N ≥ 2 with 2^(P+1) ≤ N &lt; 2^(P+2). The top two bits share one digit pair <code>1t</code>, and the rest are std digits. For example, pk(6) = W(2, 2) = <code>1100</code> and pk(7) = <code>1101</code>.</li>
+<li>The words <code>std(N)</code> and <code>pk(N)</code> are <em>clean</em>. Every other word is <em>dirty</em>.</li>
+<li><strong>Configurations.</strong></li>
+<li><code>K(w, n, m) = 0^inf w &lt;A 1 (10)^(1+n) 0 (10)^m 0^inf</code>, for n, m ≥ 0. This is BECv5's <code>w &lt;| R n m</code> with <code>R n m = [1] *&gt; [1;0]^^(1+n) *&gt; [0] *&gt; [1;0]^^m *&gt; const 0</code>.</li>
+<li>A <em>clean overflow state</em> <code>S(typ, N, m) = K(typ(N), 0, m)</code> is written <code>(typ, N, m)</code>.</li>
+<li><strong>Parameters</strong> of a state <code>(typ, N, m)</code>:</li>
+<li><code>i</code> = the number of trailing 1 bits of N, and <code>k = N &gt;&gt; (i+1)</code>, so <code>N + 1 = (2k+1)·2^i</code>;</li>
+<li><code>b = m + 1 + i</code>, <code>L = bitlen(k)</code>, and for pk with k ≥ 1, <code>r = k - 2^(L-1)</code>;</li>
+<li><code>tz(x)</code> = the number of trailing 0 bits of x.</li>
+</ul>
+<h2 id="3-rules">3. Rules</h2>
+<h3 id="31-low-level-rules-finite-runs-and-shift-rules">3.1 Low-level rules (finite runs and shift rules)</h3>
+<p>Notation: <code>l &lt;S r</code> = state S reading the last cell of <code>l</code>; <code>l S&gt; r</code> = state S reading the first cell of <code>r</code>. <code>X</code> is any right context, and <code>Y = (10)^(m+2) 0^inf</code>.</p>
+<p><strong>Left step L (= phi).</strong> For every word <code>l</code> and every right side <code>r</code>:
+- <strong>L0.</strong> <code>l 0 &lt;A r --&gt; l 1 B&gt; r</code> (A0, 1 step).
+- <strong>L1.</strong> <code>l 0 0 z &lt;A r --&gt; l 1 0^(|z|+1) B&gt; r</code>, in 2|z|+3 steps. Here <code>z</code> begins and ends with 1 and has no factor <code>00</code>; <code>l 0 0</code> may be <code>0^inf</code>.
+  - <em>Proof.</em> Every cell of <code>z</code> is read moving left, in state A or F.
+    - A 1 is read by A1 = 1LF or F1 = 1LF, so the next state is F.
+    - Every 0 of <code>z</code> has a 1 to its right, so F reads it. F0 = 1LA writes 1, and A then reads a 1 (no <code>00</code> in <code>z</code>), so the scan continues.
+  - After |z| steps F reads the lower 0 of the pair: F0 writes 1. A reads the upper 0: A0 = 1RB writes 1. B1 = 0RB then clears the |z|+1 ones back to the boundary.
+  - Every word with last cell 1 is <code>l 0 0 z</code> for exactly one such <code>z</code>. So L0/L1 compute <code>phi</code>. The runs use only A0, A1, F0, F1 and B1, and they never read right of the boundary.</p>
+<p><strong>Right step RS</strong> (n ≥ 1), <code>l B&gt; R n m --&gt; l &lt;A R (n-1) (m+1)</code> in 10n+7 steps, for every <code>l</code>. Write <code>R n m = 1 1 0 (10)^n 0 X</code> with <code>X = (10)^m 0^inf</code>.</p>
+<table>
+<thead>
+<tr>
+<th>after steps</th>
+<th>configuration</th>
+<th>transitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>l B&gt; 1 1 0 (10)^n 0 X</code></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>l 0 0 0 C&gt; (10)^n 0 X</code></td>
+<td>B1 B1 B0</td>
+</tr>
+<tr>
+<td>4n+3</td>
+<td><code>l 0 0 (10)^n 0 C&gt; 0 X</code></td>
+<td>shift <code>0 C&gt; 10 --&gt; 10 0 C&gt;</code> (C1 A0 B1 B0), n times</td>
+</tr>
+<tr>
+<td>4n+8</td>
+<td><code>l 0 (01)^(n-1) &lt;A 0 0 0 1 0 X</code></td>
+<td>C0 D0 C0 D1 E0</td>
+</tr>
+<tr>
+<td>6n+6</td>
+<td><code>l 0 &lt;A (11)^(n-1) 0 0 0 1 0 X</code></td>
+<td>shift <code>01 &lt;A --&gt; &lt;A 11</code> (A1 F0), n-1 times</td>
+</tr>
+<tr>
+<td>8n+6</td>
+<td><code>l 1 0^(2n-1) C&gt; 0 0 1 0 X</code></td>
+<td>A0, B1^(2n-2), B0</td>
+</tr>
+<tr>
+<td>10n+5</td>
+<td><code>l 1 0 &lt;D (01)^(n-1) 0 0 1 0 X</code></td>
+<td>C0, then shift <code>00 &lt;D --&gt; &lt;D 01</code> (D0 C0), n-1 times</td>
+</tr>
+<tr>
+<td>10n+7</td>
+<td><code>l &lt;A 1 1 (01)^(n-1) 0 0 1 0 X</code> = <code>l &lt;A R (n-1) (m+1)</code></td>
+<td>D0 C1</td>
+</tr>
+</tbody>
+</table>
+<p>RS never moves left of the boundary cell. It reads F only as F0 (never F1), and E only once, on a 0 that B wrote earlier in the same step. This is exactly BECv5's <code>RIncs</code>: TM1 and TM2 run the same 10n+7 steps (check RS).</p>
+<p><strong>Overflow OV</strong> (n = 0). Let <code>f = phi(w) = x 1 0^q</code>, the result of the left step.
+- <strong>OV0.</strong> <code>f B&gt; 1 1 0 0 X --&gt; f &lt;C 1 0 1 0 X</code> in 7 steps (B1 B1 B0 C0 D0 C0 D0). So the head is at <code>f &lt;C Y</code>.
+- <strong>CD.</strong> <code>0 0 &lt;C --&gt; &lt;C 1 0</code> (C0 D0), applied to the 0s of f.
+- <strong>OVe</strong> (q = 2u). <code>x 1 0^(2u) &lt;C Y --&gt; x 1 &lt;C (10)^u Y</code>, then C1 gives <code>x &lt;A 1 (10)^(u+m+2) 0^inf = K(x, m+1+u, 0)</code>. Total q+8 steps after the left step.
+- <strong>OVo</strong> (q = 2u+1). <code>x 1 0 0^(2u) &lt;C Y --&gt; x 1 0 &lt;C (10)^u Y</code>, then C0 and D1 give <code>x &lt;E 0 0 (10)^u Y</code> (q+8 steps so far). Then E reads the last cell of x:
+  - x ends in 1: E1, <strong>halt</strong> (step q+9).
+  - x = x' 0 0 (or x = 0^inf): E0 A0 B0 C0 D0 C1 gives <code>x' &lt;A 1 1 0 0 (10)^(u+m+2) 0^inf = K(x', 0, m+u+2)</code>. Total q+14 steps.
+  - x ends in <code>10</code>: E0, then A1 enters an F-scan inside x. This case has no rule and is never reached.</p>
+<h3 id="32-level-1-rules">3.2 Level-1 rules</h3>
+<ul>
+<li><strong>R1</strong> = L then RS: <code>K(w,n,m) --&gt; K(phi(w), n-1, m+1)</code> for n ≥ 1. Iterated: <code>K(w,n,m) --&gt;* K(phi^n(w), 0, m+n)</code>.</li>
+<li><strong>R2 / R3 / R4 / R5</strong> = L then OV, with the cases of §1.</li>
+<li>The step counts are those of the comment block. Check Z recomputes every overflow time of the direct run to step 9,998,414,763 from these formulas, exactly.</li>
+</ul>
+<h3 id="33-phi-in-eo-coordinates">3.3 phi in E/O coordinates</h3>
+<p><strong>Lemma SW.</strong> Let <code>Hi</code> be any word, h ≥ 1, 1 ≤ o &lt; 2^h, P = tz(o), 0 ≤ c &lt; 2^(P+1), and <code>w = Hi·W_h(c, o)</code>.
+- <strong>(i)</strong> If c &lt; 2^(P+1) - 1, then <code>phi(w) = Hi·W_h(c+1, o)</code>.
+- <strong>(ii)</strong> If c = 2^(P+1) - 1 and o' := o + 2^P &lt; 2^h, then <code>phi(w) = Hi·W_h(0, o')</code>.
+  - Its lowest 1 is the O-cell 2g+1, g = tz(o'): a <em>landing</em>.
+  - The two cells above it (offsets 2g+3, 2g+2) are <code>(bit g+1 of o, 0)</code> if g+1 &lt; h, and the two lowest cells of Hi if g = h-1.
+- <strong>(iii)</strong> If c = 2^(P+1) - 1 and o + 2^P = 2^h, then <code>phi(w) = phi(Hi·1)·0^(2h-1)</code>, where <code>Hi·1</code> is Hi with one cell 1 appended below it.</p>
+<p><em>Proof.</em> The low part below offset 2P+1 has E-cells = the bits of c and O-cells = 0. No E-bit of c lies above P.
+- <strong>(i)</strong> Let d ≤ P be the lowest 0 bit of c.
+  - If d = 0, the last cell is 0 and becomes 1.
+  - If d ≥ 1, the cells 0..2d-2 alternate (E = 1, O = 0). So every pair of adjacent cells below 2d-1 contains a 1.
+  - Cells 2d-1 (an O-cell below 2P+1, so 0) and 2d (bit d of c, 0) form the lowest 00 pair. phi sets cell 2d and clears 0..2d-1, which gives c+1.
+- <strong>(ii) and (iii)</strong> The counter is full: all E-cells ≤ 2P are 1. Let s ≥ 1 be the length of the run of 1 bits of o starting at bit P.
+  - The O-cells 2P+1, …, 2P+2s-1 are 1, and the E-cells between them are 0 (bits of c above P).
+  - So every pair of adjacent cells up to offset 2P+2s-1 contains a 1.
+  - <strong>Case P+s &lt; h.</strong> Cells 2P+2s (E, bit P+s of c, 0) and 2P+2s+1 (O, bit P+s of o, 0) are the lowest 00 pair. phi sets the O-cell 2(P+s)+1 and clears everything below, which gives o + 2^P with c = 0. The two cells above the landing are the E-cell 2g+2, which is 0, and the O-cell 2g+3, which is bit g+1 of o. When g = h-1 these two cells are the lowest two cells of Hi.
+  - <strong>Case P+s = h.</strong> Cell 2h-1 is 1 and nothing below it is a 00 pair. So the lowest 00 pair of w is the lowest 00 pair of <code>Hi·1</code>, whose cell 0 is that 1. phi on w and phi on <code>Hi·1</code> set the same cell, and w's cells 0..2h-2 are cleared. ∎</p>
+<p><strong>Sweep corollary.</strong> Under the hypotheses of SW, call <code>T = 2o + c</code> the <em>T-count</em>. Each phi adds 1 to T as long as T &lt; 2^(h+1): (i) adds 1 to c, and (ii) changes (o, 2^(P+1)-1) to (o+2^P, 0).
+- The O-values met are the <em>barriers</em> <code>o_0 = o &lt; o_1 &lt; … &lt; 2^h</code>, with <code>o_(t+1) = o_t + 2^tz(o_t)</code>. Equivalently they are <code>(o &gt;&gt; g &lt;&lt; g) + 2^g</code> for the 0 bits g of o with tz(o) &lt; g &lt; h, followed by 2^h.
+- For T+j &lt; 2^(h+1), <code>phi^j(w) = Hi·W_h(T+j-2o_t, o_t)</code>, where o_t is the largest barrier with 2·o_t ≤ T+j.
+- The landings are exactly T+j = 2·o_t (t ≥ 1), and at T+j = 2^(h+1) the word is <code>phi(Hi·1)·0^(2h-1)</code> (SW iii).</p>
+<p><strong>Increments.</strong>
+- <strong>INC-std:</strong> <code>phi(std(N)) = std(N+1)</code>. With no O-bits, the proof of SW(i) applies to every digit.
+- <strong>INC-pk:</strong> <code>phi(pk(N)) = pk(N+1)</code> for N ≥ 2. This is SW with Hi = 0^inf, h = P+1, o = 2^P. Case (i) adds 1. Case (iii) occurs at N = 2^(P+2)-1 and gives <code>phi('1')·0^(2P+1) = 100·0^(2P+1) = W(0, 2^(P+1)) = pk(2^(P+2))</code>.</p>
+<p><strong>Orbit lemmas.</strong> Each comes from the sweep corollary with the high word shown. The constant words are <code>phi(1) = 100</code>, <code>phi(11) = 1000</code>, <code>phi(1011) = 100000</code> and <code>phi(111) = 10000</code>.</p>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>start word</th>
+<th>Hi, h</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O3 (std, gen 1)</td>
+<td><code>W(0,k)</code>, k ≥ 1</td>
+<td>0^inf, h = L</td>
+<td><code>phi^j = pk(2k+j)</code> once 2k+j ≥ 2^(L+1) (SW iii gives <code>100·0^(2L-1) = pk(2^(L+1))</code>, then INC-pk). If k = 2^(L-1), <code>W(0,k) = pk(2k)</code> from the start. <strong>Final gap:</strong> if k is not a power of 2 and bit L-2 of k is 0, the barriers end with <code>3·2^(L-2)</code>, so <code>phi^j = W(T-3·2^(L-1), 3·2^(L-2))</code> for <code>3·2^(L-1) ≤ T = 2k+j &lt; 2^(L+1)</code>.</td>
+</tr>
+<tr>
+<td>O4 (pk, gen 1)</td>
+<td><code>W(2^(L-1), r)</code>, 1 ≤ r &lt; 2^(L-1)</td>
+<td><code>1</code>, h = L-1</td>
+<td><code>phi^j = std(2r+j)</code> once 2r+j ≥ 2^L (SW iii: <code>1000·0^(2L-3) = std(2^L)</code>). <strong>Final gap:</strong> if r &lt; 2^(L-2) (L ≥ 3), <code>phi^j = W(T, 2^(L-2))</code> for <code>2^(L-1) ≤ T = 2r+j &lt; 2^L</code>. The landing at T = 2^(L-1) has <code>01</code> above it: the halting point H.</td>
+</tr>
+<tr>
+<td>O5 (std, gen 2)</td>
+<td><code>W(3·2^h, g)</code>, 0 ≤ g &lt; 2^h</td>
+<td><code>101</code>, h</td>
+<td>g = 0: <code>phi^j = std(3·2^h + j)</code>. g ≥ 1: for j ≥ j0 = 2^(h+1)-2g, <code>phi^j = std(2^(h+1)+2g+j)</code> (at j0, SW iii gives <code>100000·0^(2h-1) = std(2^(h+2))</code>).</td>
+</tr>
+<tr>
+<td>O6 (pk, gen 2)</td>
+<td><code>W(2^h, 2^h+g)</code>, 0 ≤ g &lt; 2^h</td>
+<td><code>11</code>, h</td>
+<td>g = 0: <code>W(2^h,2^h) = pk(3·2^h)</code>, so <code>phi^j = pk(3·2^h+j)</code>. g ≥ 1: for j ≥ j0, <code>phi^j = pk(2^(h+1)+2g+j)</code> (at j0: <code>10000·0^(2h-1) = pk(2^(h+2))</code>).</td>
+</tr>
+</tbody>
+</table>
+<p>In O3, the barrier <code>3·2^(L-2)</code> is <code>(k &gt;&gt; (L-2) &lt;&lt; (L-2)) + 2^(L-2)</code>, for the 0 bit L-2, which lies above tz(k) because k is not a power of 2. The next barrier is 2^L. O4 is the same with r and the 0 bit L-2 of r.</p>
+<h3 id="34-macro-rules">3.4 Macro rules</h3>
+<p><strong>Overflow words of clean counters.</strong> Let N+1 = (2k+1)2^i.
+- <strong>std.</strong> <code>phi(std(N)) = std(N+1)</code> has its lowest 1 at E-cell 2i. The cells above it are the bits of k, now on O-cells. So q = 2i and <strong>x = W(0, k)</strong>.
+- <strong>pk, k = 0</strong> (N = 2^i - 1, i ≥ 2). <code>phi(pk(N)) = W(0, 2^(i-1))</code>: q = 2i-1 and x = 0^inf, so R3 applies, with m + (q+3)/2 = b.
+- <strong>pk, k ≥ 1.</strong> <code>phi(pk(N)) = pk(N+1) = W(N+1-2^(P+1), 2^P)</code> has its lowest 1 at E-cell 2i (i ≤ P). The E-bits above it move to O-cells, and the top O-cell 2P+1 moves to E-cell 2(P-i). So q = 2i and <strong>x = W(2^(L-1), r)</strong> with L = P-i+1. For r = 0 this is <code>std(k)</code>.</p>
+<p>Then R2 gives <code>K(x, b, 0)</code>, and R1^b gives <code>K(phi^b(x), 0, b)</code>. If that word is not clean, the next overflow sees <code>phi^(b+1)(x)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>precondition</th>
+<th>run</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S0</td>
+<td>std, k = 0</td>
+<td>x = 0^inf, <code>phi^b(0) = std(b)</code> (INC-std)</td>
+<td>(std, b, b)</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>std, k ≥ 1, and k = 2^(L-1) or 2k+b ≥ 2^(L+1)</td>
+<td>O3</td>
+<td>(pk, 2k+b, b)</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>std, k not a power of 2, 2k+b+1 = 2^(L+1)</td>
+<td><code>phi^(b+1)(x) = W(0, 2^L) = 1 0^(2L+1)</code> (O3): R3 with x empty gives <code>K(0^inf, 0, M)</code>, M = b+L+2. Then R2 with q = 0 gives <code>K(0^inf, M+1, 0)</code>, then R1^(M+1)</td>
+<td>(std, b+L+3, b+L+3)</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>std, k not a power of 2, k &lt; 3·2^(L-2), 3·2^(L-1) &lt; T = 2k+b+1 &lt; 2^(L+1); (S3b) n ≥ 2^(h+1)-2g</td>
+<td>O3 final gap: <code>phi^(b+1)(x) = W(v, 3·2^(L-2))</code>, 1 ≤ v &lt; 2^(L-1). Its lowest 1 is E-cell 2u, so R2 gives <code>K(W(3·2^h, g), n, 0)</code>. Then R1^n and O5</td>
+<td>(std, 3·2^h+n, n) if g = 0; (std, 2^(h+1)+2g+n, n) if g ≥ 1</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>pk, k = 0</td>
+<td>R3 gives <code>K(0^inf, 0, b)</code>, then R2 and R1^(b+1)</td>
+<td>(std, b+1, b+1)</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>pk, k = 2^(L-1)</td>
+<td>x = std(k), INC-std</td>
+<td>(std, k+b, b)</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>pk, r ≥ 1, 2r+b ≥ 2^L</td>
+<td>O4</td>
+<td>(std, 2r+b, b)</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>pk, r ≥ 1, 2r+b+1 = 2^L</td>
+<td><code>phi^(b+1)(x) = std(2^L)</code> (O4): R2 with q = 2L and x empty gives <code>K(0^inf, b+1+L, 0)</code>, then R1^(b+1+L)</td>
+<td>(std, b+L+1, b+L+1)</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>pk, 1 ≤ r &lt; 2^(L-2), 2^(L-1) &lt; T = 2r+b+1 &lt; 2^L; (P4b) n ≥ 2^(h+1)-2g</td>
+<td>O4 final gap: <code>phi^(b+1)(x) = W(2^(L-1)+v, 2^(L-2))</code>, 1 ≤ v &lt; 2^(L-1). Its lowest 1 is E-cell 2u, so R2 gives <code>K(W(2^h, 2^h+g), n, 0)</code>. Then R1^n and O6</td>
+<td>(pk, 3·2^h+n, n) if g = 0; (pk, 2^(h+1)+2g+n, n) if g ≥ 1</td>
+</tr>
+</tbody>
+</table>
+<p>In S3 and P4, the E-bits of <code>phi^(b+1)(x)</code> above offset 2u move to O-cells and become g = v &gt;&gt; (u+1) &lt; 2^h. The O-cells 2L-3 and 2L-1 (S3), or the O-cell 2L-3 and the E-cell 2L-2 (P4), move to E-cells 2h and 2h+2 (S3), or to E-cell 2h and O-cell 2h+1 (P4).</p>
+<p><strong>Where a macro rule ends.</strong> Each macro rule runs from S(typ, N, m) to the <strong>first</strong> overflow state <code>K(w', 0, m')</code> whose word w' is clean with N' ≥ 1. That state is the result column. The other overflow states met on the way are of two kinds.
+- <strong>Dirty:</strong> <code>phi^b(x)</code> in S2, S3, P3 and P4.
+  - In S2 and S3 its O-part is a barrier o with 2^(L-1) &lt; o &lt; 2^L, so o is neither 0 nor a power of 2.
+  - In P3 and P4 it has the E-bit L-1 (from Hi = <code>1</code>) above an O-part 0 &lt; o &lt; 2^(L-1), which a pk word cannot have.
+- <strong>Empty:</strong> <code>K(0^inf, 0, M) = S(std, 0, M)</code>, met only in S2 (M = b+L+2, after R3 with x empty) and P0 (M = b), once each.
+  - It violates I0 (N = 0 &lt; M), so it is never the end of a macro rule and never a state of the induction.
+  - The step out of it is exactly S0 at (std, 0, M): R2 with q = 0 gives <code>K(0^inf, M+1, 0)</code>, then R1^(M+1) gives (std, M+1, M+1). S0 has no hypothesis on m.
+  - So S2 = (run to (std,0,M)) followed by S0, and the same holds for P0.</p>
+<p>Check B confirms this: the abstract trace on every small state, the direct TM run (which passes exactly the overflow states of the abstract trace), one empty state with the stated M in S2 and P0 only, and S0 from it.</p>
+<p><strong>The overflows inside a macro rule.</strong> Each one is of one of these kinds:
+- a clean counter (q even, or q odd with x = 0^inf, the all-ones pk);
+- O3's top word <code>1 0^(2L+1)</code> (R3 with x = 0^inf);
+- <code>std(2^L)</code> in P3 (q even);
+- a final-gap word with v ≥ 1 (q = 2u even);
+- <code>K(0^inf, 0, M)</code> (q = 0).</p>
+<p>So <strong>R4 and R5 never occur inside a macro rule</strong>. The landings of the gen-2 orbits O5/O6 (the last possible one, at T = 2^h, has <code>01</code> or <code>11</code> above it) all come before j0 ≤ n. They happen during bounces, where R1 applies to any word, so they do no harm.</p>
+<h2 id="4-invariant-coverage-closure">4. Invariant, coverage, closure</h2>
+<h3 id="41-the-invariant">4.1 The invariant</h3>
+<p>For a clean state (typ, N, m):
+- <strong>I0:</strong> <code>1 ≤ m ≤ N</code> (pk: N ≥ 2).
+- <strong>Class P</strong> (N ≡ m mod 2). With D = N - m (even), the bounds are:</p>
+<table>
+<thead>
+<tr>
+<th>typ</th>
+<th>N even</th>
+<th>N odd</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>std</td>
+<td>2N ≤ 3m+6, i.e. 2D ≤ m+6</td>
+<td>N ≤ 2m+3, i.e. D ≤ m+3</td>
+</tr>
+<tr>
+<td>pk</td>
+<td>N ≤ 2m+3, i.e. D ≤ m+3</td>
+<td>2N ≤ 5m+6, i.e. 2D ≤ 3m+6</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Class X</strong> (N ≢ m mod 2): <code>N ≤ m+3</code>, i.e. D ≤ 3 (D odd, so D ∈ {1, 3}).</li>
+</ul>
+<p>In class P, N even ⇔ m even ⇔ i = 0. The weakest bound in every class is <code>2N ≤ 5m+6</code>. The strongest P bound is <code>2D ≤ m+6</code>, so D even with 2D ≤ m'+6 satisfies all four P bounds at once.</p>
+<h3 id="42-lemma-s-coverage-if-is-exactly-one-macro-rule-applies-to-s">4.2 Lemma S (coverage): if I(s), exactly one macro rule applies to s</h3>
+<p>The preconditions are mutually exclusive by construction (k = 0 / k a power of 2 / k not, and the position of T). It remains to show that a state with I never falls outside them: it is never dirty outside the final gap, and the gen-2 merge comes in time.</p>
+<p><strong>std, k not a power of 2</strong> (so k ≥ 3, L ≥ 2, k ≥ 2^(L-1)+1). T = 2k+b+1. T &gt; 2^(L+1) gives S1 and T = 2^(L+1) gives S2. Suppose T &lt; 2^(L+1); then b &lt; 2^(L+1) - 1 - 2k ≤ 2^L - 3.
+- i ≥ 1 is impossible: N+1 = (2k+1)2^i ≥ 2(2^L+3), so N ≥ 2^(L+1)+5, and I gives N ≤ 2m+3 (std, N odd, either class). So m ≥ 2^L+1 and b ≥ m+2 &gt; 2^L - 3.
+- i = 0 in class X is impossible: N = 2k ≤ m+3 gives b = m+1 ≥ 2k-2, so T ≥ 4k-1 &gt; 2^(L+1).
+- i = 0 in class P (m even): 4k ≤ 3m+6, so 3T = 6k+3m+6 ≥ 10k.
+  - T ≤ 2^(L+1)-1 gives k &lt; 0.6·2^L &lt; 3·2^(L-2), so bit L-2 of k is 0.
+  - T ≥ 10k/3 &gt; 3·2^(L-1).
+  - So S3's range holds.
+  - T = 2k+m+2 is even, so v is even and <strong>u ≥ 1</strong>.
+  - 3m ≥ 4k-6 ≥ 2^(L+1)-2 gives n = m+2+u &gt; 2^(L-1) ≥ 2^(h+1) ≥ j0, so in case g ≥ 1 the S3b condition holds.</p>
+<p><strong>pk, k not a power of 2</strong> (r ≥ 1, L ≥ 2). T = 2r+b+1. T &gt; 2^L gives P2 and T = 2^L gives P3. Suppose T &lt; 2^L, so b ≤ 2^L - 4. Also N+1 = (2k+1)2^i with 2k+1 ≥ 2^L+3.
+- i ≥ 2 is impossible: N ≥ 4·2^L + 11, and the weakest bound 2N ≤ 5m+6 gives m &gt; 2^L, so b &gt; 2^L.
+- Class X is impossible.
+  - i = 1: N ≥ 2^(L+1)+5 and N ≤ m+3 give m &gt; 2^L, so b &gt; 2^L.
+  - i = 0: N = 2k ≤ m+3 gives T ≥ 2r+2k-1 = 2^L+4r-1 &gt; 2^L.
+- i = 0, class P (m, N even): N ≤ 2m+3 means 2k ≤ 2m+2, so m ≥ k-1.
+  - Then T = 2r+m+2 ≥ 3r + 2^(L-1) + 1 &gt; 2^(L-1).
+  - T &lt; 2^L gives 3r &lt; 2^(L-1), so <strong>r &lt; 2^(L-2)</strong>, and L ≥ 3 follows.
+  - T is even, so <strong>u ≥ 1</strong>.
+  - n = m+2+u ≥ k+1 &gt; 2^(L-1) ≥ j0.
+- i = 1, class P (m odd, N = 4k+1): 2N ≤ 5m+6 gives 5m ≥ 8k-4. Then 5T = 10r+5m+15 ≥ 18r + 4·2^L + 11.
+  - T &lt; 2^L gives 18r &lt; 2^L - 11, so <strong>r &lt; 2^(L-2)</strong>.
+  - T ≥ (4·2^L+11)/5 &gt; 2^(L-1).
+  - T = 2r+m+3 is even, so <strong>u ≥ 1</strong>.
+  - n = m+3+u ≥ (8k-4)/5 + 3 &gt; 2^(L-1) ≥ j0.</p>
+<p>So under I the dirty cases are exactly: std with i = 0 in class P (S3), and pk with i ≤ 1 in class P (P4). Each is in its final gap (past every landing of its gen-1 orbit) with u ≥ 1, and its gen-2 orbit merges before the next overflow.</p>
+<h3 id="43-lemma-c-closure-if-is-and-s-s-by-a-macro-rule-then-is">4.3 Lemma C (closure): if I(s) and s → s' by a macro rule, then I(s')</h3>
+<p>Each result has the form N' = m' + D with D ≥ 0 and m' ≥ 1, so I0 holds (for pk, N' ≥ 2). It remains to bound D.</p>
+<ul>
+<li><strong>S0, S2, P0, P3:</strong> D = 0.</li>
+<li><strong>S1:</strong> D = 2k, class P, m' = b, and the result is pk. We need D ≤ b+3 (b even) or 2D ≤ 3b+6 (b odd).</li>
+<li>i = 0, class P (b odd): 4k ≤ 3m+6 = 3b+3.</li>
+<li>i = 0, class X (b even): 2k = N ≤ m+3 = b+2.</li>
+<li>i ≥ 1: N+1 ≥ 2(2k+1) gives 2k ≤ (N-1)/2 ≤ m+1 &lt; b (I: N ≤ 2m+3 for std with N odd). Both bounds hold.</li>
+<li><strong>P1:</strong> D = k = 2^(L-1), m' = b, and the result is std.</li>
+<li>k = 1: class X with D = 1.</li>
+<li>k ≥ 2: class P. We need 2k ≤ b+6 (b even) or k ≤ b+3 (b odd).<ul>
+<li>i = 0, class P: k ≤ m+1 and b = m+1 is odd.</li>
+<li>i = 0, class X: 2k ≤ m+3 and b = m+1 is even.</li>
+<li>i ≥ 1, class P (m odd, so b = m+1+i ≡ i mod 2), using 2N ≤ 5m+6:</li>
+<li>i odd: k ≤ (N-1)/4 ≤ (5m+4)/8 ≤ b+3;</li>
+<li>i even ≥ 2: 2k ≤ (N-3)/4 ≤ 5m/8 ≤ b+6.</li>
+<li>i ≥ 1, class X: 2k ≤ (N-1)/2 ≤ (m+2)/2.</li>
+</ul>
+</li>
+<li><strong>P2:</strong> D = 2r &lt; k (since r &lt; 2^(L-1) ≤ k-r), class P, m' = b, and the result is std. We need 4r ≤ b+6 (b even) or 2r ≤ b+3 (b odd).</li>
+<li>i = 0, class P (b odd): 2r &lt; k ≤ m+1 = b.</li>
+<li>i = 0, class X (b even): 4r &lt; 2k ≤ m+3 = b+2.</li>
+<li>i odd, class P (b odd): 2r &lt; k ≤ (5m+4)/8.</li>
+<li>i even ≥ 2, class P (b even): 4r &lt; 2k ≤ 5m/8.</li>
+<li>i ≥ 1, class X: 4r &lt; 2k ≤ (m+2)/2.</li>
+<li><strong>S3, P4:</strong> D = 3·2^h (g = 0) or 2^(h+1)+2g ≤ 2^(h+2)-2 (g ≥ 1), so <strong>D &lt; 2^(h+2) = 2^(L-u)</strong>. Here m' = n &gt; 2^(L-1) (Lemma S) and n ≡ u (mod 2): n = m+2+u with m even, or n = m+3+u with m odd.</li>
+<li>h = 0: then g = 0 and D = 3, class X.</li>
+<li>h ≥ 1: D is even, class P.<ul>
+<li>u odd (n odd): D &lt; 2^(L-1) &lt; n, which gives D ≤ n+3 and 2D ≤ 3n+6.</li>
+<li>u even ≥ 2 (n even): D &lt; 2^(L-2), so 2D &lt; 2^(L-1) &lt; n, which gives 2D ≤ n+6 and D ≤ n+3.</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-progress-and-halting">5. Progress and halting</h2>
+<ul>
+<li><strong>Progress.</strong> Every macro rule contains at least one overflow and at least one bounce, so it takes at least 9 steps. Also m' ≥ m+1 in every rule (check INV.progress).</li>
+<li><strong>Halting.</strong> The only undefined transition is E1. E is entered only by D1, in two places:</li>
+<li>in RS, where E reads a cell that B has just written 0;</li>
+<li>in OVo, where E reads the last cell of x.</li>
+<li>Inside the macro rules, OVo occurs only with x = 0^inf (the resets in S2 and P0), where E reads 0. The left step L never enters E. So under I, E1 is never executed.</li>
+</ul>
+<h2 id="6-initial-segment-exact">6. Initial segment (exact)</h2>
+<p><code>c0 = 0^inf A&gt; 0^inf</code> (the head reading 0) runs 32 steps:</p>
+<table>
+<thead>
+<tr>
+<th>steps</th>
+<th>transitions</th>
+<th>configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1–5</td>
+<td>A0 B0 C0 D0 C1</td>
+<td><code>K(0^inf, 0, 0) = 0^inf &lt;A 1 1 0 0 0^inf</code></td>
+</tr>
+<tr>
+<td>6–14</td>
+<td>A0 (L0), B1 B1 B0 C0 D0 C0 D0 (OV0), C1 (OVe, q = 0)</td>
+<td><code>K(0^inf, 1, 0)</code></td>
+</tr>
+<tr>
+<td>15–32</td>
+<td>A0 (L0), B1 B1 B0 C1 A0 B1 B0 C0 D0 C0 D1 E0 A0 B0 C0 D0 C1 (RS, n = 1)</td>
+<td><code>K(1, 0, 1) = S(std, 1, 1)</code></td>
+</tr>
+</tbody>
+</table>
+<p>(std, 1, 1) satisfies I: 1 ≤ 1 ≤ 1, class P, N odd, and N ≤ 2m+3 = 5. In Rocq this is <code>init: c0 --&gt;* S (std,1,1)</code> by <code>esx</code>, as TM1/TM2 do with <code>S (6,6)</code>.</p>
+<p>From there the macro rules give (std,1,1) →S0 (std,3,3) →S0 (std,6,6) →S1 (pk,13,7) →P2 (std,11,9) →S1 (pk,14,12) → … The orbit of all overflow configurations given by R1–R3 (including the dirty and empty-x ones) equals the 1,003 overflow configurations of the stored direct C run to 1e10 steps, word for word and step for step (check Z). The clean subsequence equals the macro-rule orbit, and 40 fresh direct-TM macro steps chained from (std,1,1) agree. Along the blank-tape orbit, I holds for the 500,000 cycles checked by default (2,000,000 with <code>--full</code>). Earlier stages checked 17,000,000 cycles.</p>
+<h2 id="7-conclusion">7. Conclusion</h2>
+<h3 id="71-non-halting">7.1 Non-halting</h3>
+<ul>
+<li>The run reaches S(std,1,1), and I holds there (§6).</li>
+<li>If I(s), exactly one macro rule takes s →+ s' (Lemma S, §3.4), and I(s') holds (Lemma C).</li>
+<li>Every macro rule is a finite chain of the exact rules L, RS and OV, and none of them executes E1 (§5).</li>
+</ul>
+<p>The induction runs over the clean overflow states with N ≥ 1 that satisfy I. The step from s to s' is one whole macro rule, which ends at the first clean overflow state with N ≥ 1 after s (§3.4, "Where a macro rule ends"). The state (std, 0, M) that S2 and P0 pass through is outside I, and the induction never stops there. By induction the machine runs forever. In busycoq terms this is <code>progress_nonhalt_cond</code> with <code>P := I</code> on states (typ, N, m), after <code>multistep_nonhalt</code> with the 32-step <code>init</code>.</p>
+<h3 id="72-why-it-is-not-a-cryptid">7.2 Why it is not a cryptid</h3>
+<p>The branch taken in each cycle depends on bit patterns of N (i, k, the gap position of T), which look pseudo-random. But I is closed under <strong>every</strong> branch. Lemma C uses only linear bounds and two parity facts: N ≡ m in class P, and T even at the dirty overflows. Halting is excluded by inequalities, not by residues. Ground rule 6 does not apply.</p>
+<h3 id="73-machine-349">7.3 Machine 349</h3>
+<ul>
+<li><strong>What Eqv_v3 says.</strong> In <code>verify/Eqv_v3.v</code>, <code>Module TM518</code> has <code>tm = 1RB1RA_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---</code>, <code>tm' = 1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---</code> (349, on the 740 list), and <code>eqv: halts tm c0 &lt;-&gt; halts tm' c0</code>.</li>
+<li><strong>TM518 <code>tm</code> is this table mirrored and renamed.</strong> Swap L and R in every transition, and rename this table's states F→A, A→B, B→C, C→D, D→E, E→F. The result is TM518 <code>tm</code>, character for character. Its start state A is this table's F.</li>
+<li>So <code>flip tm</code> (directions swapped back) is this table with renamed states. Its state q behaves like this table's state f(q), where f = (A↦F, B↦A, C↦B, D↦C, E↦D, F↦E). This is busycoq's <code>Perm (flip tm) W42 f</code>.</li>
+<li>The run of TM518 <code>tm</code> from the blank tape is the mirror image of this table's run from <code>0^inf F&gt; 0^inf</code>: the same cells, the head at minus the position, and the state renamed.</li>
+<li>Check F verifies the string identity, the <code>Perm</code> transition by transition, the Eqv_v3 strings, and a lockstep run of both machines (200,000 steps by default, 1,000,000 with <code>--full</code>).</li>
+<li><strong>The run from F.</strong></li>
+<li>From <code>0^inf F&gt; 0^inf</code> (F reading 0), the transitions F0 A0 B1 B0 C0 D0 C0 D1 E0 A0 B0 C0 D0 C1 reach <code>K(0^inf, 0, 1)</code> in 14 steps.</li>
+<li>K(0^inf, 0, 1) is the clean state (std, 0, 1). As in S2 and P0, it is outside I (N &lt; m), and S0 (no precondition on m) takes it to (std, 2, 2) at step 73. That state satisfies I.</li>
+<li>Then (std,2,2) →S1 (pk,5,3) →P1 (std,6,5) → …, and the induction of §7.1 applies from (std,2,2) (check F).</li>
+<li><strong>What carries over, and what does not.</strong> The mathematics carries over unchanged. The Rocq proof does not carry over by itself: <code>nonhalt</code> for this machine is about <code>c0</code>, which starts in A, while 349 needs this table started in F and seen through a mirror and a renaming. §8 gives the reduction. It reuses this machine's lemmas and adds only an initial segment of 73 steps from F.</li>
+</ul>
+<h2 id="8-lemma-plan-for-rocq-template-becv5-tm1tm2">8. Lemma plan for Rocq (template: BECv5 TM1/TM2)</h2>
+<p>Shared shape, as in TM1/TM2:
+- <code>Notation "l &lt;| r" := (l &lt;{{A}} [] *&gt; r)</code> and <code>"l |&gt; r" := (l &lt;* [] {{B}}&gt; r)</code>;
+- <code>R n m</code>; <code>hL := (A,[])</code>, <code>hR := (B,[])</code>; <code>tm' := flip tm</code>;
+- the state <code>S '(t,a,b) := word t a &lt;| R 0 b</code>;
+- <code>BigStep</code> lemmas, <code>init</code> by <code>esx</code>, and <code>nonhalt</code> by <code>multistep_nonhalt</code> + <code>progress_nonhalt_cond</code>.</p>
+<table>
+<thead>
+<tr>
+<th>proof.md</th>
+<th>Rocq</th>
+<th>source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RS (§3.1)</td>
+<td><code>RIncs n m : sideRLs tm (hRL^^n) (R n m) (R 0 (n+m))</code></td>
+<td><strong>verbatim</strong> from TM1/TM2. RS never reads F1, and TM1/TM2 give the same run (check RS.same_on_TM1/2)</td>
+</tr>
+<tr>
+<td><code>std</code>, INC-std</td>
+<td><code>LC0 n := BinInc &lt;[0;1] n</code>; <code>LInc0</code>, <code>LIncs n m : sideRLs tm' (hLR^^n) (LC0 m) (LC0 (n+m))</code></td>
+<td><strong>verbatim</strong> from TM2. On std words F only reads O-cells, which are 0, so F1 is never read (check TPL)</td>
+</tr>
+<tr>
+<td>OVe on std (X, std)</td>
+<td><code>ROv k i m : LC0 ((k*2+1)*2^i-1) &lt;| R 0 m --&gt;+ LC0 k &lt;* [0] &lt;| R (1+i+m) 0</code></td>
+<td><strong>verbatim</strong> from TM1 (<code>LC0 k &lt;* [0]</code> is W(0,k); the same run on all three machines, check TPL)</td>
+</tr>
+<tr>
+<td>words W(e,o)</td>
+<td><code>Fixpoint Wd h e o (hi:side) := match h with O =&gt; hi \| S h' =&gt; Wd h' (e/2) (o/2) hi &lt;* &lt;[Nat.odd o; Nat.odd e] end</code> (as 0/1); <code>pk N</code>, plus equations <code>LC0 N = Wd _ N 0 0inf</code>, <code>pk N = Wd _ (N-2^(P+1)) (2^P) 0inf</code></td>
+<td>new; the ctr pattern of machine #4's .v (<code>ctr_even</code>/<code>ctr_odd</code>)</td>
+</tr>
+<tr>
+<td>SW(i)</td>
+<td><code>sideRLs tm' [(hL,hR)] (Wd h e o hi) (Wd h (e+1) o hi)</code> when the counter below tz(o) is not full. Digit shift rules on the flipped machine: <code>&lt;[0;1]</code> passes A→A (A1 F0), the bottom digit <code>&lt;[0;0]</code> turns (A0), and B1 clears back</td>
+<td>new, <code>ind</code> on the digit list</td>
+</tr>
+<tr>
+<td>SW(ii)</td>
+<td>the sweep: full digits <code>&lt;[0;1]^^P</code>, the digit <code>&lt;[1;1]</code> (A1 F1: A→F), the run <code>&lt;[1;0]^^(s-1)</code> (F0 A1: F→F), then <code>&lt;[0;0]</code> turns (F0 A0)</td>
+<td>new, <code>ind</code></td>
+</tr>
+<tr>
+<td>SW(iii)</td>
+<td>needed only for Hi ∈ {0inf, <code>1</code>, <code>101</code>, <code>11</code>} (O3–O6), so four concrete <code>es</code> lemmas</td>
+<td>new</td>
+</tr>
+<tr>
+<td>sweep corollary, O3–O6</td>
+<td><code>sideRLs tm' (hLR^^j) x (target)</code> by strong induction on the barriers, as TM2's <code>LIncs'</code> does for <code>LC0 n &lt;* [1]</code> (<code>divmod2_cases</code>, <code>segRLs_addmul''</code>)</td>
+<td>new; TM2 <code>LIncs'</code> is the model</td>
+</tr>
+<tr>
+<td>OV on general f (OVe, OVo reset)</td>
+<td><code>x &lt;* [1] &lt;* [0;0]^^u \|&gt; R 0 m --&gt;+ x &lt;\| R (u+m+1) 0</code> and <code>x' &lt;* [0;0;1;0] &lt;* [0;0]^^u \|&gt; R 0 m --&gt;+ x' &lt;\| R 0 (u+m+2)</code>, by <code>es</code> + <code>ind u</code> (CD = <code>[0;0] &lt;C → &lt;C [1;0]</code>)</td>
+<td>new; generalizes TM1 <code>ROv</code></td>
+</tr>
+<tr>
+<td>macro rules S0–S3, P0–P4</td>
+<td><code>BigStep_*</code> with the §1 preconditions as hypotheses, chained by <code>follow</code> (ROv/OV, then <code>sideRLs_concat_1L (RIncs _ _)</code> with the left-side lemma, as in TM1 <code>BigStep</code>). Each goes from <code>S s</code> to the first clean <code>S s'</code> with N' ≥ 1 (§3.4). <code>BigStep_S2</code> and <code>BigStep_P0</code> run to <code>S (std,0,M)</code> and then apply <code>BigStep_S0</code>, which needs no hypothesis on m. <code>S (std,0,M)</code> is never a state of <code>progress_nonhalt_cond</code></td>
+<td>TM1 <code>BigStep</code></td>
+</tr>
+<tr>
+<td>I, Lemma S, Lemma C</td>
+<td><code>progress_nonhalt_cond</code> with <code>P := I</code> on <code>(bool*nat*nat)</code>; the case split by <code>lowbitS_cases</code>/<code>highbit</code> (BECv5 header) plus <code>Nat.testbit</code>; arithmetic by <code>lia</code> after naming 2^L, 2^h. Export it as <code>nonhalt_I : forall s, I s -&gt; ~ halts tm (S s)</code> so that 349 can reuse it</td>
+<td>TM2 <code>nonhalt</code></td>
+</tr>
+<tr>
+<td>init</td>
+<td><code>S (std,1,1)</code> by <code>esx</code> (32 steps)</td>
+<td>TM1/TM2</td>
+</tr>
+<tr>
+<td><strong>349</strong> (<code>tm349 = 1RB1LD_…0RB---</code>, its own file)</td>
+<td><code>nonhalt : ~ halts tm349 c0</code>, as a chain of reductions: (1) <code>TM518.eqv</code> gives <code>~ halts TM518.tm c0</code>; (2) <code>flip_halts_c0</code> (Flip.v) gives <code>~ halts (flip TM518.tm) c0</code>; (3) <code>perm_nonhalt</code> (Permute.v) with <code>Perm (flip TM518.tm) W42.tm f</code>, f = (A↦F, B↦A, C↦B, D↦C, E↦D, F↦E), proved by case analysis like <code>perm</code> in Skelet15.v, gives <code>~ halts W42.tm (F;; tape0)</code>; (4) <code>multistep_nonhalt</code> to <code>S (std,2,2)</code> by <code>execute</code> (73 steps); (5) <code>nonhalt_I</code>. For step 1, copy the 15-line TM518 module (its <code>solve_eqv</code> call) or <code>Require</code> a compiled Eqv_v3</td>
+<td>Skelet15.v does exactly 2–4 (<code>flip_halts_c0</code>, <code>perm_nonhalt</code>, <code>multistep_nonhalt</code>). Flip.v uses <code>functional_extensionality_dep</code>, which is already in the kill baseline. Fallback: a standalone file on TM518 <code>tm</code>, with every side lemma mirrored (RIncs, LIncs, ROv, SW, O3–O6) and init = 14 steps to the mirror of K(0^inf,0,1)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Risks.</strong>
+- The general OV and SW lemmas need care with <code>&lt;[...]</code> list orientation (rocq-notes: left lists read reversed).
+- 349: the TM518 module of Eqv_v3 runs <code>solve_eqv</code> with a CTL/NG certificate. Copying it may cost compile time or memory; time it alone before you rely on it. Fallback: <code>Require</code> a compiled Eqv_v3.
+- The arithmetic of Lemma S/C has many cases. Split it into one lemma per rule, each with <code>lia</code> after stating the rule's bounds in terms of 2^L, 2^h, k, r and m.
+- No CTL/NG parameter searches are involved. The NG parameters of TM518.eqv are given in Eqv_v3.</p>
+<h2 id="9-evidence-python3-b-check_proofpy-seed-s-quick-full">9. Evidence (<code>python3 -B check_proof.py [--seed S] [--quick|--full]</code>)</h2>
+<p>Every claim above has a named check. The results are in <code>work/check_proof_seed1.log</code> (default), <code>work/check_proof_seed2.log</code> (default, seed 2) and <code>work/check_proof_full_seed1.log</code> (<code>--full</code>).</p>
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>what is checked</th>
+<th>size (default run)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T</td>
+<td>E1 is the only undefined transition; TM1/TM2 differ only in F1</td>
+<td></td>
+</tr>
+<tr>
+<td>LS</td>
+<td>L0/L1 on the TM: result = phi, steps 1 / 2e+3, right context untouched, transitions ⊆ {A0, A1, F0, F1, B1}</td>
+<td>all 16,384 words of length ≤ 14 + 3,000 random words up to 90 cells</td>
+</tr>
+<tr>
+<td>RS</td>
+<td>every row of the RS chain (configuration, state, head, step); left side untouched; no F1/E1; TM1, TM2 give the same run</td>
+<td>n ≤ 40, m ≤ 6, plus 200 random up to 400</td>
+</tr>
+<tr>
+<td>OV</td>
+<td>OV0, CD, OVe (q+8), OVo reset (q+14), halt at step q+9 when x ends in 1, nested case enters F</td>
+<td>every f up to length 13 × m ≤ 3, plus 2,000 random</td>
+</tr>
+<tr>
+<td>K</td>
+<td>R1, R2, R3, R4 on K configurations, composed</td>
+<td>all words up to length 11</td>
+</tr>
+<tr>
+<td>PHI</td>
+<td>the string definition of phi = the bit version; SW(i), (ii) with the landing cells, (iii); INC-std, INC-pk; accelerated phij = plain iteration</td>
+<td>SW: every h ≤ 5, every (o,c), every Hi up to 6 cells, plus 30,000 random (h ≤ 40)</td>
+</tr>
+<tr>
+<td>ORB</td>
+<td>O3–O6 by plain iteration (every k &lt; 512, every h ≤ 9 and g), and with phij at random large parameters (L, h ≤ 60)</td>
+<td></td>
+</tr>
+<tr>
+<td>X</td>
+<td>overflow words of std/pk counters</td>
+<td>N &lt; 8192 + 5,000 random up to 120 bits</td>
+</tr>
+<tr>
+<td>B</td>
+<td>each macro rule: closed form = abstract execution of R1–R4 with plain phi (every clean state with m ≤ 90, N ≤ 3m+8); = with phij on 3,000 constructed large states per rule; = <strong>direct TM simulation</strong> on 30 states per rule. Where a rule ends (§3.4): the end is the first clean overflow state with N ≥ 1, and every earlier overflow state is dirty or empty; the direct TM passes exactly the overflow states of the abstract trace; the empty state (std,0,M) occurs once, only in S2/P0, with the stated M, is outside I, and S0 takes it to the result</td>
+<td>same states</td>
+</tr>
+<tr>
+<td>INV</td>
+<td>Lemma S (a rule applies; dirty kinds; every inequality step of §4.2 as its own check), Lemma C (closure, D per rule, u ≥ 1, D &lt; 2^(L-u), parity of n), progress m' ≥ m+1, closed form = abstract execution</td>
+<td>exhaustive for m ≤ 700 (251,124 states; <code>--full</code>: m ≤ 1300) + 300,000 random boundary states up to m ~ 2^60</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>32-step trace and milestones; the R1–R3 orbit = the stored direct run's 1,003 overflow configurations, including the step formulas, to step 9,998,414,763; macro orbit; 40 fresh direct macro steps</td>
+<td></td>
+</tr>
+<tr>
+<td>F</td>
+<td>start F: K(0^inf,0,1) at step 14, (std,2,2) at step 73, I along 300,000 macro steps. 349: TM518 <code>tm</code> = this table mirrored and renamed (string identity); the TM518 <code>tm</code>/<code>tm'</code> strings and <code>eqv</code> statement in the vendored Eqv_v3.v; 349 and this table on the 740 list; <code>Perm (flip TM518.tm) W42 f</code> transition by transition; lockstep run of TM518 <code>tm</code> from blank against the mirror of this table from F (state, head and every cell)</td>
+<td>lockstep 200,000 steps (<code>--full</code>: 1,000,000)</td>
+</tr>
+<tr>
+<td>J</td>
+<td>I along the blank-tape orbit</td>
+<td>500,000 macro steps (<code>--full</code>: 2,000,000)</td>
+</tr>
+<tr>
+<td>NEG</td>
+<td>off I, constructed overflows on landings: H halts on the TM, N nests, R resets</td>
+<td>10 each</td>
+</tr>
+<tr>
+<td>TPL</td>
+<td>template carry-over (§8): on std words the left step never reads F1 (TM2 <code>LIncs</code>); L+OV on std words (TM1 <code>ROv</code>) runs identically on this machine, TM1 and TM2</td>
+<td>N &lt; 2048, m ∈ {0,1,4}</td>
+</tr>
+</tbody>
+</table>
+<h2 id="10-checkpoint-b-dennis">10. Checkpoint B (Dennis)</h2>
+<p>Pending (non-blocking).</p>
+<h2 id="review-log">Review log</h2>
+<ul>
+<li><strong>2026-10-11, funded stage <code>hunt</code>.</strong> First draft: rules, the closed-form step B (17 cases), the invariant I, Lemma S, Lemma C and a check list. That draft is kept as <code>work/proof_draft_hunt_2026-10-11.md</code>. Its checks were exhaustive to m = 1300 and on 5.2M random states. The hunt's checks caught two errors before the draft: a wrong closed form (pk gen-1 R reset, outside I) and a wrong lemma ("pk odd is never dirty"; pk i = 1 is).</li>
+<li><strong>2026-10-11, informal_proof stage (this revision).</strong></li>
+<li>Rewritten as a complete proof.<ul>
+<li>The full rule table is in comment-block form (§1).</li>
+<li>The low-level rules are exact TM runs with step counts: L0/L1 with a proof, RS as an 8-row chain, OV with all branches (§3.1).</li>
+<li>The landing claims are now one general lemma, SW, with a proof, a sweep corollary and four orbit lemmas O3–O6 (§3.3). They replace the stated-not-derived "gen 1 / gen 2 landing lemmas" of the draft.</li>
+<li>The 17-case step B is cut to the 11 macro rules that can occur under I, each with an exact precondition, including the gen-2 merge condition (§3.4). Gen-1 N/H/R landings and gen-2 "merge at overflow" are not rules. Lemma S shows they never occur under I.</li>
+</ul>
+</li>
+<li>Lemma S and Lemma C were redone in terms of the rules. Every inequality step is a separate check.</li>
+<li>check_proof.py is new and self-contained, with its own simulator and none of the hunt scripts. It found four bugs in itself and none in the proof:<ul>
+<li>two off-by-one padding comparisons;</li>
+<li>an O4 check that ran on r = 0;</li>
+<li>an all-ones reset check that expected i+2 for i+1 (the proof text had i+1 right).</li>
+</ul>
+</li>
+<li>
+<p>A self-review pass over this text, done before the final check runs, fixed four slips:</p>
+<ul>
+<li>§6 listed the start-F orbit as the blank-tape orbit; it now reads (std,1,1) → (std,3,3) → (std,6,6) → (pk,13,7) → …;</li>
+<li>Lemma C, P1: the parity was given as b ≡ i+1; it is b ≡ i (m odd), and the case split was already right;</li>
+<li>S1 now states k ≥ 1;</li>
+<li>the RS remark on E: E reads a 0 that B wrote, not one that D1 wrote.</li>
+</ul>
+<p>None of these changes a rule or a bound that the checks test.
+  - Corrections to earlier notes:
+- 349's (std,2,2) is reached at step 73, not 63 as a first count here said;
+- the direct-run file has 1,003 overflow rows (notes said 1,002).
+  - Open: Checkpoint B; a skeptic pass by a second agent; formalization (§8).
+- <strong>2026-10-11, skeptic round 1</strong> (verdict: sound; two minor gaps), with this revision.
+  - <strong>Gap 1: 349 is a mirror, not just a different start.</strong>
+- The text said Eqv_v3 TM518 <code>tm</code> is "this table started in F". In fact it is this table mirrored (L↔R), renamed F→A, A→B, …, E→F, and started in its A. That is confirmed from the strings, and check F now runs the two machines in lockstep.
+- Fixed in the header, §0, §7.3 and §8. §8 now has a 349 row. The skeptic proposed mirroring every side lemma; that is kept as the fallback. The main route follows Skelet15.v: <code>TM518.eqv</code>, then <code>flip_halts_c0</code>, then <code>perm_nonhalt</code> with the renaming, then 73 steps from F by <code>execute</code>, then an exported <code>nonhalt_I</code>. A risk line covers the cost of TM518's <code>solve_eqv</code>.
+- New checks: F.TM518_eq_mirror_rename_of_table, F.Eqv_v3_TM518_strings_and_eqv, F.349_and_table_on_740_list, F.Perm_flip_TM518_to_table, F.TM518_lockstep_mirror_of_startF.
+  - <strong>Gap 2: where a macro step ends.</strong>
+- Added "Where a macro rule ends" (§3.4), a line in the §1 block, the induction statement in §7.1, and the BigStep note in §8. Each rule ends at the first clean overflow state with N ≥ 1. (std,0,M) is an intermediate state of S2 and P0 only; it lies outside I and S0 leaves it.
+- The checks already stopped there (the abstract executor and the direct runner skip the empty word), so no rule or bound changed.
+- New checks: B.end_first_clean_N&gt;=1_{abstract,TM}, B.overflow_states_TM_eq_abstract, B.empty_state_only_in_S2_P0_{abstract,TM}, B.S2_P0_pass_(std,0,M)<em>once</em>{abstract,TM}, B.S2_P0_(std,0,M)<em>not_I_then_S0</em>{abstract,TM}.
+  - <strong>Teeth.</strong> The new F checks fail when this table is started in A instead of F, or when the renaming swaps two states (a scratch mutation run).
+  - <strong>Results.</strong> 147/147 PASS with seed 1 <code>--full</code> (39 s; lockstep 1,000,000 steps; 25,656 abstract and 330 direct-TM endpoint checks), seed 1 default, and seed 2 default.
+  - <strong>Re-check.</strong> Both gaps were re-read against the revised text and are closed. No fatal or major gap was raised. Status: CHECKPOINT_B.
+  - <strong>Open.</strong> Checkpoint B (Dennis); formalization (§8), including a solo timing of TM518's <code>solve_eqv</code> for 349.</p>
+</li>
+</ul>
+</main></body></html>

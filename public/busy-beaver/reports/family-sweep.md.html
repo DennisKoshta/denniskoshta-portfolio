@@ -1,0 +1,1435 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>family-sweep.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/family-sweep.md · <a href="/busy-beaver/reports/family-sweep.md.html">raw</a></div>
+<h1 id="family-sweep-untouched-holdouts-related-to-our-kills">Family sweep: untouched holdouts related to our kills</h1>
+<p><em>2026-10-10. Inputs: <code>data/holdouts/2026-10-07_778.txt</code> (778 entries), <code>data/holdouts/2026-10-07_eqv_1590.txt</code> (778 groups, 1,590 machines), the 9 <code>machines/*/status.json</code> with <code>KILLED_NONHALT</code> (#2, #3, #4, #11, #12, #12-twin, #24, #25, #33), their <code>proof.md</code>/<code>check_proof.py</code>, <code>reports/forensics/remaining_778.tsv</code> (sheet fields), <code>data/discord/</code>, <code>reports/landscape.md</code> §7 (claims), <code>data/solved_index.tsv</code>.</em></p>
+<p>Simulation and table matching are evidence, not proof. Only a <code>tools/check_kill.sh</code> PASS counts.</p>
+<h2 id="bottom-line">Bottom line</h2>
+<ul>
+<li><strong>Three new same-table relatives.</strong> Each is an untouched holdout that runs a killed machine's own transition table (up to renaming states) from a different start state. On each one, simulation shows the run entering the parent's proven invariant. If that holds, the parent's rules and invariant carry over as they are, and only the init changes, as with #24, #25 and #33.
+  1. <strong>line 388</strong> <code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code>: kill #33's table renamed (no mirror), started in #33's D. Equivalently, #11's table mirrored and started in #11's C.
+  2. <strong>line 604</strong> <code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code>: kill #3's table renamed (no mirror), started in #3's B. This is the 4th holdout with that table (A = #3, B = this, C = #25, D = #24). It is <strong>not mentioned anywhere in the project yet</strong>.
+  3. <strong>line 17</strong> <code>1RB---_0LC1RF_1LE0RD_0RB1RC_1RD0LE_0RC1RA</code>: kill #4's table renamed (no mirror), started in #4's F. Not mentioned in any machine notes yet.</li>
+<li><strong>Excluded as claimed:</strong> line 541 <code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code> (#11's table from B; Level 1 tab, "Done By: hipparcos", Discord thread). It would be as cheap as 388 if the duplicate-work question is resolved.</li>
+<li><strong>Relation (2), 1–2 transitions after the best renaming + mirror:</strong> no untouched holdout. The only holdouts at distance 1 are already touched: #32 and R4 (from #11/#33), <code>1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code> (from #2) and the #12 twin pair. Nothing is at distance 2. At distance 3–4 there are 16 untouched representatives, but every one first uses a differing transition within 31 steps, and most are in another sheet class (full table below).</li>
+<li><strong>Relation (3), trajectories:</strong> the only exact twin of a kill that is untouched is 388, twin of #11 (77,691 / 77,685 cells and 38,839 / 38,836 nonzeros at 1e9). 541 is also a twin but is claimed. 604 and 17 are <em>different orbits of the same macro map</em>, not trajectory twins: at 1e9 they have 18% and 23% more cells than their parents.</li>
+<li><strong>Relation (4), same class and similar growth:</strong> two weaker multi-start families. One is a Skelet 1-like Class 2 trio, a single table with 3 starts that is 5 transitions from #11. The other is an "Unknown" quartet, a single table with 4 starts that is 6 transitions from #11 and within 7% of its trajectory. Each would need a new proof, but one proof would cover all of its starts.</li>
+</ul>
+<h2 id="method">Method</h2>
+<ol>
+<li><strong>Relabelling distance.</strong> For every kill and every one of the 1,590 machines (778 representatives plus their equivalence-group members), we took the minimum, over all 720 state permutations (the start state included) with and without the L/R mirror, of the number of differing transitions (out of 12, with <code>---</code> compared as a symbol). Distance 0 with a permutation that moves A means the same table with a different start, i.e. relation (1).</li>
+<li><strong>Divergence.</strong> For each pair at distance 1–4, we ran the kill's relabelled table and the holdout in lockstep from the blank tape (a small C tool), and recorded the first step at which the holdout uses a transition where the two differ. A pair that never diverges would mean the differing transitions are unused. None qualified.</li>
+<li><strong>Trajectories.</strong> We ran all 778 holdouts with the C core (<code>tools/sim/tmsim</code>) to 1e9 steps, taking the width at every 1e7 checkpoint and the nonzero count at 1e8 and 1e9. 778/778 ran, and none halted. A <em>twin</em> is defined as in <code>reports/targeting.md</code> (width within 0.3% + 3 at every 1e7 checkpoint, and nonzeros at 1e9 within 0.5% + 3). Look-alikes have width within 8% at every checkpoint and nonzeros at 1e9 within 5%. The growth exponent is log10(w(1e9)/w(1e8)).</li>
+<li><strong>Parent-mechanism checks</strong> for the three relation-(1) machines, using each parent's own <code>check_proof.py</code> functions on the new start (details per candidate below).</li>
+<li><strong>Gate.</strong> Every candidate is a byte-exact entry of the 778 list (<code>tools/holdouts.py contains</code>, exit 0), has no <code>machines/&lt;tm&gt;/</code> dir, and has no completed proof in <code>solved_index.tsv</code> in any tier. At most it has <code>Eqv*.v</code> <code>tm'</code> mentions with <code>proves=-</code>. None has a sheet status, "done by", Level 1 or Unverified-tab entry, or a §7 claim. Membership in the UBRRBA (mxdys) and longitudinal (dyuan01) lists is noted but does not exclude a machine, per Dennis.</li>
+</ol>
+<p>Permutation notation: <code>perm EDBCFA</code> means the kill's A, B, C, D, E, F become the holdout's E, D, B, C, F, A. "kill start" is the kill state that becomes the holdout's A.</p>
+<h2 id="ranked-candidates">Ranked candidates</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>holdout (line)</th>
+<th>parent</th>
+<th>relation</th>
+<th>evidence (short)</th>
+<th>score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code> (388)</td>
+<td>#33 (= #11 mirrored)</td>
+<td>same table as #33, perm BCDAEF, no mirror, start = #33's D (= #11's C, mirrored)</td>
+<td>#11 check 10: 687 steps to K((1,1,9);8,1), INV class A. Our closure run: 2,753/2,753 macro steps match #11's abstract model to 2e7 steps, all in INV. Exact trajectory twin of #11</td>
+<td>0.95</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code> (604)</td>
+<td>#3 (and #25, #24)</td>
+<td>same table as #3, perm DABCEF, no mirror, start = #3's B (also #25 under BCDAEF from D)</td>
+<td>5,323/5,323 canonical transitions follow #3's abstract map from step 1,083 to 3e8. At re-pairing 6 (step 38,732), K(2;(47,32,0),(40,33,1),(13,34,1);-) satisfies INV+(e) and the Rocq <code>J_base</code> clauses, and so do all 11 E-starts (re-pairings 6, 8, …, 26) to 2.8e8</td>
+<td>0.93</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>1RB---_0LC1RF_1LE0RD_0RB1RC_1RD0LE_0RC1RA</code> (17)</td>
+<td>#4</td>
+<td>same table as #4, perm EDBCFA, no mirror, start = #4's F</td>
+<td>S(6,14,4) = Q(7,65,1,14,4) = <code>CfgF 5 0 14 4</code> at step 16,590 satisfies #4's <code>Inv</code> (facet 4Y+2Z ≥ N tight: 64 = 64). 8/8 later cycle-map predictions S(k+1,F(k,Y,Z)) appear in the real run to k = 14 (step 1.27e9)</td>
+<td>0.90</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code> (543)</td>
+<td>#11 / #33</td>
+<td>same sheet class, 5 transitions on the rep, 4 via eqv member <code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA1RF_0RA---</code> (diverges at step 2)</td>
+<td>One table with 3 starts (543/363/624 pairwise distance 0, trajectory twins of each other). Tape is (10)^n runs split by 0/1/00 defects, like #11's digits. 61,955 cells at 1e9 vs #11's 77,685 (−20%), exponent 0.503</td>
+<td>0.15</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code> (363)</td>
+<td>#11 / #33</td>
+<td>as #4: the same table started elsewhere</td>
+<td>as #4 (61,951 cells, 30,972 nonzeros at 1e9); eqv group of 6</td>
+<td>0.15</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD</code> (624)</td>
+<td>#11 / #33</td>
+<td>as #4</td>
+<td>as #4 (61,909 / 30,948); eqv group of 5</td>
+<td>0.15</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>1RB0LF_1RC0RB_1LD0RA_0LE0LC_1LB1LF_1LD---</code> (599)</td>
+<td>#11</td>
+<td>trajectory look-alike, 6 transitions (no renaming; A0 is the same 1RB)</td>
+<td>Width within 7.1% of #11 at every 1e7 checkpoint, nonzeros within 1.3% at 1e9, exponent 0.477 vs 0.510. One table with 4 starts (599/479/199/166). Sheet class Unknown, but the tape looks Skelet-like ((10)^n with single-bit defects)</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>1RB0LE_0RC0RA_1RD1RF_1LA0LD_1LD0RF_1RB---</code> (479)</td>
+<td>#11</td>
+<td>as #7</td>
+<td>as #7</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>1RB1RF_1LC0LB_1RE0LD_1LB0RF_0RA0RC_1RE---</code> (199)</td>
+<td>#11</td>
+<td>as #7</td>
+<td>as #7</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>1RB0RA_1LC0RE_0LD0LB_1LA1LF_1RA0LF_1LC---</code> (166)</td>
+<td>#11</td>
+<td>as #7</td>
+<td>as #7</td>
+<td>0.10</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>1RB0RE_1LC0RA_1LA1LD_0LC1LF_0LB1RB_1RA---</code> (319)</td>
+<td>#33</td>
+<td>trajectory look-alike, 6+ transitions</td>
+<td>Width within 4.0% of #33 at every checkpoint and nonzeros within 1.7% at 1e9, but nonzeros 47% off at 1e8. Unknown class</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>1RB0LA_0LC0RB_1RA0RD_1LE0LD_1LF---_1LA1LC</code> (364)</td>
+<td>#2</td>
+<td>same class (Bell eats counter), same growth</td>
+<td>Width within 3.3% of #2 at every checkpoint, exponent 0.346 vs 0.344, but nonzeros 30% off at 1e9 (3,219 vs 4,592). On the dyuan01 list</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>1RB---_1RC1RE_1LD0RC_0RE0LD_1LC0LF_1RA0RF</code> (92)</td>
+<td>#2</td>
+<td>as #12</td>
+<td>width within 3.2%, nonzeros 30% off. On the dyuan01 list</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>1RB0LA_0RC1RD_0LD1RE_1LA0RF_0RD0LD_1RD---</code> (55)</td>
+<td>#4</td>
+<td>3 transitions (D1, E1, F0), no renaming</td>
+<td>Diverges at step 31. Chaotic Fractal Type 1, 49,389 cells at 1e9 vs #4's 23,607. On the dyuan01 list</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>1RB0LF_1LC0RB_0LD1LA_0RA1LE_0LA0RA_1LA---</code> (48)</td>
+<td>#4</td>
+<td>3 transitions (mirror + BCDAEF, from D)</td>
+<td>Diverges at step 15. Chaotic Fractal Type 1, 51,188 cells. On the dyuan01 list</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB</code> (723)</td>
+<td>#11 / #33</td>
+<td>3 transitions</td>
+<td>Diverges at step 1. Bell eats counter, 4,657 cells (not Skelet-like)</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+<h2 id="the-three-strong-candidates-in-detail">The three strong candidates in detail</h2>
+<h3 id="1-line-388-1rb0ld_1rc0re_1ld0re_1la0la_1rb1rf_1rb-parent-33-11">1. Line 388 <code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code> (parent #33 / #11)</h3>
+<ul>
+<li><strong>Relation.</strong> It is #33's table with states renamed A→B, B→C, C→D, D→A (E, F fixed), with no mirror, started in #33's D. Seen from #11, it is #11's table mirrored, started in #11's C. This is row D of #33's <code>proof.md</code> §0 and the "C-start twin" of #11's <code>proof.md</code> §4. Its equivalence group, <code>1RB1RF_1RC0RA_1LD0RA_1LE0LE_1RB0LD_1RB---</code> and <code>1RB---_1RC0RF_1LD0RF_1LE0LE_1RB0LD_1RB1RA</code> (Eqv_v2.v TM688/TM2137), is #11's table started in E and in F. So all 6 starts of this table are now accounted for: A (#11, killed), B (541, hipparcos), C (388), D (#33, killed), and E/F (merged into 388).</li>
+<li><strong>Evidence.</strong></li>
+<li>
+<h1 id="11s-check_proofpy-check-10-passes-687-steps-reach-k119-8-1-class-a-of-inv">11's <code>check_proof.py</code> check 10 passes: 687 steps reach K((1,1,9); 8, 1), class A of INV.</h1>
+</li>
+<li>Our closure run of #11's table from C: 2,753/2,753 macro steps of the real run match #11's abstract <code>mstep</code> model to step 2.0e7. The INV class counts are A 983, B 876, C 894, with no failure.</li>
+<li>It is an exact trajectory twin of #11.</li>
+<li><strong>Formal route.</strong> #33's .v (669 lines), every state letter renamed by BCDAEF, with no mirror (cheaper than #11 + mirror). The new <code>init</code> is 687 steps to <code>K [d1 1 9] 8 1</code>. The abstract part is unchanged. This is the cheapest kill on the list.</li>
+<li><strong>Flags.</strong> Sheet: Skelet 1-like Class 2, no status or notes. It is named in the unposted <code>reports/discord-drafts.md</code> Message 2, group 2. Not on the Discord lists.</li>
+</ul>
+<h3 id="2-line-604-1rb0rd_1rc1rf_1ld0le_1ra0lc_1re1lc_0ra-parent-3-25-and-24-are-siblings">2. Line 604 <code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code> (parent #3; #25 and #24 are siblings)</h3>
+<ul>
+<li><strong>Relation.</strong> It is #3's table renamed A→D, B→A, C→B, D→C (E, F fixed), with no mirror, started in #3's B. From #25 it is perm BCDAEF from #25's D; from #24 it is the mirror from #24's C. With this machine, the table has four holdouts, A = #3, B = 604, C = #25 and D = #24; the E and F starts are not on the list. No project file mentions 604 yet. It is absent from <code>solved_index.tsv</code> and is a singleton equivalence group.</li>
+<li><strong>Evidence.</strong> The script imports #25's <code>check_proof.py</code> and, through it, #3's (<code>cp.astep</code>, <code>cp.inv_violations</code>, <code>J_base</code>). It simulates 604's own table, with the canonical head state D = π(A).</li>
+<li>From step 1,083 to 3e8, 5,323/5,323 consecutive canonical configurations follow #3's abstract map (Dec 5,266, Ov 26, End 13, EndLast 13, DecMerge 3, DecMergeTail 2).</li>
+<li>The base E-start after re-pairing 6, at step 38,732, is K(2; (47,32,0),(40,33,1),(13,34,1); −). There, INV+(e) has no violations and the Rocq <code>J_base</code> clauses (PC E1 per pair) all hold.</li>
+<li>All 11 E-starts at the even re-pairings 6–26 (to step 2.78e8) pass both checks, which matches the parent's own alternating pattern (the parent's base is at step 78,710).</li>
+<li><strong>Formal route.</strong> #3's .v (1,301 lines) with the states renamed by DABCEF and no mirror. The new <code>init</code> is one <code>esx</code> of 38,732 steps to the 3-pair base. <code>J</code>, <code>Jstep</code> and <code>J_base</code> are reused, and <code>J_base</code> is re-proved by computation for the new base. This is the #25 recipe (a scripted σ-swap); the init is about half the parent's 78,710 steps.</li>
+<li><strong>Caveat.</strong> The base has 3 pairs, where #3's and #25's bases have 4. INV+(e) and J accept it, but it is the one structural difference to watch.</li>
+</ul>
+<h3 id="3-line-17-1rb-_0lc1rf_1le0rd_0rb1rc_1rd0le_0rc1ra-parent-4">3. Line 17 <code>1RB---_0LC1RF_1LE0RD_0RB1RC_1RD0LE_0RC1RA</code> (parent #4)</h3>
+<ul>
+<li><strong>Relation.</strong> It is #4's table renamed A→E, B→D, C→B, D→C, E→F, F→A, with no mirror, started in #4's F. #4's F1 = <code>---</code> becomes this machine's A1. Its equivalence-group member <code>1RB0LC_1LC0RB_0LD1LA_0RA1LE_0LA1LF_1LD---</code> is #4's table mirrored and started in #4's D. Eqv_v2.v TM7 proves halts ⟺ halts between that member (in its 1LB mirrored form) and line 17. Starts B, C and E are not on the list.</li>
+<li><strong>Evidence.</strong> We simulated #4's table from <code>0^inf F&gt; 0^inf</code> and pattern-matched every right-edge C visit against #4's P/Q families.</li>
+<li>S(6,14,4) = Q(7,65,1,14,4) appears at step 16,590 (from D it is the same S(6,14,4), at step 16,585). In the .v's coordinates this is <code>CfgF 5 0 14 4</code>.</li>
+<li><code>Inv</code> holds: 64 ≤ 112 ≤ 192; 12 ≤ 64; 0 ≤ 96; 64 ≤ 4·14 + 2·4 = 64 (tight); 344 ≤ 576.</li>
+<li>From there, the first S-config of each level k = 7..14 is exactly #4's cycle map F(k, Y, Z): (7,25,29), (8,68,2), (9,104,115), (10,271,186), (11,594,−31), (12,860,888), (13,2178,1485), (14,4752,2348) at step 1.27e9. That is 8/8 matches, all in the hexagon.</li>
+<li>The same script on #4 itself reproduces the proof's S(6,16,0) at step 17,215 and 8/8 cycles.</li>
+<li><strong>Formal route.</strong> #4's .v (502 lines) with the states renamed by EDBCFA. The new <code>init0</code> is an <code>esx</code> of 16,590 steps to <code>CfgF 5 0 14 4</code>; the final <code>cbn; lia</code> must close the tight facet, which it should because <code>Inv</code> uses ≤. <code>cycle_step</code> is unchanged.</li>
+<li><strong>Flags.</strong> Sheet class Sync bouncer counter, no notes. It is on mxdys's UBRRBA_TODO list and dyuan01's longitudinal list. Per Dennis these lists are fair game, and #4 was on both too, but someone's pipeline may absorb it.</li>
+</ul>
+<h2 id="excluded-relation-found-but-gated-out">Excluded (relation found, but gated out)</h2>
+<table>
+<thead>
+<tr>
+<th>holdout (line)</th>
+<th>relation</th>
+<th>why excluded</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code> (541)</td>
+<td>#11's table from B (perm EABCDF), exact trajectory twin of #11; #11 check 10 gives 732 steps to K((1,1,10);8,1), class A</td>
+<td>Level 1 tab, "Done By: hipparcos", Discord thread 1432566675533992019 (claim; duplicate-work question open since #11)</td>
+</tr>
+<tr>
+<td><code>1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code> (395, #32)</td>
+<td>1 transition from #11 (A1)</td>
+<td>touched (OPEN)</td>
+</tr>
+<tr>
+<td><code>1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---</code> (596, R4)</td>
+<td>1 transition from #33 (B1)</td>
+<td>touched (CHECKPOINT_A)</td>
+</tr>
+<tr>
+<td><code>1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code> (663)</td>
+<td>1 transition from #2 (A1)</td>
+<td>touched (OPEN)</td>
+</tr>
+<tr>
+<td><code>1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</code> (369)</td>
+<td>3 transitions from #11/#33</td>
+<td>touched (CHECKPOINT_A)</td>
+</tr>
+<tr>
+<td><code>1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA</code> (731)</td>
+<td>same class as #2 (Bell eats counter)</td>
+<td>Level 1, "Done By: mxdys"</td>
+</tr>
+</tbody>
+</table>
+<h2 id="full-table-a-every-structural-relative-at-distance-4-representatives-and-equivalence-group-members">Full table A: every structural relative at distance ≤ 4 (representatives and equivalence-group members)</h2>
+<p>Columns: dist, kill, holdout representative, 778 line, matched machine (the rep itself, or an equivalence-group member), the best permutation, the kill start, the differing transitions (kill transition → holdout transition), the first step at which the holdout uses a differing transition, the sheet class, and flags. Kill-to-kill pairs are omitted (#3/#24/#25 and #11/#33 are mutual distance 0, and #12/#12-twin distance 1).</p>
+<table>
+<thead>
+<tr>
+<th>dist</th>
+<th>kill</th>
+<th>holdout rep</th>
+<th>line</th>
+<th>matched</th>
+<th>perm</th>
+<th>kill start</th>
+<th>differing transitions</th>
+<th>first use</th>
+<th>class</th>
+<th>flags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>#4</td>
+<td><code>1RB---_0LC1RF_1LE0RD_0RB1RC_1RD0LE_0RC1RA</code></td>
+<td>17</td>
+<td>rep</td>
+<td>EDBCFA</td>
+<td>F</td>
+<td>(none)</td>
+<td>-</td>
+<td>Sync bouncer counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#4</td>
+<td><code>1RB---_0LC1RF_1LE0RD_0RB1RC_1RD0LE_0RC1RA</code></td>
+<td>17</td>
+<td>eqv member <code>1RB0LC_1LC0RB_0LD1LA_0RA1LE_0LA1LF_1LD---</code></td>
+<td>BCDAEF + mirror</td>
+<td>D</td>
+<td>(none)</td>
+<td>-</td>
+<td>Sync bouncer counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#11</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>rep</td>
+<td>CDABEF + mirror</td>
+<td>C</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#11</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>eqv member <code>1RB1RF_1RC0RA_1LD0RA_1LE0LE_1RB0LD_1RB---</code></td>
+<td>CDEBAF + mirror</td>
+<td>E</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#11</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>eqv member <code>1RB---_1RC0RF_1LD0RF_1LE0LE_1RB0LD_1RB1RA</code></td>
+<td>CDEBFA + mirror</td>
+<td>F</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#33</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>rep</td>
+<td>BCDAEF</td>
+<td>D</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#33</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>eqv member <code>1RB1RF_1RC0RA_1LD0RA_1LE0LE_1RB0LD_1RB---</code></td>
+<td>BCDEAF</td>
+<td>E</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#33</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>eqv member <code>1RB---_1RC0RF_1LD0RF_1LE0LE_1RB0LD_1RB1RA</code></td>
+<td>BCDEFA</td>
+<td>F</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#11</td>
+<td><code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code></td>
+<td>541</td>
+<td>rep</td>
+<td>EABCDF</td>
+<td>B</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>done_by=hipparcos; level-1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#33</td>
+<td><code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code></td>
+<td>541</td>
+<td>rep</td>
+<td>CEABDF + mirror</td>
+<td>C</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>done_by=hipparcos; level-1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#3</td>
+<td><code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code></td>
+<td>604</td>
+<td>rep</td>
+<td>DABCEF</td>
+<td>B</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#24</td>
+<td><code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code></td>
+<td>604</td>
+<td>rep</td>
+<td>CDABEF + mirror</td>
+<td>C</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>0</td>
+<td>#25</td>
+<td><code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code></td>
+<td>604</td>
+<td>rep</td>
+<td>BCDAEF</td>
+<td>D</td>
+<td>(none)</td>
+<td>-</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>1</td>
+<td>#11</td>
+<td><code>1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code></td>
+<td>395</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>A1:0LE-&gt;0LC</td>
+<td>27</td>
+<td>Skelet 1-like Class 2</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>1</td>
+<td>#33</td>
+<td><code>1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code></td>
+<td>395</td>
+<td>rep</td>
+<td>DABCEF + mirror</td>
+<td>B</td>
+<td>A1:0LE-&gt;0LC</td>
+<td>27</td>
+<td>Skelet 1-like Class 2</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>1</td>
+<td>#11</td>
+<td><code>1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---</code></td>
+<td>596</td>
+<td>rep</td>
+<td>BCDAEF + mirror</td>
+<td>D</td>
+<td>B1:0RE-&gt;0RD</td>
+<td>5</td>
+<td>Skelet 1-like Class 2</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>1</td>
+<td>#33</td>
+<td><code>1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---</code></td>
+<td>596</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>B1:0RE-&gt;0RD</td>
+<td>5</td>
+<td>Skelet 1-like Class 2</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>1</td>
+<td>#2</td>
+<td><code>1RB0RA_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code></td>
+<td>663</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>A1:0RF-&gt;0RA</td>
+<td>19</td>
+<td>Bell eats counter</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#4</td>
+<td><code>1RB0LF_1LC0RB_0LD1LA_0RA1LE_0LA0RA_1LA---</code></td>
+<td>48</td>
+<td>rep</td>
+<td>BCDAEF + mirror</td>
+<td>D</td>
+<td>A1:0LC-&gt;0LF, E1:1LF-&gt;0RA, F0:1LD-&gt;1LA</td>
+<td>15</td>
+<td>Chaotic Fractral Type 1</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#4</td>
+<td><code>1RB0LA_0RC1RD_0LD1RE_1LA0RF_0RD0LD_1RD---</code></td>
+<td>55</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>D1:0RB-&gt;0RF, E1:1RF-&gt;0LD, F0:1RC-&gt;1RD</td>
+<td>31</td>
+<td>Chaotic Fractral Type 1</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#4</td>
+<td><code>1RB0LA_0RC1RD_0LD1RE_1LA0RF_0RD0LD_1RD---</code></td>
+<td>55</td>
+<td>eqv member <code>1RB---_1LC0RA_1RD0LC_0RE1RB_0LB1RF_0RB0LB</code></td>
+<td>CDEBFA</td>
+<td>F</td>
+<td>A0:1RE-&gt;1RB, B1:0RD-&gt;0RA, F1:1RA-&gt;0LB</td>
+<td>0</td>
+<td>Chaotic Fractral Type 1</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#11</td>
+<td><code>1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</code></td>
+<td>369</td>
+<td>rep</td>
+<td>CDEBAF + mirror</td>
+<td>E</td>
+<td>C1:0RA-&gt;1RE, E0:1RB-&gt;0RA, F0:1RB-&gt;0RB</td>
+<td>6</td>
+<td>Bell eats counter</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#33</td>
+<td><code>1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</code></td>
+<td>369</td>
+<td>rep</td>
+<td>BCDEAF</td>
+<td>E</td>
+<td>C1:0RA-&gt;1RE, E0:1RB-&gt;0RA, F0:1RB-&gt;0RB</td>
+<td>6</td>
+<td>Bell eats counter</td>
+<td>TOUCHED</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#11</td>
+<td><code>1RB0RE_1LC1RD_1LD0LD_0RE0LC_1RA1RF_0RA---</code></td>
+<td>470</td>
+<td>rep</td>
+<td>BCDAEF + mirror</td>
+<td>D</td>
+<td>B1:0RE-&gt;1RD, D0:1RA-&gt;0RE, F0:1RA-&gt;0RA</td>
+<td>3</td>
+<td>Bell eats counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#33</td>
+<td><code>1RB0RE_1LC1RD_1LD0LD_0RE0LC_1RA1RF_0RA---</code></td>
+<td>470</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>B1:0RE-&gt;1RD, D0:1RA-&gt;0RE, F0:1RA-&gt;0RA</td>
+<td>3</td>
+<td>Bell eats counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#11</td>
+<td><code>1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB</code></td>
+<td>723</td>
+<td>rep</td>
+<td>FABECD</td>
+<td>B</td>
+<td>B0:1LE-&gt;0LC, D0:1LE-&gt;0LE, F1:0LC-&gt;1LB</td>
+<td>1</td>
+<td>Bell eats counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#33</td>
+<td><code>1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB</code></td>
+<td>723</td>
+<td>rep</td>
+<td>EFABCD + mirror</td>
+<td>C</td>
+<td>B0:1LE-&gt;0LC, D0:1LE-&gt;0LE, F1:0LC-&gt;1LB</td>
+<td>1</td>
+<td>Bell eats counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB1RF_1RC0RA_1LD1RB_1LE0LD_1RB0LB_0RB---</code></td>
+<td>8</td>
+<td>rep</td>
+<td>CDEBAF + mirror</td>
+<td>E</td>
+<td>C1:0RA-&gt;1RB, D1:0LE-&gt;0LD, E1:0LD-&gt;0LB, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Shift-overflow counter</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB1RF_1RC0RA_1LD1RB_1LE0LD_1RB0LB_0RB---</code></td>
+<td>8</td>
+<td>eqv member <code>1RB0LB_1RC0RE_1LD1RB_1LA0LD_1RB1RF_0RB---</code></td>
+<td>CDABEF + mirror</td>
+<td>C</td>
+<td>A1:0LD-&gt;0LB, C1:0RE-&gt;1RB, D1:0LA-&gt;0LD, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Shift-overflow counter</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB1RF_1RC0RA_1LD1RB_1LE0LD_1RB0LB_0RB---</code></td>
+<td>8</td>
+<td>rep</td>
+<td>BCDEAF</td>
+<td>E</td>
+<td>C1:0RA-&gt;1RB, D1:0LE-&gt;0LD, E1:0LD-&gt;0LB, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Shift-overflow counter</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB1RF_1RC0RA_1LD1RB_1LE0LD_1RB0LB_0RB---</code></td>
+<td>8</td>
+<td>eqv member <code>1RB0LB_1RC0RE_1LD1RB_1LA0LD_1RB1RF_0RB---</code></td>
+<td>BCDAEF</td>
+<td>D</td>
+<td>A1:0LD-&gt;0LB, C1:0RE-&gt;1RB, D1:0LA-&gt;0LD, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Shift-overflow counter</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LD_0RC---_1LD0RF_0LE0RA_0RA1LF_0LA1LB</code></td>
+<td>15</td>
+<td>rep</td>
+<td>CDEAFB + mirror</td>
+<td>D</td>
+<td>A0:1RC-&gt;1RB, B0:1LE-&gt;0RC, C1:0RC-&gt;0RF, D1:1LA-&gt;0RA</td>
+<td>0</td>
+<td>Shift-overflow counter</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LD_0RC---_1LD0RF_0LE0RA_0RA1LF_0LA1LB</code></td>
+<td>15</td>
+<td>eqv member <code>1RB0LD_0RC---_1LD0RF_0LE0RD_0RA1LF_0LA1LB</code></td>
+<td>CDEAFB + mirror</td>
+<td>D</td>
+<td>A0:1RC-&gt;1RB, B0:1LE-&gt;0RC, C1:0RC-&gt;0RF, D1:1LA-&gt;0RD</td>
+<td>0</td>
+<td>Shift-overflow counter</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LA_0RC1RF_0LD1RE_1LA0RB_0RD---_1RA1RD</code></td>
+<td>108</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>B1:1RD-&gt;1RF, E1:1RF-&gt;---, F0:1RC-&gt;1RA, F1:----&gt;1RD</td>
+<td>11</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LC_1LC0RB_0LE0LD_1LC---_0RA1LF_1LA1LF</code></td>
+<td>125</td>
+<td>rep</td>
+<td>BCEAFD + mirror</td>
+<td>D</td>
+<td>C1:1LA-&gt;0LD, D0:1LE-&gt;1LC, F0:0LA-&gt;1LA, F1:1LD-&gt;1LF</td>
+<td>2</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LC_1LC0RB_0LE0LD_1LC---_0RA1LF_1LA1LF</code></td>
+<td>125</td>
+<td>eqv member <code>1RB0LA_0RC0RF_0LD1RE_1LA0RB_1RD1RE_1RB---</code></td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>B1:1RD-&gt;0RF, E0:0RD-&gt;1RD, E1:1RF-&gt;1RE, F0:1RC-&gt;1RB</td>
+<td>8</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LC_1LC0RB_0LE0LD_1LC---_0RA1LF_1LA1LF</code></td>
+<td>125</td>
+<td>eqv member <code>1RB---_0RC0RA_0LD1RF_1LE0RB_1RB0LE_1RD1RF</code></td>
+<td>EBCDFA</td>
+<td>F</td>
+<td>A0:1RC-&gt;1RB, B1:1RD-&gt;0RA, F0:0RD-&gt;1RD, F1:1RA-&gt;1RF</td>
+<td>0</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LC_1LC0RB_0LE0LD_1LC---_0RA1LF_1LA1LF</code></td>
+<td>125</td>
+<td>eqv member <code>1RB1RA_1LC0RD_1RD0LC_0RE0RF_0LB1RA_1RD---</code></td>
+<td>CDEBAF</td>
+<td>E</td>
+<td>A0:0RB-&gt;1RB, A1:1RF-&gt;1RA, D1:1RB-&gt;0RF, F0:1RE-&gt;1RD</td>
+<td>0</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB1LD_1RC0RB_1LD0RD_1LA0LE_1LD1LF_0LD---</code></td>
+<td>190</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>A1:0LE-&gt;1LD, B1:0RC-&gt;0RB, C1:0RB-&gt;0RD, F0:1LD-&gt;0LD</td>
+<td>5</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB1LD_1RC0RB_1LD0RD_1LA0LE_1LD1LF_0LD---</code></td>
+<td>190</td>
+<td>rep</td>
+<td>DABCEF + mirror</td>
+<td>B</td>
+<td>A1:0LE-&gt;1LD, B1:0RC-&gt;0RB, C1:0RB-&gt;0RD, F0:1LD-&gt;0LD</td>
+<td>5</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#12-twin</td>
+<td><code>1RB1LA_1LC0RA_0LF0LD_1RE1LD_1RE0RB_---0LC</code></td>
+<td>200</td>
+<td>rep</td>
+<td>ABCFDE</td>
+<td>A</td>
+<td>C1:1RC-&gt;0LD, D0:0LE-&gt;1RE, E1:1LB-&gt;0RB, F1:0LD-&gt;0LC</td>
+<td>2</td>
+<td>Cubic Mess</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></td>
+<td>363</td>
+<td>eqv member <code>1RB1RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_0RB---</code></td>
+<td>CDEBAF + mirror</td>
+<td>E</td>
+<td>B1:0RA-&gt;0RB, D1:0LE-&gt;0LD, E1:0LD-&gt;0LC, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></td>
+<td>363</td>
+<td>eqv member <code>1RB0LC_1RC0RB_1LD0RE_1LA0LD_1RB1RF_0RB---</code></td>
+<td>CDABEF + mirror</td>
+<td>C</td>
+<td>A1:0LD-&gt;0LC, B1:0RE-&gt;0RB, D1:0LA-&gt;0LD, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></td>
+<td>363</td>
+<td>eqv member <code>1RB1RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_0RB---</code></td>
+<td>BCDEAF</td>
+<td>E</td>
+<td>B1:0RA-&gt;0RB, D1:0LE-&gt;0LD, E1:0LD-&gt;0LC, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></td>
+<td>363</td>
+<td>eqv member <code>1RB0LC_1RC0RB_1LD0RE_1LA0LD_1RB1RF_0RB---</code></td>
+<td>BCDAEF</td>
+<td>D</td>
+<td>A1:0LD-&gt;0LC, B1:0RE-&gt;0RB, D1:0LA-&gt;0LD, F0:1RB-&gt;0RB</td>
+<td>3</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LC_1LC0RB_0LE1LD_1LB1LA_0RA1LF_0LA---</code></td>
+<td>365</td>
+<td>rep</td>
+<td>BCEAFD + mirror</td>
+<td>D</td>
+<td>C1:1LA-&gt;1LD, D0:1LE-&gt;1LB, D1:----&gt;1LA, F1:1LD-&gt;---</td>
+<td>2</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#4</td>
+<td><code>1RB0LC_1LC0RB_0LE1LD_1LB1LA_0RA1LF_0LA---</code></td>
+<td>365</td>
+<td>eqv member <code>1RB1RE_1RC0LB_0RD1RA_0LE1RF_1LB0RC_0RE---</code></td>
+<td>BCDEFA</td>
+<td>F</td>
+<td>A0:1RD-&gt;1RB, A1:----&gt;1RE, C1:1RE-&gt;1RA, F1:1RA-&gt;---</td>
+<td>0</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code></td>
+<td>543</td>
+<td>eqv member <code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA1RF_0RA---</code></td>
+<td>BCDAEF + mirror</td>
+<td>D</td>
+<td>A1:0RE-&gt;0RA, C1:0LD-&gt;0LC, D1:0LC-&gt;0LB, F0:1RA-&gt;0RA</td>
+<td>2</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code></td>
+<td>543</td>
+<td>eqv member <code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA1RF_0RA---</code></td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>A1:0RE-&gt;0RA, C1:0LD-&gt;0LC, D1:0LC-&gt;0LB, F0:1RA-&gt;0RA</td>
+<td>2</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB0RE_1LC1RA_1LD0LC_1RA0LA_1RA1RF_0RA---</code></td>
+<td>597</td>
+<td>rep</td>
+<td>BCDAEF + mirror</td>
+<td>D</td>
+<td>B1:0RE-&gt;1RA, C1:0LD-&gt;0LC, D1:0LC-&gt;0LA, F0:1RA-&gt;0RA</td>
+<td>2</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB0RE_1LC1RA_1LD0LC_1RA0LA_1RA1RF_0RA---</code></td>
+<td>597</td>
+<td>rep</td>
+<td>ABCDEF</td>
+<td>A</td>
+<td>B1:0RE-&gt;1RA, C1:0LD-&gt;0LC, D1:0LC-&gt;0LA, F0:1RA-&gt;0RA</td>
+<td>2</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD</code></td>
+<td>624</td>
+<td>eqv member <code>1RB0RA_1LC0RD_1LD0LC_1RA0LE_1LC1LF_0LC---</code></td>
+<td>DABCEF</td>
+<td>B</td>
+<td>A1:0RB-&gt;0RA, B1:0RA-&gt;0RD, C1:0LE-&gt;0LC, F0:1LC-&gt;0LC</td>
+<td>2</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD</code></td>
+<td>624</td>
+<td>eqv member <code>1RB0RA_1LC0RD_1LD0LC_1RA0LE_1LC1LF_0LC---</code></td>
+<td>CDABEF + mirror</td>
+<td>C</td>
+<td>A1:0RB-&gt;0RA, B1:0RA-&gt;0RD, C1:0LE-&gt;0LC, F0:1LC-&gt;0LC</td>
+<td>2</td>
+<td>Skelet 1-like Class 2</td>
+<td>level-0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#11</td>
+<td><code>1RB0RA_1LC0RC_1LE0LD_1LC1LF_1RA1LC_0LC---</code></td>
+<td>627</td>
+<td>rep</td>
+<td>EABCDF</td>
+<td>B</td>
+<td>A1:0RB-&gt;0RA, B1:0RA-&gt;0RC, E1:0LD-&gt;1LC, F0:1LC-&gt;0LC</td>
+<td>6</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#33</td>
+<td><code>1RB0RA_1LC0RC_1LE0LD_1LC1LF_1RA1LC_0LC---</code></td>
+<td>627</td>
+<td>rep</td>
+<td>CEABDF + mirror</td>
+<td>C</td>
+<td>A1:0RB-&gt;0RA, B1:0RA-&gt;0RC, E1:0LD-&gt;1LC, F0:1LC-&gt;0LC</td>
+<td>6</td>
+<td>Shift-overflow counter</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="full-table-b-trajectory-look-alikes-of-a-kill-width-within-8-at-every-1e7-checkpoint-and-nonzeros-within-5-at-1e9-or-a-twin">Full table B: trajectory look-alikes of a kill (width within 8% at every 1e7 checkpoint and nonzeros within 5% at 1e9, or a twin)</h2>
+<table>
+<thead>
+<tr>
+<th>kill</th>
+<th>holdout</th>
+<th>line</th>
+<th>max width dev</th>
+<th>nz dev 1e8</th>
+<th>nz dev 1e9</th>
+<th>cells 1e9 (H / K)</th>
+<th>nonzeros 1e9 (H / K)</th>
+<th>exponent (H / K)</th>
+<th>twin</th>
+<th>class</th>
+<th>flags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#11</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>0.09%</td>
+<td>0.0%</td>
+<td>0.01%</td>
+<td>77691 / 77685</td>
+<td>38839 / 38836</td>
+<td>0.509 / 0.510</td>
+<td>yes</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#11</td>
+<td><code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code></td>
+<td>541</td>
+<td>0.11%</td>
+<td>0.0%</td>
+<td>0.01%</td>
+<td>77693 / 77685</td>
+<td>38841 / 38836</td>
+<td>0.509 / 0.510</td>
+<td>yes</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#33</td>
+<td><code>1RB0RE_1LC0RA_1LA1LD_0LC1LF_0LB1RB_1RA---</code></td>
+<td>319</td>
+<td>3.96%</td>
+<td>46.9%</td>
+<td>1.73%</td>
+<td>73226 / 76245</td>
+<td>37460 / 38119</td>
+<td>0.501 / 0.523</td>
+<td>no</td>
+<td>Unknown</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#2</td>
+<td><code>1RB1RA_1LC1LB_1RE0LD_1RA0LB_---0RF_1RC0RA</code></td>
+<td>634</td>
+<td>5.88%</td>
+<td>14.8%</td>
+<td>2.33%</td>
+<td>4709 / 4902</td>
+<td>4699 / 4592</td>
+<td>0.338 / 0.344</td>
+<td>no</td>
+<td>Cubic Mess</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#11</td>
+<td><code>1RB1RF_1LC0LB_1RE0LD_1LB0RF_0RA0RC_1RE---</code></td>
+<td>199</td>
+<td>7.10%</td>
+<td>6.3%</td>
+<td>1.28%</td>
+<td>76681 / 77685</td>
+<td>38339 / 38836</td>
+<td>0.477 / 0.510</td>
+<td>no</td>
+<td>Unknown</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#11</td>
+<td><code>1RB0LF_1RC0RB_1LD0RA_0LE0LC_1LB1LF_1LD---</code></td>
+<td>599</td>
+<td>7.13%</td>
+<td>6.3%</td>
+<td>1.28%</td>
+<td>76681 / 77685</td>
+<td>38338 / 38836</td>
+<td>0.477 / 0.510</td>
+<td>no</td>
+<td>Unknown</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#11</td>
+<td><code>1RB0RA_1LC0RE_0LD0LB_1LA1LF_1RA0LF_1LC---</code></td>
+<td>166</td>
+<td>7.13%</td>
+<td>6.3%</td>
+<td>1.28%</td>
+<td>76685 / 77685</td>
+<td>38338 / 38836</td>
+<td>0.477 / 0.510</td>
+<td>no</td>
+<td>Unknown</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#11</td>
+<td><code>1RB0LE_0RC0RA_1RD1RF_1LA0LD_1LD0RF_1RB---</code></td>
+<td>479</td>
+<td>7.13%</td>
+<td>6.3%</td>
+<td>1.28%</td>
+<td>76681 / 77685</td>
+<td>38337 / 38836</td>
+<td>0.477 / 0.510</td>
+<td>no</td>
+<td>Unknown</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#2</td>
+<td><code>1RB1LD_0RC0RF_1LC0LA_0LE1LD_1LA---_0RB0LF</code></td>
+<td>332</td>
+<td>6.49%</td>
+<td>15.8%</td>
+<td>2.64%</td>
+<td>4722 / 4902</td>
+<td>4713 / 4592</td>
+<td>0.336 / 0.344</td>
+<td>no</td>
+<td>Cubic Mess</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#33</td>
+<td><code>1RB0LD_1RC0RE_1LD0RE_1LA0LA_1RB1RF_1RB---</code></td>
+<td>388</td>
+<td>7.42%</td>
+<td>5.1%</td>
+<td>1.89%</td>
+<td>77691 / 76245</td>
+<td>38839 / 38119</td>
+<td>0.509 / 0.523</td>
+<td>no</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#33</td>
+<td><code>1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---</code></td>
+<td>541</td>
+<td>7.42%</td>
+<td>5.1%</td>
+<td>1.89%</td>
+<td>77693 / 76245</td>
+<td>38841 / 38119</td>
+<td>0.509 / 0.523</td>
+<td>no</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#11</td>
+<td><code>1RB0RD_1RC1RF_1LD0LE_1RA0LC_1RE1LC_0RA---</code></td>
+<td>604</td>
+<td>7.66%</td>
+<td>1.7%</td>
+<td>2.27%</td>
+<td>79454 / 77685</td>
+<td>39718 / 38836</td>
+<td>0.527 / 0.510</td>
+<td>no</td>
+<td>Skelet 1-like Class 2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#3</td>
+<td><code>1RB0RC_1RC1RA_1LD0RA_0LE1RA_---1LF_1RB0LF</code></td>
+<td>109</td>
+<td>5.90%</td>
+<td>58.2%</td>
+<td>4.32%</td>
+<td>70681 / 67343</td>
+<td>35120 / 33665</td>
+<td>0.501 / 0.484</td>
+<td>no</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#24</td>
+<td><code>1RB0RC_1RC1RA_1LD0RA_0LE1RA_---1LF_1RB0LF</code></td>
+<td>109</td>
+<td>5.92%</td>
+<td>58.2%</td>
+<td>4.32%</td>
+<td>70681 / 67345</td>
+<td>35120 / 33665</td>
+<td>0.501 / 0.484</td>
+<td>no</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+<tr>
+<td>#25</td>
+<td><code>1RB0RC_1RC1RA_1LD0RA_0LE1RA_---1LF_1RB0LF</code></td>
+<td>109</td>
+<td>5.95%</td>
+<td>58.2%</td>
+<td>4.31%</td>
+<td>70681 / 67347</td>
+<td>35120 / 33668</td>
+<td>0.501 / 0.484</td>
+<td>no</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>Kill reference values at 1e9 (cells / nonzeros / exponent):
+- #2: 4,902 / 4,592 / 0.344
+- #3: 67,343 / 33,665 / 0.484
+- #4: 23,607 / 11,358 / 0.356
+- #11: 77,685 / 38,836 / 0.510
+- #12: 134 / 89 / 0.063
+- #24: 67,345 / 33,665
+- #25: 67,347 / 33,668
+- #33: 76,245 / 38,119 / 0.523</p>
+<p>Within each relation-(1) family the trajectories split as follows:
+- <strong>#11's table:</strong> 388 and 541 are exact twins of #11; #33 (D start) is 7% off.
+- <strong>#3's table:</strong> #24 and #25 are exact twins of #3; 604 is 18% wider at 1e9.
+- <strong>#4's table:</strong> 17 has the same width at 1e8 (10,453 vs 10,403) and is 23% wider at 1e9.</p>
+<p>This happens because the start sets the orbit inside the same invariant. So for start-variant searches, trajectory matching is a weaker test than table matching.</p>
+<h2 id="full-table-c-untouched-members-of-the-kills-sheet-classes-relation-4">Full table C: untouched members of the kills' sheet classes (relation 4)</h2>
+<ul>
+<li><strong>Skelet 1-like Class 2</strong> (untouched, unclaimed):</li>
+<li>388 and 604 (above);</li>
+<li>the trio 543 / 363 / 624 (one table; −20% width vs #11; exponent 0.503);</li>
+<li><code>1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB</code> (587; 7–8 transitions from every kill; 56,062 cells at 1e9, 24% off #3; 0.05, not ranked).</li>
+<li><strong>Sync bouncer counter:</strong> 17 only. The other two members are touched.</li>
+<li><strong>Counter Class 4:</strong> none left.</li>
+<li><strong>Bell eats counter</strong> (#2's class, 32 untouched representatives, one of them claimed): all but one share #2's exponent (0.31–0.36); the exception is 256, at 0.65. The closest by width (within 3–4%) are 364, 92, 727, 215, 687, 500 and 611, but every one has 30–56% fewer nonzeros at 1e9 than #2. That points to different mechanisms; growth alone does not separate this class.</li>
+</ul>
+<h2 id="reproduction">Reproduction</h2>
+<p>The scratch scripts are in this session's scratchpad (<code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/</code>) and are not kept in the project:
+- <code>relabel_all.py</code>: the 1440-relabelling distance;
+- <code>lockstep.c</code> + <code>diverge.py</code>: first use of a differing transition;
+- <code>traj_one.sh</code> + <code>trajall.py</code>: the 778 runs to 1e9 with <code>tools/sim/tmsim</code>, about 10 minutes on 6 niced processes;
+- <code>chk388.py</code>, <code>chk604.py</code>, <code>chk17.py</code>: the parent-mechanism checks, which import the parents' <code>check_proof.py</code> read-only.</p>
+<p>Each relation-(1) claim is quick to re-check by hand:
+- 388: <code>machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/check_proof.py</code> check 10.
+- 604 and 17: the step counts and base configurations above are exact and deterministic.</p>
+</main></body></html>

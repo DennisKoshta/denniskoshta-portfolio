@@ -1,0 +1,57 @@
+{
+ "tm": "1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---",
+ "bucket_reason": "Halt predicted at about 1.82e18 steps: the final cycle halts in direct TM simulation, the path to it rests on a checked cycle model; certifying it is a large formal job.",
+ "question": "W5-5 is predicted to halt at about 1.82e18 steps (cycle 611,577): fund a Rocq halting certificate in the C2-552 style, only firm up the evidence (exact step count, more checks), or park?",
+ "options": [
+  {
+   "id": "certify",
+   "label": "Fund the halting certificate (C2-552 style)",
+   "consequence": "Write proof.md for the cycle model (eat as parametric-in-c lemmas, round lemmas, clean-increment batches), then a checked replay of 611,577 cycles with untrusted batch proposals, ending in `Lemma halt: halts tm c0.` Decides the Eqv_v2 TM291 partners too."
+  },
+  {
+   "id": "evidence",
+   "label": "Firm up the evidence only",
+   "consequence": "Finish the exact total step count and a second independent model run (other bell size and b, C-free), write a short halting note; no Rocq work yet. Status stays a prediction."
+  },
+  {
+   "id": "park",
+   "label": "Park it",
+   "consequence": "Keep the prediction and the scripts as they are; move on to other holdouts."
+  }
+ ],
+ "recommended": "certify",
+ "rationale": [
+  "Direct TM run from the cycle-611,577 start halts after 108,456,557,258 steps.",
+  "The cycle model matches 1,572 direct cycles (with steps) and 22,905 cycles re-run on tools/sim.py.",
+  "C2-552 certified a 1.8e44-step halt; here only 611,577 cycles need a checked replay."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Fig: the last 400 cycle-start counters; dirty digits survive, a 111 appears, the last row halts.",
+   "href": "img/k0_last400.png"
+  },
+  {
+   "kind": "fact",
+   "text": "Direct TM run from 0^inf w 0 E> 101 0001 (001)^1218828 0^inf (w = 010111100100001101000000000001001000101) halts after 108,456,557,258 steps.",
+   "href": "scripts/directk0.c"
+  },
+  {
+   "kind": "fact",
+   "text": "Eats identical at bell 40 and 300 on all 611,577 cycles; ~2.0M oracle rounds identical at b = 1, 2, 3, 9.",
+   "href": "scripts/fastabs2b.c"
+  },
+  {
+   "kind": "fact",
+   "text": "Independent check (tools/sim.py engine, Python ints): 22,905 cycles equal, same halt after 7,434 rounds of cycle 611,577.",
+   "href": "scripts/check_cycles.py"
+  }
+ ],
+ "effort_if_yes": "Several stages (~2 h each): proof.md, then parametric lemmas and a replay certificate; replay of 611,577 cycles in vm_compute chunks.",
+ "updated": "2026-10-13",
+ "answer": {
+  "option": "certify",
+  "note": "Dennis 2026-10-13: 'go with recommendations'",
+  "date": "2026-10-13"
+ }
+}

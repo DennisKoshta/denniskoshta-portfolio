@@ -1,0 +1,18 @@
+{
+ "tm": "1RB0LC_0RC0RF_1RD0RE_1LE0RA_0LA0LE_1LD---",
+ "label": "P-124",
+ "status": "STUCK",
+ "stage": "twin_port",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 124,
+ "holdout_line_778": 131,
+ "class": "Skelet 1-like Class 1 (K42 core)",
+ "upstream_twin": "Sk1like_TC_v1.v Module TM3 = 1RB0LC_0RC1RF_1RD0RE_1LE0RA_0LA0LE_1RD--- (nonhalt)",
+ "relation": "same state names, same start A, no mirror; differs only in B1 (TM3 1RF, here 0RF) and F0 (TM3 1RD, here 1LD)",
+ "reason": "Twin port fails (directions.md section 1, critic's caveat realised). Each B1 exit is the 4-cell event A> 0100 -> <E 0001 (TM3, 7 steps) / <E 0110 (here, 5 steps), so in upstream's digit model this machine writes D0011001 where TM3 writes D0000101 (or D00001 0 + D01). Read again as a leading digit, both become D001101 (bounded-delay reconvergence: exits 1-5, +12 steps each, the 3e8 evidence). Read as the second digit after D0011 0, TM3 gets D0011_000101 (-> D0011101 -> next exit, its self-sustaining exit chain) and this machine gets D0011_011001 (-> D00101001 merge, no exit). That first happens at the 6th exit (Inc 528728, read at Inc 528977, >= 1.0e11 steps); from there the Inc orbits never meet again. TM3 reaches upstream's cycle base S' at Inc 1333832; this machine never has the S' prefix (to 3e6 Inc) and S' is not a cycle for it (from S'(r) its Inc reads r after 777 steps). No delta proof exists; nonhalting needs an invariant of the modified digit system (direction 2, K42).",
+ "result": "exact digit-level model RInc2/Inc2 (upstream RInc with 3 exit branches changed + one new return kind Tp3 = <E 011001 w^n); RInc_spec, Inc_spec and init for this machine compile with coqc 8.20 against the pinned framework in 11 s (scripts/P124_model.v; model lemmas only, not a kill). Inc2 orbit to 1e9 Inc: no inr, no cycle signature, 11 exits.",
+ "evidence": "scripts/twin_check.py (all checks PASS; output in scripts/twin_check.out)",
+ "next": "Hand the Coq-checked model to direction 2 (K42 F-entry atlas): it is the exact digit-level simulator that direction asks for, for this line. Not a direction-1 target any more.",
+ "pair": "740 line 64 (P-64, mirror twin of TM1 = the same upstream table started in D): its exit (in TM3 names B1 = 0RF, F0 = 1RD) returns in state C instead of E, so it needs its own Inc-level comparison; expect the same kind of break."
+}

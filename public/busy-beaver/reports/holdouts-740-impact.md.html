@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>holdouts-740-impact.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/holdouts-740-impact.md · <a href="/busy-beaver/reports/holdouts-740-impact.md.html">raw</a></div>
+<h1 id="holdout-list-740-what-changed-for-us-2026-10-10">Holdout list 740: what changed for us (2026-10-10)</h1>
+<p>New list: <code>data/holdouts/BB6_holdouts_740.txt</code> (740 machines, sha1 0aedc3e4…). Compared with the 778 list (<code>2026-10-07_778.txt</code>) we have worked from: <strong>38 removed, 0 added</strong>. The 740 machines that remain keep their order.</p>
+<h2 id="headline">Headline</h2>
+<ul>
+<li><strong>#2 is officially solved.</strong> PR #14 was merged by ccz181078 at 13:47 PDT today (merge commit <code>9cf9e88</code>, file <code>verify/BellEatsCounter_1RB0RF.v</code>), with no comments and no changes requested. It is the only removal that comes from our work. (That is the "solved very recently" machine: it was on the 815 list and the 778 list, and it is gone from the 740 list because of our PR.)</li>
+<li><strong>Our 11 unsubmitted kills are all still on the list</strong>, so each still counts once submitted.</li>
+<li><strong>No one solved a machine we are working on.</strong> The only other machine of ours that left the list is #19, which we had parked. It left by equivalence, not by a proof (see below).</li>
+<li><strong>The framework did not change.</strong> Upstream added 6 new files and edited none, so our proofs, checked against <code>0940bb9</code>, compile unchanged against the new HEAD <code>9cf9e88</code>.</li>
+</ul>
+<h2 id="the-38-removals-by-cause">The 38 removals, by cause</h2>
+<p>Upstream commit <code>d3c52f5</code> ("add ChaoticBell1Halt, CubicMachines_v2, Cubic50, Eqv_WordPairs, Eqv_RegularPairs", today 13:23 PDT) plus our merge:</p>
+<table>
+<thead>
+<tr>
+<th>cause</th>
+<th style="text-align: right;">count</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>solved by us</td>
+<td style="text-align: right;">1</td>
+<td><code>BellEatsCounter_1RB0RF.v</code> (#2)</td>
+</tr>
+<tr>
+<td>solved upstream: Cubic machines</td>
+<td style="text-align: right;">4</td>
+<td><code>CubicMachines_v2.v</code> (3, non-halting), <code>Cubic50.v</code> (1, <strong>halts</strong>)</td>
+</tr>
+<tr>
+<td>solved upstream: Chaotic Bell</td>
+<td style="text-align: right;">2</td>
+<td><code>ChaoticBell1Halt.v</code> (both <strong>halt</strong>)</td>
+</tr>
+<tr>
+<td><strong>removed by equivalence, not solved</strong></td>
+<td style="text-align: right;">31</td>
+<td><code>Eqv_WordPairs.v</code>, <code>Eqv_RegularPairs.v</code></td>
+</tr>
+</tbody>
+</table>
+<p>The 31 equivalence removals are deduplication. Each file proves two holdouts have the same halting behaviour ("neither machine's halting behavior is decided"), and only one representative stays on the list. They do not reduce the real problem count. They also mean that a proof for a representative now covers its removed partners automatically.</p>
+<p>None of the 7 really solved machines was on our targeting pool, reserve, watchlist or family sweep. One of them (<code>1RB0RE_1RC0LD_1LD0RF_0LB0LA_1LC1RE_---0RE</code>) was on dyuan01's longitudinal list. The upstream activity is in Cubic and Chaotic Bell. Our classes (Bell eats counter, Skelet 1-like Class 2, Sync bouncer counter, Counter Class 4) saw no competing kills.</p>
+<h2 id="our-machines-one-by-one">Our machines, one by one</h2>
+<table>
+<thead>
+<tr>
+<th>machine</th>
+<th>before</th>
+<th>740 list</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#2 <code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code></td>
+<td>KILLED, PR #14 open</td>
+<td><strong>removed (merged)</strong></td>
+<td>done; status.json records the merge</td>
+</tr>
+<tr>
+<td>#19 <code>1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF</code></td>
+<td>STUCK (parked)</td>
+<td>removed (equivalence)</td>
+<td><code>Eqv_WordPairs.v</code> TM83 makes it equivalent to <code>1LB---_1RC0RC_1LD1RB_1RE1LD_0RA1RF_1RD0LF</code>, which stays. Nothing lost: it stays parked, and any future work targets that representative.</td>
+</tr>
+<tr>
+<td>the 11 other kills (#3 #4 #11 #12 twin#12 #24 #25 #33 + 3 family-sweep relatives)</td>
+<td>KILLED, not submitted</td>
+<td>all present</td>
+<td>unchanged; still count</td>
+</tr>
+<tr>
+<td>everything else in machines/ (funded, parked, cryptid)</td>
+<td>—</td>
+<td>all present</td>
+<td>unchanged</td>
+</tr>
+</tbody>
+</table>
+<h2 id="what-this-means-for-next-steps">What this means for next steps</h2>
+<ol>
+<li><strong>Submission gate is open.</strong> You said you would wait for a response to #2 before posting the next family. The response came: a merge within about 2 hours and no comments. Ready next, each a family that shares one proof idea:
+   - #3 + #24 + #25 + <code>1RB0RD_1RC1RF_…</code> (4 machines, one table)
+   - #11 + #33 + <code>1RB0LD_1RC0RE_…</code> (3)
+   - #12 + its twin (2)
+   - #4 + <code>1RB---_0LC1RF_…</code> (2)</li>
+</ol>
+<p>My suggestion: #3's family next, as one PR with 4 files, since all four share one table and one proof. The PR text and Discord message would follow #2's format.
+2. <strong>Switch our reference list to 740.</strong> Nothing pins it now: tools (dashboard.py, killreview.py, compress/rulefit) and workflow prompts still read <code>2026-10-07_778.txt</code>, and the formalize audit checks membership against it. A kill on a machine removed by equivalence would no longer shrink the list, so new work should be gated on 740. (Tests can keep their 778 fixtures.)
+3. <strong>Refresh solved_index / equivalence data.</strong> <code>data/solved_index.tsv</code> and <code>2026-10-07_eqv_1590.txt</code> predate <code>d3c52f5</code>. Re-indexing against <code>9cf9e88</code> adds the 6 new files.
+4. <strong>Record provenance.</strong> Add the 740 list to <code>data/holdouts/SOURCES.md</code>, naming its source (wiki upload or Discord) and date. The repo convention would name it <code>YYYY-MM-DD_740.txt</code>.</p>
+</main></body></html>

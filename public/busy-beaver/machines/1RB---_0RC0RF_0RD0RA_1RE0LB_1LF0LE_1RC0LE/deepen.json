@@ -1,0 +1,95 @@
+{
+ "tm": "1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE",
+ "stage": "chain_law",
+ "date": "2026-10-12",
+ "confidence": "low",
+ "recommend": "park: both lines STUCK; reopen only for a merge-tolerant wall-level closed-language search (decision.json)",
+ "mechanism": "Every E record is K(n; a): a buffer (01)^n, then walls (single extra 0s) with gaps a_j. One cycle is a sequence of rightward passes and leftward sweeps. On reaching a wall with gap g after it: phase A shifts the wall right one pair (next phase A if g odd, else F); F opens it in place (D if g odd, else C); C opens it one pair further left (C if g odd, else D); D shifts it right and turns. The sweep closes open walls and bounces at the first shifted wall, which returns to its old place and acts as 'A at that wall'. The map reads gaps only through their parity (plus a zero test), so it is a parity automaton on the wall word: a uniform binary-counter hierarchy with two walls per level, wall 2m moving (2^m-1)/2^(2m-1) times per cycle. The irregular settled values are frozen offsets the dynamics never reads. Carry stage: the cycle map is a binary recursion Run(w,A) = Run(w+1,.)^2, Run(w,F) = one C/D chain; the A-tree is complete and Leaf_w^2 = Leaf_{w+1} up to a temporary shift, so every cycle is ONE chain, started at wall 2p+2 with level p = t1(k xor c) (c = 4672 start A, 4673 start E). Chain-law stage: the chain length of a level-q cycle is a selector-masked ruler, l = t1(((k^c)>>(2q+1)) ^ m_q[s]), s = bits q+1..2q of k^c, with 2^q irregular masks per level; but there is no steady state: from k = 650,686 D (and once F) meet double walls, walls merge, the right end is reached in phase D, and the region past wall ~17 becomes irregular, rewriting the masks of levels >= 5.",
+ "closed_gaps": [
+  "Right-end routine ruled: it is local after all, 4 zero-run rules ZA/ZF/ZC/ZD (cut at the first leftward E move), plus R12 (F at a double wall), R13 (A at a double wall), F1, C1; 22 fixed rules + 6 sweep forms validated 8,400/8,400 twice (seeds 20261011 and 7), exact tape/state/head/steps (scripts/check_rules2.py)",
+  "Rule-only abstract simulator (scripts/wallmodel.py) = TM at every E record to 1e11 for both starts: 223,095/223,095 (line 99) and 223,102/223,102 (line 612) records identical in k, step count, n and wall vector; no unruled configuration, so every step from blank to 1e11 is a rule application (scripts/validate_model.sh)",
+  "Cycle map (scripts/cyclemap.py): parity-only pass/sweep algorithm; one-cycle check 223,065/223,065 (A) and 223,073/223,073 (E), 0 mismatches; the 30/29 cycles it does not cover are right-end reaches and start-up double walls; free run from blank (with rule-model fallback) reproduces every record of both lines",
+  "Steady state k > 3,520: rules L1-L3, R1-R7, R9, R11, ZC, ZF only; zero gaps met only in phase C (85,695 times to 1e11, 290,365 to k = 2^19 in the long abstract run); right end reached only in phase C (k = 11711, 28095, 60863: appends gaps 2, 4; 126399: two reaches, appends 2 3 3 4)",
+  "Parity determinism: inflating every gap by 100 gives identical wall moves and pass counts for 96,000 cycles",
+  "Uniform hierarchy: per 65,536 cycles wall 2m moves (2^m-1)*2^(17-2m) times and wall 2m+1 half that, walls 2..21 (within 1); a_j exactly 2^(j+1)-periodic for j = 1..15; walls 4..17 take 4 positions each (gaps = base +-3, all bases odd)",
+  "Recursive form (scripts/carry.py) = cycle map on every record (223,066 A, 223,074 E, 0 disagree) and on 20,000 random words (13,526 agree, 0 disagree)",
+  "Squaring lemma Leaf_w^2 = Leaf_{w+1} (gap_w odd) or S^-1 Leaf_{w+1} S (even): 26,256/26,256 and 26,328/26,328 random words, exact positions",
+  "One chain per cycle (scripts/onechain.py): = cycle map on all records of both lines and 40,511 random words, 0 differ",
+  "Level law p = t1(k xor c), c = 2^6+2^9+2^12 (A) / +1 (E): 0 mismatches on 219,492 (A) and 219,499 (E) cycles k >= 3,600; level p is 2^-(p+1) of the cycles",
+  "Level-0 chain length l = t1((k xor c)>>1 xor m_0), m_0 = 2^16 (A) / 2^16+1 (E): 0 mismatches on 109,748 / 109,751 cycles",
+  "Chain-length law (selector-masked ruler) fits all cycles k >= 3,600 to 1e11 on both lines (219,492 A / 219,499 E, 935 groups, 0 conflicts) and 1,048,576 cycles at k = 2^24..2^24+2^20 (2,047 groups, 0 conflicts; level mask extended to c = 1,184,320)",
+  "Faithful fast simulator scripts/hyb.c (C cycle map + cell-level TM fallback + periodic TM cross-checks) = TM record at k = 223,095; run from blank to 2^28 (about 1.4e17 steps) start A and 2^26 start E: no halt, every record of the form K(n; a)",
+  "A/F zero-gap events are record-level: A meets 0 iff n even and the first even gap g_p = 0; F iff (n odd, g_1 = 0) or (n even, g_{p+1} = 0); exact on 200,000 random words; on the orbit the first even gap is always >= 4 (k >= 3,600 to 1e11 and at k ~ 2^24)"
+ ],
+ "remaining_gaps": [
+  "Invariants (ii) and (iii) are FALSE on the orbit: after k = 3,600, D meets a double wall 6 times (k = 650,686 ... 61,730,238; walls merge, L -2/-4), F once (R12 at k = 44,953,023, a level-26 cycle with g_27 = 0, +9 walls), and the right end is reached in phase D 5 times, by k = 2^26 (none new from there to 2^28)",
+  "The chain-law masks of levels >= 5 change across merges (joint fit of the 1e11 and far windows: 1,067 conflicts at levels 5..9), so the law describes the counter only between merges",
+  "No merge-tolerant invariant: one must keep A (never seen at a zero gap to 2^26) and F away from double walls in an irregular, history-dependent high region; R13 can misalign the tape (random words: 11 TAIL, 264 outside the rule set of 1,897)",
+  "K(n; a) alone is not closed under one cycle (random words: 0.02-0.35 % become misaligned), so a closed language must be finer"
+ ],
+ "evidence": [
+  "data/check_rules2.out: 8,400/8,400 (28 rule forms x 300)",
+  "data/model_validate_1e11.out: MATCH 223,095 records (start A) and 223,102 (start E); rule-use counts",
+  "data/cyclemap_check_1e11.out, data/cyclemap_freerun_1e11.out: cycle map 0 mismatches; zero-gap arrivals C 85,695 / D 5 / F 2 (start-up)",
+  "data/avec_startE_1e11.txt.gz: C tracker, start E, 1e11 steps, 223,102 records, no halt",
+  "data/longrun_A.out: abstract free run to k = 2^19 (~5.5e11 TM steps' worth, L = 41): right end only in phase C (next reach at k = 388,543 = 126,400 + 2^18), zero gaps only in phase C (290,365), min gap 0",
+  "data/carry_check_A.out, data/carry_check_E.out, data/carry_random.out: recursion, lemma and one-chain checks",
+  "data/levels_1e11.out: level law, both starts, 0 mismatches",
+  "data/chainlen_A.out, data/chainlen_E.out: chain lengths; level 0 exact ruler, levels >= 1 open",
+  "data/chainlaw_fit_A.out, data/chainlaw_fit_E.out, data/chainlaw_fit_far_A.out, data/chainlaw_fit_joint_A.out, data/chainlaw_period_far_A.out: chain-length law fits",
+  "data/hyb_A_2e28.out (long run, start A), data/hyb_E_2e25.out and data/hyb_E_2e26.out (start E), data/hyb2_A_2e25_every2e15.out (sampled records, read histograms): merge events",
+  "data/event_A.out: first non-C zero-gap event at k = 650,686 (rule model, no tail)",
+  "data/eventclass_random.out, data/closure_random.out: what R10/R12/R13 and the right end do to random words; K(n; a) not closed",
+  "img/farmap_2e25.png: walls from wall 1, one row per 32,768 cycles to 2^25",
+  "data/afcheck_random.out, data/firsteven_A.out, data/windows_A.out, data/hyb2_A_events_4.5e7.out: A/F reduction, first-even-gap values, wall windows (walls 2..17 identical in both windows), records around every uncovered cycle"
+ ],
+ "scripts": [
+  "scripts/wallmodel.py",
+  "scripts/check_rules2.py",
+  "scripts/validate_model.sh",
+  "scripts/cyclemap.py",
+  "scripts/longrun.py",
+  "scripts/carry.py",
+  "scripts/onechain.py",
+  "scripts/levels.py",
+  "scripts/chainlen.py",
+  "scripts/hyb.c",
+  "scripts/hyb2.c",
+  "scripts/event.py",
+  "scripts/chainlaw.py",
+  "scripts/chainfit.py",
+  "scripts/closure.c",
+  "scripts/eventclass.py",
+  "scripts/farmap.py",
+  "scripts/afcheck.py",
+  "scripts/firsteven.py",
+  "scripts/windows.py"
+ ],
+ "rounds": [
+  {
+   "date": "2026-10-11",
+   "option": "wall_model",
+   "pass": "funded stage: exact wall-level model from the local rules plus a ruled right end, checked against the TM to 1e11 for both starts; cycle map; carry invariant looked for",
+   "confidence": "med",
+   "recommend": "carry_stage (decision.json)",
+   "result": "exact model and parity-only cycle map validated on every record to 1e11 (both lines); uniform 2-walls-per-level counter; no invariant yet, so no-go on proof.md for now"
+  },
+  {
+   "date": "2026-10-12",
+   "option": "carry_stage",
+   "pass": "funded stage: level recursion of the parity-only cycle map, move rates, windows and invariant looked for",
+   "confidence": "med",
+   "recommend": "chain_law (decision.json)",
+   "result": "exact time structure: every cycle is one C/D chain from wall 2p+2 at level p = t1(k xor c), all checks 0 mismatches on both lines; level-0 chain length an exact ruler; chain-length law above level 0 and so the invariant still open; no-go on proof.md"
+  },
+  {
+   "date": "2026-10-12",
+   "option": "chain_law",
+   "pass": "funded stage: chain-length law above level 0, then windows and invariant; checked far past 1e11 with a new faithful simulator",
+   "confidence": "low",
+   "recommend": "park (decision.json); the only reopening route is a merge-tolerant wall-level closed-language search",
+   "result": "chain-length law found (selector-masked ruler, 0 conflicts to 1e11 and at k ~ 2^24), but the steady state ends at k = 650,686: D/F meet double walls (R10 x6, R12 x1 to 2^26; none new to 2^28, no halt, about 1.4e17 steps), walls merge, the high region turns irregular and rewrites the masks of levels >= 5; invariants (ii)/(iii) false; no-go on proof.md; STUCK"
+  }
+ ],
+ "updated": "2026-10-12"
+}

@@ -1,0 +1,994 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/notes.md · <a href="/busy-beaver/machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/notes.md.html">raw</a></div>
+<h1 id="w4-3-1rb0rf_1rc0rb_1ld0ra_1le0ld_1rb0lc_1la-">W4-3 <code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></h1>
+<p>740 line 341 (778 line 363). Sheet: Results tab, class "Skelet 1-like Class 2"; no status, notes, sources or "done by" (Results, Level 0, Classifications). Not in data/discord/*.txt. Upstream busycoq HEAD 9cf9e88 mentions it only as <code>tm'</code> in Eqv_v2.v / Eqv_v3.v (equivalence targets, no non-halting proof).</p>
+<div class="highlight"><pre><span></span><code>     0    1
+A   1RB  0RF
+B   1RC  0RB
+C   1LD  0RA
+D   1LE  0LD
+E   1RB  0LC
+F   1LA  ---      halt: F reads 1 (reached only via A1: A&gt; 11, or C&gt; 111)
+</code></pre></div>
+
+<h2 id="observation">Observation</h2>
+<ul>
+<li>No halt to 2e10 steps (lo = -70, hi = 269,226, nonzeros 134,642). The span grows like t^0.5.</li>
+<li><strong>Defect picture.</strong> The tape is alternating cells with isolated defects, a <code>00</code> (z) or a <code>11</code> (o). A sweep flips every pair it crosses. Rightward, the states run B0 C1 A0 B1 (period 4 cells); leftward, D1 D0 E1 C0. The head turns only at defects, and only in the right phase:</li>
+<li>leftward head: turns at a 00 if it is in D-phase (E reads 0, E0 = 1RB), and at an 11 if it is in E-phase (C reads 1, C1 = 0RA);</li>
+<li>rightward head: turns only at a 00 in B-phase (C reads 0, C0 = 1LD), including the right edge;</li>
+<li>otherwise it passes, and its phase shifts.</li>
+<li>Halting needs <code>A&gt; 11</code> or <code>C&gt; 111</code> (two adjacent defects in the wrong phase).</li>
+<li><strong>Level 1 (wall trips).</strong> Most trips run from the right edge to a wall W and back. Each hit moves W 1 cell left: an E-turn changes a 00 at x into an 11 at x-1, and a C-turn changes an 11 at x into a 00 at x-1. W eats the active block X, while the right block Y gains about 1.7 cells per trip. Single-turn trips from 2e4 to 3e6: 554/555 change exactly the turn defect, plus +2-cell resets of some passed 00-defects (78 resets). The one miss is at step 446,473, at an epoch change.</li>
+<li><strong>Level 2 (deep trips).</strong> About 3 trips in 8 go deeper, to the defects between fossil blocks. Each of these cycles through 2 or 3 positions (e.g. 180z -&gt; 179o -&gt; 178z -&gt; 180z; 1158z &lt;-&gt; 1157o). Trips that reach the far left increment a small counter in the leftmost ~30 cells (6-cell digits 101000 / 101100 / 100100, base 3). This is a mixed-radix counter, and each full overflow ends a <strong>phase</strong>.</li>
+<li><strong>Epoch = 3 phases</strong> (one of the 3-cell left records each):</li>
+<li>(I) a new block X grows from 0 to X_k;</li>
+<li>(II) X is frozen and the right block Y grows;</li>
+<li>(III) W eats X, and Y freezes into a new fossil.</li>
+<li><strong>Epoch laws</strong> (exact for every epoch observed, to 2e10):</li>
+<li>fossils F: 2736 -&gt; 8280 -&gt; 24912 -&gt; 74808 cells, F' = 3F + 72 (the first fossil, ~970 cells, is irregular);</li>
+<li>mid blocks X: 248 -&gt; 752 -&gt; 2264 -&gt; 6800, X' = 3X + 8 (X5 = 20408 predicted; 19996 already being eaten at 1e10);</li>
+<li>left records come in triples whose times grow x9.04 per epoch: (4.37e7, 6.55e7, 1.145e8), (3.98e8, 5.97e8, 1.041e9), (3.600e9, 5.400e9, 9.400e9).</li>
+<li><strong>Fossils are inert mod 4</strong> (work/perturbation.txt). Start from the right-edge turn at step 597,279,037 and insert 4j cells (whole pairs, alternation kept) into the fossils and/or X. In all 4 random trials the run is unchanged at the next two left records: same new blocks 19322 and 71924, and only the perturbed lengths differ. Inserting 2 mod 4 cells changes the run (3/3; p2 even ran off a 2^25-cell tape). So an abstract state can keep fossil lengths mod 4 only, but it must pin those residues: all fossils are 0 mod 4, and F' = 3F + 72 keeps them there.</li>
+<li><strong>Cryptid check (ground rule 6): not cryptid-like.</strong> Every law seen is exact and linear (x3 + const), the residues are fixed, and there is no parity-of-growing-number branching. The hard part is structural: an unbounded hierarchy.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<ul>
+<li>Local lemmas S1-S4, P1, the turns TE/TC/TR and the halting patterns: <code>scripts/check_lemmas.py</code>, 542/542 random instances.</li>
+<li>Defect turn rule (above): 554/555.</li>
+<li>Inert-mod-4 meta-rule: 4/4, with 3/3 negative controls.</li>
+<li>Epoch laws: 6/6 observed instances. They are not derived.</li>
+<li><strong>Missing.</strong> A closed rule for <em>which</em> defects turn, pass or reset on each trip (the phase rule). It depends on positions mod 4, the wall position and the digit states. The left-end counter is also missing, as is the boundary event at each phase change (where X / Y / the new fossil are created).</li>
+</ul>
+<h2 id="family-canon-state-renaming-mirror">Family (canon, state renaming + mirror)</h2>
+<table>
+<thead>
+<tr>
+<th>740 line</th>
+<th>string</th>
+<th>relation</th>
+<th>evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>341</td>
+<td><code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code></td>
+<td>this machine</td>
+<td></td>
+</tr>
+<tr>
+<td>512</td>
+<td><code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code></td>
+<td>our table started in our B, rename A-&gt;E B-&gt;A C-&gt;B D-&gt;C E-&gt;D, no mirror</td>
+<td>no halt to 2e9; left records 3,4xx steps after ours (114,514,474 vs 114,511,038), same 3-per-epoch triples</td>
+</tr>
+<tr>
+<td>588</td>
+<td><code>1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD</code></td>
+<td>our table started in our F, mirrored, rename A-&gt;B .. F-&gt;A</td>
+<td>no halt to 2e9; left records mirrored (right side), 1,040,780,817 vs 1,041,302,737</td>
+</tr>
+</tbody>
+</table>
+<p>These are different orbits of one macro map (same epoch structure, offsets of 1e3-1e5 steps). A proof for 341 would carry over with a new init (the #25/#33b recipe).</p>
+<h2 id="template-check">Template check</h2>
+<p>Nearest proved neighbour: kill #11 (<code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---.v</code>, TM21 architecture).
+- Its rule set: S1-S6 shifts, T1-T14 windows, Lb/Lf/Rb/Ro digit lemmas, M_spec / Mdrop_spec / O_spec, and one INV over a single digit list.
+- What carries over: only the bottom layer, the sweep and turn lemmas.
+- What #11 lacks: W4-3's counter has an unbounded number of levels (fossil defects with 2-3 states, 3 phases per epoch, a left-end counter).
+- The nearest open cases are #32/R4 (multi-level counter, parked by Dennis 2026-10-10).</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>(pending; the card has 2 check questions and 1 decision)</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>(not started; blocked on the level-2 phase rule and the invariant)</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>(none)</p>
+<h2 id="outcome">Outcome</h2>
+<p>Observe done at confidence low. Scratch tools (C loggers for turns and defects, perturbation runner) are in work/.</p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: Fund one ~2 h stage to derive W4-3's phase rule and an exact defect-level model, or park it with #32/R4 as a multi-level counter?
+Answer: <strong>rules_stage</strong> (Fund one ~2 h rules stage, with a kill criterion). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="funded-stage-2026-10-10-rules_stage">Funded stage (2026-10-10, rules_stage)</h2>
+<p>Scope (answered decision, now in decisions/2026-10-10-rules_stage.json): derive the phase rule, the left-end counter and the phase-change event, and build a model that keeps fossils mod 4 only. Kill criterion: the model must reproduce every trip to 1e9, or W4-3 is parked.</p>
+<p><strong>Result: the kill criterion is passed.</strong> The model reproduces every turn and wiggle, with exact step indices, to 2e10 (20x the bar). Scripts are in <code>scripts/rules_stage/</code> and outputs in <code>scripts/rules_stage/results/</code>.</p>
+<h3 id="the-defect-model-dmodelpy-8-local-rules-exact-on-every-tape">The defect model (<code>dmodel.py</code>): 8 local rules, exact on every tape</h3>
+<ul>
+<li>A <strong>defect</strong> is an edge e (between cells e and e+1) whose two cells are equal. Both 0^inf ends are chains of 00 defects (every edge there is one), so the tape edges need no rules of their own.</li>
+<li>The head carries a <strong>phase</strong> phi in Z/4:</li>
+<li>leftward cycle: D1 at phi, D0 at phi-1, E1 at phi-2, C0 at phi-3;</li>
+<li>rightward cycle: B0 at phi, C1 at phi+1, A0 at phi+2, B1 at phi+3 (cells mod 4).</li>
+<li>At a defect the head sees d = (e - phi) mod 4. As the head reads it, d even means 00 and d odd means 11. D is the defect set and ^ is symmetric difference.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>head</th>
+<th>d=0</th>
+<th>d=1</th>
+<th>d=2</th>
+<th>d=3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>leftward</td>
+<td>pass, phi+1</td>
+<td>turn at cell e (C-turn): D ^= {e-1,e}</td>
+<td>turn at cell e (E-turn): D ^= {e-1,e}</td>
+<td>pass, phi-1</td>
+</tr>
+<tr>
+<td>rightward</td>
+<td>turn at cell e+1: D ^= {e,e+1}</td>
+<td>wiggle C1 A1 F0 A0: D ^= {e,e+2}, then e+2 crossed by d=3 (net: defect +2 cells, phi+1, +2 steps)</td>
+<td>pass, phi-1</td>
+<td>pass, phi+1</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Turns keep phi. Sweeps complement every cell they cross, which leaves defects where they are, so D changes only at turns and wiggles.</li>
+<li><strong>Halting</strong> happens only through a rightward d=1 defect with another defect at e+1 (F reads 1, <code>C&gt; 111</code>).</li>
+<li>Derived by hand from the table. Validated against direct simulation on random tapes: random defect density 2-35%, 0^inf ends, a random sweep-phase head, up to 60 events each with step indices. Results: 1,000/1,000 (seed 20261011; 192 of them reach a halt) and 20,000/20,000 (seed 7; 4,194 reach a halt).</li>
+<li><strong>Real run from blank</strong> (<code>run_model.py</code>, compared with <code>work/turns2.c</code>):</li>
+<li>to 1e9: every one of 88,860 events (turn cells and step indices) is identical;</li>
+<li>to 2e10: every one of 388,516 events is identical (145,149 left turns, 145,149 right turns, 98,218 wiggles).</li>
+<li>The model runs 1e9 steps in 0.4 s and 1e14 steps in 73 s.</li>
+<li>Reproduce: <code>gcc -O2 -o /tmp/turns2 work/turns2.c &amp;&amp; /tmp/turns2 0 2e10 | python3 -B scripts/rules_stage/run_model.py 2e10 /dev/stdin</code> (about 2 min).</li>
+</ul>
+<h3 id="phase-rule-per-trip-level-2-bitspy-check_trip_rulepy">Phase rule per trip (level 2), <code>bits.py</code> + <code>check_trip_rule.py</code></h3>
+<ul>
+<li><strong>Labels.</strong> At a right-edge turn, scan the defects right to left with the head's phase:</li>
+<li>bit 1 if d is 0 or 3 (the head passes);</li>
+<li>bit 0 if d is 1 or 2 (it would turn);</li>
+<li>after each defect, phi += +1 for a 00 and -1 for an 11.</li>
+<li>Labels are z/o (00/11) plus the bit.</li>
+<li><strong>(L)</strong> The leftward head turns at the <strong>rightmost bit-0 defect</strong>. That defect moves 1 cell left and changes type. With the same phase arriving from the right, its label becomes z0 -&gt; o0 or o0 -&gt; z1. In labels anchored at the left end it becomes z0 -&gt; o1 or o0 -&gt; z0, and every bit to its right flips, which is a binary-counter carry through the trailing 1s (derived from the rules, not separately tested).</li>
+<li><strong>(R)</strong> On the way back, delta starts at 0 and flips 0 &lt;-&gt; 2 at every defect crossed:</li>
+<li>a <strong>z1 met with delta=2 wiggles</strong> (the defect moves +2 cells; these are the "+2 resets" of observe);</li>
+<li>an <strong>o1 met with delta=0 turns the head left</strong> again (a multi-turn trip);</li>
+<li>otherwise the head reaches the right edge.</li>
+<li><strong>(L')</strong> If no explicit defect has bit 0, the head enters the left chain. It passes edge lo-1 with d=0 and turns at cell lo-2. The chain start moves 3 cells left and lo-1 stays as a z1 defect, which the return crosses first. This is the <strong>left record</strong> (3 cells, as observed).</li>
+<li>Check on the blank run: <strong>93,231/93,232 trip segments to 2e10</strong> match (turn cell, every wiggle cell, and how the segment ends). The one miss is the first left-chain entry at step 1,070 (start-up; the chain is entered with d=2, a 2-cell record). The 11 later chain entries all have d=0.</li>
+<li>Segment ends: 51,848 at the right edge and 41,384 at a mid-tape left turn. The continuation after a mid-tape turn follows the same 8 rules, but no closed trip formula is checked for it.</li>
+</ul>
+<h3 id="fossils-mod-4-now-derived">Fossils mod 4: now derived</h3>
+<ul>
+<li>Every decision uses only d = (e - phi) mod 4 and the order of the defects. Inserting 4j cells into a block therefore cannot change any decision, and inserting 2 mod 4 cells flips d by 2, and hence every bit, to its right.</li>
+<li>Model-level check (<code>check_mod4.py</code>, from step 6.0e8, 200,000 events each, compared as kind plus defect index):</li>
+<li>0 mod 4 inserted into every block of 200+ cells: 10/10 identical;</li>
+<li>2 mod 4 inserted into one block: 0/10 identical.</li>
+<li>This agrees with observe's 4/4 and 3/3.</li>
+</ul>
+<h3 id="left-end-and-phase-changes-no-extra-rules">Left end and phase changes: no extra rules</h3>
+<ul>
+<li>The left-end counter is the left 0-chain under the same 8 rules. Each left record is case (L').</li>
+<li>At every second left record, the defects up to lo+57 are identical relative to lo: lo+2 z1, then adjacent pairs (z0 at lo+6k+1, z1 at lo+6k+2), then a fixed tail. One 6-cell digit (an adjacent z0/z1 pair) is added per 2 left records. Deeper digits differ from record to record.</li>
+<li>The phase-change events (new X, Y frozen into a fossil) also come from the same rules. They are not yet written as a macro.</li>
+</ul>
+<h3 id="epoch-laws-extended-with-the-model-epochspy-to-1e14-33-left-records-no-halt">Epoch laws, extended with the model (<code>epochs.py</code> to 1e14, 33 left records, no halt)</h3>
+<ul>
+<li>Fossils F: 2736, 8280, 24912, 74808, <strong>224496, 673560, 2020752, 6062328</strong>. F' = 3F + 72 holds on all 7 transitions.</li>
+<li>Mid blocks X: 248, 752, 2264, 6800, <strong>20408, 61232, 183704, 551120, 1653368</strong>. X' = 3X + 8 holds on all 8 transitions.</li>
+<li>The new values come from model runs past 2e10, to about 6e13 steps. Measured block lengths jitter by up to 3 cells because the boundary defects cycle.</li>
+</ul>
+<h3 id="still-open-next-stage">Still open (next stage)</h3>
+<ul>
+<li><strong>Level-3 macro.</strong> The bits form a multi-level counter, and its rule is observed only:</li>
+<li>the 2-3 position cycles of the fossil-boundary defects;</li>
+<li>the left digit counter;</li>
+<li>the epoch map F' = 3F + 72, X' = 3X + 8.</li>
+<li><strong>Non-halting.</strong> Halting needs a wiggle (z1 with delta=2 on a return) at a defect whose right neighbour is adjacent. The left digits are adjacent z0/z1 pairs, so the invariant must keep their left member out of wiggles. No invariant is proposed yet.</li>
+<li><strong>Siblings 512/588.</strong> The same model applies with a new start state (B, or F mirrored). It was not run here.</li>
+<li>No template. The shape is still that of #32/R4 (unbounded levels), but the alphabet is now small: positions mod 4 plus z/o.</li>
+</ul>
+<h2 id="decision-2026-10-12">Decision (2026-10-12)</h2>
+<p>Question: Fund one ~2 h stage to derive W4-3's level-3 counter as an exact macro on the defect labels, or park W4-3 now with its exact defect model?
+Answer: <strong>macro_stage</strong> (Fund one ~2 h macro stage, with a kill criterion). Dennis: apply recommendations (2026-10-12).</p>
+<h2 id="funded-stage-2026-10-10-macro_stage">Funded stage (2026-10-10, macro_stage)</h2>
+<p>Scope (answered decision, now in decisions/2026-10-10-macro_stage.json): derive the counter above the trip rule as a macro on the z/o bit labels, reproduce every left record and epoch-boundary configuration to 1e13 in the model, and give a candidate invariant against the only halting pattern. Park if either fails. Scripts are in <code>scripts/macro_stage/</code>, outputs in <code>scripts/macro_stage/results/</code>.</p>
+<p><strong>Kill criterion: passed as stated, at confidence med.</strong> The record macro reproduces every left record from record 11 to record 33 (step 6.2e13). The two-part pair invariant holds on every pair crossing to 1e13. Neither one is proved for all u yet.</p>
+<h3 id="record-macro-on-mod-4-label-words-record_wordspy">Record macro on mod-4 label words (<code>record_words.py</code>)</h3>
+<ul>
+<li><strong>Word.</strong> At the first right-edge turn after left record n, list the defects from left to right. For each one record:</li>
+<li>the gap to its left neighbour mod 4 (the first gap is measured from lo-1);</li>
+<li>its type z/o and its bit from <code>bits.bitview</code>, with the bits XORed by n mod 2;</li>
+<li>and finally R = (hi - last defect) mod 4.</li>
+<li><strong>Macro.</strong> For n &gt;= 11, W(n) = P . U^u(n) . T_r . R_r with r = (n-11) mod 6, where</li>
+<li>P = <code>3z0 1z1 1z0 1z1 1z0 1z1 1z0 1z1 1z0 0o0 2z1 1z0 1z1 1z0 0o0</code> (15 defects, fixed);</li>
+<li>U = <code>0z0 1z1 1z0 0o0</code> (4 defects, one per epoch);</li>
+<li>u(n) = 2*floor((n-11)/6) + du_r;</li>
+<li>the six classes (T_r, R_r, du_r): r0 (<code>0z0 0o0 3o1</code>, 3, 0), r1 (empty, 3, 1), r2 (<code>0z0 0o0 2z1 0o1 3o0</code>, 1, 0), r3 (<code>0z0 1z1</code>, 0, 1), r4 (<code>0z0 0o0 2z1 0o1</code>, 3, 1), r5 (<code>0z0 1z1 1z0 1z1 0o1</code>, 1, 1).</li>
+<li><strong>Blank run.</strong> All 23 records 11..33 (to step 6.2e13, model run to 1.2e14) fit the macro. The six classes are fixed by records 11-16, and the other 17 records match (<code>results/record_words_1.2e14.txt</code>). Records 1-10 are a finite start-up, and the exact model reproduces them.</li>
+<li><strong>One U per epoch.</strong> Fossil boundaries and the left digit groups are the same U in mod-4 terms: real gaps (4,5,1,4) near the left end, (36,973,2733,8280) and so on in the fossil region. By the mod-4 rule, they are equivalent for every decision. The 2-3 position cycles and the left digit counter are the internal states of the U digits between records. At records, all U digits are in the same state.</li>
+<li><strong>Epoch boundaries</strong> (new fossil, r0/r3) are 2 of the 6 classes, so they are covered.</li>
+<li><strong>Random instances</strong> (<code>check_record_random.py</code>): take the record-n configuration, lengthen random long gaps (&gt;= 100 cells, not the last two active blocks) by 4j, run to the next record and compare with the predicted W(n+1). Results:</li>
+<li>120/120 (records 11-22, 10 trials each, seed 20261012);</li>
+<li>320/320 (records 11-26, 20 trials each, seed 7);</li>
+<li>negative control with +4j+2: 0/18 (every trial mismatched or did not reach the next record within the 3e6-event cap).</li>
+<li><strong>Trip counts per record interval</strong> (<code>depths.py</code> + <code>check_trip_counts.py</code>, to 1.2e14):</li>
+<li>N(n+6) = 9 N(n) + c_r with c = (58, 8, 10, 78, 0, 38) for r0..r5. Each class is fixed by its first pair, and the law then holds with 11/11 further confirmations and no mismatch.</li>
+<li>Class r4 gives N = 3^(u+6): 2187, 19683, 177147, 1594323.</li>
+<li>Class r1 gives N = 3^(u+5) - 1: 728, 6560, 59048, 531440.</li>
+<li>The counter is ternary. Turn depths come in groups of 4 defects (one U each). Between two records, group j is the turn site in about 3^(K-j) trips, and every second trip turns at depth 0/1 (record 21: 9841 = (3^9-1)/2 of 19683).</li>
+<li><strong>Siblings</strong> (<code>siblings.py</code>, our table from the blank tape in another start state, model to 1.2e14):</li>
+<li>512 (start in our B): 23/23 records match W(n);</li>
+<li>588 (start in our F, mirrored): 23/23 records match W(n-1), one record later in index, the same words.</li>
+<li>One macro therefore covers 341/512/588.</li>
+</ul>
+<h3 id="candidate-non-halting-invariant-check_invariantpy-every-event-to-1e13-24832839-events">Candidate non-halting invariant (<code>check_invariant.py</code>, every event to 1e13: 24,832,839 events)</h3>
+<ul>
+<li>Halting needs a rightward d=1 at the left member of an adjacent pair. Adjacent pairs occur in two places:</li>
+<li>(a) <strong>left-region pairs</strong> at e - lo = 7, 13, 19, 25, 36, 39, ... &lt;= 84: the left digits inside P and in the left U's;</li>
+<li>(b) <strong>transient fossil-boundary pairs</strong> (e - lo = 294, 1195, 3941, 12231, 37153, 111971, 336477, ~1.01e6).</li>
+<li>At most 9 pairs exist at once.</li>
+<li><strong>(I2a)</strong> Every rightward arrival at a left-region pair has d=3: 10,972/10,972 to 1e13.</li>
+<li>Partial derivation: the head passes both members (phi+2), and the next pair is 6 cells on, so d = (e+6) - (phi+2) = d mod 4.</li>
+<li>So once the head enters the digit run with d=3 it keeps d=3. Only one trip in 7,360 saw two d values (a d=0 turn and then d=3).</li>
+<li><strong>(I2b)</strong> Every rightward arrival at a fossil-boundary pair has d=0: 8/8 to 1e13.</li>
+<li>Such a pair is made by a leftward turn that moves a boundary defect next to its neighbour. The next rightward head that arrives turns there (D ^= {e, e+1}), which removes both defects (a carry).</li>
+<li>No halt to 1.2e14. Wiggle gaps are &gt;= 2 (a gap-2 wiggle annihilates the two defects).</li>
+</ul>
+<h3 id="still-open">Still open</h3>
+<ul>
+<li><strong>Induction over u.</strong> The macro is checked for u &lt;= 7, plus 320 perturbed instances, but it is not proved for every u. The natural route is a finite U-digit lemma: one U is a finite-state transducer on (head phase, direction), because all decisions are mod 4. Enumerate it once, then prove "P U^u T_r reaches P U^u' T_{r+1}" by induction on u, as a ternary counter.</li>
+<li><strong>The active blocks.</strong> X and Y are not inert (W eats X, and Y grows 3 cells per trip). The lemma must carry their lengths, which follow from the trip counts (3F+72 and 3X+8).</li>
+<li><strong>(I2a)/(I2b) as inductive statements.</strong> They are checked on every event to 1e13, and (I2a) has a mod-4 reason, but how the head enters the left run, and the d=0 at boundary pairs, are not derived.</li>
+<li>No template; formalization would still take several stages.</li>
+</ul>
+<h2 id="decision-2026-10-12_1">Decision (2026-10-12)</h2>
+<p>Question: Fund one ~2 h induction stage to prove W4-3's record macro for every u (a finite U-digit transducer plus induction), or park W4-3 with the exact record macro?
+Answer: <strong>induction_stage</strong> (Fund one ~2 h induction stage, with a kill criterion). Dennis: b (fund all five), 2026-10-12.</p>
+<h2 id="funded-stage-2026-10-10-induction_stage">Funded stage (2026-10-10, induction_stage)</h2>
+<p>Scope (answered decision, now in decisions/2026-10-10-induction_stage.json): enumerate the U-digit transducer (4 defects, positions mod 4), then prove P U^u T_r -&gt; P U^u' T_r+1 for every u as a ternary counter that carries the active X/Y lengths, and derive (I2a)/(I2b) as inductive statements. Stop rule: park if the transducer does not close or the induction needs unbounded state. Scripts are in <code>scripts/induction_stage/</code>, outputs in <code>scripts/induction_stage/results/</code>.</p>
+<p><strong>Result: the transducer closes, but the induction is not done; confidence stays med.</strong> The record macro turned out not to be a statement about mod-4 words alone. A proof has to carry the exact X/Y lengths in step with the counter. That synchronization is observed as an exact linear recurrence (6/6 epochs) but is not derived.</p>
+<h3 id="compressed-defect-tm-blocktmpy">Compressed defect TM (<code>blocktm.py</code>)</h3>
+<ul>
+<li>With the gap lengths forgotten, the 8 rules are a Turing machine on the defects themselves: 8 head states (direction, phase) and 4 symbols (defect position mod 4). It is exact as long as no defect moves onto, or wiggles next to, another one (<code>COLLIDE</code>).</li>
+<li>Validation against <code>dmodel.py</code> on random blocks (1-6 defects, random gaps, random entry side and phase, <code>check_blocktm.py</code>):</li>
+<li>19,709/19,709 agree (gaps &gt;= 2, seed 20261012; 291 flagged COLLIDE and excluded);</li>
+<li>19,990/19,990 agree (gaps &gt;= 4, seed 7; 10 flagged).</li>
+<li><strong>Collision census</strong> on the blank run (<code>collisions.py</code>, every event to 1e13, 24,832,839 events):</li>
+<li>interior collisions: exactly 8, all rightward d=0 turns that annihilate an adjacent pair at the left end of the newest fossil (X runs out), one per epoch (e - lo = 297, 1195, 3941, ..., 1,010,047);</li>
+<li>no interior leftward-turn collision and no interior wiggle collision, hence no halt pattern;</li>
+<li>all other collisions are at the chain ends: 32 at the left chain (the left records), the rest at the right chain.</li>
+<li>So away from the two chain ends and the one annihilation per epoch, the machine is exactly the compressed TM.</li>
+</ul>
+<h3 id="the-u-digit-transducer-blocktmtable">The U-digit transducer (<code>blocktm.table</code>)</h3>
+<ul>
+<li>Exhaustive table for a 4-defect block: 4^4 residue patterns x 2 entry sides = 512 entries, entry phase normalized to 0. No block loops forever; a traversal takes at most 13 events; 386 entries exit right, 126 exit left.</li>
+<li><strong>Blank run</strong> (<code>uepisodes.py</code>, records 15-24): 387,538/387,538 U-block episodes (from the head's first contact with the block to its exit) match the table in exit side, exit phase and the displacement of every defect. They use only <strong>53 of the 512 entries</strong>, so the transducer closes on a 53-entry sub-table.</li>
+<li><strong>Block words between records</strong> (<code>useq.py</code>, <code>ublocks.py</code>):</li>
+<li>each U block cycles through 6 words, which are 3 states x 2 phase frames: A = <code>0z0 1z1 1z0 0o0</code> -&gt; B = <code>0z0 0o0 2z1 0o1</code> -&gt; C = <code>0z0 3z0 3z0 0o0</code> -&gt; A with all bits flipped -&gt; ...;</li>
+<li>only the 2nd defect moves (offset +1, 0, -1, then back by a +2 wiggle), so each U carries one ternary digit;</li>
+<li>a short excursion with first gap 1 (<code>1z1 1z0 1z1 0o1</code>, ...) appears when the left neighbour changes.</li>
+<li><strong>Most significant on the left.</strong> Per record interval, block 1 changes 754 times, block 2 2,266 times and block 3 6,802 times (c_j+1 = 3c_j + 4). The counts are identical in every interval from record 15 to record 22 once the block exists.</li>
+</ul>
+<h3 id="negative-result-the-macro-is-not-uniform-in-u">Negative result: the macro is not uniform in u</h3>
+<ul>
+<li><code>check_insert_u.py</code> / <code>diag_insert.py</code> insert one extra U into a record configuration: 4 defects, big gaps with residues 0,1,1,0, and everything to the right (head included) shifted along. The word is then exactly P U^(u+1) T_r.</li>
+<li>3/3 tested insertions do not give the predicted next word (<code>results/insert_u_diag.txt</code>), and none halts within 1e6-3e6 events:</li>
+<li>record 11, after P: later words no longer parse as P U^* T;</li>
+<li>record 17, at block boundaries 1 and 2: record 18 reads P U^2 T_r5 and P U^1 + a longer tail, not the predicted P U^4 T_r1.</li>
+<li>So W(n) -&gt; W(n+1) holds only when the active blocks X/Y have the lengths that go with u. The transducer alone cannot carry an induction on mod-4 words. The induction has to run on the epoch index, with X and Y as exact integers in step with the counter. The fossils stay inert mod 4.</li>
+</ul>
+<h3 id="the-synchronization-observed-xsyncpy-to-1e13">The synchronization, observed (<code>xsync.py</code>, to 1e13)</h3>
+<ul>
+<li>X runs out once per epoch, in the interval after a record of class r2 or r5. At trip t of N in that interval: 25/265 (after record 10), 90/807, 295/2,443, 900/7,341, 2,725/22,045, 8,190/66,147, 24,595/198,463 (after record 28).</li>
+<li><strong>t' = 3t + 15</strong> (into r2) and <strong>3t + 25</strong> (into r5). <strong>N' = 3N + 12</strong> and <strong>3N + 22</strong>. Both hold on 6/6 transitions.</li>
+<li>So the synchronization looks like a pair of linear recurrences, not a coincidence. A proof needs them derived from the transducer plus the right-boundary mechanics (T classes, the wall, Y, the right chain).</li>
+</ul>
+<h3 id="still-open_1">Still open</h3>
+<ul>
+<li><strong>Chain lemma.</strong> The ternary counter on U^k for every k, from the 53-entry sub-table. This is a two-way composition: carries go left, while the return pass wiggles digits and can turn the head back left. Only the per-block statistics above exist.</li>
+<li><strong>Synchronization identity.</strong> Derive t and N in closed form, and show that X is used up exactly at trip t, for every epoch.</li>
+<li><strong>(I2a)/(I2b).</strong> The census gives no interior collision except the epoch annihilation (8/8) and no interior wiggle collision to 1e13. Deriving this for all u needs the chain lemma.</li>
+<li><strong>Boundaries.</strong> P plus the left chain (left records); T plus the right chain.</li>
+<li>No template. proof.md is not started.</li>
+</ul>
+<h2 id="reopened-2026-10-12">Reopened (2026-10-12)</h2>
+<p>Dennis: close out Skelet 1-like Class 2. The class's 8 kills (#3's and #11's tables) are the templates to learn from.</p>
+<h2 id="class-2-close-out-stage-1-2026-10-12">Class 2 close-out, stage 1 (2026-10-12)</h2>
+<p>Funded: sync_stage (decision.json answer, Dennis 2026-10-12). Scope: the U-chain counter lemma for every k, then the X/Y synchronization. Scripts in <code>scripts/sync_stage/</code>, outputs in <code>scripts/sync_stage/results/</code>.</p>
+<p><strong>Result: the chain lemma is closed for every k, in a corrected and simpler form. The synchronization is located on the counter (both epoch events sit at a regime switch whose position the lemma predicts) but its closed form is not derived.</strong> Outcome: progress, confidence med.</p>
+<h3 id="1-the-right-unit-is-a-digit-block-not-the-4-defect-u">1. The right unit is a digit block, not the 4-defect U</h3>
+<ul>
+<li>The previous U grouping (P = 15 defects, then U = 4 defects) is a mod-4 artifact. It splits the physical digits differently at different records.</li>
+<li>The physical unit is a <strong>digit block</strong>: one digit defect, then m separators (m = 1 or 3), all separators at one residue c mod 4. Consecutive blocks shift c by 2.</li>
+<li>Examples at record 21 (absolute cells): <code>(-35; -34)</code> m=1, <code>(-29; -28, -24, -20)</code>, <code>(-15; -10, 6, 30)</code>, <code>(75; 108, 148, 184)</code>, <code>(1157; 3890, 12170, 37082)</code>. The fossils are the separator gaps of the later blocks.</li>
+<li>Left of the chain sits one block with <strong>2</strong> separators (<code>lo+25</code>: <code>(25; 26, 30)</code> relative to lo). It and the m=1 blocks left of it are the left-end counter; not analysed here.</li>
+</ul>
+<h3 id="2-eight-block-states">2. Eight block states</h3>
+<p>Offsets from the block base b (b = c - 1 mod 4); for m = 1 only the first two entries exist, and U2 = D0.</p>
+<table>
+<thead>
+<tr>
+<th>state</th>
+<th>defects</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U0, U1, U2</td>
+<td><code>(-s, g1, g2, g3)</code></td>
+<td>s</td>
+</tr>
+<tr>
+<td>W0, W1</td>
+<td><code>(-2, g1+1, g2+3-w, g3)</code></td>
+<td>w (W2 would be D0)</td>
+</tr>
+<tr>
+<td>D2, D1, D0</td>
+<td><code>(-2, g1+1, g2+1, g3+t)</code></td>
+<td>2 - t</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>U: the digit moves left of the separators (the old "2nd defect at offsets +1/0/-1"). D: the last defect is the digit. W: a block in transit from U to D (the old "short excursions").</li>
+<li><strong>Every</strong> chain configuration in the run reads as a word over these 8 states: 573,000+ right-edge snapshots, intervals 16-26, none unreadable (<code>read_blocks8.py</code>, <code>results/chain_words_readable_16_26.txt</code>).</li>
+<li>The words always have the shape <code>D^a [W] U^b</code> (left to right). A whole interval of words: <code>results/chain_words_interval18.txt</code>.</li>
+</ul>
+<h3 id="3-mixed-chain-lemma-all-k">3. Mixed chain lemma (all k)</h3>
+<p>Value of a word = ternary number of the block values, least significant digit on the right. A block is <em>full</em> at U2 or D0.</p>
+<p>A visit = the head enters the chain from the right at phase c_K (separator residue of the last block). Claim:
+- <strong>Not all full:</strong> the value goes up by 1 and the head leaves to the right.
+  - The turned block (rightmost non-full) moves to its successor: U0&gt;U1&gt;U2, W0&gt;W1&gt;D0, D2&gt;D1&gt;D0.
+  - The full blocks right of it reset to value 0. After a U or W turn they are all U2 and become U0. After a D turn, the D0 blocks become D2, the first U2 becomes W0 (a new wave) and the other U2 become U0.
+  - Exit phase: c_K + 0 if the turned block is D and the last block is D afterwards, else c_K + 2.
+- <strong>All full:</strong> the head leaves to the left with the chain unchanged (carry out), at phase c_1 + 2.
+- <strong>Carry back from the left</strong> (all full, entry at c_1 + 2): every block resets to value 0 with the D-turn labels.</p>
+<p>Proof shape: the 11 single-block entries it uses for m=3 (7 for m=1) are the same for every gap choice and never collide (<code>block_table.py</code>, 206 + 54 gap choices, <code>results/block_table.txt</code>). The phases then compose: a full block passed leftward exits at c+2 = the standard entry of the block on its left; a U/W turn hands c+0 to the right (resets U2 -&gt; U0, each again handing c+0); a D turn hands c+2 (D0 -&gt; D2 keeps c+2; the first U2 -&gt; W0 switches to c+0). That is an induction on the word, and it keeps the shape <code>D^a [W] U^b</code>.</p>
+<p>Checks:
+- Synthetic, compressed TM: every word of the right shape, K &lt;= 5, 0-2 leading m=1 blocks, random gaps including the tight ones: <strong>16,246/16,246</strong> (side, labels, exit phase) (<code>mixed_chain.py</code>, <code>results/mixed_chain.txt</code>).
+- Blank run, every visit, intervals 16-27: <strong>262,442/262,442</strong> visits from the right enter at c_K and match; <strong>972/972</strong> carry-backs from the left enter at c_1 + 2 and match; no other kind of entry occurs (<code>check_mixed_visits.py</code>, <code>results/mixed_visits_16_27.txt</code>).
+- An earlier two-frame version (pure U = up, pure D = down) is in <code>chain_lemma.py</code> / <code>check_chain_visits.py</code>. It is a special case.</p>
+<p>Consequences:
+- Between two carry-outs the chain receives exactly 3^K visits.
+- No collision happens inside the chain, so no halt can start there. The adjacent pairs of the old (I2a) are the U0 blocks with g1 = 1; the lemma covers them. The halting question moves entirely to the two boundaries.
+- At every left record the chain reads as all-U0 under some grouping (a D-chain regroups as a U-chain). This is why the record words were <code>P U^u T</code> mod 4.</p>
+<h3 id="4-the-right-boundary-is-a-finite-automaton-per-visit">4. The right boundary is a finite automaton per visit</h3>
+<ul>
+<li>Right of the validated chain: zero to two more blocks (it depends on the record class), then <strong>W</strong> (the right end of X), Y and the right edge.</li>
+<li>Define the boundary state at each chain exit as: the exit phase class, the residues mod 4 of every defect right of the chain, hi mod 4, and which defects sit within 3 cells of hi.</li>
+<li>Result (<code>boundary_dfa.py</code>, <code>results/boundary_dfa_16_27.txt</code>, intervals 16-27): at most 10 boundary states per interval. Each state always leads to the same (trips until the next visit, W move, hi move), <strong>except at most one transition per interval</strong> (none in intervals 18, 21, 24, 27), and that transition is an epoch event (section 6).</li>
+<li>Two regimes, each an exact 4-cycle. Interval 21 for example:</li>
+<li>first regime (exit class 2): trips (9, 9, 10, 8), W (0, -1, +1, 0): X frozen;</li>
+<li>second regime (exit class 1): trips (7, 10, 5, 8), W (-2, -5, -1, -4): W eats 3 cells per chain visit.</li>
+<li>Which regime freezes, grows or eats, and the cells per eating visit (3 in intervals 21/22, 9 in intervals 19/25), depend on the record class.</li>
+</ul>
+<h3 id="5-visit-counts-come-from-the-chain-lemma">5. Visit counts come from the chain lemma</h3>
+<ul>
+<li><strong>Visits per record interval = 3^(K+4)</strong> (2,187 / 6,561 / 19,683 / 59,049 for K = 3, 4, 5, 6, up to one visit at the interval edge): the chain carries out to the left end 3^4 = 81 times per interval, and the interval ends at the left record.</li>
+<li><strong>First-regime visits = (3^(K+1) - 7)/2 + 1</strong> in every interval 16-27 (38, 119, 362, 1,091). The chain lemma alone predicts (3^(K+1) - 7)/2: run the lemma from U0^K, with carries coming back at c_1 + 2; class-2 exits stop for good once the chain is all-D (<code>regime_counts.py</code>, K = 2..8). The +1 is the interval's first visit.</li>
+</ul>
+<h3 id="6-the-synchronization-located-on-the-counter-epoch_eventspy-resultsepoch_events_16_27txt">6. The synchronization, located on the counter (<code>epoch_events.py</code>, <code>results/epoch_events_16_27.txt</code>)</h3>
+<p>The one non-automatic boundary transition per interval is always one of two epoch events, and both sit right at the end of the first regime:</p>
+<table>
+<thead>
+<tr>
+<th>event</th>
+<th>intervals</th>
+<th>visit index</th>
+<th>what happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X exhausted</td>
+<td>16, 19, 22, 25</td>
+<td>first-regime count + 3</td>
+<td>W meets the left end of X (annihilation); W's identity jumps by the new fossil (24,912, 74,800, 224,496, 673,552)</td>
+</tr>
+<tr>
+<td>X frozen</td>
+<td>17, 20, 23, 26</td>
+<td>first-regime count + 4</td>
+<td>the edge defect stops following hi and becomes the new W; the jump is exactly X_k (6,800, 20,408, 61,232, 183,704)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>So the first regime of the "exhausted" intervals is the eating regime, and X runs out just after it ends. Interval 22: 364 eating visits x 3 cells = 1,092 = the X left at record 22. The annihilation trips (297, 902, 2,727, 8,192) are the xsync values (295, 900, 2,725, 8,190) up to how the event is timed.</li>
+<li>Phase I (X grows with the edge, 3 cells per trip) runs from the annihilation to the freeze one interval later. Trips in phase I x 3 against X_k:</li>
+<li>epoch 4: 2,144 + 124 = 2,268 trips, x3 = 6,804 vs X4 = 6,800;</li>
+<li>epoch 5: 6,434 + 367 = 6,801, x3 = 20,403 vs 20,408;</li>
+<li>epoch 6: 19,316 + 1,096 = 20,412, x3 = 61,236 vs 61,232;</li>
+<li>epoch 7: 57,950 + 3,283 = 61,233, x3 = 183,699 vs 183,704.</li>
+<li>The offsets alternate -4 / +5 with the epoch parity (the record classes repeat every 2 epochs).</li>
+<li>Every quantity here (visits per interval, first-regime visits, trips per visit from the 4-cycles, cells per eating visit) is a fixed linear function of 3^K. So t' = 3t + 15/25, N' = 3N + 12/22 and X' = 3X + 8 should all follow by linear arithmetic, once the 4-cycles and their starting phases are pinned down per record class.</li>
+<li><strong>Not derived yet:</strong> the boundary automaton as a lemma (it is observed as exact, and it is finite, but not derived from the 8 rules or checked exhaustively); the exact cycle phases at the regime switch; the left end (always returns the carry at c_1 + 2, 972/972; 3^4 carries per record); the epoch events themselves (annihilation, freeze, the new block); the closed forms.</li>
+</ul>
+<h3 id="what-is-validated-open">What is validated / open</h3>
+<ul>
+<li><strong>Validated:</strong> the 8-state block picture; the mixed chain lemma for every k (finite base + composition; 16,246 synthetic and 263,414 run checks); no halt inside the chain; first-regime visit count (3^(K+1)-7)/2 from the lemma (K = 3..6 in the run); the boundary is a per-visit automaton with exactly two epoch events per epoch, both at the regime switch.</li>
+<li><strong>Open (stage 2):</strong> the boundary automaton as a checked lemma per record class (state set, 4-cycles, phases), then the closed forms for t, N, X_k as an induction on the epoch. <strong>Open (stage 3+):</strong> the left end (2-separator block, m=1 digits, left records), the epoch boundary event (X exhausted, new fossil, new block), the non-halting invariant at the two boundaries, proof.md. Formalization is still several stages beyond that.</li>
+<li>Template check: #3's pair-list down-counter is the closest analogue now (a counter over a list of blocks, one touch per step, blocks shrinking by a fixed amount per touch). Here the list is the digit chain, a visit is the touch, and W eating 3 cells per eating visit plays the role of #3's q-blocks running out. #11 / TM21 contribute only the sweep layer.</li>
+</ul>
+<h2 id="class-2-close-out-stage-2-2026-10-12">Class 2 close-out, stage 2 (2026-10-12)</h2>
+<p>Funded: sync_stage (same decision as stage 1). Scope: the right-boundary automaton as a lemma, then the X/Y synchronization in closed form. Scripts in <code>scripts/closeout2/</code>, outputs in <code>scripts/closeout2/results/</code>. The episode pickles (23-220 MB) are not kept; <code>results/README.txt</code> lists the commands that regenerate them (1-2 min each) and every check.</p>
+<p><strong>Result: the right boundary is closed for every epoch, and the synchronization is derived (an exact cancellation, not a fit).</strong>
+- The record step closes symbolically on the right as well.
+- The left end is a fixed 81-step finite counter.
+- At a record, the chain regroups by one defect.
+- The siblings 512 and 588 follow the same induction from record 16.</p>
+<p>What is still open: the record regrouping and frame bookkeeping, stated as one lemma per class; the assembled invariant; and proof.md. Outcome: progress, confidence high.</p>
+<h3 id="1-episodes-and-the-right-region">1. Episodes and the right region</h3>
+<ul>
+<li>An <strong>episode</strong> starts when the head, moving right in the chain, is about to cross the chain end B, and ends when it is about to cross B leftward again. In between it touches only the defects right of B and the right 0-chain (<code>episodes.py</code>).</li>
+<li><strong>Shape</strong> of the right region: the list of gaps B -&gt; x_1 -&gt; ... -&gt; x_j -&gt; hi. A gap below T = 24 is kept exactly; a gap of 24 or more is a <strong>counter</strong>, kept only as ('L', gap mod 4).</li>
+<li>An episode's <strong>signature</strong>: entry phase, trips, and every new defect (and the new hi) as (nearest old defect, offset) (<code>table.py</code>).</li>
+</ul>
+<h3 id="2-the-right-region-table-81-entries">2. The right-region table (81 entries)</h3>
+<ul>
+<li>Intervals 16-27 (262,430 episodes): the signature is a function of (record class, exit phase, shape). There are 81 entries, with <strong>no conflict</strong>: r0 13, r1 9, r2 13, r3 13, r4 10, r5 23.</li>
+<li>Every entry returns the head at phase c_K, which is the chain lemma's entry condition.</li>
+<li><strong>Gap independence</strong> (<code>check_table.py</code>): each entry is re-run on a synthetic tape that holds only the right region (no chain, no left end). Results: 81/81 reproduce the signature with the real gaps and with 20 random +4j perturbations of every large gap each (1,620 runs). No run halts. No large gap shrinks by more than 12 within an episode, so each entry holds whenever all large gaps are &gt;= 24.</li>
+<li><strong>Prediction</strong> (<code>predict_table.py</code>): the 16-27 table matches <strong>2,125,759/2,125,759</strong> episodes of intervals 28-33. No new shape appears.</li>
+<li><strong>Exit phases</strong>: every interval 16-33 reads exactly 2^V1 0^(rest), with V1 = (3^(K+1) - 5)/2 (38, 119, 362, 1091, 3278, 9839).</li>
+</ul>
+<h3 id="3-v1-and-the-visit-count-derived-from-the-chain-lemma">3. V1 and the visit count, derived from the chain lemma</h3>
+<ul>
+<li>After a record the chain is one m=1 block followed by K-1 blocks with m=3, all at value 0. A suffix that starts at W0 U0^(j-1) runs through:</li>
+<li>2 x 3^(j-1) visits to reach D0 U0^(j-1);</li>
+<li>3^(j-1) visits to reach D2 W0 U0^(j-2);</li>
+<li>then the (j-1)-suffix.</li>
+<li>So T(1) = 2 and T(j) = 3^j + T(j-1), which gives <strong>T(K) = (3^(K+1) - 5)/2</strong>. The leading m=1 block plays the role of W (U0 -&gt; U1 -&gt; D0).</li>
+<li>Exit phase 0 happens exactly when the whole word is D (lemma), and an all-D word stays all-D. So the first T(K) visits exit at phase 2 and all later visits at phase 0.</li>
+<li>One carry-out happens per 3^K visits, so a record interval has 81 x 3^K visits.</li>
+<li><code>v1_count.py</code> checks this on the lemma for K = 2..9, over the full 81 carry-outs.</li>
+</ul>
+<h3 id="4-symbolic-interval-map-all-epochs-symbpy">4. Symbolic interval map, all epochs (<code>symb.py</code>)</h3>
+<ul>
+<li>Parameter: w = 9^e, where e = (n - 16) div 6. Each class r has a start vector that is affine in w. The inert prefix (the large gaps left of the first small gap) matters only through its residues.</li>
+<li>The interval is run through the table. Every 4-cycle is accelerated by an affine number of cycles, with a check that every changing gap stays &gt;= 24 for all w = 1 mod 8.</li>
+<li><strong>All 6 classes close.</strong> End gaps and right-edge trips match the real run at e = 0, 1, 2 (w = 1, 9, 81, records 16-33). The e = 2 start vectors are predictions, and they match.</li>
+<li><strong>Synchronization = exact cancellation.</strong> Two examples:</li>
+<li>r5: X starts at (243w - 11)/2 = 3 V1 + 2, and the first regime eats 12 per 4 visits for (81w - 25)/8 cycles. The w-terms cancel and X = 32 is left; the X-exhausted transient then runs inside the table.</li>
+<li>r2: X = (729w - 21)/2, eaten 36 per cycle; it cancels the same way.</li>
+<li><strong>Life cycle of X and Y</strong> (per visit, by class and regime):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>regime 1 (exit 2)</th>
+<th>regime 2 (exit 0)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r5</td>
+<td>old X eaten 3; exhausted at the switch, old Y becomes fossil 24948w - 36</td>
+<td>new X grows 3</td>
+</tr>
+<tr>
+<td>r0</td>
+<td>X grows 9; frozen at the switch at <strong>6804w - 4</strong></td>
+<td>new Y grows 9</td>
+</tr>
+<tr>
+<td>r1</td>
+<td>Y grows 9</td>
+<td>X eaten 1, Y grows 8</td>
+</tr>
+<tr>
+<td>r2</td>
+<td>X eaten 9; exhausted at the switch, Y becomes fossil <strong>74844w - 36</strong></td>
+<td>new X grows 9</td>
+</tr>
+<tr>
+<td>r3</td>
+<td>X grows 9; frozen at <strong>20412w - 4</strong></td>
+<td>new Y grows 9</td>
+</tr>
+<tr>
+<td>r4</td>
+<td>Y grows 27</td>
+<td>X eaten 3, Y grows 24</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Closed forms.</strong></li>
+<li>X_k = 6804 x 3^(k-4) - 4 (6800, 20408, 61232, ...), so <strong>X' = 3X + 8</strong> is derived.</li>
+<li>Fossils F = 24948 x 3^j - 36, so <strong>F' = 3F + 72</strong> is derived.</li>
+<li><strong>Right-edge trips per interval:</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>trips</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r5</td>
+<td>(9801w - 61)/4</td>
+</tr>
+<tr>
+<td>r0</td>
+<td>6561w - 4</td>
+</tr>
+<tr>
+<td>r1</td>
+<td>(65853w - 21)/4</td>
+</tr>
+<tr>
+<td>r2</td>
+<td>(29403w - 119)/4</td>
+</tr>
+<tr>
+<td>r3</td>
+<td>19683w - 3</td>
+</tr>
+<tr>
+<td>r4</td>
+<td>(197559w - 51)/4</td>
+</tr>
+</tbody>
+</table>
+<p>So N(r2) = 3 N(r5) + 16 and N(r5, 9w) = 3 N(r2) + 74. The old 3N + 12/22 used another trip count. The X-exhaustion trip is (1215w - 31)/4 in r5 and (3645w - 313)/4 in r2, of the same 3t + c form.</p>
+<h3 id="5-the-left-end-is-a-finite-counter-left_episodespy-check_leftpy">5. The left end is a finite counter (<code>left_episodes.py</code>, <code>check_left.py</code>)</h3>
+<ul>
+<li>Every interval 16-33 (18 intervals) has exactly <strong>81 left episodes</strong>, through the same sequence of 81 distinct left-end words (4 ternary digits). They are entered at A + 1 and deterministic.</li>
+<li>The left region has no counters, so a synthetic run on the left region alone is the whole computation: 81/81 transitions are reproduced, and none halts.</li>
+<li>Episode 81 is the left record. Its end word is episode 1's start word moved 3 cells left, plus one new defect at A - 1. That defect becomes the digit of the new first (m=1) chain block.</li>
+</ul>
+<h3 id="6-the-record-is-a-regrouping-regrouppy-timeline-check">6. The record is a regrouping (<code>regroup.py</code>, timeline check)</h3>
+<ul>
+<li>The record visit runs: carry-out at all-D0, left episode 81 (left record), carry back to <strong>all D2</strong>, exit at phase 0.</li>
+<li>At every record 17-33 (17/17), the new parse is the old D2 chain <strong>grouped one defect later</strong>: new block = (last defect of old block j; first defects of old block j+1). On top of that:</li>
+<li>one new left digit;</li>
+<li>at the right end, by class, the chain drops 1 defect (r5 -&gt; r0, r3 -&gt; r4), takes in 3 defects from the right region (r0 -&gt; r1, r2 -&gt; r3, r4 -&gt; r5), or drops 5 (r1 -&gt; r2).</li>
+<li>So K = (3, 3, 4, 3, 4, 4) + 2e for r5..r4. These are real digit counts: the visits between left records are exactly 81 x 3^K. The r2 frame shows one extra crossing, which is a frame-switch artifact.</li>
+<li>In r1 the right-edge turn that defines the record comes one visit late (its straddle episode has no right-edge trip). That is why r1 has 3^(K+4) recorded episodes instead of 3^(K+4) - 1.</li>
+</ul>
+<h3 id="7-the-record-step-closes-on-the-right-too-gluepy-linkpy">7. The record step closes on the right too (<code>glue.py</code>, <code>link.py</code>)</h3>
+<ul>
+<li>Switch to the new frame (B, c_K of the coming record) at the <strong>left record</strong>, not at the right-edge turn. The head then leaves the chain once (the "record exit", phase c_K + 2 in the new frame), and runs <strong>one</strong> episode, which is a <strong>regular table entry</strong> of the new class (17/17, records 17-33). The next exit is v = 0 of the interval.</li>
+<li>Symbolically, for all w (<code>link.py</code>) the step works as follows:</li>
+<li>the tail of the class-r end vector (pair, X, Y, edge) is carried over unchanged to the record exit; the record visit stays left of the old B, and only the inert prefix is re-based;</li>
+<li>one class-(r+1) table entry then gives exactly the class-(r+1) start vector.</li>
+<li><strong>All six steps close</strong>, and r4 -&gt; r5 maps w -&gt; 9w. So the right region is an exact induction over all epochs: R_r(w) -&gt; R_(r+1)(w), with R_r4(w) -&gt; R_r5(9w).</li>
+<li>Counted from the record exit, every class has 81 x 3^K - 1 episodes up to the next record exit. The r1 "+1" in <code>episodes.py</code> comes only from defining the record by a right-edge turn.</li>
+</ul>
+<h3 id="8-siblings-512-and-588-ride-the-same-induction-episodespy-b-0-f-1-sib_comparepy">8. Siblings 512 and 588 ride the same induction (<code>episodes.py ... B 0</code> / <code>F 1</code>, <code>sib_compare.py</code>)</h3>
+<ul>
+<li>Both were run in our numbering: 512 is our table started in B, and 588 is our table started in F, shifted by one record.</li>
+<li><strong>Table:</strong> for each sibling, all 2,388,189 episodes of intervals 16-33 are entries of our 81-entry table. The exit-phase sequences and the episode counts are identical to ours.</li>
+<li><strong>Right region:</strong> at v=0 and at the end of every interval 16-33, the sibling's right region equals ours (18/18 each). The tail (pair, X, Y, edge) is exact, and the prefix agrees by residue.</li>
+<li><strong>Chain:</strong> at every record (18/18 each) the sibling has the same block structure as ours, with chain gaps equal mod 4. They differ only by multiples of 4: 18 gaps in total for 512, and 86 for 588, which includes tight variants such as g = (1, 5, 13). The chain lemma's entries are uniform over these.</li>
+<li>So one induction from record 16 covers 341, 512 and 588. Only the base case (simulation to record 16) differs.</li>
+<li>The siblings' left-end words were not compared directly. Their visit counts per interval are identical to ours, which means 81 carries per interval.</li>
+</ul>
+<h3 id="what-is-validated-open_1">What is validated / open</h3>
+<ul>
+<li><strong>Validated (scripted checks, exact):</strong></li>
+<li>the right-region table: 81 entries, gap-independent, no halt, 2.1M predicted episodes;</li>
+<li>the symbolic interval map, all 6 classes, all w, matching e = 0, 1, 2;</li>
+<li>the symbolic record step, all 6 classes;</li>
+<li>V1 = T(K) and 81 x 3^K from the chain lemma (hand recursion, plus the lemma checked for K = 2..9);</li>
+<li>the left end: an exact 81-word cycle with the record shift and the new digit;</li>
+<li>the chain regrouping at records (17/17).</li>
+<li><strong>Not yet a stated lemma:</strong></li>
+<li>the chain regrouping and the prefix re-base as one per-class statement. The residue argument works: a D2 block's last defect plus the next block's first three is a U0 block, with bases shifting by 2. It is checked on data only (17/17 records, and the shapes match for all w).</li>
+<li>the class-dependent frame (K = (3,3,4,3,4,4) + 2e for r5..r4, and which 1/3/5 defects change sides). It is read off the greedy parse.</li>
+<li><strong>Open (stage 3):</strong></li>
+<li>write the invariant C_r(w) at each record exit: left word W_1, chain [m1 U0] U0^(K-1), right region R_r(w);</li>
+<li>state the record lemma per class;</li>
+<li>base case: the blank run reaches record 16 (exact model and C sim agree to 2e10);</li>
+<li>proof.md.</li>
+<li><strong>Non-halting</strong> then follows: every move lies in a chain-lemma entry, a left-end word or a right-region entry, and none of them halts.</li>
+<li>Formalization (busycoq) is a separate, large effort.</li>
+<li><strong>Template check.</strong> #3's projected-value invariant (p+Rt / q-Rt) is exactly what section 4 does: X - 3 x (visits left in the regime) is constant along a regime. Writing J as "X + rate x (visits remaining) = const" per class would be the Coq-side invariant. #11/TM21 still contribute only the sweep layer.</li>
+</ul>
+<h2 id="class-2-close-out-stage-3-2026-10-12">Class 2 close-out, stage 3 (2026-10-12)</h2>
+<p>Funded: sync_stage (same decision as stages 1-2; final stage of the campaign). Scope: the invariant at record exits, the record lemma per class, the base case, proof.md. Scripts in <code>scripts/closeout3/</code>, outputs in <code>scripts/closeout3/results/</code>.</p>
+<p><strong>Result: the induction closes. <code>proof.md</code> (machine directory) is written: an invariant C_r(e) at every record exit and a record lemma that maps C_r to C_(r+1) symbolically for every epoch e &gt;= 2, concretely for records 16-27, with the base case at record exit 16 by simulation. It covers 341, 512 and 588.</strong> Outcome: proof_ready (informal proof; not a kill), confidence high.</p>
+<h3 id="1-record-exit-snapshots-snappy">1. Record-exit snapshots (<code>snap.py</code>)</h3>
+<ul>
+<li>The record exit of record n = the first moment after left record n at which the head, moving right, is about to cross the chain end B of record n. <code>snap.py</code> stores the full defect state there.</li>
+<li>Taken for records 12-33 of 341, 512 (start B) and 588 (start F, shifted one record), and records 34-39 of 341 (run to step 1.7e16 in the defect model).</li>
+<li>At every record exit 16-39 the head is at phase c_K + 2, the left word is W_1 = A + (-32,-27,-26,-21,-20,-15,-14,-9,-8,-4) with lo = A - 34, and the chain is K = K0(r) + 2e U0 blocks: (A+2; A+3), then m=3 blocks whose gaps have the U0 residues (digit gap 1, separator gaps 0, inter gap 1 mod 4) and are at least (1, 4, 5).</li>
+<li>Records 12-15 have the same frame with K = K0 - 2 (e = -1), but their left word is still forming; the induction starts at 16.</li>
+</ul>
+<h3 id="2-the-structure-of-the-middle-of-the-tape">2. The structure of the middle of the tape</h3>
+<p>Chain gaps at a record exit, left to right (e.g. record 33): <code>1, 5, 1,4,4,5, 1,4,4,5, ... | 5, 16, 24, 45, 33, 40, 36 | 973, 2733, 8280, 24912 | prefix 74805, 224495, ...</code>.
+- Left-born gaps (one new digit per record): the pattern 1,4,4,5 shifted by one per record.
+- A fixed start-up segment of 7-8 gaps, which cycles with period 4 records.
+- Fossils: 969-973, 2733-2737, 8277-8280, 24909-24913, ... (each cycles within 4 cells).
+- Regrouping shifts each gap to the next role with change +3, 0, +1, -4 (digit -&gt; sep1 -&gt; sep2 -&gt; inter -&gt; digit). The changes sum to 0 over 4 records, which is why every gap cycles with period 4 and the residues and lower bounds of (C) are preserved.
+- The siblings differ only in the start-up segment (512: 17/20 instead of 13/16; 588: 52, 936 instead of 24-45, 972). This is deep in the chain at e &gt;= 2.</p>
+<h3 id="3-chain-lemma-with-tight-gaps-chain_tightpy-1432212-1432212">3. Chain lemma with tight gaps (<code>chain_tight.py</code>): 1,432,212 / 1,432,212</h3>
+<ul>
+<li>Stage 1's synthetic check never put two blocks at inter-gap 5. But the real chain has it, and then neighbouring D blocks touch (gap 1, e.g. at record 21 the D2 positions -18 and -17).</li>
+<li>New exhaustive check: every word of the lemma's shape for K &lt;= 2, every gap in {tight, tight+4, long} in every position; K = 3 for the pair (2,3) entered from the left after a U/W turn of block 1. Visits from the right and carry backs from the left are both checked, including the carry back's exit phase (c_K if the chain is then all D, else c_K + 2), which Lemma T uses.</li>
+<li>Result: all match the lemma, with no collision (COLLIDE = any toggle onto a defect, or a wiggle with a defect at e+1/e+2).</li>
+<li>With the locality argument (a collision needs two defects within 2 cells, so one block or one neighbouring pair), this covers every K.</li>
+</ul>
+<h3 id="4-left-end-in-context-check_left_ctxpy">4. Left end in context (<code>check_left_ctx.py</code>)</h3>
+<ul>
+<li>The 81 left episodes, re-run with the first three chain blocks present in their full states at the tightest gaps (4 contexts each): 320/324 reproduce the left-only result with the chain untouched. The 4 misses are episode 81 (the left record), whose result is also the same and which also leaves the chain untouched. It is flagged only because its event at A-2 creates the new digit at A-1.</li>
+<li>Episodes 1-80 have every event at a defect &lt;= A - 4. Every left word present while the chain works ends at A - 4. Entry and exit phase rel A are 1 for all 81, which equals c_1 + 2 (the chain lemma's carry-out and carry-back phase).</li>
+</ul>
+<h3 id="5-the-window-and-the-symbolic-record-step-windowpy-symcorepy">5. The window and the symbolic record step (<code>window.py</code>, <code>symcore.py</code>)</h3>
+<ul>
+<li>Window of class r: the last J_r chain gaps plus the right region (gaps from B to hi), with J = (3, 2, 5, 0, 1, 0) for r5..r4. These are the smallest sizes that reproduce themselves: a step that drops d defects needs J_r &gt;= d + J_(r+1), and a step that takes in 3 needs J_r &gt;= J_(r+1) - 3.</li>
+<li>The record visit (from the chain lemma): the 81st carry-out at all-D0, left episode 81, a carry back to all-D2 (digit -2, s1 +1, s2 +1, s3 +2). The head crosses the new end B' during the carry back:</li>
+<li>in the drop classes (r5, r1, r3 drop 1, 5, 1 defects) the dropped defects are still at their D0 places;</li>
+<li>in the take-in classes (r0, r2, r4) the head passes x_1..x_3 unchanged, and they become the separators of the new last block.</li>
+<li><code>step_concrete.py</code>: this bookkeeping, together with the record-exit table entry and the interval run through the table (no acceleration), reproduces the next record-exit window exactly for <strong>12/12 records 16-27 in each of 341, 512 and 588</strong>.</li>
+<li><code>window.py</code>: V_r(u) is the affine fit of the window at e = 2 and e = 3 (u = 9^(e-2)); the table is in proof.md section 3.4.</li>
+<li><strong>All six steps close symbolically for every u</strong>: record-exit table entry, interval (V1 = T(K) phase-2 visits, 81 x 3^K - 1 episodes, 4-cycles accelerated), record visit, regroup and exchange. r4 -&gt; r5 maps u -&gt; 9u.</li>
+<li>The gaps that leave the window for the deep chain (only at r2 -&gt; r3, 2 gaps) have the U0 residues and minimums.</li>
+<li>The window equals V_r(1) at record exits 28-33 of all three machines and V_r(9) at 34-39 of 341.</li>
+<li>The fit is only how V_r was found. The proof is the closure (6 affine identities over 2-point fits).</li>
+<li>With fits from e = 1, 2 instead, 5/6 steps close and r4 -&gt; r5 fails only on the first fossil (969 at e = 1 is not on the regular line 8316w - 39). That is why the symbolic part starts at e = 2, and records 16-27 are done concretely.</li>
+</ul>
+<h3 id="6-only-the-stated-constraints-matter-perturbpy">6. Only the stated constraints matter (<code>perturb.py</code>)</h3>
+<ul>
+<li>At a record exit, every deep chain gap is replaced by a random value with the same residue and at least its role minimum (the minimum itself, the original, or the original + 4j). Then the exact model runs to the next record exit.</li>
+<li>Checked: membership in C_(r+1); the window equals the unperturbed run's; the deep chain equals the old chain at its D2 places, regrouped, with the new digit at A - 1.</li>
+<li>Result: 120/120 at record exits 16-27 (10 trials each) and 15/15 at 28-32 (3 each).</li>
+</ul>
+<h3 id="7-proofmd">7. proof.md</h3>
+<ul>
+<li>Written in the machine directory: overview, defect model, invariant C_r(e) with the window table, Lemma C/C'/T (chain), Lemma L (left), Lemma R (right table), the interval (counts, symbolic map, the X/Y cancellation table), Lemma S (record step: regrouping table, exchange table, window closure), base case and theorem, and a table of which check backs which piece.</li>
+<li>It is the internal version: it names the scripts, so <code>tools/writeup_lint.py</code> reports those references as errors. A submission version would drop the check table.</li>
+</ul>
+<h3 id="template-comparison-3-11">Template comparison (#3, #11)</h3>
+<ul>
+<li>
+<h1 id="3s-projected-values-p-rt-q-rt-are-what-section-54-of-proofmd-does-x-3-x-visits-left-in-the-regime-is-constant-and-that-is-how-the-xy-sync-becomes-an-exact-cancellation">3's projected values p + Rt / q - Rt are what section 5.4 of proof.md does: X - 3 x (visits left in the regime) is constant, and that is how the X/Y sync becomes an exact cancellation.</h1>
+</li>
+<li>
+<h1 id="11s-architecture-macro-rules-mo-on-a-digit-list-one-inv-lemma-step-inv-s-exists-s-kc-s-kc-s-inv-s-is-the-shape-a-coq-version-would-take-here-inv-is-c_re-the-macro-step-is-lemma-s-and-the-digit-list-is-the-block-list-with-lemma-c-as-the-mo-analogue">11's architecture (macro rules M/O on a digit list, one INV, <code>Lemma step: INV s -&gt; exists s', Kc s --&gt;+ Kc s' /\ INV s'</code>) is the shape a Coq version would take. Here INV is C_r(e), the macro step is Lemma S, and the digit list is the block list, with Lemma C as the M/O analogue.</h1>
+</li>
+<li>What #11 does not have: the 81-entry right table, the symbolic 4-cycle acceleration, and gaps that are kept only mod 4. In Coq the long gaps would be written as 4k + c (or as lists of 4-cell units), so each table entry becomes a lemma quantified over k.</li>
+</ul>
+<h3 id="what-is-validated-open_2">What is validated / open</h3>
+<ul>
+<li><strong>Validated:</strong> see proof.md section 8. New in this stage: the tight-gap chain lemma; the left end in context; record-exit membership at 16-39 (341) and 16-33 (512, 588); the concrete record steps 16-27 for all three; the six-step symbolic closure of the window for every u; random deep-chain perturbations (120/120 at record exits 16-27 (10 trials each) and 15/15 at 28-32 (3 each)).</li>
+<li><strong>Open:</strong> a referee read of proof.md (Checkpoint B). Then a decision on formalization: a busycoq proof needs mod-4 gap counters, the 81-entry table as lemmas, the chain lemma by induction on the word, the symbolic interval with 4-cycle acceleration, and a base case of 3.98e8 steps. That is several stages and has no template for the table layer. A submission version of proof.md (lint-clean) is also still to write.</li>
+</ul>
+<h2 id="class-2-close-out-completion-pass-2026-10-12">Class 2 close-out, completion pass (2026-10-12)</h2>
+<p>Task (close-out workflow): complete proof.md (rule table, every macro rule with variables, invariant, progress, halting,
+exact initial segment, lemma plan against #11/TM21 and #3) and validate every claim in one <code>check_proof.py</code>.</p>
+<p><strong>Result: proof.md completed; <code>check_proof.py</code> (machine directory) checks every claim, all PASS. Still an informal proof,
+not a kill (no Coq).</strong></p>
+<h3 id="what-was-added-to-proofmd">What was added to proof.md</h3>
+<ul>
+<li>2.2: the TM transitions behind each of the 8 defect rules, and the halting argument (A1 occurs only in the wiggle).</li>
+<li>4.1: the 18 single-block runs as a table (the base of Lemma C).</li>
+<li>4.2: the left word in closed form: four m=1 blocks at A + (-27, -21, -15, -9) in states U_(v_j), v = i - 1 in base 3,
+  plus the fixed defects A-32 and A-4. So Lemma L is the chain lemma on m=1 blocks plus one overflow run.</li>
+<li>5.3 + Appendix B: the interval of each class as a program: 20-30 single entries plus two 4-cycles (one per regime),
+  each repeated an affine-in-u number of times.</li>
+<li>Section 7: progress and halting. Section 10: lemma plan (layers L0-L8). Appendix A: the 81 right-table entries.
+  Appendix C: the exact tape at step 398,090,000 (record exit 16) and the windows at record exits 16-27. Review log.</li>
+</ul>
+<h3 id="check_proofpy-s1-s12">check_proof.py (S1-S12)</h3>
+<ul>
+<li>S1 table, sweep cycles, the 8 rules' transitions, the halting wiggle. S2 model vs direct simulation: exhaustive on every
+  tape word of length &lt;= 12 (122,884 runs, 34,134 halts) + 10,000 random tapes.</li>
+<li>S3 Lemma C/C' <strong>on the exact defect model</strong> (earlier stages used the compressed TM): 18 single-block runs (1,045),
+  exhaustive tight-gap pairs K &lt;= 2 + pair (2,3) at K = 3 (1,432,212 runs), 4,000 random chains K = 3..10; no defect ever
+  left of A. S4 Lemma T on words K &lt;= 9 and on the exact model K &lt;= 8 (81 x 3^K visits).</li>
+<li>S5 Lemma L: closed form, 81 episodes from W_1 alone, record, in context (324). S6 Lemma R: every entry at the minimal
+  long gaps (24-27), all {min, min+4} combinations (5,376), random +4j up to 10^6 (810); largest shrink 12.</li>
+<li>S7 symbolic step for all six classes with <strong>independently verified 4-cycle jumps</strong> (M d = d, shapes at both ends of the
+  jump), then exact-number steps without jumps: 16-27 for 341/512/588 (12/12 each) and 28-39 from V_r(u) (12/12, up to
+  4.8M episodes). S8 regroup arithmetic. S9 sync rates and closed forms. S10 membership 16-39/16-33; record exit 16 vs
+  direct simulation of all three strings (512 renamed, 588 mirrored + renamed), cell by cell. S11 perturbations.
+  S12 proof.md's appendices and V table = the checked data.</li>
+<li>Default run about 5 min; <code>--full</code> adds the compressed-TM K = 3 check, Lemma T K = 9 and 135 perturbations.</li>
+</ul>
+<h3 id="corrections-made-to-proofmd">Corrections made to proof.md</h3>
+<ul>
+<li>5.3 claimed jumps need changing gaps &gt;= 64 at both ends; the code's actual condition is &gt;= 24 at every jumped episode.
+  Now stated correctly and verified independently.</li>
+<li>5.4's rate table missed that Y grows 24 (r5) and 72 (r2) per visit in the first regime.</li>
+<li>7 (old): "a visit crosses each block at most twice" replaced by "at most two single-block runs per block".</li>
+</ul>
+<h3 id="open">Open</h3>
+<ul>
+<li>Checkpoint B (Dennis, non-blocking). For a referee: Lemma C's composition step, the residue argument behind Lemma R
+  above the minimal gaps, and the defect-frame bookkeeping are prose + finite checks, not symbolic derivations.</li>
+<li>Formalization: several stages (proof.md section 10). Recommended route: a verified defect-model interpreter (one
+  simulation theorem, then the base case, left episodes, block runs and concrete steps by vm_compute); the 81 right
+  entries as generated lemmas; a per-visit invariant J in #3's style. Untested idea: abstract fossil gaps (residue +
+  minimum) might let the symbolic step start at e = 0.</li>
+</ul>
+<h2 id="class-2-close-out-review-pass-1-2026-10-12">Class 2 close-out, review pass 1 (2026-10-12)</h2>
+<p>Task (close-out workflow): fix the six gaps of a referee read of proof.md (verdict: sound; all six minor), re-run,
+review log. New code: <code>check_proof.py</code> (new claims in S3, S5, S6, S7, S9, S10; new Appendices D-F and the 6.4
+formulas, all checked verbatim by S12) and <code>scripts/review1/lo_moves.c</code> (direct simulation: moves of lambda, and the
+record exit by the operational definition).</p>
+<p><strong>Result: every gap fixed; check_proof.py all PASS (see the review log in proof.md). Status CHECKPOINT_B.</strong></p>
+<ul>
+<li><strong>Transfer lemma (proof.md 2.4).</strong> Inserting 4j alternating cells after an edge m keeps every event, if no defect
+  ever sits on m-1, m, m+1. Proof by induction on events (next defect, d mod 4, toggles/tests in [e-1, e+2]).</li>
+<li><strong>Lemma R as a simulation lemma.</strong> Measured on the base runs (all long gaps 24-27): every long gap keeps &gt;= 11
+  consecutive edges that never hold a defect and are never toggled/tested (blank zone above hi counted); nothing
+  left of x_1 is ever touched (x_1 itself never moves left). So 2.4 transfers each entry to every long gap.</li>
+<li><strong>Lemma B / B' (single blocks, chain locality).</strong> All 18 runs: one event list for every gap choice (1,045 runs);
+  per-defect ranges from the U0 place: digit -2..0, s1 0..+2, s2 0..+3, s3 0..+2 (m=1: digit -2..0, sep 0..+2);
+  touched edges in [b-2, b+g_last+2]. Consequences: free triples for digit gap &gt;= 5 and separator gap &gt;= 8 (so 2.4
+  reduces every gap to tight or tight+4), and disjoint block intervals for inter gap &gt;= 5 (so a visit is a list of
+  single-block runs and Lemma C is a list induction). The 1.43M exhaustive pair runs are now a cross-check.</li>
+<li><strong>Lemma L81.</strong> Episode 81 traced with the chain all D0: 31 events (Appendix E), none at a defect &gt;= A; the six
+  wiggles test A-31, -25, -19, -13, -7, -2 (all free). The new defect A-1 comes from the wiggle at A-3 and is passed
+  with d=3; the head ends on cell A, moving right, phase A+1 = c_1+2, next defect A with d=3 (Lemma C' entry).</li>
+<li><strong>Record exit at cell level.</strong> Every snapshot 16-39 (341) / 16-33 (512, 588): p = B-1, (p - phi) mod 4 = 3 (B1),
+  10+4K-2 pre-sweep defects in (lo, p-1], B = (4K-2)-th defect &gt;= A, plus 2. Direct simulation with the operational
+  definition (state B reading 1 and 20 pre-sweep defects in (lambda-1, h-1]): 341 after its 16th 3-cell move at
+  398,090,000 (cell 1154); 512 (our table from B) after its 16th at 398,095,384; 588 (our table from F) after its
+  17th at 397,796,108. So 588 has one extra start-up 3-cell move (10906-10908).</li>
+<li><strong>Numbering.</strong> lambda = leftmost cell that has held 1. 341: small moves at 1, 6-7, 838-839, 7820, 17531-17532; 3-cell
+  moves 14-16, 47-49, 942-944, 1157-1159, 29329, 91394, 442985, 647766, 1212915, 4664920, 6952349, 12289410,
+  43669197, 65532918, 114511039, 398088768 (the 16th).</li>
+<li><strong>Jumps.</strong> Every one of the 12 cycles composes symbolically to a pure translation f(h) = h + d (linear part = the
+  identity), so f(h+d) = f(h)+d is immediate. Intermediate slopes are sums of entries of d, hence multiples of 4.
+  Appendix F: class r1 in full (9 gap maps, 20 singles, 2 cycles).</li>
+<li><strong>Record-visit formulas</strong> (proof.md 6.4), e.g. r5 -&gt; r0: chain (c1+3, c2) | right (c3-3, E1+2, E2..E5). The
+  take-in classes have E1 = 1, E2 = E3 = 0 mod 4, so x1..x3 = c_K+3 and are passed with d = 3, 2, 3; drop classes
+  hit the record exit inside block j's D0 -&gt; D2 run right after the s2 pass (phase c_j+3 = c'+2).</li>
+<li><strong>5.4 corrected:</strong> X = 20 after the last jumped cycle (32 at its start), = the 20 of r5.5; w = 9^e = 81u defined.</li>
+</ul>
+<p>Open: Checkpoint B (Dennis, non-blocking). Formalization as in proof.md section 10 (several stages).</p>
+<h2 id="kill">Kill</h2>
+<p><strong>KILLED_NONHALT (2026-10-12).</strong> <code>Lemma nonhalt: ~halts tm c0.</code> in <code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---.v</code>
+(2,583 lines, sha256 7bda36dc…3f4c, Individual62 + stdlib only), proved by rounds 1-2 of the formalization (rocq/log.md).
+- <strong>Verification.</strong> check_kill PASS three times on the same sha256: round 2b (56.7 s compile), the independent audit
+  (56.8 s, <code>--json</code>), and a fresh run for the package (75.7 s compile, run alongside other sessions' Coq jobs;
+  raw log rocq/check_kill_final.log). Print Assumptions nonhalt: closed (0 assumptions). coqchk SKIP every time: the
+  600 s cap is hit (policy A warning), so the 38 native_compute base-case pieces and the vm_compute checks rest on
+  coqc's kernel check at Qed. The unchunked round-2 file died in coqchk with out-of-memory (FAIL); the chunked file has no
+  coqchk error, only the timeout.
+- <strong>What the .v proves vs proof.md.</strong> No defect model and no transfer lemma: a symbolic run-length simulator of <code>tm</code>
+  (linear-form lengths, abstract sides) proves every finite run for all gap values at once. The 81-entry right table
+  is not an input; each episode is run symbolically (<code>ep_run</code>), 4-cycles by <code>jump_run</code>/<code>jump_lemma</code>, u = 1 + 8t. The
+  invariant point is one episode after the record exit (start of the interval, Appendix B <code>start</code> vectors). The base
+  case is the direct simulation to record exit 28 (18,571,896 simulator steps), so the record-exit-16 base and the
+  concrete steps 16-27 are not used. Only line 341 is proved; siblings 512 and 588 are not formalized.
+- <strong>Package</strong> (submission/, not posted): the .v (byte-identical), proof.md (public write-up; writeup_lint 0 errors,
+  0 warnings), check_kill.txt (fresh run, local paths replaced by placeholders), README.md, discord.md (1,818 characters
+  without the link; fill <code>&lt;LINK&gt;</code>).
+- <strong>Open (not blocking):</strong> the dead helper lemma <code>sum_false_true</code> (line 1720) is still in the file; removing it means a new
+  check_kill. A coqchk that finishes would need a cheaper base case (e.g. start the induction earlier). Checkpoint B on
+  proof.md is still unanswered; fold any notes into both proof.md files before posting.</p>
+<h2 id="class-2-close-out-stage-2-2026-10-12_1">Class 2 close-out, stage 2 (2026-10-12)</h2>
+<p>Workflow track "W4-3 table" (740 lines 341, 512, 588), funded sync_stage; this stage was dispatched again after the
+kill above. Its goal for this machine (X/Y synchronization, U-chain counter lemma, non-halting invariant) is already
+met: the earlier stages 2-3 derived it, and the formalization proved it (<code>## Kill</code>). So the stage went to the two other
+starts of the table. Nothing in this directory was changed apart from this section and status.json (<code>siblings_note</code>, <code>funded</code>).</p>
+<p><strong>Result: both siblings KILLED_NONHALT (check_kill PASS each).</strong>
+- W4-3b <code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code> (740 line 512): check_kill PASS, compile 71.96 s, coqchk timeout, 0 assumptions.
+- W4-3c <code>1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD</code> (740 line 588): check_kill PASS, compile 72.31 s, coqchk timeout, 0 assumptions.
+- <strong>Method.</strong> Each file is this machine's kill file verbatim with the table renamed <code>tmP</code>, a new base case and the
+  conjugacy (<code>Perm tm tmP phi</code> for 512; <code>Perm (flip tm) tmP phi</code> + <code>flip_halts</code> for 588; busycoq Permute.v / Flip.v).
+  Our <code>Inv</code> leaves the deep chain free, so only the base case and <code>nus28</code> change.
+- <strong>Numbers.</strong> Record exit 28 (exact right side of our cfg28) from B after 18,571,902 simulator steps, from F after
+  18,571,554 (ours from A: 18,571,896). Same window, same chain structure; gap variables differ only deep:
+  512 block 3 <code>[10; 5; 4; 1]</code> (ours <code>[10; 5; 3; 1]</code>); 588 block 2 <code>[233; 8; 9; 8]</code> (ours <code>[242; 8; 9; 8]</code>) and block 3
+  <code>[12; 1; 0; 0]</code>. This confirms in Coq the stage-3 claims (window V_r5(1) at record exit 28; deep gaps equal mod 4).
+- <strong>Template comparison (#3, #11).</strong> As for #7/#30 and #3b/#33b: a sibling of a killed table costs only a base case
+  plus busycoq's Perm/Flip lemmas, because the invariant (like #11's INV over a digit list and #3's J with projected
+  values) quantifies over the part of the tape the start changes.
+- <strong>For this package:</strong> <code>submission/discord.md</code> (last paragraph) and <code>submission/README.md</code> (first bullet) say the two
+  starts are not formalized. Not edited here; when posting, change that sentence or post the siblings' combined
+  message (their <code>submission/discord.md</code>) right after.
+- <strong>Open:</strong> independent re-verification of the two sibling kills; nothing open for this machine from this stage.</p>
+<h2 id="class-2-close-out-invariant-stage-2026-10-12">Class 2 close-out, invariant stage (2026-10-12)</h2>
+<p>Workflow track "W4-3 table", dispatched again after the kill. Computed task: write proof.md for this string (rule
+table, macro rules, invariant, progress, halting, exact start, lemma plan "this kill file with the table renamed tmP
++ perm_halts / flip_halts"), validate it in check_proof.py, set status.json to stage informal_proof, status OPEN.</p>
+<p><strong>Result: nothing was missing; status.json NOT changed (still KILLED_NONHALT).</strong>
+- Already met: proof.md has every listed part (1 table, 2.2 rules, 3.3 invariant, 4 lemmas C/C'/T/L/R, 5 interval and
+  X/Y sync, 7 progress and halting, 8 + Appendix C base case, 10 lemma plan, review log), and check_proof.py (S1-S12)
+  checks it. The machine is killed (check_kill PASS three times, sha256 7bda36dc...3f4c). The "tmP + Perm/Flip" plan
+  is the siblings' plan, and stage 2 carried it out (512 and 588: check_kill PASS each).
+- Not done on purpose: status.json was left alone. Setting it to informal_proof / OPEN would overwrite a verified kill.
+- Added to proof.md: a status line under the header; section 10.3 (where the .v followed the plan and where it took
+  another route: run-length simulator in place of the defect-model interpreter, symbolic episodes in place of the
+  81-entry table, one interval invariant <code>Inv</code> with a free deep chain in place of a per-visit J, base case at record
+  exit 28); the sibling lemma plan with the real lemma names, phi maps and nus28 differences; a review log entry.
+- check_proof.py default run after the edit: 68/68 claims PASS, 158 s (output in check_proof.out).
+- Open, unchanged: Checkpoint B (Dennis); independent re-verification of the two sibling kills (their status.json);
+  this package's README/discord still say the siblings are not formalized (see stage 2 above).</p>
+</main></body></html>

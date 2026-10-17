@@ -1,0 +1,812 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC/proof.md · <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC/proof.md.html">raw</a></div>
+<h1 id="1rb0rf_1rc1rf_1ld1ra_-0le_1la0le_0ra0lc-never-halts-conditional-lemma-n-open-revision-2">1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC: never halts (CONDITIONAL, Lemma N open; revision 2)</h1>
+<ul>
+<li>Machine: <code>1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC</code>, viewer https://bbchallenge.org/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC</li>
+<li>Holdout lists: pilot #10. Sheet: Results row 1047, class "Bell eats counter"; status, notes and sources are blank. No Discord thread is linked. Twin <code>1RB0RE_1RC1RE_1LD1RA_1LA0LD_0RA0LF_1LD---</code> (row 1032) is also blank.</li>
+<li>Written for: the string itself (no mirror, no state permutation).</li>
+<li><strong>Status (2026-10-10, after the funded Lemma X stage): CRYPTID_CANDIDATE. This file does not prove that the machine runs forever, and the machine is not a kill.</strong> The funded stage (§5.8) found that the excursion entries do not close into a finite list of safe types, which was the agreed exit. §5.5–5.6 and §5.8 are the heuristic.</li>
+<li>Revision 2 status, kept for the record: STUCK at informal_proof after the skeptic review.</li>
+<li>Done: the rule layer (§1–§4) is exact, and every rule now has its L1 lemmas written as exact <code>--&gt;+</code> statements (§2.5). The epoch map has a closed form (§3).</li>
+<li>Open: <strong>Lemma N</strong> (§5.1). It says the counter is normalized at every eat.</li>
+<li>Revision 1 stated Lemma N in the form "Inv_S holds for all t ≥ 20". <strong>That form is false.</strong> Inv_S fails on the machine's own orbit at t = 350,274 (§5.3), so it is withdrawn.</li>
+<li>New and proved: Lemma Z and Lemma R (§5.5). Together they reduce Lemma N to the epochs that follow an <strong>excursion</strong>, i.e. an epoch where the potential <code>P = ⌈n/2⌉ + C</code> reaches <code>2^{B(n')}</code>. The open piece is now the <strong>excursion lemma X</strong> (§5.7).</li>
+<li>Notation: tapes are written left to right. <code>C&gt;</code> means the head is in state C and reads the cell to its right. <code>&lt;E</code> means the head is in state E and reads the cell to its left. Exponents repeat words.</li>
+</ul>
+<hr />
+<h2 id="1-families">1. Families</h2>
+<p>Groups are 3 cells and are read left to right:</p>
+<table>
+<thead>
+<tr>
+<th>group</th>
+<th>name</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>000</code></td>
+<td>digit 0</td>
+<td>counter digit</td>
+</tr>
+<tr>
+<td><code>001</code></td>
+<td>digit 1</td>
+<td>counter digit</td>
+</tr>
+<tr>
+<td><code>010</code></td>
+<td>inert <code>i</code></td>
+<td>skipped by the counter's carry</td>
+</tr>
+<tr>
+<td><code>100</code></td>
+<td>pending <code>S</code></td>
+<td>only in residue-derived words; a carry turns it into <code>i</code> (rule inc, §2.3)</td>
+</tr>
+</tbody>
+</table>
+<p>A counter word is <code>X = x0 g1 g2 …gk</code>, where <code>x0</code> is one cell and each <code>gj</code> is a group. Its value is <code>value(X) = x0 + Σ 2^j</code>, where j runs over the digit-1 groups and counts digit groups only (inert and pending groups are skipped; the first digit group has weight 2). The word is <strong>normalized</strong> when it has no <code>100</code> group. The language is <code>L_X = x0 {000,001,010}* {100,010,000}*</code>.</p>
+<div class="highlight"><pre><span></span><code>K(a, b, X) := 0^inf (110)^a 0 (011)^b C&gt; X 0^inf          a &gt;= 1, b &gt;= 1, X in L_X        (hub)
+L(n, Q)    := 0^inf &lt;E (010)^n 001 Q 0^inf                 n &gt;= 1, Q in {100,010,000}*     (left record)
+</code></pre></div>
+
+<p>Family predicate used by the epoch argument (§4): every hub reached in the bounce phase satisfies <strong><code>value(X) = a</code></strong>. It holds at <code>K(1, n, 1Q)</code>, because Q has no digit-1 group. Rule B preserves it, because B adds 1 to a and inc adds 1 to the value (Lemma V, §2.3).</p>
+<h2 id="2-rules">2. Rules</h2>
+<h3 id="21-cell-level-rules-l0">2.1 Cell-level rules (L0)</h3>
+<p>The transition table, regrouped by direction of motion. F splits by predecessor: Fa is F entered from A1, and Fb is F entered from B1.</p>
+<div class="highlight"><pre><span></span><code>moving right   A:  0 -&gt; 1, B            1 -&gt; 0, Fa
+               B:  0 -&gt; 1, C            1 -&gt; 1, Fb
+               C:  1 -&gt; 1, A            0 -&gt; write 1, turn: D at the cell to the left
+               Fa: 0 -&gt; 0, A            1 -&gt; turn: cells (q-1,q) := (1,0), D at q-2       [via F1=0LC, C0=1LD]
+               Fb: 0 -&gt; 0, A            1 -&gt; cell kept, B at q+1                          [via F1, C1, A0]
+moving left    D:  1 -&gt; 0, E            0 -&gt; HALT (D0 = ---)
+               E:  1 -&gt; 0, E            0 at p: if cell p-1 = 1: keep both, D at p-2;
+                                                if cell p-1 = 0: cells (p-1,p) := (1,1), Fb at p+1
+</code></pre></div>
+
+<p>The only undefined transition is D0, so the machine halts exactly when D is about to read a 0. Note that <strong>D1 = E1 = 0LE</strong>: on a 1, D and E act the same. The lemmas below use this when a left pass may arrive in either state.</p>
+<p>Shift rules (check 2.1a, k = 1..40):</p>
+<div class="highlight"><pre><span></span><code>  A&gt; (001)^k   --&gt;  (111)^k A&gt;        3k steps     carry passes digit 1
+  A&gt; (010)^k   --&gt;  (110)^k A&gt;        3k steps     carry passes an inert group
+  B&gt; (010)^k   --&gt;  (111)^k B&gt;        3k steps     toggle passes an inert group
+  F&gt; (001)^k   --&gt;  (011)^k F&gt;        3k steps     J-walk passes digit 1
+  (110)^k &lt;E   --&gt;  &lt;E (010)^k        5k steps     return pass restores inert groups / builds (010)^n
+  1^k &lt;E       --&gt;  &lt;E 0^k            k  steps     return pass clears passed digits (111 -&gt; 000)
+</code></pre></div>
+
+<p>Single-group rules (checks 2.1b and 2.5 "L0x"; the step count follows each rule):</p>
+<div class="highlight"><pre><span></span><code>  A&gt; 000      --&gt; &lt;E 001     5     carry stops
+  A&gt; 100      --&gt; 001 B&gt;     3     carry meets S: placeholder 001, toggle starts
+  B&gt; 000      --&gt; &lt;E 010     3     toggle stops
+  B&gt; 100      --&gt; 101 B&gt;     3     toggle skips S
+  111 &lt;E      --&gt; &lt;E 000     3
+  1 101 &lt;E    --&gt; &lt;E 0 100   6     S restored on the return pass (E reads the last 1 of 101; the 1 to its left is cleared)
+  1 1 0 &lt;E 0  --&gt; &lt;E 0 1 0 0 5    the same restore after TG's IH has already cleared the last cell (used by TG)
+  0 0 &lt;E 0    --&gt; 1 1 0 A&gt;   4     placeholder restart (E reads the middle cell of the cleared placeholder 000)
+  000 &lt;E      --&gt; 011 F&gt;     3     end of JW-010 (the carry came back to a cleared 010)
+  F&gt; 010      --&gt; 000 A&gt;     3     start of JW-010
+  F&gt; 000      --&gt; 011 C&gt;     3     JW-000
+  0 011 C&gt; 0  --&gt; 110 11 F&gt;  9     even eat entry (marker, last bouncer block, x0 = 0)
+  0 011 1 &lt;E  --&gt; 110 11 C&gt;  9     odd eat exit (E reads x0 = 1 after the carry)
+</code></pre></div>
+
+<h3 id="22-high-level-rules-comment-block-style">2.2 High-level rules (comment-block style)</h3>
+<div class="highlight"><pre><span></span><code>1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC
+
+start: c0 --&gt;(27) L(2, [])
+
+R  (restart) L(n, Q)      --&gt;  K(1, n, 1Q)        exactly 3n+5 steps        n &gt;= 1, Q in {100,010,000}*
+B  (bounce)  K(a, b+1, X) --&gt;+ K(a+1, b, inc X)                             a &gt;= 1, b &gt;= 1, X in L_X
+E  (eat)     K(a, 1, X)   --&gt;+ L(a', Q')                                    a &gt;= 1, X normalized; (a', Q') = eat(a, X)
+
+halt: only if an eat starts on a non-normalized X (not covered by E); see §5
+
+K(a,b,X) := 0^inf (110)^a 0 (011)^b C&gt; X 0^inf
+L(n,Q)   := 0^inf &lt;E (010)^n 001 Q 0^inf
+</code></pre></div>
+
+<p>Rule E is stated with the block count <code>a</code> and the word <code>X</code> as separate arguments. The parity of the eat is read from <code>x0</code>, and the new block count <code>a'</code> is computed from <code>a</code> (§2.3). In the run, E is applied only at <code>K(n, 1, X)</code> with <code>value(X) = n</code> (the family predicate), so <code>x0 = n mod 2</code>.</p>
+<p>One epoch is <code>L(n,Q) -R-&gt; K(1,n,1Q) -B^(n-1)-&gt; K(n,1,X_end) -E-&gt; L(n',Q')</code>. The counter goes from 1 to n, since <code>value(1Q) = 1</code> and Lemma V applies. B needs b ≥ 1 after the step, so exactly n-1 bounces fit.</p>
+<p>Note for the formalizer: an even eat whose J-walk drops <code>010</code> and then meets <code>001</code> passes through a configuration that is literally a hub <code>K(a+2, 1, X'')</code> (seen on the TM, check 8c). This is harmless. E is a <code>--&gt;+</code> statement and does not care about intermediate configurations, and <code>X''</code> is normalized. Section 3 counts the whole eat as one step of the map.</p>
+<h3 id="23-inc-rule-b-and-eat-rule-e-every-case">2.3 inc (rule B) and eat (rule E), every case</h3>
+<p><code>inc(x0 g1 g2 …)</code>:
+- <code>x0 = 0</code>: set x0 := 1.
+- <code>x0 = 1</code>: set x0 := 0, and a carry enters g1. <code>carry(w)</code> is defined by cases on the first group of w:
+  - <code>010</code>: pass, go to the next group.
+  - <code>001</code>: becomes <code>000</code>, pass.
+  - <code>000</code>: becomes <code>001</code>, stop.
+  - past the end: append <code>001</code>, stop.
+  - <strong><code>100</code></strong>: becomes <code>010</code>. Then <code>tog</code> toggles the groups after it, up to and including the next <code>000</code>: <code>010 -&gt; 000</code>, <code>100</code> is skipped, and past the end a <code>000</code> becomes <code>010</code>. <strong>The carry then resumes at the group immediately after the former <code>100</code>.</strong> That group lies inside the segment that was just toggled, so it may itself have just changed. In symbols: <code>carry(100 w) = 010 carry(tog(w))</code>.</p>
+<p>The other reading, "resume after the toggled segment", disagrees with the TM on 1,524 of the 14,580 words of L_X with ≤ 7 groups (check 2.3x).</p>
+<p>The toggle is binary +1 on the i/0 string to the right (i = 1, 0 = 0), skipping S groups. It never meets a <code>001</code>, because S groups occur only in the tail <code>{100,010,000}*</code>.</p>
+<p><strong>Lemma V (value).</strong> For X in L_X, <code>inc X</code> is in L_X and <code>value(inc X) = value(X) + 1</code>.</p>
+<p><em>Proof.</em> In the prefix <code>{000,001,010}*</code>, the carry is binary +1 over the digit groups, and it passes inert groups. If the carry enters the tail, every tail digit group is <code>000</code>, so the tail contributes 0 to the value. A <code>100</code> becomes inert (<code>010</code>), and <code>tog</code> only swaps <code>010 &lt;-&gt; 000</code> inside the tail, so neither changes the value. The carry then stops at the first <code>000</code> after the former S. That group has the same digit index as the position the carry had reached, so the value grows by exactly 1. Every rewrite stays inside <code>{000,001,010}*{100,010,000}*</code>. ∎</p>
+<p>Check 2.3x verifies this on every word with ≤ 7 groups.</p>
+<p><code>eat(a, x0 G)</code>, with G normalized:
+- <strong>x0 = 1 (odd case):</strong> H := carry(G), and a' := a+1.
+- <strong>x0 = 0 (even case):</strong> the J-walk drops groups from the front of G, starting with k := a+1:
+  - <code>001</code>: drop it, k += 1.
+  - <code>010</code>: drop it, replace the rest by carry(rest), k += 1.
+  - <code>000</code> (or the end of G): drop it and stop. Then a' := k+1.</p>
+<p>H := what is left.
+- Residue in both cases: <code>Q' := regroup(cells(H)[1:])</code>, i.e. group by group <code>010 -&gt; 100</code> (S), <code>001 -&gt; 010</code> (i), <code>000 -&gt; 000</code>.</p>
+<h3 id="24-checks-of-the-rule-layer">2.4 Checks of the rule layer</h3>
+<ul>
+<li><strong>2.2</strong> (against the TM): R 1000/1000 with the exact step count, B 1000/1000, E 1000/1000. The instances are random, with a and b up to 2000 and words up to 55 groups.</li>
+<li><strong>2.2x</strong>: B on every word of L_X with ≤ 5 groups (2,876/2,876).</li>
+<li><strong>2.3x</strong>: B again, on every word of L_X with ≤ 7 groups (14,580/14,580). It also checks Lemma V and the closure of inc on the same words, and refutes the other reading of the <code>100</code> bullet.</li>
+<li>The skeptic checked the closed form independently on 26,744 arbitrary eat states, and the inc spec on 3,000 random words with up to 60 groups. Both agreed with the TM.</li>
+</ul>
+<h3 id="25-l1-lemmas-exact-statements-for-the-formalization">2.5 L1 lemmas (exact <code>--&gt;+</code> statements for the formalization)</h3>
+<p>Each lemma is proved from §2.1 by the induction named in its row. Check 2.5 also runs each one as a window rule on the TM: the head may not leave the window, the words must match exactly, and the step counts shown must hold.</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>statement</th>
+<th>proof</th>
+<th>check 2.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TG (toggle)</td>
+<td><code>1 B&gt; τ 000 r  --&gt;+  &lt;E 0 tog(τ) 010 r</code> for <code>τ ∈ {010,100}*</code>, any r (r is never read; <code>000 r</code> may be <code>0^inf</code>)</td>
+<td>induction on τ. <code>[]</code>: <code>B&gt; 000 --&gt; &lt;E 010</code>, then the left 1 is cleared by E1 (4 steps). <code>010 τ'</code>: <code>B&gt; 010 --&gt; 111 B&gt;</code>, then the IH with the last 1 of <code>111</code> as the left 1, then E1 three times. <code>100 τ'</code>: <code>B&gt; 100 --&gt; 101 B&gt;</code>, then the IH with the last 1 of <code>101</code> as the left 1, which leaves <code>1 1 0 &lt;E 0</code>, then the 5-step S-restore tail <code>1 1 0 &lt;E 0 --&gt; &lt;E 0 1 0 0</code>, which ends with D1 = E1 on the left 1</td>
+<td>exhaustive for |τ| ≤ 8 (511)</td>
+</tr>
+<tr>
+<td>CA (carry)</td>
+<td><code>A&gt; w 0^inf  --&gt;+  &lt;E carry(w) 0^inf</code> for <code>w ∈ {000,001,010}*{100,010,000}*</code></td>
+<td>induction on (#<code>100</code> in w, length of w), lexicographic. <code>000</code>: one turn rule. <code>001 w'</code>: shift, IH on w', <code>111 &lt;E</code>. <code>010 w'</code>: shift, IH, <code>110 &lt;E</code>. End: <code>A&gt; 000</code> on <code>0^inf</code>. <code>100 w'</code>: <code>A&gt; 100 --&gt; 001 B&gt;</code>, then <strong>TG</strong> (the last 1 of the placeholder is the left 1; w' is <code>τ 000 r</code> because w' is in the tail), then the placeholder restart <code>0 0 &lt;E 0 --&gt; 1 1 0 A&gt;</code>, then the <strong>IH on <code>tog(w')</code></strong>, which has one <code>100</code> fewer than <code>100 w'</code>, then <code>110 &lt;E --&gt; &lt;E 010</code></td>
+<td>exhaustive for ≤ 6 groups, plus 3,000 random words with ≤ 30 groups</td>
+</tr>
+<tr>
+<td>BL (bounce, left part)</td>
+<td><code>(110)^a 0 (011)^b 0 1 &lt;E 0 Y  --&gt;(8b+6)  (110)^(a+1) 0 (011)^b C&gt; Y</code>, a ≥ 1, b ≥ 1, Y never read</td>
+<td><strong>BLa</strong> (left pass, induction on b): <code>0 (011)^b 0 1 &lt;E 0 --&gt;(5b+2) &lt;A 0 1 (010)^b 0 0</code>, ending with A on the marker. <strong>BLb</strong> (right sweep, induction on b): <code>A&gt; 0 1 (010)^b 0 0 --&gt;(3b+4) 110 0 (011)^b C&gt;</code>. <code>(110)^a</code> is never touched</td>
+<td>a ∈ {1,2,7,40}, b = 1..40, plus BLa and BLb separately</td>
+</tr>
+<tr>
+<td>B (bounce)</td>
+<td>x0 = 0: <code>K(a,b+1,0w) --&gt;(2) (110)^a 0 (011)^b 0 1 &lt;E 0 1 w --&gt;BL K(a+1,b,1w)</code> (C0, then D1). x0 = 1: <code>K(a,b+1,1w) --&gt;(1) … 1 A&gt; w --&gt;CA … (011)^(b+1) 1 &lt;E carry(w) --&gt;(2) (110)^a 0 (011)^b 0 1 &lt;E 0 0 carry(w) --&gt;BL K(a+1,b,0 carry(w))</code></td>
+<td>composition</td>
+<td>2.2, 2.2x, 2.3x</td>
+</tr>
+<tr>
+<td>JW (J-walk)</td>
+<td>with the regrouping <code>1 1 (011) = (110) 1 1</code>: JW-001 <code>(110)^k 1 1 F&gt; 001 G --&gt; (110)^(k+1) 1 1 F&gt; G</code> (3 steps). JW-010 <code>(110)^k 1 1 F&gt; 010 G 0^inf --&gt;+ (110)^(k+1) 1 1 F&gt; carry(G) 0^inf</code>, via <code>F&gt; 010 --&gt; 000 A&gt;</code>, then <strong>CA</strong>, then <code>000 &lt;E --&gt; 011 F&gt;</code>. JW-000 <code>(110)^k 1 1 F&gt; 000 G --&gt; (110)^(k+1) 1 1 C&gt; G</code> (3 steps; <code>000</code> may come from <code>0^inf</code>)</td>
+<td>JW* (the whole walk): induction on <code>μ(G) = 2·#010 + #digit groups</code>. JW-001 lowers μ by 1. JW-010 lowers it by ≥ 1, because carry only rewrites digits or appends one <code>001</code></td>
+<td>JW-010: 3,000 random normalized G</td>
+</tr>
+<tr>
+<td>FT (final turn)</td>
+<td><code>(110)^k 1 1 C&gt; 0 h  --&gt;(5k+3)  &lt;E (010)^k 0 0 1 h</code>, i.e. it reaches <code>L(k, regroup(h))</code> when the left side is <code>0^inf</code>. It needs the first cell after <code>C&gt;</code> to be 0, which holds when H is normalized or empty</td>
+<td>C0, D1, E1, then the <code>(110)^k &lt;E</code> shift</td>
+<td>k = 1..40</td>
+</tr>
+<tr>
+<td>E odd</td>
+<td><code>K(a,1,1G) --&gt;(1) … 0 011 1 A&gt; G --&gt;CA … 0 011 1 &lt;E carry(G) --&gt;(9) (110)^(a+1) 1 1 C&gt; carry(G) --&gt;FT L(a+1, regroup(cells(carry G)[1:]))</code></td>
+<td>composition; carry(G) is normalized and nonempty</td>
+<td>intermediate configuration: 1,000 random (a, G) on the full TM; whole rule: 2.2</td>
+</tr>
+<tr>
+<td>E even</td>
+<td><code>K(a,1,0G) --&gt;(9) (110)^(a+1) 1 1 F&gt; G --&gt;JW* (110)^(a') 1 1 C&gt; H --&gt;FT L(a', regroup(cells(H)[1:]))</code></td>
+<td>composition; H is a suffix of a carried normalized word, so it is normalized</td>
+<td>the same</td>
+</tr>
+</tbody>
+</table>
+<p>A non-normalized eat is exactly where these lemmas stop applying. <code>FT</code> would meet a <code>1</code> after <code>C&gt;</code> (an S group), and JW would meet <code>F&gt; 100</code>, which is an Fa-turn.</p>
+<p><strong>Why <code>---</code> (D0) is never read inside a rule.</strong> Each rule above is an exact <code>--&gt;+</code> lemma, so no D0 read occurs inside it. The only configuration the rules leave uncovered is <strong>an eat on a non-normalized word</strong>. This replaces revision 1's claim that "D only reads a 1 the same rule wrote one step before". That claim was wrong for the C0 entry, where C writes at q and D reads q-1, a cell C did not write.</p>
+<p>A non-normalized eat does <strong>not</strong> always halt. About 1% of random non-normalized eats halt, some of them at a = 768. The violating starts the skeptic confirmed on the TM survive 2·10^9 steps. So Lemma N is sufficient for non-halting but may not be necessary. Tolerating some non-normalized eats is another possible route to a proof, but nothing about it is worked out (§5.7).</p>
+<h2 id="3-the-epoch-map-in-closed-form">3. The epoch map in closed form</h2>
+<p>Agreement checks:
+- check 3a: agrees with the deepen map on 20,000/20,000 epochs;
+- check 3b: 17,141/17,141 random normalized states (revision-2 run);
+- check 3c: the TM's own records, 276/276 epochs to 1e9 steps;
+- the deepen pass: 1,142/1,142 epochs to 1e11;
+- the skeptic: 26,744 arbitrary eat states.</p>
+<p><strong>State at an eat.</strong> A normalized counter of value n is <code>x0 = n mod 2</code>, followed by a <strong>layout</strong> <code>λ = i^c0 d i^c1 d i^c2 d …</code>. The d-slots hold bits 1, 2, 3, … of n, and <code>c_j ≥ 0</code> is the number of inert groups just before d-slot j. Write the state as <code>(n, c)</code> and define:
+- <code>C(c) := Σ c_j 2^j</code> (the inert weight);
+- <code>J(c) := max{ j : c_j &gt; 0 }</code> (the slot of the top inert group, -1 if there is none);
+- <code>B(x)</code> := the bit length of x;
+- <code>Z(M) := B(M) - popcount(M)</code>, the number of 0-bits of M below its top bit (Z(0) := -1);
+- the potential <code>P(n,c) := ⌈n/2⌉ + C(c)</code>.</p>
+<p><strong>Lemma 3.1 (eat).</strong> Let <code>M</code> be the number the d-slots of the uneaten part H spell, plus <code>C(H)</code>.
+- <strong>n odd:</strong> <code>H = c</code>, <code>M = (n+1)/2 + C(c) = P</code>, <code>n' = n+1</code>.
+- <strong>n even:</strong> let <code>V = n/2 + C(c) = P</code> and let <code>t</code> be the number of trailing 1-bits of V. Then <code>H = (c_{t+1}, c_{t+2}, …)</code>, <code>M = V &gt;&gt; (t+1)</code>, and <code>n' = n + 2 + t + Σ_{r≤t} c_r</code>.</p>
+<p><em>Proof (n even).</em> Induction over the J-walk with the invariant <code>m + C(rest) = ⌊V/2^k⌋</code> after k digit slots have been dropped, where m is the value on the rest.
+- Dropping an inert slot before d-slot 0 adds 1 to m and removes weight 1 from C(rest).
+- Once those inert slots are gone, C(rest) is even, so the next digit is the parity of <code>⌊V/2^k⌋</code>.
+- A digit 1 is dropped with <code>m := (m-1)/2</code>, which keeps the invariant at k+1.
+- The first digit 0 ends the walk. That is d-slot t.
+- n' counts the dropped groups: t+1 digit slots plus <code>Σ_{r≤t} c_r</code> inert slots, plus 1.</p>
+<p>The odd case is one carry into slot 0, and that carry passes inert slots. ∎</p>
+<p><strong>Lemma 3.2 (next layout).</strong> In the next epoch the residue <code>Q'</code> has:
+- an S at each inert slot of H;
+- an <code>i</code> at each d-slot of H holding 1;
+- a <code>0</code> at each d-slot holding 0.</p>
+<p>Once the bounce phase has carried through every S, the layout is <code>λ' = merge(H, M)</code>. For each j it has <code>c^H_j</code> inert groups, then <code>i</code> if bit j of M is 1 and <code>d</code> otherwise; past the end of H the bits of M continue in the same way. Equivalently, with <code>r(j) := #{0-bits of M below j}</code>, every inert group of H at slot j and every 1-bit of M at position j lands at slot <code>r(j)</code> of the new layout. So:</p>
+<div class="highlight"><pre><span></span><code>C' = Σ_j (M_j + c^H_j) · 2^{r(j)}
+</code></pre></div>
+
+<p><em>Proof.</em> The d-slots of H, read as <code>i = 1</code> and <code>0 = 0</code>, spell <code>m_H</code>. Toggles run left to right. An S sitting before d-slot j adds 2^j to the number spelled by the slots after it (inc, §2.3), and it never changes a slot to its left. So the final i/0 pattern spells <code>m_H + Σ_S 2^{j(S)} = m_H + C(H) = M</code>, and each S itself becomes <code>i</code>. The main counter's carries only ever stop on <code>000</code> groups, which are the d-slots. They never touch a slot to the right of the exploration frontier, which is where the remaining S groups are. ∎</p>
+<p><strong>Lemma 3.3 (normalization depth).</strong> In the next epoch, the last S is consumed by the main counter's D-th exploration, which happens at increment <code>2^D - 1</code>. Here</p>
+<div class="highlight"><pre><span></span><code>D = 1 + #{ j &lt; J(H) : bit j of M is 0 } = 1 + r(J(H))          (D = 0 if H has no inert slot)
+</code></pre></div>
+
+<p>So the next eat is normalized iff <code>2^D ≤ n'</code>, i.e. iff <strong><code>slack := B(n') - 1 - D ≥ 0</code></strong>. Also <code>D ≤ 1 + J(H)</code>.</p>
+<p><em>Proof.</em> Each exploration ends on a d of λ'. The last S sits just before H's d-slot J(H). The d's of λ' before that point are the 0-bits of M below J(H). The counter runs from 1 to n', so the k-th exploration happens iff <code>2^k - 1 ≤ n' - 1</code>. ∎</p>
+<h2 id="4-coverage">4. Coverage</h2>
+<p>Every member of the families that the run reaches is covered:
+- <code>L(n,Q)</code> with n ≥ 1 and Q ∈ {100,010,000}<em>: R applies.
+- <code>K(a,b,X)</code> with b ≥ 2 and X ∈ L_X: B applies. inc keeps X in L_X and <code>value(X) = a</code> (Lemma V).
+- <code>K(n,1,X)</code> with <code>value(X) = n</code>: E applies </em><em>if X is normalized</em>*. It then produces <code>L(n',Q')</code> with <code>n' ≥ n+1 ≥ 2</code> and <code>Q' ∈ {100,010,000}*</code>. The regroup of a normalized H only produces those three groups, because every group of H starts with a 0.</p>
+<p>That leaves exactly one obligation: <strong>every eat sees a normalized counter</strong>, i.e. <code>slack_t ≥ 0</code> for all t (Lemma 3.3).</p>
+<h2 id="5-the-invariant">5. The invariant</h2>
+<h3 id="51-what-is-needed-the-only-form-of-lemma-n">5.1 What is needed (the only form of Lemma N)</h3>
+<p><strong>Lemma N (OPEN).</strong> Along the orbit <code>(n_t, c_t)</code> from §6, <code>slack_t := B(n_{t+1}) - 1 - D_t ≥ 0</code> for every t ≥ 0.</p>
+<p>Revision 1 also stated an "Inv_S form" of Lemma N. That form is false (§5.3) and has been withdrawn.</p>
+<h3 id="52-sufficient-conditions-for-one-step-proved-but-not-invariant">5.2 Sufficient conditions for one step (proved, but not invariant)</h3>
+<p><strong>Lemma S-odd.</strong> If n is odd and <code>C(c) &lt; 2^{B(n+1)-1}</code>, then the next eat is normalized.</p>
+<p><em>Proof.</em> <code>H = c</code> and <code>2^{J(c)} ≤ C(c) &lt; 2^{B(n')-1}</code>, so <code>J(H) ≤ B(n') - 2</code> and <code>D ≤ 1 + J(H) ≤ B(n') - 1</code>. ∎</p>
+<p><strong>Lemma S-even.</strong> If n is even and <code>J(c) ≤ B(n) - 1</code>, then the next eat is normalized.</p>
+<p><em>Proof.</em> <code>J(H) = J(c) - t - 1 ≤ B(n) - 2 ≤ B(n') - 2</code>. ∎</p>
+<p>Check 5.2 confirms both on random states.</p>
+<p>Let <code>Inv_S(n,c)</code> := (n odd ⟹ <code>C &lt; 2^{B(n+1)-1}</code>) and (n even ⟹ <code>J ≤ B(n)-1</code>). Inv_S at epoch t implies <code>slack_t ≥ 0</code>. It is <strong>only a one-step sufficient condition</strong>.</p>
+<h3 id="53-inv_s-is-not-an-invariant-of-the-orbit">5.3 Inv_S is not an invariant of the orbit</h3>
+<ul>
+<li><strong>The orbit itself.</strong> A cascade (§5.4) starts at t = 350,272:</li>
+<li>t = 350,272: odd n = 4,193,605, c = [3,15,3,0,11,0,0,1], M = 2^21.</li>
+<li>t = 350,273: slack is exactly 0 (D = 21, B(n') = 22, and J = B-1 at even n).</li>
+<li>t = 350,274: n = 4,193,611 is odd and C = 3,145,901 = 1.5001·2^{B-1} ≥ 2^{B(n+1)-1}, so <strong>Inv_S fails</strong>. The slack at this eat is still 15.</li>
+</ul>
+<p>Checks 6a and 6b reproduce this, and so did the skeptic's two independent implementations, in Python and in C. Through 10^10 orbit epochs (n ≈ 1.95·10^11) the skeptic found:
+  - slack 0 only at t ≤ 15 and at t = 350,273;
+  - slack never below 0;
+  - for t ≥ 20, Inv_S fails only at t = 350,274.</p>
+<p>Revision 1's "slack ≥ 2 for t ≥ 20" and "J ≤ B-2 at every even n" were true only up to its 200,000-epoch horizon.
+- <strong>Structural reason.</strong> By cascade lemma (ii), every cascade with <code>c_0</code> odd and <code>n''+1 &lt; 2^B</code> puts the orbit, two epochs later, at an odd n with <code>C'' = 3·2^{B-2} + (C - c_0)/2 ≥ 2^{B-1}</code>.
+- <strong>Witness of non-closure (check 5.3).</strong> n = 2049, c = [1023] gives (2050, C = 3071, J = 11) and then (3075, C = 3072), where Inv_S fails. Both eats are still normalized.</p>
+<h3 id="54-cascade-lemma-proved-check-54">5.4 Cascade lemma (proved; check 5.4)</h3>
+<p>Let n be odd, <code>B := B(n+1)</code>, and <code>M = (n+1)/2 + C = 2^{B-1}</code>. Write the next two epochs as (n', c') and (n'', c''), with <code>n' = n+1</code>. Then:</p>
+<ul>
+<li><strong>(i)</strong> <code>V' = n'/2 + C' = 2^B</code>, <code>M' = 2^{B-1}</code>, <code>J(c') = B-1</code>, and <code>D' = B - 1</code>. So <strong>slack' = 0 if <code>n'' &lt; 2^B</code>, and 1 otherwise</strong>. Here <code>n'' = n + 3 + c'_0 = n + 3 + c_0</code>.</li>
+<li><strong>(ii)</strong> If <code>c_0</code> is odd and <code>n'' + 1 &lt; 2^B</code>:</li>
+<li>n'' is odd;</li>
+<li><code>C'' = 3·2^{B-2} + (C - c_0)/2 ≥ 2^{B(n''+1)-1}</code>, so <strong>Inv_S fails at (n'', c'')</strong>;</li>
+<li><code>M'' = 5·2^{B-2} + (3 - C)/2</code>.</li>
+<li><strong>(iii)</strong> For every <code>c_0</code>, <code>D'' ≤ B - 1</code>, so the eat after (n'', c'') is normalized (slack'' ≥ 0).</li>
+</ul>
+<p><em>Proof.</em>
+- <strong>(i)</strong> M has no 1-bit below B-1, so <code>r(j) = j</code> there. Also <code>C &lt; 2^{B-1}</code> gives <code>J(c) ≤ B-2</code>. Hence <code>C' = C + 2^{B-1}</code> and <code>V' = (n+1)/2 + C + 2^{B-1} = 2M = 2^B</code>. So t' = 0 and <code>M' = 2^{B-1}</code>. By Lemma Z (§5.5), <code>J(c') = max(D-1, Z(M)) = B-1</code>, because <code>D - 1 ≤ J(c) ≤ B-2</code>. Then <code>H' = c'[1:]</code> has <code>J(H') = B-2</code>, and <code>D' = 1 + r(B-2) = B-1</code> since M' has no 1-bit below B-1. Finally <code>n'' = n' + 2 + c'_0</code> with <code>c'_0 = c_0</code>.
+- <strong>(ii)</strong> <code>M' = 2^{B-1}</code> again acts as the identity, so <code>C'' = C(H') + 2^{B-1} = (C + 2^{B-1} - c_0)/2 + 2^{B-1}</code>. n'' has the parity of c_0. Substituting <code>n = 2^B - 2C - 1</code> gives <code>M'' = (n''+1)/2 + C'' = 5·2^{B-2} + (3-C)/2</code>.
+- <strong>(iii)</strong> By Lemma Z, <code>J(c'') = max(D'-1, Z(M')) = B-1</code>.
+  - If n'' is even, <code>J(H'') ≤ B-2</code>, so <code>D'' ≤ B-1</code>.
+  - If n'' is odd, <code>D'' = 1 + #{0-bits of M'' below B-1}</code>. Here <code>M'' mod 2^{B-1} = 2^{B-2} - (C-3)/2</code>, and <code>1 ≤ C ≤ 2^{B-2}</code> because <code>(n+1)/2 ≥ 2^{B-2}</code> and c_0 is odd. This value lies in <code>(2^{B-3}, 2^{B-2}+1]</code>, so it is nonzero, M'' has a 1-bit below B-1, and <code>D'' ≤ B-1</code>. ∎</p>
+<p>So the eats right after a cascade are safe. The danger lies later in the excursion it starts (§5.5–5.7).</p>
+<h3 id="55-lemma-z-and-lemma-r-proved-check-55">5.5 Lemma Z and Lemma R (proved; check 5.5)</h3>
+<p><strong>Lemma Z (top inert slot).</strong> <code>J(c') = max(D - 1, Z(M))</code>. The first term counts only if H has an inert group; the second only if M ≥ 1.</p>
+<p><em>Proof.</em> Every inert group of H at slot j, and every 1-bit of M at j, lands at slot r(j) (Lemma 3.2), and r is non-decreasing. The top inert group of H lands at <code>r(J(H)) = D - 1</code> (Lemma 3.3). The top 1-bit of M lands at <code>r(B(M)-1) = Z(M)</code>. ∎</p>
+<p><strong>Lemma R (no violation without an excursion).</strong> If <code>slack_{t-1} ≥ 0</code> and <code>P_{t-1} &lt; 2^{B(n_t)}</code>, then <code>slack_t ≥ 0</code>.</p>
+<p><em>Proof.</em> <code>D_t ≤ 1 + J(H_t) ≤ 1 + J(c_t) = 1 + max(D_{t-1} - 1, Z(M_{t-1}))</code> by Lemma Z.
+- <strong>First term.</strong> <code>D_{t-1} ≤ B(n_t) - 1 ≤ B(n_{t+1}) - 1</code>.
+- <strong>Second term.</strong> <code>M_{t-1} ≤ P_{t-1} &lt; 2^{B(n_t)}</code>: M = P at odd n, and M ≤ P/2 at even n. So <code>Z(M_{t-1}) ≤ B(n_t) - 1</code>, with equality only if <code>M_{t-1} = 2^{B(n_t)-1}</code>.
+  - Without equality, <code>D_t ≤ B(n_t) - 1</code>, which is enough.
+  - Equality is impossible at even n_{t-1}, because there <code>M ≤ P/2 &lt; 2^{B(n_t)-1}</code>. At odd n_{t-1} it is exactly a cascade start, and cascade lemma (i) gives <code>slack_t ≥ 0</code>. ∎</p>
+<p><strong>Corollary (reduction).</strong> Call epoch s an <strong>excursion</strong> if <code>P_s ≥ 2^{B(n_{s+1})}</code>. Then Lemma N follows from the slack at t = 0 together with</p>
+<blockquote>
+<p><strong>Lemma X (excursion lemma, OPEN):</strong> for every t ≥ 1 such that epoch t-1 is an excursion, <code>slack_t ≥ 0</code>.</p>
+</blockquote>
+<p><em>Proof.</em> Induction on t, using Lemma R when epoch t-1 is not an excursion and Lemma X when it is. ∎</p>
+<p>Lemma X cannot come from magnitude bounds alone. Take the <strong>super-cascade</strong> (check 8b): an odd n with <code>M = (n+1)/2 + C = 2^{B(n+1)}</code> exactly and <code>n'' &lt; 2^B</code>. It has <code>V' = 2^{B+1}</code>, <code>M' = 2^B</code>, <code>J(c') = B</code> and <code>D' = B</code>, so slack' = -1. Example: n = 1019, c = [0,1,0,0,0,0,0,0,2]. It has C/2^{B-1} = 1.004, its first eat has slack 0, and the next has slack -1. The orbit reaches C/2^{B-1} ≈ 1.5 at odd n (§5.3). So whatever proves Lemma X must use exact values, as cascade lemma (ii) does. There, the dangerous value <code>M'' = 2^B</code> is excluded by arithmetic: <code>5·2^{B-2} + (3-C)/2 ≠ 2^B</code> for C ≤ 2^{B-2}.</p>
+<h3 id="56-evidence">5.6 Evidence</h3>
+<ul>
+<li><strong>The orbit</strong> (check 6, 400,000 epochs, n up to 4.77·10^6):</li>
+<li>slack ≥ 0 at every eat; slack ≤ 1 for t ≥ 16 only at t = 350,273 (slack 0);</li>
+<li>for t ≥ 20, the excursion epochs are exactly t = 350,273 and 350,274, the ones after the cascade;</li>
+<li>Lemma R covers every other epoch. The two uncovered epochs have slack 15 (t = 350,274) and 17 (t = 350,275), checked directly (6c);</li>
+<li>the skeptic's run to 10^10 epochs adds no further slack-0 eats after t = 350,273.</li>
+<li><strong>Other orbits of the map</strong> (check 7: 2,000 small random starts × 3,000 epochs; the skeptic: 20,000 × 100,000 epochs = 2·10^9 eats after burn-in; my scratch run: 100 × 100,000):</li>
+<li><strong>0 non-normalized eats.</strong></li>
+<li>Check 7 has 1,052 slack-0 eats after burn-in, and <strong>all 1,052 come right after a cascade start</strong>. The skeptic classified 1,488 slack-0 eats, all of them cascades.</li>
+<li>Slack-1 eats do occur (155 in check 7).</li>
+<li>Inv_S fails 567 times in check 7's 6M eats.</li>
+<li>Max <code>C/2^{B-1}</code> is 1.624, and max <code>P/2^{B(n)}</code> is 1.25.</li>
+<li>Excursions are short, at most 2 consecutive epochs, with 2,178 excursion epochs in check 7. Of its 1,087 excursion entries, 1,052 come right after a cascade start and 35 do not. In a scratch run of 100 × 100,000 epochs, 125 of 127 entries followed a cascade, and the 2 I inspected followed a near-cascade <code>M = 2^{B-1} + 2^{B-3}</code>.</li>
+<li><strong>Constructed cascade and near-cascade starts</strong> (check 5.6: 22,472 valid starts with B = 6..24, 40 epochs each; scratch runs: 302,484 starts): <strong>0 non-normalized eats</strong>. The longest excursions last 4 epochs. One example is the cascade with C = 3 at n = 2^B - 7, which reaches <code>P/2^B = 1.75</code> and has a second slack-0 eat at t+2, as cascade lemma (iii) allows.</li>
+<li><strong>Arbitrary starts violate.</strong> Revision 1's claim of a "hard barrier on the image of a few iterations" is withdrawn.</li>
+<li>Random arbitrary c violate in epochs 0–2 in the revision-2 run of check 8 (20,000 starts), and in epochs 0–4 in revision 1's run. The skeptic's searches (2M starts per distribution) found violations at epochs 5, 6 and 7, at epoch 1 with B up to 28, at epoch 2 with B up to 23, at epoch 3 up to 15, and at epoch 4 up to 12.</li>
+<li>Starts that satisfy Inv_S also violate later.</li>
+<li>Two violating starts are confirmed on the TM. The start <code>(20, [0,0,0,22])</code> (check 8c) gives TM eats at n = 22, 25, 26, 55, 56, 58, and the eat at n = 58 is non-normalized, exactly as the map predicts (check 8b). The skeptic confirmed <code>(16384, [0]*13+[1295])</code> at epoch 1.</li>
+</ul>
+<p>So the slack is <strong>not</strong> bounded below by 0 on Φ^k images for small k. A proof has to describe the residues that are actually reachable.</p>
+<h3 id="57-plan-for-lemma-x-and-the-cryptid-question">5.7 Plan for Lemma X, and the cryptid question</h3>
+<p><strong>Plan.</strong>
+1. <strong>Classify excursion entries.</strong> An excursion entry has <code>P_t ≥ 2^{B(n_{t+1})}</code> while <code>P_{t-1} &lt; 2^{B(n_t)}</code>. Since <code>P_t = ⌈n_t/2⌉ + Σ_j (M_j + c^H_j)·2^{r(j)}</code> and <code>⌈n_t/2⌉ ≈ M_{t-1} - C_{t-1}</code>, an entry needs <code>r(j)</code> close to j for the heavy terms. So M_{t-1} must have at most about two 1-bits at or near its top, with the inert weight below its lowest 1-bit. Examples are the cascade <code>2^{B-1}</code> and the near-cascades <code>2^{B-1} + 2^{B-2}</code> and <code>2^{B-1} + 2^{B-3}</code>.
+2. <strong>Follow each entry type exactly</strong>, as in cascade lemma (ii)–(iii), until the potential returns below <code>2^B</code>. Each continuation of the excursion forces one more exact bit pattern, which pins C further. For example, the cascade continues past t+2 only if <code>2^{B-2} - (C-3)/2</code> is a power of two, i.e. only if C = 3.
+3. In parallel, look for a 2–3 epoch invariant that names the post-cascade states explicitly (the skeptic's suggestion).</p>
+<p>The risk is that the list of entry types turns out not to be small. The ψ-term depends on where the inert groups of H sit relative to the 1-bits of M.</p>
+<p><strong>Cryptid assessment (ground rule 6): not flagged as of this revision; this is a priority call for Dennis.</strong>
+- An excursion starts with a coincidence: <code>⌈n/2⌉ + C</code> equals a power of two or nearly so. On the main orbit this happens about 0.1 times per binary level, and it happened once in 10^10 epochs.
+- Halting would need the excursion that follows to reach a violating pattern. In every case examined, that is excluded by exact arithmetic rather than by luck:
+  - cascade lemma (ii)–(iii);
+  - 0 violations in 302,484 constructed cascade and near-cascade starts;
+  - 0 violations in more than 2·10^9 natural-orbit eats.
+- If Lemma X turns out to need an unbounded family of entry types, the condition does depend on exact coincidences of <code>⌈n/2⌉ + C</code> with sparse binary patterns along one deterministic orbit. Then the right outcome is ground rule 6 (CRYPTID_CANDIDATE), with §5.5–5.6 as the heuristic.</p>
+<h3 id="58-funded-stage-on-lemma-x-2026-10-10-the-exit-fires">5.8 Funded stage on Lemma X (2026-10-10): the exit fires</h3>
+<p>New proved results. All are checked by <code>scripts/fs_lemmax.py</code>, which passes for seeds 1 and 2 at N = 20,000. The counts are in notes.md, "Funded stage".</p>
+<p>The notation is that of §3, plus two quantities:
+- <code>m(M) = Σ_{1-bits p of M} 2^{r(p)}</code>;
+- <code>L(H,M) = Σ_j H_j (2^j - 2^{r(j)}) ≥ 0</code>.</p>
+<p>With them, <code>C' = m(M) + C(H) - L(H,M)</code>.</p>
+<ul>
+<li><strong>F4/F5 (potential identities).</strong></li>
+<li>Odd n: <code>P' = P + m(P) - L(c,P)</code>.</li>
+<li>Even n: <code>P' = V + 1 + ⌈(s+σ_s)/2⌉ - C_lo - (2^{s+1}-1)C(H) + m(M) - L(H,M)</code>.</li>
+<li><strong>Lemma A.</strong> No excursion starts at an even eat: even n and <code>P &lt; 2^{B1}</code> imply <code>P' &lt; 2^{B1}</code>, where <code>B1 = B(n')</code>.</li>
+<li><strong>Lemma B.</strong> <code>P + m(P) ≤ 2^b + 2^{b-2}</code> for <code>P &lt; 2^b</code>. So an odd entry has <code>P' ≤ 1.25·2^{B1}</code>.</li>
+<li><strong>Lemma R2.</strong> Suppose slack(σ) ≥ 0 and slack(σ') &lt; 0. Then one of three things holds:</li>
+<li>σ is a <strong>super-cascade</strong>: n odd and <code>P = 2^{B1}</code>;</li>
+<li><code>P ≥ 2^{B1+1}</code>;</li>
+<li>σ is an even cascade (<code>V = 2^{B1}</code>) with <code>B(n) &lt; B1</code>.</li>
+<li><strong>Lemma EC.</strong> Suppose n is even, <code>V = 2^{B1}</code>, <code>B(n) = B1</code> and slack ≥ 0. Then slack' ≥ 0, and <code>1.125·2^{B1} &lt; P' ≤ 1.25·2^{B1} + 1</code>. This is cascade lemma (iii) for any residue.</li>
+</ul>
+<p>So every failure has to pass through a super-cascade or through a potential <code>≥ 2^{B1+1}</code>. Both of these can only be reached from inside an excursion, and every excursion starts at an odd eat. The entry shapes are <code>P = 2^B - 2^k + x</code>: a top run of w ones followed by a tail. That is an infinite family. Natural orbits use only the cascade and w = 1.</p>
+<p><strong>Counter-family (proved for every B ≥ 8; exact for B = 8..300; TM-confirmed at B = 8).</strong> Let <code>σ0(B) = (3·2^{B-2} - 7, [3, 0^{B-6}, 10, 0, 2])</code>.
+- It satisfies everything Lemma X may assume: slack is 2, it is not an excursion, and <code>P0 = 15·2^{B-4}</code> (w = 4).
+- Epoch 1: <code>V = 17·2^{B-4}</code>.
+- Epoch 2: <code>P = 2^B</code> at odd n, a super-cascade.
+- Epoch 3: <code>V = 2^{B+1}</code> and slack = -1.
+- On the TM, from <code>K(185, 1, X(σ0(8)))</code>, the eats are n = 186, 191 and 192, and then a <strong>non-normalized eat at n = 194</strong>.
+- The TM then recovers: normalized eats resume at n = 207. The same happens at B = 9 and B = 10.</p>
+<p>So a finite case analysis over entry types cannot prove Lemma X. What decides safety are equations like <code>P_{t+2} = 2^B</code> in the residue counts. Whether the main orbit ever solves them is a question about exact coincidences along one deterministic orbit. Following ground rule 6 and the agreed exit, the machine is flagged CRYPTID_CANDIDATE.</p>
+<p>The heuristic still supports non-halting:
+- 0 non-normalized eats in more than 2·10^9 natural eats, and none to 10^10 main-orbit epochs;
+- natural entries are 1,769 cascades and 11 w = 1 near-cascades in 5.9M eats, and never w ≥ 2;
+- the TM recovers even from the family's non-normalized eats.</p>
+<p>The rule layer (§1–§4, §2.5) remains formalizable as an AntiHydra-style reduction.</p>
+<h2 id="6-initial-segment">6. Initial segment</h2>
+<p><code>c0 = 0^inf A&gt; 0^inf</code> takes exactly <strong>27 steps</strong>, with no halt, to <code>L(2, []) = 0^inf &lt;E (010)^2 001 0^inf</code> (checks 4 and 4b). The first left record, at step 5, is a degenerate n = 0 record and is not a family member. From <code>L(2, [])</code> the epochs are exact (checks 3a and 3c):</p>
+<div class="highlight"><pre><span></span><code>t:   0      1      2         3        4           5          6            7               8                9
+n:   2      5      6         11       12          18         21           22              25               26
+Q:   []     []     ii        i        S0ii        i0i        Si0i         SiSSi0i         SS0iiS           SSi0iSiS
+</code></pre></div>
+
+<p>The slack is ≥ 0 at every epoch checked: 400,000 here (check 6a), 10^10 by the skeptic. The minimum is 0, at t ≤ 15 and at t = 350,273. The formal proof can handle the epochs before Lemma X's induction takes over by <code>execute</code> on the concrete configurations, as long as they are short. That is open until Lemma X fixes where the induction starts.</p>
+<h2 id="7-conclusion-conditional-on-lemma-n-ie-on-lemma-x">7. Conclusion (conditional on Lemma N, i.e. on Lemma X)</h2>
+<ul>
+<li>By §6, c0 reaches <code>L(2, [])</code>.</li>
+<li>By §4 and Lemma N, every epoch is the exact composition R ∘ B^(n-1) ∘ E. Each epoch takes at least <code>3n+5 ≥ 11</code> steps (R alone) and returns to the family <code>L(n', Q')</code> with n' &gt; n.</li>
+<li>So <code>progress_nonhalt</code> applies and the machine never halts.</li>
+</ul>
+<p>Each rule is an exact <code>--&gt;+</code> lemma (§2.5), so no D0 read occurs inside a rule. The only configuration not covered is an eat on a non-normalized word. Lemma N rules that out; it is sufficient but possibly not necessary (§2.5).</p>
+<h2 id="8-busycoq-lemma-plan">8. busycoq lemma plan</h2>
+<table>
+<thead>
+<tr>
+<th>step</th>
+<th>busycoq</th>
+<th>nearest template</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tm, families</td>
+<td><code>Definition tm := Eval compute in (TM_from_str "1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC")</code>. <code>K a b X</code> and <code>Lrec n Q</code>, with digit words as <code>Inductive grp := G0 \| G1 \| Gi \| GS</code> and <code>toR : list grp -&gt; side</code></td>
+<td><code>BECv7.v</code> (<code>Inductive RD</code>, <code>toRC</code>, <code>canonical</code>, <code>bin_inc</code>)</td>
+</tr>
+<tr>
+<td>L0 rules (§2.1 tables)</td>
+<td><code>Lemma … Proof. es. Qed.</code> / <code>shift_rule</code></td>
+<td>any machine file</td>
+</tr>
+<tr>
+<td>TG, CA, BLa, BLb, FT, JW-001/010/000 (§2.5)</td>
+<td>one lemma each. TG by <code>induction τ</code>. CA by well-founded induction on <code>(count GS w, length w)</code>. JW* by induction on μ. Each is an exact <code>--&gt;+</code> with the left context universally quantified (TG, CA, JW) or fixed as stated (BL, FT)</td>
+<td><code>BECv7.v</code> <code>bin_inc</code>, <code>RIncs</code></td>
+</tr>
+<tr>
+<td>B bounce</td>
+<td><code>K a (S b) X --&gt;+ K (S a) b (inc X)</code>, by cases on x0: (C0, D1, BL) or (C1, CA, E1, E1, BL)</td>
+<td><code>FractalBEC.v</code> <code>RInc</code>/<code>LInc</code> (mirror; tm10 differs in C1)</td>
+</tr>
+<tr>
+<td>B^(n-1)</td>
+<td><code>ind</code> over bounces, carrying <code>value X = a</code> (Lemma V)</td>
+<td><code>FractalBEC.v</code> <code>Incs</code></td>
+</tr>
+<tr>
+<td>E eat, R restart</td>
+<td>E odd and E even as compositions (§2.5); R as 6 single steps, then <code>A&gt;(010)^(n-1)</code>, then 2 single steps</td>
+<td><code>BECv7.v</code> route/tail lemmas</td>
+</tr>
+<tr>
+<td>arithmetic (§3)</td>
+<td><code>Fixpoint layout</code>, <code>merge</code>, with N-valued <code>M</code>. Lemmas 3.1–3.3, Z, R and the cascade lemma as pure <code>lia</code>/<code>N</code> arithmetic over lists</td>
+<td><code>BinaryCounterFull.v</code> (N-valued counters)</td>
+</tr>
+<tr>
+<td>invariant</td>
+<td><code>progress_nonhalt_cond</code> with a P to be defined. <strong>Not Inv_S</strong>: Inv_S is false on the orbit (§5.3). P has to be "slack ≥ 0 plus whatever Lemma X needs to carry across an excursion". <strong>Blocked on Lemma X</strong></td>
+<td><code>BECv7.v</code> line 631 (<code>P := canonical</code>)</td>
+</tr>
+<tr>
+<td>init</td>
+<td><code>Lemma init: c0 --&gt;* Lrec 2 [].</code> by <code>execute</code> (27 steps)</td>
+<td>any</td>
+</tr>
+</tbody>
+</table>
+<p>If Dennis prefers the ground-rule-6 route, the same rule layer (every row except "invariant") is the AntiHydra-style formal rule reduction.</p>
+<h2 id="9-evidence-and-gaps">9. Evidence and gaps</h2>
+<ul>
+<li><code>check_proof.py</code> (revision 2, seed 2, full run; output in <code>scripts/check_proof_full.log</code>). Every PASS check passes, and the INFO lines report data only:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.1a</td>
+<td>240/240</td>
+</tr>
+<tr>
+<td>2.1b</td>
+<td>5/5</td>
+</tr>
+<tr>
+<td>2.1c</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td>R/B/E 1000/1000 each</td>
+</tr>
+<tr>
+<td>2.2x</td>
+<td>2,876/2,876</td>
+</tr>
+<tr>
+<td>2.3x</td>
+<td>14,580/14,580 words with ≤ 7 groups; Lemma V and closure 14,580/14,580; the other reading disagrees on 1,524 words</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td>L0x 9/9, TG 511/511, CA 10,108/10,108, BL 240/240, FT 40/40, JW-010 3,000/3,000, eat entries 2,000/2,000</td>
+</tr>
+<tr>
+<td>4, 4b</td>
+<td>initial segment</td>
+</tr>
+<tr>
+<td>3a</td>
+<td>20,000/20,000</td>
+</tr>
+<tr>
+<td>3b</td>
+<td>17,141/17,141</td>
+</tr>
+<tr>
+<td>3c</td>
+<td>276/276</td>
+</tr>
+<tr>
+<td>5.2</td>
+<td>S-lemmas: even 9,111/9,111, odd 7,382/7,382</td>
+</tr>
+<tr>
+<td>5.3</td>
+<td>witness</td>
+</tr>
+<tr>
+<td>5.4</td>
+<td>cascade lemma (i)–(iii): 18,879/18,879 constructed cascades, 7,469 of them with c_0 odd and n''+1 &lt; 2^B</td>
+</tr>
+<tr>
+<td>5.5</td>
+<td>Lemma Z 40,000/40,000; Lemma R 29,664/29,664</td>
+</tr>
+<tr>
+<td>5.6</td>
+<td>22,472 constructed cascade and near-cascade starts, 0 violations</td>
+</tr>
+<tr>
+<td>6a–6c</td>
+<td>orbit, 400,000 epochs (2.9 s)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>6M eats from other orbits, 0 violations</td>
+</tr>
+<tr>
+<td>8 (INFO)</td>
+<td>arbitrary starts; violations at epochs 0–2 in this run</td>
+</tr>
+<tr>
+<td>8b</td>
+<td>explicit violating starts</td>
+</tr>
+<tr>
+<td>8c</td>
+<td>TM confirmation of <code>(20,[0,0,0,22])</code></td>
+</tr>
+</tbody>
+</table>
+<p>Run <code>python3 -B check_proof.py --quick</code> for a fast pass.
+- Scratch runs cited in §5.6 (revision 2; they reproduce with these exact arguments):
+  - <code>scripts/rev2_cascade_search.py 1 200000 40 casc</code> gave 189,084 cascade starts.
+  - <code>scripts/rev2_cascade_search.py 2 200000 40 near</code> gave 113,400 near-cascade starts.
+  - Together that is 302,484 starts, with 0 violations.
+  - <code>scripts/rev2_excursions_natural.py {1,2} 50 100000</code> covered 100 orbits × 100,000 epochs: 0 violations, and 127 excursion entries, of which 125 followed a cascade.
+- Deepen pass (scripts/): R/B/E 9,000/9,000, and TM records 1,142/1,142 epochs to 1e11.
+- <strong>Gap 1 (blocking, fatal for a kill): Lemma N.</strong> It reduces to Lemma X (§5.5), which is open (plan in §5.7).
+- Gap 2 (formalization only): the L1 lemmas of §2.5 are stated exactly and checked, but not yet in Rocq.
+- Step counts per bounce or eat are not derived, beyond BL (8b+6) and FT (5k+3). They are not needed, because <code>--&gt;+</code> suffices.</p>
+<h2 id="10-review-log">10. Review log</h2>
+<p><strong>Skeptic review, 2026-10-10</strong> (verdict: not sound; 1 fatal, 2 major, 4 minor). What changed:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>severity</th>
+<th>gap</th>
+<th>resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>fatal</td>
+<td>Lemma N in the Inv_S form is false on the orbit: a cascade at t = 350,272 gives slack 0 at 350,273, and Inv_S fails at 350,274. <code>P := Inv_S</code> cannot be the invariant</td>
+<td><strong>Accepted; not resolved.</strong> The Inv_S form is dropped. Lemma N now has only the slack form (§5.1), and <code>P := Inv_S</code> is removed from §8. §5.3 reproduces the failure (checks 6a/6b) and gives its structural cause, cascade lemma (ii). New proved results: Lemma Z and Lemma R reduce N to the excursion lemma X (§5.5), and cascade lemma (iii) shows the eats right after a cascade are safe. Lemma X is open, so the status is STUCK, not CHECKPOINT_B. The file no longer says "hypotheses hold along the orbit"</td>
+</tr>
+<tr>
+<td>2</td>
+<td>major</td>
+<td>§5.5 evidence: "non-normalized eats only in epochs 0–4 / hard barrier on Φ^k images" is false</td>
+<td><strong>Fixed.</strong> That evidence is withdrawn. §5.6 reports the observed facts instead: slack-0 eats come right after cascades, slack-1 eats exist, natural orbits have C/2^{B-1} &lt; 1.625, and arbitrary starts violate at later epochs too (TM-confirmed, checks 8b and 8c). Check 8 is now INFO and asserts nothing about epochs ≥ 5. The plan targets reachable residues via excursion entries (§5.7)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>major</td>
+<td>Rules B (S-toggle) and E (J-walk) had only prose sketches, with no L1 lemmas</td>
+<td><strong>Fixed.</strong> §2.5 gives exact <code>--&gt;+</code> statements for TG (toggle segment, induction on τ), CA (carry, lexicographic induction with the IH applied to <code>tog(w')</code>), BL (= BLa + BLb, with step counts), JW-001/010/000 and JW* (induction on μ), FT, and E odd/even as compositions. Each is checked as an exact window run (check 2.5)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>minor</td>
+<td>the <code>100</code> bullet was ambiguous</td>
+<td><strong>Fixed.</strong> The carry resumes at the group immediately after the former S, and <code>carry(100 w) = 010 carry(tog(w))</code>. Check 2.3x confirms that the other reading disagrees with the TM on 1,524 of 14,580 words</td>
+</tr>
+<tr>
+<td>5</td>
+<td>minor</td>
+<td>§2.4/§7 "D only reads a 1 the same rule wrote" was wrong for the C0 entry</td>
+<td><strong>Fixed.</strong> Replaced by "each rule is an exact <code>--&gt;+</code> lemma, so no D0 read occurs inside it; the only uncovered configuration is an eat on a non-normalized word" (§2.5, §7). Added that a non-normalized eat does not always halt, so Lemma N may not be necessary</td>
+</tr>
+<tr>
+<td>6</td>
+<td>minor</td>
+<td>(a) the cascade lemma lacked the hypothesis <code>n'' &lt; 2^B</code> and the odd-c_0 consequence; (b) the 3b count differed between §3 and §9; (c) Lemma N had two forms</td>
+<td><strong>Fixed.</strong> (a) Cascade lemma (i)–(iii) in §5.4: slack exactly 0 iff n'' &lt; 2^B (else 1), plus the odd-c_0 corollary and the safety of eat t+2, all checked in 5.4. (b) Every count is now taken from the revision-2 log, and §3 and §9 give the same 3b count (17,141; the random stream shifted because new checks run before 3b). (c) Only the slack form remains (§5.1)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>minor</td>
+<td>Rule E used n both as the block count and as value(X)</td>
+<td><strong>Fixed.</strong> E is now stated as <code>K(a,1,X) --&gt;+ L(a',Q')</code>, with parity read from x0 and a' computed from a (§2.2, §2.3). <code>value(X) = a</code> is part of the family predicate (§1), and Lemma V (§2.3) preserves it</td>
+</tr>
+</tbody>
+</table>
+<h2 id="checkpoint-b-dennis">Checkpoint B (Dennis)</h2>
+<ul>
+<li>(answered 2026-10-10: Dennis funded one more stage on Lemma X, with the cryptid flag as the exit. The exit fired; see §5.8.) Lemma N now reduces to the excursion lemma X (§5.5). Lemma X looks like a finite case analysis over sparse values of M (§5.7), but it is not done. Should I spend another stage on Lemma X, or flag the machine CRYPTID_CANDIDATE now and formalize only the rule layer, AntiHydra-style?</li>
+<li>(open) Is §2.5 readable enough to formalize from?</li>
+</ul>
+<h3 id="review-log-validation-run-for-revision-2">Review log: validation run for revision 2</h3>
+<ul>
+<li><code>python3 -B check_proof.py --seed 2</code> (full): <code>all_pass: true</code>, 69 s, 18 MB. Output is in <code>scripts/check_proof_full.log</code>.</li>
+<li><code>--quick --seed 3</code>: <code>all_pass: true</code>.</li>
+<li>Revision 1's script and log were replaced by revision 2. Revision 2 keeps every revision-1 check except check 8. Check 8 used to assert "no violations at epochs ≥ 5 / at B &gt; 10 after epoch 0"; it is now INFO. The new checks are 2.3x, 2.5, the revised 5.4, 5.5, 5.6, 6b, 6c, 8b and 8c.</li>
+</ul>
+</main></body></html>

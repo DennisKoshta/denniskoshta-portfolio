@@ -1,0 +1,483 @@
+{
+ "tm": "1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---",
+ "rank": 29,
+ "class_sheet": "Bell eats counter (results: Chaotic; level-0 note: chaotic bell eats counter)",
+ "class_guess": "Bell eats counter: signed base-4 counter on 3-cell digits, bitten by a growing bell (W4-2 architecture)",
+ "confidence": "med",
+ "summary": "Each round adds 1 to a base-4 counter and walks a defect 1 block left; then the bell bites the counter's low end.",
+ "mechanism": [
+  "Round start K(w,b,c) = 0^inf w 0 E> 101 (001)^b 0001 (001)^c 0^inf; w = 3-cell digits x0y worth 2x-y (001=-1, 000=0, 101=1, 100=2). Round (b>=3): K(w,b,c) -> K(w+1,b-1,c+1) in 12b+22+14t(+4) steps, exact, 300/300.",
+  "Eat (b=2): 1-7 sub-rounds over the bell; the boundary moves left d = 3j+2 cells (pure bite for d>=5), b' = c+1..c+5, so L grows ~1-3 per eat and L ~ step^(1/3). The 2-cell alignment shift leaves dirty digits 010/011, which later carries clean.",
+  "Halting routes exist (round on ...1 110; eat on a 111 top, fed by eats on 011 tops), but to 3e10 steps (1,597 eats) no pre-eat counter has a 011/111 top: avoidance looks structural, as in W4-2. No closed form for the eat yet."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, first 10,000 steps",
+   "why": "The site's view. The left edge is the counter; the striped body is the bell of 100 blocks.",
+   "primary": true,
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 px rows (1 px row = 20 steps, the site's bilinear squeeze)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom rows: one per 6th round start",
+   "png": "img/rounds_late.png",
+   "html": null,
+   "steps": 998633016,
+   "caption": "Round starts near step 1e9: counter, defect, bell",
+   "title": "Round starts near 1e9: three cycles",
+   "why": "One row per 6th round. Follow a yellow line down; note where it restarts and what the counter does.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per 6th round start K(w,b,c): rounds 239,901..243,255 of the run (steps 979,754,002..998,633,016), 1 px per row",
+   "window": "cells -24..3000, 1 px = 6 cells in the bell part; counted from the counter boundary p (p moves left); the left 72 px are the counter's last 24 cells at 3 px per cell, then a 2 px blue boundary",
+   "legend": "white = counter cell 1, black = counter cell 0, pink/maroon = 1/0 inside a dirty digit (010 or 011), blue = counter boundary, grey = bell blocks 001, yellow = the 3-gap defect (0001)",
+   "style": "custom"
+  },
+  {
+   "mode": "custom rows: two per eat",
+   "png": "img/eat_pairs.png",
+   "html": null,
+   "steps": 998671012,
+   "caption": "Counter before and after each of 120 eats",
+   "title": "Counter before and after each eat",
+   "why": "One pair of rows per eat. Compare how far the blue reaches and what changed left of it.",
+   "primary": false,
+   "start": "blank",
+   "rows": "two per eat: the last round start before the eat (b = 2), then the first round start after it (b >= 3), 2 px each, 1 px gap; the last 120 eats before step 1e9 (steps 432,639,314..998,671,012)",
+   "window": "cells -36..-1, 1 px = 0.33 cells (3 px per cell), counted from the counter boundary p before the eat",
+   "legend": "white = 1, black = 0, pink/maroon = 1/0 inside a dirty digit, blue (lower row) = cells the eat bit off (now part of the bell), dark (upper row) = beyond the boundary; right strip: yellow = bite of 5+ cells, grey = bite of 2 cells",
+   "style": "custom"
+  },
+  {
+   "mode": "custom rows: one per cycle start K0",
+   "png": "img/k0_last400.png",
+   "html": null,
+   "steps": 1817000000000000000,
+   "caption": "Cycle-start counters of the last 400 cycles before the halt",
+   "title": "The last 400 cycles before the halt",
+   "why": "Bottom rows: dirty digits (pink) survive, a 111 (red) appears; the last row is the post-eat word that halts.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per cycle start K0, cycles 611,177..611,576 (c = 1,218,0xx..1,218,828), 1 px per row; after a 2-row gap, the post-eat word of the halting cycle 611,577 (from the TM-grounded cycle model, not a direct run)",
+   "window": "cells -45..-1 (the counter, right-aligned at the boundary), 1 px = 1/6 cell (3 px per cell, scaled x2)",
+   "legend": "white/black = 1/0 in a clean digit, pink/maroon = 1/0 in a dirty digit (010/011), red/dark red = 1/0 in a 110/111 digit, blue = boundary",
+   "style": "custom"
+  },
+  {
+   "mode": "custom chart: counter excess per 1,000 cycles",
+   "png": "img/excess_all.png",
+   "html": null,
+   "steps": 1817000000000000000,
+   "caption": "Excursions: counter length beyond log4(c), whole run to the halt",
+   "title": "Counter excursions over 611,577 cycles",
+   "why": "Spikes are excursions: run conversions inflate the counter far past log4(c), then eats bite it back.",
+   "primary": false,
+   "start": "blank",
+   "rows": "x: one px per 1,000 cycles (612 buckets, cycles 0..611,576); y: max over the bucket of (counter digits at K0 - log4 c), 4 px per digit (from the TM-grounded cycle model, not a direct run)",
+   "window": "cells: not applicable (a chart over cycles 0..611,576), 1 px = 1,000 cycles across, 1/4 digit up",
+   "legend": "yellow bars = max excess in the bucket",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "pre-eat round start K(w, 2, c), L = c+3 bell blocks",
+  "vars": [
+   "eat #",
+   "L (bell blocks)",
+   "counter cells",
+   "boundary shift to next eat"
+  ],
+  "rows": [
+   {
+    "step": 706,
+    "values": [
+     1,
+     5,
+     1,
+     8
+    ]
+   },
+   {
+    "step": 1304,
+    "values": [
+     2,
+     8,
+     3,
+     2
+    ]
+   },
+   {
+    "step": 2088,
+    "values": [
+     3,
+     9,
+     6,
+     5
+    ]
+   },
+   {
+    "step": 3135,
+    "values": [
+     4,
+     11,
+     6,
+     2
+    ]
+   },
+   {
+    "step": 6002,
+    "values": [
+     6,
+     14,
+     6,
+     2
+    ]
+   },
+   {
+    "step": 12744,
+    "values": [
+     9,
+     19,
+     9,
+     2
+    ]
+   },
+   {
+    "step": 27670,
+    "values": [
+     13,
+     25,
+     9,
+     5
+    ]
+   },
+   {
+    "step": 85524,
+    "values": [
+     21,
+     37,
+     9,
+     2
+    ]
+   },
+   {
+    "step": 220200,
+    "values": [
+     31,
+     53,
+     12,
+     2
+    ]
+   },
+   {
+    "step": 1009152,
+    "values": [
+     51,
+     97,
+     12,
+     2
+    ]
+   },
+   {
+    "step": 4067606,
+    "values": [
+     81,
+     155,
+     12,
+     8
+    ]
+   },
+   {
+    "step": 13806185,
+    "values": [
+     121,
+     234,
+     15,
+     2
+    ]
+   },
+   {
+    "step": 46434732,
+    "values": [
+     181,
+     353,
+     15,
+     2
+    ]
+   },
+   {
+    "step": 127529227,
+    "values": [
+     251,
+     506,
+     15,
+     5
+    ]
+   },
+   {
+    "step": 357547720,
+    "values": [
+     351,
+     719,
+     15,
+     5
+    ]
+   },
+   {
+    "step": 771380521,
+    "values": [
+     451,
+     916,
+     18,
+     2
+    ]
+   },
+   {
+    "step": 1385637899,
+    "values": [
+     551,
+     1094,
+     18,
+     8
+    ]
+   },
+   {
+    "step": 2239637135,
+    "values": [
+     651,
+     1272,
+     15,
+     2
+    ]
+   },
+   {
+    "step": 3377783939,
+    "values": [
+     751,
+     1476,
+     18,
+     2
+    ]
+   },
+   {
+    "step": 4865302052,
+    "values": [
+     851,
+     1667,
+     18,
+     8
+    ]
+   },
+   {
+    "step": 6737854451,
+    "values": [
+     951,
+     1852,
+     18,
+     2
+    ]
+   },
+   {
+    "step": 9042409298,
+    "values": [
+     1051,
+     2057,
+     18,
+     2
+    ]
+   },
+   {
+    "step": 11868540672,
+    "values": [
+     1151,
+     2265,
+     18,
+     2
+    ]
+   },
+   {
+    "step": 14971811793,
+    "values": [
+     1251,
+     2441,
+     39,
+     35
+    ]
+   },
+   {
+    "step": 18114354159,
+    "values": [
+     1351,
+     2609,
+     18,
+     5
+    ]
+   },
+   {
+    "step": 22515414649,
+    "values": [
+     1451,
+     2791,
+     15,
+     5
+    ]
+   },
+   {
+    "step": 27466733738,
+    "values": [
+     1551,
+     2971,
+     24,
+     2
+    ]
+   },
+   {
+    "step": 29935603692,
+    "values": [
+     1596,
+     3072,
+     21,
+     5
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "ROUND (clean counter)",
+   "from": "0^inf w 0 E> 101 (001)^b 0001 (001)^c 0^inf",
+   "to": "0^inf (w+1) 0 E> 101 (001)^(b-1) 0001 (001)^(c+1) 0^inf",
+   "steps": "12b+22+14t (+4 if the digit that absorbs the carry is 000 or blank)",
+   "cases": "b >= 3; w over the clean digits 001,000,101,100 (values -1,0,1,2); w+1 = +1 in base 4 with digits {-1,0,1,2}; t = number of trailing 100 digits",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "ROUND step count",
+   "from": "K(w,b,c)",
+   "to": "K(w+1,b-1,c+1)",
+   "steps": "12b+22+14t (+4)",
+   "cases": "t = carry length; fitted on 40 random instances, k <= 6 digits, b <= 40",
+   "validated": {
+    "instances": 40,
+    "passed": 40
+   },
+   "source": "manual"
+  },
+  {
+   "name": "ROUND (dirty counter)",
+   "from": "K(w,b,c), w with digits 010/011",
+   "to": "K(w',b-1,c+1)",
+   "steps": null,
+   "cases": "exhaustive: every 1-3 digit word over {001,000,101,100,011,010} with a dirty digit, 40-70 rounds each: no halt, never another code, always clean again after the carry passes (no closed form for w' yet)",
+   "validated": {
+    "instances": 172,
+    "passed": 172
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT shape",
+   "from": "K(w,2,c)",
+   "to": "K(w', c+delta, c'), delta in 1..5, c' in 0..6",
+   "steps": null,
+   "cases": "random clean words (1-7 digits, 1500) and 30%-dirty words (1500), c = 20..120: no halt, always returns to K-form; w' has no closed form yet",
+   "validated": {
+    "instances": 3000,
+    "passed": 3000
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT bite (real run)",
+   "from": "pre-eat boundary p",
+   "to": "post-eat boundary p-d, d = 3j+2",
+   "steps": null,
+   "cases": "d >= 5: the cells left of the new boundary are unchanged (pure bite); d = 2: 1-8 cells near the new boundary rewritten (a carry/borrow); 496 eats to 1e9 (4 early eats with d = 0)",
+   "validated": {
+    "instances": 496,
+    "passed": 492
+   },
+   "source": "manual"
+  },
+  {
+   "name": "HALT route A",
+   "from": "K(w,b,c), w ends in 1 110 (cells)",
+   "to": "halt",
+   "steps": "6",
+   "cases": "001110, 101110, 011110, 111110 (all 2-digit words with low block 110 and a 1 left of it)",
+   "validated": {
+    "instances": 4,
+    "passed": 4
+   },
+   "source": "manual"
+  },
+  {
+   "name": "HALT route B",
+   "from": "K(w,2,c), top block 111",
+   "to": "halt (during the eat)",
+   "steps": null,
+   "cases": "e.g. 111001011, 111000001, 111000101 for c = 30, 31, 32; top-011 words (14 of 3 digits) instead leave a 110/111 top after the eat",
+   "validated": {
+    "instances": 9,
+    "passed": 9
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "BECv5.v:30",
+  "module": "TM1",
+  "machine": "1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA0RB",
+  "diff": "different table (not a near neighbour); same architecture as our W4-2 kill (BECv5 TM1/TM2 plus an invariant)",
+  "applies": "partly",
+  "note": "BECv5/W4-2: K(w,n,m) = w <A 1 (10)^(1+n) 0 (10)^m, bounce n-1, m+1, w -> phi(w) (binary +1); overflow at n = 0 bites q+1 trailing cells, parity of q decides safety. Here: the same bounce rule with a signed base-4 counter on 3-cell digits, the overflow is a multi-sub-round eat at b = 2 that bites d = 3j+2 cells and re-aligns the digits, and halting needs a dirty top digit (011/111) under a deep bite. RIncs/LIncs-style lemmas carry over in shape; the eat and the dirty-digit tracking are new."
+ },
+ "strategy": "1) Derive the eat exactly: the left E-run through the low digits and the B sub-rounds over the bell, giving d = 3j+2 and w' from w's low digits. 2) Abstract simulator on (w,b,c), checked against direct simulation. 3) Look for a W4-2-style invariant: dirty high digits are cleaned by carries before a bite deep enough to reach them.",
+ "risks": [
+  "The path to the halting cycle (1.82e18 steps) is not directly simulated; it rests on the cycle model (eat bell-size independence, round b-independence, clean-increment arithmetic), checked on all 611,577 eats, ~2.0M oracle rounds, 1,572 direct cycles and 22,905 independently recomputed cycles.",
+  "A Rocq certificate needs parametric eat/round lemmas for this table and a checked replay of 611,577 cycles (C2-552 style); effort is large but mechanical.",
+  "No exact total step count yet (dominant term 1.8168e18)."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "rounds_late: does each yellow line walk from the right end to the counter, one block per round, and restart at the right end at each eat, while only the counter's right few cells change from row to row?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "eat_pairs: is the blue bite mostly 2 cells, otherwise 5, 8, 11, ... cells, with the cells left of a 5+ bite unchanged?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Should we fund a 2 h stage to derive the exact eat rule and test a W4-2-style invariant (dirty top digits never meet a deep bite), or park it?",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 30000000000,
+  "cells": null,
+  "nonzeros": 2150,
+  "growth": "no halt to 3e10 steps (scripts/eats.c); L ~ step^(1/3): 996 bell blocks at 1e9, 3,072 at 3e10; span 6,448 cells and 2,150 ones at 1e10 (tools/sim.py)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "HALT predicted at about 1.82e18 steps (cycle 611,577, c = 1,218,828); the final cycle halts in direct TM simulation, the path to it rests on a TM-grounded cycle model checked several ways. Not certified."
+}

@@ -1,0 +1,2360 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>kill-forensics.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/kill-forensics.md · <a href="/busy-beaver/reports/kill-forensics.md.html">raw</a></div>
+<h1 id="recent-kill-forensics-for-track-b-targeting">Recent-kill forensics for Track B targeting</h1>
+<p><em>2026-10-09. busycoq BB6 @ <code>0940bb9</code> (2026-10-07, read-only git). Holdout snapshots <code>data/holdouts/</code> (26 lists, newest <code>2026-10-07_778.txt</code> + <code>2026-10-07_eqv_1590.txt</code>). Sheet: <code>data/sheet/2026-10-09_*.csv</code>. Proof index: <code>data/solved_index.tsv</code>.</em></p>
+<p><strong>Hypothesis under test (Dennis):</strong> many recent kills were done with AI help. Studying them should show which areas are weak to AI, which are now picked clean, and which strategies and tarpits exist, so we don't rediscover them.</p>
+<p><strong>Short answer:</strong>
+- The hypothesis holds for the last ~7 weeks. There is explicit evidence that at least one contributor works through an AI assistant, and since Sep 2026 the kill rate has spiked in exactly the files that carry assistant-style markers.
+- The AI-assisted front is narrow and still moving: shift-overflow counters, Skelet-like counters, Fractal Type 7, Cubic Mess, and long halters proved with verified accelerators. Avoid those areas.
+- The best targets are mid-size counter/bouncer classes that cooled off in August and have reusable templates. A few small classes nobody has touched since Dec are also worth a look.</p>
+<h2 id="tldr">TL;DR</h2>
+<ol>
+<li><strong>What left the list since Dec 2025:</strong> 638 machines (13 windows, 1416 → 778).
+   - 563 were real proofs: 473 nonhalt, 90 halt.
+   - 75 were equivalence merges: list bookkeeping, not kills.
+   - 553 of the 563 proofs landed in busycoq within the list window (±1 day), so attribution is tight.
+   - 562 of the 563 were committed by mxdys (<code>ccz181078</code>). The one exception is univerz's PR #5, later renamed to <code>SOBCv11.v</code>. Commit authorship tells us nothing about who wrote a proof.</li>
+<li><strong>The pace roughly tripled after June.</strong>
+   - Dec–Jun windows: 266 proof kills in 7 months.
+   - Jun 29–Oct 7 windows: 297 proof kills in 3.3 months.
+   - September alone: 215 removals, 203 of them proofs, mostly from two commits: <code>51fa271</code> (09-16, "add 78 SOC, 18 FractalType7…") and <code>3127e48</code> (09-23, "31 SOMDC_Class1").</li>
+<li><strong>The kind of proof changed.</strong>
+   - Dec–Jun was dominated by mxdys's decider-style certificates (FAR, LongAccHalt, RWLAcc/UBRRBA: 35% of kills, about 160 B per machine) and terse batch files (LongLoop/LongAcc, SOCSS, <code>es</code>/<code>follow</code> style). The median over all Dec–Jun kills was 2.9 KB per machine.
+   - Jun–Oct is dominated by large bespoke files: median 11.3 KB per machine, files up to 539 KB, with self-defined <code>Inductive</code>/<code>Fixpoint</code> checkers proved sound and run with <code>vm_compute</code>.
+   - Decider certificates fell to 5% of kills. The FAR, RWLAcc and LongAcc routes look exhausted (last kills 07-29, 08-30 and 09-23).</li>
+<li><strong>AI evidence:</strong>
+   - <strong>Explicit:</strong><ul>
+<li>Three comments in the 10-07 commit address "the user": <code>QuadraticMess30.v:1</code> and <code>Queue_v1.v:1</code> say "…proof archive supplied by the user", and <code>SOCMisc.v:5713</code> says "the user's machine".</li>
+<li>One sheet note says "Analysed thoroughly using formal proofs from Claude Opus 4.6" (still-open holdout <code>1RB1LA_1RC0RF_1RD---_0LE1RB_---0LA_1LD1RF</code>).</li>
+<li><strong>Probable:</strong></li>
+<li>Boilerplate headers ("Standalone; only BusyCoq and standard-library dependencies", "Consolidated checked proofs").</li>
+<li>Citations of six audit/analysis <code>.md</code> files that are not in the repo, plus dozens of absent per-machine <code>.v</code> files.</li>
+<li><strong>Coverage:</strong> these markers cover 132 of 297 proof kills (44%) since Jun 29, and 189 (64%) if prose-heavy new-style files are included. None appear before 2026-08-15. No commit message, README or co-author trailer mentions AI.</li>
+</ul>
+</li>
+<li><strong>Picked clean</strong> (0 left in the 778): Counter Class 1, Skelet 17-like, Quadratic Skelet 17-like, List merging, Bouncer + Complex Counter, Bouncer + Translated Counter, Structural counter + bouncer. <strong>Nearly clean:</strong> Chaotic Fractal Type 1 (4 left), Sync bouncer counter (4), Counter Class 2 and 3 (3 each), Monotone list (8).</li>
+<li><strong>Actively mined (avoid):</strong>
+   - Shift-overflow counter (128 left, 130 proof kills since 08-30)
+   - Skelet 1-like Class 1 (101 left; someone is working through a numbered "Sk1 Class1 TM1..TM105" list)
+   - Cubic Mess (50 left; "completed machines from cubic.txt", plus 6 CubicCap <code>Cert_WF</code> stubs)
+   - Shift-overflow bouncer counter, Monotone list, Counter Class 3, Translated Counter
+   - Halting proofs in Bell-like and Quadratic Mess via RLE accelerators (<code>Bell60.v</code>, <code>QuadraticMess30.v</code>, 10-07)</li>
+<li><strong>Stalled but plausible (targets):</strong>
+   - <strong>Cooled off in August, templates exist:</strong><ul>
+<li>Bell eats counter (40 left)</li>
+<li>Shift-overflow structural counter (11)</li>
+<li>Structural counter + chaotic edge (11)</li>
+<li>Bouncer + Chaotic Edge (20)</li>
+<li>Skelet 1-like Class 2 (14)</li>
+<li><strong>No proof kill since Dec:</strong></li>
+<li>Structural counter + counter (5)</li>
+<li>Counter Class 4 (2)</li>
+</ul>
+</li>
+<li><strong>Tarpits:</strong>
+   - Bell-like: 15 of the 18 sheet cryptids, 18 machines on the "worked on extensively" tab, 1 proof kill since Dec.
+   - The chaotic classes:<ul>
+<li>Chaotic Bell Class 3 (FAR got 9 of 24 in 2025, nothing since)</li>
+<li>Spaghetti</li>
+<li>Chaotic 1dCA-like in bouncer and in bell</li>
+<li>Chaotic Ack-like Bell</li>
+<li>Four holdouts with "NONHALT (?) unlikely to be correct" claims.</li>
+<li>Cost blow-ups: recent BLEC proofs cost 313 KB per machine, TranslatedBell 117 KB, SOBCv10 152 KB for one machine.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="1-method-validation-and-caveats">1. Method, validation and caveats</h2>
+<p><strong>Pipeline</strong> (stdlib Python; run in this order; total runtime under 30 s):</p>
+<table>
+<thead>
+<tr>
+<th>script</th>
+<th>does</th>
+<th>outputs (<code>reports/forensics/</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tools/analysis/forensics_git.py</code></td>
+<td>For every non-merge commit in <code>ce2f22e..BB6</code> (133 commits since 2024-05-04): metadata, changed paths with numstat, and the machine strings each changed file newly contains (tokens in the new blob that were not in the old one), via <code>git diff-tree -M</code> + <code>git cat-file --batch</code>. Read-only, with <code>GIT_OPTIONAL_LOCKS=0</code>.</td>
+<td><code>commits.tsv</code>, <code>commit_files.tsv</code>, <code>string_events.tsv</code>, <code>file_first_seen.tsv</code></td>
+</tr>
+<tr>
+<td><code>tools/analysis/forensics_attrib.py</code></td>
+<td>For each machine removed between consecutive snapshots: find every busycoq file that proves it (<code>solved_index.tsv</code>, matched by mirror/rename <code>equiv_key</code>, so mirrored <code>1LB…</code> proofs count), find the commit that first added it to that file (following git renames), and choose the earliest proof inside the list window (Discord share dates, ±1 day). Then derive the technique family from the filename, join the sheet, and profile the 778.</td>
+<td><code>kills.tsv</code> (3,656 rows, all windows since 4408), <code>remaining_778.tsv</code>, <code>class_velocity.tsv</code>, <code>tables.md</code></td>
+</tr>
+<tr>
+<td><code>tools/analysis/forensics_style.py</code></td>
+<td>AI-mention scan (commit messages, README*, every <code>.v</code> comment, every sheet cell) and per-file style features for the 229 proof files at the pin.</td>
+<td><code>ai_signals.tsv</code>, <code>style_files.tsv</code>, <code>style_summary.md</code></td>
+</tr>
+<tr>
+<td><code>tools/analysis/forensics_report.py</code></td>
+<td>Joins the above into the tables used here.</td>
+<td><code>tables2.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Equivalence classes.</strong> <code>forensics_common.equiv_key</code> is a general n-state, m-symbol normal form: halt notation, L/R mirroring, and BFS renaming of non-start states. It agrees with <code>tools/holdouts.py equiv_key</code> on all 12,372 snapshot machines and handles e.g. 3x3 <code>1RB2RA1LC_2LC1RB2RB_---2LA1LA</code>.</p>
+<p><strong>Validation:</strong>
+- <strong>Per-window reason counts match <code>data/crossref.md</code> §2 exactly.</strong> For example, 1003→815: 176 proof (91 exact + 85 mirror) and 12 equivalence; 1161→1119: 2 proof and 40 equivalence.
+- <strong>The 815→778 split matches crossref §3.1:</strong> 18 removals from <code>27b8b41</code> and 19 from <code>0940bb9</code>.
+- <strong>Commit attribution matches <code>git log -S</code>.</strong> In 88 random exact-tier attributions (8 + 80), the attributing commit equals <code>git log -S'&lt;tm&gt;' --reverse -- verify/&lt;file&gt;</code> in every case.
+- <strong>The rename fix was checked.</strong> Following renames moved one kill (<code>SOBCv11.v</code>) from a false "2025-09 Eqv" attribution to univerz's <code>dba975e</code>.</p>
+<p><strong>Caveats:</strong>
+- <strong>Commit author ≠ proof author.</strong> mxdys commits other people's work. Sometimes a header carries a credit (M-Abozaid); usually nothing does.
+- <strong>The sheet's Results tab is stale.</strong> It is keyed to the 1534 list, and its status column stops after ~Apr 2026: 315 of 316 removals since Jun 29 have a blank status. "Done By" is only informative for Dec–Apr.
+- <strong>There is no Discord access.</strong> The sheet's Discord links end in Mar 2026, so "is someone working on X right now" is inferred only from commits and file headers.
+- <strong>"Family" is derived from the filename</strong> (<code>forensics_common.FAMILY_RULES</code>). The "misc named mechanism" bucket lumps BMO, BC, BL, LM, FIB, RGR, S18, InfiniteRect and others.
+- <strong>"Kill month" is the commit month of the attributing proof.</strong> For equivalence rows it is the month the list dropped the machine.</p>
+<hr />
+<h2 id="2-commit-history">2. Commit history</h2>
+<h3 id="21-coarse-back-to-the-branch-start-u3">2.1 Coarse, back to the branch start (U3)</h3>
+<table>
+<thead>
+<tr>
+<th>quarter</th>
+<th style="text-align: right;">commits</th>
+<th style="text-align: right;">.v added</th>
+<th style="text-align: right;">.v modified</th>
+<th style="text-align: right;">lines added</th>
+<th style="text-align: right;">holdout-universe 6x2 strings added</th>
+<th style="text-align: right;">list removals attributed</th>
+<th>authors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2024Q2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3,197</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2024Q3</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">49,198</td>
+<td style="text-align: right;">1,868</td>
+<td style="text-align: right;">0</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2024Q4</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">61</td>
+<td style="text-align: right;">599,198</td>
+<td style="text-align: right;">166,815</td>
+<td style="text-align: right;">366</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2025Q1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">94</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">242,466</td>
+<td style="text-align: right;">65,555</td>
+<td style="text-align: right;">543</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2025Q2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">41,451</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">104</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2025Q3</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">173,504</td>
+<td style="text-align: right;">7,832</td>
+<td style="text-align: right;">1,538</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2025Q4</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">127,444</td>
+<td style="text-align: right;">868</td>
+<td style="text-align: right;">542</td>
+<td>ccz181078 11, Shawn Ligocki 1</td>
+</tr>
+<tr>
+<td>2026Q1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">23,773</td>
+<td style="text-align: right;">177</td>
+<td style="text-align: right;">165</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2026Q2</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">35,268</td>
+<td style="text-align: right;">126</td>
+<td style="text-align: right;">66</td>
+<td>ccz181078</td>
+</tr>
+<tr>
+<td>2026Q3</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">210,397</td>
+<td style="text-align: right;">354</td>
+<td style="text-align: right;">313</td>
+<td>ccz181078 13, univerz 1</td>
+</tr>
+<tr>
+<td>2026Q4 (to 10-07)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">13,699</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">19</td>
+<td>ccz181078</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The 2024Q4–2025Q1 string counts are the decider-certificate dumps: CTL/CPS/RWL files with up to 6 MB and 235k strings each.</li>
+<li>The 2025Q3 removals (1,538) include 783 equivalence merges in 2592→1618, the month <code>Eqv*.v</code> landed.</li>
+<li>131 of the 133 commits are by <code>ccz181078</code>; the others are one by Shawn Ligocki (Antihydra proofs, 2025-10) and one by univerz (PR #5, 2026-09-23).</li>
+</ul>
+<h3 id="22-every-commit-since-2025-12-01-and-the-removals-it-explains-u2">2.2 Every commit since 2025-12-01 and the removals it explains (U2)</h3>
+<table>
+<thead>
+<tr>
+<th>commit</th>
+<th>date</th>
+<th>message (truncated)</th>
+<th style="text-align: right;">.v A/M</th>
+<th style="text-align: right;">removals explained</th>
+<th>nonhalt / halt / eqv</th>
+<th>main families</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bdf5ff5</td>
+<td>2025-12-16</td>
+<td>add TranslatedBellv2,v3,v4, Bouncer_v1, BMO7, Sk17 eqv, upd FARv1,SOC</td>
+<td style="text-align: right;">13/15</td>
+<td style="text-align: right;">66</td>
+<td>62/4/0</td>
+<td>FAR 25, TranslatedBell 10, SOC 9</td>
+</tr>
+<tr>
+<td>d7ae6ec</td>
+<td>2025-12-30</td>
+<td>add LongLoop</td>
+<td style="text-align: right;">2/5</td>
+<td style="text-align: right;">17</td>
+<td>17/0/0</td>
+<td>LongLoop 8, FAR 6</td>
+</tr>
+<tr>
+<td>7fd9993</td>
+<td>2026-01-29</td>
+<td>6x2 1326 =&gt; 1314</td>
+<td style="text-align: right;">2/5</td>
+<td style="text-align: right;">12</td>
+<td>10/2/0</td>
+<td>BLEC 4, misc 4, RWLAcc 2</td>
+</tr>
+<tr>
+<td>457869d</td>
+<td>2026-02-15</td>
+<td>add LongAcc, upd LongLoop</td>
+<td style="text-align: right;">8/9</td>
+<td style="text-align: right;">81</td>
+<td>58/23/0</td>
+<td>Longitudinal 48, SOCSS 17, FAR 7</td>
+</tr>
+<tr>
+<td>54863c1</td>
+<td>2026-02-19</td>
+<td>upd LongLoop</td>
+<td style="text-align: right;">0/3</td>
+<td style="text-align: right;">7</td>
+<td>7/0/0</td>
+<td>Longitudinal 6</td>
+</tr>
+<tr>
+<td>83531ba</td>
+<td>2026-02-28</td>
+<td>upd FARv1</td>
+<td style="text-align: right;">0/1</td>
+<td style="text-align: right;">12</td>
+<td>12/0/0</td>
+<td>FAR 12</td>
+</tr>
+<tr>
+<td>760fc21</td>
+<td>2026-03-11</td>
+<td>add SBCv6a,SOBCv9,SOCSSv2,3,SOMDCv5,Sk1like_TC</td>
+<td style="text-align: right;">7/4</td>
+<td style="text-align: right;">25</td>
+<td>25/0/0</td>
+<td>SOCSS 8, FAR 4, Skelet 4</td>
+</tr>
+<tr>
+<td>eb3ecb7</td>
+<td>2026-03-15</td>
+<td>add LongLoop3x3v1, upd LongLoop for bbxy</td>
+<td style="text-align: right;">1/7</td>
+<td style="text-align: right;">7</td>
+<td>7/0/0</td>
+<td>FAR 3, Longitudinal 3</td>
+</tr>
+<tr>
+<td>6f61914</td>
+<td>2026-03-25</td>
+<td>add SOCSSv4,5, SOMDCv6, LongLoopv3</td>
+<td style="text-align: right;">4/1</td>
+<td style="text-align: right;">20</td>
+<td>20/0/0</td>
+<td>Longitudinal 12, SOMDC 6</td>
+</tr>
+<tr>
+<td>897a653</td>
+<td>2026-04-07</td>
+<td>add BigInt</td>
+<td style="text-align: right;">49/0</td>
+<td style="text-align: right;">1</td>
+<td>0/1/0</td>
+<td>Bell 1 (<code>Bellv1.v</code>)</td>
+</tr>
+<tr>
+<td>64c53c7</td>
+<td>2026-04-26</td>
+<td>upd Eqv_Misc</td>
+<td style="text-align: right;">0/1</td>
+<td style="text-align: right;">40</td>
+<td>0/0/40</td>
+<td>equivalence</td>
+</tr>
+<tr>
+<td>a95776a</td>
+<td>2026-04-29</td>
+<td>upd Eqv_Misc</td>
+<td style="text-align: right;">0/2</td>
+<td style="text-align: right;">14</td>
+<td>0/1/13</td>
+<td>equivalence</td>
+</tr>
+<tr>
+<td>10e149a / e52b811</td>
+<td>06-15 / 06-30</td>
+<td>FAR certs, FIBv4</td>
+<td style="text-align: right;">–</td>
+<td style="text-align: right;">9</td>
+<td>9/0/0</td>
+<td>FAR 8</td>
+</tr>
+<tr>
+<td>eb20dbd / 895b0f3</td>
+<td>07-02 / 07-03</td>
+<td>upd SOMDCv6; InfiniteRect, LongN</td>
+<td style="text-align: right;">–</td>
+<td style="text-align: right;">5</td>
+<td>5/0/0</td>
+<td></td>
+</tr>
+<tr>
+<td>ac98a31</td>
+<td>2026-07-29</td>
+<td>add CounterClass2, Bouncer_v3,v4, BCv2, BLv2, FIBv5, LMv1,v2, SOBLv1, TranslatedBellv5, FAR/UBRRBA certs</td>
+<td style="text-align: right;">13/3</td>
+<td style="text-align: right;">26</td>
+<td>20/6/0</td>
+<td>misc 11, FAR 6, CounterClass 4</td>
+</tr>
+<tr>
+<td>7583181</td>
+<td>2026-08-15</td>
+<td>add BECv7,v8, BLECv3x,y, CounterClass3v1, InfiniteRect_v2, LMv3, SBCv10,v11, SOMDCv7, Sk17Ex…</td>
+<td style="text-align: right;">13/12</td>
+<td style="text-align: right;">45</td>
+<td>27/12/6</td>
+<td>SBC 12, Longitudinal 9</td>
+</tr>
+<tr>
+<td>5a56ed7</td>
+<td>2026-08-30</td>
+<td>add BLECv3z, BLv3, CCAv1, CubicCapLoop_v2, SOBCv10, SOBLv2,v3, TranslatedBellv6, LongitudinalHalt</td>
+<td style="text-align: right;">9/5</td>
+<td style="text-align: right;">13</td>
+<td>7/6/0</td>
+<td>SOBL 4</td>
+</tr>
+<tr>
+<td>b801373</td>
+<td>2026-09-05</td>
+<td>add CounterClass1, Loop4Mono_v2..6</td>
+<td style="text-align: right;">70/2</td>
+<td style="text-align: right;">25</td>
+<td>23/2/0</td>
+<td>CounterClass 16, Loop4 9</td>
+</tr>
+<tr>
+<td>a7183bb</td>
+<td>2026-09-08</td>
+<td>add SqrtSk17Like_v2..5, Sk17, TranslatedBellv7, RGRv3</td>
+<td style="text-align: right;">10/0</td>
+<td style="text-align: right;">23</td>
+<td>22/1/0</td>
+<td>Skelet 21</td>
+</tr>
+<tr>
+<td><strong>51fa271</strong></td>
+<td><strong>2026-09-16</strong></td>
+<td><strong>add 78 SOC, 18 FractalType7, 11 Eqv, 2 FractalMisc</strong></td>
+<td style="text-align: right;">12/3</td>
+<td style="text-align: right;"><strong>105</strong></td>
+<td>86/12/7</td>
+<td><strong>SOC 78, Fractal 20</strong></td>
+</tr>
+<tr>
+<td>dba975e</td>
+<td>2026-09-23</td>
+<td>(univerz) add CounterRegular nonhalting proofs → renamed <code>SOBCv11.v</code> on 09-24</td>
+<td style="text-align: right;">1/0</td>
+<td style="text-align: right;">1</td>
+<td>1/0/0</td>
+<td>SOBC</td>
+</tr>
+<tr>
+<td><strong>3127e48</strong></td>
+<td><strong>2026-09-23</strong></td>
+<td><strong>add 31 SOMDC_Class1, 2 SOMDCv8, 2 LongAccv1</strong></td>
+<td style="text-align: right;">2/1</td>
+<td style="text-align: right;"><strong>35</strong></td>
+<td>35/0/0</td>
+<td>SOMDC 33</td>
+</tr>
+<tr>
+<td>605d26d</td>
+<td>2026-09-24</td>
+<td>add BMO9, S18, SOBCv11,v12</td>
+<td style="text-align: right;">3/1</td>
+<td style="text-align: right;">3</td>
+<td>3/0/0</td>
+<td>SOBC 2</td>
+</tr>
+<tr>
+<td>27b8b41</td>
+<td>2026-09-30</td>
+<td>add BTCv4, SOTCv2, Sk1Machines, SOC23_Halt165, Nonhalt51, PeriodicHalt, SOC_4_3_Halt, Halt13, Halt14</td>
+<td style="text-align: right;">9/0</td>
+<td style="text-align: right;">18</td>
+<td>5/13/0</td>
+<td>SOC 10, Skelet 5</td>
+</tr>
+<tr>
+<td>0940bb9</td>
+<td>2026-10-07</td>
+<td>add CubicMachines, SOCMisc, Bell60, QuadraticMess30, CounterClass3v2, Queue_v1, SBCv12</td>
+<td style="text-align: right;">7/0</td>
+<td style="text-align: right;">19</td>
+<td>12/7/0</td>
+<td>SOC 7, Cubic 6, Queue 2</td>
+</tr>
+</tbody>
+</table>
+<p>Full table: <code>reports/forensics/tables2.md</code> §U2.</p>
+<p>Commits come in weekly-ish batches, and mxdys shares a new list the same day or the next.</p>
+<hr />
+<h2 id="3-what-was-killed-dec-2025-oct-2026">3. What was killed, Dec 2025 → Oct 2026</h2>
+<h3 id="31-per-window">3.1 Per window</h3>
+<table>
+<thead>
+<tr>
+<th>window</th>
+<th>shared</th>
+<th style="text-align: right;">removed</th>
+<th style="text-align: right;">proof</th>
+<th style="text-align: right;">nonhalt</th>
+<th style="text-align: right;">halt</th>
+<th style="text-align: right;">eqv</th>
+<th style="text-align: right;">proof commit in window</th>
+<th style="text-align: right;">after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1416→1343</td>
+<td>11-28 → 12-16</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>1343→1326</td>
+<td>12-16 → 12-30</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1326→1226</td>
+<td>12-30 → 02-19</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1226→1214</td>
+<td>02-19 → 02-28</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1214→1161</td>
+<td>02-28 → 03-25</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1161→1119</td>
+<td>03-25 → 04-25</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>1119→1104</td>
+<td>04-25 → 04-29</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1104→1094</td>
+<td>04-29 → 06-29</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1094→1064</td>
+<td>06-29 → 07-28</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1064→1016</td>
+<td>07-28 → 08-15</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>1016→1003</td>
+<td>08-15 → 08-30</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>1003→815</td>
+<td>08-30 → 09-24</td>
+<td style="text-align: right;">188</td>
+<td style="text-align: right;">176</td>
+<td style="text-align: right;">161</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">176</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>815→778</td>
+<td>09-24 → 10-07</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td><strong>total</strong></td>
+<td></td>
+<td style="text-align: right;"><strong>638</strong></td>
+<td style="text-align: right;"><strong>563</strong></td>
+<td style="text-align: right;"><strong>473</strong></td>
+<td style="text-align: right;"><strong>90</strong></td>
+<td style="text-align: right;"><strong>75</strong></td>
+<td style="text-align: right;"><strong>553</strong></td>
+<td style="text-align: right;"><strong>10</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Proof form:</strong> 343 proofs are byte-exact; 220 (39%) exist only in mirrored <code>1LB…</code> form. Those would fail our <code>check_kill.sh</code> string rule as written. That is fine for them, but it means their templates must be re-targeted to the exact list string.</li>
+<li><strong>Equivalence merges</strong> are concentrated in April (<code>Eqv_Misc.v</code> updates). They are not work on any mechanism.</li>
+</ul>
+<h3 id="32-kills-per-month-per-technique-family-t2">3.2 Kills per month per technique family (T2)</h3>
+<p>Proofs are counted by the commit month of the attributed proof; equivalence rows by the month the list dropped them.</p>
+<table>
+<thead>
+<tr>
+<th>family</th>
+<th style="text-align: right;">2025-12</th>
+<th style="text-align: right;">2026-01</th>
+<th style="text-align: right;">02</th>
+<th style="text-align: right;">03</th>
+<th style="text-align: right;">04</th>
+<th style="text-align: right;">06</th>
+<th style="text-align: right;">07</th>
+<th style="text-align: right;">08</th>
+<th style="text-align: right;">09</th>
+<th style="text-align: right;">10</th>
+<th style="text-align: right;">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SOC (shift-overflow counter)</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">88</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">105</td>
+</tr>
+<tr>
+<td>Longitudinal (LongAcc/LongLoop/LongN)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">91</td>
+</tr>
+<tr>
+<td>CTL/FAR certificates</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">73</td>
+</tr>
+<tr>
+<td>equivalence merge</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">56</td>
+</tr>
+<tr>
+<td>SOMDC</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">47</td>
+</tr>
+<tr>
+<td>misc named mechanism (BMO, BC, BL, LM, FIB, RGR, S18, InfiniteRect, …)</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>Skelet-like (Sk1/Sk17/SqrtSk17)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>SOCSS</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">28</td>
+</tr>
+<tr>
+<td>Fractal (FractalType*/Inv/Misc)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr>
+<td>CounterClass</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr>
+<td>SBC (sync bouncer counter)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr>
+<td>other equivalence</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr>
+<td>Loop3/Loop4 (Monotone list)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr>
+<td>SOBC</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr>
+<td>TranslatedBell</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>BLEC</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>RWLAcc/UBRRBA (inductive-decider certs)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>Cubic (Cap/Cup/Mess/Machines)</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>Bouncer</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>SOBL</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>TC, Inductive, Bell, BEC, Queue, QuadraticMess, SOTC</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td><strong>total</strong></td>
+<td style="text-align: right;">83</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">59</td>
+<td style="text-align: right;">215</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">638</td>
+</tr>
+</tbody>
+</table>
+<p>What the table shows:
+- <strong>Dec–Mar was mxdys's decider era:</strong>
+  - FAR (his DFA generator), LongAcc/LongLoop (generalized longitudinal analysis) and SOCSS together gave 165 kills.
+  - These routes then dried up: FAR's last kill was 07-29, RWLAcc/UBRRBA's 08-30, and LongAcc gave 2 more on 09-23.
+- <strong>April–June was nearly dead:</strong> 10 proof kills, plus equivalence bookkeeping.
+- <strong>July–August was mxdys-style individual proofs</strong>, small batches across many classes: CounterClass2, Bouncer_v3/v4, LM, BL, SBCv10/11, SOBL, BEC.
+- <strong>September–October</strong> is the burst analysed in §5: SOC ×88, SOMDC ×33 (31 of them <code>SOMDC_Class1.v</code>), Sk17/Sk1 ×26, FractalType7 ×20, CounterClass1 ×16, Cubic, and halting checkers.</p>
+<h3 id="33-family-proofs-vs-individual-proofs-t4-u1">3.3 Family proofs vs individual proofs (T4, U1)</h3>
+<p>How the 563 proof kills are packaged:</p>
+<table>
+<thead>
+<tr>
+<th>packaging</th>
+<th style="text-align: right;">kills</th>
+<th>what it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>multi-machine file</td>
+<td style="text-align: right;">395</td>
+<td>One file with <code>Module TM1…TMn</code>, often with a shared lemma section, e.g. <code>SOMDC_Class1.v</code> (31 machines), <code>SOC_2_3_v4.v</code> (40).</td>
+</tr>
+<tr>
+<td>decider certificate</td>
+<td style="text-align: right;">108</td>
+<td>One line or entry per machine, checked by a proven decider (<code>FARv1.v</code>, <code>LongAccHaltv1.v</code>, <code>RWLAccHaltv8.v</code>, <code>UBRRBAHaltv2.v</code>).</td>
+</tr>
+<tr>
+<td>single-machine file</td>
+<td style="text-align: right;">44</td>
+<td></td>
+</tr>
+<tr>
+<td>parameterized family</td>
+<td style="text-align: right;">16</td>
+<td><code>CounterClass1/</code>: one record of K4 rules plus per-machine <code>CounterClass1TM*Proof.v</code> of 1.4–5 KB. This is the only true template-instantiation family since Dec.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The 563 kills come from 127 distinct files. 28 files with 5 or more kills account for 399 kills (71%); 57 files kill exactly one machine.</li>
+<li><strong>Halting proofs</strong> were 31 of 266 kills (12%) in Dec–Jun and 59 of 297 (20%) since Jun 29.</li>
+<li>53 of those 59 were never on the sheet's direct-simulation backlog. They are long halters proved by accelerated certificates or verified checkers, not by plain simulation: <code>LongAccHaltv1.v</code>, <code>UBRRBAHaltv2.v</code>, <code>SOC23_Halt165.v</code>, <code>SOC23_PeriodicHalt.v</code>, <code>SOC43_Halt13/14.v</code>, <code>SOC_4_3_Halt.v</code>, <code>CubicMachines.v</code>, <code>Bell60.v</code>, <code>QuadraticMess30.v</code>.</li>
+</ul>
+<p><strong>Median proof size</strong> (bytes of the attributed file ÷ machines it proves; U8):</p>
+<table>
+<thead>
+<tr>
+<th>family</th>
+<th style="text-align: right;">Dec–Jun</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">Jun 29–Oct</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SOC</td>
+<td style="text-align: right;">5,683</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">10,189</td>
+<td style="text-align: right;">96</td>
+</tr>
+<tr>
+<td>Longitudinal</td>
+<td style="text-align: right;">2,691</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">231</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td>CTL/FAR certs</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">162</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>SOMDC</td>
+<td style="text-align: right;">6,061</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">13,835</td>
+<td style="text-align: right;">36</td>
+</tr>
+<tr>
+<td>Skelet-like</td>
+<td style="text-align: right;">33,682</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">33,682</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr>
+<td>SOCSS</td>
+<td style="text-align: right;">2,866</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">–</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Fractal</td>
+<td style="text-align: right;">3,374</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">29,925</td>
+<td style="text-align: right;">21</td>
+</tr>
+<tr>
+<td>CounterClass (incl. imported TM proofs)</td>
+<td style="text-align: right;">–</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2,847</td>
+<td style="text-align: right;">24</td>
+</tr>
+<tr>
+<td>SBC</td>
+<td style="text-align: right;">6,228</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">5,239</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>SOBC</td>
+<td style="text-align: right;">5,666</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">18,732</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>Loop3/Loop4</td>
+<td style="text-align: right;">4,620</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">25,922</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td>TranslatedBell</td>
+<td style="text-align: right;">7,286</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">117,285</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>BLEC</td>
+<td style="text-align: right;">6,177</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">313,600</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr>
+<td><strong>all</strong></td>
+<td style="text-align: right;"><strong>2,866</strong></td>
+<td style="text-align: right;">266</td>
+<td style="text-align: right;"><strong>11,334</strong></td>
+<td style="text-align: right;">297</td>
+</tr>
+</tbody>
+</table>
+<p>For CounterClass1, the shared libraries <code>CounterClass1Common.v</code> and the <code>K4Boundary*.v</code> files bring the directory to 699 KB, about 44 KB per machine.</p>
+<h3 id="34-who">3.4 Who</h3>
+<ul>
+<li><strong>Commit authors:</strong> <code>ccz181078</code> (mxdys) for 562 of 563 proof kills and all 75 equivalence merges. The exception is <code>univerz</code> (1), whose PR #5 <code>CounterRegular.v</code> mxdys renamed to <code>SOBCv11.v</code> the next day without a credit line.</li>
+<li><strong>Credits inside files:</strong> <code>M-Abozaid</code> in <code>BTCv4.v</code> ("M-Abozaid M23 and its sibling… Sources, certificate conversion and audit: EXTERNAL_BOUNCER_PROOFS.md") and in <code>SOTCv2.v</code> ("M-Abozaid M7… Source and attribution: EXTERNAL_BOUNCER_PROOFS.md"). Older files credit only sligocki (Skelet1*, AntiHydra) and dyuan/mxdys (BB33_543). Nothing else names a contributor.</li>
+<li><strong>Sheet "Done By"</strong> for Dec 2025+ removals:</li>
+<li>Windows 1416→1161 (Nov 28 – Mar 25, 255 removals): mxdys 224, Andrew Ducharme 18 (all FAR-certificate nonhalts), Alistaire 7, prurq 4, Peacemaker 3, Shawn Ligocki 2, Racheline 2, Dyuan 2.</li>
+<li>Windows 1161→1094 (Mar 25 – Jun 29, 67 removals): equivalence merges credited to "-d" (54) and mxdys.</li>
+<li>Jun 29+: 315 of 316 blank. The sheet stopped tracking, so recent proof authors are unknown except where a file header says.</li>
+</ul>
+<h3 id="35-sheet-classes-of-the-killed-machines">3.5 Sheet classes of the killed machines</h3>
+<p>The full per-class table is in §4. Since Dec, kills by sheet class:</p>
+<table>
+<thead>
+<tr>
+<th>sheet class</th>
+<th style="text-align: right;">kills</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shift-overflow counter</td>
+<td style="text-align: right;">299 (40 of them equivalence)</td>
+</tr>
+<tr>
+<td>unclassified</td>
+<td style="text-align: right;">73 (all removed 1416→1343, before the Dec-16 classification)</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Type 1</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr>
+<td>Counter Class 1</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr>
+<td>Bouncer + Chaotic Edge</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>Cubic Mess</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>Shift-overflow bouncer counter</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>Structural counter + chaotic edge</td>
+<td style="text-align: right;">13</td>
+</tr>
+<tr>
+<td>Monotone list</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 1</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td>Shift-overflow structural counter</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td>Quadratic Mess</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>Sync bouncer counter</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr>
+<td>Bouncer + Complex Counter, Chaotic Bell Class 2, Skelet 17-like</td>
+<td style="text-align: right;">8 each</td>
+</tr>
+<tr>
+<td>all others</td>
+<td style="text-align: right;">≤ 7 each</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-the-778-remaining-distribution-and-kill-velocity">4. The 778 remaining: distribution and kill velocity</h2>
+<p><strong>Sheet tabs and simulation backlog:</strong>
+- <strong>Classes:</strong> all 778 are in the Classifications tab.
+- <strong>Results status:</strong>
+  - 759 blank
+  - 18 CRYPTID: 15 Bell-like, 2 Quadratic Mess, 1 Shift-overflow bouncer counter
+  - 1 NONHALT: the <code>…_1LA1LC</code> sheet mix-up already noted in STATUS.md
+- <strong>Category tabs:</strong> category-1 (bounded inductive rules or halts; most cryptids) 16, category-2 (mxdys's 50 random) 21, category-3 (Chaotic Bell Class 3, "two arrays of integers") 15.
+- <strong>Level tabs:</strong> level-0 115, level-1 ("worked on extensively") 41: Bell-like 18, Cubic Mess 7, Quadratic Mess 5.
+- <strong>Direct-simulation backlog:</strong>
+  - 133 still not simulated to 10¹⁴ and 168 not to 10¹⁵.
+  - The 10¹⁴ backlog is concentrated in chaotic classes: Chaotic Bell Class 1 19/19, Chaotic 1dCA-like in bouncer 14/14, Spaghetti 16/18, Chaotic Bell Class 3 11/22, Chaotic 1dCA-like in bell 9/9, Unknown 40/93.
+- <strong>Traces in busycoq:</strong> 299 are mentioned in <code>verify/</code> but none is proved. 286 appear only as the <code>tm'</code> representative of an <code>Eqv*.v</code> lemma, and 6 Cubic Mess machines have only a <code>Cert_WF</code> stub in <code>CubicCap.v</code>.
+- <strong>Equivalence groups:</strong> in <code>2026-10-07_eqv_1590.txt</code>, 291 of the 778 groups have more than one member.</p>
+<p><strong>Per class.</strong> Velocity = proof kills since 06-29 ÷ (that + remaining). State:
+- <strong>hot:</strong> a proof kill since 08-30
+- <strong>cooling:</strong> proof kills in Jul–Aug only
+- <strong>stalled:</strong> Dec–Jun only
+- <strong>untouched:</strong> no proof kill since Dec</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th style="text-align: right;">left</th>
+<th style="text-align: right;">removed Dec+ (eqv)</th>
+<th style="text-align: right;">proofs since 06-29</th>
+<th style="text-align: right;">since 08-30</th>
+<th style="text-align: right;">velocity</th>
+<th>last proof kill</th>
+<th>state</th>
+<th style="text-align: right;">level tabs</th>
+<th style="text-align: right;">not sim 1e14</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shift-overflow counter</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">299 (40)</td>
+<td style="text-align: right;">141</td>
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">0.52</td>
+<td>10-07</td>
+<td><strong>hot</strong></td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 1</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.05</td>
+<td>09-30</td>
+<td><strong>hot</strong> (new numbered list)</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">33 (8)</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.08</td>
+<td>10-07</td>
+<td>hot (scattered)</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr>
+<td>Bell-like</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.01</td>
+<td>10-07</td>
+<td>hot (Bell60 halting only)</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>Quadratic Mess</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.09</td>
+<td>10-07</td>
+<td>hot (QM30 halting)</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Cubic Mess</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">13 (4)</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.12</td>
+<td>10-07</td>
+<td><strong>hot</strong></td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Bell eats counter</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">7 (3)</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.09</td>
+<td>08-15</td>
+<td>cooling</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Shift-overflow bouncer counter</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.20</td>
+<td>09-24</td>
+<td>hot</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic Bell Class 3</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>–</td>
+<td>untouched</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td>Bouncer + Chaotic Edge</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">13 (2)</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.17</td>
+<td>07-29</td>
+<td>cooling</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>Chaotic Bell Class 1</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">4 (4)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>–</td>
+<td>untouched (eqv only)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr>
+<td>Spaghetti</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">5 (3)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>02-28</td>
+<td>stalled</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr>
+<td>Chaotic 1dCA-like in bouncer</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">5 (3)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>02-28</td>
+<td>stalled</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 2</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.07</td>
+<td>08-15</td>
+<td>cooling</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Shift-overflow structural counter</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.42</td>
+<td>08-30</td>
+<td>cooling</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Structural counter + chaotic edge</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">13 (7)</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.35</td>
+<td>08-30</td>
+<td>cooling</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic Ack-like Bell</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>02-15</td>
+<td>stalled</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic 1dCA-like in bell</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>–</td>
+<td>untouched</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr>
+<td>Monotone list</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.53</td>
+<td>09-05</td>
+<td>hot</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic Bell Class 2</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.36</td>
+<td>09-08</td>
+<td>hot</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Translated Counter</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.17</td>
+<td>09-30</td>
+<td>hot (M-Abozaid)</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>Structural counter + counter</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>–</td>
+<td><strong>untouched</strong></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic Bell Class 4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1 (1)</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>–</td>
+<td>untouched</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Type 1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">0.82</td>
+<td>09-16</td>
+<td>hot, nearly clean</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Sync bouncer counter</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.67</td>
+<td>08-15</td>
+<td>cooling, nearly clean</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Others</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.33</td>
+<td>09-16</td>
+<td>hot</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Fractal in Bouncer</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.40</td>
+<td>07-29</td>
+<td>cooling</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>Counter Class 3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.57</td>
+<td>10-07</td>
+<td>hot</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>Counter Class 2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.57</td>
+<td>07-29</td>
+<td>cooling</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>Counter Class 4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>–</td>
+<td><strong>untouched</strong></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<p>Full table with Discord-link counts and <code>verify/</code> mentions: <code>reports/forensics/tables2.md</code> §U5. Per-machine detail: <code>reports/forensics/remaining_778.tsv</code>.</p>
+<p><strong>Is mxdys (or someone) actively mining a class?</strong></p>
+<p>The evidence is the file headers and commit cadence. The sheet and Discord links are stale, with the newest sheet link from 2026-03-29.</p>
+<ul>
+<li><strong>Shift-overflow counter: yes, heavily.</strong></li>
+<li>SOC files landed in three batches, 09-16, 09-30 and 10-07: <code>SOC_2_3_v4/v5</code>, <code>SOC_2_4_v8</code>, <code>SOC_2_5_v2</code>, <code>SOC_3_3_v5</code>, <code>SOC_3_4_v1</code>, <code>SOC_3_6_v1</code>, <code>SOC_4_3_v1</code>, <code>SOC_4_3_Halt</code>, <code>SOC23_*</code>, <code>SOC43_*</code>, <code>SOCMisc</code>.</li>
+<li>Their headers cite numbered work lists ("SOC_ex rows 8–14", "test_SOC_4_3.TM10", "SOC_FT7_CONSOLIDATION.md for numbering").</li>
+<li>Some 50 of the 128 remaining are already equivalence representatives in <code>Eqv*.v</code>, so mxdys has processed them at least that far.</li>
+<li><strong>Skelet 1-like Class 1: yes, just started.</strong> <code>Sk1Machines.v</code> (09-30) is titled "Sk1 Class1: TM17 nonhalts; TM91, TM94, TM104, TM105 halt", so someone holds a numbered list of 105 or more of this class's 112 original machines.</li>
+<li><strong>Cubic Mess: yes.</strong> <code>CubicMachines.v</code> (10-07) says "Completed machines from cubic.txt: TM1, TM17, TM18, TM39, TM41, TM49", and the 6 <code>Cert_WF</code> stubs in <code>CubicCap.v</code> are mxdys's own unfinished work.</li>
+<li><strong>Bell-like and Quadratic Mess: the halting route is active.</strong> <code>Bell60.v</code> and <code>QuadraticMess30.v</code> (10-07) are RLE-accelerator halting certificates, the latter from "the halting-proof archive supplied by the user". The nonhalting side has barely moved (1 Bell-like and 5 Quadratic Mess proofs in 3 months).</li>
+<li><strong>Everything "cooling" had a burst of mxdys-style batch files in Jul–Aug and nothing since 08-30</strong>: Bell eats counter, SO structural counter, Structural counter + chaotic edge, Bouncer + Chaotic Edge, Skelet 1-like Class 2, Sync bouncer counter, Counter Class 2, Fractal in Bouncer. The same templates could produce more if someone pushed. mxdys may come back to them, but there is no sign of a numbered work list for them in any recent header.</li>
+</ul>
+<hr />
+<h2 id="5-ai-signals">5. AI signals</h2>
+<h3 id="51-explicit-mentions-searched-all-133-commit-messages-incl-bodies-readmemdreadme_oldmd-every-comment-in-every-verifyv-at-the-pin-the-whole-diff-history-of-verify-every-cell-of-all-12-sheet-tabs">5.1 Explicit mentions (searched: all 133 commit messages incl. bodies, README.md/README_old.md, every comment in every <code>verify/*.v</code> at the pin, the whole diff history of <code>verify/</code>, every cell of all 12 sheet tabs)</h3>
+<table>
+<thead>
+<tr>
+<th>where</th>
+<th>text</th>
+<th>date / commit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>verify/QuadraticMess30.v:1</code></td>
+<td>"Parameter lemmas adapted from the halting-proof archive <strong>supplied by the user</strong>. The entire route is generated by a proved RLE parameter interpreter."</td>
+<td>2026-10-07 <code>0940bb9</code></td>
+</tr>
+<tr>
+<td><code>verify/Queue_v1.v:1</code></td>
+<td>"Adapted from the October 2026 nonhalting proof archive <strong>supplied by the user</strong>. The finite graph is constructed by a small generator, not a literal table."</td>
+<td>2026-10-07 <code>0940bb9</code></td>
+</tr>
+<tr>
+<td><code>verify/SOCMisc.v:5713</code></td>
+<td>"A6 uses the literal L/R mirror of <strong>the user's machine</strong>."</td>
+<td>2026-10-07 <code>0940bb9</code></td>
+</tr>
+<tr>
+<td>sheet Results row 686, <code>1RB1LA_1RC0RF_1RD---_0LE1RB_---0LA_1LD1RF</code> (Cubic Mess, still a holdout, potential cryptid)</td>
+<td>"Analysed thoroughly using formal proofs from <strong>Claude Opus 4.6</strong>." Done By: dyuan, mxdys, hipparcos, DrDisentangle</td>
+<td>sheet 2026-10-09</td>
+</tr>
+</tbody>
+</table>
+<p>No hits anywhere for GPT/ChatGPT/LLM/Gemini/Codex/Copilot/DeepSeek/agent/auto-generated, no <code>Co-authored-by</code> trailers, and nothing in the README.</p>
+<p>The three "user" comments are written in an assistant's voice, describing an archive "supplied by the user". A human author would not describe his own input that way. <strong>This is direct evidence that at least those three files were produced or rewritten by an AI assistant for someone, and merged by mxdys.</strong></p>
+<h3 id="52-probable-markers-consistent-with-agent-produced-files-none-appear-before-2026-08-15">5.2 Probable markers (consistent with agent-produced files; none appear before 2026-08-15)</h3>
+<ul>
+<li><strong>Boilerplate self-description headers:</strong></li>
+<li>"Standalone; only BusyCoq and standard-library dependencies" (<code>SOC23_Nonhalt51.v</code>)</li>
+<li>"Self-contained except for BusyCoq and the Coq standard library" (<code>Sk1Machines.v</code>)</li>
+<li>"This file needs only BusyCoq and the standard library" (<code>SOC23_Halt165.v</code>, <code>SOC23_PeriodicHalt.v</code>)</li>
+<li>"Only BusyCoq and standard-library dependencies; no stored long trace" (<code>Bell60.v</code>)</li>
+<li>"ported to current BusyCoq… generated and checked inside Coq; no external trace table or generator is needed" (<code>CounterClass3v2.v</code>)</li>
+<li>In total, 12 files carry such phrases, the first being <code>Sk17.v</code> on 09-08.</li>
+<li><strong>Citations of audit/analysis documents that are not in the repo:</strong></li>
+<li><code>SOC_FT7_CONSOLIDATION.md</code> (10 citations; "Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering." heads 7 SOC files)</li>
+<li><code>EXTERNAL_BOUNCER_PROOFS.md</code> (2: "Sources, certificate conversion and audit")</li>
+<li><code>SOC_EX_WEIGHTED.md</code> ("Informal argument and compilation/audit records")</li>
+<li><code>SOC_ANALYSIS.md, section 49</code></li>
+<li><code>SOC51_BLOCK_PROOF.md</code></li>
+<li><code>SOC43_EX13_RUNS.md</code> ("the independent simulations")</li>
+<li>Plus <code>cubic.txt</code>, <code>m23_dfa_analyze.py</code>, <code>symsim.py</code>.</li>
+<li><strong>References to dozens of absent per-machine source files, i.e. a consolidated external workspace.</strong> Examples: <code>SOC23_R2carry.v</code>, <code>SOC23_TM102Halt.v</code>, <code>FT7CallRules.v</code>, <code>FT7Compute.v</code>, <code>FT7TM16Nonhalt.v</code>, <code>SOCPair12Carry.v</code>, <code>SOCPair12Guard.v</code>. <code>FractalType7v2.v</code> even keeps a dozen concatenated <code>Require Import</code> blocks from the files it was stitched from. A workspace of hundreds of small files plus <code>*_ANALYSIS.md</code> / <code>*_RUNS.md</code> / <code>*_CONSOLIDATION.md</code> records is the typical footprint of a coding-agent workflow. <em>Speculation: we cannot see the workspace.</em></li>
+<li><strong>Phrases like "untrusted input", "audit", "conservative checker… with primitive fallback at every unmatched edge" and "rechecked for this transition table, not assumed from TM13".</strong> These are careful-verification boilerplate typical of current coding agents. <em>Weak evidence on its own.</em></li>
+</ul>
+<h3 id="53-style-statistics-proof-files-at-the-pin-by-date-the-file-was-added-certificates-excluded-medians-per-file-style_summarymd">5.3 Style statistics (proof files at the pin, by date the file was added; certificates excluded; medians per file; <code>style_summary.md</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>era</th>
+<th style="text-align: right;">files</th>
+<th style="text-align: right;">bytes/machine</th>
+<th style="text-align: right;">framework tactics per lemma (<code>es</code>, <code>follow</code>, <code>ind</code>, <code>mid</code>…)</th>
+<th style="text-align: right;">generic tactics per lemma</th>
+<th style="text-align: right;"><code>Fixpoint</code>s</th>
+<th style="text-align: right;">snake_case lemma names</th>
+<th style="text-align: right;">mean lemma-name length</th>
+<th style="text-align: right;">mean line length</th>
+<th style="text-align: right;">prose comments / 1000 lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>before 2025-12</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">3,599</td>
+<td style="text-align: right;">1.44</td>
+<td style="text-align: right;">4.7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2025-12 … 2026-06</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">7,124</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2026-07 … 08</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">23,196</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.90</td>
+<td style="text-align: right;">10.8</td>
+<td style="text-align: right;">31.0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>2026-09 … 10</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">13,224</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">9.3</td>
+<td style="text-align: right;">41.1</td>
+<td style="text-align: right;">2.0</td>
+</tr>
+<tr>
+<td>files with explicit/assistant-style headers</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">23,730</td>
+<td style="text-align: right;">0.57</td>
+<td style="text-align: right;">–</td>
+<td style="text-align: right;">9.5</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;">8.3</td>
+<td style="text-align: right;">42.9</td>
+<td style="text-align: right;">5.9</td>
+</tr>
+</tbody>
+</table>
+<p>How the two styles differ:
+- <strong>Classic mxdys files</strong> are terse.
+  - Short <code>Lemma … Proof. es. Qed.</code> / <code>ind n Inc</code> chains, short lemma names (mean about 6 characters), no comments.
+  - About 3.6 KB per machine.
+  - Example: <code>verify/Bouncer_v3.v</code> (3.5 KB) and the rules at the top of <code>verify/CubicMachines.v</code> TM1, which mixes both styles.
+- <strong>The new population</strong> reads differently.
+  - Long, snake_case lemma names (<code>partition_phase_columns_Forall</code>), full-sentence explanatory comments with coqdoc <code>[refs]</code>, and lines about twice as long.
+  - It defines its own data structures and <strong>verified checkers</strong>: an <code>Inductive</code> tape/word type, a <code>Fixpoint</code> interpreter or generator, a soundness lemma against <code>--&gt;*</code>, then <code>vm_compute</code> over finite data.
+  - It barely uses the framework's <code>es</code>/<code>follow</code>.
+- <strong>The style shift starts on 2026-08-15</strong> (<code>BLECv3x.v</code>, <code>BLECv3y.v</code>, <code>SBCv6a2.v</code>: prose comments, references to <code>TM4x1.txt</code>-style data files). Assistant-style headers start 09-08 (<code>Sk17.v</code>); the explicit "the user" comments appear on 10-07.
+- <em>Caveat:</em> "prose-heavy" is a style, not proof of AI. mxdys's own files also grew after mid-2026 (e.g. <code>SOMDC_Class1.v</code>, plain header, 2.8 prose comments per 1000 lines).</p>
+<h3 id="54-how-many-kills-came-from-marked-files-u10-u11">5.4 How many kills came from marked files (U10, U11)</h3>
+<p>Tiers, first match wins:
+- <strong>explicit:</strong> an "the user" comment
+- <strong>assistant header:</strong> self-contained/standalone/consolidated/attribution header or <code>.md</code> audit citation
+- <strong>absent refs:</strong> comments cite files not in the repo
+- <strong>prose-heavy:</strong> at least 1 full-sentence comment per 1000 lines
+- <strong>classic:</strong> none of the above
+- <strong>cert:</strong> decider certificate</p>
+<table>
+<thead>
+<tr>
+<th>commit month</th>
+<th style="text-align: right;">explicit</th>
+<th style="text-align: right;">assistant header</th>
+<th style="text-align: right;">absent refs</th>
+<th style="text-align: right;">prose-heavy</th>
+<th style="text-align: right;">classic</th>
+<th style="text-align: right;">cert</th>
+<th style="text-align: right;">total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025-12 … 2026-07</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">190</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">289</td>
+</tr>
+<tr>
+<td>2026-08</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">52</td>
+</tr>
+<tr>
+<td>2026-09</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">203</td>
+</tr>
+<tr>
+<td>2026-10 (to 10-07)</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">19</td>
+</tr>
+</tbody>
+</table>
+<p>Since Jun 29: explicit 10, assistant header 102, absent refs 20, prose-heavy 57, classic 92, cert 16 (297 total).</p>
+<p>Which classes fell to marked files (Jun 29+, explicit + assistant header + absent refs):</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th style="text-align: right;">kills in marked files</th>
+<th style="text-align: right;">of all kills</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shift-overflow counter</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">141 (plus 43 prose-heavy)</td>
+</tr>
+<tr>
+<td>Chaotic Fractal Type 1 (FractalType7)</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">18</td>
+</tr>
+<tr>
+<td>Skelet 17-like</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>Cubic Mess</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>Unknown</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>Bouncer + Translated Counter (M-Abozaid BTCv4)</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>Translated Counter (SOTCv2)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Bell-like (Bell60, halting)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>Quadratic Mess (QuadraticMess30, halting)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>Counter Class 3 (CounterClass3v2)</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<p>The other recent kills are classic mxdys work: Counter Class 1 (16, <code>CounterClass1/</code>), Monotone list (<code>Loop4Mono_v*</code>), Sync bouncer counter (<code>SBCv7.v</code>, <code>SBCv11.v</code>), List merging (<code>LMv1..v3.v</code>), Structural counter + chaotic edge (<code>BLv2.v</code>, <code>BLv3.v</code>, <code>Bouncer_v4.v</code>), and SO structural counter (<code>SBCv10.v</code>, <code>SOBLv1..v3.v</code>).</p>
+<p><strong>Interpretation (labelled speculation):</strong>
+- The AI-assisted contributor(s) do best on <strong>arithmetic counters with a finite case structure that a verified checker can grind through</strong>: shift-overflow counters, Skelet-17/Sk1 column flows, Fractal Type 7. They also do well on <strong>long halters</strong>, where a proved accelerator (RLE, periodic tape) replaces simulation.
+- Those areas are weak to AI, and <strong>they are being harvested right now from numbered lists</strong>.
+- The AI-style files have not touched the chaotic classes, Bell-like nonhalting, Spaghetti, or the bouncer/counter hybrids that mxdys handled by hand in Jul–Aug.</p>
+<hr />
+<h2 id="6-conclusions-for-track-b">6. Conclusions for Track B</h2>
+<h3 id="61-picked-clean-nothing-left-in-the-778-dont-look-here">6.1 Picked clean (nothing left in the 778; don't look here)</h3>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th style="text-align: right;">killed since Dec</th>
+<th>how</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Counter Class 1</td>
+<td style="text-align: right;">16</td>
+<td><code>verify/CounterClass1/</code> parameterized family (09-05)</td>
+</tr>
+<tr>
+<td>Skelet 17-like</td>
+<td style="text-align: right;">8</td>
+<td><code>Sk17.v</code> (09-08, assistant-style)</td>
+</tr>
+<tr>
+<td>Quadratic Skelet 17-like</td>
+<td style="text-align: right;">6</td>
+<td><code>SqrtSk17Like_v*.v</code> (09-08)</td>
+</tr>
+<tr>
+<td>List merging</td>
+<td style="text-align: right;">6</td>
+<td><code>LMv1.v</code>, <code>LMv2.v</code>, <code>LMv3.v</code> (Jul–Aug)</td>
+</tr>
+<tr>
+<td>Bouncer + Complex Counter</td>
+<td style="text-align: right;">8</td>
+<td>6 FAR certs + <code>BCv2.v</code> (Jul)</td>
+</tr>
+<tr>
+<td>Bouncer + Translated Counter</td>
+<td style="text-align: right;">3</td>
+<td><code>BTCv3.v</code> (Jan) + <code>BTCv4.v</code> (M-Abozaid, 09-30)</td>
+</tr>
+<tr>
+<td>Structural counter + bouncer</td>
+<td style="text-align: right;">5</td>
+<td><code>BLECv3.v</code> (Jan) + <code>InfiniteRect_v2.v</code> (Aug)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nearly clean</strong> (≤ 4 left, high velocity): Chaotic Fractal Type 1 (4), Sync bouncer counter (4), Counter Class 2 (3) and 3 (3), Fractal in Bouncer (3), Chaotic Fractal Others (4). The leftovers are probably the ones the batch technique did not cover. They are worth a look only if their nearest template obviously fails for a nameable reason.</p>
+<p><strong>Methods that are picked clean</strong> (re-running them will not find more):
+- mxdys's FAR/CTL DFA generator: 73 kills Dec–Jul, none since.
+- LongAcc/LongLoop longitudinal deciders: 91 kills, last 09-23.
+- RWLAcc/UBRRBA halting certificates: last 08-30.
+- Equivalence merging (<code>Eqv*.v</code>): 75. It doesn't shrink the real problem.</p>
+<h3 id="62-actively-mined-avoid-duplicate-work-risk">6.2 Actively mined (avoid; duplicate-work risk)</h3>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th style="text-align: right;">left</th>
+<th>why we think it is being worked</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shift-overflow counter</td>
+<td style="text-align: right;">128</td>
+<td>130 proof kills since 08-30. Numbered SOC sub-lists; consolidated agent-style files in three batches (09-16, 09-30, 10-07).</td>
+</tr>
+<tr>
+<td>Skelet 1-like Class 1</td>
+<td style="text-align: right;">101</td>
+<td><code>Sk1Machines.v</code> (09-30) works from a numbered "Sk1 Class1 TM1..TM105" list. Low velocity so far, but the pipeline exists.</td>
+</tr>
+<tr>
+<td>Cubic Mess</td>
+<td style="text-align: right;">50</td>
+<td><code>CubicMachines.v</code> (10-07) from <code>cubic.txt</code> (TM1..TM49), plus 6 <code>Cert_WF</code> stubs in <code>CubicCap.v</code>.</td>
+</tr>
+<tr>
+<td>Shift-overflow bouncer counter</td>
+<td style="text-align: right;">33</td>
+<td><code>SOBCv9..v12</code> and univerz's PR (Aug–Sep).</td>
+</tr>
+<tr>
+<td>Bell-like / Quadratic Mess <strong>halting</strong></td>
+<td style="text-align: right;">80 / 51</td>
+<td><code>Bell60.v</code>, <code>QuadraticMess30.v</code> (10-07): RLE-accelerator halting certificates from an "archive supplied by the user".</td>
+</tr>
+<tr>
+<td>Monotone list</td>
+<td style="text-align: right;">8</td>
+<td><code>Loop4Mono_v2..6</code> (09-05).</td>
+</tr>
+<tr>
+<td>Counter Class 3, Translated Counter</td>
+<td style="text-align: right;">3, 5</td>
+<td><code>CounterClass3v2.v</code> (10-07, assistant-style "M1"); <code>SOTCv2.v</code> (M-Abozaid M7, 09-30).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-stalled-but-plausible-targets-ranked">6.3 Stalled but plausible (targets), ranked</h3>
+<p>Our activity signal comes only from commits and file headers. Before committing to any of these, still do the ground-rule-7 check (sheet row plus Discord thread).</p>
+<ol>
+<li><strong>Bell eats counter, 40 left.</strong>
+   - <strong>Activity:</strong> 4 proof kills in Jul–Aug (<code>SOMDCv6.v</code> 2 in July, <code>BECv7.v</code> 2 on 08-15), plus 3 equivalence merges in August, none since 08-30. Only 2 machines are on level tabs and 1 has a Discord link (2024).
+   - <strong>Templates:</strong> BEC is one of the oldest classes ("typical bell eats counters", 2024): <code>verify/BECv1.v</code> … <code>verify/BECv8.v</code>, most recently <code>verify/BECv7.v</code>, plus <code>verify/SOMDCv6.v</code>.
+   - <strong>Caution:</strong> the two level-tab notes call members "chaotic bell eats counter". Triage for the regular ones first.</li>
+<li><strong>Shift-overflow structural counter (11) and Structural counter + chaotic edge (11).</strong>
+   - <strong>Activity:</strong> 8 and 6 proof kills in Jul–Aug, none since. No level-tab notes for the second class, and only one "possibly tetrational" note for the first.
+   - <strong>Templates, SO structural counter:</strong> <code>verify/SBCv6a.v</code>, <code>verify/SBCv10.v</code>, <code>verify/SBCv6a2.v</code>, <code>verify/SOBLv1.v</code>…<code>SOBLv3.v</code>.
+   - <strong>Templates, Structural counter + chaotic edge:</strong> <code>verify/BLv2.v</code>, <code>verify/BLv3.v</code>, <code>verify/Bouncer_v4.v</code>.</li>
+<li><strong>Bouncer + Chaotic Edge, 20 left.</strong>
+   - <strong>Activity:</strong> In Feb–Jun, decider certificates took 7 (<code>RWLAccHaltv8.v</code> ×3, FAR ×4). In July, individual proofs took 4 (<code>InfiniteRect_v1.v</code>, <code>LongNv1.v</code>, <code>Bouncer_v3.v</code>, <code>UBRRBAHaltv2.v</code>). None since 07-29. The certificate route is exhausted, so what remains needs individual proofs.
+   - <strong>Templates:</strong> <code>verify/Bouncer_v3.v</code> (3.5 KB), <code>verify/InfiniteRect.v</code>, <code>verify/LongNv1.v</code>.</li>
+<li><strong>Skelet 1-like Class 2, 14 left.</strong>
+   - <strong>Activity:</strong> 1 kill (<code>SBCv6.v</code>, 08-15).
+   - <strong>Risk:</strong> it is adjacent to the actively mined Class 1. Check whether the <code>Sk1Machines.v</code> numbering covers Class 2 before investing.
+   - <strong>Templates:</strong> <code>verify/SBCv6.v</code>; for the sibling Class 1, <code>verify/Sk1like_TC_v1.v</code>, <code>verify/Sk1like_TC_v2.v</code>, <code>verify/TCv3.v</code> (Mar) and <code>verify/Sk1Machines.v</code> (Sep).</li>
+<li><strong>Structural counter + counter (5) and Counter Class 4 (2).</strong>
+   - <strong>Activity:</strong> untouched since Dec, while all their sibling counter classes were cleaned Jul–Oct.
+   - <strong>Templates:</strong> <code>verify/CounterClass1/</code> (parameterized), <code>verify/CounterClass2v1.v</code>…<code>v4.v</code>, <code>verify/CounterClass3v1.v</code>, <code>verify/CounterClass3v2.v</code>, <code>verify/CounterCmp_v1.v</code>.
+   - <strong>Caution:</strong> <code>1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF</code> (Counter Class 4) is the machine in <code>atlas/tooling-notes.md</code> on which Quick_Sim finds 0 rules. It may be genuinely irregular.</li>
+<li><strong>Side quest (halting), not proofs:</strong> the not-simulated-to-10¹⁴ backlog sits in the chaotic classes (Chaotic Bell Class 1 19/19, Chaotic 1dCA-like 23/23, Spaghetti 16/18, Unknown 40/93). Recent halting kills came from accelerators, not this backlog. The backlog is still unsimulated, which makes it a cheap lottery for our sim tools.</li>
+</ol>
+<h3 id="64-recurring-proof-templates-worth-reusing">6.4 Recurring proof templates worth reusing</h3>
+<table>
+<thead>
+<tr>
+<th>pattern</th>
+<th>canonical files</th>
+<th>when it applies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>mxdys batch style:</strong> <code>es</code> low-level rules, <code>ind</code> repeats, <code>follow</code> chains, <code>multistep_nonhalt</code> + <code>progress_nonhalt_*</code></td>
+<td><code>verify/SBCv11.v</code>, <code>verify/BECv7.v</code>, <code>verify/LMv1.v</code>, <code>verify/BLv2.v</code>, <code>verify/Bouncer_v3.v</code> (3.5 KB), <code>verify/SOCSSv2.v</code> (18 kills, 2.9 KB each)</td>
+<td>Clean affine rules; our default (PLAN §6 step 6)</td>
+</tr>
+<tr>
+<td><strong>Shared-lemma batch:</strong> a generic <code>segRLs</code>/<code>sideRLs</code> phase lemma, then per-machine instantiations</td>
+<td><code>verify/SOMDC_Class1.v</code> (31 machines), <code>verify/SOMDCv6.v</code>, <code>verify/LongLoopv2.v</code> (24), <code>verify/LongAccv1.v</code> (17, 6.7 KB total)</td>
+<td>Many machines with the same tape-segment mechanism</td>
+</tr>
+<tr>
+<td><strong>Parameterized family (record of rules + per-machine instance)</strong></td>
+<td><code>verify/CounterClass1/CounterClass1.v</code> + <code>CounterClass1TM*Proof.v</code> (1.4–5 KB each) + <code>verify/CounterClass1/CounterClass1Common.v</code></td>
+<td>≥ 3 machines with the same counter; Phase 2 model. Note the shared files use Sections; our kills must stay Hypothesis-free.</td>
+</tr>
+<tr>
+<td><strong>Verified checker:</strong> <code>Fixpoint</code> interpreter/generator + soundness lemma + <code>vm_compute</code> on finite data</td>
+<td><code>verify/SOC_4_3_Halt.v</code> (20 KB, 3 halts, "single shared, conservative checker"), <code>verify/SOC23_PeriodicHalt.v</code>, <code>verify/Queue_v1.v</code> (finite graph from a generator), <code>verify/CounterClass3v2.v</code> (symbolic bridges generated in Coq)</td>
+<td>Finite-case explosions, periodic-tape behaviour. This is what the AI-assisted files use.</td>
+</tr>
+<tr>
+<td><strong>Proved accelerator for halting</strong></td>
+<td><code>verify/Bell60.v</code> (11 KB, RLE accelerator + halting certificate, BigUint), <code>verify/QuadraticMess30.v</code> (RLE parameter interpreter), <code>verify/LongAccHaltv1.v</code> (23 halts in 4.6 KB)</td>
+<td>Long halters beyond direct simulation (20% of recent kills)</td>
+</tr>
+<tr>
+<td><strong>Decider certificates</strong></td>
+<td><code>verify/FARv1.v</code> (162 B/machine), <code>verify/RWLAccHaltv8.v</code>, <code>verify/UBRRBAHaltv2.v</code></td>
+<td>Only with a <em>new</em> DFA/rule generator; mxdys's is exhausted</td>
+</tr>
+</tbody>
+</table>
+<h3 id="65-tarpits">6.5 Tarpits</h3>
+<ul>
+<li><strong>Bell-like nonhalting (80 left):</strong></li>
+<li>15 of 18 sheet CRYPTIDs, 18 on the "worked on extensively" level-1 tab, 9 on category tabs.</li>
+<li>1 proof kill in 3 months, and that one was a halt.</li>
+<li>Treat it as the cryptid frontier (PLAN §8), not Track B.</li>
+<li><strong>Category-1 tab ("bounded inductive rules, or it halts", 16 left: Quadratic Mess 8, Cubic Mess 4, Bell-like 4):</strong> the sheet itself says most cryptids live here.</li>
+<li><strong>Chaotic classes with no proof kill since Dec:</strong></li>
+<li>Chaotic Bell Class 3 (22; FAR killed 9 of 24 in 2025, nothing since)</li>
+<li>Chaotic Bell Class 1 (19, equivalence only)</li>
+<li>Spaghetti (18)</li>
+<li>Chaotic 1dCA-like in bouncer (14) and in bell (9)</li>
+<li>Chaotic Ack-like Bell (11)</li>
+<li>Chaotic Bell Class 4 (5)</li>
+</ul>
+<p>Nobody, human or AI-assisted, has found a mechanism here. Expect STUCK.
+- <strong>Claimed-but-wrong proofs.</strong> Four of the 778 carry "NONHALT (?)… unlikely to be correct" on the Unverified tab:
+  - <code>1RB1LB_1LC0RD_0LE1LA_0RF1RA_1LE0LA_---0RB</code>
+  - <code>1RB0RE_0RC---_1LD1LE_1LE1LD_1RF0LC_1RA1RF</code>
+  - <code>1RB0RE_1LC0RA_0LD0LB_1RE0LB_1RF---_0RB0RC</code>
+  - <code>1RB1RB_0LC0LD_0LE1LD_1LB0RE_1RA0RF_1RD---</code></p>
+<p>Earlier informal arguments failed on these.
+- <strong><code>1RB1LA_1RC0RF_1RD---_0LE1RB_---0LA_1LD1RF</code></strong> (Cubic Mess, two <code>---</code>): "analysed thoroughly using formal proofs from Claude Opus 4.6" and still open; the sheet lists it as a potential cryptid. Someone has already thrown an agent at it.
+- <strong>Cost blow-up families:</strong> the recent kills in BLEC (<code>BLECv3z.v</code>, 772 KB for 2 machines), TranslatedBell (117 KB per machine), SOBC (<code>SOBCv10.v</code>, 152 KB for 1) and Loop4 (26 KB per machine) needed enormous bespoke proofs. The cheap members of these families are gone.
+- <strong>Mirror-form templates:</strong> 220 of 563 upstream proofs state the machine mirrored (<code>1LB…</code>). Copying one gives a file that fails our byte-exact gate until the string and every rule are mirrored back.</p>
+<hr />
+<h2 id="appendix-files">Appendix: files</h2>
+<table>
+<thead>
+<tr>
+<th>path</th>
+<th>content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reports/forensics/kills.tsv</code></td>
+<td>3,656 removals since the 4408 list (one row per window × machine): reason, proves, tier, file, family, proof kind, commit, date, timing, author, bytes, sheet class/status/Done By/notes</td>
+</tr>
+<tr>
+<td><code>reports/forensics/remaining_778.tsv</code></td>
+<td>the 778: class, Results status, tabs, sim backlog, Discord links, eqv group size, <code>verify/</code> mentions</td>
+</tr>
+<tr>
+<td><code>reports/forensics/class_velocity.tsv</code></td>
+<td>per class: remaining, removals, proof kills per period, velocity, last proof kill, state, families used</td>
+</tr>
+<tr>
+<td><code>reports/forensics/commits.tsv</code>, <code>commit_files.tsv</code>, <code>string_events.tsv</code>, <code>file_first_seen.tsv</code></td>
+<td>git mining (133 commits; per-file added/dropped machine strings)</td>
+</tr>
+<tr>
+<td><code>reports/forensics/ai_signals.tsv</code>, <code>style_files.tsv</code>, <code>style_summary.md</code></td>
+<td>AI-mention hits with context; per-file style features</td>
+</tr>
+<tr>
+<td><code>reports/forensics/tables.md</code>, <code>tables2.md</code></td>
+<td>all tables (T1–T7, U1–U11)</td>
+</tr>
+</tbody>
+</table>
+<p>Reproduce (about 30 s; read-only on vendor, no <code>__pycache__</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>[local working file]
+python3<span class="w"> </span>-B<span class="w"> </span>tools/analysis/forensics_git.py<span class="w"> </span>-j<span class="w"> </span><span class="m">24</span>
+python3<span class="w"> </span>-B<span class="w"> </span>tools/analysis/forensics_attrib.py
+python3<span class="w"> </span>-B<span class="w"> </span>tools/analysis/forensics_style.py
+python3<span class="w"> </span>-B<span class="w"> </span>tools/analysis/forensics_report.py
+</code></pre></div>
+</main></body></html>

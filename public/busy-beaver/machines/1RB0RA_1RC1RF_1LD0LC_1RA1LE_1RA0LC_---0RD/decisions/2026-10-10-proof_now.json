@@ -1,0 +1,57 @@
+{
+ "tm": "1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD",
+ "bucket_reason": "Med confidence after the exact_rules stage: the sweep, the glider and the creep trigger are exact. The end of the absorption, the MS overflow and the pause counter are still validated lemmas only.",
+ "question": "Write proof.md now with the absorption tail, the MS overflow and the pause counter as flagged lemmas, spend one more stage making them exact, or park?",
+ "options": [
+  {
+   "id": "proof_now",
+   "label": "Write proof.md now (the stop rule)",
+   "consequence": "An informal, TM31-style visit-count proof built on the exact rules (CL with the map g, the glider segRLs rule, the B-visit throttle rule and K-drop predicate) and the validated normal and pause rules. The absorption tail, MO and the pause-mode counter go in as validated lemmas, flagged as gaps to close during formalization."
+  },
+  {
+   "id": "exact_tail",
+   "label": "One more stage (2 h): exact rules for the absorption tail, MO and the pause counter",
+   "consequence": "Test whether MS-overflow carries reach cell 618 as B visits under the same frontier rule. Decode how normal visits finish a half-done R step. Write the pause-mode left counter as a per-trip rule. proof.md would follow with no flagged lemmas."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "No spend. It leaves a machine with an exact sweep rule and an exact creep trigger, and no halt in any test."
+  }
+ ],
+ "recommended": "proof_now",
+ "rationale": [
+  "The stop rule says proof.md is next; proof.md needs the open items in visit form anyway.",
+  "Sweep exact (19,732/19,732 visits); the trigger formula is right at 18/18 pause ends.",
+  "Each open item only picks K' in {K, K-1}; every test keeps K >= -1, a fixed point."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Fig 3: the m=14 creep. The thin front is the glider 12, which moves one block per visit.",
+   "href": "img/creep_special_1.487e8.png"
+  },
+  {
+   "kind": "fact",
+   "text": "Sweep rule CL per visit: 800/800 random pause ends and 19,732/19,732 visits exact; outcome from the map g right in 800/800.",
+   "href": "data/exact/validate_cl_long_throttle_seed3.jsonl"
+  },
+  {
+   "kind": "fact",
+   "text": "The creep trigger formula predicts the ending at 18/18 pause ends m = 9..26 (gliders at m = 14 and 22 only).",
+   "href": "data/exact/trigger_m9-27.jsonl"
+  },
+  {
+   "kind": "fact",
+   "text": "Absorption B phase: 1,815/1,815 B visits exact over 363 throttle states; the half-done-R predicate gives the K drop in 363/363.",
+   "href": "scripts/exact/check_bvisit.py"
+  }
+ ],
+ "effort_if_yes": "proof.md: one stage of about 2 h, no heavy compute. After that comes a TM31-style Longitudinal formalization over several stages; the flagged lemmas have to be made exact there at the latest.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "proof_now",
+  "note": "auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.",
+  "date": "2026-10-10"
+ }
+}

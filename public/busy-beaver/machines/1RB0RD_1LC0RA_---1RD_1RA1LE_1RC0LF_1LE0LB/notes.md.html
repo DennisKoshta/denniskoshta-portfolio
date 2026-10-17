@@ -1,0 +1,999 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/notes.md · <a href="/busy-beaver/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/notes.md.html">raw</a></div>
+<h1 id="c2-552-1rb0rd_1lc0ra_-1rd_1ra1le_1rc0lf_1le0lb">C2-552 <code>1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB</code></h1>
+<p>740 list line 552 (778 list line 587), sheet class "Skelet 1-like Class 2". Singleton: no other holdout in the 740 list or the 1590 equivalence file is this table from another start state, mirrored or renamed.</p>
+<h2 id="class-2-close-out-stage-1-2026-10-12">Class 2 close-out, stage 1 (2026-10-12)</h2>
+<p>Stage 1 = PLAN §6 "Observe". Outcome: <strong>progress</strong>. The bottom level is an exact binary counter (rule M, exact step formula). The full machine is a multi-level structure whose fossil zone is Pascal's triangle. Neither #3's nor #11's architecture covers it as is.</p>
+<h3 id="checks">Checks</h3>
+<ul>
+<li>Byte-exact: <code>tools/holdouts.py contains data/holdouts/BB6_holdouts_740.txt</code> finds it at line 552. It is in all 26 snapshots and in the newest 778 list (line 587). <code>holdouts.py solved</code>: absent from verify/, with no equivalent proof.</li>
+<li>Claims: none. The results sheet row has empty Status / Notes / Sources / Done By. Nothing in data/discord/.</li>
+<li>No halt to 10¹¹ (direct C sim: span −3,671..552,893, 283,762 ones). Left edge −676 at 3·10⁹.</li>
+</ul>
+<h3 id="halting-condition-from-the-table-alone">Halting condition (from the table alone)</h3>
+<ul>
+<li>Only B0 and E0 enter C, and C reads 0 = halt.</li>
+<li>E0 → 1RC moves onto the cell that D1 or F0 just wrote as 1, so it is safe.</li>
+<li>B0 → 1LC after A0 is safe too (A just wrote the cell C reads).</li>
+<li>B0 → 1LC after F1 (<code>0LB</code>, moving left) halts iff that cell is 0.</li>
+<li>So the machine halts <strong>iff the head in F reads a 1 whose two left neighbours are <code>0 0</code></strong>.</li>
+<li>F is entered only from E1. Inside an alternating stretch a left sweep in F/E never meets this, so the danger is a <code>00</code> wall with gap 0 before 1s (<code>0011</code>).</li>
+</ul>
+<h3 id="wall-view-the-representation-that-works">Wall view (the representation that works)</h3>
+<p>Read the tape left of the head at a right record (state A on the blank cell).
+- A <strong>wall</strong> is a run of ≥ 2 equal symbols: <code>00</code>, <code>11</code>, <code>1111</code>, <code>1^5</code>, <code>1^n</code>.
+- A <strong>gap</strong> is the number of cells between two walls; those cells alternate.
+- The <code>11</code> walls cut the tape into <strong>units</strong>. A unit is <code>11 x M m_1 P m_2 … P y</code>:
+  - lead marker <code>M ∈ {00, 1111}</code> (the bit: 00 = 0, 1111 = 1);
+  - k − 1 passive walls <code>P = 1111</code>, so k markers in all;
+  - gaps x (left), m_i (inside), y (right, the <strong>fuel</strong>).
+- The tail is <code>11 t</code> (t = 2a − 1 odd, a = number of increments since the last reset).
+- Left of the first <code>11</code> is the <strong>prefix</strong> (the fossil zone).
+- In pair notation a k = 1 unit is <code>(10)^p [1111] (01)^q</code>, #11's digit shape with marker 1111 instead of 00.
+- Tools: work/walls.py, work/unitlib.py, work/build.py (builds a tape from wall tokens).</p>
+<h3 id="rule-m-one-increment-one-right-record-in-state-a-exact">Rule M (one increment = one right record in state A): exact</h3>
+<p>The carry runs from the right. Every unit with lead 1111 is passed; the first unit with lead 00 stops it.
+- Passed unit: <code>1111 → 00</code>, x += 3.
+- Stopping unit: <code>00 → 1111</code>, x −= 1.
+- Every touched unit, k = 1: y −= 1.
+- Every touched unit, k ≥ 2: m_1 += 1, y −= 2.
+- Untouched units and the prefix are unchanged; t += 2.
+- Steps (old values; for k = 1 there are no m terms):
+  - 2t;
+  - plus, per passed unit, 20 + 16(k−1) + 2(x + Σm + y);
+  - plus, for the stopping unit, 16 + 16(k−1) + 2(Σm + y).</p>
+<p>Validated:
+- <strong>27,033 / 27,033</strong> orbit increments to 1e9 whose shape M covers: exact wall lists, 0 mismatches (work/unitcheck.py; 14,702/14,702 to 3e8, 4,530/4,530 to 3e7).
+- <strong>3,000 / 3,000</strong> random constructed instances (work/randM.py): 1–6 units, up to 3 markers each, random leads, random stop unit, a fossil-like prefix.
+- The step formula fits all 3,000 exactly (work/fitsteps.py, exact rational fit, max error 0).</p>
+<p>So level 0 is #11's per-carry M macro with a different encoding. Every touch burns fuel, and the bit sense matches #11 (00 = 0).</p>
+<h3 id="the-other-events-785-of-27818-increments-to-1e9">The other events (785 of 27,818 increments to 1e9)</h3>
+<ul>
+<li><strong>Overflow O</strong> (437 to 1e9): the carry passes every unit and enters the prefix.</li>
+<li>Clean form: every unit as in M; the prefix's leading block <code>1^n → 1^(n+3)</code>; the prefix's last gap −2.</li>
+<li>Exact on 73 of the 285 prefix-entering increments to 3e8 (work/ocheck.py).</li>
+<li>The rest stop inside glued units in the prefix or exhaust the prefix's last gap. Not modelled yet.</li>
+<li>At 2e8 the prefix's last gap is 13, 11, 9, …, 1: the prefix is itself a unit with fuel.</li>
+<li><strong>Glue G</strong> (72 multi-marker fuel-outs, k = 2..10): a k ≥ 2 unit touched at y = 1 gets y = −1. Its last P overlaps the next <code>11</code>, giving a <code>1^5</code> wall.</li>
+<li><strong>Split S</strong> (237 glued-unit events): a glued pair <code>[x M m P]⊕[x' M' y']</code> acts as two units while the right one is touched with lead 00.</li>
+<li>When the carry passes it, the passive wall moves across. Example: <code>8 00 16 1^5 21 1111 13 → 7 1111 15 | 2 00 22 1111 11</code>.</li>
+<li>Exact rule not written yet.</li>
+<li><strong>Reset R</strong> (39 increments with the tail glued; 17 resets to 3e9): the multi-marker unit next to the tail glues to the tail, then splits.</li>
+<li>End shape on <strong>17/17</strong> resets to 3e9: <code>… [x, M, a−1] [1, 1111, 2a−1] [1]</code>. The old tail becomes the fuel of a new LSB unit, and the new tail is 1.</li>
+<li>a at the resets: 2, 4, 7, 11, 17, 28, 50, 93, 173, 317, 574, 1036, 1875, 3407, 6205, 11304, 20577 (ratio → 1.82; steps ×3.3).</li>
+<li><strong>k = 1 fuel-outs: 0 to 1e9.</strong></li>
+<li>A k = 1 unit that does run out halts the machine, as the halting condition predicts.</li>
+<li>Constructed: LSB <code>[3 1111 5]</code> → <code>[10 00 0]</code> → halt within the next increment (work/runincs.py).</li>
+<li>Any invariant must keep every single-marker unit's fuel ≥ 1.</li>
+</ul>
+<h3 id="fossil-zone-pascals-triangle">Fossil zone = Pascal's triangle</h3>
+<p>The prefix is a list of rows. Row k is a block <code>1^{n_k}</code>, then k passive walls, with inner gaps <strong>2·C(k,i) − 1</strong> (i = 1..k−1).</p>
+<p>At 2.73e9 the prefix reads:</p>
+<div class="highlight"><pre><span></span><code>1^690 | 1^526 P | 1^283 P 3 P | 1^151 P 5 P 5 P | 1^82 P 7 P 11 P 7 P | 1^46 P 9 P 19 P 19 P 9 P | 1^25 P 11 P 29 P 7 …
+</code></pre></div>
+
+<ul>
+<li>Rows 1–5 are exact.</li>
+<li>Row 6 (11, 29, 39, 29, 11) is complete inside unit 1 at 2.49e8.</li>
+<li>Row 7 is forming at 2.73e9 (15 55 111 139 111 57 vs 2C(8,i)−1 = 15 55 111 139 111 55 15).</li>
+<li>The leading blocks grow by 3 per overflow; n_k ≈ ×1.85 per row.</li>
+<li>One new row per ~1 reset generation, so the number of walls grows like log t: 28 → 46 walls, 8 → 9 units between 2e6 and 2.5e8.</li>
+</ul>
+<h3 id="cryptid-check">Cryptid check</h3>
+<p><strong>Not cryptid-like.</strong>
+- All updates are linear with exact formulas (M; the clean O; the R end shape).
+- The fossil zone is binomial (Pascal), not pseudo-random. No parity- or mod-driven branching was seen beyond binary carries.
+- The irregular part is <em>when</em> glue/split events happen (which unit's fuel runs out first). That is fuel arithmetic, the same kind as #11's drops.</p>
+<h3 id="comparison-with-3-11-tm21">Comparison with #3 / #11 / TM21</h3>
+<ul>
+<li><strong>#3 (down-counter, per-step J with ghost phase):</strong> does not fit; this counter increments.</li>
+<li><strong>#11 / TM21:</strong> level 0 is #11's per-carry M (one macro step per carry, fuel burned per touch), so the per-step INV approach is the right shape for the active units. But:
+  1. There is no global re-pairing O. New digits enter at the right (R: the tail becomes a new LSB unit's fuel), and old units fossilize at the left.
+  2. Units carry passive markers (k up to 10 by 1e9). Their fuel burns 2 per touch, and they glue and split (G, S).
+  3. The fossil zone is an unbounded Pascal triangle, i.e. a multi-level structure whose depth grows like log t. #11's INV (three phases, 2^j bounds over one digit list) cannot express it.</li>
+<li><strong>R4 / #32 (fossil-K walls):</strong> a similar level of difficulty, but a different mechanism and encoding. No shared rules.</li>
+</ul>
+<h3 id="open-stages-23">Open (stages 2–3)</h3>
+<ol>
+<li>Exact rules for G, S, the prefix-entering carries and R (rule closure). Then validate them all on the orbit, aiming at 27,818/27,818 to 1e9.</li>
+<li>An invariant:
+   - every k = 1 fuel ≥ 1;
+   - glue happens only for k ≥ 2;
+   - an inductive description of the rows, with fuel bounds per row derived from the binomial gaps.</li>
+</ol>
+<p>Natural route: a per-step INV over the unit list as in #11, plus a recursive row predicate for the prefix. Feasibility is unknown; it is far beyond a delta of #11.</p>
+<h3 id="files">Files</h3>
+<ul>
+<li>img/:</li>
+<li>default_site.png (Fig 1);</li>
+<li>units_constructed.png (constructed 5-unit tape, every 4 steps);</li>
+<li>records_3e5.png;</li>
+<li>lrec_3e9.png (left records to 3e9, window −699..2300);</li>
+<li>records_1e8.png (unused, 5000 rows to 7.9e6);</li>
+<li>viewer.html.</li>
+<li>work/: lrec_3e9.jsonl, resets_3e9.jsonl (pair-view parse at each reset), unitcheck_1e9.txt, randM_steps.json, constructed.txt, scripts.</li>
+</ul>
+<h2 id="class-2-close-out-stage-2-2026-10-12">Class 2 close-out, stage 2 (2026-10-12)</h2>
+<p>Outcome: <strong>progress</strong>. The rules close: one rule set reproduces every increment from step 342 on. No invariant yet; the open problem is now one precise question, the fuel race of single-marker units.</p>
+<h3 id="result-rule-closure">Result: rule closure</h3>
+<p>The executable spec is <code>work/rules3.py</code> (<code>parse</code>, <code>step</code>, <code>unparse</code>). One call of <code>step</code> = one increment (A right record to the next).
+- <strong>Orbit:</strong> 27,813 / 27,813 consecutive increments from step 342 to step 999,928,220 predicted exactly (full wall lists, 0 mismatches). Only the 5 bootstrap increments before step 342 are outside the rules.
+- <strong>Macro run from step 342</strong> reproduces the orbit configuration at step 999,928,220 exactly (work/macro.py).
+- <strong>Past the dump:</strong> 3,000,000 more macro increments, no rule failure: no fuel-out, no unknown shape (work/macrolong.py, log in work/macrolong_3M_log.txt). That covers at least 4.88·10¹² TM steps (lower bound Σ2t, work/steplb.py); the tape is then 6.09M cells.
+- <strong>Independent TM checks past 1e9</strong> (build the tape, run the C simulator to the next A right record, compare walls):
+  - 200 evenly spaced increments up to 600,000 increments past the dump, tapes up to 1.26M cells (work/valfar.py, work/valfar_log.txt);
+  - 400 targeted increments in the first 277,096: every increment that used a rare rule (absorb, stack edge, U₀ rules, resets, unglue with g up to 576, stack glue) plus every 50th overflow (work/valfar2.py, work/valfar2_log.txt).
+  - 600 / 600 match.</p>
+<h3 id="representation">Representation</h3>
+<p>Read the wall tokens left of the head at an A right record (as in stage 1). Every 1-block is classified by its length mod 3:</p>
+<table>
+<thead>
+<tr>
+<th>token</th>
+<th>class</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1^(3g+2)</code>: <code>11</code>, <code>1^5</code>, <code>1^8</code>, …</td>
+<td>boundary</td>
+<td>a <code>11</code> with g passive walls of the left unit glued on (g = 0 is a plain <code>11</code>)</td>
+</tr>
+<tr>
+<td><code>1^(3j+1)</code>: <code>1111</code>, <code>1^7</code>, <code>1^10</code>, …</td>
+<td>passive Q</td>
+<td>a stack of j glued <code>1111</code> walls</td>
+</tr>
+<tr>
+<td><code>00</code> / <code>1111</code> right after a boundary</td>
+<td>lead M</td>
+<td>the bit (00 = 0, 1111 = 1)</td>
+</tr>
+<tr>
+<td>the leftmost block <code>1^e</code></td>
+<td>edge E</td>
+<td>grows at the left end</td>
+</tr>
+</tbody>
+</table>
+<p>The tape is</p>
+<div class="highlight"><pre><span></span><code>E U_0 b_1 U_1 b_2 … b_N U_N b_T [t] A&gt;
+</code></pre></div>
+
+<ul>
+<li>U₀ (left boundary E): leadless <code>[x, Q, m, …, Q, y]</code>, empty <code>[y]</code>, or a digit.</li>
+<li>U_j, j ≥ 1: a digit <code>[x, M, m_1, Q, m_2, …, Q, y]</code> with k − 1 passive walls; y is the fuel.</li>
+<li>The tail <code>[t]</code>. For one increment after a reset there is no tail.</li>
+</ul>
+<p>The stage-1 "prefix" is not special: it is E, U₀ and the units whose boundaries are glued blocks (<code>1^5</code>, <code>1^11</code>, …), and its big blocks are passive stacks.</p>
+<h3 id="the-rules">The rules</h3>
+<p>The carry runs from the right and treats one unit at a time.</p>
+<table>
+<thead>
+<tr>
+<th>situation</th>
+<th>rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tail, boundary <code>11</code></td>
+<td>t += 2, continue</td>
+</tr>
+<tr>
+<td>digit, lead 1111, boundary <code>11</code></td>
+<td>M pass: lead → 00, x += 3; k = 1: y −= 1; k ≥ 2: m₁ += 1, y −= 2; continue</td>
+</tr>
+<tr>
+<td>digit, lead 1111, boundary <code>1^(3g+2)</code>, g ≥ 1</td>
+<td>S unglue (below); continue</td>
+</tr>
+<tr>
+<td>digit, lead 00</td>
+<td>M stop: lead → 1111, x −= 1; fuel as in M; <strong>stop</strong></td>
+</tr>
+<tr>
+<td>leadless unit</td>
+<td>every wall +2: x += 2, y −= 2; continue</td>
+</tr>
+<tr>
+<td>empty unit</td>
+<td>continue</td>
+</tr>
+<tr>
+<td>U₀ a digit with lead 1111 (E then has e ≡ 1 mod 3)</td>
+<td>the lead moves like a passive wall: x += 2, y −= 2; continue</td>
+</tr>
+<tr>
+<td>edge, e ≡ 0 mod 3</td>
+<td>e += 3 (one cell left, two right); U₀'s first gap −2</td>
+</tr>
+<tr>
+<td>edge, e ≡ 1 mod 3</td>
+<td>E becomes U₀'s first passive wall: U₀ = <code>[1, 1^e, x₀, …]</code>; a new edge <code>111</code> starts two cells further left</td>
+</tr>
+</tbody>
+</table>
+<p>Unglue S (the left unit's glued walls enter this unit; the first one becomes the lead and is passed at once; the old lead 1111 turns passive; the boundary becomes <code>11</code>):</p>
+<div class="highlight"><pre><span></span><code>g = 1:  [x, 1111, m_1, …, y]  -&gt;  [2, 00, x+1, 1111, m_1, …, y-2]
+g ≥ 2:  [x, 1111, m_1, …, y]  -&gt;  [2, 00, 0, 1^(3g-2), x, 1111, m_1, …, y-2]
+</code></pre></div>
+
+<p>Glue G: whenever a last gap reaches −1, the last passive wall <code>1^q</code> merges with the boundary <code>1^r</code> on its right into <code>1^(q+r−1)</code>. If U₀ is empty and its gap reaches −1, E absorbs b₁ instead (e += r − 1; U₁ becomes U₀).</p>
+<p>Reset R (two increments):</p>
+<div class="highlight"><pre><span></span><code>… 1^5 [t]          -&gt;  … 11 [2, 00, t+2]            (no tail; the carry continues left)
+… 11 [2, 00, t+2]  -&gt;  … 11 [1, 1111, t] 11 [1]     (the digit stops the carry; new tail)
+</code></pre></div>
+
+<p>Event counts on the orbit (27,813 increments, step 342 → 1e9):
+- plain M: 27,255;
+- overflows: 373 with e ≡ 0, 10 with e ≡ 1;
+- absorptions: 10;
+- resets: 17 (16 first halves in the window);
+- unglue: 202 with g = 1, 47 with g ≥ 2 (g up to 52);
+- glue: 98 for k ≥ 2 units, 106 for leadless units, 3 in U₀, 22 right after an unglue.</p>
+<h3 id="what-the-rules-say">What the rules say</h3>
+<ul>
+<li><strong>Binary counter.</strong> Every touch flips a digit's bit. U_j is touched exactly once per two touches of U_{j+1}.</li>
+<li><strong>Markers flow right.</strong></li>
+<li>A lead moves 1 cell per touch on average (x: −1, +3 alternately).</li>
+<li>A passive wall moves 2 cells per touch.</li>
+<li>When the last passive wall reaches the boundary it glues. At the next touch of its unit it becomes the right neighbour's lead, and that neighbour's old lead turns passive.</li>
+<li><strong>Edge and fossils.</strong></li>
+<li>The edge grows by 3 per overflow.</li>
+<li>When U₀ runs empty, E absorbs b₁ (e ≡ 1 mod 3). At the next overflow it fossilizes as a passive stack, and a fresh <code>111</code> starts.</li>
+<li>On the orbit the edge fossilized 10 times, at sizes 10, 10, 13, 19, 28, 40, 58, 91, 157, 286 (steps 884 … 365,107,435).</li>
+<li>The stacks <code>1^286, 1^154, 1^85, 1^49, 1^25, 1^10</code> seen at 1e9 descend from these blocks, less the walls they have shed.</li>
+<li><strong>Stacks make the Pascal rows.</strong> A stack of g walls leaves one wall behind (the new lead) in each unit it enters, and travels on as a stack of g − 1.</li>
+<li><strong>Bounded width.</strong> The unit count stays at 8–9: one absorption per reset on average (8 resets and 8 absorptions in the 3M-increment run).</li>
+</ul>
+<h3 id="the-only-danger-the-k-1-fuel-race">The only danger: the k = 1 fuel race</h3>
+<p>Under the rules, the machine halts only if a single-marker unit (k = 1) runs out of fuel. Every other precondition held in all 3,000,000 macro increments, for example:
+- odd last gaps for k ≥ 2;
+- x ≥ 0;
+- only <code>1^5</code> ever glues to the tail.</p>
+<p>A k = 1 unit j waits for its left neighbour i to hand it a wall (the rescue). Write T for the number of touches of i until the rescue, and bit for j's bit. Then:
+- j gets n_r = 2T − bit touches up to and including the rescue;
+- its fuel just before the rescue is y − n_r + 1.</p>
+<p>So <strong>μ = y − n_r</strong> must stay ≥ 0. It is constant under ordinary touches:
+- a stop touch lowers y by 1 and raises bit, so n_r drops by 1;
+- a pass touch lowers y by 1, T by 1 and bit from 1 to 0, so n_r drops by 1.</p>
+<p>T is local:</p>
+<div class="highlight"><pre><span></span><code>neighbour i with k ≥ 2 (or leadless), boundary b_j unglued:  T = (y_i + 1)/2 + 1
+boundary b_j glued:                                           T = 1
+neighbour i with k = 1:                                       T = (y_i + n_r(i))/2 + 1
+</code></pre></div>
+
+<ul>
+<li><strong>Check</strong> (work/margin.py, work/margin_epochs.py; 400k increments from step 54,043; 66 episodes):</li>
+<li>between resets the prediction is constant and equals the fuel left before the rescue, in all 66;</li>
+<li>a reset (its no-tail touch takes one extra cell) lowers it by 1 in 12 episodes and leaves it unchanged in 28;</li>
+<li>26 episodes see no reset.</li>
+<li>Started at step 342 instead (1.5M increments, 93 episodes): the prediction is exact within the last reset epoch in all 93. Across a reset it drops by 1 in 20 episodes; in the first bootstrap episodes it can also rise (e.g. 1 → 3 at increment 9).</li>
+<li><strong>Slack</strong> (work/fuelrace.py, 94 episodes over 1.5M increments from step 342): the fraction of the starting fuel left at rescue is:</li>
+<li>0.178–0.197 at depth 1 (next to the tail);</li>
+<li>0.36–0.41 at depth 2;</li>
+<li>0.54–0.80 at depth 3;</li>
+<li>0.71–0.99 at depth 4.</li>
+<li>The minimum fuel at rescue past 1e9 is 2,383. It grows about ×1.8 per reset generation.</li>
+<li><strong>The depth-1 race is the reset race.</strong> The LSB unit born at reset n gets fuel 2a_n − 1 and must survive until reset n+1, a_{n+1} increments later. So non-halting needs a_{n+1} &lt; 2a_n for every n.</li>
+<li>a_n (25 resets: 17 on the orbit, 8 in the macro run): 1, 2, 4, 7, 11, 17, 28, 50, 93, 173, 317, 574, 1036, 1875, 3407, 6205, 11304, 20577, 37419, 67969, 123257, 222949, 401914, 721916, 1292815.</li>
+<li>Ratios from the 8th reset on: 1.79–1.86, slowly oscillating (latest 1.809, 1.803, 1.796, 1.791). The first two are exactly 2 (bootstrap, before step 342).</li>
+</ul>
+<h3 id="comparison-with-the-templates-updated">Comparison with the templates (updated)</h3>
+<ul>
+<li>Level 0 is still #11's per-carry M.</li>
+<li>New compared with #11: walls migrate between digits (glue/unglue), digits are created at the right (R) and absorbed at the left (edge), and an unbounded, Pascal-structured fossil zone feeds the digits.</li>
+<li>An #11-style INV would have to bound μ for every future k = 1 episode. Those episodes start at glue events (k: 2 → 1, y := m₁) and at resets, whose timing is set by the arrival schedule from U₀/U₁.</li>
+</ul>
+<h3 id="open-stage-3">Open (stage 3)</h3>
+<ol>
+<li><strong>Invariant.</strong> Turn "μ ≥ 0 for every episode" into a condition on the current configuration that all rules preserve. That needs:
+   - a bound on m₁ at the coming glue of each k = 2 unit relative to its neighbour's T;
+   - the reset ratio a_{n+1}/a_n &lt; 2, which depends on the arrival schedule from U₀/U₁ (the Pascal rows).</li>
+<li><strong>Feasibility.</strong> This is a renormalization-type statement over an unbounded structure, far beyond #11's three-phase INV. A realistic stage-3 target is an exact invariant candidate, closed under all the rules and tested on the macro simulator, not a Coq proof.</li>
+</ol>
+<h3 id="files-stage-2">Files (stage 2)</h3>
+<ul>
+<li>work/rules3.py: the closed rules.</li>
+<li>Checks: work/macro.py, work/macrolong.py, work/valfar.py, work/valfar2.py, work/steplb.py, work/fuelrace.py, work/margin.py.</li>
+<li>Orbit dump: work/dumpinc.py.</li>
+<li>Data: work/anchors.json (configs at steps 342 and 999,928,220); logs *_log.txt, steplb.txt, fuelrace.json.</li>
+<li>Superseded: work/rules2.py (intermediate), and work/s2lib.py (a builder with <code>1^n</code> support).</li>
+</ul>
+<h2 id="class-2-close-out-stage-3-2026-10-12">Class 2 close-out, stage 3 (2026-10-12)</h2>
+<p>Outcome: <strong>halt predicted</strong>. There is no invariant to find: run far enough, the closed rules of stage 2 reach a single-marker fuel-out, and the TM halts two increments later. This is a prediction from validated rules, not a simulated halt and not a kill.</p>
+<h3 id="how-we-got-past-3m-increments">How we got past 3M increments</h3>
+<p><code>work/fast.py</code> is an exact accelerated form of <code>rules3.step</code>.
+- Between structural events every unit changes linearly in its touch count.
+- The touch counts follow binary-counter arithmetic: a unit with q digits to its right is touched <code>((C mod 2^q) + d) &gt;&gt; q</code> times in d increments, where C is the counter value of those digits.
+- So the simulator jumps to one increment before the next structural event and runs that increment with <code>rules3.step</code>.
+- Structural events: glue, unglue, k = 1 fuel-out, resets, absorption, and any carry that reaches U₀ while U₀ is a digit or the edge is not ≡ 0 mod 3.</p>
+<p>Checks of <code>fast.py</code> against plain <code>rules3.step</code> (work/xval.py, work/xval_log.txt):</p>
+<table>
+<thead>
+<tr>
+<th>start</th>
+<th>increments</th>
+<th>units</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>step 342</td>
+<td>4,027,813</td>
+<td>4–9</td>
+<td>identical</td>
+</tr>
+<tr>
+<td>reset 40 snapshot</td>
+<td>2,000,000</td>
+<td>12</td>
+<td>identical</td>
+</tr>
+<tr>
+<td>reset 62 snapshot</td>
+<td>2,000,000</td>
+<td>19</td>
+<td>identical</td>
+</tr>
+<tr>
+<td>reset 80 snapshot</td>
+<td>2,000,000</td>
+<td>24</td>
+<td>identical</td>
+</tr>
+<tr>
+<td>reset 82, last 2,000,000 increments before the fuel-out</td>
+<td>plain stepping</td>
+<td>23</td>
+<td>same fuel-out, same increment</td>
+</tr>
+</tbody>
+</table>
+<p>The run from step 342 to the fuel-out takes 91 s (work/longrun.py; every reset is logged in work/resets_long.jsonl).</p>
+<h3 id="what-the-long-run-shows">What the long run shows</h3>
+<p>Stage 2 saw reset ratios a_{n+1}/a_n of 1.79–1.86 and 8–9 units. That window was too short. The ratio oscillates, and the swings grow:</p>
+<table>
+<thead>
+<tr>
+<th>resets</th>
+<th>ratio a_{n+1}/a_n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>24–37</td>
+<td>1.788–1.807</td>
+</tr>
+<tr>
+<td>45 (peak)</td>
+<td>1.882</td>
+</tr>
+<tr>
+<td>53 (trough)</td>
+<td>1.818</td>
+</tr>
+<tr>
+<td>62 (peak)</td>
+<td>1.977</td>
+</tr>
+<tr>
+<td>75 (trough)</td>
+<td>1.813</td>
+</tr>
+<tr>
+<td>82</td>
+<td>1.969, still rising</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The period is about 17–20 resets.</li>
+<li>The unit count grows slowly: 9 at reset 29, 12 at reset 40, 19 at reset 62, 25 at reset 82.</li>
+<li>Non-halting needs every ratio below 2 (stage 2's depth-1 race). The third swing crosses that line.</li>
+</ul>
+<h3 id="the-fuel-out">The fuel-out</h3>
+<ul>
+<li>It comes 5,712,816,071,814,019,770,034 increments after reset 82, with a_82 = 2,856,408,035,907,009,885,019.</li>
+<li>The configuration just before it is in work/fuelout_config.json. Its right end reads:
+  <code>… 11 [x₂₀, 1111, 4.81e18] 11 [x₂₁, 1111, 1] 11 [x₂₂, 1111, 3] 11 [t]</code>
+  with t = 2·5,712,816,071,814,019,770,034 + 1.</li>
+<li>Units 20, 21 and 22 all have a single marker (k = 1). Unit 21 sits at depth 1, and its left neighbour (unit 20) has no passive wall to hand on, so no rescue can come.</li>
+<li>The next increment passes unit 21 with fuel 1, which gives <code>[x₂₁+3, 00, 0]</code>: a lead <code>00</code> right against the boundary <code>11</code>.</li>
+<li>Two increments later the LSB (fuel 3) runs out as well, and the carry reaches unit 21.</li>
+</ul>
+<p>What the real TM does with this shape (work/runincs.py, a constructed tape with the same right end at small sizes):</p>
+<div class="highlight"><pre><span></span><code>['111', 5, '11', 6, '00', 8, '11', 5, '1111', 7, '11', 3, '1111', 1, '11', 3, '1111', 3, '11', 7]
+  increment 1 (step 150): unit 3 -&gt; [6, 00, 0], exactly as the rules say
+  increment 2 (step 188): LSB stop
+  increment 3: HALT at step 228
+</code></pre></div>
+
+<p>This matches the halting condition from stage 1: F reads a 1 whose two left neighbours are <code>0 0</code>.</p>
+<p>So, if the rules hold, the TM halts during increment <strong>11,631,266,794,472,450,654,093</strong> counted from the step-342 configuration.
+Step count (work/stepest.py, which reruns the batched loop with accounting and reaches the same fuel-out increment):
+- <strong>Lower bound: 87,364,406,466,050,439,442,427,007,228,199,699,615,332,500 ≈ 8.74·10⁴³.</strong> This is 342 plus the sum of 2t over all increments; each increment sweeps the tail twice.
+- <strong>Estimate: ≈ 2.06·10⁴⁴.</strong> This adds 2 × the width of every unit the carry touches, and ignores the O(k) constants per touched unit.
+- The exact count is not computed: stage 1's exact step formula covers only rule M.</p>
+<h3 id="are-the-rules-still-trusted-that-far-out">Are the rules still trusted that far out?</h3>
+<ul>
+<li><strong>Event-class coverage</strong> (work/evcover.py, work/evcover_log.txt). Event labels are bucketed by their parameters (k, g, q, r small or big).</li>
+<li>Every class on the run to the fuel-out also occurs in the stage-2 window, where each rare label was TM-checked, except two: a stack glue (<code>1^7</code> or bigger) from a digit with k ≥ 4.</li>
+<li>Those two classes occur 9 times in all, first at increment 1.97·10²⁰.</li>
+<li><strong>Constructed TM checks</strong> (work/ctest.py, work/ctests.txt). Four constructed tapes with stack glues from k = 5 and 6 digits (q = 10, 13, 31), each followed for 40 increments: 160 / 160 increments match <code>rules3.step</code>.</li>
+<li>These runs also exercise unglue with g up to 10, resets, absorption, U₀-1111 and edge fossilization.</li>
+<li>Earlier evidence:</li>
+<li>27,813 / 27,813 orbit increments to 10⁹;</li>
+<li>600 / 600 far TM checks;</li>
+<li>3,000 random rule-M instances.</li>
+<li><strong>Not checked on the TM:</strong> any configuration from the new regime (more than 10 units). The tape there has more than 10⁹ cells. The rules are local and linear in the gap sizes, but they are an empirical rule set, not a proof.</li>
+</ul>
+<h3 id="corrections-to-stage-2">Corrections to stage 2</h3>
+<ul>
+<li>"Bounded width, 8–9 units": wrong in the long run. The unit count grows, about one unit per 3–4 resets.</li>
+<li>"Ratios 1.79–1.86": that was one phase of a growing oscillation. It does not show a uniform bound below 2, and the rules predict there is none.</li>
+<li>The stage-3 goal (an invariant, μ ≥ 0 forever) is moot: under the rules, μ reaches 0 at reset 83.</li>
+</ul>
+<h3 id="open">Open</h3>
+<ol>
+<li>Certify the halt. This needs:
+   - the rules as lemmas about the TM: parametric shift/sweep lemmas, one per rule of <code>rules3.py</code>;
+   - an exact step count: extend stage 1's M formula to every rule, then sum it in <code>fast.py</code>;
+   - a checked computation of the macro run: about 60k structural events plus closed-form batches.</li>
+</ol>
+<p>The busycoq-style route for a halting kill would be a Coq development that replays the macro run.
+2. An independent confirmation. sligocki's accelerated simulator (tools/qsim.py, recursive prover on) ran about 5 minutes in stage 3 and printed nothing: fewer than 2M loops, and its RSS grew past 1.7 GB. It is not a practical route to 10⁴⁴ steps.
+   - A better independent check is a second implementation of the macro rules, written from the TM rather than from rules3.py.
+   - Or the Coq replay itself.</p>
+<h3 id="files-stage-3">Files (stage 3)</h3>
+<ul>
+<li>Scripts: work/fast.py (accelerated exact rules), work/longrun.py, work/xval.py, work/evcover.py, work/ctest.py, work/stepest.py.</li>
+<li>Data and logs: work/resets_long.jsonl (all 82 resets with full unit lists), work/fuelout_config.json, work/xval_log.txt, work/evcover_log.txt, work/ctests.txt.</li>
+</ul>
+<h2 id="halt-certification-exact-step-count-2026-10-12">Halt certification: exact step count (2026-10-12)</h2>
+<p>Outcome: <strong>exact step count computed.</strong> Assuming the closed rules hold, the TM halts after exactly</p>
+<div class="highlight"><pre><span></span><code>N = 176,522,930,997,643,289,094,015,905,898,381,767,890,130,463  ≈ 1.765·10⁴⁴ steps
+</code></pre></div>
+
+<p>N counts the halting transition, as tools/sim does (BB(5) = 47,176,870). In busycoq's convention (<code>halts_in tm c0 n</code>: n defined steps, then a halted configuration) this is n = N − 1 = …130,462.</p>
+<p>This is still a prediction from validated rules, not a kill. No Coq was run.</p>
+<h3 id="step-formulas-worksteps_exactcostspy">Step formulas (work/steps_exact/costs.py)</h3>
+<p>An increment costs the sum of its carry actions' costs, computed from the old values. Notation:
+- Σm is the sum of a unit's inner gaps.
+- Qc sums (14L − 8)/3 over the unit's passive walls <code>1^L</code>: 16 for a <code>1111</code>, 14j + 2 for a stack of j walls.</p>
+<table>
+<thead>
+<tr>
+<th>action (rules3 branch)</th>
+<th>TM steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tail <code>11 [t]</code></td>
+<td>2t + 11</td>
+</tr>
+<tr>
+<td>glued tail <code>1^5 [t]</code> (reset, first half)</td>
+<td>2t + 24</td>
+</tr>
+<tr>
+<td>no tail: stop on <code>[x, 00, …, y]</code> (reset, second half)</td>
+<td>2(Σm + y) + Qc + 12</td>
+</tr>
+<tr>
+<td>digit pass, boundary <code>1^(3g+2)</code> (g = 0: rule M; g ≥ 1: unglue)</td>
+<td>2(x + Σm + y) + Qc + 14g + 20</td>
+</tr>
+<tr>
+<td>digit stop (any boundary, U₀ included)</td>
+<td>2(Σm + y) + Qc + 5</td>
+</tr>
+<tr>
+<td>leadless U₀</td>
+<td>2(x + Σm + y) + Qc + 3</td>
+</tr>
+<tr>
+<td>empty U₀ <code>[y]</code></td>
+<td>2y + 3</td>
+</tr>
+<tr>
+<td>U₀ digit with lead 1111 (edge ≡ 1)</td>
+<td>2(x + Σm + y) + Qc + 19</td>
+</tr>
+<tr>
+<td>edge e ≡ 0 (growth or absorption)</td>
+<td>14e/3</td>
+</tr>
+<tr>
+<td>edge e ≡ 1 (fossilization)</td>
+<td>(14e − 2)/3</td>
+</tr>
+<tr>
+<td>glue, absorption</td>
+<td>0 extra</td>
+</tr>
+</tbody>
+</table>
+<p>Stage 1's M formula is the case g = 0 with the tail's 11 added to the stop constant: 5 + 11 = 16.</p>
+<ul>
+<li><strong>How the formulas were found.</strong> An exact rational fit over all orbit increments, with constants per action. The constants were then fixed by per-region step attribution on the TM (work/steps_exact/attrib.py).</li>
+<li><strong>Which constants matter.</strong> Only sums of constants are identified by the orbit. Every action pattern on the long run lies in the span of the orbit patterns, so the split between them cannot change N.</li>
+<li><strong>The one class absent from the orbit:</strong> an empty-U₀ overflow without absorption. It fixed the empty-U₀ constant at 3 (constructed tapes).</li>
+</ul>
+<p><strong>Batches</strong> (work/steps_exact/stepsexact.py). A batch adds closed-form sums over the touches of each unit:
+- <strong>Tail:</strong> 2dt + 2d(d − 1) + 11d.
+- <strong>Digit with m touches:</strong> p passes and s stops alternate from its current bit. Σm + y drops by 1 per touch, and x rises by 2 per pass/stop pair. The sum is m·Qc + 2m·S₀ − m(m − 1) + 20p + 2p·x_first + 2p(p − 1) + 5s.
+- <strong>Leadless U₀:</strong> every overflow leaves x unchanged and lowers y by 2, so the sum is m·(const) − 2m(m − 1).
+- <strong>Edge:</strong> e rises by 3 per overflow, so the sum is m(14e₀/3) + 7m(m − 1).</p>
+<p><strong>Last three increments</strong> (work/steps_exact/final3.py, certify.py):
+- <strong>091:</strong> unit 21 is passed with fuel 1 → <code>[x+3, 00, 0]</code>, and the carry stops at unit 17. The table above applies.
+- <strong>092:</strong> the LSB stops.
+- <strong>093:</strong> the carry passes the LSB and halts in unit 21. It costs t + x₂₂ + 24 (start-of-093 values; the halting step included).</p>
+<h3 id="result">Result</h3>
+<table>
+<thead>
+<tr>
+<th>part</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>step-342 config → config before increment 091 (11,631,266,794,472,450,654,090 increments)</td>
+<td>176,522,930,997,643,289,093,929,980,567,625,894,149,417,299 (absolute)</td>
+</tr>
+<tr>
+<td>increment 091</td>
+<td>45,935,618,253,175,602,322,868</td>
+</tr>
+<tr>
+<td>increment 092</td>
+<td>22,851,264,287,256,079,080,162</td>
+</tr>
+<tr>
+<td>increment 093, to the halt (t = 11,425,632,143,628,039,540,073, x₂₂ = 5,712,816,071,814,019,770,037)</td>
+<td>17,138,448,215,442,059,310,134</td>
+</tr>
+<tr>
+<td><strong>total N</strong></td>
+<td><strong>176,522,930,997,643,289,094,015,905,898,381,767,890,130,463</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The run reaches the stored fuel-out configuration (work/fuelout_config.json) exactly, at the same increment. The halt is in increment 11,631,266,794,472,450,654,093, as stage 3 predicted.</p>
+<h3 id="cross-checks-all-pass">Cross-checks (all pass)</h3>
+<p><strong>Per increment on the orbit.</strong> A direct 10¹¹ run logged every A right record (work/steps_exact/arec_1e11.jsonl). All <strong>276,427 / 276,427</strong> increments from step 342 to step 99,999,963,828 have exactly the formula's step count.</p>
+<p><strong>Cumulative anchors.</strong> The batched count from step 342 equals the TM step at the last increment ≤ 10⁹ / 10¹⁰ / 10¹¹:</p>
+<table>
+<thead>
+<tr>
+<th>anchor</th>
+<th>TM step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>≤ 10⁹</td>
+<td>999,928,220</td>
+</tr>
+<tr>
+<td>≤ 10¹⁰</td>
+<td>9,999,862,126</td>
+</tr>
+<tr>
+<td>≤ 10¹¹</td>
+<td>99,999,963,828</td>
+</tr>
+</tbody>
+</table>
+<p>The 10⁹ value matches work/anchors.json, and the 10¹¹ end matches work/sim_1e11.txt (hi 552,893).</p>
+<p><strong>Every structural increment of the run, on the TM</strong> (surrogate.py, surrogate_log.txt). There are 53,973 single-stepped increments from step 342 to the fuel-out.
+- Each was replayed on a reduced copy: gaps &gt; 64 become random 40–79 of the same parity; 1-blocks &gt; 64 become random 40–79 of the same residue mod 3.
+- All took the same rule path, and <strong>53,973 / 53,973</strong> gave exactly the predicted tokens and step count (44 classes).
+- Large-size version (bigsur.py, every 200th, sizes up to about 1,560): <strong>270 / 270</strong>.</p>
+<p><strong>Constructed tapes.</strong>
+- The stack-glue tapes (k = 5, 6) of work/ctests.txt: 160 / 160 increments exact in tokens and steps.
+- The real fuel-out configuration, reduced 60 times: increments 091 and 092 exact, and 093 halts.
+  - H = t + x₂₂ + 24 was fitted on 30 reductions and holds on the 30 others.
+  - It also holds on 12 minimal tapes with t and x₂₂ up to 4·10⁵.</p>
+<p><strong>Batched against plain stepping.</strong> Identical step totals and configurations:
+- 4,027,813 increments from step 342;
+- 2M increments from each of the reset 40 / 62 / 80 snapshots;
+- 150k increments from <strong>each of the 82</strong> reset snapshots.</p>
+<p><strong>Bookkeeping.</strong> The run's Σ2t plus stepest's end terms reproduces stage 3's lower bound to the digit: 87,364,406,466,050,439,442,427,007,228,199,699,615,332,500.</p>
+<p><strong>Bounds.</strong>
+- N / lower bound = 2.02.
+- N is below stage 3's estimate of 2.06·10⁴⁴, which charged every stopping digit its full width. A stop never crosses its x.
+- N plus that overcount (Σ 2(x + b) over stop touches, 2.86·10⁴³) gives 2.05·10⁴⁴ (recon.py), which accounts for the estimate.</p>
+<h3 id="what-is-still-not-proven">What is still not proven</h3>
+<ul>
+<li><strong>Empirical rules.</strong> The rules (rules3.py) and these step formulas are an empirical, TM-validated rule set. Linearity in the gap and block sizes was checked up to about 10³–10⁵ cells; the real values reach 10²².</li>
+<li><strong>Certification.</strong> A kill still needs the rule lemmas in Coq and a checked replay of the batched run, with this N (or n = N − 1) as the <code>halts_in</code> count.</li>
+</ul>
+<h3 id="files-worksteps_exact">Files (work/steps_exact/)</h3>
+<ul>
+<li><strong>Model:</strong> costs.py (formulas and constants), actions.py (carry-path classifier), stepsexact.py (batched exact counter, from a copy of fast.py's loop).</li>
+<li><strong>Runs:</strong> longsteps.py (the run to the fuel-out, 333 s; fuelout_steps.json), final3.py and certify.py (last three increments; exact_steps.json, halt_inc_formula.json).</li>
+<li><strong>Checks:</strong></li>
+<li>orbitdata.py and exactsolve.py (orbit fit);</li>
+<li>xcheck_plain.py (logs xcheck_plain_*.log, xcheck_resets_log.txt);</li>
+<li>tmcheck.py, surrogate.py and bigsur.py (logs surrogate_log.txt, bigsur_log.txt);</li>
+<li>tailsum.py and recon.py.</li>
+</ul>
+<h2 id="halt-certification-independent-re-check-2026-10-12">Halt certification: independent re-check (2026-10-12)</h2>
+<p>Outcome: <strong>the predicted halt is confirmed by a second implementation.</strong> It was written from the TM table only; work/rules3.py, fast.py, longrun.py and stepest.py were not read or imported. It halts during increment <strong>11,631,266,794,472,450,654,093</strong> after the step-342 record, the same increment as stage 3. The configuration 3 increments earlier, all 82 resets and the reset increments are identical to work/fuelout_config.json and work/resets_long.jsonl. This is still a simulation with validated rules, not a proof.</p>
+<h3 id="representation_1">Representation</h3>
+<ul>
+<li><strong>Wall list</strong> (work/indep/walls.py): the tape left of the head at a right record in state A is written <code>0^inf g1 W1 g2 W2 … Wn g</code>.</li>
+<li>W = a maximal run of ≥ 2 equal symbols.</li>
+<li>g = the number of alternating cells between two walls.</li>
+<li>The encoding is lossless and covers every tape, so events need no special shapes.</li>
+<li><strong>L1</strong> (work/indep/l1.py): an exact TM simulator on run-length pieces.</li>
+<li>It moves through an alternating piece in one go when the table has a pair q/q2 that flips cells in the same direction. For this table the pairs are E/F going left, A/D and A/B going right.</li>
+<li>It has no unit rules.</li>
+<li>Long 1-walls (&gt; 40) are shrunk to a short wall of the same length mod 3, and restored afterwards. A long wall is crossed by a 3-periodic process (<code>1^3 B1 001 → B1 001 011</code>, 9 steps). Each shrunk run is done twice, with two replacement lengths, and the restored results must agree.</li>
+</ul>
+<h3 id="rule-g-one-rule-for-a-carry-workindeprule_gpy">Rule G: one rule for a carry (work/indep/rule_g.py)</h3>
+<p>Classify the walls:</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>walls</th>
+<th>effect of a passing carry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sep</td>
+<td><code>11</code></td>
+<td>fixed</td>
+</tr>
+<tr>
+<td>lead (counter bit)</td>
+<td>the first wall right of a sep, if <code>00</code> or <code>1111</code>; a <code>00</code> right of a long wall (touched at most once per batch)</td>
+<td>pass <code>1111→00</code>: left edge +3, right edge +1; stop <code>00→1111</code>: left edge −1, right edge +1</td>
+</tr>
+<tr>
+<td>shift</td>
+<td>other <code>1111</code>; 1-walls of length ≥ 7 and ≡ 1 mod 3; a <code>1111</code> at gap 1 right of such a wall</td>
+<td>both edges +2</td>
+</tr>
+<tr>
+<td>left</td>
+<td>the leftmost wall: length ≥ 7, ≡ 0 mod 3, gap 0 to the blank, a long wall at gap 1 to its right</td>
+<td>length +3</td>
+</tr>
+<tr>
+<td>irr</td>
+<td>everything else (<code>1^5</code> glue, <code>1^3</code>, other residues, …)</td>
+<td>must not be reached</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>An increment carries through the leads with bit 1 and stops at the first 0. Every wall right of the stop is passed, and the head moves +2.</li>
+<li>A wall with r leads to its right is passed <code>floor((V+N)/2^r) − floor(V/2^r)</code> times in N increments from counter value V.</li>
+<li>Domain:</li>
+<li>the carry never reaches an irr wall;</li>
+<li>shrinking gaps stay valid (P to sep ≥ 1, lead to sep ≥ 0);</li>
+<li>a stopping lead has x ≥ 2.</li>
+<li>Rule M of stage 1 is the special case with no long walls. The fossil-zone overflow, the transparent <code>1^n 0 1111</code> passes and the units bounded by long walls are also rule G.</li>
+<li>Everything outside the domain is one exact L1 increment: glue, unglue, resets, P migration, fossilisation, fuel-outs, and the halt itself.</li>
+</ul>
+<h3 id="checks_1">Checks</h3>
+<p>Logs: work/indep/checks_log.txt, tm_checkpoints_log.txt, tm_resets_compare_log.txt, halt_constructed_log.txt, compare_theirs_log.txt.</p>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1 vs plain TM from blank (test_l1.py)</td>
+<td>3,000 increments to 1.15e7 steps: steps, positions, tapes equal</td>
+</tr>
+<tr>
+<td>L1 vs real TM (tools/sim.py, both engines) on constructed tapes (check_g.py)</td>
+<td>24,000 tapes, 698 of them halting: record tape and exact step count (or halting step) equal</td>
+</tr>
+<tr>
+<td>rule G vs real TM on constructed tapes (check_g.py grammar: fossil zones of every residue, O-units, one-shot leads, inner units, k = 1..4, small gaps)</td>
+<td>15,259 / 15,259</td>
+</tr>
+<tr>
+<td>rule M vs real TM (check_m.py)</td>
+<td>9,000 / 9,000 (rule G agrees on all of them)</td>
+</tr>
+<tr>
+<td>long-wall shrinking vs plain L1, walls up to ~2,800 (check_shrink.py)</td>
+<td>11,977 equal, 23 refused (refusal stops the run; it never happened in the run)</td>
+</tr>
+<tr>
+<td>rule G vs exact L1, every increment (xcheck_g.py)</td>
+<td>1.6M increments from 4 starts: 1,597,510 agree, the rest outside the domain</td>
+</tr>
+<tr>
+<td>batched closed form vs increment-by-increment stepping</td>
+<td>0.8M vs plain L1 (2 starts); 6.5M vs stepping my rules, from reset snapshots 20, 33, 35, 45 and 55 (the last three windows end at the next reset)</td>
+</tr>
+<tr>
+<td>engine vs real TM (tools/sim/tmsim) to 1e11 steps</td>
+<td>full tape equal at 9 records (increments 1,000 to 276,427, the last record before 1e11 steps at step 99,999,963,828); all 20 TM resets (the record moves +3) match my resets one increment later</td>
+</tr>
+<tr>
+<td>runtime self-check of the long run</td>
+<td>the first and last increment of every one of the 81,884 batches recomputed by L1: all equal</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-run-workindeprun_to_haltpy-43-min">The run (work/indep/run_to_halt.py, 43 min)</h3>
+<ul>
+<li>Start: the step-342 record (7th right A-record from blank), obtained by direct simulation.</li>
+<li>The run has 82 resets, 81,884 closed-form batches and 82,216 exact L1 increments. A rerun without self-checks is identical.</li>
+<li>Last configurations (right end; increment counted after the step-342 record):
+  <code>…090  11 1495536819214692213317 1111 4812803520428781749 11 2901296570081134732223 1111 1 11 5712816071814019770035 1111 3 11 11425632143628039540069
+  …091  11 1495536819214692213320 00 4812803520428781748 11 2901296570081134732226 00 0 11 5712816071814019770038 00 2 11 11425632143628039540071
+  …092  11 1495536819214692213320 00 4812803520428781748 11 2901296570081134732226 00 0 11 5712816071814019770037 1111 1 11 11425632143628039540073</code></li>
+<li>Increment …093 passes the LSB and reaches <code>00 0 11</code>: F reads a 1 after <code>0 0</code>, and the machine halts (L1, exact).</li>
+<li>Constructed tapes with this right end on the real TM (3 to 12 units kept, gaps shrunk to 40/41): rule G predicts the next 2 increments, and the 3rd halts at step 112 of that increment.</li>
+</ul>
+<h3 id="comparison-with-stage-3">Comparison with stage 3</h3>
+<table>
+<thead>
+<tr>
+<th>item</th>
+<th>stage 3</th>
+<th>this re-check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>halting increment after the step-342 record</td>
+<td>11,631,266,794,472,450,654,093</td>
+<td>11,631,266,794,472,450,654,093</td>
+</tr>
+<tr>
+<td>fuel-out configuration (fuelout_config.json, increment …090)</td>
+<td>full wall list</td>
+<td>identical</td>
+</tr>
+<tr>
+<td>resets (resets_long.jsonl)</td>
+<td>82</td>
+<td>the same 82 increments and full configurations</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Differences in method:</li>
+<li>One geometric rule plus exact accelerated TM increments, instead of a catalogue of event rules.</li>
+<li>Step counts were not computed.</li>
+<li>The halt is found by simulating the halting increment, not by extrapolating a fuel-out.</li>
+<li>Still open:</li>
+<li>L1's long-wall shrink is justified by a 3-periodic crossing, checked numerically but not proved.</li>
+<li>Inside a batch only the first and last increment are re-simulated.</li>
+</ul>
+<h3 id="files_1">Files</h3>
+<p>work/indep/: tm.py, l1.py, walls.py, units.py, rulem.py, engine.py (rules M and O, L1 wrapper with long-wall shrinking), rule_g.py, engine2.py, run_to_halt.py, the check scripts named above, run_resets.jsonl, halt.json and halt_nospot.json. Regenerate the TM record log with <code>tools/sim/tmsim '&lt;tm&gt;' --max-steps 1e11 --on-record</code>.</p>
+<h2 id="kill-halting-2026-10-12">Kill (halting) (2026-10-12)</h2>
+<p>Outcome: <strong>KILLED_HALT</strong>. <code>Lemma halt: halts tm c0.</code> is proved and passes <code>tools/check_kill.sh --halt</code>. This is the first halting kill of the hunt.</p>
+<h3 id="the-check">The check</h3>
+<ul>
+<li>Fresh run on the unchanged .v (sha256 95335b4984c87480b39f1399238df6f85637235879f381bfdd09303a392d515c, 1,142 lines): <strong>RESULT: PASS, exit 0</strong>, all 17 checks. Full output: submission/check_kill.txt.</li>
+<li>compile 69.7 s with -native-compiler yes;</li>
+<li>coqchk finished and passed in 509.7 s (cap 600 s), so the 22 <code>vm_cast_no_check</code> chunks were re-checked by the independent kernel (not a policy-A timeout);</li>
+<li>Print Assumptions halt = functional_extensionality_dep only (from flip_halts_iff), the baseline.</li>
+<li>Independent audit (a separate run of the same checker plus a full read of the .v): PASS. String byte-exact at line 552 of the 740 list; final theorem <code>halt</code> via <code>flip_halts_iff</code> and <code>halt_tmf</code>; no missing or circular soundness lemma; <code>propose</code> untrusted (it only picks d); IFail is a sound self-loop.</li>
+<li>Earlier runs: rocq/check_kill_r2.log (single cast: coqchk out of memory), rocq/check_kill_r2b.log (22 chunks: PASS).</li>
+</ul>
+<h3 id="what-is-and-is-not-proved">What is and is not proved</h3>
+<ul>
+<li>Proved: halting. The .v replays the run from the step-342 record (<code>init</code>, 342 steps by solve_init) through 107,781 checker moves to the halting touch during increment 11,631,266,794,472,450,654,093.</li>
+<li>Not proved: the step count. N = 176,522,930,997,643,289,094,015,905,898,381,767,890,130,463 (halting step included; busycoq halts_in n = N − 1) is computed from the per-rule step formulas (section "Halt certification: exact step count" above). status.json records it as <code>halt_steps</code> with <code>proven_in_coq: false</code>.</li>
+</ul>
+<h3 id="package">Package</h3>
+<ul>
+<li>submission/: the .v (same hash), proof.md (public write-up; writeup_lint 0 errors, 0 warnings), check_kill.txt, README.md. No Discord draft (not requested).</li>
+<li>proof.md (working copy) = the public write-up plus an internal evidence appendix.</li>
+<li>how_proved.md written; tools/card.py now shows the how-proved box for KILLED_HALT too, headed "How we proved it halts" (<code>how_title</code>; killreview.py uses the same heading). test_card.py updated and passing (26 tests).</li>
+<li>Rebuilt: card.html, kill.html (auto 7/7), machines/kills.html (19 kills), dashboard (kill 19, bucket claimed).</li>
+<li>Checkpoint B is pending (non-blocking); there are no notes to fold in yet. Nothing posted.</li>
+</ul>
+</main></body></html>

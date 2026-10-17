@@ -1,0 +1,43 @@
+{
+ "tm": "1RB1RF_1LC1RE_---0LD_1LE0LD_1RA0RF_0RE0LB",
+ "stage": "deepen2",
+ "date": "2026-10-10",
+ "confidence": "med",
+ "recommend": "cryptid",
+ "mechanism": "The tape is a bell 0^inf (110)^a 0 (011)^n plus a binary counter of 3-cell digits b 0 (100)^w 0 (bit b, width w, LSB first). Each trip does a+1, n-1 and counter+1 (T1). At n=1 the low 1-digits of width 0 (j of them) are eaten and digit j decides the reset. RI: digit j is (1,m) with m>=1; then a,n := a+2+j, m and the counter becomes inc of the higher digits. RII: digit j is (0,m); then a,n := 0, a+2+j and the counter becomes a junction J(m) = 1(100)^m 0, followed by the old higher digits R one cell out of phase. Junction rule PROC (exact): when the counter's carry reaches J, R gets +m. Then the pass walks up R. A 1-digit of width w adds w to the rest and is passed. The first 0-digit stops the pass and becomes the new junction J(w). The passed region becomes one aligned 0-digit of width m + sum(w+1). The counter is aligned again once J has width 0 and every remaining old digit has width 0. Halting needs a reset to meet an unaligned counter: a lost race, where 2^P > L' and P is the number of PROC passes. P <= W - j, where W = 1 + the position of the highest wide digit. The invariant W <= bitlen(L) - 1 wins every race. It is kept by every phase type except a junction phase whose +m carries past the top of R. Such an overflow happens only near L ~ 2^k. After an overflow the outcome depends on widths and bits built up over the whole history (pseudo-random arithmetic). The closest natural race missed by 0.9998 bits, at L' = 2^22 - 692.",
+ "closed_gaps": [
+  "Counter word: Q is a list of digits, each b 0 (100)^m 0 (bit b, length m >= 0, LSB first, 0^inf = [0,0] digits). The old '1010010 D(c)' / x00 / x01 encodings are special cases.",
+  "T1 (one trip, n>=2, any aligned digit list): G(a,n,word D) -> <C|<D on the same cell, tape LP(a+1,n-1) word(inc D). Exit is C if there is no carry, D if there is one. 860/860 exact.",
+  "Trips ignore Q's digit structure: the bell sweep only touches (011)^n and the a|n boundary. The Q processing only touches Q. This explains T' and R'.",
+  "RI (n=1, D=[1,0]^j [1,m] R, m>=1): -> LP(a+2+j, m) word(inc R). dL = 1+j+m. 860/860 exact.",
+  "RII (n=1, D=[1,0]^j [0,m] R): -> G(0, a+2+j, 1 (100)^m 0 word(R)) in a block alignment shifted by one cell. dL = j+1. 860/860 exact.",
+  "Odd-a G configs and the L-odd dL spread are explained: they are RI sub-phases, with dL = 1+j+m.",
+  "Language: every natural G config to 1e9 (111,287) has Q in DIG or DIG.SH, where DIG = ([01]0(100)*0)* and SH = [01](100)*0 DIG. One processing pass maps DIG.SH into itself in 100,000/100,000 random tests and always exits in C or D.",
+  "Whole regime map: the abstract trip model (T1, RI, RII, plus the transient computed by sub-simulating only the Q region) reproduces every G config of the direct run to 1e9 exactly. That is 222,436 trips: 219,707 T1, 2,223 transient, 229 RI and 277 RII.",
+  "Counter invariant: V = sum b_i 2^i = a+1 on 99.3% of aligned trips (to 1e6 trips). The exceptions are RI sub-phases, where V = a - const. At all 2,042 resets to 4e6 trips, V/L is 1 or 1/2.",
+  "Re-alignment transient (round-1 gap 1) has a closed form. PROC(m,R): R += m (widths kept), then ARR. ARR(d:R): if d=(0,w), stop; d becomes J(w) one cell after its bit cell. If d=(1,w), run PROC(w,R). Output: A zeroed, then one aligned digit (0, m+sum(w+1)), then J(w), then the rest of R, exit D. 11,500/11,500 exact against direct simulation of the Q region.",
+  "Realignment criterion: J(m) word(R) is aligned iff m=0 and every old digit up to the top nonzero one has width 0. 200,000/200,000 against parse_digits. The old 1-runs then become widths: (1,run0), (0,run1), ...",
+  "Phase-level regime map: fast_orbit.py runs whole phases on closed forms (T1 as D+k, PROC, RI, RII, realignment). It reproduces all 4,871 pre-reset configurations (a and the full Q cells) of the trip-level orbit to 2.4e7 trips. It extends the run to 1e7 phases (L = 68,590,476) with no race lost.",
+  "Race timing (Lemma B): PROC pass i fires on trip 2^i - 1 of the junction phase, so the race is won iff 2^P <= L' = L+1+j.",
+  "Race bound (Lemma A, from PROC plus the criterion): P <= max(1, W-j), where W = 1 + the position of the highest digit of width >= 1. Never violated in 4,921,722 junction phases (1e7 phases).",
+  "Invariant Inv: W(D) <= bitlen(L) - 1 implies every race is won. It is preserved by T1, by RI, and by any junction phase without a PROC overflow (shown in notes.md, Deepen pass 2). All 3 Inv violations in 1e7 resets come right after an overflow phase.",
+  "Round-1 claim 'V/L in {1, 1/2} at resets' was a small-L artefact. Chains of RI phases halve V each time (V/L = 1/32 seen). V = L holds exactly after junction phases, and V <= L always.",
+  "What a lost race does: the machine usually re-enters DIG/ALS after a few OUT G configs (21/21 configs, 3e6 steps each). A minority halt: 4/388 within 2e6 steps here, 3/300 in round 1."
+ ],
+ "remaining_gaps": [
+  "Overflow aftermath (load-bearing, pseudo-random). A junction phase whose +m carries past the top of R (only when R's remaining part is all ones, near L ~ 2^k) can break Inv, so W reaches bitlen(L). A race at the next RII (V=L, j=0) is then lost only if a carry runs through the top 1-run before the junction passes it. That depends on the width and bits of the digit just below the run, which come from the whole history. Natural case: 1/1 won (P=6 vs bound 22), because the passes through the overflow zeros left width 0 below the run. Synthetic Inv-violating configs: 1/38,136 lost. No conserved quantity found that forbids the coincidence.",
+  "If the overflow-aftermath lemma holds (overflow zeros come back as x=0 widths, so the next junction cannot carry into the top run, or RI phases restore Inv before the next RII), non-halting follows. It would also need cell-level proofs of T1, PROC, RI, RII and the realignment criterion (all validated, none written as proofs yet).",
+  "proof.md not started (cryptid protocol: flag and stop, and wait for Dennis's stop/continue call)."
+ ],
+ "evidence": [
+  "scripts/procrule.py seeds 1-5: PROC 11,500/11,500 exact on the full Q cells plus exit D, against tm15.qproc (direct simulation of the Q region; B enters the all-ones prefix A as in the real trip). Inputs: A up to 6 digits, m up to 40, up to 12 old digits with widths up to 15.",
+  "scripts/procrule.py 7 200000 --realign: the realignment criterion agrees with parse_digits 200,000/200,000 (28,132 aligned).",
+  "scripts/compare_fast.py 2.4e7: 4,871/4,871 resets exact, fast_orbit vs abstract_orbit.step. abstract_orbit itself matches direct C simulation on all 111,287 G configs to 1e9 steps.",
+  "scripts/race_scan.py 1e7: phases to L = 68,590,476, 4,921,723 RII races, none lost. Minimum margin log2(L') - P per octave 2^8..2^26 is 2.32-5.62 bits, except 0.9998 at L' = 4,193,612 (octave 2^21).",
+  "scripts/nearmiss_check.py: the closest race (phase 703,380, L' = 2^22 - 692, j=0, J width 15) replayed at the cell level. 21/21 PROC passes are exact; re-alignment comes on trip 2,097,151 of 4,193,611 available.",
+  "scripts/invariant_scan.py 1e7: Lemma A never violated. Inv violated at 3 of 1e7 resets (RI at L=11, RI at L=4,193,607, RII at L=4,193,612), all right after an overflow phase; at the RII the race was still won (P=6). Overflow phases: 4,303 of 4,921,722, in bursts at octave crossings (none between L = 1.9e7 and 2.6e7).",
+  "Synthetic Inv-violating RII configs (L = 2^k - s, V = L, wide top digit, random low widths; k = 22, 30, 40): 1/38,136 races lost (inline check, notes.md).",
+  "scripts/raceloss_reentry.py: forced lost races from the closest natural race. 21/21 still running after 3e6 steps and back in DIG/ALS; a wider sample had 4/388 halt within 2e6 steps (after 208, 208, 815 and 29,740 steps).",
+  "V <= L at every reset and V = L after every junction phase (1e6 phases; used in the Inv preservation argument)."
+ ]
+}

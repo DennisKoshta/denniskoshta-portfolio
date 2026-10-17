@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>#2 submission README</title><link rel="stylesheet" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/review.css"><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><div class="wrap"><nav class="sec"><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review.html">← #2 review</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/proof.html">proof.md</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/v.html">the .v</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/diff.html">diff vs TM7</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/tm7.html">TM7 (SOMDCv6.v)</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/index.html#mechanism">machine page</a></nav><p class="muted" style="margin-top:12px">Rendered from <a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/submission/README.md.html"><code>submission/README.md</code></a> (raw file). Submission one-pager.</p><div class="toc"><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#mechanism">Mechanism</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#how-the-proof-works">How the proof works</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#template-and-what-changed">Template and what changed</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#files">Files</a></div><div class="mdbody"><h1 id="1rb0rf-1lc0re-0lc0ld-1rd1lb-0rf1ra-0rb-never-halts"><code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code> never halts <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#1rb0rf-1lc0re-0lc0ld-1rd1lb-0rf1ra-0rb-never-halts">#</a></h1>
+<ul>
+<li>
+<strong>Machine:</strong> <code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code>, a BB(6) holdout. It is on every holdout list from 2024-06-14 through 2026-10-07 (the 778-machine list).
+</li>
+<li>
+<strong>Class:</strong> &quot;Bell eats counter&quot; (spreadsheet Results row 1035, no prior notes or claims).
+</li>
+<li>
+<strong>Result:</strong> <code>Lemma nonhalt: ~halts tm c0.</code> in Coq 8.20.1 against unmodified busycoq (commit <code>0940bb9c</code>). <code>Print Assumptions nonhalt</code> is closed (no axioms). Compile time is 3.6 s with <code>-native-compiler yes</code>; coqchk re-checks it in 1.1 s (<code>check_kill.txt</code>).
+</li></ul>
+<h2 id="mechanism">Mechanism <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#mechanism">#</a></h2>
+<ul>
+<li>
+At each sweep boundary the tape is <code>S(r) = 0^inf 11 D&gt; &lt;r&gt; 0^inf</code>, where r is a word over three 3-cell digits: L = <code>110</code>, 0 = <code>000</code>, 1 = <code>100</code>. In practice r is a long L-run followed by a short binary counter.
+</li>
+<li>
+Each sweep has an eater that turns digits into L until it reads a 1. It then runs k drain passes (k = digits eaten), which rebuild the counter at the right end in bijective binary. A drain pass that reaches an L restarts the eater. The wall ends one cell further left.
+</li>
+<li>
+Whenever a sweep enters an L digit (eater or drain pass), it first runs one extra pass over everything to the right. That pass adds +1 to the 0/1 digits, read as a little-endian binary number with L digits skipped.
+</li></ul>
+<h2 id="how-the-proof-works">How the proof works <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#how-the-proof-works">#</a></h2>
+<p>The sweep is the inductive relation <code>RIncs hx 0 r r&#x27;</code>. <code>RIncs_spec</code> proves each clause is an exact pass-level run, and <code>BigStep</code> gives <code>S(r) --&gt;+ S(r&#x27;)</code>. The invariant is <code>P r := exists r&#x27;, RIncs hx 0 r r&#x27;</code>, starting at S(L1) (step 16). <code>domain</code> shows <code>P</code> is closed under the sweep. <code>nonhalt</code> follows from <code>multistep_nonhalt</code> and <code>progress_nonhalt_cond</code>, as in the template.</p>
+<h2 id="template-and-what-changed">Template and what changed <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#template-and-what-changed">#</a></h2>
+<p>This extends <code>SOMDCv6.v</code> <code>Module TM7</code> (<code>1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code>), which differs only in A1 (<code>0RC</code> there, <code>0RF</code> here).</p>
+<ol>
+<li>
+<strong>New <code>Inc</code> relation</strong> (one pass = +1, L skipped), proved as <code>sideRLs tm h</code>.
+</li>
+<li>
+<strong><code>Inc</code> premise on the two L clauses of <code>RIncs</code></strong> (eater enters L, drain pass enters L). Their segment facts become <code>[h; h&#x27;; h]</code> (<code>seg_hx_ld</code>, <code>seg_h1_ld</code>).
+</li>
+<li>
+<strong>Two zero-pass end clauses, Z1 <code>RIncs h1 0 [D1] [LD]</code> and Z0 <code>RIncs h1 0 [D0] [D1]</code>.</strong> They add no machine behaviour (<code>1 100 0^inf = 110 0^inf</code>, <code>1 000 0^inf = 100 0^inf</code>), but without them the sweep&#x27;s domain is not closed.
+</li>
+<li>
+<strong>Domain lemma redone</strong> as <code>key</code>, with j pending +1 passes and a condition <code>Inv</code> that reduces to TM7&#x27;s when j = 0. It uses the helper lemmas <code>RIncs_Inc</code>, <code>End_1</code> and <code>End_x</code>.
+</li></ol>
+<p>The file is 599 lines, about 2.4 times TM7. The informal proof is <code>proof.md</code>.</p>
+<h2 id="files">Files <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/readme.html#files">#</a></h2>
+<p><code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---.v</code> (the proof), <code>proof.md</code> (informal proof), <code>check_kill.txt</code> (our verifier&#x27;s full output), <code>discord.md</code> (draft announcement, not posted).</p>
+<p><strong>AI assistance:</strong> the informal proof and the Coq formalization were produced with Claude Code (Anthropic) under Dennis&#x27;s direction, and checked by our checker, <code>check_kill</code> (compile against pinned busycoq, theorem statement, forbidden tokens, <code>Print Assumptions</code>, coqchk).</p></div></div></body></html>

@@ -1,0 +1,19 @@
+{
+ "tm": "1RB0RF_1LC0RD_1LA0LD_1LE0RA_0LB---_0LB1RB",
+ "label": "P-385",
+ "status": "SKIPPED",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 385,
+ "class": "Monotone list",
+ "upstream_twin": "CTLv1.v nonhalt16856 = 1RB0RE_1LC0RD_1LA0LD_1LE0RA_0LB0LF_0RA---, solve_cert (CPS_LRU 1001 100000 100000 2 3200 2 2 0 0) (CTL62 decider certificate); second twin nonhalt18273 = 1RB0RE_1LC0RD_1LA0LD_1LE0RA_0LB1LF_1RC---, same call",
+ "relation": "Same start A, no mirror; A-D identical except A1 (385 0RF, twin 0RE). The twin's E is split by entry: 385's E = twin E entered by D0, 385's F = twin E entered by A1 (E0 = F0 = twin E0 = 0LB). F reads 1 at p with t[p-1]=0: 385 F1 (1 step) == twin E1 F0 A0 (3 steps), B at p+1, t[p-1]=0, t[p]=1; with t[p-1]=1 the twin halts, so this never occurs in its run. D0 at p with t[p-1]=1: 385 halts at E1, the twin halts only if t[p-2]=1 and otherwise runs on. Hence 385 never halts iff the twin's run satisfies P: every D0 has a 0 on its left (only C1-entered D0 can fail it: C reads 1 at q, t[q-1]=0, P needs t[q-2]=0).",
+ "reason": "Twin port refuted at the level of upstream's invariant (same failure mode as P-728). P holds in simulation (1e6-step exact lockstep; 2e8 steps of each machine in C with 3.0e7 / 2.8e7 D0 events and no violation; 2e9 steps of each machine with 3.04e8 / 2.80e8 D0 events and no violation, logs/d0ctx_2e9.log), but upstream's certificate does not contain it. The extracted CTL62 decider replays nonhalt16856's exact call: twin true, twin2 true, 385 false (0.02 s). Split-state probe on a 7-state context (state after D0 copied to G = 0LB---): twin and twin2 both false, calibration (unused 7th state) true. The step-by-step trace (ctltrace7) shows the closed set contains '... 00 01 01 <C' (2-cell blocks, LRU abstraction beyond 2 exact blocks): C1, D0 with a 1 on its left, then the D0-entered state reads 1. 385 fails at the same pattern. So no opening of 385 enters upstream's invariant with the argument intact.",
+ "searches": "On 385 directly with the extracted CTL62 deciders (scripts/grid.py, logs/grid385.jsonl, 8-20 s cap): NG 640 configs, RWL_mod 1,008, CPS_LRU 1,126 of 2,400 (simT 1001 complete); 0 true (2,139 false, 635 timeout). Split-state probes on twin and twin2 at upstream's call: false.",
+ "checks": {
+  "twin_check": "scripts/twin_check.py SUMMARY PASS with --long, 7 checks (R relation, M merge lemma, X exit lemma, L 1e6-step lockstep, C 2e9-step D0 context run, U upstream certificate replay, S split-state probes); output scripts/twin_check.out; C log logs/d0ctx_2e9.log"
+ },
+ "formalization_route": "None for the port. Importing nonhalt16856 (or copying its solve_cert) proves the twin only; the missing P is equivalent to 385's own non-halting, and CTL62 brings PArray/Uint63, which the unchanged check_kill baseline rejects. No Perm or Flip (no mirror; the only renaming is the E split), no new init. A kill needs a regular invariant for 385 itself that excludes D0 with a 1 on its left (CTL format: left NFA, right NFA, key set) through Astra's package, i.e. direction 5, or a hand proof of the Monotone-list dynamics.",
+ "next": "No port, no delta proof.md. Candidate for direction 5 (regular-language search): the target invariant must exclude '0 1 0 1 <C' (C1 then D0 with a 1 on its left) while covering the twin's orbit. scripts/bin/ctltrace7 names the first P-violating closure step of any CPS_LRU call in seconds."
+}

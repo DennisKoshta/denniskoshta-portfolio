@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The easy fates</title>
+<meta name="description" content="Module 1 of the BB(6) learning guide: halt, cycler, translated cycler and bouncer, what the deciders catch, and why holdouts are left.">
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* four fates at a glance: the canvases never shrink, so the scale is the same in all four */
+  .fates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 16px 0 6px; }
+  @media (min-width: 900px) { .fates { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .fate { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 10px 12px; min-width: 0; display: flex; flex-direction: column; }
+  .fate h3 { margin: 0 0 2px; font-size: 15.5px; }
+  .fate .tm { font: 11.5px/1.35 ui-monospace, Consolas, monospace; color: var(--muted); overflow-wrap: anywhere; margin-bottom: 8px; min-height: 4.05em; }
+  .fate .pic { display: flex; justify-content: center; align-items: flex-start; flex: 1; overflow-x: auto; }
+  .fate canvas { display: block; max-width: none; flex: none; image-rendering: pixelated; }
+  .fate .look { font-size: 13.5px; margin: 8px 0 0; color: var(--ink2); }
+  .fate .by { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+  .fate .by b { color: var(--ink2); font-weight: 600; }
+  /* phones: one card per row, picture on the left, words on the right */
+  @media (max-width: 479px) {
+    .fates { grid-template-columns: minmax(0, 1fr); }
+    .fate { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto auto 1fr; column-gap: 12px; }
+    .fate .pic { grid-column: 1; grid-row: 1 / -1; justify-content: flex-start; }
+    .fate > :not(.pic) { grid-column: 2; }
+    .fate .look { margin-top: 2px; }
+    .fate .tm { min-height: 0; }
+  }
+  .figcap { font-size: 12.5px; color: var(--muted); margin: 4px 0 0; line-height: 1.5; }
+  .figcap i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: -1px; margin: 0 4px 0 10px; }
+  .figcap i:first-child { margin-left: 0; }
+
+  /* static tapes side by side */
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 10px 0 12px; }
+  @media (max-width: 640px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+  .pair .tm-run { margin: 0; }
+  .pair .tm-label { color: var(--ink); font-weight: 600; }
+
+  /* pipeline */
+  .pipe { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr) minmax(0, 1fr) minmax(0, 1fr); gap: 18px; margin: 14px 0 8px; }
+  .pipe > div:not(:last-child)::after { content: '→'; position: absolute; right: -15px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; }
+  @media (max-width: 760px) { .pipe { grid-template-columns: 1fr; gap: 16px; } .pipe > div:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -19px; transform: none; } }
+  .pipe > div { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 9px 11px; font-size: 14px; position: relative; }
+  .pipe > div b { display: block; font-size: 13px; letter-spacing: .02em; }
+  .pipe .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .chip { font-size: 12px; border-radius: 10px; padding: 1px 8px; border: 1px solid var(--line); background: var(--sunk); }
+  .chip.halt { border-color: var(--sZ); }
+  .chip.loop { border-color: var(--sC); }
+  .chip.pat { border-color: var(--sD); }
+  .left { border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 10px; background: var(--surface); padding: 10px 14px; margin: 8px 0 14px; font-size: 15px; }
+  .left .n { font: 700 20px/1.2 system-ui, sans-serif; }
+  .left .hist { font-size: 13px; color: var(--muted); }
+  dl.words { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; margin: 10px 0 16px; font-size: 15px; max-width: 80ch; }
+  dl.words dt { font-weight: 650; }
+  dl.words dd { margin: 0; }
+  @media (max-width: 480px) { dl.words { grid-template-columns: 1fr; gap: 2px; } dl.words dd { margin-bottom: 8px; } }
+  .reasons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 10px 0; }
+  @media (max-width: 760px) { .reasons { grid-template-columns: 1fr; } }
+  .reasons > div { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 12px; font-size: 14.5px; }
+  .reasons .k { display: block; font-size: 12px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .reasons p { margin: 4px 0 0 !important; }
+
+  /* from our kills */
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); border-radius: 12px; background: var(--good-weak); padding: 12px 14px 6px; margin: 34px 0 10px; }
+  .kills > .tag { font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); }
+  .kills > h2 { font-size: 19px; margin: 2px 0 6px; }
+  .kills figure { margin: 12px 0; }
+  .kills figure img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); background: #000; }
+  .kills figcaption { font-size: 13px; color: var(--ink2); margin-top: 6px; max-width: 80ch; }
+
+  /* W5-8's tape as blocks: particles cell by cell, each block of 1s as one bar */
+  .ktape { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 12px 12px 8px; margin: 10px 0 4px; }
+  .ktape .row { display: flex; flex-wrap: wrap; gap: 10px 6px; align-items: flex-start; }
+  .ktape .tok { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .ktape .top { height: 22px; display: flex; align-items: center; }
+  .ktape .bar { height: 22px; border-radius: 5px; background: var(--c1); color: var(--c1fg); font: 650 12.5px/22px ui-monospace, Consolas, monospace; padding: 0 9px; white-space: nowrap; }
+  .ktape .gad { height: 22px; border-radius: 5px; border: 1px dashed var(--axis); background: var(--sunk); color: var(--ink2); font: 12.5px/20px system-ui, sans-serif; padding: 0 8px; white-space: nowrap; }
+  .ktape .cells { display: flex; gap: 2px; }
+  .ktape .cells i { display: block; width: 11px; height: 18px; border-radius: 2px; border: 1px solid var(--axis); background: var(--c0); }
+  .ktape .cells i.one { background: var(--c1); border-color: var(--c1); }
+  .ktape .cells i.head { box-shadow: 0 0 0 2px var(--sF); }
+  .ktape .lab { font: 12px/1.2 system-ui, sans-serif; color: var(--muted); white-space: nowrap; }
+  .ktape .lab b { font: 700 14px/1.2 ui-monospace, Consolas, monospace; color: var(--accent); }
+  .ktape .cap { font-size: 12.5px; color: var(--muted); margin: 10px 0 0; }
+  .ktape .cells.sw { display: inline-flex; vertical-align: -3px; }
+  .ktape .cells.sw i { width: 9px; height: 14px; }
+
+  .recap { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 16px; margin: 30px 0 0; }
+  .recap h2 { font-size: 15px; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .recap ol { margin: 4px 0; }
+  table.len { border-collapse: collapse; font: 13.5px/1.3 ui-monospace, Consolas, monospace; margin: 4px 0 12px; background: var(--surface); border-radius: 8px; }
+  table.len caption { text-align: left; font: 13px system-ui, sans-serif; color: var(--muted); padding: 0 0 4px; }
+  table.len th, table.len td { padding: 4px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+  table.len th { font: 700 13px ui-monospace, Consolas, monospace; color: var(--accent); }
+  table.len th:first-child { font: 600 12.5px system-ui, sans-serif; color: var(--muted); }
+  table.len td.d { color: var(--muted); font-size: 11.5px; padding-top: 0; border-bottom-width: 0; }
+  .lenwrap { overflow-x: auto; max-width: 100%; }
+  .self-error { color: var(--bad); font-weight: 600; font-size: 14px; }
+  .w58wait { font-size: 13px; color: var(--muted); }
+
+  /* predict boxes: the linked run has no controls until Reveal, so the answer is not one click away */
+  .tm-predict .tm-pinput input { width: 10.5em; }
+  .tm-predict:not([data-revealed]) .tm-plinked .tm-controls { display: none; }
+  .tm-predict:not([data-revealed]) .tm-plinked .tm-run::before { content: 'Reveal plays this run to the answer.'; display: block; font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 1 · The easy fates</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/00-00-reading.html" title="Reading a machine">← Module 0</a><a class="ui-btn" href="/busy-beaver/learn/02-02-compression.html" title="Compression and shift rules">Module 2 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 1 of 8 · about 15 minutes</div>
+<h1>The easy fates: halt, cycler, translated cycler, bouncer</h1>
+<div class="answer"><b>The answer</b>
+  <p>Most machines quickly do one of four things, and each one has a look you can learn to spot. They <b>halt</b>, they repeat in place (a <b>cycler</b>), they repeat while sliding along the tape (a <b>translated cycler</b>), or they go back and forth between ends that move apart (a <b>bouncer</b>).</p>
+  <p>Programs called <b>deciders</b> prove machines like these automatically. A <b>holdout</b> is a machine that every decider failed on.</p>
+</div>
+
+<section class="beat" id="glance"><h2><span class="num">0</span>The four pictures</h2>
+<p>Each picture is a real run, simulated in this page: one row per step, time going down, the same scale for all four. The coloured cell is the head (its colour is its state).</p>
+<div class="fates">
+  <div class="fate"><h3>Halt</h3><div class="tm">1RB1LB_1LA0LC_1RZ1LD_1RD0RA<br>4-state champion, steps 0–107</div>
+    <div class="pic"><canvas id="mini-halt"></canvas></div>
+    <p class="look">The run stops. The last row is step 107, the halt.</p>
+    <div class="by">Caught by: <b>simulation</b></div></div>
+  <div class="fate"><h3>Cycler</h3><div class="tm">1RB0RB_0LC0RA_1LA0LC<br>steps 0–107</div>
+    <div class="pic"><canvas id="mini-cycler"></canvas></div>
+    <p class="look">The same 12 rows again and again, in place (lines at steps 12, 24, …).</p>
+    <div class="by">Caught by: <b>Loops</b></div></div>
+  <div class="fate"><h3>Translated cycler</h3><div class="tm">1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC<br>steps 0–107</div>
+    <div class="pic"><canvas id="mini-tc"></canvas></div>
+    <p class="look">The same 10 rows again and again, each time 2 cells further right: a straight diagonal.</p>
+    <div class="by">Caught by: <b>Loops</b></div></div>
+  <div class="fate"><h3>Bouncer</h3><div class="tm">1RB1LA_0LA0LC_---1RA<br>steps 0–107</div>
+    <div class="pic"><canvas id="mini-bouncer"></canvas></div>
+    <p class="look">Back and forth. Each trip is 4 steps longer, and the left end moves out one cell.</p>
+    <div class="by">Caught by: <b>pattern deciders</b> (CTL, FAR, …)</div></div>
+</div>
+<p class="figcap"><i style="background:var(--c1)"></i>1 <i style="background:var(--line)"></i>0 (visited) <i style="background:var(--surface);border:1px solid var(--axis)"></i>never visited · head: <span style="color:var(--sA)">A</span> <span style="color:var(--sB)">B</span> <span style="color:var(--sC)">C</span> <span style="color:var(--sD)">D</span> <span style="color:var(--sE)">E</span>, <span style="color:var(--sZ)">halted</span> · 1 cell = 7 px wide, 1 step = 3 px tall</p>
+</section>
+
+<section class="beat" id="halt"><h2><span class="num">1</span>Halt</h2>
+<div data-tm-run data-opts='{"tm":"1RB1RZ_1LB0RC_1LC1LA","rows":"each","count":30,"table":true,"speed":3,"title":"3-state step champion 1RB1RZ_1LB0RC_1LC1LA, every step to the halt"}'></div>
+<p>Press <b>play</b>. At step 21, A reads a 1, and A1 = <code>1RZ</code> sends the head to Z, the halt state. The run is over: 21 steps (the halting step counts), five 1s left, never more than 5 cells used.</p>
+<p>No 3-state machine runs longer and still halts, so this is the 3-state <b>step champion</b>. The most 1s a 3-state machine can leave is six, from a different machine that halts at step 14.</p>
+<p>The 4-state champion in the first picture halts at step 107 with thirteen 1s. For a machine that halts, the run is the proof: simulate it and watch it stop. (Some halt far too late to watch: <a href="/busy-beaver/learn/06-06-astronomical-halts.html">module 6</a>.)</p>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1LB_1LA0LC_1RZ1LD_1RD0RA&amp;steps=107&amp;style=explore">the 4-state champion in the explorer</a></p>
+</section>
+
+<section class="beat" id="cycler"><h2><span class="num">2</span>Cycler: the same picture comes back</h2>
+<div data-tm-run data-opts='{"tm":"1RB0RB_0LC0RA_1LA0LC","rows":"each","count":13,"window":[-3,2],"table":true,"mark":{"digits":"m1-start"},"speed":2,"title":"Cycler 1RB0RB_0LC0RA_1LA0LC, steps 0–12"}'></div>
+<p>Step to the end. At step 12 the tape is blank again and A is back on cell 0: exactly the picture at step 0. The machine has nothing else to remember, so from step 12 it must do the same 12 steps again, forever.</p>
+<p><b>How it is caught.</b> The Loops decider stores the configurations it has seen (state, head cell, tape) and stops when one comes back. Any machine whose head stays inside a fixed stretch of cells must repeat sooner or later, since only finitely many tapes fit there. So a machine that never halts and never needs a new cell is always a cycler.</p>
+<div data-tm-predict data-opts='{"id":"m1-cycler-31","prompt":"Same cycler. What is on the tape at step 31? (Use the run above.)","input":{"kind":"choice","options":[{"label":"blank","value":0},{"label":"a single 1","value":1},{"label":"two 1s","value":2}]},"answer":2,"run":{"tm":"1RB0RB_0LC0RA_1LA0LC","rows":"each","count":32,"window":[-3,2],"mark":{"digits":"m1-start"},"speed":8},"revealTo":31,"actual":"ones","explain":"31 = 12 + 12 + 7. The run starts over at steps 12 and 24, so step 31 looks exactly like step 7: two 1s with a 0 between them. (Step 25 looks like step 1: a single 1.)","checkId":"C-M1-2"}'></div>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RB_0LC0RA_1LA0LC&amp;steps=100&amp;style=explore">this cycler in the explorer</a></p>
+</section>
+
+<section class="beat" id="tcycler"><h2><span class="num">3</span>Translated cycler: the same picture, shifted</h2>
+<div data-tm-run data-opts='{"tm":"1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC","rows":"each","count":27,"window":[-2,8],"mark":{"digits":"m1-tc"},"speed":3,"title":"Translated cycler 1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC, steps 0–26"}'></div>
+<p>Watch the right edge. At steps 6, 16 and 26, D steps onto a cell no one has visited yet: cells 2, 4 and 6. Each time, the cells at the head read <code>1 0 D&gt;</code> (D reading the cell after the <code>1 0</code>) with blank tape to the right: the same picture, 2 cells further right.</p>
+<p>That gives a rule: from <code>1 0 D&gt;</code> followed by n blank pairs <code>00</code>, 10n steps carry the <code>1 0 D&gt;</code> across them. The box below runs it for n = 1 to 7. The head never goes more than 2 cells left of D, so nothing further left can ever change what happens.</p>
+<div data-tm-rule data-opts='{"tm":"1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC","name":"slide","lhs":"1 0 D> (00)^n","rhs":"(00)^n 1 0 D>","vars":{"n":{"from":1,"to":7}},"steps":"10n","pick":1}'></div>
+<p><b>How it is caught.</b> Loops also compares the moments when the head reaches a new cell. Here are two of them:</p>
+<div class="pair">
+  <div data-tm-tape data-opts='{"tm":"1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC","step":6,"window":[-1,5],"label":"step 6: D on new cell 2","mark":{"digits":"m1-tc-win"}}'></div>
+  <div data-tm-tape data-opts='{"tm":"1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC","step":16,"window":[-1,5],"label":"step 16: D on new cell 4","mark":{"digits":"m1-tc-win"}}'></div>
+</div>
+<p>Same state D, and the same 3 cells <code>1 0 0</code> ending at the head, with blank tape to the right. Between steps 6 and 16 the head never went left of cell 0, so those 3 cells are all the run looked at. So steps 16 to 26 repeat steps 6 to 16, 2 cells further right, and so on forever.</p>
+<p>The bbchallenge wiki says 95% of all non-halting 6-state machines are translated cyclers that have cycled at least once within their first 1,000 steps.</p>
+<div data-tm-predict data-opts='{"id":"m1-tc-cell12","prompt":"D stands on a new cell at step 6 (cell 2) and at step 16 (cell 4). At which step does it first stand on cell 12?","input":{"kind":"number"},"answer":56,"run":{"tm":"1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC","rows":{"record":"R"},"count":12,"window":[-3,14],"mark":{"digits":"m1-tc"},"speed":4},"revealTo":{"row":11},"actual":"step","explain":"Every 10 steps the picture comes back 2 cells further right: cells 2, 4, 6, 8, 10, 12 at steps 6, 16, 26, 36, 46, 56. (C, between the D records, takes the odd cells.)","checkId":"C-M1-3"}'></div>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC&amp;steps=400&amp;style=explore">this translated cycler in the explorer</a></p>
+</section>
+
+<section class="beat" id="bouncer"><h2><span class="num">4</span>Bouncer: trips that keep getting longer</h2>
+<div data-tm-run data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","rows":"each","count":56,"window":[-6,2],"mark":{"digits":"m1-bounce"},"speed":4,"title":"Bouncer 1RB1LA_0LA0LC_---1RA, steps 0–55 (the bracket marks the hole)"}'></div>
+<p>Every trip has the same shape. A writes a 1 on a new cell at the left. A single 0, the <b>hole</b>, walks right through the 1s. At the right end the head turns and runs left over the whole block onto the next new cell.</p>
+<p>Here is one trip, step by step. Watch the bracket: it is the hole.</p>
+<div data-tm-run data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","from":10,"rows":"each","count":12,"window":[-4,2],"table":true,"mark":{"digits":"m1-trip"},"speed":2,"title":"One trip of the bouncer, steps 10–21"}'></div>
+<p>The hole moves one cell right every 3 steps (A0, B1, C1). So each 1 in the block costs 4 steps per trip: 3 for the hole to pass it and 1 on the run back (A1).</p>
+<p>The block grows by one cell per trip, so each trip takes 4 steps more than the last: new cells on the left at steps 3, 10, 21, 36, 55. That is why it is not a translated cycler: the picture never comes back, not even shifted.</p>
+<h3>Why it never halts, from the table</h3>
+<div data-tm-table data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","highlight":["A0","B1"],"caption":"the bouncer as a table"}'></div>
+<p>The only halt is C reading 0 (red dashes). C is entered only by B1, and B only by A0.</p>
+<p>A0 writes a 1 and moves right; if B then reads a 1, B1 moves straight back onto the 1 that A0 just wrote. So C always reads a 1, and the halt C0 can never happen. (Simulation agrees: C0 is never used in 10<sup>6</sup> steps.)</p>
+<p><b>How it is caught.</b> Those three lines are already a proof. Deciders find a different one: a list of tape shapes. Every tape is a block of 1s with at most one hole in it, and the head is in one of four spots:</p>
+<div class="pair">
+  <div data-tm-tape data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","step":12,"window":[-3,1],"label":"step 12: C on a 1, the hole just right of it","mark":{"digits":"m1-hole"}}'></div>
+  <div data-tm-tape data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","step":13,"window":[-3,1],"label":"step 13: A on the hole","mark":{"digits":"m1-hole"}}'></div>
+  <div data-tm-tape data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","step":14,"window":[-3,1],"label":"step 14: B, no hole, a 1 on its left","mark":{"digits":"m1-hole"}}'></div>
+  <div data-tm-tape data-opts='{"tm":"1RB1LA_0LA0LC_---1RA","step":19,"window":[-3,1],"label":"step 19: A on a 1, no hole (the run back)","mark":{"digits":"m1-hole"}}'></div>
+</div>
+<p>One step from any tape of these four shapes gives a tape of these four shapes again, and C appears only in the first, standing on a 1. So no run that starts on the blank tape (A on the hole) can ever reach C reading 0.</p>
+<p>Pattern deciders (CTL, FAR and their relatives) search for shape lists like this one. Dedicated Bouncers deciders look instead for new-cell moments whose gaps grow by a constant (7, 11, 15, 19 here).</p>
+<div data-tm-predict data-opts='{"id":"m1-bouncer-next","prompt":"New cells on the left at steps 3, 10, 21, 36, 55. At which step comes the next one?","input":{"kind":"number"},"answer":78,"run":{"tm":"1RB1LA_0LA0LC_---1RA","rows":{"record":"L"},"count":8,"window":[-9,3],"mark":{"digits":"m1-bounce"},"speed":3},"revealTo":{"row":5},"actual":"step","explain":"The gaps are 7, 11, 15, 19, so the next gap is 23: 55 + 23 = 78, with the tape reading 0^inf &amp;lt;A 1^6 0^inf (six 1s). In general the n-th one is at step 2n² + n.","checkId":"C-M1-4"}'></div>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1LA_0LA0LC_---1RA&amp;steps=300&amp;style=explore">this bouncer in the explorer</a></p>
+</section>
+
+<section class="beat" id="deciders"><h2><span class="num">5</span>What the deciders catch, and what is left</h2>
+<p>Three words first:</p>
+<dl class="words">
+  <dt>STF</dt><dd>Standard Text Format, the machine string that names every machine on this page. <code>1RB1LA_0LA0LC_---1RA</code> is the bouncer's table above: one group per state (A, B, C), and in each group what to do on a 0 and on a 1 (write, move, next state). <code>---</code> is undefined, and reaching it halts.</dd>
+  <dt>TNF</dt><dd>Tree Normal Form, how machines are listed. A transition is filled in only when the run first needs it, and machines that differ only by renamed states (a permutation) are listed once.</dd>
+  <dt>holdout list</dt><dd>The community's list of machines that every step below failed on. Each one needs its own proof, by hand or by a new tool.</dd>
+</dl>
+<div class="pipe">
+  <div><b>1 · Enumerate</b>every 6-state machine in TNF, each written as an STF string.</div>
+  <div><b>2 · Deciders</b>proven-correct programs, each for one kind of behaviour.
+    <span class="chips"><span class="chip halt">halt → simulation</span><span class="chip loop">cyclers → Loops</span><span class="chip loop">translated cyclers → Loops</span><span class="chip pat">patterns → n-gram CPS, RepWL, CTL/FAR</span><span class="chip">rules by induction → inductive deciders</span></span></div>
+  <div><b>3 · Simulate</b>every survivor for at least 10<sup>13</sup> steps.</div>
+  <div><b>4 · Group</b>equivalent machines, and keep one of each group.</div>
+</div>
+<p>The deciders, one line each:</p>
+<dl class="words">
+  <dt>simulation</dt><dd>Run the machine. If it halts, that run is the proof (section 1).</dd>
+  <dt>Loops</dt><dd>Remember earlier tapes. One that comes back, in place or shifted at a new cell, proves a cycler or a translated cycler (sections 2 and 3).</dd>
+  <dt>n-gram CPS</dt><dd>Keep only short pieces of the tape (n cells each) and show that the set of pieces the run can produce stops growing without ever allowing a halt.</dd>
+  <dt>RepWL</dt><dd>Write the tape as repeated words, but count copies only up to a cap ("1, 2, … or many"), and show that these rough tapes close up without a halt.</dd>
+  <dt>CTL / FAR</dt><dd>Search for a tape pattern that the start fits, that one step keeps, and that can never halt, like the bouncer's four shapes in section 4.</dd>
+  <dt>inductive deciders</dt><dd>Find rules that hold for every n, like the slide rule in section 3, prove them by induction, and chain them.</dd>
+</dl>
+<div class="left"><span class="n">740</span> machines are left: the current <b>holdout list</b>.
+  <div class="hist">12,325 in June 2024 · 815 on 2026-09-29 · 778 on 2026-10-07 · 740 now</div></div>
+<p>Why does a holdout escape? Usually for one of three reasons:</p>
+<div class="reasons">
+  <div><span class="k">1 · Two sizes must be compared</span><p>The proof needs a fact like "this block is shorter than that one". A pattern can count a block's length modulo a fixed number, but it cannot compare two lengths that both grow. <a href="/busy-beaver/learn/05-05-invariants.html">Module 5</a>.</p></div>
+  <div><span class="k">2 · Induction nested too deep</span><p>The rules are about rules: a counter inside a bell, a cycle inside a cycle. That goes beyond what the inductive deciders try. <a href="/busy-beaver/learn/03-03-counters.html">Modules 3</a> and <a href="/busy-beaver/learn/04-04-bells.html">4</a>.</p></div>
+  <div><span class="k">3 · Cryptid</span><p>A proof would settle an open number problem, like Collatz. No cheap pattern can exist unless that problem is easy after all. <a href="/busy-beaver/learn/07-07-cryptids.html">Module 7</a>.</p></div>
+</div>
+</section>
+
+<section class="kills" id="ours">
+<div class="tag">From our kills</div>
+<h2>W5-8: a bouncer that every decider missed</h2>
+<p><a href="/busy-beaver/machines/1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF/index.html"><code>1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code></a>, line 214 of the 740 list, listed in the class "Bouncer + Chaotic Edge". At heart it is a bouncer: the head runs back and forth, and the two ends move apart. Our Coq proof that it never halts passes all our kill checks (its only undefined cell is D0).</p>
+<figure>
+  <img src="/busy-beaver/learn/img/01-w58-left-records.png" alt="W5-8: one row per new cell on the left, 2,253 rows to step 20,000,000. A white wedge whose left and right ends move apart; dark diagonal lines run through its right part." loading="lazy" width="4828" height="2253">
+  <figcaption>From the blank tape to step 20,000,000: one row each time the head reaches a new cell on the left (2,252 rows, plus the start); white = 1, black = 0 or never visited. Both ends move out, as in a bouncer. The thin stripe along the left edge is the gadget (the same 43 cells at the start of every trip from step 5,511 on), and the dark lines in the right part are the short words between the blocks of 1s.</figcaption>
+</figure>
+<p>What it adds to a plain bouncer: the fixed gadget at the left end, and five blocks of 1s with four short words, the <b>particles</b>, between them. This is the real tape at the start of one trip, with each block of 1s drawn as one bar:</p>
+<div id="w58tape" class="ktape"><span class="w58wait">simulating W5-8 to step 4,097,897 in this page…</span></div>
+<div id="w58len"></div>
+<p>Read the table. Every 12 trips the first block grows by 48, the second shrinks by 8, the third and fifth grow by 4, and the fourth stays at 45.</p>
+<p>At the last row the second block is down to 2. Then the particles collide: 147 trips later the tape has the same shape again, with lengths (2739, 38, 96, 35, 18).</p>
+<p>Nine more collisions follow, of four kinds, in no regular order. From step 153,126,993 on, only two kinds are left, and they alternate forever.</p>
+<p><b>Why every decider missed it:</b> reason 2 above, a cycle inside a cycle. From step 153,126,993 the 12-trip step of the table repeats 26 times, then a collision, then 20 times, then a collision; then 30 and 24; then 34 and 28. Each round the counts grow by 4, so the proof needs one induction (the 12-trip step, repeated) inside another (the rounds).</p>
+<p>Inside each trip the head crosses the long blocks with shift rules like this one, which turns <code>11</code> pairs into <code>10</code> pairs, 2 steps per pair:</p>
+<div data-tm-rule data-opts='{"tm":"1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF","name":"R1","lhs":"C> (11)^n","rhs":"(10)^n C>","vars":{"n":{"from":1,"to":8}},"steps":"2n","pick":3}'></div>
+<p class="links"><a href="/busy-beaver/machines/1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF/index.html">W5-8 machine page (with its write-up)</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF&amp;steps=2e7&amp;rows=rec:L">W5-8's new-cell rows in the explorer</a></p>
+</section>
+
+<section class="recap">
+<h2>Recap</h2>
+<ol>
+  <li>Halt: it stops. Cycler: the same rows repeat in place. Translated cycler: they repeat, shifted. Bouncer: back and forth, each trip a little longer.</li>
+  <li>Simulation proves halts; Loops catches both kinds of cycler; pattern deciders (CTL, FAR, …) catch simple bouncers.</li>
+  <li>A holdout escapes because its proof compares two growing sizes, needs induction nested deeper than the deciders go, or would settle an open number problem (a cryptid).</li>
+</ol>
+</section>
+
+<nav class="pager"><a href="/busy-beaver/learn/00-00-reading.html">← Module 0: Reading a machine and its pictures</a><a href="/busy-beaver/dashboard/index.html">Dashboard</a> · <a href="/busy-beaver/learn/index.html">All modules</a><a href="/busy-beaver/learn/02-02-compression.html">Module 2: Compression →</a></nav>
+
+<footer class="checked">
+  <b>checked:</b> every tape on this page is simulated live by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>); each drill compares its stated answer with the live run, and the W5-8 tape and table are compared with the checked values below.
+  <code>python3 -B learn/checks/m01_easy_fates.py</code> (13 checks, all pass, about 11 s) re-checks with <code>tools/sim.py</code>:
+  C-M1-1 (3-state step champion: 21 steps, five 1s, halts on A1, cells −1…3; 4-state champion: 107 steps, thirteen 1s);
+  C-M1-12 (all 13<sup>6</sup> 3-state tables run 50 steps from the blank tape: most steps 21 with five 1s, most 1s six, from a machine that halts at step 14; BB(3) = 21, Lin and Rado, so none halts later);
+  C-M1-2 (the cycler equals step 0 at steps 12, 24, …, 96; cells −2…1; one 1 at steps 1 and 25, two at steps 7 and 31);
+  C-M1-3 (right records, D at cells 2, 4, …, 12 at steps 6, 16, …, 56; the slide rule for n = 1…7 with the head inside its cells; cells 0–2 at step 6 and cells 2–4 at step 16 both read 1 0 0, and the head stays at cell 0 or right of it in steps 6–16);
+  C-M1-4 (left records at 2n²+n for 223 records, gaps growing by 4; C0 never used in 10<sup>6</sup> steps; only A0 enters B, only B1 enters C);
+  C-M1-9 (the trip from step 10 to 21 uses A0 B1 C1 A0 B1 C1 A0 B0 A1 A1 A1; for the first 200 trips, the trip from n 1s to n+1 uses A0 n+1, B1 n, C1 n, B0 once and A1 n+1 times, 4n+3 steps);
+  C-M1-10 (every one of the first 10<sup>6</sup> steps has one of the four shapes; one step from each shape with blocks up to 12 long stays in the shapes; the four tapes at steps 12, 13, 14, 19);
+  C-M1-5 (the four small pictures: rows and cells);
+  C-M2-3 (W5-8's rule R1 for n = 1…8, head inside its cells);
+  C-M1-6 (W5-8: only D0 undefined; the 43-cell gadget; the five rows at steps 4,097,897 … 4,883,657, 24 left records apart, follow rule S of its write-up's §1, and the next such row comes 294 left records (147 trips) later, at step 7,713,999, with lengths (2739, 38, 96, 35, 18); line 214 of <code>data/holdouts/BB6_holdouts_740.txt</code>);
+  C-M1-7 (the W5-8 picture: 2,252 left records to step 2·10<sup>7</sup>, cells −2,252…2,575; from left record 15, step 5,511, every second left record, and only those, has the gadget's 43 cells next to the head);
+  C-M1-11 (W5-8 to step 5.6·10<sup>8</sup>: ten collisions of four kinds, TO T6 T8 T6 T8 TO T8 T6 TE T6, reach Even(12863, 212) at step 153,126,993; then TE and TO alternate for three rounds, with the 12-trip step repeated 26, 20, 30, 24, 34, 28 times, back to the Even shape at steps 241,393,559, 363,208,093 and 526,157,923);
+  C-M1-8 (holdout list sizes, line counts of <code>data/holdouts/</code>).
+  Cited, not simulated: the four-step pipeline (PLAN.md, "How the holdouts were produced"), Loops and the record test (atlas/curriculum.md §2.1, Lemma 3.1 of the deciders paper, part I), the one-line decider descriptions (atlas/curriculum.md §2.1 and §5.1, the bbchallenge wiki), the four shapes for every block length (atlas/curriculum.md §5.3), the three reasons (§5.1), the Bouncers deciders (atlas/tooling-notes.md §1), the wiki's 95% figure (quoted in §2.1), W5-8's class, kill, picture (<code>tools/diagram.py</code>, records:L) and its double cycle forever (its <code>status.json</code> and <code>submission/proof.md</code> §0, §1, §4).
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, decoders, Run } from './tm.js';
+
+// ---------------------------------------------------------------- row readers used by this page's widgets
+const cellsOf = (v, a, b) => { let s = ''; for (let p = a; p <= b; p++) s += v.read(p); return s; };
+const fp = (p) => (p < 0 ? '−' + -p : String(p));
+const ones = (n) => `${n} one${n === 1 ? '' : 's'}`;
+// cycler: the start picture (blank tape, A on cell 0)
+decoders['m1-start'] = (v) => {
+  if (v.state !== 'A' || v.pos !== 0 || /1/.test(cellsOf(v, v.lo, v.hi))) return null;
+  return v.step === 0 ? { label: 'the start', text: 'blank tape, A on cell 0 (the start)', marks: [] }
+    : { label: 'same as step 0', text: 'blank tape, A on cell 0: the same picture as step 0', marks: [] };
+};
+// translated cycler: D on a new cell on the right
+decoders['m1-tc'] = (v) => {
+  if (v.record !== 'R' || v.state !== 'D') return null;
+  return { label: `D on new cell ${v.pos}`, text: `D on a new cell (${v.pos}), reading 1 0 D> with blank tape to the right`,
+    marks: [{ from: v.pos - 2, to: v.pos + 1, label: '1 0 D>' }] };
+};
+// the same, for the two static tapes: the 3 cells ending at the head
+decoders['m1-tc-win'] = (v) => ({ label: '', text: '', marks: [{ from: v.pos - 2, to: v.pos + 1, label: `cells ${v.pos - 2}–${v.pos}: ${cellsOf(v, v.pos - 2, v.pos).split('').join(' ')}` }] });
+// bouncer: where the hole is. A reading 0 stands on it; C stands just left of it (B1 has just written it).
+// A in a block of 1s, or B, means there is no hole right now.
+const holeOf = (v) => (v.state === 'A' && v.read(v.pos) === 0 ? v.pos : v.state === 'C' ? v.pos + 1 : null);
+const holeMark = (h) => (h === null ? [] : [{ from: h, to: h + 1, label: 'hole' }]);
+decoders['m1-hole'] = (v) => {
+  const h = holeOf(v);
+  if (h !== null) return { label: '', text: `the hole is cell ${fp(h)}`, marks: holeMark(h) };
+  const s = cellsOf(v, v.lo, v.hi), a = v.lo + s.indexOf('1'), b = v.lo + s.lastIndexOf('1');
+  return { label: '', text: 'no hole right now', marks: [{ from: a, to: b + 1, label: 'all 1s, no hole' }] };
+};
+// bouncer, every step: the hole, and at a new cell on the left, the block of 1s to its right
+decoders['m1-bounce'] = (v) => {
+  const h = holeOf(v);
+  if (v.record === 'L' && v.state === 'A') {
+    const s = cellsOf(v, v.pos + 1, v.hi), n = (s.match(/^1*/) || [''])[0].length;
+    return { n, label: `new cell, ${ones(n)}`, text: `A on a new cell on the left (the next hole), ${ones(n)} to its right`,
+      marks: [...holeMark(h), { from: v.pos + 1, to: v.pos + 1 + n, label: ones(n) }] };
+  }
+  return { label: '', text: h === null ? 'no hole right now: the block is all 1s' : `the hole is cell ${fp(h)}`, marks: holeMark(h) };
+};
+// bouncer, one trip: what each step does to the hole
+decoders['m1-trip'] = (v) => {
+  const h = holeOf(v), rd = v.read(v.pos);
+  let label, text;
+  if (v.state === 'A' && rd === 0) {
+    label = v.record === 'L' ? `A on the hole: new cell ${fp(v.pos)}` : `A on the hole (${fp(v.pos)})`;
+    text = v.record === 'L' ? 'A reached a new cell on the left. Its 0 is the hole of the next trip.'
+      : 'A stands on the hole. Next, A0 writes a 1 there and B steps right.';
+  } else if (v.state === 'B') {
+    label = rd === 1 ? 'A0 filled it' : 'A0 filled it; B past the end';
+    text = rd === 1 ? 'A0 filled the hole with a 1. B reads the next 1; B1 will turn it into the hole.'
+      : 'A0 filled the hole with a 1. B is past the end of the block; B0 turns back.';
+  } else if (v.state === 'C') {
+    label = `hole moved to ${fp(h)}`;
+    text = `B1 wrote the hole one cell further right (cell ${fp(h)}). C reads the 1 that A0 just wrote; C1 steps onto the hole.`;
+  } else if (v.rule === 'B0') {
+    label = 'turned back'; text = 'B0 turned back. Now A runs left over the whole block, one A1 per cell.';
+  } else {
+    label = 'run back'; text = 'A runs left over the 1s (A1).';
+  }
+  return { label, text, marks: holeMark(h) };
+};
+// W5-8: K(n,a,b,c,d) = 0^inf <F G 1^n 0 1^a 0110 1^b 0^6 1^c 0110 1111 0^6 1^d 0110 0110 111 0^inf (its write-up, §1-§2)
+const G = '0011011110110111111011011111001101111101100';
+const KRE = new RegExp('^0' + G + '(1+)0(1+)0110(1+)000000(1+)01101111000000(1+)01100110111$');
+decoders['K(n,a,b,c,d)'] = (v) => {
+  if (v.state !== 'F' || v.record !== 'L' || v.pos !== v.lo) return null;
+  const m = KRE.exec(cellsOf(v, v.pos, v.hi));
+  if (!m) return null;
+  const [n, a, b, c, d] = m.slice(1).map((x) => x.length);
+  return { n, a, b, c, d, label: `K(${n}, ${a}, ${b}, ${c}, ${d})`, text: `F on a new cell; then the gadget and blocks of ${n}, ${a}, ${b}, ${c}, ${d} ones`, marks: [] };
+};
+
+// ---------------------------------------------------------------- the four small pictures (live runs, steps 0..107)
+const PANELS = [
+  { id: 'mini-halt', tm: '1RB1LB_1LA0LC_1RZ1LD_1RD0RA', win: [-11, 4] },
+  { id: 'mini-cycler', tm: '1RB0RB_0LC0RA_1LA0LC', win: [-4, 3], every: 12 },
+  { id: 'mini-tc', tm: '1RB0RE_0LC1RC_0RD1LA_1LE---_1LB1RC', win: [-2, 23] },
+  { id: 'mini-bouncer', tm: '1RB1LA_0LA0LC_---1RA', win: [-8, 2] },
+];
+const CW = 7, RH = 3, STEPS = 107;
+for (const p of PANELS) {
+  const r = new Run(p.tm);
+  p.rows = [];
+  const snap = () => { const v = r.view(); p.rows.push({ pos: v.pos, state: v.state, lo: v.lo, hi: v.hi, cells: cellsOf(v, p.win[0], p.win[1]) }); };
+  snap();
+  while (r.t < STEPS && r.step()) snap();
+}
+function drawPanels() {
+  const css = getComputedStyle(document.documentElement), tok = (n) => css.getPropertyValue(n).trim();
+  const dpr = window.devicePixelRatio || 1;
+  for (const p of PANELS) {
+    const cv = document.getElementById(p.id), cols = p.win[1] - p.win[0] + 1, W = cols * CW, H = p.rows.length * RH;
+    cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    const g = cv.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.fillStyle = tok('--surface'); g.fillRect(0, 0, W, H);
+    p.rows.forEach((row, t) => {
+      for (let c = 0; c < cols; c++) {
+        const x = p.win[0] + c;
+        if (x < row.lo || x > row.hi) continue;
+        g.fillStyle = x === row.pos ? tok('--s' + (row.state === 'Z' ? 'Z' : row.state)) : row.cells[c] === '1' ? tok('--c1') : tok('--line');
+        g.fillRect(c * CW, t * RH, CW, RH);
+      }
+    });
+    if (p.every) { g.fillStyle = tok('--accent'); for (let t = p.every; t < p.rows.length; t += p.every) g.fillRect(0, t * RH - 0.5, W, 1); }
+  }
+}
+drawPanels();
+if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawPanels);
+
+// ---------------------------------------------------------------- W5-8 every 12 trips: a hidden run (so the page's ready
+// signal waits for it), drawn as blocks and as a table, checked against learn/checks/m01_results.json (C-M1-6)
+const W58 = '1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF';
+const WANT = [[4097897, '1959,34,68,45,18'], [4288457, '2007,26,72,45,22'], [4482937, '2055,18,76,45,26'], [4681337, '2103,10,80,45,30'], [4883657, '2151,2,84,45,34']];
+const K = ['n', 'a', 'b', 'c', 'd'];
+const hold = document.createElement('div');
+hold.hidden = true;
+document.getElementById('w58tape').after(hold);
+const w58 = mountRun(hold, { tm: W58, from: WANT[0][0], rows: { decoded: 'K(n,a,b,c,d)' }, count: WANT.length, speed: 1 });
+function drawTape(k) {
+  const el = document.getElementById('w58tape');
+  const cells = (w, lab, head) => `<span class="tok"><span class="top"><span class="cells">${[...w].map((c, i) => `<i class="${c === '1' ? 'one' : ''}${head && i === 0 ? ' head' : ''}"></i>`).join('')}</span></span><span class="lab">${lab}</span></span>`;
+  const bar = (key) => `<span class="tok"><span class="top"><span class="bar">${k[key].toLocaleString('en-US')} ones</span></span><span class="lab"><b>${key}</b></span></span>`;
+  const tok = [cells('0', 'F, new cell', true),
+    '<span class="tok"><span class="top"><span class="gad">gadget: 43 fixed cells</span></span><span class="lab">the same every trip</span></span>',
+    bar('n'), cells('0', 'particle'), bar('a'), cells('0110', 'particle'), bar('b'), cells('000000', 'particle'), bar('c'),
+    cells('01101111000000', 'particle'), bar('d'), cells('01100110111', 'right end')];
+  el.innerHTML = `<div class="row">${tok.join('')}</div>`
+    + `<p class="cap">Step ${k.step.toLocaleString('en-US')}, simulated in this page: F (outlined) on a new cell at the left end, the gadget, then the blocks <b>n, a, b, c, d</b> of 1s. The particles between them are drawn cell by cell: <span class="cells sw"><i class="one"></i></span> 1, <span class="cells sw"><i></i></span> 0.</p>`;
+}
+function drawTable(rows) {
+  const sgn = (x) => (x > 0 ? '+' + x : x < 0 ? '−' + -x : '0');
+  let h = '<div class="lenwrap"><table class="len"><caption>The five block lengths at the start of every 12th trip (simulated in this page)</caption>'
+    + '<tr><th>step</th>' + K.map((k) => `<th>${k}</th>`).join('') + '</tr>';
+  rows.forEach((r, i) => {
+    if (i) h += '<tr><td class="d">12 trips later</td>' + K.map((k) => `<td class="d">${sgn(r[k] - rows[i - 1][k])}</td>`).join('') + '</tr>';
+    h += `<tr><td>${r.step.toLocaleString('en-US')}</td>` + K.map((k) => `<td>${r[k].toLocaleString('en-US')}</td>`).join('') + '</tr>';
+  });
+  document.getElementById('w58len').innerHTML = h + '</table></div>';
+}
+w58.ready.then((c) => {
+  const rows = c.rows().filter((r) => r.decoded).map((r) => ({ step: r.step, ...r.decoded }));
+  hold.remove();                                     // its rows are read; the hidden widget is not needed any more
+  const got = rows.map((r) => [r.step, K.map((k) => r[k]).join(',')]);
+  if (JSON.stringify(got) !== JSON.stringify(WANT)) {
+    const msg = `W5-8 rows differ from the checked values: ${JSON.stringify(got)}`;
+    (window.__tmErrors = window.__tmErrors || []).push(msg);
+    const e = document.createElement('div'); e.className = 'self-error'; e.textContent = 'Page error: ' + msg;
+    document.getElementById('w58tape').replaceChildren(e);
+    console.error(msg);
+    return;
+  }
+  drawTape(rows[0]);
+  drawTable(rows);
+});
+
+// ---------------------------------------------------------------- mount the widgets; a predict box's linked run is
+// inert (no buttons, keys or taps) until Reveal, so the answer is never one click away
+window.__learnReady = autoMount();
+for (const box of document.querySelectorAll('.tm-predict')) {
+  const linked = box.querySelector('.tm-plinked');
+  if (!linked) continue;
+  const sync = () => { linked.inert = !box.hasAttribute('data-revealed'); };
+  sync();
+  new MutationObserver(sync).observe(box, { attributes: true, attributeFilter: ['data-revealed'] });
+}
+</script>
+</body>
+</html>

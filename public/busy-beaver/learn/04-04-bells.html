@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bells eating counters</title>
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* the lead: two pictures (light and dark versions, drawn in the widgets' colours) and their caption */
+  .lead { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 24px; align-items: start; margin: 18px 0 8px; }
+  @media (max-width: 760px) { .lead { grid-template-columns: minmax(0, 1fr); } }
+  .pics { display: flex; gap: 12px; align-items: flex-start; }
+  .pics figure { margin: 0; }
+  .pics img { display: block; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 6px; max-width: none; }
+  .pics figcaption { font-size: 12.5px; line-height: 1.35; color: var(--muted); margin-top: 4px; }
+  .th-dark { display: none !important; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .th-light { display: none !important; }
+    :root:not([data-theme="light"]) .th-dark { display: block !important; }
+  }
+  :root[data-theme="dark"] .th-light { display: none !important; }
+  :root[data-theme="dark"] .th-dark { display: block !important; }
+  .cap { font-size: 14.5px; color: var(--ink2); margin: 0; }
+  .cap p { margin: 0 0 8px; }
+  .cap b { color: var(--ink); }
+  .key { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12.5px; color: var(--muted); margin: 2px 0 8px; }
+  .key i { display: inline-block; width: 11px; height: 11px; border-radius: 2px; vertical-align: -1px; margin-right: 4px; border: 1px solid var(--axis); }
+  .small { font-size: 12.5px; color: var(--muted); }
+
+  .formula { display: block; font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 15px; background: var(--code); border-radius: 8px;
+    padding: 8px 12px; margin: 8px 0; overflow-x: auto; white-space: nowrap; max-width: 100%; }
+  @media (max-width: 480px) { .formula { font-size: 12.5px; padding: 8px 9px; } }
+  ul.watch { margin: 6px 0 10px; }
+
+  /* .fit: a tape whose cells shrink until the whole window (--n cells) fits the box. 100cqw = the widget's width. */
+  .fit { --g: 4px; --sp: 28px; }
+  .fit .tm-run { container-type: inline-size; }
+  .fit .tm-tapewrap { --cw: clamp(3px, calc((100cqw - var(--sp) + var(--g)) / var(--n) - var(--g)), 46px) !important; }
+  .fit .tm-tape { gap: var(--g); }
+  .fit .tm-tapewrap .tm-cell { font-size: clamp(8px, calc(var(--cw) * .48), 18px); }
+  .fit .tm-tapewrap .tm-pos { font-size: clamp(7px, calc(var(--cw) * .6), 10px); }
+  .fit.nopos .tm-pos { display: none; }
+  .fit.nopos .tm-tape { padding-bottom: 4px; }
+  @media (max-width: 600px) {
+    .fit { --g: 2px; --sp: 16px; }
+    .fit .tm-stage { padding-left: 6px; padding-right: 6px; }
+    .fit .tm-cell { border-radius: 3px; }
+    .fit.tiny .tm-cell { font-size: 0 !important; border-radius: 1px; }
+    .fit.tiny .tm-pos { display: none; }
+    .fit .tm-marks { height: 42px; }
+    .fit .tm-br span { font-size: 10.5px; }
+    .fit .tm-br:nth-child(even) span { top: 22px; }      /* neighbouring labels on two lines, so they never overlap */
+  }
+  /* brackets on the parts of the bell around a defect: quieter than the defect itself */
+  .tm-br.side { border-color: var(--axis); }
+  .tm-br.side span { color: var(--ink2); font-weight: 500; }
+  /* blocks history with each line's E(p, N) first */
+  .labfirst .tm-bline { display: flex; }
+  .labfirst .tm-bline .lab { order: -1; margin-left: -3ch; min-width: 13ch; }
+  .labfirst .tm-bline.cur .lab { color: var(--ink); font-weight: 700; }
+
+  table.rules td:nth-child(2), table.rules td:nth-child(3) { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13.5px; white-space: nowrap; }
+  table.rules td:first-child { white-space: nowrap; }
+  section.beat p code, ul.watch code, .fam p code { white-space: nowrap; }
+  @media (max-width: 560px) {
+    table.rules, table.rules tbody, table.rules tr, table.rules td { display: block; }
+    table.rules tr:first-child { display: none; }
+    table.rules tr { border-bottom: 1px solid var(--line); padding: 6px 0; }
+    table.rules td { border: 0; padding: 1px 4px; white-space: normal !important; }
+    table.rules td:first-child { font-weight: 650; }
+    table.rules td[data-l]::before { content: attr(data-l) ": "; color: var(--muted); font: 12.5px system-ui, sans-serif; }
+  }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 4px; }
+  .pair figure { margin: 0; min-width: 0; }
+  .pair img { display: block; width: 100%; height: auto; border-radius: 6px; border: 1px solid var(--line); }
+  .pair figcaption { font-size: 12.5px; color: var(--muted); margin-top: 3px; overflow-wrap: anywhere; }
+  .fam { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 12px 14px 6px; margin: 14px 0; }
+  .fam h3 { margin: 0 0 4px; }
+  .fam p { font-size: 15px; }
+  .fam .cap { font-size: 13.5px; }
+  .tm { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: 13px; overflow-wrap: anywhere; color: var(--ink2); }
+  footer.checked ul { margin: 4px 0 6px; padding-left: 18px; max-width: none; }
+  footer.checked li { margin: 2px 0; }
+  .calc { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface); padding: 12px 14px; margin: 16px 0; }
+  .calc .row { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 15px; }
+  .calc input { font: inherit; font-size: 15px; width: 6.5em; border: 1px solid var(--line); border-radius: 7px; padding: 4px 8px; min-height: 34px; background: var(--page); color: var(--ink); }
+  .calc button { font: inherit; font-size: 14px; border-radius: 7px; padding: 4px 12px; min-height: 34px; cursor: pointer; background: var(--ink); color: var(--page); border: 1px solid var(--ink); font-weight: 600; }
+  .calc .presets { font-size: 13px; color: var(--muted); }
+  .calc .presets button { background: var(--surface); color: var(--ink); border-color: var(--line); font-weight: 500; font-size: 13px; min-height: 28px; padding: 2px 9px; }
+  .calc .out { margin-top: 10px; font-size: 15px; }
+  .calc .out .k { color: var(--muted); font-size: 13px; }
+  .calc .out .mono { font-size: 13px; overflow-wrap: anywhere; }
+  .calc .ok { color: var(--good); font-weight: 700; }
+  .calc .bad { color: var(--bad); font-weight: 700; }
+  .calc .grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 12px; align-items: baseline; }
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); border-radius: 10px; background: var(--surface); padding: 10px 16px; margin: 30px 0 18px; }
+  .kills > b:first-child { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 2px; }
+  .kills ul { margin: 6px 0; padding-left: 20px; }
+  .kills li { margin: 5px 0; }
+  .recap { border-top: 2px solid var(--ink); padding-top: 8px; margin-top: 26px; }
+  .recap h2 { font-size: 17px; margin: 0 0 4px; }
+  .recap ol { margin: 4px 0; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 4 · Bells eating counters</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/03-03-counters.html" title="Counters on the tape">← Module 3</a><a class="ui-btn" href="/busy-beaver/learn/05-05-invariants.html" title="Invariants, not long runs">Module 5 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 4 of 8 · about 15 minutes</div>
+<h1>Bells eating counters</h1>
+<div class="answer"><b>The short answer</b>
+  <p>A <b>bell</b> is a run made of bouncers that keep getting bigger (<a href="https://wiki.bbchallenge.org/wiki/Bell">the wiki's definition</a>). The word is also used for a part of the tape: the striped word <code>(10)^p</code> that the bouncer runs over. The whole run is called a bell because each round is a bouncer over that word, bigger than the last.</p>
+  <p>In W5-3, each trip of the head adds 1 to a binary counter. When a round ends, the bell <b>eats</b> the counter's lowest digits and grows. To prove W5-3 never halts, we look only at the moments just before each eat, called E(p, N), and show that five rules always give the next one.</p>
+</div>
+
+<div class="lead">
+  <div class="pics">
+    <figure>
+      <img class="th-light" src="/busy-beaver/learn/img/04-w53-zigzag-light.png" width="132" height="574" alt="W5-3, every step from 165 to 451: the head's path zig-zags between the counter on the right and a turning point that moves left, over vertical stripes">
+      <img class="th-dark" src="/busy-beaver/learn/img/04-w53-zigzag-dark.png" width="132" height="574" alt="W5-3, every step from 165 to 451: the head's path zig-zags between the counter on the right and a turning point that moves left, over vertical stripes">
+      <figcaption>one round,<br>every step<br>(165 → 451)</figcaption>
+    </figure>
+    <figure>
+      <img class="th-light" src="/busy-beaver/learn/img/04-w53-rounds-light.png" width="194" height="600" alt="W5-3, one row each time the head is back at the counter: a striped bell crossed by slanted lines, growing rounds, and the counter on the right">
+      <img class="th-dark" src="/busy-beaver/learn/img/04-w53-rounds-dark.png" width="194" height="600" alt="W5-3, one row each time the head is back at the counter: a striped bell crossed by slanted lines, growing rounds, and the counter on the right">
+      <figcaption>200 trips, one row each<br>(steps 7 → 20,651)</figcaption>
+    </figure>
+  </div>
+  <div class="cap">
+    <div class="key"><span><i style="background:var(--c1)"></i>1</span><span><i style="background:var(--c0)"></i>0</span><span><i style="background:var(--sB)"></i>head in B (other states: their colour)</span><span>time goes down</span></div>
+    <p><b>Left: one bouncer.</b> Each row is one step of W5-3. The first trip is an eat: it runs to the blank left end, cell −5. Every later trip runs left until it meets the <b>defect</b> (one cell that breaks the stripes), changes it, and comes back to the counter on the right.</p>
+    <p>The turning point moves left with every trip (cell 5, 3, 0, −1, −4, −5), so the zig-zag widens. That widening zig-zag is the bouncer.</p>
+    <p><b>Right: many rounds.</b> One row each time the head is back at the counter, so the head (orange) is always at the counter's left end. The stripes are the bell. Each slanted line is the defect walking left: one line, one round.</p>
+    <p>When the defect is gone, the next trip is an <b>eat</b>: the bell grows at both ends, so its left edge steps left and the head steps right. Rounds mostly get longer; the two short ones near step 3,000 are M4 rounds (section 4).</p>
+    <p class="small">Rendered from real runs by <code>tools/diagram.py</code>, in the widgets' colours; <code>learn/img/make_04.py</code> remakes them.</p>
+  </div>
+</div>
+
+<section class="beat"><h2><span class="num">1</span>Read the tape at an eat</h2>
+<p>W5-3 at step 165. Left is the bell, 2 pairs of <code>10</code> (cells −2 to 1). Then <code>0 1 1</code>, and the head: B reads the 0 after them (cell 5). Right is the counter: digit 0 is <code>00</code>, digit 1 is <code>11</code>, lowest digit first.</p>
+<div class="fit" style="--n:16" data-tm-tape data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","step":165,"window":[-3,12],"label":"W5-3 at step 165 (simulated from the blank tape in this page)","mark":{"digits":"count"},"blocks":true,"compress":{"words":["10","00","11"]}}'></div>
+<p>The counter reads 0, 0, 1 from the head outward, so N = 100 in binary = 4. We call this tape <b>E(2,4)</b>: p = 2 pairs in the bell, counter N = 4. Every eat configuration has the same shape:</p>
+<code class="formula">E(p, N) = 0^inf (10)^p 0 1 1 B&gt; 0 C(N)</code>
+<p class="note">C(N) is the counter: N's binary digits, lowest first, each written twice (<code>00</code> or <code>11</code>). <code>B&gt;</code> means "state B reads the next cell to the right".</p>
+</section>
+
+<section class="beat"><h2><span class="num">2</span>One round: count, count, …, count</h2>
+<p>One row each time the head is back at the counter: B reads the 0 just right of <code>0 1 1</code>. These moments are the <b>count configurations</b>. Here they go from E(2,4) at step 165 to E(5,7) at step 451, the round in the left picture above. Row 2 is right after the eat (section 3). Rows 3 to 8 are <b>counts</b>, and each one adds 1 to N.</p>
+<div id="round" class="fit" style="--n:21" data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":165,"rows":{"decoded":"count"},"count":8,"window":[-5,15],"view":"both","compress":{"words":["10","00","11"]},"speed":1,"title":"W5-3, one row per trip, steps 165 to 451"}'></div>
+<p>Step through it and watch the bracket marked <b>defect</b>:</p>
+<ul class="watch">
+  <li>an extra <code>1</code> becomes an extra <code>0</code> in the same place (rows 3 → 4 and 5 → 6);</li>
+  <li>an extra <code>0</code> becomes an extra <code>1</code> two pairs further left (rows 4 → 5 and 6 → 7);</li>
+  <li>at row 8 the defect has walked off the left end. The bell is clean again, <code>(10)^5</code>, and N = 7: that is E(5,7).</li>
+</ul>
+
+<h3>Inside two counts, every step (steps 225 to 301)</h3>
+<p>E runs left over the <code>10</code> pairs until it meets the defect, and changes it. Then A runs back right into the counter and adds 1 there (the carry of module 3), and the head ends at B again. The first trip takes 30 steps, the second 46.</p>
+<div class="fit" style="--n:21" data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":225,"rows":"each","count":77,"window":[-5,15],"mark":{"digits":"count"},"speed":10,"title":"W5-3, every step from 225 to 301"}'></div>
+</section>
+
+<section class="beat"><h2><span class="num">3</span>The eat, every step (steps 165 to 197)</h2>
+<p>With no defect, E's sweep does not stop: it runs off the left end of the bell into the blank. There B and C write 1s, and then C and F sweep right over the whole bell. C writes 1 on each 0 and F writes 0 on each 1, so the stripes slide over by one cell: watch rows 177 to 187. The bell now starts 3 cells further left (cell −5 instead of −2).</p>
+<div class="fit" style="--n:19" data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":165,"rows":"each","count":33,"window":[-6,12],"table":true,"mark":{"digits":"count"},"speed":4,"title":"W5-3, the eat from E(2,4), every step"}'></div>
+<p>Then A runs on into the counter and bites its low digits: <code>00 00 11</code> (N = 4) becomes <code>11</code> (N = 1), and the head ends 4 cells further right (cell 9 instead of 5). The bell has grown into the eaten cells too and ends with <code>1 1 1</code>. The next count turns that into a single extra <code>1</code>: the new defect, at the counter end, ready to walk left.</p>
+<p class="note">Why eats are where proofs get hard: W5-3's only undefined transition is F reading 0 (the red cell in the table), and F runs only in this sweep. On a clean bell every cell F reads is a 1, so the machine cannot halt here. The proof has to show that every future eat is like this one.</p>
+</section>
+
+<section class="beat"><h2><span class="num">4</span>Eat to eat: from E(p, N) to E(p′, N′)</h2>
+<p>Now skip the counts: one row per eat configuration, from the blank tape. The strip shows 14 cells on each side of the head: the end of the bell, <code>0 1 1</code>, and the counter. Each line of the history starts with its E(p, N). Watch the two numbers.</p>
+<div id="eats" class="fit nopos tiny labfirst" style="--n:29" data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","rows":{"decoded":"w53-E"},"count":12,"window":{"follow":14},"view":"blocks","compress":{"words":["10","00","11"]},"speed":1,"title":"W5-3, one row per eat configuration"}'></div>
+<p>Which rule comes next depends only on N's lowest binary digits: the digits right of the head. These are rules M1–M5 of W5-3's write-up, in plain words.</p>
+<table class="plain rules">
+  <tr><th>N is …</th><th>next p</th><th>next N</th><th>seen in the run</th></tr>
+  <tr><td>odd (M1)</td><td data-l="next p">p + 2, +1 if p is odd</td><td data-l="next N">(N + 1)/2 + p + 3</td><td data-l="seen in the run">E(5,7) → E(8,12)</td></tr>
+  <tr><td>a multiple of 4 (M2)</td><td data-l="next p">p + 3, +1 if p is odd</td><td data-l="next N">N/4 + p + 4</td><td data-l="seen in the run">E(2,4) → E(5,7)</td></tr>
+  <tr><td>8m + 2 (M3)</td><td data-l="next p">p + 4, +1 if p is odd</td><td data-l="next N">m + p + 6</td><td data-l="seen in the run">E(30,34) → E(34,40)</td></tr>
+  <tr><td>16m + 6 (M4)</td><td data-l="next p">p + 7</td><td data-l="next N">m + 5</td><td data-l="seen in the run">E(14,22) → E(21,6)</td></tr>
+  <tr><td>16k + 14 (M5)</td><td data-l="next p">p + 7 + t</td><td data-l="next N">m + 2^t + t + 1, m and t below</td><td data-l="seen in the run">E(68,110) → E(76,7)</td></tr>
+</table>
+<p class="note">"+1 if p is odd" means p′ gets one more when p is odd. In M5, write N + 2 = (2m + 1)·2^(t+3) with t ≥ 1. For N = 110: N + 2 = 112 = 7·16, so m = 3, t = 1 and N′ = 3 + 2 + 1 + 1 = 7. (The write-up also asks for p + 7 ≥ 2^t; that always holds while N ≤ 2p, module 5's invariant.)</p>
+<p><b>Why N stays small.</b> The eat leaves about half or a quarter of N: (N + 1)/2 for odd N, N/4 for N a multiple of 4. Then each count adds 1, and a round has about as many counts as the bell has pairs (drill 2). From E(2,4): the eat leaves 1, then 6 counts give N = 7.</p>
+<p><b>Why M4 and M5 drop N so far.</b> They eat, count once, and eat again. From E(14,22): eat (steps 2,725 → 2,822), one count (→ 2,846), eat (→ 2,953). The two eats bite the four low digits of 22 = <code>10110</code> and leave m + 1 = 2. Then two defects cancel each other after just 4 counts (N = 2, 3, 4, 5, 6, steps 2,953 → 3,097), instead of one defect walking across the whole bell. So N′ = m + 5 = 6.</p>
+
+<div class="calc" id="calc">
+  <div class="tm-ptag" style="color:var(--accent)">Try it on the machine</div>
+  <p style="margin:4px 0 10px">Pick p and N (with N ≤ 2p, the range the real run stays in; module 5 shows why). The page writes E(p, N) on a fresh tape, runs W5-3 until the next eat configuration, and compares it with the table.</p>
+  <div class="row">
+    <label>p = <input id="cp" type="number" inputmode="numeric" min="1" max="300" value="5"></label>
+    <label>N = <input id="cn" type="number" inputmode="numeric" min="1" value="7"></label>
+    <button type="button" id="cgo">run the machine</button>
+  </div>
+  <div class="row presets" style="margin-top:8px">try: <button type="button" data-p="2" data-n="4">E(2,4)</button><button type="button" data-p="14" data-n="22">E(14,22)</button><button type="button" data-p="30" data-n="34">E(30,34)</button><button type="button" data-p="68" data-n="110">E(68,110)</button><button type="button" data-p="200" data-n="398">E(200,398)</button></div>
+  <div class="out" id="cout"></div>
+</div>
+</section>
+
+<section class="beat"><h2><span class="num">5</span>The family</h2>
+<p>Eight more of our kills are in the spreadsheet's class "Bell eats counter"; here are four of them. Each has its own bell and its own counter. In each proof, rules take one eat configuration to the next, and an invariant (module 5) shows that no eat ever lands at a bad moment.</p>
+
+<div class="fam">
+  <h3>W4-2 and W5-1: one table, mirrored</h3>
+  <div class="pair">
+    <figure><img src="/busy-beaver/learn/img/04-w42-blaze.png" width="800" height="500" alt="Blaze picture of W4-2: a striped region growing to the right, a ragged dotted edge on the left"><figcaption>W4-2</figcaption></figure>
+    <figure><img src="/busy-beaver/learn/img/04-w51-blaze.png" width="800" height="500" alt="Blaze picture of W5-1, which looks like W4-2 flipped left to right"><figcaption>W5-1</figcaption></figure>
+  </div>
+  <p class="cap"><b>How to read these:</b> bbchallenge.org's Blaze view squeezes the first 10<sup>6</sup> steps into 500 rows, time going down; orange is a 1, white a 0. The wide striped part is the bell. The narrow, ragged edge is the counter it eats: on the left in W4-2, on the right in W5-1. Each horizontal band is one round of bounces, from one eat to the next, and the bell's outer edge steps out once per band. The early, short rounds are squeezed into the top rows. (Rendered by <code>tools/diagram.py</code>.)</p>
+  <p><b>W4-2</b> <span class="tm">1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF</span> is a machine already proved in busycoq (the Coq library that bbchallenge proofs are written in), file BECv5.v, Module TM1, with one transition changed (F1). Its proof: from step 32 on, the counter stays between 1 and about 2.5 times the length of the last round.</p>
+  <p><b>W5-1</b> <span class="tm">1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---</span> is W4-2 with one transition changed (F1), mirrored left to right, with the states permuted. Its start state A plays the role of W4-2's state F. That is why its picture looks like W4-2's flipped left to right.</p>
+  <p class="links"><a href="/busy-beaver/machines/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF/index.html">W4-2 machine page</a><a href="/busy-beaver/machines/1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---/index.html">W5-1 machine page</a></p>
+</div>
+
+<div class="fam">
+  <h3>W5-4: a counter that counts down</h3>
+  <p><b>W5-4</b> <span class="tm">1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB</span>. One row per round: the head is back at the wall <code>00</code>. Each round the bell (q pairs) loses 2 pairs and the counter v loses 1. At 0 the counter refills (here to 6) and grows by one bit, and that round costs 3 pairs. Between rows 7 and 8 the bell is used up: the wall bites the counter, and everything left of it becomes the new bell (q = 15).</p>
+  <div class="fit nopos tiny" style="--n:42" data-tm-run data-opts='{"tm":"1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB","from":3035,"rows":{"decoded":"round start"},"count":14,"window":[-18,23],"speed":1,"title":"W5-4, one row per round, steps 3,035 to 4,414"}'></div>
+  <p class="cap">The counter's bits sit on every third cell, counted from its right end, and a set bit is a <b>0</b> cell. The labels give v, decoded from those cells as in W5-4's write-up. The widget stops at row 14. The next bite is a nested one (the write-up's "Nesting"), and its rows do not follow this pattern.</p>
+  <p class="links"><a href="/busy-beaver/machines/1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB/index.html">W5-4 machine page</a></p>
+</div>
+
+<div class="fam">
+  <h3>#2 against its template</h3>
+  <div class="pair">
+    <figure><img src="/busy-beaver/learn/img/04-p2-blaze.png" width="800" height="500" alt="Blaze picture of #2"><figcaption>#2</figcaption></figure>
+    <figure><img src="/busy-beaver/learn/img/04-tm7-blaze.png" width="800" height="500" alt="Blaze picture of busycoq's SOMDCv6 TM7, nearly the same as #2"><figcaption>busycoq's TM7</figcaption></figure>
+  </div>
+  <p class="cap">Same reading as above: the first 10<sup>6</sup> steps, Blaze view, orange = 1, white = 0, time going down. Look at the overall shape, not the details.</p>
+  <p><b>#2</b> <span class="tm">1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</span>, our first accepted kill (PR #14), is busycoq's file SOMDCv6.v, Module TM7, with one transition changed: A1 is <code>0RF</code> instead of <code>0RC</code>. From far away they look the same. The explorer preset plays both from the same tape, step by step, and marks where they split.</p>
+  <p class="links"><a href="/busy-beaver/tools/explorer/index.html#preset=p2-vs-tm7">#2 vs TM7 in the explorer</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/index.html">#2 machine page</a></p>
+</div>
+<p>The other four: <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC/index.html">#30</a>, <a href="/busy-beaver/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA/index.html">#7</a> and <a href="/busy-beaver/machines/1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB/index.html">W4-1</a> share one table (mirrored or with the states permuted) and start in different states; <a href="/busy-beaver/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/index.html">W5-5</a> is the one that halts.</p>
+</section>
+
+<section class="drills">
+<h2>Predict, then reveal</h2>
+<p>Read the tape in each box, then guess. Your guess stays in this browser. Reveal plays the real run to the answer.</p>
+
+<div class="fit nopos tiny" style="--n:28" data-tm-predict data-opts='{"id":"m4-defect","prompt":"W5-3 at step 709, in the middle of a round. The bell is <code>(10)^3 0 (10)^4</code>: an extra 0 after 3 pairs, the defect. Where is the defect after the next count?","input":{"kind":"choice","options":[{"label":"same place, now a 1","value":"3:1"},{"label":"same place, still a 0","value":"3:0"},{"label":"two pairs further left, now a 1","value":"1:1"},{"label":"gone: the bell is clean","value":"clean"}]},"answer":"1:1","run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":709,"rows":{"decoded":"count"},"count":2,"window":[-8,19],"view":"cells","speed":1},"revealTo":{"row":1},"actual":"decoded.where","explain":"An extra 0 becomes an extra 1 two pairs further left (rule INC0): <code>(10)^1 1 (10)^6</code> at step 769. The next count will turn that 1 into a 0 in the same place.","checkId":"C-M4-D1"}'></div>
+
+<div class="fit nopos tiny" style="--n:28" data-tm-predict data-opts='{"id":"m4-counts","prompt":"W5-3 has just eaten (step 509). The bell is <code>(10)^7 1</code>: 7 pairs, then an extra 1 at the counter end, the new defect. How many counts until the bell is clean again (the next eat configuration)?","input":{"kind":"number"},"answer":8,"run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":509,"rows":{"decoded":"count"},"count":9,"window":[-8,19],"view":"cells","speed":3},"revealTo":{"decoded":"w53-E"},"actual":"i","explain":"Two counts move the defect two pairs left: 1 becomes 0 in place, then 0 becomes 1 two pairs further left. So it sits after 7, 5, 3 and 1 pairs, two counts each: 8 counts, and the 8th pushes it off the left end. The bell is then <code>(10)^8</code>, clean: E(8,12) at step 905. A defect that starts after a pairs needs a + 1 counts, so a round has about as many counts as the bell has pairs.","checkId":"C-M4-D2"}'></div>
+
+<div class="fit nopos tiny" style="--n:29" data-tm-predict data-opts='{"id":"m4-grows","prompt":"Over many eats, which one always grows: p, N, or both?","input":{"kind":"choice","options":[{"label":"only p","value":"p"},{"label":"only N","value":"N"},{"label":"both","value":"both"}]},"answer":"p","run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","rows":{"decoded":"w53-E"},"count":12,"window":{"follow":14},"view":"both","compress":{"words":["10","00","11"]},"speed":4},"revealTo":{"row":11},"explain":"p goes 2, 5, 8, 11, 14, 21, 28, 30, 34, 37, 41, 44: up by at least 2 at every step from one eat configuration to the next (all 61 to step 3,000,000). N goes 4, 7, 12, 15, 22, 6, 5, 34, 40, 48, 53, 71: up and down.","checkId":"C-M4-1"}'></div>
+</section>
+
+<div class="kills"><b>From our kills</b>
+  <ul>
+    <li><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/index.html">W5-3</a> <span class="tm">1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</span>, the machine on this page: our 24th kill, a 530-line Coq proof that passes our checks (claimed, not yet submitted). <a href="/busy-beaver/tools/explorer/index.html#tm=1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC&amp;steps=1e5&amp;style=explore">Open it in the explorer.</a></li>
+    <li><a href="/busy-beaver/machines/1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF/index.html">W4-2</a>, <a href="/busy-beaver/machines/1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---/index.html">W5-1</a>, <a href="/busy-beaver/machines/1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB/index.html">W5-4</a>, <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC/index.html">#30</a>, <a href="/busy-beaver/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA/index.html">#7</a>, <a href="/busy-beaver/machines/1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB/index.html">W4-1</a> (never halt) and <a href="/busy-beaver/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/index.html">W5-5</a> (halts): killed and claimed, not yet submitted.</li>
+    <li><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/index.html">#2</a>: accepted upstream (PR #14, merged 2026-10-10).</li>
+  </ul>
+</div>
+
+<div class="recap">
+  <h2>Recap</h2>
+  <ol>
+    <li>Each count adds 1 to the counter and flips the defect; every second count moves it two pairs left. When the defect is gone, the next trip is an eat that shifts the bell and bites the counter.</li>
+    <li>The eat configurations E(p, N) are the checkpoints: N's lowest binary digits pick one of five rules, which give the next E(p′, N′).</li>
+    <li>p always grows and N stays small; proving that N ≤ 2p holds forever is the invariant of module 5.</li>
+  </ol>
+</div>
+
+<nav class="pager"><a href="/busy-beaver/learn/03-03-counters.html">← Module 3: Counters</a><a href="/busy-beaver/learn/index.html">All modules</a><a href="/busy-beaver/learn/05-05-invariants.html">Module 5: Invariants →</a></nav>
+
+<footer class="checked">
+  <b>checked:</b> every tape on this page is simulated live by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). The numbers in the text were re-checked with <code>tools/sim.py</code> by <code>python3 -B learn/checks/m04_bells.py</code> (all checks pass; <code>learn/checks/m04_results.json</code>):
+  <ul>
+    <li>C-M4-PIC: the two lead pictures. Left: every step 165 → 451; the eat reaches cell −5, then the counts turn at cells 5, 3, 0, −1, −4, −5. Right: the first 200 count configurations whose right side is a counter (steps 7 to 20,651; B also reads a 0 after <code>0 1 1</code> inside the bell during an INC011 count, at steps 2,984 and 3,412, and those are not rows). Rounds: E(11,15) → E(14,22) takes 15 trips and 1,030 steps, the two M4 rounds after it 7 trips each (372 and 424 steps); at every eat to step 3,000,000 the bell's left edge moves left and the head moves right.</li>
+    <li>C-M4-R: the 8 rows of the round 165 → 451 (bell words, N). C-M4-T: the two counts take 30 and 46 steps.</li>
+    <li>C-M4-EAT: the eat 165 → 197 is exactly the 32 transitions described; B and C write 1s at cells −4 and −5, and rows 178 to 187 are the C/F sweep (C0 = 1RF, F1 = 0RC), after which cells −4 … 4 hold the opposite of what they held at row 177; every F step reads a 1; the bell's left end −2 → −5, the head 5 → 9.</li>
+    <li>C-M4-1: 62 eat configurations to step 3,000,000 (E(2,4) to E(227,293)); all 61 steps from one to the next follow M1–M5 (all five occur); p grows by at least 2 each time; N does not always grow. Also in <code>verify_plan.py</code>.</li>
+    <li>C-M4-EATS: 72 eats in those 61 steps: one in each M1–M3 step, two in each of the 5 M4 and 6 M5 steps, always eat, one count, eat. From E(14,22): eats 2,725 → 2,822 and 2,846 → 2,953, then C(2) and counts to N = 3, 4, 5, 6 at 2,977, 3,025, 3,055, 3,097.</li>
+    <li>C-M4-ROUND: after an M1 or M2 eat the counter is (N+1)/2 or N/4, and the next round has p′ counts (+1 if p is even), on 19 rounds. C-M4-M5: N + 2 = 16k for every M5 case, and p + 7 ≥ 2^t whenever 1 ≤ N ≤ 2p (all p ≤ 2,000).</li>
+    <li>C-M4-CALC: E(p, N) built from scratch for all 600 pairs with p ≤ 24, N ≤ 2p reaches the table's E(p′, N′) next; E(5,7) → E(8,12) in 454 steps.</li>
+    <li>C-M4-D1: from step 709, <code>(10)^3 0 (10)^4</code>, the next count gives <code>(10)^1 1 (10)^6</code> at 769. C-M4-D2: from step 509, <code>(10)^7 1</code>, exactly 8 counts to E(8,12) at 905, the defect after 7, 7, 5, 5, 3, 3, 1, 1 pairs.</li>
+    <li>C-M4-FAM: W4-2 vs BECv5 TM1 differ only in F1; #2 vs SOMDCv6 TM7 only in A1; W5-1 mirrored and renamed (A→F, B→A, C→B, D→C, E→D, F→E) is W4-2 with F1 = 1RC. C-M4-BANDS: W4-2 has 47 eat moments from step 32 to 10<sup>6</sup>; in every round between them its right edge (the bell's outer edge) grows exactly once, except one 54-step round with no bounces, far thinner than a picture row; at 10<sup>6</sup> the counter is the 28 cells left of the head; W5-1's records and span are W4-2's mirrored. C-M4-CLASS: the nine write-ups that name the class (W5-3 and the eight others), and their kill states in <code>status.json</code>; #30, #7 and W4-1 are one table by STATUS.md.</li>
+    <li>C-M4-WIN: every widget's cell window holds every cell its rows use; the eat-to-eat strip (head ± 14) holds the whole counter of its 12 rows. C-M4-W54: W5-4's 14 rows from step 3,035 (q and v); row 15 starts at q = 1 without the sweep back (p ≠ −1), which the write-up (§2.4) allows only at the innermost level of a nested bite. C-M4-FILES: quotes from W4-2's <code>how_proved.md</code>, #2's <code>status.json</code>, W5-3's and W5-4's <code>submission/proof.md</code>. "F runs only in the eat sweep" is §5 of W5-3's write-up.</li>
+  </ul>
+  Live on load: <span id="live">checking the table against the first 30 eat configurations…</span> The drills read their answers off the run, and the calculator runs the machine. Pictures: <code>python3 -B learn/img/make_04.py</code>.
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, decoders, parseConfig, Run, at, compress, STATES } from './tm.js';
+
+const W53 = '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC';
+const rd = (v, a, b) => { let s = ''; for (let p = a; p <= b; p++) s += v.read(p); return s; };
+const pairs = (k) => '10'.repeat(k);
+const pw = (k) => `(10)^${k}`;
+
+/** W5-3's counter C(N): digits 11 / 00, lowest first, ending with the leading 11. null if r is not one. */
+function counterValue(r) {
+  if (!r || r.length % 2 || !r.endsWith('11')) return null;
+  let N = 0;
+  for (let i = r.length / 2 - 1; i >= 0; i--) {
+    const d = r.slice(2 * i, 2 * i + 2);
+    if (d !== '11' && d !== '00') return null;
+    N = 2 * N + (d === '11' ? 1 : 0);
+  }
+  return N;
+}
+
+/** W5-3 count configuration G(w, C(N)) = 0^inf w 0 1 1 B> 0 C(N): the head is back at the counter. */
+decoders['count'] = (v) => {
+  if (v.state !== 'B' || v.read(v.pos) !== 0) return null;
+  const h = v.pos;
+  if (v.read(h - 1) !== 1 || v.read(h - 2) !== 1 || v.read(h - 3) !== 0) return null;
+  let b = v.hi;
+  while (b > h && v.read(b) === 0) b--;
+  const r = b > h ? rd(v, h + 1, b) : '';
+  const N = counterValue(r);
+  if (N == null) return null;                                    // B inside the bell (an INC011 count), not at the counter
+  let a = v.lo;
+  while (a < h - 3 && v.read(a) === 0) a++;
+  const w = a <= h - 4 ? rd(v, a, h - 4) : '';
+  const marks = [];
+  let word, clean = false, defect = null;
+  if (w === pairs(w.length / 2)) {
+    clean = true; word = pw(w.length / 2);
+    if (w.length) marks.push({ from: a, to: a + w.length, label: `bell ${word}` });
+  } else {
+    let k = -1;
+    if (w.length % 2) for (let j = 0; 2 * j < w.length; j++) { const rest = w.slice(2 * j + 1); if (w.slice(0, 2 * j) === pairs(j) && rest === pairs(rest.length / 2)) { k = j; break; } }
+    if (k >= 0) {
+      const X = w[2 * k], rb = (w.length - 2 * k - 1) / 2;
+      defect = { X, at: k };
+      word = (k ? pw(k) + ' ' : '') + X + (rb ? ' ' + pw(rb) : '');
+      if (k) marks.push({ from: a, to: a + 2 * k, label: pw(k), cls: 'side' });
+      marks.push({ from: a + 2 * k, to: a + 2 * k + 1, label: 'defect' });
+      if (rb) marks.push({ from: a + 2 * k + 1, to: h - 3, label: pw(rb), cls: 'side' });
+    } else {
+      let j = 0;
+      while (w.slice(2 * j, 2 * j + 2) === '10') j++;
+      word = (j ? pw(j) + ' ' : '') + w.slice(2 * j).split('').join(' ');
+      if (j) marks.push({ from: a, to: a + 2 * j, label: pw(j), cls: 'side' });
+      marks.push({ from: a + 2 * j, to: h - 3, label: w.slice(2 * j).split('').join(' ') });
+    }
+  }
+  for (let i = 0; i < r.length / 2; i++) marks.push({ from: h + 1 + 2 * i, to: h + 3 + 2 * i, label: r[2 * i] });
+  const label = clean && N ? `E(${w.length / 2},${N})` : `${word} · N = ${N}`;
+  const text = clean && N
+    ? `E(${w.length / 2},${N}): a clean bell of ${w.length / 2} pairs and counter N = ${N}, so the next trip is an eat`
+    : defect
+      ? `bell ${word}: one extra ${defect.X} after ${defect.at} pair${defect.at === 1 ? '' : 's'} · counter N = ${N}`
+      : `bell ${word} · counter N = ${N}`;
+  const where = clean ? 'clean' : defect ? `${defect.at}:${defect.X}` : 'other';    // for the defect drill
+  return { word, N, clean, where, label, text, marks };
+};
+
+/** W5-4 round start R(p, q, Z) = 0^inf (10)^p 1 C> 0 0 (10)^q Z (p = -1: nothing left of the wall); Z holds the counter v. */
+decoders['round start'] = (v) => {
+  if (v.state !== 'C' || v.read(v.pos) !== 0 || v.read(v.pos + 1) !== 0) return null;
+  const h = v.pos;
+  let a = v.lo;
+  while (a < h && v.read(a) === 0) a++;
+  const left = a < h ? rd(v, a, h - 1) : '';
+  if (left && !(left.endsWith('1') && left.slice(0, -1) === pairs((left.length - 1) / 2))) return null;
+  let b = v.hi;
+  while (b > h && v.read(b) === 0) b--;
+  if (b < h + 2) return null;
+  const right = rd(v, h + 2, b);
+  let q = 0;
+  while (right.slice(2 * q, 2 * q + 2) === '10') q++;
+  const Z = right.slice(2 * q), w = Z.length;
+  if (!Z.startsWith('1')) return null;
+  const lat = [];
+  for (let i = 1; w - 1 - 3 * i >= 2; i++) lat.push(w - 1 - 3 * i);
+  lat.sort((x, y) => x - y);
+  for (let j = 0; j < w; j++) if (Z[j] === '0' && !lat.includes(j)) return null;
+  let val = 0;
+  lat.forEach((j, bit) => { if (Z[j] === '0') val += 2 ** bit; });
+  const z0 = h + 2 + 2 * q;
+  const marks = [{ from: h, to: h + 2, label: 'wall', cls: 'side' }];
+  if (q) marks.push({ from: h + 2, to: z0, label: `(10)^${q}`, cls: 'side' });
+  marks.push({ from: z0, to: z0 + w, label: `v = ${val}` });
+  return { q, w, v: val, label: `q = ${q}, v = ${val}`, text: `bell q = ${q} pair${q === 1 ? '' : 's'}, counter v = ${val} (${w} cells)`, marks };
+};
+
+// ---- the rule table (W5-3's M1-M5), used by the calculator and the live check
+function rule(p, N) {
+  if (N % 2) return { p: p + 2 + (p % 2), N: (N + 1) / 2 + p + 3, name: 'M1', why: 'N is odd' };
+  if (N % 4 === 0) return { p: p + 3 + (p % 2), N: N / 4 + p + 4, name: 'M2', why: 'N is a multiple of 4' };
+  if (N % 8 === 2) return { p: p + 4 + (p % 2), N: (N - 2) / 8 + p + 6, name: 'M3', why: `N = 8·${(N - 2) / 8} + 2` };
+  if (N % 16 === 6) return { p: p + 7, N: (N - 6) / 16 + 5, name: 'M4', why: `N = 16·${(N - 6) / 16} + 6` };
+  let x = N + 2, t3 = 0;
+  while (x % 2 === 0) { x /= 2; t3++; }
+  const t = t3 - 3, m = (x - 1) / 2;
+  if (t >= 1 && p + 7 >= 2 ** t) return { p: p + 7 + t, N: m + 2 ** t + t + 1, name: 'M5', why: `N + 2 = ${2 * m + 1}·2^${t + 3}, so m = ${m}, t = ${t}` };
+  return null;
+}
+const eConfig = (p, N) => `0^inf ${'1 0 '.repeat(p)}0 1 1 B> 0 ${[...N.toString(2)].reverse().map((d) => d + d).join(' ')} 0^inf`;
+const isE = at.decoded('w53-E');
+
+// ---- live check: the first 30 eat configurations from the blank tape follow the table
+{
+  const live = document.getElementById('live');
+  try {
+    const run = new Run(W53);
+    const seq = [];
+    while (seq.length < 30) { if (run.until(isE, { max: 5e6 }) === null) break; const d = decoders['w53-E'](run.view()); seq.push([run.t, d.p, d.N]); }
+    const bad = [];
+    for (let i = 0; i + 1 < seq.length; i++) { const r = rule(seq[i][1], seq[i][2]); if (!r || r.p !== seq[i + 1][1] || r.N !== seq[i + 1][2]) bad.push(seq[i]); }
+    const pUp = seq.every((s, i) => i === 0 || s[1] >= seq[i - 1][1] + 2);
+    if (seq.length < 30 || bad.length || !pUp) {
+      live.textContent = `✗ mismatch at ${JSON.stringify(bad[0] || seq[seq.length - 1])}`;
+      (window.__tmErrors = window.__tmErrors || []).push('m4 live check failed: ' + live.textContent);
+    } else live.textContent = `✓ the first 30 eat configurations (to step ${seq[29][0].toLocaleString('en-US')}) follow the table, and p grows by at least 2 each time.`;
+  } catch (e) { live.textContent = '✗ ' + e.message; (window.__tmErrors = window.__tmErrors || []).push('m4 live check: ' + e.message); }
+}
+
+// ---- the calculator
+{
+  const $ = (id) => document.getElementById(id);
+  const out = $('cout');
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const blocks = (cfg) => compress(cfg, { words: ['10', '00', '11'] }).text;
+  function go() {
+    const p = Number($('cp').value), N = Number($('cn').value);
+    if (!Number.isInteger(p) || !Number.isInteger(N) || p < 1 || p > 300 || N < 1 || N > 2 * p) {
+      out.innerHTML = '<span class="bad">Pick whole numbers with 1 ≤ p ≤ 300 and 1 ≤ N ≤ 2p.</span>';
+      return;
+    }
+    const r = rule(p, N);
+    const start = parseConfig(eConfig(p, N));
+    const run = new Run(W53, start, { maxSteps: 5e7 });
+    const t = run.until(isE, { max: 5e7 });
+    const d = t === null ? null : decoders['w53-E'](run.view());
+    const ok = d && r && d.p === r.p && d.N === r.N;
+    out.innerHTML = `<div class="grid">
+      <span class="k">tape</span><span class="mono">${esc(blocks(start))}</span>
+      <span class="k">table</span><span>${r ? `${esc(r.why)}: rule ${r.name} predicts <b>E(${r.p},${r.N})</b>` : 'no rule applies'}</span>
+      <span class="k">machine</span><span>${d ? `reached <b>E(${d.p},${d.N})</b> after ${t.toLocaleString('en-US')} steps` : 'no eat configuration within 5·10^7 steps'}</span>
+      <span class="k">its tape</span><span class="mono">${d ? esc(blocks(run.config())) : '–'}</span>
+      <span class="k">verdict</span><span class="${ok ? 'ok' : 'bad'}">${ok ? '✓ the machine agrees with the table' : '✗ the machine and the table disagree'}</span></div>`;
+    if (!ok) (window.__tmErrors = window.__tmErrors || []).push(`m4 calculator: E(${p},${N}) table ${JSON.stringify(r)} machine ${JSON.stringify(d && [d.p, d.N])}`);
+  }
+  $('cgo').addEventListener('click', go);
+  for (const id of ['cp', 'cn']) $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+  for (const b of document.querySelectorAll('.calc .presets button')) b.addEventListener('click', () => { $('cp').value = b.dataset.p; $('cn').value = b.dataset.n; go(); });
+  go();
+}
+
+void STATES;
+window.__learnReady = autoMount();
+</script>
+</body>
+</html>

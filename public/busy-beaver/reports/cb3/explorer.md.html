@@ -1,0 +1,417 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>explorer.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/cb3/explorer.md · <a href="/busy-beaver/reports/cb3/explorer.md.html">raw</a></div>
+<h1 id="cb3-closure-explorer-progress-log">CB3 closure explorer: progress log</h1>
+<p><em>Direction 4, option A (Dennis, 2026-10-14). Stages 1-2 of at most 3 done; stage 2 hit the stop rule (see the stage 2 log below). Option A is stopped until Dennis picks the next step (<code>decision.md</code>, section "Next"). Code and outputs: <code>reports/cb3/explorer/</code>.</em></p>
+<h2 id="outcome-2026-10-14-after-stage-2">Outcome (2026-10-14, after stage 2)</h2>
+<p><strong>No closed set, so no kill.</strong> The explorer did not close a tape language for any table. It did not even close the write-0 sibling S0LC, which FAR proves upstream and which we close first as calibration. So nothing was exported, packaged through Astra's generator or run through <code>tools/check_kill.sh</code>. T1 was run only in stage 1, and T2 and T3 were never explored.</p>
+<p><strong>Which stop condition fired.</strong> Option A's stop rule has two triggers:
+- <strong>The size trigger fired</strong> in both stages. In stage 1 the cluster alphabet went past 40 words. In stage 2 it went past 40 words again, or a cluster went past 20 cells. This happened after about 5.75 agent-hours, well inside the 1.5-day budget.
+- <strong>The gap-length trigger never fired.</strong> No closure needed a long-gap length or parity condition. The cryptid check stays negative.</p>
+<p><strong>What we learned.</strong> These facts hold for any later method on this class:
+1. <strong>Long gaps need a length class.</strong> "Any length ≥ 3" gives abstract halts from lone defects 3 or 5 cells apart. Real orbits keep them at least 7 apart. With exact lengths below <code>K</code> and "≥ K, even or odd" above, no abstract halt appeared in any run.
+2. <strong>Packs of separators are real but transient.</strong> These are runs of 2-segments, the period-4 stripe <code>0110 0110 ...</code>.
+   - Real orbits reach 14-cell clusters (3 packed separators). Small structured tapes reach 14-17-cell packs, and the widths plateau over 3e6 steps.
+   - Tapes seeded with packs up to 32 cells: 0 halts in 80 runs of 1e5 steps on T1 and T2.
+3. <strong>The real orbit bounds its runs; the abstraction does not.</strong> To 3e6 steps on S0LC and T1:
+   - at most 2 consecutive 5-segments on the left;
+   - every cluster has at most 8 segments (14 cells);
+   - the orbit uses 11-14 cluster words on S0LC.</p>
+<p>An automaton with a finite cluster alphabet and gap classes, but no run-length bound, lets 5-segments repeat. A left sweep then turns them into touching separators.
+4. <strong>More history does not help.</strong> History 2 made the drift worse in stage 1 and left the stage-2 leak in place.
+5. <strong>Discovery from scratch feeds on its own junk.</strong> Seeding the automaton from the real orbit is needed.
+6. <strong>No gap-parity condition was ever needed</strong>, on S0LC or in the stage-1 T1 runs. T2 and T3 were never explored, so this is not yet tested against their persistent even gaps (<code>study.md</code>).</p>
+<p><strong>Reusable code.</strong> All in <code>reports/cb3/explorer/</code>:
+- <code>segx.py</code>: its step semantics match tools/sim on 31,340 sampled symbolic steps (5,981 in stage 1 and 25,359 in stage 2), with 0 mismatches.
+- <code>export_cert.py</code> and <code>check_cert.py</code>: certificate export and an independent checker, smoke-tested.
+- <code>walk_cert.py</code>: written but never run, because nothing closed.</p>
+<p><strong>Ledger.</strong> Each stage has its own row in <code>coord/attempts.tsv</code>. On 2026-10-14 the following were added:
+- a row that closes the stage-1 <code>in-progress</code> row;
+- the concrete pack and wide-configuration probes (<code>halting-sim</code>);
+- the real-orbit bounds (<code>observe</code>);
+- a <code>method</code> row with the design lessons, so that a future closure explorer (for example on the CB1 core) starts from them.</p>
+<p>To see them all, run <code>python3 -B tools/attempts.py query CB3</code> or <code>query 'closure explorer'</code>.</p>
+<h2 id="what-the-explorer-is">What the explorer is</h2>
+<p>It searches for a regular tape language that contains the real orbit and is closed under single machine steps. A closed language with no halting step is a non-halting certificate.</p>
+<p><strong>Segment view of a tape side.</strong> Each side of the head is read nearest-first and cut into <em>segments</em>: maximal alternating blocks (no two equal neighbours). Two consecutive segments meet at a defect (two equal cells), so a side is fully given by its first cell and its list of segment lengths.</p>
+<p>In this view:
+- the stripe <code>(01)^n</code> is one long segment;
+- a separator <code>00110</code> between stripe runs is the short-segment cluster <code>(2,2)</code>;
+- a glider is a lone defect between two long segments (the empty cluster).</p>
+<p><strong>Shapes.</strong> A side shape is <code>(first cell, segment tokens, tail)</code>:
+- a token is an exact length below <code>K</code>, or "length ≥ K with a given parity";
+- the tail is the blank tape, or <code>X(q)</code>, the rest-of-tape automaton of that side started in state <code>q</code>.</p>
+<p><strong>The rest-of-tape automaton X.</strong> A <em>unit</em> is a cluster of short segments (length &lt; <code>T</code>) followed by one long segment, with its length class (exact <code>T..K-1</code>, or "≥ K even/odd"). The automaton's state is the previous unit (history 1). Its transitions are "unit <code>u</code> may follow unit <code>q</code>" and "after <code>q</code> the tape may end with this short cluster". There is no condition on long lengths beyond their class, and no parity condition on long gaps.</p>
+<p><strong>Exploration.</strong> This is a lazy closed-tape-language search in the dual-head semantics of the certificate checker:
+- a key is <code>(left shape, right shape, state, direction)</code>;
+- a step pops the scanned cell (exact splits) and pushes the written cell onto the side behind the move;
+- a pushed side keeps its first <code>N</code> long segments explicit and folds the rest into <code>X(q)</code>, after checking that the rest is in <code>X(q)</code>;
+- missing automaton transitions are added (discovery), and the run is repeated until a run adds nothing.</p>
+<p>Every shape's language is exactly the union of its split edges. These are the edges that the exported certificate and the checker use.</p>
+<h2 id="checks">Checks</h2>
+<ul>
+<li><code>validate_steps.py</code>: takes sampled symbolic transitions, builds random concrete members, runs one step of tools/sim, and checks membership of the result with a structural test that does not use the edge lists.</li>
+<li><code>check_cert.py</code>: an independent certificate checker. It reads only the exported JSON and checks closure (every edge into every scanned state, existential push, listed successor key) and acceptance of the concrete entries by NFA simulation.</li>
+</ul>
+<h2 id="log">Log</h2>
+<h3 id="stage-1-2026-10-14-about-3-h-explorer-built-and-validated-no-closed-set-yet">Stage 1 (2026-10-14, about 3 h): explorer built and validated; no closed set yet</h3>
+<p><strong>Verdict.</strong> No table closed in stage 1. No configuration tried produced an abstract halt once long gaps were kept as length classes. The obstacle is a <em>third token</em>: packs of separators (runs of length-2 segments, i.e. the period-4 stripe <code>0110 0110 ...</code>). The explorer folds them into the cluster alphabet one width at a time, so the alphabet grows without closing.</p>
+<p>The stop rule fired for these configurations: more than 40 cluster words, without closing. It did not fire on gap-length conditions: no closure here needed a long-gap length or parity condition, so the cryptid check stays negative.</p>
+<p><strong>Calibration first.</strong> Every configuration was run on the write-0 sibling S0LC (proved upstream by FAR) before the holdouts, since an explorer that cannot close the sibling will not close T1-T3.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>configuration</th>
+<th>S0LC (sibling)</th>
+<th>holdouts</th>
+<th>what it showed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>X = free cluster sequence, long gaps "any length ≥ 3"; K=6, T=3, N=2..4; entry blank or step 1e5</td>
+<td>abstract halt at once</td>
+<td>not run</td>
+<td>X let lone defects sit 3 or 5 cells apart; a left sweep then reads <code>1 1</code> in F. Real orbits keep them at least 7 apart (a right sweep turns each <code>S 01</code> into a defect plus a 7-cell segment).</td>
+</tr>
+<tr>
+<td>2</td>
+<td>units carry the long-length class (exact 3..K-1, else ≥K even/odd); K=8/10, N=2..4</td>
+<td>no halts; stops on clusters wider than 12, then 20, cells</td>
+<td>not run</td>
+<td>real orbits themselves reach 14-cell clusters (3 packed separators; <code>realwidth.py</code>, 3e6 steps), so the 12-cell width guard was raised to 20</td>
+</tr>
+<tr>
+<td>3</td>
+<td>X with history 1 (state = previous unit), discovery from scratch, N=1/2/3</td>
+<td>N=1: wide at once; N=2: about 2,900 R-transitions and wide after 785 s; N=3: 3M-key cap</td>
+<td>not run</td>
+<td>discovery feeds on its own junk (tiny abstract tapes ending in odd packs)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>history 1, automaton seeded from the real orbit (6e5 steps, every 37 steps), N=2</td>
+<td>stop rule: 41 cluster words, after +3,913 R-transitions and +722 ends</td>
+<td>T1 (4 starts): seeded 29 words, stop rule at 44 words after +1,144 R-transitions</td>
+<td>the additions are runs of 2-segments, up to 24 cells; the left automaton stays at lone defects and gains nothing</td>
+</tr>
+<tr>
+<td>5</td>
+<td>history 2, seeded, N=2</td>
+<td>stop rule: 41 words after +74,000 R-transitions</td>
+<td>not run</td>
+<td>more history makes the drift worse, not better</td>
+</tr>
+<tr>
+<td>6</td>
+<td>as 4, plus folds where the segment before X was shortened (merge into X's first unit)</td>
+<td>stop rule at 43 words after 65k keys</td>
+<td>T1 same, 44 words</td>
+<td>packs now grow through the merge itself</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Checks done.</strong>
+- <strong>Step semantics:</strong> 5,981 sampled symbolic steps on S0LC, T1, T2 and T3 (about 1,500 per table). Each step was compared with one tools/sim step on a random concrete member. There were 0 mismatches (<code>validate_steps.py</code>).
+- <strong>Certificate pipeline:</strong> export, then <code>check_cert.py</code>. The smoke test closes on <code>1RB---_0RA---</code>, catches a halting machine, and FAILs a certificate with one key removed.
+- <strong>Packs on the real machine:</strong> packs are real and transient. Small structured tapes reach 14-17-cell packs, and the widths plateau over 3e6 steps (<code>tinytapes.py</code>, <code>packgrowth.py</code>). Tapes seeded with packs up to 32 cells give 0 halts in 80 runs of 1e5 steps on T1 and T2, and the packs mostly dissolve (<code>packs.py</code>).
+- The explorer's wide abstract configurations, run concretely, stay at width 20-21 for 1e6 steps.</p>
+<p><strong>Stage 2 plan (about 2-3 h).</strong>
+1. Add a pack token, "<code>2^m</code> with <code>m ≥ M</code> and a parity". It works like the long-gap class, both in explicit shapes and in X units. Packs then never enter the cluster alphabet, and the cluster words should stay near the real orbit's 14 (S0LC) to 29 (T1).
+2. Keep history 1 and seeding from the real orbit, and log every addition.
+3. Close S0LC first, as the calibration, then T1, T2 and T3.
+4. On a closed run: export, check with <code>check_cert.py</code>, run the multi-step tools/sim walk, then package through Astra's generator. The entry is blank with startup 0, or a left-end configuration below 1,000,001 steps.</p>
+<p><strong>Stop for stage 2.</strong> Stop if the cluster alphabet still passes 40 words with packs tokenised. Also stop if an abstract halt appears that a concrete member reproduces, or if a closure needs a long-gap length or parity condition (that triggers the cryptid re-check).</p>
+<h3 id="stage-2-2026-10-14-about-275-h-pack-tokens-added-the-stop-rule-fired-on-the-calibration-sibling">Stage 2 (2026-10-14, about 2.75 h): pack tokens added; the stop rule fired on the calibration sibling</h3>
+<p><strong>Verdict.</strong> The stop rule fired: with packs as tokens, the cluster words still went past 40. No closed set was found, not even for the write-0 sibling S0LC, so T1, T2 and T3 were not run. There is nothing to export or package.</p>
+<p>Two things the stop rule watches for did not happen:
+- <strong>No abstract halt</strong> appeared in any stage-2 run.
+- <strong>No long-gap length or parity condition</strong> was ever needed. The cryptid check stays negative.</p>
+<p><strong>What was built.</strong> In <code>segx.py</code>:
+- A <strong>pack token</strong> <code>P(n)</code>: a run of <code>m</code> length-2 segments, with <code>m ≥ n</code> and <code>m</code> of the same parity as <code>n</code>.
+  - Every maximal run of 2-segments and packs merges into one token.
+  - An exact run of 2s becomes a pack once it is <code>M</code> long. Pack counts above <code>M+1</code> are capped to <code>M</code> or <code>M+1</code> by parity.
+  - Split stays exact: it never caps, and a leading <code>P(1)</code> splits into one exact <code>2</code> or a <code>P(3)</code>.
+  - Fold expands small packs into canonical units.
+- The rest-of-tape automaton X became an <strong>NFA</strong>, with moves <code>(q, unit, q2)</code>.
+  - Stage 1's fold forced <code>X(q) ⊇ X(q2)</code>, which merged unrelated contexts. Now the last folded unit goes straight into the tail's own state.
+  - Short segments in front of an X tail become a <strong>derived state</strong> <code>('m', cell, shorts, q2)</code>. Its moves are computed from <code>q2</code>'s moves when needed.
+- Two options: a different window per side (<code>N=(NL,NR)</code>) and history 1 or 2. Snapshots: <code>logs/segx_stage1_final.py</code>, <code>logs/segx_stage2_packs_hist1.py</code>, <code>logs/segx_stage2_nfa_v1.py</code>.</p>
+<p><strong>Runs on S0LC.</strong> All runs are seeded from the real orbit and are in <code>logs/s2_*.txt</code> and <code>logs/s2_*.json</code>. The word guard was raised to 300 so the trajectory could be seen. The real orbit itself uses 11 to 14 cluster words.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>automaton</th>
+<th>K, N, M</th>
+<th>result</th>
+<th>cluster words</th>
+<th>what it showed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>stage-1 (history 1, conflating fold) + packs</td>
+<td>8, 2, 3 / 8, 2, 4 / 10, 2, 4</td>
+<td>stop rule in round 0</td>
+<td>303 / 345 / 305</td>
+<td>packs are tokenised, but clusters become free words over {1, 2, P}: chains <code>P,1,P,1,2</code> and touching separators <code>SS = 2,2,1,2,2</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>same</td>
+<td>8, 3, 3 / 8, 3, 4 / 10, 3, 4 / 6, 3, 3</td>
+<td>key cap (3M) / wide / wide / wide</td>
+<td>24 / 35 / 35 / 19</td>
+<td>a wider window keeps the words down, but the keys explode (8M keys, 3.3 GB at N=(2,3)) or a cluster goes past 20 cells (<code>SSS</code>)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>NFA (no conflation)</td>
+<td>8, 2, 3 / 6, 2, 3 / 8, 3, 3</td>
+<td>stopped (fold discovery never settled) / wide / key cap (6M)</td>
+<td>- / 25 / 30</td>
+<td>an explicit short run in front of X(q) fed X(q) back into itself; fixed by derived states (row 4)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>NFA + derived states, seeded from 1e5</td>
+<td>6, 2, 3 / 8, 2, 3</td>
+<td>wide at 17k / 1.9M keys</td>
+<td>18 / 44</td>
+<td>same <code>SSS</code> pattern</td>
+</tr>
+<tr>
+<td>5</td>
+<td>as 4, history 2</td>
+<td>6, 2, 3 / 8, 2, 3</td>
+<td>wide at 44k / 1.9M keys</td>
+<td>16 / 32</td>
+<td>history 2 does not remove it</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why it does not close (<code>why_wide.py</code>, <code>realruns.py</code>).</strong> Every "wide" trace has the same shape:
+1. The head sweeps left over a left side made of lone defects 5 cells apart.
+2. Each 5-cell segment it crosses becomes one separator on the right, so the separators touch: <code>00110 00110 00110 ...</code>.
+3. The left automaton lets 5-segments repeat without bound.</p>
+<p>The real orbit never does this. To 3e6 steps, there are at most <strong>2</strong> consecutive 5-segments on S0LC and on T1, and every cluster has at most 7-8 segments (14 cells).</p>
+<p>So the invariant would need a run-length count on the left side. History 2 does not give it: an unbounded run of 5s comes back through the fold's tail move and through long classes whose split leaves a 5.</p>
+<p>Each leak fixed so far (gap length classes in stage 1, then packs, then the NFA fold, then derived states) uncovered the next one. Every fix has stayed inside the family "finite cluster alphabet plus gap classes".</p>
+<p><strong>Checks.</strong>
+- Step semantics: 17 runs, 25,359 sampled symbolic steps compared with one tools/sim step each on random concrete members, with 0 mismatches (<code>validate_steps.py</code>, with pack instantiation).
+- Shape algebra (<code>test_packs.py</code>): about 4,000 random members per run on S0LC and T1. Three properties were checked:
+  - every member is covered by a split edge;
+  - every edge stays inside its shape;
+  - push followed by fold only enlarges.</p>
+<p>There were 0 failures after one fix: split had been capping exact 2-runs into packs, an enlargement inside split that the test caught.
+- <code>walk_cert.py</code> (a multi-step tools/sim walk against an exported certificate, using only the certificate's NFAs) is written but has not been run, because nothing closed.</p>
+<p><strong>What a stage 3 would have to do.</strong> This goes past the stop rule, so it needs Dennis's go-ahead.
+- Give the left X a run-length counter: at most 2 consecutive 5-segments, matching the real orbit.
+- Find the remaining source of repeated 5s (the tail move into <code>q2</code>, or the split of <code>≥K</code> classes).
+- Then re-close S0LC before T1-T3.</p>
+<p>Expected odds are low. The more useful hand-off is option B: give Astra's automaton synthesis these facts:
+- clusters have at most 8 segments (14 cells);
+- at most 2 consecutive 5-segments on the left;
+- no gap-parity condition is needed;
+- packs are transient.</p>
+<p><strong>Files (all in <code>reports/cb3/explorer/</code>).</strong>
+- Explorer and drivers: <code>segx.py</code>, <code>run_explore.py</code>, <code>run_seeded.py</code>, <code>seed.py</code>, <code>run_stage2.py</code> (stage-2 driver).
+- Stage-2 checks and diagnosis: <code>test_packs.py</code>, <code>walk_cert.py</code>, <code>why_wide.py</code>, <code>realruns.py</code>, <code>realvocab.py</code>.
+- Diagnosis: <code>why_grow.py</code>, <code>trace.py</code>, <code>realtrace.py</code>.
+- Checks: <code>validate_steps.py</code>, <code>export_cert.py</code>, <code>check_cert.py</code>.
+- Real-machine probes: <code>realwidth.py</code>, <code>tinytapes.py</code>, <code>packgrowth.py</code>, <code>packs.py</code>, <code>forward.py</code>.
+- Run outputs: <code>logs/</code> (run logs; the discovered automata are in <code>lang_S0LC_K8N2H1.json</code> and <code>lang_T1_K8N2H1.json</code>).</p>
+</main></body></html>

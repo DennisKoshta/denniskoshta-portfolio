@@ -1,0 +1,679 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/proof.md · <a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/proof.md.html">raw</a></div>
+<h1 id="1rb0rf_1lc0re_0lc0ld_1rd1lb_0rf1ra_0rb-never-halts">1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---: never halts</h1>
+<ul>
+<li>Machine: <code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code>, viewer https://bbchallenge.org/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</li>
+<li>Holdout lists: on every snapshot in <code>data/holdouts/</code>, 2024-06-14 (12,091) through 2026-10-07 (778). Sheet: Results row 1035, class "Bell eats counter"; Status, Notes, Sources and Done By are blank. No Discord thread.</li>
+<li>Written for: the string itself. There is no mirror or state permutation.</li>
+<li>Template: <code>vendor/busycoq/verify/SOMDCv6.v</code>, <code>Module TM7</code> (<code>1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</code>). Our machine differs from it in one transition: A1 is <code>0RF</code> here and <code>0RC</code> in TM7.</li>
+<li>Status: informal proof complete, partly formal.</li>
+<li>Compiles in Rocq with closed assumptions (<code>python3 -B check_proof.py --rocq</code>): §3.1 (<code>Inc_spec</code>, the two new segment facts, <code>RIncs_spec</code> for all 12 clauses of R), §3.2 (<code>BigStep</code>) and §4 (<code>c0 -&gt;* S(1)</code>).</li>
+<li>Still informal: §3.3 (the domain lemma <code>RIncs_nxt'</code> and its auxiliary lemmas) and the final <code>nonhalt</code> assembly (§5). These are checked by simulation only (§7).</li>
+</ul>
+<p><strong>Summary.</strong> The configuration at each sweep boundary is <code>S(r) = 0^inf 11 D&gt; &lt;r&gt; 0^inf</code>, where r is a word over three 3-cell digits. TM7's proof carries over with three changes:
+1. Where TM7's sweep enters an L digit, ours first runs one extra "+1 pass" over everything to the right. This adds an <code>Inc</code> premise to two clauses of TM7's <code>RIncs</code>.
+2. <code>RIncs</code> gets two new end clauses, Z0 and Z1, that use zero passes. They describe no new machine behaviour (each is an identity between two ways of writing the same tape), but without them the sweep map's domain is not closed under the sweep map (§3.3).
+3. TM7's domain lemma <code>RIncs_nxt</code> gets an extra parameter j, the number of pending +1 passes. Its condition <code>Inv</code> reduces to TM7's when j = 0.</p>
+<h2 id="1-families-and-notation">1. Families and notation</h2>
+<ul>
+<li><strong>Digits:</strong> <code>L = 110</code>, <code>0 = 000</code>, <code>1 = 100</code> (cells left to right). For a word r over {L,0,1}, <code>&lt;r&gt;</code> is its cells in order. A word followed by <code>0^inf</code> denotes the same tape with or without trailing <code>0</code> digits.</li>
+<li><strong>Counter value:</strong> <code>inc(r)</code>, also written <code>r+1</code>, adds 1 to the little-endian binary number formed by the 0/1 digits of r. L digits are skipped; a carry out of the last digit appends a <code>1</code> digit.</li>
+<li><strong>Family:</strong> <code>S(r) := 0^inf 11 D&gt; &lt;r&gt; 0^inf</code> (busycoq <code>S' r</code>), for r in the domain <code>P</code> of §3.3.</li>
+<li><strong>Passes</strong> (busycoq <code>sideRLs</code>). A pass runs over a right part X and never reads a cell left of where it exits, so it holds for every left part:</li>
+<li><code>h</code>: <code>B&gt; X  -&gt;+  &lt;C X'</code>. The head exits one cell left of where it entered, and X' starts at the same cell as X.</li>
+<li><code>h'</code>: <code>1 D&gt; X  -&gt;+  &lt;C X'</code>. The <code>1</code> belongs to the pass, so X' starts at the cell that held the <code>1</code>.</li>
+<li><strong><code>Inc(r, r')</code>:</strong> the pass <code>[h]</code> turns <code>&lt;r&gt;</code> into <code>&lt;r'&gt;</code>.</li>
+<li><strong><code>R(tp, k, r, r')</code></strong> (busycoq <code>RIncs</code>):</li>
+<li><code>R(hx, k, r, r')</code>: the passes <code>[h', h^k]</code> turn <code>&lt;r&gt;</code> into <code>&lt;r'&gt;</code>.</li>
+<li><code>R(h1, k, r, r')</code>: the passes <code>[h^k]</code> turn <code>1 &lt;r&gt;</code> into <code>&lt;r'&gt;</code>, where the extra <code>1</code> cell comes first.</li>
+</ul>
+<p>So hx is "the eater pass plus k queued passes", and h1 is "k passes draining over a stray 1".</p>
+<h2 id="2-rule-table">2. Rule table</h2>
+<div class="highlight"><pre><span></span><code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---      (SOMDCv6 TM7 with A1 = 0RF instead of 0RC)
+
+S(r) = 0^inf 11 D&gt; &lt;r&gt; 0^inf          L = 110, 0 = 000, 1 = 100
+start: 0^inf A&gt; 0^inf  -(5)-&gt;  S(1)
+sweep: S(r) -+-&gt; S(r')  if R(hx,0,r,r')            (r' starts one cell further left)
+domain P(r) := exists r', R(hx,0,r,r');   P(1);   P(r) /\ R(hx,0,r,r') -&gt; P(r')
+
+Inc (one h pass = +1):
+  I1  Inc(1::r, 0::r')  &lt;- Inc(r,r')         I3  Inc(L::r, L::r')  &lt;- Inc(r,r')
+  I2  Inc(0::r, 1::r)                        I4  Inc([], [1])
+
+R (k &gt;= 0); NEW = differs from TM7's RIncs:
+  X1  R(hx,k,    L::r, L::r')  &lt;- Inc(r,r1), R(hx,k+1,r1,r')   NEW (TM7: R(hx,k+1,r,r'))  RIncs_hx_ld
+  X2  R(hx,k,    0::r, L::r')  &lt;- R(hx,k+1,r,r')                                          RIncs_hx_d0
+  X3  R(hx,k,    1::r, L::r')  &lt;- R(h1,k,r,r')                                            RIncs_hx_d1
+  C1  R(h1,k+1,  L::r, L::r')  &lt;- Inc(r,r1), R(hx,k+1,r1,r')   NEW (TM7: R(hx,k+1,r,r'))  RIncs_h1_ld
+  C2  R(h1,k+1,  1::r, L::r')  &lt;- R(h1,k,r,r')                                            RIncs_h1_d1
+  C3  R(h1,2k+1, 0::r, 0::r')  &lt;- R(h1,k,r,r')                                            RIncs_h1_d0_0
+  C4  R(h1,2k+2, 0::r, 1::r')  &lt;- R(h1,k,r,r')                                            RIncs_h1_d0_1
+  R0  R(h1,0,    [],   [1])                                                               RIncs_h1_rh_0
+  R1  R(h1,2k+1, [],   0::r')  &lt;- R(h1,k,[],r')                                           RIncs_h1_rh_1
+  R2  R(h1,2k+2, [],   1::r')  &lt;- R(h1,k,[],r')                                           RIncs_h1_rh_2
+  Z1  R(h1,0,    [1],  [L])     NEW: 0 passes, 1 100 0^inf = 110 0^inf
+  Z0  R(h1,0,    [0],  [1])     NEW: 0 passes, 1 000 0^inf = 100 0^inf
+  (no clause: hx at the right end; h1 with 0 passes on a word other than [], [1], [0])
+
+machine level (j = number of digits of X before its first 0 digit, or |X| if none):
+  B&gt; 100 X  -(3)-&gt;  000 B&gt; X            B&gt; 000 X  -(1)-&gt;  &lt;C 100 X        B&gt; 0^inf  -(1)-&gt;  &lt;C 100 0^inf
+  B&gt; 110 X  -(3)-&gt;  011 B&gt; X            011 &lt;C  -(3)-&gt;  &lt;C 110            000 &lt;C  -(3)-&gt;  &lt;C 000
+     =&gt;  B&gt; &lt;X&gt; 0^inf  -(6j+1)-&gt;  &lt;C &lt;X+1&gt; 0^inf                       (Inc, no A1)
+  eater enters L:   1 D&gt; 110 &lt;X&gt;  -(6j+13)-&gt;  1 111 D&gt; &lt;X+1&gt;       TM7: -(11)-&gt; 1 111 D&gt; &lt;X&gt;
+  drain enters L:   B&gt; 1 110 &lt;X&gt;  -(6j+12)-&gt;  1 111 D&gt; &lt;X+1&gt;       TM7: -(10)-&gt; 1 111 D&gt; &lt;X&gt;
+  wall:             0^inf 1 &lt;C &lt;r'&gt;  -(3)-&gt;  0^inf 11 D&gt; &lt;r'&gt;      (C1, D0, D0)
+</code></pre></div>
+
+<p>In words:
+- <strong>Eater (hx).</strong> The eater turns every digit it crosses into L. It gains one pass at each L or 0, and at each L the rest of the word gets +1 (X1, NEW). It switches to draining at the first 1 (X3).
+- <strong>Drain (h1, k passes).</strong> Each 1 absorbs one pass and becomes L (C2). Each 0 keeps one bit of the count and halves it (C3, C4). At the right end the count is written in bijective binary (R0–R2). An L restarts the eater with the same count and adds +1 to the rest (C1, NEW; this is the "drain-enters-L restart"). With 0 passes left, the drain can only be at the last digit, and it leaves the stray <code>1</code> in place (Z0, Z1, NEW).</p>
+<p><strong>Worked example.</strong> This is the start of the Checkpoint A picture pair, <code>S(L^4 1L1)</code>, and it is the extra 1 Dennis noticed there (checked in §7).
+- <strong>First eat.</strong> Both machines eat the 4 L's (k = 4) and stop at the <code>1</code>. Ours added +1 at each L, so its rest is <code>1L1 + 4 = 1L11</code>, while TM7's is still <code>1L1</code>. The extra <code>1</code> digit on the right is the extra bar after the first eat.
+- <strong>Drain.</strong> The first drain pass enters the L.
+  - TM7 restarts the eater on <code>1</code>.
+  - Ours first runs +1 pass number 5: <code>11 + 1 = 001</code>. The extra 1 is not ignored: the carry turns both 1s into 0s and appends a new 1.
+- <strong>Second eat.</strong> Ours also eats the two new 0s (k = 6). TM7 stops at once (k = 4).
+- <strong>Right end.</strong> The count is written in bijective binary: 6 gives <code>111</code>, 4 gives <code>101</code>.
+- <strong>Result.</strong> Ours reaches <code>S(L^9 111)</code> and TM7 reaches <code>S(L^7 101)</code>. Ours has two more L's on the left, and the right end differs.</p>
+<h2 id="3-the-argument">3. The argument</h2>
+<h3 id="31-every-clause-is-an-exact-pass-level-transition-rincs_spec-rocq-checked">3.1 Every clause is an exact pass-level transition (<code>RIncs_spec</code>), Rocq-checked</h3>
+<p>Claim: <code>R(hx,k,r,r')</code> implies <code>sideRLs ([h'] ++ h^k) &lt;r&gt; &lt;r'&gt;</code>, and <code>R(h1,k,r,r')</code> implies <code>sideRLs (h^k) (1 &lt;r&gt;) &lt;r'&gt;</code>. Proof by induction on R, one clause at a time, as in TM7.</p>
+<p>This section compiles. <code>check_proof.py --rocq</code> states Inc and all 12 clauses of R for the real machine string, then proves <code>Inc_spec</code>, <code>seg_hx_ld</code>, <code>seg_h1_ld</code> and <code>RIncs_spec</code>. <code>Print Assumptions</code> is closed. The two segment facts were first probed in <code>rocq-scratch/probe_segments_2.v</code>.
+- <strong>X2, X3, C2, C3, C4, R0, R1, R2.</strong> Each clause's run never fires A1, the one transition where the two machines differ (§7 counts A1 firings). So the run is the same as TM7's, and TM7's tactic scripts for these 8 cases (<code>cat3</code>, <code>tr1</code>/<code>tr2</code>, <code>wal</code>, <code>am</code>) are reused verbatim.
+- <strong>X1 (eater enters L).</strong>
+  - TM7: the eater reaches A1 at the middle cell of the 110 in 4 steps (D1, B1, E1, A1). TM7's <code>A1 = 0RC</code> writes 0 and steps right onto the last cell of the 110 in state C. <code>C0 = 0LC</code> then turns left.
+  - Ours: <code>A1 = 0RF</code> writes the same 0 and steps onto the same cell in state F. <code>F0 = 0RB</code> then puts B on the first cell of X. That is one h pass over X: <code>B&gt; &lt;X&gt; -&gt;(6j+1) &lt;C &lt;X+1&gt;</code>. It returns with C on the last cell of the 110, which is exactly where TM7 is one step after its A1. From then on the two runs agree.
+  - So TM7's segment fact for the L digit, <code>segRLs [h'] [h', h] 110 110</code>, becomes <code>segRLs [h'] [h, h', h] 110 110</code>, followed by the wall for <code>h^k</code> (Rocq: <code>seg_hx_ld</code>). The passes reaching the rest are <code>[h] ++ ([h'] ++ h^(k+1))</code>. That is <code>Inc(r, r1)</code> (Inc_spec below), followed by <code>R(hx, k+1, r1, r')</code> (induction hypothesis), joined by <code>sideRLs_trans</code>.
+- <strong>C1 (drain enters L).</strong> The same argument. The first pass of <code>h^(k+1)</code> meets <code>1 110</code> and reaches A1 in 3 steps (B1, E1, A1). TM7's segment fact <code>segRLs [h] [h', h] 1110 110</code> becomes <code>segRLs [h] [h, h', h] 1110 110</code> (Rocq: <code>seg_h1_ld</code>).
+- <strong>Inc_spec</strong> (<code>Inc(r,r')</code> implies <code>sideRLs [h] &lt;r&gt; &lt;r'&gt;</code>). By induction on Inc, using the six machine-level h-pass rules of §2 for I1–I4.
+- <strong>Z1 and Z0.</strong> These use zero passes, so they hold by <code>sideRLseq_O</code> (via <code>applys_eq</code>) and the stream identities <code>1 100 0^inf = 110 0^inf</code> and <code>1 000 0^inf = 100 0^inf</code> (<code>const_unfold</code>).</p>
+<h3 id="32-sweep-bigstep">3.2 Sweep (<code>BigStep</code>)</h3>
+<p>Suppose <code>R(hx,0,r,r')</code>. The left part <code>0^inf 1</code> is never read by the pass, so:</p>
+<p><code>S(r) = 0^inf 1 · 1 D&gt; &lt;r&gt;  -+-&gt;  0^inf 1 &lt;C &lt;r'&gt;  -(3)-&gt;  0^inf 11 D&gt; &lt;r'&gt; = S(r')</code></p>
+<p>The first arrow is the single pass h' (<code>sideRLs_1</code>); the second is the wall rule. This is TM7's <code>BigStep</code>, with the same proof. It compiles (§7).</p>
+<h3 id="33-the-domain-is-closed-rincs_nxt">3.3 The domain is closed (<code>RIncs_nxt'</code>)</h3>
+<p>Let <code>P(r) := exists r', R(hx,0,r,r')</code>. We need <code>R(hx,0,r,r')</code> to imply <code>P(r')</code>.</p>
+<p><strong>Why the extension is needed.</strong> Without Z0/Z1 this is false:
+- r = <code>LLLL10LL1L1</code> is in P, and its sweep is <code>LLLLL1LLLLLLL111</code>, which is not in P without Z0/Z1. Its second sweep needs Z1 and gives <code>LLLLLLLLLLLLLL011L</code>, which is also what the real machine produces.
+- Up to 11 digits, 170 words fail this way.</p>
+<p>Z0/Z1 are never used on the run from blank (§7), so they matter only to the domain lemma.</p>
+<p><strong>Auxiliary lemmas.</strong> All are stated as relations. The only functionality the proof uses is that of Inc.</p>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>statement</th>
+<th>proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inc total and functional</td>
+<td>for every r there is exactly one r' with <code>Inc(r,r')</code></td>
+<td>induction on r</td>
+</tr>
+<tr>
+<td>A</td>
+<td><code>R(tp,k,r,r') /\ Inc(r',r'') -&gt; R(tp,k+1,r,r'')</code></td>
+<td>induction on R; each clause maps to the same clause with k+1, except C3 -&gt; C4, C4 -&gt; C3 (carry), R0 -&gt; R1, R1 -&gt; R2, R2 -&gt; R1, Z1 -&gt; C2, Z0 -&gt; C3</td>
+</tr>
+<tr>
+<td>Total_1</td>
+<td><code>forall q, exists w, R(h1,q,[],w)</code></td>
+<td>TM7's <code>RIncs_nxt_1</code>, unchanged</td>
+</tr>
+<tr>
+<td>End_1</td>
+<td><code>R(h1,m,[],w) /\ m &lt;= q -&gt; exists w', R(h1,q,w,w')</code></td>
+<td>induction on the derivation of <code>R(h1,m,[],w)</code>, generalizing q. Only R0–R2 apply to <code>[]</code>; write m0 for the premise's count. R0 (<code>w = [1]</code>): Z1 if q = 0, else C2 + Total_1. R1 (<code>w = 0::w0</code>, m = 2m0+1): C3 or C4 by q's parity, then IH at floor((q-1)/2) ≥ m0. R2 (<code>w = 1::w0</code>, m = 2m0+2): C2, then IH at q-1 ≥ m0</td>
+</tr>
+<tr>
+<td>End_x</td>
+<td><code>R(h1,m,[],w) /\ m &lt;= 2q+2 -&gt; exists w', R(hx,q,w,w')</code></td>
+<td>induction on the same derivation, generalizing q. R0: X3 + Total_1. R1: X2, then IH at q+1 (m0 ≤ q). R2: X3, then End_1 (m0 ≤ q)</td>
+</tr>
+</tbody>
+</table>
+<p>Lemma A says one extra pass after the k passes is +1 on the result. It is what turns the second sweep's +1 passes into extra count for the first.</p>
+<p><strong>Key lemma (<code>RIncs_nxt'</code>).</strong> Two sweep processes run over the same digits:
+- the <em>first</em> has <code>R(tp,k,r,r1)</code>;
+- the <em>second</em> reads the first's output after j pending +1s, <code>R(tp,k+j,r,rK)</code> (by Lemma A this is <code>r1 + j</code>), with count q.</p>
+<p>Write <code>K = k+j</code>. The lemma:</p>
+<div class="highlight"><pre><span></span><code>R(tp,k,r,r1) /\ R(tp,K,r,rK) /\ Inv(tp,k,j,tq,q)  -&gt;  exists r2, R(tq,q,rK,r2)
+  Inv(hx,k,j,hx,q) := k &lt;= q /\ j &lt;= q
+  Inv(h1,k,j,hx,q) := k+1 &lt;= q /\ j &lt;= q
+  Inv(h1,k,j,h1,q) := (j = 0 /\ 2k+1 &lt;= q) \/ (j &gt;= 1 /\ K &lt;= q /\ 1 &lt;= q)      [both imply K &lt;= q, 1 &lt;= q]
+  Inv(hx,_,_,h1,_) := False
+</code></pre></div>
+
+<p>With j = 0 these are exactly TM7's conditions (<code>k&lt;=k'</code>, <code>k+1&lt;=k'</code>, <code>k*2+1&lt;=k'</code>). The domain step is the instance <code>tp = tq = hx</code>, <code>k = j = q = 0</code>.</p>
+<p><strong>Proof.</strong> Induct on the derivation of <code>R(tp,k,r,r1)</code>, generalizing j, rK, tq and q. The induction is on the derivation, not on r, because X1/C1 recurse on <code>inc r</code>. In each case, invert <code>R(tp,K,r,rK)</code>; Inc is functional, so both derivations name the same incremented word. The second process reads the first digit of rK, and that leaves one IH obligation. Each obligation's count <code>K'</code> is supplied by Lemma A, since the second's +1 passes land on the first's rest.</p>
+<p>Some shorthand for the table:
+- <code>t+</code> means <code>Inc(t)</code>.
+- In C3/C4, <code>k1 = floor((k-1)/2)</code> and <code>K1 = floor((K-1)/2)</code>. Then <code>j1 = K1 - k1</code> equals <code>ceil(j/2)</code> when K is odd and <code>floor(j/2)</code> when K is even.</p>
+<table>
+<thead>
+<tr>
+<th>first</th>
+<th>second reads</th>
+<th>IH instance <code>(tp,k,j -&gt; tq,q)</code></th>
+<th>Inv holds since</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(hx,hx) X1/X2: <code>rK = L::t</code>, <code>R(hx,K+1,_,t)</code></td>
+<td>X1: <code>R(hx,q+1,t+,_)</code>; <code>R(hx,K+2,_,t+)</code> by A</td>
+<td>(hx,k+1,j+1 -&gt; hx,q+1)</td>
+<td>k+1 ≤ q+1, j+1 ≤ q+1</td>
+</tr>
+<tr>
+<td>(hx,hx) X3: <code>rK = L::t</code>, <code>R(h1,K,w,t)</code></td>
+<td>X1</td>
+<td>(h1,k,j+1 -&gt; hx,q+1)</td>
+<td>k+1 ≤ q+1, j+1 ≤ q+1</td>
+</tr>
+<tr>
+<td>(h1,hx) C1: <code>rK = L::t</code>, <code>R(hx,K,_,t)</code></td>
+<td>X1</td>
+<td>(hx,k,j+1 -&gt; hx,q+1)</td>
+<td>k ≤ q+1, j+1 ≤ q+1</td>
+</tr>
+<tr>
+<td>(h1,hx) C2: <code>rK = L::t</code>, <code>R(h1,K-1,w,t)</code></td>
+<td>X1</td>
+<td>(h1,k-1,j+1 -&gt; hx,q+1)</td>
+<td>k ≤ q+1, j+1 ≤ q+1</td>
+</tr>
+<tr>
+<td>(h1,hx) C3/C4, K odd: <code>rK = 0::t</code></td>
+<td>X2</td>
+<td>(h1,k1,j1 -&gt; hx,q+1)</td>
+<td>k1 &lt; k, j1 ≤ j</td>
+</tr>
+<tr>
+<td>(h1,hx) C3/C4, K even: <code>rK = 1::t</code></td>
+<td>X3</td>
+<td>(h1,k1,j1 -&gt; h1,q)</td>
+<td>j1 = 0 only if j ≤ 1, and then 2K1+1 = K-1 ≤ k ≤ q; otherwise K1 = (K-2)/2 &lt; q, q ≥ 2</td>
+</tr>
+<tr>
+<td>(h1,hx) R0-R2: the K-derivation is <code>R(h1,K,[],rK)</code></td>
+<td>End_x on it</td>
+<td>none</td>
+<td>K = k+j ≤ 2q-1</td>
+</tr>
+<tr>
+<td>(h1,hx) Z1/Z0 (k = 0, so K = j ≤ q)</td>
+<td>Invert the K-derivation. K = 0: Z1 gives <code>[L]</code> -&gt; X1, X3, Total_1; Z0 gives <code>[1]</code> -&gt; X3, Total_1. K ≥ 1: C2 gives <code>L::t</code> with <code>R(h1,K-1,[],t)</code> -&gt; X1 on <code>t+</code>; Lemma A on that R0–R2 derivation gives <code>R(h1,K,[],t+)</code>, then End_x. C3 gives <code>0::t</code> with <code>R(h1,(K-1)/2,[],t)</code> -&gt; X2, End_x. C4 gives <code>1::t</code> with <code>R(h1,(K-2)/2,[],t)</code> -&gt; X3, End_1</td>
+<td>none</td>
+<td>K ≤ 2(q+1)+2; (K-1)/2 ≤ 2(q+1)+2; (K-2)/2 ≤ q</td>
+</tr>
+<tr>
+<td>(h1,h1) C1 (k ≥ 1)</td>
+<td>C1 (q ≥ 1)</td>
+<td>(hx,k,j+1 -&gt; hx,q)</td>
+<td>k ≤ K ≤ q; j+1 ≤ K ≤ q since k ≥ 1</td>
+</tr>
+<tr>
+<td>(h1,h1) C2 (k ≥ 1)</td>
+<td>C1</td>
+<td>(h1,k-1,j+1 -&gt; hx,q)</td>
+<td>k ≤ q; j+1 ≤ K ≤ q</td>
+</tr>
+<tr>
+<td>(h1,h1) C3/C4, K odd: <code>rK = 0::t</code></td>
+<td>C3/C4: <code>q1 = floor((q-1)/2)</code></td>
+<td>(h1,k1,j1 -&gt; h1,q1)</td>
+<td>j = 0: K ≤ q1 since 2K+1 ≤ q. j ≥ 1: j1 ≥ 1, K1 ≤ q1, and q ≥ K ≥ 3 so q1 ≥ 1</td>
+</tr>
+<tr>
+<td>(h1,h1) C3/C4, K even: <code>rK = 1::t</code></td>
+<td>C2: q-1</td>
+<td>(h1,k1,j1 -&gt; h1,q-1)</td>
+<td>j ≤ 1: j1 = 0, 2K1+1 = K-1 ≤ q-1. j ≥ 2: K1 ≤ q-1, and K ≥ 4 so q-1 ≥ 1</td>
+</tr>
+<tr>
+<td>(h1,h1) R0-R2</td>
+<td>End_1 on the K-derivation</td>
+<td>none</td>
+<td>K ≤ q</td>
+</tr>
+<tr>
+<td>(h1,h1) Z1/Z0 (k = 0; Inv gives q ≥ 1 and K ≤ q)</td>
+<td>Invert the K-derivation. K = 0: <code>[L]</code> -&gt; C1, X3, Total_1; <code>[1]</code> -&gt; C2, Total_1. K ≥ 1: <code>L::t</code> with <code>R(h1,K-1,[],t)</code> -&gt; C1 on <code>t+</code>; Lemma A gives <code>R(h1,K,[],t+)</code>, then End_x. <code>0::t</code> with <code>R(h1,(K-1)/2,[],t)</code> -&gt; C3 or C4 by q's parity, End_1. <code>1::t</code> with <code>R(h1,(K-2)/2,[],t)</code> -&gt; C2, End_1</td>
+<td>none</td>
+<td>K ≤ 2q+2; (K-1)/2 ≤ floor((q-1)/2); (K-2)/2 ≤ q-1</td>
+</tr>
+</tbody>
+</table>
+<p>No other case occurs:
+- hx at the right end has no clause.
+- h1 with 0 passes occurs only as Z0/Z1.
+- <code>Inv(hx,_,_,h1,_)</code> is False.</p>
+<p>∎</p>
+<h3 id="34-progress">3.4 Progress</h3>
+<p>R is inductive, so every derivation is finite. Each clause is a finite run: its segment lemma, plus the finitely many passes of its premises (§3.1). So <code>S(r) -+-&gt; S(r')</code> is a finite run of at least 4 steps: h' takes at least 1, and the wall takes 3. Example: S(1) to S(L1) takes 11 steps (steps 5 to 16).</p>
+<h3 id="35-the-halting-transition-f1">3.5 The halting transition F1</h3>
+<p>Formally, every rule is a proved exact run, so no step on the way from c0 is the halting transition.</p>
+<p>As a sanity check: F is entered only by <code>A1 = 0RF</code> and <code>E0 = 0RF</code>. In the machine-level rules of §2, F is entered on the last cell of a digit, and that cell is 0 for all three digits, so <code>F0 = 0RB</code> fires. In every simulated rule instance F read a 0; the count of F reading 1 is 0 (§7).</p>
+<h2 id="4-initial-segment">4. Initial segment</h2>
+<p><code>0^inf A&gt; 0^inf</code> reaches S(1) in 5 steps:</p>
+<ul>
+<li><code>-A0-&gt;  0^inf 1 B&gt; 0^inf</code></li>
+<li><code>-B0-&gt;  0^inf 1 &lt;C 1 0^inf</code></li>
+<li><code>-C1-&gt;  0^inf &lt;D 0 1 0^inf</code></li>
+<li><code>-D0-&gt;  0^inf 1 D&gt; 0 1 0^inf</code></li>
+<li><code>-D0-&gt;  0^inf 11 D&gt; 100 0^inf = S(1)</code></li>
+</ul>
+<p>S(1) is in the domain: <code>R(hx,0,[1],[L,1])</code> by X3 and R0.</p>
+<p>TM7's <code>nonhalt</code> uses the same start, <code>S' [D1]</code>, by <code>esx</code>. Here too, <code>init: c0 -[tm]-&gt;* S' [D1]</code> compiles by <code>esx</code> (§7).</p>
+<h2 id="5-conclusion">5. Conclusion</h2>
+<p>Use <code>multistep_nonhalt</code> with <code>c' = S(1)</code> (§4), then <code>progress_nonhalt_cond</code> with <code>P(r) := exists r', R(hx,0,r,r')</code>:
+- §3.2 gives <code>S(r) -+-&gt; S(r')</code>.
+- §3.3 gives <code>P(r')</code>.
+- §3.4 shows each sweep is at least one step.</p>
+<p>So the machine never halts. In Rocq this is TM7's <code>nonhalt</code> with RIncs replaced by R and with a different call to the domain lemma. TM7 calls <code>RIncs_nxt</code> with <code>(tp':=hx) (k':=O)</code> on one hypothesis. Here the call is <code>RIncs_nxt'</code> at tp = tq = hx and k = j = q = 0. Both R hypotheses are I1 (K = k+j = 0), and <code>Inv(hx,0,0,hx,0)</code> is discharged by <code>lia</code>.</p>
+<h2 id="6-mapping-to-somdcv6-tm7">6. Mapping to SOMDCv6 TM7</h2>
+<table>
+<thead>
+<tr>
+<th>TM7 (<code>SOMDCv6.v</code>)</th>
+<th>here</th>
+<th>change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>S'</code>, <code>lh</code></td>
+<td>S(r)</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>ld</code>/<code>d0</code>/<code>d1</code>, <code>RD</code>, <code>toRC</code></td>
+<td>digits L/0/1</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>hR</code>/<code>hR'</code>/<code>hL</code>, <code>h</code>/<code>h'</code>, <code>toH</code>/<code>toH'</code></td>
+<td>passes h, h'</td>
+<td>none</td>
+</tr>
+<tr>
+<td>none</td>
+<td><code>Inc</code> (I1–I4), <code>Inc_spec</code></td>
+<td>new: <code>sideRLs [h] (toRC r) (toRC r')</code>; compiles</td>
+</tr>
+<tr>
+<td><code>RIncs</code> (10 clauses)</td>
+<td>R (12 clauses)</td>
+<td><code>RIncs_hx_ld</code>/<code>RIncs_h1_ld</code> gain an <code>Inc</code> premise and recurse on <code>inc r</code>; new clauses Z1 <code>R(h1,0,[D1],[LD])</code> and Z0 <code>R(h1,0,[D0],[D1])</code></td>
+</tr>
+<tr>
+<td><code>RIncs_spec</code></td>
+<td>§3.1</td>
+<td>8 cases unchanged (X2, X3, C2–C4, R0–R2). The X1/C1 segment facts gain a leading h (<code>[h'] -&gt; [h;h';h]</code> on <code>110</code>, <code>[h] -&gt; [h;h';h]</code> on <code>1110</code>), followed by <code>sideRLs_trans</code> with <code>Inc_spec</code>. Z0/Z1 by <code>sideRLseq_O</code> and <code>const_unfold</code>. Compiles</td>
+</tr>
+<tr>
+<td>none</td>
+<td>Lemma A, End_1, End_x</td>
+<td>new (TM7 handled r = [] inside <code>RIncs_nxt</code> by an inner induction on k)</td>
+</tr>
+<tr>
+<td><code>RIncs_nxt_1</code></td>
+<td>Total_1</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td><code>RIncs_nxt</code></td>
+<td><code>RIncs_nxt'</code> (§3.3)</td>
+<td>new parameter j (pending +1s) and <code>Inv</code>; j = 0 gives TM7's conditions; induction on the derivation instead of on r</td>
+</tr>
+<tr>
+<td><code>BigStep</code></td>
+<td>§3.2</td>
+<td>unchanged; compiles</td>
+</tr>
+<tr>
+<td><code>nonhalt</code></td>
+<td>§5</td>
+<td><code>P</code> uses R; the domain call is <code>RIncs_nxt'</code> at k = j = q = 0 with I1 passed twice (§5); start <code>S' [D1]</code> compiles</td>
+</tr>
+</tbody>
+</table>
+<p>Formal status:
+- Done: everything above marked "compiles" (§3.1, §3.2, §4). The former risk 1, that the exact <code>segRLs</code> lists for X1/C1 were unconfirmed, is retired: <code>seg_hx_ld</code> and <code>seg_h1_ld</code> prove them (<code>esx</code>, then TM7's wall tactic <code>wal</code>).
+- Remaining: §3.3 (Inc total and functional, Lemma A, Total_1, End_1, End_x, <code>RIncs_nxt'</code>) and the <code>nonhalt</code> assembly.</p>
+<p>Formalization risks, all in §3.3:
+1. <code>RIncs_nxt'</code>'s arithmetic. It needs <code>floor</code>/<code>ceil</code> facts on j1, handled with <code>mod2</code> case splits as in TM7's <code>solve_v1</code>.
+2. The C3/C4 inversion of the K-derivation depends on K's parity, not k's.</p>
+<h2 id="7-evidence">7. Evidence</h2>
+<p>The checks are in <code>check_proof.py</code>, in this directory (reuses <code>check_rules.l_entry</code>). The numbers below are from <code>python3 -B check_proof.py --full</code> (36 s). That mode includes the Rocq check, which <code>--rocq</code> runs alone (4 s). The default run (8 s) gives the same verdicts on smaller samples, with the from-blank check to 1e8 steps. "Real machine" means simulation of the actual transition table: a pass stops the first time the head reaches its exit cell, so cells left of it are never read.</p>
+<table>
+<thead>
+<tr>
+<th>claim</th>
+<th>instances</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inc: <code>B&gt; &lt;r&gt; -(6j+1)-&gt; &lt;C &lt;r+1&gt;</code>, no A1 (all r ≤ 6 digits + random)</td>
+<td>13,093</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>§3.1 every clause: the pass list of <code>R(tp,k,r,r')</code> turns the input into <code>&lt;r'&gt;</code> on the real machine, with #A1 firings = #X1 + #C1 (exhaustive r ≤ 4 digits with k ≤ 8; k &lt; 80 at the right end; random r up to 53 digits with k ≤ 200)</td>
+<td>8,477 derivations; clause uses X1 69,237, X2 15,894, X3 15,109, C1 10,450, C2 12,353, C3 4,215, C4 3,855, R0 8,031, R1 12,659, R2 9,742, Z0 58, Z1 388</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>F never reads 1 in any of those runs</td>
+<td>all</td>
+<td>0 occurrences</td>
+</tr>
+<tr>
+<td>TM7's own RIncs on TM7 (template sanity, same A1 count)</td>
+<td>1,410</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>L entry, ours vs TM7, eater and drain (every X ≤ 6 digits + 150 random)</td>
+<td>1,243 per case, 4 cases</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>Lemma A (all r ≤ 6 digits, k ≤ 12, both tp)</td>
+<td>21,347</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>Lemma A at the right end, as used by the Z rows of §3.3: <code>inc(R(h1,m,[])) = R(h1,m+1,[])</code> (m &lt; 2000)</td>
+<td>2,000</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>End_1, End_x (m &lt; 300, q &lt; 160). End_1 is tight: m = q+1 fails for q = 0, 2, 6, 14, 30, ...</td>
+<td>38,679</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td><code>RIncs_nxt'</code> at the smallest q allowed by Inv (exhaustive r ≤ 5 digits with k, j ≤ 8; random up to k, j ≤ 60)</td>
+<td>83,794</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>The case table of §3.3, run as an abstract transition system on (tp,k,K,tq,q): every Inv state closes under every digit, the end, and Z0/Z1 (k &lt; 28, K, q &lt; 56)</td>
+<td>100,744 states</td>
+<td>all close</td>
+</tr>
+<tr>
+<td>Domain closed: <code>sweep(r)</code> defined implies <code>sweep(sweep r)</code> defined (all words ≤ 11 digits)</td>
+<td>76,738</td>
+<td>all pass; without Z0/Z1, 170 fail</td>
+</tr>
+<tr>
+<td>BigStep on the real machine: <code>S(r) -+-&gt; S(sweep r)</code>, one cell left</td>
+<td>5,843 (502 use Z0/Z1)</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>Worked example (§2): <code>S(L^4 1L1)</code> gives <code>S(L^9 111)</code> on ours and <code>S(L^7 101)</code> on TM7, abstractly and on both real machines, with the intermediate words <code>1L11</code> and <code>001</code></td>
+<td>4</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>Initial segment <code>c0 -(5)-&gt; S(1)</code></td>
+<td>1</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>From blank to 2e9 steps: consecutive sweep boundaries follow <code>sweep</code></td>
+<td>256 sweeps</td>
+<td>256/256; Z0/Z1 never used; last boundary at step 1,976,201,019 = <code>S(L^2068 0000LLLLL00100001)</code></td>
+</tr>
+<tr>
+<td>Abstract orbit from S(1)</td>
+<td>3,000 sweeps</td>
+<td>stays in the domain; Z0/Z1 never used; ends at <code>S(L^31762 0LLLL10111111101111)</code></td>
+</tr>
+<tr>
+<td><strong>Rocq</strong> (not simulation): <code>Inc_spec</code>, <code>seg_hx_ld</code>, <code>seg_h1_ld</code>, <code>RIncs_spec</code> (all 12 clauses), <code>BigStep</code>, <code>init</code> compile with Coq 8.20.1 against unmodified busycoq; no Admitted/Axiom; <code>Print Assumptions</code> closed for <code>RIncs_spec</code>, <code>BigStep</code>, <code>init</code></td>
+<td>1 file</td>
+<td>compiles; 3/3 closed</td>
+</tr>
+</tbody>
+</table>
+<p>Gaps: §3.3 and the <code>nonhalt</code> assembly are not formal yet. Ground rule 3 applies: the simulation rows are evidence only, and the machine is not killed until a full <code>nonhalt</code> passes <code>tools/check_kill.sh</code>.</p>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with Claude (Anthropic) under Dennis's direction.</p>
+<h2 id="review-log">Review log</h2>
+<p>Independent skeptic review, 2026-10-10. Verdict: sound; 5 minor gaps, no fatal or major ones. All 5 were accepted and fixed.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>gap</th>
+<th>resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>§6 clause counts were wrong. TM7's <code>RIncs</code> has 10 constructors, not 12; R has 12 clauses, not 14; and §3.1 lists 8 unchanged cases, not 10.</td>
+<td>Fixed: <code>RIncs</code> (10 clauses), R (12 clauses), 8 cases unchanged (X2, X3, C2–C4, R0–R2). Checked against <code>SOMDCv6.v</code> lines 1663–1701.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Formal status was understated. The X1/C1 segment facts and all of §3.1, §3.2 and §4 already compile: <code>rocq-scratch/probe_segments_2.v</code>, plus the reviewer's <code>RSpec2.v</code>, which takes 3 s and has closed assumptions.</td>
+<td>Accepted. I recompiled <code>RSpec2.v</code> (3.3 s, 3/3 <code>Print Assumptions</code> closed). It is now embedded in <code>check_proof.py</code> as <code>--rocq</code> (also run by <code>--full</code>), so it can be rerun from this directory. Risk 1 is retired, and the header, §3.1, §3.2, §4, §6 and §7 now say what compiles. Remaining formal work: §3.3 and <code>nonhalt</code>. The reviewer's 2e9 from-blank figure was reproduced and now replaces the 1e9 row: 256/256, last boundary at step 1,976,201,019 = <code>S(L^2068 0000LLLLL00100001)</code>.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>§5 called the conclusion "TM7's <code>nonhalt</code> verbatim", but <code>RIncs_nxt'</code> has a different signature.</td>
+<td>Fixed: §5 now gives the call (<code>RIncs_nxt'</code> at tp = tq = hx, k = j = q = 0, I1 passed twice, <code>Inv</code> by <code>lia</code>). This matches §6.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>§3.1 said TM7's A1 "turns straight back, <code>0RC</code>". <code>0RC</code> moves right; <code>C0 = 0LC</code> is the step that turns back.</td>
+<td>Fixed in §3.1. <code>notes.md</code> ("Where the +1 comes from") has the same wording and was not changed here, because it is outside this revision's files.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>word(m)</code> as a function relied on R(h1,m,[],·) being functional, and the Z rows also used <code>inc(word(K-1)) = word(K)</code>; neither was listed as a lemma.</td>
+<td>Fixed: End_1 and End_x are now relational and proved by induction on the R0–R2 derivation. The Z rows get <code>R(h1,K,[],t+)</code> from Lemma A applied to that derivation. Only Inc's functionality is used. <code>check_proof.py</code> adds the right-end Lemma A instance (m &lt; 2000, all pass).</td>
+</tr>
+</tbody>
+</table>
+<p>Also added, though the review did not ask for it: the worked example in §2, which explains Dennis's Checkpoint A observation (the extra 1 after the first eat is carried away by +1 pass 5), with a check in §7.</p>
+</main></body></html>

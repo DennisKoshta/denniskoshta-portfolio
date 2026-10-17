@@ -1,0 +1,93 @@
+{
+ "confidence": "high",
+ "recommend": "proof",
+ "mechanism": "Hub K(a,b,X) bounces with an LSB-first counter X over blocks d01(001)^e (grammar G). An E2 eat leaves an O2 residue '11' V that is digested (D1-D5). At the first b-block, D6 runs, in one bounce, an ordinary epoch from K(1,e+1,R) to its first left record L(k,000 Y) and leaves a^(k+1) z Y. Nests are flat (one block per level) and are incremented at half speed. Digestion consumes the whole residue, leaves one block per level, and costs O(sqrt N log N) against the budget N.",
+ "closed_gaps": [
+  "Grammar G and inc on G (GI): exact recursive carry with absorption into the previous block; G closed under inc. 1200/1200 (seeds 1, 2).",
+  "Digestion steps D1-D5 exact: 800/800, 800/800, 792/792, 770/770, 1200/1200.",
+  "Generalized eats E2g (any first-block exponent, any G rest) and E1g (any G rest): 1200/1200 each; all 1,020 orbit eats after epoch 2 to 1e11 match E1g/E2g/E0/tail rules.",
+  "Every eat after epoch 2 on the orbit to 1e11 (519 epochs, N to 12,668) is at a G word; digestion leaves >= 0.467*N of the budget (N=45), beta/N <= 0.051 for N >= 6000.",
+  "Exhaustive clean residues k <= 12 (32,760): beta_max(k) = 2^((k+9)/2)-7 (odd k), 5*2^((k+4)/2)-7 (even k), i.e. beta_max(k+2) = 2*beta_max(k)+7; a first block a^e0 adds exactly e0-1.",
+  "D6 exact: one bounce = a^(k+1) z Y with (k, 000 Y) the first left record of the epoch from K(1,e+1,R); 1200/1200 (seeds 1, 2), prediction from the rules-only model.",
+  "Nested words H = (c z)* O2 | G with toggle/carry HT/HC (1200/1200), D1-D4 for any rest (1200/1200 each), 8 constant end words (160/160), tail eats (80/80), whole epochs (387/387), orbit hub words (1200/1200).",
+  "Rules-only model reproduces all 517 TM left records from L(7,000010001) to 1e11 steps, with no unknown word.",
+  "Cost recursion equals the TM beta on all 32,760 clean residues; doubling law beta(k+2) = 2 beta(k) + 7 proved for the attaining family '11' a z D(k,s,1); family = clean maximum for k <= 15.",
+  "Lemma D proof plan checked on the model orbit: (K) 2(L-1)+S <= kW, (P) k_post in {L, L+1}, (V) m_W/N <= 0.517, (X) excess suffix step 103,679/103,679, beta <= Bnd on 8,000/8,000 epochs and Bnd <= N-2 for N > 784."
+ ],
+ "remaining_gaps": [
+  "Write lemmas K, P, V and X as proofs from the rule statements with exact constants (analytic threshold: N >= 40,112 safe for every residue; below that, the rules-only orbit, TM-checked to N = 12,668).",
+  "D6 proof: sub-epoch in a left context (bounces and E1g never read left of (110)^a: 400/400 each) plus the left-record exit through the outer hub (validated, not proved).",
+  "Rocq: needs a recursive epoch map for D6 and a finite check of about 1,400 epochs (or tighter constants); heavy."
+ ],
+ "evidence": [
+  "scripts/fs_val_rules.py seeds 1, 2 -> data/fs_val_rules_{1,2}.json (all rules pass; D6 shape census)",
+  "scripts/fs_orbit.c 1e11 -> data/fs_orbit_1e11_LE.txt, data/fs_orbit_1e11_eats.txt; scripts/fs_analyze.py -> data/fs_analyze.json",
+  "scripts/fs_digest.c 30 on fs_analyze.py gen-clean -> data/fs_digest_clean_k1-12.txt.gz; non-clean -> data/fs_digest_nonclean.txt",
+  "img/fs_digest_share.png (scripts/fs_plot_digest.py): beta/N per epoch to 1e11 vs 8/sqrt(N)",
+  "scripts/nest_val.py seeds 1, 2 -> data/nest_val_{1,2}.json",
+  "scripts/nest_orbit.py -> data/nest_orbit_517.json (model vs TM log to 1e11)",
+  "scripts/nest_cost.py -> data/nest_cost_{clean,family,exhaust}.json",
+  "scripts/nest_mass.py, nest_excess.py, nest_bound.py -> data/nest_mass.txt, nest_excess.json, nest_bound.json",
+  "scripts/nest_long.py -> data/nest_long.txt, nest_long_summary.json; img/nest_beta_sqrtN.png (scripts/nest_plot.py)"
+ ],
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "deepen",
+   "stage": "funded stage: exact digestion rules, epoch map vs TM to 1e11, size invariant (eat after digestion)",
+   "confidence": "med",
+   "outcome": "STUCK (pre-agreed exit: the size invariant did not close; reduced Lemma D written down). Not a cryptid candidate: the open condition is a size bound with sqrt(N)-growing slack and an exact worst case, not an arithmetic coincidence.",
+   "closed_gaps": "see top-level closed_gaps",
+   "remaining_gaps": "see top-level remaining_gaps",
+   "numbers": {
+    "orbit_steps": 100000000000,
+    "epochs": 519,
+    "N_max": 12668,
+    "eats": 1022,
+    "eats_outside_G_after_epoch2": 0,
+    "min_b_left_over_N": 0.467,
+    "max_beta_over_N_N_ge_6000": 0.051,
+    "max_beta_over_sqrtN": 6.52,
+    "clean_residues_exhaustive": 32760,
+    "nonclean_residues": 424
+   }
+  },
+  {
+   "date": "2026-10-10",
+   "option": "nest",
+   "stage": "funded stage: exact D6 / nested digestion, doubling law by induction on depth",
+   "confidence": "high",
+   "outcome": "D6 closed into an exact recursive rule (sub-epoch to its first left record). The rule set is closed and the rules-only model equals the TM to 1e11. Doubling law proved for the attaining family. Lemma D has a concrete proof plan (K, P, V, X plus the finite rest N < 40,112) checked on the model orbit. Next: proof.md.",
+   "closed_gaps": "see top-level closed_gaps (last 5)",
+   "remaining_gaps": "see top-level remaining_gaps",
+   "numbers": {
+    "D6_validated": "1200/1200",
+    "HTC_validated": "1200/1200",
+    "model_vs_TM_L_records": "517/517",
+    "cost_recursion_vs_TM_clean": "32760/32760",
+    "family_checked_to_k": 40,
+    "clean_max_exhaustive_to_k": 15,
+    "excess_step_checks": "103679/103679",
+    "beta_le_Bnd_epochs": "8000/8000",
+    "Bnd_le_N_minus_2_for_N_gt": 784,
+    "analytic_safe_N_ge": 40112,
+    "long_run": {
+     "epochs": 80583,
+     "last_epoch": 80585,
+     "N_max": 3493246,
+     "unsafe": 0,
+     "max_beta_over_sqrtN": 6.54,
+     "max_beta_over_sqrtN_N_ge_2e5": 4.95,
+     "max_beta_over_N_N_ge_1e5": 0.0093,
+     "max_beta_over_N_N_ge_1e6": 0.0043,
+     "max_x0": 95,
+     "max_emax": 59,
+     "max_depth": 9,
+     "max_kW_minus_log2N": -2.99,
+     "epochs_N_lt_40112": 1408
+    }
+   }
+  }
+ ],
+ "updated": "2026-10-10"
+}

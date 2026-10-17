@@ -1,0 +1,792 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RD_0LC0RA_1LA1LC_1RE0LF_0RA1RF_1LB---/proof.md · <a href="/busy-beaver/machines/1RB0RD_0LC0RA_1LA1LC_1RE0LF_0RA1RF_1LB---/proof.md.html">raw</a></div>
+<h1 id="w7-5-the-machine-never-halts-informal-proof-both-starts">W7-5: the machine never halts (informal proof, both starts)</h1>
+<p>Table <code>1RB0RD_0LC0RA_1LA1LC_1RE0LF_0RA1RF_1LB---</code>, started in A (740 line 274) and, mirrored and renamed, in F (740 line 514, <code>1RB---_0RC0LD_1RD1RC_1LB0LE_1LF0RA_0LD1LA</code>).</p>
+<p>Stage: informal proof, 2026-10-14. Every claim below is checked by <code>check_proof.py</code> in this directory (section letters in brackets; map in section 10). Status: CHECKPOINT_B. The review found the proof sound, with 5 minor gaps, all fixed (Review log, section 11).</p>
+<h2 id="0-what-the-machine-does">0. What the machine does</h2>
+<p>The machine is a base-4 counter. Its digits are four fixed words in a sea of <code>100</code>. The least significant digit is at the right end, next to the head's turning point.</p>
+<p>One sweep adds 1. The head runs left from the right end to the first digit that is not 3, turns, and runs back. On the way left, every digit 3 is turned into a block <code>(10)^4</code> that has eaten the first sea word to its right. On the way back, every such block becomes a digit 0.</p>
+<p>When every digit is 3, the carry reaches the left end. With a wall <code>1100</code> there, the wall disappears (O1). Without a wall, a wall appears and a new digit 3 is born at the right end (O2). So the number of digits grows by one every two overflows, forever.</p>
+<p>The only thing that could go wrong is a digit that needs a sea word and finds none to its right. Section 5 shows that one field, the one in front of the youngest digit, always has enough sea words for every older digit. That field is born large (about <code>3·4^k</code>), and the older digits need only about <code>4^k/3</code> until the next birth.</p>
+<h2 id="1-the-table-and-the-two-starts">1. The table and the two starts</h2>
+<table>
+<thead>
+<tr>
+<th>state</th>
+<th>read 0</th>
+<th>read 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1RB</td>
+<td>0RD</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0LC</td>
+<td>0RA</td>
+</tr>
+<tr>
+<td>C</td>
+<td>1LA</td>
+<td>1LC</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1RE</td>
+<td>0LF</td>
+</tr>
+<tr>
+<td>E</td>
+<td>0RA</td>
+<td>1RF</td>
+</tr>
+<tr>
+<td>F</td>
+<td>1LB</td>
+<td>---</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>F1 is the only undefined transition. F is entered only by D1 (<code>0LF</code>) and E1 (<code>1RF</code>). [A]</li>
+<li>Line 514 is this table mirrored, with its states renamed by <code>phi: A-&gt;F, B-&gt;B, C-&gt;C, D-&gt;A, E-&gt;D, F-&gt;E</code> (514 state to this table's state). All 12 transitions agree, and this is the only map among the 720 renamings times 2 mirrorings. [A]</li>
+<li>So line 514 run from blank is, step by step, the mirror image of this table run from <code>0^inf F&gt; 0^inf</code>, with states mapped by <code>phi</code>. Line 514 halts if and only if this table halts from start F.</li>
+</ul>
+<p>Lines 274 and 514 are therefore the starts A and F of one table. The proof below is about the table; section 7 gives the opening run for each start.</p>
+<h2 id="2-notation">2. Notation</h2>
+<h3 id="21-words">2.1 Words</h3>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>cells</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s</code></td>
+<td><code>100</code></td>
+<td>sea word</td>
+</tr>
+<tr>
+<td><code>P0</code></td>
+<td><code>11001100</code></td>
+<td>digit with phase 0</td>
+</tr>
+<tr>
+<td><code>P1</code></td>
+<td><code>110000</code></td>
+<td>digit with phase 1</td>
+</tr>
+<tr>
+<td><code>P2</code></td>
+<td><code>1001100</code></td>
+<td>digit with phase 2</td>
+</tr>
+<tr>
+<td><code>P3</code></td>
+<td><code>10000</code></td>
+<td>digit with phase 3</td>
+</tr>
+<tr>
+<td><code>W</code></td>
+<td><code>1100</code></td>
+<td>the wall (left end only, optional)</td>
+</tr>
+<tr>
+<td><code>X</code></td>
+<td><code>10101010</code> = <code>(10)^4</code></td>
+<td>a digit 3 during a sweep, after it has eaten one <code>s</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>w^n</code> is n copies of w. Exponents are natural numbers; a lemma with an exponent holds for every value.</p>
+<h3 id="22-head-notation">2.2 Head notation</h3>
+<p><code>u q&gt; v</code> means: the head is in state q on the first cell of v. <code>u &lt;q v</code> means: the head is in state q on the last cell of u. When <code>&lt;q</code> stands first, the head is on the (unread) cell left of everything written. <code>0^inf</code> marks an end of the tape that is blank.</p>
+<h3 id="23-d-records-and-configurations">2.3 D-records and configurations</h3>
+<p>A D-record is a moment when the head, in state D, steps onto a cell it has never visited, at the right end. At every D-record of interest the tape is</p>
+<div class="highlight"><pre><span></span><code>C(W; p1..pk; f1..f(k-1); r)  =  0^inf [W] P(p1) s^f1 P(p2) s^f2 ... s^f(k-1) P(pk) s^r D&gt; 0^inf
+</code></pre></div>
+
+<p>with k &gt;= 1 digits, phases <code>p_i</code> in 0..3, fields <code>f_i &gt;= 0</code>, and <code>r &gt;= 1</code> sea words between the last digit and the head. The wall, when present, touches the first digit (no field between them). The counter value is <code>V = sum p_i 4^(k-i)</code>: digit 1 is the most significant, digit k the least.</p>
+<h2 id="3-pass-lemmas">3. Pass lemmas</h2>
+<p>Each lemma is an exact run of the machine on the cells shown, with the stated number of steps, for every value of the exponents. Cells outside the shown window are never read (they can be anything), except where the window ends in <code>0^inf</code>. [B, C]</p>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>rewrite</th>
+<th>steps</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S0</td>
+<td><code>100 D&gt; 0^inf  --&gt;  100 &lt;B 1010 0^inf</code></td>
+<td>9</td>
+<td>sweep starts</td>
+</tr>
+<tr>
+<td>L1</td>
+<td><code>100 &lt;B  --&gt;  &lt;B 100</code></td>
+<td>5</td>
+<td>left pass crosses a sea word</td>
+</tr>
+<tr>
+<td>L2</td>
+<td><code>10000 &lt;B X^j 100  --&gt;  &lt;B X^(j+1)</code></td>
+<td>19 + 20j</td>
+<td>a digit 3 wraps</td>
+</tr>
+<tr>
+<td>L3</td>
+<td><code>11001100 &lt;B  --&gt;  110000 10 A&gt;</code></td>
+<td>9</td>
+<td>stop at phase 0</td>
+</tr>
+<tr>
+<td>L4</td>
+<td><code>1001100 &lt;B  --&gt;  10000 10 A&gt;</code></td>
+<td>9</td>
+<td>stop at phase 2</td>
+</tr>
+<tr>
+<td>L5</td>
+<td><code>110000 &lt;B X^j 100 X^i 100  --&gt;  1001100 P0^(i+j) 100 10 A&gt;</code></td>
+<td>59 + 56j + 36i</td>
+<td>stop at phase 1</td>
+</tr>
+<tr>
+<td>L5e</td>
+<td><code>110000 &lt;B X^j 100 X^i 1010 0^inf  --&gt;  1001100 P0^(i+j) 100 100 D&gt; 0^inf</code></td>
+<td>62 + 56j + 36i</td>
+<td>stop at phase 1, at the end</td>
+</tr>
+<tr>
+<td>L6</td>
+<td><code>1100 &lt;B  --&gt;  00 10 A&gt;</code></td>
+<td>9</td>
+<td>carry reaches the wall: O1</td>
+</tr>
+<tr>
+<td>L7</td>
+<td><code>0^inf &lt;B X^j 100  --&gt;  0^inf 1100 P0^j 100 1 E&gt;</code></td>
+<td>38 + 56j</td>
+<td>carry reaches the blank: O2</td>
+</tr>
+<tr>
+<td>RA1</td>
+<td><code>10 A&gt; X^j 100  --&gt;  P0^j 100 10 A&gt;</code></td>
+<td>3 + 36j</td>
+<td>right pass (j = 0: a sea word)</td>
+</tr>
+<tr>
+<td>RA2</td>
+<td><code>10 A&gt; 1010 0^inf  --&gt;  100 100 D&gt; 0^inf</code></td>
+<td>6</td>
+<td>right pass ends</td>
+</tr>
+<tr>
+<td>RA3</td>
+<td><code>10 A&gt; X^j 1010 0^inf  --&gt;  P0^j 100 100 D&gt; 0^inf</code></td>
+<td>6 + 36j</td>
+<td>right pass ends after a block</td>
+</tr>
+<tr>
+<td>RE1</td>
+<td><code>100 1 E&gt; X^j 100  --&gt;  P0^j 100 100 1 E&gt;</code></td>
+<td>5 + 36j</td>
+<td>O2 right pass (j = 0: a sea word)</td>
+</tr>
+<tr>
+<td>RE2</td>
+<td><code>100 100 1 E&gt; 1010 0^inf  --&gt;  10000 100 100 100 D&gt; 0^inf</code></td>
+<td>49</td>
+<td>O2 ends: birth of a digit 3</td>
+</tr>
+</tbody>
+</table>
+<p>S0 visits exactly the four cells of <code>1010</code> (it ends in B on the last cell of the <code>100</code> before them, which it does not read). Every cell to the right of <code>1010</code> is still unvisited and blank. The cell after <code>1010</code> is first visited at the very end of the sweep, by the <code>D&gt;</code> of RA2, RA3 or L5e, or among the new cells of RE2. In the lemmas ending in <code>D&gt; 0^inf</code>, the final cell is the first cell never visited, and no earlier moment of the lemma is a D-record. [B]</p>
+<h3 id="31-how-the-lemmas-with-exponents-are-proved">3.1 How the lemmas with exponents are proved</h3>
+<p>The lemmas without exponents are finite runs. The others use six shift rules, each a finite run on one copy of <code>X</code> plus induction on n. In each rule a short group of cells (the "object") travels with the head and comes out unchanged. [C]</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>rewrite</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ch1</td>
+<td><code>A&gt; 010 X^n  --&gt;  X^n A&gt; 010</code></td>
+<td>8n</td>
+</tr>
+<tr>
+<td>Ch2</td>
+<td><code>X^n 10101 B&gt; 0  --&gt;  10101 B&gt; 0 X^n</code></td>
+<td>12n</td>
+</tr>
+<tr>
+<td>Ch3</td>
+<td><code>1 F&gt; 00101010 X^n  --&gt;  (10011001)^n 1 F&gt; 00101010</code></td>
+<td>36n</td>
+</tr>
+<tr>
+<td>Ch4</td>
+<td><code>B&gt; 1101010 X^n  --&gt;  (10011001)^n B&gt; 1101010</code></td>
+<td>36n</td>
+</tr>
+<tr>
+<td>Ch5</td>
+<td><code>0 A&gt; 10101010 X^n  --&gt;  (10011001)^n 0 A&gt; 10101010</code></td>
+<td>36n</td>
+</tr>
+<tr>
+<td>Ch6</td>
+<td><code>001 E&gt; 10101010 X^n  --&gt;  (10011001)^n 001 E&gt; 10101010</code></td>
+<td>36n</td>
+</tr>
+</tbody>
+</table>
+<p>Usage: L2 is Ch1 then Ch2. L5 and L5e are Ch1, Ch2, then Ch3 on <code>X^j</code> and again on <code>X^i</code>. L7 is Ch1, Ch2, Ch4. RA1 and RA3 split j = 0 or j = j'+1 and use Ch5. RE1 splits the same way and uses Ch6.</p>
+<p>The words <code>(10011001)^n</code> that the shift rules write are the digit words <code>P0^n</code> cut at another place. For example, L5 ends with the identity</p>
+<div class="highlight"><pre><span></span><code>P2 P0^n 1  =  1001100 (11001100)^n 1  =  (10011001)^(n+1)
+</code></pre></div>
+
+<p>The final comparison with each right-hand side is an identity of words like this one. [C]</p>
+<p>The proofs are done by <code>proof_scripts/symx.py</code>, a symbolic executor in the style of busycoq's shift rules. It runs concrete transitions on concrete cells, crosses a block only with a shift rule it has just verified on one copy, peels a copy off a block whose exponent is at least 1, and otherwise splits a variable into 0 and n'+1. Section B of <code>check_proof.py</code> re-runs every lemma by plain simulation (exponents 0..5, random context cells) as an independent check of the executor.</p>
+<h2 id="4-one-sweep">4. One sweep</h2>
+<h3 id="41-the-left-pass">4.1 The left pass</h3>
+<p>Start from a D-record <code>C(W; p; f; r)</code>. S0 and r uses of L1 bring the head to</p>
+<div class="highlight"><pre><span></span><code>0^inf [W] P(p1) s^f1 ... P(pk) &lt;B  T,      T = s^r 1010 0^inf
+</code></pre></div>
+
+<p>T is the processed tail: a word over the letters <code>X</code> and <code>s</code>, followed by the end <code>1010 0^inf</code>.</p>
+<p>The pass goes left digit by digit, starting at digit k. While the digit at the head is <code>P3</code>:</p>
+<ol>
+<li><strong>Wrap (L2).</strong> T has the form <code>X^j s T'</code> (j &gt;= 0 leading blocks, then the first <code>s</code>). L2 replaces <code>P3</code> and that first <code>s</code> by one more block: T becomes <code>X^(j+1) T'</code>.</li>
+<li><strong>Cross the field (L1).</strong> The field <code>s^f</code> to the left of the digit moves into T unchanged: T becomes <code>s^f T</code>.</li>
+</ol>
+<p>In words, a wrapping digit eats the first sea word to its right. If its own field is empty, that sea word comes from further right. This is the "push" of the observe stage.</p>
+<p>The pass stops at the first digit with phase 0, 1 or 2 (the stop digit), or at the left end when every digit is 3.</p>
+<h3 id="42-the-turn-case-split">4.2 The turn (case split)</h3>
+<table>
+<thead>
+<tr>
+<th>case</th>
+<th>lemma</th>
+<th>effect on the stop digit</th>
+<th>T afterwards</th>
+<th>right pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>phase 0</td>
+<td>L3</td>
+<td><code>P0 -&gt; P1</code></td>
+<td>unchanged</td>
+<td>A-pass</td>
+</tr>
+<tr>
+<td>phase 2</td>
+<td>L4</td>
+<td><code>P2 -&gt; P3</code></td>
+<td>unchanged</td>
+<td>A-pass</td>
+</tr>
+<tr>
+<td>phase 1, T = <code>X^j s X^i s ...</code></td>
+<td>L5</td>
+<td><code>P1 -&gt; P2</code></td>
+<td>first <code>s</code> deleted (blocks around it merge)</td>
+<td>A-pass, already past <code>X^(i+j) s</code></td>
+</tr>
+<tr>
+<td>phase 1, T = <code>X^j s X^i</code> + end</td>
+<td>L5e</td>
+<td><code>P1 -&gt; P2</code></td>
+<td>first <code>s</code> deleted</td>
+<td>ends at once in a D-record</td>
+</tr>
+<tr>
+<td>all digits 3, wall present (O1)</td>
+<td>L6</td>
+<td>wall <code>1100 -&gt; 00</code> (blank)</td>
+<td>unchanged</td>
+<td>A-pass</td>
+</tr>
+<tr>
+<td>all digits 3, no wall (O2)</td>
+<td>L7</td>
+<td>a wall appears</td>
+<td>first block <code>X^a s</code> done</td>
+<td>E-pass</td>
+</tr>
+</tbody>
+</table>
+<p>So a stop at phase 1 also eats the first sea word to its right.</p>
+<h3 id="43-the-right-pass">4.3 The right pass</h3>
+<p><strong>A-pass.</strong> The head carries the object <code>10 A&gt;</code>. T splits into maximal pieces <code>X^a s</code> (a &gt;= 0) and the end. RA1 turns each <code>X^a s</code> into <code>P0^a s</code>. At the end, RA2 (or RA3 after a block) turns the end into <code>s s</code> and the head is at the next D-record.</p>
+<p><strong>E-pass (O2 only).</strong> The head carries the object <code>1 E&gt;</code>, which always has an <code>s</code> written just before it. RE1 turns <code>s X^a s</code> into <code>P0^a s s</code>. Compared with RA1, the digits of the block end up 2 cells further left, and one <code>s</code> moves from the field on their left to the field on their right. At the end, RE2 turns the last two written sea words into <code>P3 s s s</code>. That <code>P3</code> is the newborn digit.</p>
+<p><strong>Fields in the E-pass.</strong> In an O2 sweep every digit wraps. T after the wraps starts with a block, because there is no field before digit 1. Group T into maximal block groups:</p>
+<div class="highlight"><pre><span></span><code>T = X^(a_1) s^(g_1) X^(a_2) s^(g_2) ... X^(a_m) s^(g_m) 1010 0^inf,      every a_i &gt;= 1
+</code></pre></div>
+
+<p>The gaps <code>g_1, ..., g_(m-1)</code> are the nonzero fields left of the last digit after the wraps, in order, and <code>g_m</code> is what is left of r. The zero fields lie inside the groups. So <code>g_i &gt;= 1</code> for i &lt; m by maximality, while <code>g_m</code> may be 0.</p>
+<p>The E-pass changes the gaps as follows.</p>
+<ol>
+<li>L7 writes the wall, turns <code>X^(a_1) s</code> into <code>P0^(a_1) s</code> and keeps that <code>s</code>, written just before <code>1 E&gt;</code>. RE1 with j = 0 then crosses the other <code>g_1 - 1</code> sea words of gap 1. Gap 1 now holds <code>g_1</code> written sea words.</li>
+<li>RE1 on a group i &gt;= 2 uses the <code>s</code> written just before <code>1 E&gt;</code>, which is the last <code>s</code> of gap i-1, together with the first <code>s</code> of gap i, and writes <code>P0^(a_i) s s</code>. RE1 with j = 0 then crosses the other <code>g_i - 1</code> sea words of gap i. So gap i-1 loses one <code>s</code> and gap i holds <code>g_i + 1</code>.</li>
+<li>RE2 takes the last two written <code>s</code> of gap m.</li>
+</ol>
+<p>Every gap except the first gains one <code>s</code> from its own RE1. Every gap except the last loses one to the next RE1. The last gap loses two to RE2. The gaps after the sweep are</p>
+<div class="highlight"><pre><span></span><code>m &gt;= 2:   g_1 - 1,   g_2, ..., g_(m-1),   g_m - 1
+m = 1:    g_1 - 2
+</code></pre></div>
+
+<p>followed by the newborn <code>P3 s^3</code>. After the wraps, the E-pass lemmas find their context exactly when <code>g_m &gt;= 1</code> (L7 for m = 1, the last RE1 for m &gt;= 2) and, if m = 1, <code>g_1 &gt;= 2</code> (RE2 needs two written <code>s</code>; for m &gt;= 2 the last RE1 always wrote two). [E]</p>
+<h3 id="44-the-sweep-in-counter-terms">4.4 The sweep in counter terms</h3>
+<p>Write the configuration after the sweep as <code>C(W'; p'; f'; r')</code>. [D, E]</p>
+<ul>
+<li><strong>R1/R2 (stop digit i).</strong> Digits i+1..k (all 3) become 0, digit i goes up by one, and digits 1..i-1 are unchanged. So <code>V' = V + 1</code>. The wall is unchanged.</li>
+<li><strong>O1.</strong> All digits go from 3 to 0, and the wall disappears. So <code>V' = 0</code>, which is <code>4^k</code> in absolute terms.</li>
+<li><strong>O2.</strong> All digits go from 3 to 0, the wall appears, and a digit 3 is born at the right end. So <code>k' = k + 1</code>, <code>V' = 3</code> and <code>r' = 3</code>.</li>
+</ul>
+<p>Consumption law [E]:</p>
+<ul>
+<li>The consuming digits are the stop digit if its phase is 1, plus every wrapped digit.</li>
+<li>Each takes one <code>s</code> from the first nonempty field at or to the right of it, in the order <code>f_l, f_(l+1), ..., f_(k-1), r</code>. The consumptions happen right to left.</li>
+<li>No other field changes, except as follows.</li>
+<li>In a sweep without O2, <code>r' = (rest of r) + 2</code>, where the rest of r is what the consumptions leave of r. If the rest is at least 1, the right pass crosses it and ends with RA2, which adds <code>s s</code>. If the rest is 0, the pass ends right after a block, with RA3 or L5e, and <code>r' = 2</code>.</li>
+<li>In O2, the first nonzero field after the wraps and the rest of r each lose one more <code>s</code>. If the rest of r is the only nonzero field after the wraps, it loses two. This is the gap rule of section 4.3: in the domain (<code>g_m &gt;= 1</code>) the gaps are exactly the nonzero fields after the wraps, so <code>g_1</code> is the first of them and <code>g_m</code> is the rest of r. Zero fields stay zero. What is left of r becomes the newborn's left field, and <code>r' = 3</code>.</li>
+</ul>
+<p>The exact step count of a sweep is the sum of the steps of its lemmas. It equals the observe-stage step rule R3. [D, H]</p>
+<h3 id="45-the-domain-and-the-sweep-theorem">4.5 The domain and the sweep theorem</h3>
+<p>The sweep of <code>C</code> is <strong>defined</strong> when every lemma it calls finds its context:</p>
+<ul>
+<li>(D1) every wrap (L2) and every phase-1 stop (L5/L5e) finds an <code>s</code> in T;</li>
+<li>(D2) in O2, the first block is followed by an <code>s</code> (L7), the last block is followed by an <code>s</code> (RE1 rather than a block next to the end), and RE2 finds two written <code>s</code> before the end. In the gap notation of section 4.3: <code>g_m &gt;= 1</code>, and <code>g_1 &gt;= 2</code> when m = 1.</li>
+</ul>
+<p><strong>Sweep theorem.</strong> If the sweep of <code>C</code> is defined, the machine goes from <code>C</code> to <code>sweep(C)</code> in exactly <code>steps(C)</code> steps, with no D-record in between, and it does not halt on the way.</p>
+<p><em>Proof.</em> The left pass, the turn and the right pass are compositions of the lemmas of section 3. Each lemma is applied with the rest of the tape as untouched context, which is allowed because no lemma reads outside its window. The configuration after each lemma is again of the form used by the next one (sections 4.1 to 4.3). That is an induction on the digits for the left pass and on the pieces of T for the right pass. No lemma halts, so the sweep does not halt.</p>
+<p>Checks [D]: 5,636 random in-domain sweeps and all 74,587 in-domain configurations with k &lt;= 4, fields 0..2 and r 1..5 (both walls) give exactly the machine's next D-record, configuration and steps. The 813 small configurations outside the domain are not claimed.</p>
+<h2 id="5-invariant-and-progress">5. Invariant and progress</h2>
+<h3 id="51-birth-configurations">5.1 Birth configurations</h3>
+<p>For k &gt;= 2 and fields f, the birth configuration is</p>
+<div class="highlight"><pre><span></span><code>B(k; f1..f(k-1)) = 0^inf 1100 P0 s^f1 P0 ... P0 s^f(k-1) P3 s^3 D&gt; 0^inf
+</code></pre></div>
+
+<p>This is exactly the form that O2 produces: the wall, digits <code>0, ..., 0, 3</code> (so V = 3), and r = 3. Set</p>
+<div class="highlight"><pre><span></span><code>m_k = (4^k - 4) / 3 = 4 + 16 + ... + 4^(k-1)
+</code></pre></div>
+
+<h3 id="52-epoch-theorem">5.2 Epoch theorem</h3>
+<p><strong>Epoch theorem.</strong> If <code>f(k-1) &gt;= m_k</code>, then</p>
+<div class="highlight"><pre><span></span><code>B(k; f)  --&gt;  B(k+1; f')    in N = 2·4^k - 3 sweeps, each defined,
+</code></pre></div>
+
+<p>with <code>f'_k = 3·4^k - 5</code>, or <code>3·4^k - 6</code> when every field left of the last digit is empty after the O2 wraps (possible only if <code>f(k-1) = m_k</code>). In both cases <code>f'_k &gt;= m_(k+1)</code>. [F]</p>
+<p><em>Proof.</em> Let <code>C_t</code> be the configuration after t sweeps, t = 0..N-1. Let <code>Q_t</code> be the number of consumptions by digits 1..k-1 in sweeps t..N-1. This number is fixed by the counter alone, through the consumption law. We prove the following by induction on t.</p>
+<p>I(t):</p>
+<ul>
+<li>(a) the phases of <code>C_t</code> are the base-4 digits of <code>V_t = (3 + t) mod 4^k</code>, and the wall is present iff <code>t &lt;= 4^k - 4</code>;</li>
+<li>(b) <code>r_t = 3 + 2t - ceil(t/2)</code>;</li>
+<li>(c) <code>f(k-1)</code> in <code>C_t</code> is at least <code>Q_t</code>.</li>
+</ul>
+<p><strong>Base.</strong> <code>V_0 = 3</code>, <code>r_0 = 3</code>, and <code>Q_0 = m_k &lt;= f(k-1)</code>. The count <code>Q_0 = m_k</code> holds because the digit at position e &gt;= 1 (weight <code>4^e</code>) consumes <code>4^(k-e)</code> times in an epoch. In one epoch the increments pass the values 4, 5, ..., <code>2·4^k</code> (O1 passes <code>4^k</code>, O2 passes <code>2·4^k</code>). The digit goes 1 -&gt; 2 at <code>v = 2·4^e mod 4^(e+1)</code> and 3 -&gt; 0 at <code>v = 0 mod 4^(e+1)</code>, each <code>2·4^(k-e-1)</code> times. The sum over e = 1..k-1 is <code>m_k</code>.</p>
+<p><strong>The sweep is defined.</strong> In sweep t, every consumption by a digit l &lt; k takes the first <code>s</code> at or to the right of <code>f_l</code>. Field <code>f(k-1)</code> is reached last and holds at least <code>Q_t</code>, which is at least the number of these consumptions. So it is never empty when reached, and no consumption by an older digit reaches r. The last digit consumes at most once, from r, and <code>r_t &gt;= 3</code>. This gives (D1).</p>
+<p>In O2 (t = N-1), what is left of r after the wraps is <code>g_m = r_t - 1 = 3·4^k - 4 &gt;= 2</code> sea words (gap notation of section 4.3). This gives (D2), in two cases.</p>
+<ul>
+<li>If m &gt;= 2, the first block group is followed by <code>g_1 &gt;= 1</code> sea words by maximality, so L7 applies. RE1 applies to every group in between for the same reason, and to the last block group, which is followed by <code>r_t - 1 &gt;= 1</code> sea words, and RE2 finds the two <code>s</code> that this RE1 writes.</li>
+<li>If m = 1, every field left of the last digit is empty after the wraps (this is the -6 case). The only block group is both the first and the last. L7 handles it, not RE1, and RE2 finds 2 of the <code>g_1 = r_t - 1 &gt;= 2</code> written sea words after it: the one L7 keeps and those crossed by RE1 with j = 0.</li>
+</ul>
+<p><strong>Step.</strong> (a) is the counter law. For (b): the last digit's phase in sweep t is <code>(3 + t) mod 4</code>, so it consumes (phase 1 or 3) iff t is even. That consumption comes from r, and the right pass adds 2 (consumption law; here the rest of r is at least 2, so the pass ends with RA2). (c) holds because <code>f(k-1)</code> loses at most the number of consumptions by older digits in sweep t, and that number is exactly <code>Q_t - Q_(t+1)</code>. (The step is needed only for t &lt; N-1. By (a) these sweeps are not O2, so by the consumption law no field loses anything except through consumptions.)</p>
+<p><strong>End.</strong> Sweep N-1 is an O2: <code>V = 4^k - 1</code>, and the wall is absent because <code>N - 1 &gt; 4^k - 4</code>. Its last digit eats one <code>s</code> of <code>r_(N-1) = 3·4^k - 3</code>, so the rest of r is <code>3·4^k - 4</code>. By the O2 law the newborn's left field is that rest minus 1, or minus 2 when the only nonzero field left is the rest of r. All old digits are 0, the wall is back and r = 3, so the result is <code>B(k+1; f')</code>.</p>
+<p>Finally,</p>
+<div class="highlight"><pre><span></span><code>3·(3·4^k - 6) - (4^(k+1) - 4) = 5·4^k - 14 &gt; 0      (k &gt;= 1)
+</code></pre></div>
+
+<p>so <code>f'_k &gt;= m_(k+1)</code>, with strict inequality. So every epoch after the first starts strictly above the minimum. Then <code>f(k-1)</code> still holds an <code>s</code> after the O2 wraps, the first nonzero field is not the rest of r, and <code>f'_k = 3·4^k - 5</code> exactly. [F]</p>
+<p>Checks [F]: the closed forms and the identities, for k up to 199; the consumption counts by direct counting for k = 1..6. Full abstract epochs for k = 2..7, from birth configurations with <code>f(k-1)</code> at the minimum <code>m_k</code> and the other fields all 0, random 0..3, or random 0..50: every sweep is defined, I(t) holds at every t, and each run ends at <code>B(k+1)</code> with the stated <code>f'_k</code>. At the O2 sweep, m = 1 exactly in the runs that end with <code>3·4^k - 6</code>, and the gap rule of section 4.3 gives the same result as the sweep.</p>
+<h3 id="53-main-theorem">5.3 Main theorem</h3>
+<p><strong>Theorem.</strong> From any <code>B(k; f)</code> with k &gt;= 2 and <code>f(k-1) &gt;= m_k</code>, the table runs forever.</p>
+<p><em>Proof.</em> By the epoch theorem and induction, the run passes through <code>B(k; .)</code>, <code>B(k+1; .)</code>, <code>B(k+2; .)</code>, ..., each after finitely many sweeps. Each sweep takes at least 9 steps (S0). By the sweep theorem no step halts.</p>
+<p><strong>Halting is unreachable.</strong> Halting needs F to read a 1. Between two D-records the run is a chain of lemma runs, each an exact run on defined transitions. Inside them F always reads 0. So F1 is never executed.</p>
+<h2 id="6-progress-at-a-glance">6. Progress at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>quantity</th>
+<th>value at the birth of digit k+1 (k old digits)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sweeps per epoch</td>
+<td><code>2·4^k - 3</code></td>
+</tr>
+<tr>
+<td>r at the O2 sweep</td>
+<td><code>3·4^k - 3</code></td>
+</tr>
+<tr>
+<td>newborn's left field</td>
+<td><code>3·4^k - 5</code> (<code>3·4^k - 6</code> only in an epoch that started at the minimum with all other fields 0)</td>
+</tr>
+<tr>
+<td>needed in the next epoch</td>
+<td><code>m_(k+1) = (4^(k+1) - 4)/3</code></td>
+</tr>
+</tbody>
+</table>
+<p>The fields left of the youngest digit can be anything, including 0. In the real run they shrink and die one by one, and the dead digits form the zero-field cluster at the wall. The proof never needs them.</p>
+<h2 id="7-openings-start-parametric-part">7. Openings (start-parametric part)</h2>
+<h3 id="71-line-274-start-a">7.1 Line 274: start A</h3>
+<p>Direct simulation from blank: [G]</p>
+<ul>
+<li>Step 108 is the first D-record in the language: <code>C(no wall; P1; r = 3) = 0^inf 110000 s^3 D&gt; 0^inf</code>.</li>
+<li>Three sweeps later (R1, R1, O2), step 477 is the first birth, <code>B(2; f1 = 3)</code>. Here 3 is one below <code>m_2 = 4</code>, so the epoch theorem does not apply yet. The opening runs on.</li>
+<li>Step 7,910 is a D-record with tape <code>B(3; 0, 41) = 0^inf 1100 P0 P0 s^41 P3 s^3 D&gt; 0^inf</code>, and <code>41 &gt;= m_3 = 20</code>. Steps 108 to 7,910 are 32 sweeps of section 4, and every D-record in between matches.</li>
+</ul>
+<p>By the main theorem with k = 3, line 274 never halts.</p>
+<h3 id="72-line-514-start-f-mirrored">7.2 Line 514: start F, mirrored</h3>
+<p>Line 514 from blank is the mirror image of this table from <code>0^inf F&gt; 0^inf</code> (section 1). [A, G]</p>
+<ul>
+<li>Run as itself, line 514 at step 792 has its head in state E on a new leftmost cell. E is <code>phi^-1(D)</code>, so this is a D-record of the table. Read mirrored, the tape is <code>B(2; f1 = 7) = 0^inf 1100 P0 s^7 P3 s^3 D&gt; 0^inf</code>.</li>
+<li>The table run from F gives the same: a D-record at step 792 with tape <code>B(2; 7)</code>.</li>
+<li><code>7 &gt;= m_2 = 4</code>.</li>
+</ul>
+<p>By the main theorem with k = 2, this table never halts from F, so line 514 never halts.</p>
+<h3 id="73-the-two-runs-side-by-side">7.3 The two runs side by side</h3>
+<p>After their openings both lines follow the same rules. Their counters are equal, and their fields differ only in one field (+4 on 514), which moves right whenever the cluster absorbs a digit (observe stage). The proof does not need this.</p>
+<h2 id="8-cross-checks-not-needed-by-the-proof">8. Cross-checks (not needed by the proof)</h2>
+<ul>
+<li>The abstract orbit (section 4 sweeps from the openings) equals every real D-record from step 108 (274) and step 792 (514) up to 1e9, configuration and step: 18,410 and 18,406 sweeps. It also hits the C core's first D-record after 1e11 on both starts: steps 100,001,300,895 and 100,000,054,594. [G]</li>
+<li>The sweep of section 4 equals the observe-stage model (<code>scripts/model.py</code>, rules R1/R2/PUSH/O1/O2 and step rule R3) on 2,812 random in-domain sweeps. [H]</li>
+<li>In the observe-stage notes, the O2 rule says "every digit moves 2 more cells left, then pushes". Section 4.3 states the same thing exactly through L7, RE1 and RE2.</li>
+</ul>
+<h2 id="9-lemma-plan-for-the-formal-proof">9. Lemma plan for the formal proof</h2>
+<h3 id="91-against-verifysk1machinesv-mxdys-it-applies-only-in-part">9.1 Against <code>verify/Sk1Machines.v</code> (mxdys): it applies only in part</h3>
+<p><code>Sk1Counter</code>/<code>Sk1CounterMixed</code> prove a digit counter from a <code>wall</code> hypothesis and a <code>one</code> hypothesis. A head visit passes a segment <code>word p ++ W^^(take p + n)</code>, and a <code>batch</code> rule chains digits. Our machine has the same shape:</p>
+<ul>
+<li>a periodic sea (<code>W = 100</code>);</li>
+<li>fixed digit words;</li>
+<li>a take of 1 on phases 1 and 3;</li>
+<li>a carry on phase 3.</li>
+</ul>
+<p>Three things do not fit:</p>
+<ul>
+<li>A wrap moves a digit by 2 cells (<code>P3 s</code> becomes <code>X</code>, then <code>P0</code>), not by whole <code>W</code> words. The digit words would need a re-cut before <code>one</code> reads as take/give.</li>
+<li>Consumption reaches through empty fields. The batch rule requires "all consumed W initially available" in the digit's own field.</li>
+<li>The O2 pass (E object, RE1/RE2) and the birth are a second kind of visit.</li>
+</ul>
+<p>So we follow our own route: the closed-language and epoch-invariant structure of kills #30/#7/W4-1, with segment lemmas in the Individual62 style.</p>
+<h3 id="92-coq-lemma-list">9.2 Coq lemma list</h3>
+<ol>
+<li>Shift rules Ch1..Ch6, and the sea rules L1, RA1 (j = 0) and RE1 (j = 0), each by <code>induction n</code> plus a finite <code>execute</code>.</li>
+<li>Pass lemmas S0, L1..L7, RA1..RA3, RE1, RE2 as <code>--&gt;+</code> lemmas: finite runs plus the shift rules, with word re-cuts by <code>lpow</code> and <code>app</code> rewriting.</li>
+<li>An abstract configuration type: wall bool, a list of (phase, field), and r : N. The tail T as a list of <code>X</code> and <code>s^n</code>. A function <code>sweep</code> with an option result for the domain.</li>
+<li>The sweep theorem: induction on the digit list (left pass) and on T (right pass), composing the pass lemmas.</li>
+<li>The counter and consumption laws as list lemmas about <code>sweep</code>, including the E-pass gap rule of section 4.3 (induction on the block groups: one <code>s</code> moves from gap i-1 to gap i at each RE1).</li>
+<li>The epoch invariant I(t) and the epoch theorem: induction on t, with arithmetic on N (<code>lia</code>/<code>nia</code>, using <code>4^k</code> closed forms).</li>
+<li>Openings:
+   - 274: <code>solve_init</code> for 7,910 steps to <code>B(3; 0, 41)</code>;
+   - 514: busycoq's <code>flip_halts</code>/<code>perm_halts</code> with <code>phi</code> (as in the #7 and W4-1 files), then 792 steps from F to <code>B(2; 7)</code>.</li>
+<li><code>nonhalt</code> from the infinite chain of birth configurations, via <code>progress_nonhalt</code> on the family B.</li>
+</ol>
+<p>Nearest solved example: #30's .v (<code>Individual62</code>, epoch invariant on counter positions). It is heavier than what this machine needs: there is no recursive digestion here, and the invariant is one field bound.</p>
+<h2 id="10-check_proofpy-map">10. check_proof.py map</h2>
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>what it checks</th>
+<th>proof.md</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>table facts, <code>phi</code> (12/12, unique among 720 x 2)</td>
+<td>1, 7.2</td>
+</tr>
+<tr>
+<td>B</td>
+<td>every pass lemma by plain simulation, exponents 0..5, random context, no earlier D-record; S0 cell by cell</td>
+<td>3</td>
+</tr>
+<tr>
+<td>C</td>
+<td>the six shift rules (plain simulation, n = 0..8), the word identity, and the 14 pass lemmas for all exponents (symbolic execution)</td>
+<td>3, 3.1</td>
+</tr>
+<tr>
+<td>D</td>
+<td>sweep = machine on random and on all small in-domain configurations</td>
+<td>4</td>
+</tr>
+<tr>
+<td>E</td>
+<td>counter and consumption laws; r' by the lemma that ends the pass; the O2 gap rule against the machine</td>
+<td>4.3, 4.4</td>
+</tr>
+<tr>
+<td>F</td>
+<td>epoch arithmetic and full abstract epochs k = 2..7, with m at the O2 sweep</td>
+<td>5</td>
+</tr>
+<tr>
+<td>G</td>
+<td>openings, and the abstract orbit = real D-records to 1e9 and at 1e11</td>
+<td>7, 8</td>
+</tr>
+<tr>
+<td>H</td>
+<td>agreement with the observe-stage model</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>Files:</p>
+<ul>
+<li><code>proof_scripts/symx.py</code>: the symbolic executor.</li>
+<li><code>proof_scripts/sweep.py</code>: the abstract sweep of section 4.</li>
+<li><code>proof_scripts/tm.py</code>: plain simulator and decoders.</li>
+</ul>
+<h2 id="11-review-log">11. Review log</h2>
+<p>Checkpoint B review, 2026-10-14: sound, 5 minor gaps, no fatal or major one. All five are fixed.</p>
+<table>
+<thead>
+<tr>
+<th>gap</th>
+<th>where</th>
+<th>fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>section 3: "the cell after <code>1010</code> was visited by the start" was false</td>
+<td>Reworded: S0 visits exactly the four cells of <code>1010</code>, and every cell to their right is unvisited and blank. New check [B]: S0 traced cell by cell.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>section 4.4: the O2 field law was stated, not derived</td>
+<td>Derivation added to section 4.3 ("Fields in the E-pass": gaps <code>g_1..g_m</code>, one <code>s</code> moves from gap i-1 to gap i at each RE1, RE2 takes two). The law now says "first nonzero field after the wraps". New check [E]: the gap rule, coded on its own, equals the machine's next D-record on all 3,389 in-domain O2 configurations tested (897 with m = 1). Section 9.2 item 5 names this induction.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>section 4.4: "r gains 2 (RA2)" left RA3 and L5e out</td>
+<td>Now <code>r' = (rest of r) + 2</code>, with RA2 when the rest is at least 1 and RA3 or L5e when it is 0. New check [E]: every non-O2 sweep is classified by its last lemma.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>section 5.2: "RE1 applies to the last block" is wrong when m = 1</td>
+<td>Split into m &gt;= 2 (RE1 on the last group, RE2 on the two <code>s</code> it writes) and m = 1 (L7 handles the only group, RE2 takes 2 of the <code>r_t - 1 &gt;= 2</code> sea words after it). New check [F]: m = 1 at the O2 sweep exactly in the runs that end with <code>3·4^k - 6</code>.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>notes.md: 514 validation counts did not add up</td>
+<td>notes.md now gives the observe-stage figures (18,410 exact pairs plus the transient miss at step 551) and this proof's figures from step 792 (18,406).</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

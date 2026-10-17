@@ -1,0 +1,52 @@
+{
+ "tm": "1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA",
+ "bucket_reason": "Priority call: deepen2 hit its stop rule (STUCK). Lemma B is false as stated, and the safety lemma that replaces it depends on a layout that every excursion changes. No grammar for it was found.",
+ "question": "#37's sync now hinges on whether a short run ever reaches the bottom during an excursion: port the jump simulator to C and follow the real orbit through the next excursions, or park #37?",
+ "options": [
+  {
+   "id": "follow",
+   "label": "Port the jump simulator to C and follow the real orbit (~2 h)",
+   "consequence": "The agent ports jumpsim.py to C with hashed memo keys, re-checks it against the 15 exact phase-start layouts, and follows the real orbit from phase 171 until the 3-run 16 runs up reaches the bottom (about 2,000 phases) or the cost explodes. Exit: an off-sync gives a halting candidate at an explicit phase (then a halting-proof plan). Survival through those excursions gives data for a maturation rule (when a 000-gap layout keeps short runs away from the bottom). If cost explodes, the agent parks the machine."
+  },
+  {
+   "id": "park",
+   "label": "Park #37 behind the other machines",
+   "consequence": "No compute. The fixed-cell counter, both accelerators, the excursion pattern and the failure mode (short runs) stay in notes.md and deepen.json for a later round."
+  }
+ ],
+ "recommended": "follow",
+ "rationale": [
+  "Both accelerators are exact against the real TM (50,752/50,752 visits; 15/15 layouts).",
+  "The open question is concrete: one 3-run in the real layout, ~2,000 phases up.",
+  "A far-out halt drops #37 from the hunt; survival points to the grammar a proof needs."
+ ],
+ "evidence": [
+  {
+   "kind": "fact",
+   "text": "Real orbit to phase 171: the bottom run loses 1 cell per phase from phase 15 (78 -> 2). Excursions at phases 91 and 119 are both benign, with no off-sync.",
+   "href": "work/deepen2/jump_160.log"
+  },
+  {
+   "kind": "fact",
+   "text": "Exact checks: the visit accelerator matches 50,752/50,752 real visits; the jump simulator reproduces 15/15 exact phase-start layouts.",
+   "href": "work/deepen2/cmplayout_jump_vs_exact.log"
+  },
+  {
+   "kind": "fact",
+   "text": "The excursion is insensitive to the next run's length (70..81: 12/12). Random 000-separated layouts with runs 2..40 or 3..12: 120/120 benign.",
+   "href": "work/deepen2/excursion_vary1_ph108.log"
+  },
+  {
+   "kind": "fact",
+   "text": "With short runs (2..8) over 16 phases, 9/40 go off-sync (a halt): a 3- or 4-run reaches the bottom during an excursion. The real layout at phase 171 has a 3-run 16 runs up.",
+   "href": "work/deepen2/excursion_rand_seed3_a2-8_16ph.log"
+  }
+ ],
+ "effort_if_yes": "One ~2 h stage, 1 light C process (the Python version needs about 1 s per phase at phase 160); no Rocq. Next decision: a halting-proof plan or a maturation-grammar round.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "follow",
+  "note": "auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.",
+  "date": "2026-10-10"
+ }
+}

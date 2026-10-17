@@ -1,0 +1,556 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA/submission/proof.md · <a href="/busy-beaver/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA/submission/proof.md.html">raw</a></div>
+<h1 id="1rb0ra_1lc0ld_1le1ld_0lb0re_1rf0la_-0ra-never-halts">1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA: never halts</h1>
+<ul>
+<li>Machine: <code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA</code>, viewer https://bbchallenge.org/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA. A BB(6) holdout on every holdout list from the June 2024 one (12,325 machines) to the current 740-machine list (line 381 there), class "Bell eats counter".</li>
+<li>Written for: the string itself. This is a delta write-up against the write-up for <code>1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC</code>, which is shipped alongside as <code>parent-proof.md</code>. Below, <em>the parent</em> is that machine and "parent §n" is section n of its write-up. This machine's table is the parent's, mirrored (every L↔R) and with its states renamed by σ: A↦E, B↦A, C↦B, D↦F, E↦C, F↦D (§1). So this machine from the blank tape is the parent started from <code>0^inf E&gt; 0^inf</code> instead of <code>0^inf A&gt; 0^inf</code>.</li>
+<li>Template: the parent's .v, whose development is reused verbatim for the parent's table. The parent's own template is <code>verify/FractalBEC.v</code>, <code>tm10</code> (<code>1LB0LF_1LC1LF_1RD1LB_---0RE_1RA0RE_0LA0RC</code>), of which it keeps only the marker bounce <code>RInc</code>. Mirrored, tm10 differs from the parent only in C1 (parent §8.1). The mirror and the renaming use busycoq's <code>verify/Flip.v</code> (<code>flip</code>, <code>flip_halts</code>) and <code>verify/Permute.v</code> (<code>Perm</code>, <code>perm_halts</code>). Relative to the parent's .v, only the start, the finite part and the final transfer to this machine differ (§6). By table this machine is also one entry away from <code>verify/BECv1_6x2_solved.v</code>'s <code>tm10</code> (<code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LE_---0RA</code>: E1 is 0LA here and 1LE there), but that file's counter does not carry over, and nothing of it is used.</li>
+<li>Status: <strong>formalized</strong> in the accompanying <code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA.v</code> (1,790 lines), which proves <code>Lemma nonhalt: ~halts tm c0.</code> in Coq 8.20.1 against unmodified busycoq BB6 (commit <code>0940bb9c</code>), importing only <code>Individual62</code> from busycoq. <code>Print Assumptions nonhalt</code>: <em>Closed under the global context</em>. It compiles in about 17 s with <code>-native-compiler yes</code>, and coqchk re-checks it in about 72 s, most of it the finite part's <code>vm_compute</code>.</li>
+<li>Where each section lives in the .v:</li>
+<li>§1: <code>tm</code>, <code>tm30</code> (the parent's table), <code>phi</code>, <code>perm7</code>, and busycoq's <code>flip_halts</code> and <code>perm_halts</code> inside <code>nonhalt</code> (end of Section 11);</li>
+<li>§2: <code>solve_initE</code> and <code>init7 : E;; tape0 --&gt;* K 17 t1</code> (Section 4);</li>
+<li>§3: the base of the write-up's induction at e5. The .v does not use it: it starts its induction at e692 with <code>inv7</code> (§5);</li>
+<li>§4: Sections 1–10, and Section 11 up to <code>orbit_sound</code>, which are the parent's text, now about <code>tm30</code>;</li>
+<li>§5: <code>B692</code>, <code>Y692</code>, <code>fin7</code> and <code>inv7</code> (Section 11);</li>
+<li>§6: the whole file; the conclusion is <code>nonhalt_from_c</code>, <code>nonhalt_E</code> and <code>nonhalt</code>.</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>The parent is a counter fed by a marker bounce. Its hub is <code>K(a, b, X) = 0^inf (110)^a 0 (011)^b C&gt; X 0^inf</code>. Each bounce adds 1 to the counter word X, and at b = 1 the machine eats the lowest digit of X and leaves a residue. The next epoch restarts with budget <code>N = k + 1</code> and digests the residue recursively. The parent's Lemma D shows that the digestion always fits in the budget (parent Summary, §5).</li>
+<li>This machine's table is the parent's, mirrored and renamed (§1). So from the blank tape it runs the parent's table from <code>0^inf E&gt; 0^inf</code>, on the mirror-image tape. That is a different orbit of the same epoch map.</li>
+<li>Its first four left records are outside the parent's invariant family. The fifth, <code>L(16, 0001)</code> at step 1,059, is inside it, and the restart gives the hub <code>K(1, 17, t1)</code> at step 1,114 (§2). There the parent's orbit invariant (I1)–(I4) holds: it is the parent's own base case "κ = 0, special", with t1 in place of t2 (§3).</li>
+<li>Everything else in the parent's argument is a statement about the table, about one epoch, or about the induction step, so it holds unchanged (§4).</li>
+<li>Only the finite part is new. This machine's orbit shares no epoch with the parent's below N = 20,000, so it is computed again: 587 epochs below the write-up's threshold N* = 14,796, and 687 epochs up to N = 17,724 for the .v's invariant (§5).</li>
+</ul>
+<h2 id="1-the-conjugacy-this-machine-is-the-parent-mirrored-and-renamed">1. The conjugacy: this machine is the parent mirrored and renamed</h2>
+<div class="highlight"><pre><span></span><code>       this machine            parent
+      0     1               0     1
+ A   1RB   0RA          A  1RB   0RF
+ B   1LC   0LD          B  1RC   1RF
+ C   1LE   1LD          C  1LD   0RE
+ D   0LB   0RE          D  ---   0LE
+ E   1RF   0LA          E  1LA   0LE
+ F   ---   0RA          F  0RA   0LC
+</code></pre></div>
+
+<p><strong>The map.</strong> Let σ send this machine's states to the parent's:</p>
+<table>
+<thead>
+<tr>
+<th>this machine's state</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>σ (parent state)</td>
+<td><strong>E</strong></td>
+<td>A</td>
+<td>B</td>
+<td>F</td>
+<td>C</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<p>Its inverse sends the parent's A, B, C, D, E, F to this machine's B, C, E, F, A, D. For every state q and symbol s:</p>
+<p><code>M[q][s] = (w, d, q')</code>  ⟺  <code>P[σq][s] = (w, −d, σq')</code>,</p>
+<p>where M is this machine's table and P the parent's, and <code>M[q][s]</code> is undefined exactly when <code>P[σq][s]</code> is. The only such pair is this machine's F0 and the parent's D0. For example, this machine's A row <code>1RB 0RA</code> becomes <code>1LA 0LE</code>, which is the parent's E row.</p>
+<ul>
+<li><strong>Uniqueness.</strong> Among all 720 permutations and both orientations, σ with the mirror is the only map that sends this machine's table onto the parent's (X1).</li>
+<li><strong>Consequence.</strong> Map a configuration of this machine to its mirror image (cell x goes to cell −x) and rename its state by σ. One step of this machine then becomes one step of the parent's table. The start <code>0^inf A&gt; 0^inf</code> maps to <code>0^inf E&gt; 0^inf</code>. So this machine halts from the blank tape if and only if <strong>the parent's table halts from the blank tape in state E</strong>. In busycoq this is <code>flip_halts</code> plus <code>perm_halts</code> (§6). X2 checks the step-for-step correspondence over 2·10^6 steps, with full-tape comparisons at 27 intermediate steps.</li>
+<li><strong>Reading configurations across the mirror.</strong> <code>l q&gt; r</code> in the parent's frame is <code>rev(r) &lt;(σ⁻¹q) rev(l)</code> in this machine's frame. The two configurations that §2 needs:</li>
+<li><code>L(16, 0001) = 0^inf &lt;A 101 (001)^16 0001 0^inf</code> is <code>0^inf 1000 (100)^16 101 B&gt; 0^inf</code> in this machine's frame;</li>
+<li><code>K(1, 17, 1) = 0^inf 110 0 (011)^17 C&gt; 1 0^inf</code> is <code>0^inf 1 &lt;E (110)^17 0 011 0^inf</code> in this machine's frame.</li>
+<li><strong>A third start.</strong> The same table is on the holdout list a third time: <code>1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB</code> is the parent's table renamed, with no mirror, and it starts in the parent's state B (X1). It is not covered here.</li>
+</ul>
+<p><strong>From here on everything is in the parent's frame and uses the parent's notation</strong> (parent §2): hubs <code>K(a, b, X)</code>, left records <code>L(k, T)</code>, pre-records <code>L'(k, T)</code>, the grammars G ⊂ O ⊂ H, the end words E*, budgets <code>N = k + 1</code>, ordinary and special residues.</p>
+<h2 id="2-initial-segment-direct-simulation">2. Initial segment (direct simulation)</h2>
+<p>Start from <code>0^inf E&gt; 0^inf</code> and use the parent's table. Up to step 1059, the configurations of the form <code>L(k, T)</code> are exactly the five below. Here "of the form" means that state A reads a blank, every cell to its left is blank, and <code>101</code> follows. X3 checks this at every step, also with this machine's own table in its own frame.</p>
+<table>
+<thead>
+<tr>
+<th>record</th>
+<th>step</th>
+<th>k (of <code>L(k, T)</code>)</th>
+<th>T</th>
+<th>residue Y (T = 000 Y)</th>
+<th>N = k+1</th>
+<th>kind</th>
+<th>covered by the parent's rules?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>e1</td>
+<td>15</td>
+<td>0</td>
+<td><code>0001</code></td>
+<td><code>1</code> = t1</td>
+<td>1</td>
+<td>special (G)</td>
+<td>Et1 at once. The eat is at a G word, but N = 1 is not ≥ β + 2</td>
+</tr>
+<tr>
+<td>e2</td>
+<td>81</td>
+<td>1</td>
+<td><code>000010010001</code></td>
+<td><code>01 a z 1</code></td>
+<td>2</td>
+<td>special (E*)</td>
+<td><strong>no</strong>: the digestion costs 2 &gt; N − 2 = 0; the eat meets <code>11 a z 1</code> ∉ G</td>
+</tr>
+<tr>
+<td>e3</td>
+<td>183</td>
+<td>3</td>
+<td><code>0001000010001</code></td>
+<td><code>10 00 010001</code></td>
+<td>4</td>
+<td>special (E*)</td>
+<td><strong>no</strong>: it costs 11 &gt; N − 2 = 2</td>
+</tr>
+<tr>
+<td>e4</td>
+<td>573</td>
+<td>5</td>
+<td><code>000010010010001000110010001</code></td>
+<td><code>01 a^2 z 1000110010001</code></td>
+<td>6</td>
+<td><strong>neither</strong> (Y ∉ H)</td>
+<td>the epoch is covered (LP0/LP11/LPC on the prefix, then eats at G words, ending at e5), but (I1) fails at e4</td>
+</tr>
+<tr>
+<td><strong>e5</strong></td>
+<td><strong>1059</strong></td>
+<td><strong>16</strong></td>
+<td><code>0001</code></td>
+<td><code>1</code> = t1</td>
+<td><strong>17</strong></td>
+<td>special (G)</td>
+<td><strong>yes</strong>: the base (§3)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The machine gets through e2 and e3 by eats at non-G words that happen not to halt, just as the parent's own epoch 2 does (parent §6). This part is pure simulation, so no rule is claimed for it.</li>
+<li>e4's residue is outside the invariant family, so e5 is the first record from which every record is in the family. Every epoch from there on is also covered by the rules.</li>
+<li>At step 1059 the whole tape is exactly <code>L(16, 0001)</code>. In this machine's frame it is <code>0^inf 1000 (100)^16 101 B&gt; 0^inf</code>.</li>
+<li>The restart R (parent §3.7, <code>3k + 7 = 55</code> steps) gives the hub <strong><code>K(1, 17, t1)</code> at step 1114</strong>. In this machine's frame it is <code>0^inf 1 &lt;E (110)^17 0 011 0^inf</code>. X3 checks this tape cell by cell.</li>
+<li>No halt occurs before step 1114. X3 runs this machine's own table, and X2 runs the parent's table in lockstep with it.</li>
+<li>The column k is the record index of <code>L(k, T)</code>, the number of <code>001</code> blocks. It is not the k of the parent's orbit invariant (parent D.6), which is k(W), the number of blocks of the residue's W (§3).</li>
+</ul>
+<p>The next record is e6 = <code>L(23, 000 10 00 010001)</code> at step 2915, with N = 24.</p>
+<h2 id="3-the-base-of-the-parents-orbit-induction-clause-by-clause">3. The base of the parent's orbit induction, clause by clause</h2>
+<p>The parent's induction (parent §5, D.6) starts at its epoch 3: <code>L(7, 000 t2)</code>, N = 8, a special residue, κ = 0. This machine's base is <strong>e5</strong>: <code>L(16, 000 t1)</code>, N = 17, also a special residue.</p>
+<p><strong>The running maximum.</strong> In D.6, k_t is <strong>k(W_t)</strong>, the number of blocks of the W in the residue <code>Y_t = 11 a^x z W</code>, and k(W) = 0 for a special residue. It is not the record index of <code>L(k, T)</code> in §2's table. The running maximum is taken from e5 on: <strong><code>κ_t := max_{5 ≤ s ≤ t} k(W_s)</code></strong>. At the base, <strong>κ_5 = k(W_5) = 0</strong>: Y_5 = t1 is special and has no W. The record index of e5 is 16, but it does not enter the invariant. Read with it, (I4) would fail at the base, since <code>N_lo(16) = 2^19 − 2^14</code> is far above 17. X4 checks both readings.</p>
+<table>
+<thead>
+<tr>
+<th>clause (parent D.6)</th>
+<th>at e5</th>
+<th>holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>form <code>L(k, 000 Y)</code>, then R to <code>K(1, k+1, Y)</code></td>
+<td>record index k = 16, Y = <code>1</code>, so <code>K(1, 17, 1)</code></td>
+<td>yes (simulated, X3)</td>
+</tr>
+<tr>
+<td>Y ∈ H (needed for parent §4, Lemma H)</td>
+<td><code>1</code> = t1 ∈ G ⊂ H</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>(I1)</strong> Y is ordinary or special</td>
+<td>special: t1 ∈ G</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>(I2)</strong> if ordinary: η ≥ 0, <code>S ≤ U(κ, ·)</code>, <code>x ≤ xmax(κ)</code></td>
+<td>vacuous (no W)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>(I3)</strong> <code>c ≤ Γ(k, κ)</code>, so <code>k + c ≤ G(κ)</code>, with k = k(W) and c = 0 if special</td>
+<td>k(W) = 0, c = 0, κ_5 = 0; <code>0 ≤ Γ(0, 0) = 0</code> and <code>0 ≤ G(0) = 0</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong>(I4)</strong> <code>N ≥ N_lo(κ) = 2^(κ+3) − 2^(⌊(G(κ)+1)/2⌋+4)</code></td>
+<td><code>17 ≥ N_lo(κ_5) = N_lo(0) = 8 − 16 = −8</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td>epoch e5 finishes (<code>β ≤ N − 2</code>)</td>
+<td>Y ∈ G, so β = 0 ≤ 15; the next record is e6</td>
+<td>yes (model = TM)</td>
+</tr>
+</tbody>
+</table>
+<p>This is the parent's base case, "κ = 0, special", word for word, with t1 in place of t2. Both are tails in G, so the digestion is empty and the reset D.4(r) applies.</p>
+<p><strong>No earlier record can serve as the base.</strong> At e1 (N = 1) the budget is below β + 2. The induction step from e2 or e3 fails, because their digestion does not fit in N, and the parent's rules indeed do not cover those epochs. e4's residue is not in H, so (I1) fails there, although its epoch is computed by the rules and ends at e5. X4n checks all of this.</p>
+<h2 id="4-why-the-rest-of-the-parents-argument-applies-unchanged">4. Why the rest of the parent's argument applies unchanged</h2>
+<p>The parent's argument has three kinds of parts. Statements about the table hold for every configuration. Statements about one epoch hold for any epoch <code>K(1, N, Y)</code> with <code>Y ∈ H</code> and enough budget. The rest is the orbit induction with its base and its finite part. Only the base and the finite part refer to the starting configuration.</p>
+<table>
+<thead>
+<tr>
+<th>parent part</th>
+<th>depends on the start?</th>
+<th>for this machine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1 the halting transition (D0 = this machine's F0)</td>
+<td>no</td>
+<td>§1 maps it</td>
+</tr>
+<tr>
+<td>§3 rules W1–W11, S1–S3, RP0/RP1, LP*, B, eats E1g/E2g/E0/Et1–Et3, R, D6 (exact runs in every context)</td>
+<td>no: statements about the table</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td>§4 Lemma H, eat coverage, the one-epoch corollary</td>
+<td>no: for any epoch <code>K(1, N, Y)</code> with Y ∈ H</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td>§5 D.0 (positions, (P1), (P2), Lemma P, Lemma C, termination of Φ)</td>
+<td>no: per digestion</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td>D.1 cost recursion, D.2 levels, D.3 shape and mass bound, D.5 value bound</td>
+<td>no: per epoch</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td>D.4(a), (b), (e), (r)</td>
+<td>no: from epoch t to t+1</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td>D.4(c) unrolling (the chain stops "at epoch 3 (whose residue t2 is special)")</td>
+<td>only through the base</td>
+<td>stops at e5 (residue t1, special) instead. In D.6 it is subsumed by the step (I2)<em>t ⇒ (I2)</em>{t+1}.</td>
+</tr>
+<tr>
+<td>D.6 orbit invariant (I1)–(I4)</td>
+<td>only the base</td>
+<td>base = §3. The step uses only D.4, Lemma C, D.5 and <code>N_{t+1} &gt; N_t</code></td>
+</tr>
+<tr>
+<td>D.7 Bnd, Bnd_worst(κ), F = {0..11}, <strong>N* = 14,796</strong>, the closed-form tail for κ ≥ 64</td>
+<td>no: arithmetic in κ</td>
+<td>unchanged</td>
+</tr>
+<tr>
+<td>D.8 finite part (the epochs with N &lt; N*)</td>
+<td><strong>yes</strong></td>
+<td>computed for this machine's orbit (§5)</td>
+</tr>
+<tr>
+<td>§6 initial segment</td>
+<td><strong>yes</strong></td>
+<td>replaced by §2</td>
+</tr>
+<tr>
+<td>§7 conclusion</td>
+<td>only "t ≥ 3"</td>
+<td>reads "t ≥ 5"</td>
+</tr>
+</tbody>
+</table>
+<p>Spelled out:
+- The induction runs from t = 5. While <code>N_t &lt; N*</code>, the step "epoch t finishes" (<code>β_t ≤ N_t − 2</code>) is the explicit computation of §5. For <code>N_t ≥ N*</code> it is D.7, with the same case split on <code>κ_t ∈ F</code>.
+- Every epoch has <code>N_{t+1} ≥ N_t + 1</code> (parent §4, corollary), so N reaches N* after finitely many epochs and stays above it.
+- Every epoch reaches the next left record. So the sequence of left records is infinite, and this machine never halts.</p>
+<p><strong>The parent's finite part cannot be reused.</strong> This machine's orbit from e5 shares no epoch <code>(N, Y)</code> with the parent's orbit from its epoch 3, nor with the third start's orbit, up to N = 20,000 (X6). The starts do not merge before the threshold, so this machine needs its own finite part.</p>
+<h2 id="5-the-finite-part">5. The finite part</h2>
+<p><strong>With the write-up's threshold (parent D.7, N* = 14,796).</strong> The rules-only orbit (parent §3, no TM inside) runs from <code>K(1, 17, t1)</code> (e5) on.
+- The epochs with <code>N &lt; 14,796</code> are <strong>e5 to e591, 587 epochs</strong>. e592 has N = 14,804.
+- None of them has an eat at a word outside G or a word without a rule, and each has <code>β ≤ N − 2</code>.
+- The parent's checks of Lemma D (parent §9) run on this orbit from e5 to N ≥ 400,000, and every link holds on every epoch (D, §7).
+- The same orbit equals the TM's left records, in a fresh simulation to 2·10^7 steps and in a C simulation to 10^11 steps (X5).</p>
+<p><strong>With the .v's invariant (parent §8.3: <code>Inv</code>, threshold 17,705).</strong> The parent's .v closes with the invariant <code>∃κ, Inv κ N Y</code> (parent §8.3). Inv contains <code>N ≥ 17,705</code>, so the .v's finite part must run until N first reaches 17,705:
+- <code>orbit f 687 17 t1 = Some (17724, Y_692)</code>: 687 epochs (e5..e691), landing at e692, the first record with N ≥ 17,705 (e691 has N = 17,670). In the .v this is <code>fin7 : orbit 100000 687 17 t1 = Some (17724, Y692)</code>, by <code>vm_compute</code>, with <code>Y692 := p11 16 (gw B692 0)</code>, where B692 lists the ten blocks of W below (§6).
+- <code>Y_692 = '11' a^16 z W</code>, with <code>W = a(6) z a(1) z b(1) z b(1) z a(1) z b(1) z a(1) z a(1) z b(1) z a(0)</code> (bare tail). So k(W) = 10 and m(W) = 4,396.
+- <code>Inv 10 17724 Y_692</code> holds, clause by clause:</p>
+<table>
+<thead>
+<tr>
+<th>clause</th>
+<th>value</th>
+<th>bound</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>N ≥ Nstar</code></td>
+<td>17,724</td>
+<td>17,705</td>
+</tr>
+<tr>
+<td><code>N ≥ Nlo(10) = 2^13 − 8·2^⌊(13+3)/2⌋</code></td>
+<td>17,724</td>
+<td>6,144</td>
+</tr>
+<tr>
+<td>Y = <code>p11 x (gw bs s)</code>, s ≤ 3, <code>length bs ≤ 10</code></td>
+<td>x = 16, 10 blocks, s = 0</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Mw(W) = Σ w(q) e_q</code>, <code>w(q) = 2^⌊(q+1)/2⌋</code></td>
+<td>66</td>
+<td>A(10) = 2,219</td>
+</tr>
+<tr>
+<td><code>M2(W) = Σ 2^(q+1) e_q</code></td>
+<td>1,032</td>
+<td>B(10) = 5,601</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>16</td>
+<td>X(10) = 2,291</td>
+</tr>
+</tbody>
+</table>
+<p>(κ = 11 also works; κ = 10 is the least.) From there <code>inv_step</code> carries Inv to every later epoch. It is proved in the parent's .v, does not depend on the start, and is kept verbatim. As a check, Inv also holds at every later epoch of the rules-only orbit, with κ the running maximum, up to N ≥ 400,000 (V2).
+- <strong>Cross-check.</strong> An independent implementation of the bound functions reproduces the parent's §8.3 table for κ = 8..13, and an independent implementation of the model reproduces the parent's <code>fin694</code> (<code>orbit 691 8 t2 = (17713, Y694)</code>) and <code>inv694</code> (Mw 77, M2 1,054) exactly (V0). It gives the numbers above, and the .v's <code>fin7</code> and <code>inv7</code> compute the same values in Coq.</p>
+<h2 id="6-the-formal-proof">6. The formal proof</h2>
+<p>The .v is the parent's .v, with a new start, a new finite part, and busycoq's bridge for a mirrored and renamed table.
+1. <strong>Top of the file.</strong> <code>tm := TM_from_str "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA"</code> (this machine) and <code>tm30 := TM_from_str "1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC"</code> (the parent). The three step notations <code>--&gt;</code>, <code>--&gt;*</code> and <code>--&gt;+</code> are on <code>tm30</code>.
+2. <strong>Kept verbatim: Sections 1–10, and Section 11 up to <code>orbit_sound</code>.</strong> This is <code>LP</code>, <code>Phi</code>, <code>sound</code>, <code>epoch_tm</code>, the model, the potentials, <code>Inv</code>, <code>next_inv</code>, <code>inv_step</code>, the threshold, <code>orbit</code> and <code>orbit_sound</code>. None of it depends on the start. It refers to the machine only through the notations, so it is about <code>tm30</code> unchanged.
+3. <strong>Not taken over from the parent's .v:</strong> its three lemmas about its own start <code>K(1, 8, t2)</code> (<code>init : c0 --&gt;* K 8 t2</code>, <code>fin694</code>, <code>inv694</code>), and its <code>nonhalt_from</code> and <code>nonhalt</code>, which are stated for the parent's own <code>tm</code>. Apart from these, the <code>tm</code> definition and the three step notations (now on <code>tm30</code>), the parent's code is kept verbatim (comments aside).
+4. <strong>New</strong> (in Section 4 and at the end of Section 11):
+   - <code>init7 : E;; tape0 --&gt;* K 17 t1</code>, 1,114 steps from state E. The proof is <code>unfold K. cbn - [tape0].</code> followed by <code>solve_initE</code>, which is busycoq's <code>solve_init</code> with its first line replaced by <code>change (E, tape0) with (cconfig_to_config (nil,nil,S0,E))</code>. Two tactic details: in this scope the literal 0 in a cconfig head parses as a nat, so the head symbol is written <code>S0</code>; and <code>cbn -[tape0]</code> collides with busycoq's <code>-[</code> step-notation token, so it is written <code>cbn - [tape0]</code>, with a space.
+   - <code>B692</code>, <code>Y692</code> and <code>fin7 : orbit 100000 687 17 t1 = Some (17724, Y692)</code> by <code>vm_compute</code>. It is about the size of the parent's 691-epoch <code>fin694</code>.
+   - <code>inv7 : Inv 10 17724 Y692</code>, by the script of the parent's <code>inv694</code> with x = 16 (<code>exists 16, B692, 0</code>).
+   - <code>nonhalt_from_c c N0 y0 P : c --&gt;* K N0 y0 → P N0 y0 → (∀ N y, P N y → ∃ k y', Phi 1 N y k y' ∧ P (S k) y') → ~ halts tm30 c</code>. This is the parent's <code>nonhalt_from</code> with the start made generic and <code>tm30</code> in place of <code>tm</code>.
+   - <code>nonhalt_E : ~ halts tm30 (E;; tape0)</code>, from <code>nonhalt_from_c</code> with <code>P N y := ∃ k, Inv k N y</code>: the start is <code>init7</code> followed by <code>orbit_sound … fin7</code>, the base is <code>inv7</code> and the step is <code>inv_step</code>.
+   - <code>phi</code> = σ (A↦E, B↦A, C↦B, D↦F, E↦C, F↦D) and <code>perm7 : Perm (flip tm) tm30 phi</code>, checked by case analysis over every state and symbol.
+   - <code>nonhalt : ~halts tm c0</code>: <code>flip_halts</code> (the blank tape is symmetric, so the flipped start is <code>A;; tape0</code>), then <code>perm_halts</code> with <code>perm7</code> (σ(A) = E), and <code>nonhalt_E</code>.
+5. Every lemma is top level (no Section, Module, Hypothesis or Axiom). Besides busycoq's <code>Individual62</code>, the file imports only the stdlib <code>Lia</code>, <code>String</code>, <code>List</code> and <code>Arith</code>. Section numbers in its comments (write-up 3.x, D.x, Lemma C) refer to the parent's write-up.</p>
+<h2 id="7-numerical-checks">7. Numerical checks</h2>
+<p>All of these are by direct simulation of the two transition tables, or by the rules-only model (no TM inside). They are evidence only; the result rests on the .v alone. The randomized checks ran with two seeds, and every check below passed.
+- <strong>X0:</strong> the string is on the 740-machine list (line 381), and exactly once on each holdout list since June 2024.
+- <strong>X1:</strong> σ with the mirror is the unique conjugacy of this machine's table onto the parent's, among 720 × 2 maps. This machine's start A is the parent's E. The third start <code>1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB</code> is the parent's table renamed, with start B.
+- <strong>X2:</strong> lockstep for 2·10^6 steps: this machine from blank in A against the parent's table from blank in E, mirrored and renamed. States and positions are compared at every step, and the full tapes at 27 intermediate steps. No halt.
+- <strong>X3:</strong> with this machine's own table, the L-form configurations up to step 1059 are exactly e1–e5 (steps 15, 81, 183, 573, 1059). The tapes at steps 1059 and 1114 are exactly the mirrors of <code>L(16, 0001)</code> and <code>K(1, 17, t1)</code>. The parent's table from E gives the same records, and the hub at step 1114 = 1059 + 3·16 + 7.
+- <strong>X4:</strong> (I1)–(I4) at e5, with κ_5 = k(W_5) = 0 (not the record index 16; <code>N_lo(16) = 2^19 − 2^14 &gt; 17</code>), <code>Γ(0, 0) = 0</code>, <code>G(0) = 0</code> and <code>N_lo(0) = −8</code>. e5's epoch ends at e6 = <code>L(23, 000 1000010001)</code>. X4n: e1–e4 are not a valid base, and e4's epoch, although it is rule-covered, starts outside the family.
+- <strong>X5:</strong> the rules-only orbit from e5 equals the TM's left records.
+  - A fresh simulation to 2·10^7 steps: 46 records, of which 41 are compared, from e6 on.
+  - A C simulation of the parent's table started in E, to 10^11 steps: 517 records, of which 512 are compared, from e6 to N = 12,674.
+  - Neither run halts.
+- <strong>X6:</strong> the third start's first records (the parent's table from B) are <code>L(0, '')</code>@4, <code>L(2, 0001)</code>@42 and <code>L(7, 0001)</code>@194. The orbits of this machine (from e5), of the parent (from its epoch 3) and of the third start (from <code>L(2, 0001)</code>) share no epoch <code>(N, Y)</code> up to N ≥ 20,000.
+- <strong>D (the parent's checks of Lemma D, parent §9, from e5):</strong> to N = 400,004, that is 11,077 epochs, e5 to e11,081. On every epoch: Lemma C, D.1–D.5 (D.4(a)–(c), (e), (r) included), the orbit invariant of D.6, and the bounds of D.7 (<code>β ≤ Bnd ≤ Bnd_worst(κ_t)</code> and <code>β ≤ N − 2</code>).
+  - Finite part below N*: 587 epochs. N* is first reached at e592, with N = 14,804.
+  - Special residues: 2 in G, 4 end words.
+  - Not used by the proof: c_t ∈ {0, 1} (7,134 and 3,943 epochs), β/Bnd ≤ 0.3788, κ = 15 at the end.
+- <strong>V:</strong> V0 checks the implementation against the parent's §8.3 table and the parent's <code>fin694</code> and <code>inv694</code>. V1: <code>orbit 687 17 t1 = (17724, Y_692)</code>, that is, 687 epochs (e5..e691) landing at e692, with N = 17,670 at e691; <code>Inv 10</code> holds at e692. V2: Inv holds at the 10,389 later epochs, up to N ≥ 400,000 (κ goes up to 15).
+- <strong>The parent's table-level checks (parent §9), unchanged:</strong> W1–W11, S1–S3, RP0/RP1, the LP rules, D6, B, E1g/E2g/E0/Et1–Et3, R, H1/H2 (10,529 H words), the end of digestion (D.0/D.3), the threshold (N* = 14,796, F = {0..11}, the κ ≥ 64 tail), and the adversarial residues (1,504 per seed, 40 TM epochs). They depend only on the table, and they pass here as they do for the parent.</p>
+<p>Gaps: none.</p>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</p>
+</main></body></html>

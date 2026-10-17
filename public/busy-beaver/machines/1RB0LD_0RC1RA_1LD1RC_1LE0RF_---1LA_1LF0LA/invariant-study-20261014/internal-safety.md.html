@@ -1,0 +1,291 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>internal-safety.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LD_0RC1RA_1LD1RC_1LE0RF_---1LA_1LF0LA/invariant-study-20261014/internal-safety.md · <a href="/busy-beaver/machines/1RB0LD_0RC1RA_1LD1RC_1LE0RF_---1LA_1LF0LA/invariant-study-20261014/internal-safety.md.html">raw</a></div>
+<h1 id="internal-safety-with-an-unlimited-prefix">Internal safety with an unlimited prefix</h1>
+<p>This is a local mathematical reduction, not a proof about the blank-tape orbit. It removes internal halting from the right-word obligation. The finite supply of prefix blocks remains essential.</p>
+<h2 id="configurations-and-invariant">Configurations and invariant</h2>
+<p>Take a two-sided binary tape with a head in state A or C. For head position <code>h</code>, call the cells strictly to its left the left prefix. Assume this entire left prefix contains no adjacent zeros:</p>
+<div class="highlight"><pre><span></span><code>for every i with i+1 &lt; h, (tape[i], tape[i+1]) != (0,0).
+</code></pre></div>
+
+<p>An infinite repetition of <code>011</code> to the left satisfies the condition. The tape on and to the right of the head is arbitrary. The current cell is deliberately excluded from the invariant.</p>
+<h2 id="exhaustive-reduced-steps">Exhaustive reduced steps</h2>
+<p>Words below are finite windows. For A rules with a final marked bit, the head starts on the final displayed bit; for A00/A01 it starts on the first bit. For C1 it starts on the displayed bit; for C10/C100 it starts on the final displayed bit. A head displacement is measured from its input position.</p>
+<table>
+<thead>
+<tr>
+<th>State and window</th>
+<th>Output word</th>
+<th>Final state</th>
+<th>Displacement</th>
+<th>Steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A on first bit of <code>00</code></td>
+<td><code>10</code></td>
+<td>C</td>
+<td>+2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>A on first bit of <code>01</code></td>
+<td><code>11</code></td>
+<td>A</td>
+<td>+2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>A on final bit of <code>101</code></td>
+<td><code>110</code></td>
+<td>A</td>
+<td>-3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>A on final bit of <code>111</code></td>
+<td><code>011</code></td>
+<td>A</td>
+<td>-3</td>
+<td>5</td>
+</tr>
+<tr>
+<td>A on final bit of <code>1011</code></td>
+<td><code>0111</code></td>
+<td>A</td>
+<td>-4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>C on <code>1</code></td>
+<td><code>1</code></td>
+<td>C</td>
+<td>+1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>C on final bit of <code>10</code></td>
+<td><code>10</code></td>
+<td>C</td>
+<td>+1</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C on final bit of <code>100</code></td>
+<td><code>111</code></td>
+<td>A</td>
+<td>-3</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>The A cases are exhaustive. If the scanned bit is zero, use one of the first two rows. If it is one and its predecessor is zero, the preceding cell must be one, so the window is <code>101</code>. If the two final bits are <code>11</code>, the next cell to the left is either one (window <code>111</code>) or zero; in the latter case its predecessor must be one (window <code>1011</code>).</p>
+<p>The C cases are exhaustive for the same reason. A scanned one uses C1. A scanned zero has either a one immediately before it, giving C10, or a zero followed on the left by a one, giving C100.</p>
+<p>Every row executes only defined transitions. The previous general A/C reduction also had the hazard windows A001 and C000. Both require two adjacent zeros strictly left of the input head, so neither satisfies the invariant.</p>
+<h2 id="preservation">Preservation</h2>
+<p>Each left-moving row writes only strictly to the right of its output head. Its new left prefix is therefore an unchanged subset of the input left prefix.</p>
+<p>For A00 and A01, the new part of the left prefix is respectively <code>10</code> or <code>11</code>. The first newly written cell is one, so its join with the old prefix cannot create <code>00</code>. Neither appended word contains <code>00</code>.</p>
+<p>C1 appends one. C10 appends zero, but the preceding cell is one. Both preserve the condition.</p>
+<p>The result is again an A/C configuration satisfying the same invariant. Induction supplies arbitrarily many defined transitions, since each reduced step takes a positive finite number of primitive steps. Thus every such two-sided configuration is nonhalting.</p>
+<h2 id="application-and-limit">Application and limit</h2>
+<p>The virtual-reserve transducer starts in C on an arbitrary finite word <code>w</code>, with an infinite <code>011</code> prefix on its left and blank tape on its right. Consequently it cannot halt internally, regardless of <code>w</code>. It may return to the chosen finite interface, or continue forever; no termination claim is needed for this safety lemma.</p>
+<p>A real configuration has blank tape far to its left. It does not satisfy this global invariant. The transducer agrees with the real machine only while each requested prefix block exists. At zero reserve, A-entry into the last remaining <code>1</code> can reach E0, while D0 can instead escape forever to the left. This lemma does not bound reserve consumption or exclude the unsafe zero-reserve entry on the blank-tape orbit.</p>
+<p>The derivation above is now formalized in <code>../LocalSafety.v</code>. Its general theorem and unlimited011 corollary compile with closed assumptions. The primitive local rules are also formalized in <code>../LocalRules.v</code>. No whole-machine blank-start theorem follows from this note.</p>
+<h2 id="exact-finite-reserve-boundary-alternatives">Exact finite-reserve boundary alternatives</h2>
+<p>For this statement start directly in C on <code>w</code>, immediately after <code>L_k = 1(011)^k</code>, with blank tape left of <code>L_k</code>. Let the virtual call request <code>d</code> prefix blocks before returning at the interface in A, E or F. The virtual call, and its interface event sequence, do not depend on <code>k</code>.</p>
+<p>If <code>k &lt; d</code>, the real computation agrees with the virtual call until request number <code>k+1</code>. It then reaches D on the final remaining prefix <code>1</code>, with a zero immediately on the right. D writes zero and moves right into F. The current cell and every cell to its left are now zero, so F moves left forever. The escape is already established one step after this boundary event; two additional F0 steps put the head one cell left of the original prefix.</p>
+<p>If <code>k = d</code> and the virtual exit is A, the real machine reaches A on the single remaining prefix <code>1</code>. It writes zero and moves left into D on blank, then writes one and moves left into E on blank. E0 is undefined, so it halts after two more defined transitions.</p>
+<p>If <code>k = d</code> and the exit is E or F, that state reads the remaining prefix <code>1</code> and moves left into A in one step. This is a genuine left return. Its future safety depends on the resulting word; it is not a nonhalting conclusion.</p>
+<p>If <code>k &gt; d</code>, the positive-prefix return rules apply. If the virtual call continues forever with only finitely many requests and the real reserve is not exhausted, the real machine follows that infinite computation. If it makes more than <code>k</code> requests, the finite machine escapes at the first unavailable request as above.</p>
+<p>Consequently, for a fixed terminating A-exit core call, the single reserve value <code>k=d</code> halts during that call. Smaller reserves escape, and larger reserves return. This is why a cumulative lower bound is sufficient but is not the only possible route to a nonhalting proof. One could instead exclude the exact dangerous coincidence of an A exit and zero remaining reserve.</p>
+</main></body></html>

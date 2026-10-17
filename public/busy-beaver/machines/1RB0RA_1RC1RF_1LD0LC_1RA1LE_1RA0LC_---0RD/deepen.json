@@ -1,0 +1,176 @@
+{
+ "tm": "1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD",
+ "rounds": [
+  {
+   "round": 1,
+   "stage": "deepen (funded option 'deepen', 2026-10-10)",
+   "date": "2026-10-10",
+   "confidence": "med",
+   "recommend": "exact_rules",
+   "mechanism": "Each overflow pause starts from one universal configuration (left counter all ones, fixed inner zone), so the pause and its ending depend on m alone. In the pause a pause-mode binary counter sends every trip into an inner ternary throttle at cells 2..17 (s3' rotor with a junction phase, digits t0 t1, marker Q); its carry-outs feed a middle-start counter MS that grows into the middle from cell 22 (d1 = s3-type rotor, then ternary digits). After the final overflow left record, normal-mode trips sweep MS back to blank. The sweep either dissolves (ordinary ending) or leaves exactly one glider (blocks 1110 0010) that later trips push 4 blocks per trip through the 150-block middle (the creep). The glider is absorbed at the right throttle: K stays or drops by one, and K = -1 (no s3) is a fixed point. MS grows about 0.63 digits per m, so near m ~ 236 it fills the middle and overflows into the right throttle (constructed only); that event also keeps K or lowers it by one, and K = -1 stays.",
+   "closed_gaps": [
+    "Pause start is universal: at the 8 real pause starts m = 9..16, cells -10..90 at the canonical point are identical and the left zone is (011011)^(m-2). A pause start built for any m from the m = 10 right part reproduces the real endings (m = 9..18: only m = 14 creeps, as in the 2e11 run).",
+    "Pause rules PI (t0 t1 = ternary pair fed past s3', carry-out iff both Q) and PM (MS: d1 rotor . -> 1 stop, 1 -> 2 carry, 2 -> . carry; digits . = 0, 2 = 1, 1 = 2, LSB first, appended at the end): 23,495/23,495 trips on 16 random-start pauses (random t0 t1 and MS word) + 3,810/3,810 on the real m = 10, 11 pauses. PJ (junction cells -10..1 + s3' rotor) is a deterministic 20-entry table.",
+    "Pause scan: constructed pauses m = 3..27 never halt. Creeps at m = 5, 14, 22 (m = 5 lies in the start-up range); all others end ordinarily.",
+    "Endings (CL): 1,700 random MS words (600 short with the real throttle, 600 short with random K = -1..5 throttles, 500 of length up to 60): 0 halts, 1,700/1,700 middle clean afterwards, every creep is a single glider (31..37 creep trips), no double glider. Mid-pause closure: 550 random instances (m = 8..16, random point, t0 t1 and MS word; 150 with random throttles): 0 halts, 550/550 clean.",
+    "Glider absorption (AB): exhaustive over all throttle states for K = 0..4 (363 states): 0 halts, 363/363 clean, K stays in 307 and drops by one in 56 (never for K <= 1). With random throttles across all tests, K never rises and never drops by more than one. Forced repeated creeps: 3 -> 2 -> 2 -> 2 -> 2 -> 2, and K = -1, 0, 1, 2, 5 unchanged over 4 creeps each.",
+    "K = -1 normal trips (marker at 619, no s3): RL, RM, marker kept and a record every round trip with the right edge +8: 300/300.",
+    "Normal-mode wall step RW (wall 001011 -> 010011, all-ones digits -> zeros, RS/RT/record unchanged): 400/400 over two seeds, 3..20 digits, random throttles.",
+    "MS overflow into the throttle (MO, expected from m ~ 236): 120 single overflows with random throttles (0 halts, 120/120 clean; K = 0 -> -1 in 6/16, K = 1 -> 0 in 11/27, K = -1 stays 22/22) and 60 pauses with 5 forced overflows each (0 halts, 60/60 clean, K stays in 58, drops by one in 2). With K = -1, 70 more overflow runs all keep the marker Q at 619 followed by the big region.",
+    "Not a cryptid: which m creep (14, 22 in 9..27) depends on the MS word at the pause end (pseudo-random in m; the inner state at the end has period 6 in m), but every tested ending, absorption and overflow keeps K >= -1 and returns to the normal regime, so the proof can case-split without predicting the trigger."
+   ],
+   "remaining_gaps": [
+    "CL, AB and MO are validated as set-valued macro rules (ordinary or one glider; K' in {K, K-1}), not as exact block rules. Which words leave a glider, and which throttle states lose a digit, is not decoded; MO can leave a transient 0000 digit in the throttle. A first attempt at a block transducer for CL (entry state per block) was not a function: the leftward pass and zigzags carry extra context.",
+    "The pause-mode left counter (digits 011010/011011, wall 000001, three left records per pause at trips 1, 127*2^(m-8) and about 3x that; m = 10: 1, 508, 1524 of 1531 trips) is validated only end-to-end (constructed pauses m = 3..27 + 550 mid-pause instances), not as a per-trip rule.",
+    "The MO regime first appears near m ~ 236 (~10^72 steps) and is covered only by constructed probes.",
+    "No proof.md yet."
+   ],
+   "evidence": [
+    "data/funded/pause_starts.txt: real pause-start configs m = 9..16 (identical inner zone); scripts/funded/runcfg + ps_m*.cfg scan m = 3..27 (creeps 5, 14, 22)",
+    "scripts/funded/checkpause.py on data/funded/pauserand/*.jsonl (16 random starts): PI 23,495/23,495, PM 23,495/23,495, PJ deterministic; on pausetrips_m10/m11.jsonl: 3,810/3,810",
+    "data/funded/cleantest_seed1/2.jsonl (600), cleantest_throttle_seed3/4.jsonl (600), cleantest_long_seed5.jsonl + cleantest_long_throttle_seed6.jsonl (500)",
+    "data/funded/pausetest_seed1/2.jsonl (400), pausetest_throttle_seed4.jsonl (150), pausetest_fullms_seed3.jsonl (120), msrepeat_seed1.jsonl (60)",
+    "data/funded/absorbgrid_K0-3.jsonl + absorbgrid_K4.jsonl (363 exhaustive throttle states)",
+    "data/funded/validation_km1.json (K = -1, 300/300); validation_wall.json + validation_wall_seed2.json (RW, 400/400)",
+    "data/funded/msrepeat_km1_seed2.jsonl + pausetest_fullms_km1_seed5.jsonl: K = -1 with overflows, 70/70 marker kept"
+   ],
+   "scripts": [
+    "scripts/funded/cfgdump.c",
+    "scripts/funded/runcfg.c",
+    "scripts/funded/cfg.py",
+    "scripts/funded/pausetrace.py",
+    "scripts/funded/pausetrips.py",
+    "scripts/funded/checkpause.py",
+    "scripts/funded/cleantest.py",
+    "scripts/funded/pausetest.py",
+    "scripts/funded/creepiter.py",
+    "scripts/funded/creepgrid.py",
+    "scripts/funded/absorbgrid.py",
+    "scripts/funded/msfull.py",
+    "scripts/funded/msrepeat.py",
+    "scripts/funded/validate_km1.py",
+    "scripts/funded/validate_wall.py",
+    "scripts/funded/cleanwatch.py",
+    "scripts/funded/transducer.py",
+    "scripts/funded/throttlewatch.py",
+    "scripts/funded/spacetime.py",
+    "scripts/funded/trips.py",
+    "scripts/funded/pausesnap.py",
+    "scripts/funded/fmt.py",
+    "scripts/funded/sumthrottle.py"
+   ]
+  },
+  {
+   "round": 2,
+   "stage": "exact_rules (funded option 'exact_rules', 2026-10-10)",
+   "date": "2026-10-10",
+   "confidence": "med",
+   "recommend": "proof_now",
+   "mechanism": "Viewed as visits at a fixed boundary (busycoq Longitudinal / segRLs style), the pause ending is a ternary frontier process. At cell 18 the inner zone emits a fixed number a(s3',t0,t1) of DC visits (+2 to the MS word each), then only AC visits. Each AC visit acts on the frontier block: 0 -> ., 2 -> 0, 1 -> . with +4 added to the rest of the word (ternary, LSB first, . = 0, 2 = 1, 1 = 2). The only fixed point is the glider 12, which moves one block per visit. The outcome is the value map g on v = value(MS) + 2a: strip 3s; 1 mod 3 -> (v-1)/3; 2 mod 3 -> (v+10)/3. It ends at 0 (ordinary) or 5 (glider). The glider crosses the middle as the visit prefix G = [BC,BE,BC,BC,BE]; each . block absorbs one AC visit. It reaches the throttle as five B visits, and each acts on the throttle with the same frontier rule (Q -> P with +4 on the later digits; R -> P over two visits; all-P passes). K drops by one exactly when an R step is half done after the fifth B visit.",
+   "closed_gaps": [
+    "CL is exact per visit at cell 18: 800/800 random pause ends (500 words of length <= 14; 300 of length <= 60 with random throttles K = -1..5 and random s3' t0 t1). 19,732/19,732 visits match the predicted block word, 800/800 outcomes match the closed form (92 gliders, 708 ordinary), 0 halts, only DC/AC visits.",
+    "Inner-zone table: the visit list at cell 18 is DC^a AC^inf with a fixed per (s3', t0, t1) (27 entries) and independent of the MS word: 27/27 states x 8 random words.",
+    "Creep trigger exact: the formula predicts the ending at 18/18 pause ends m = 9..26 (8 real, 10 constructed); gliders at m = 14 and 22 only. MS value at the pause end follows v_m = 2 v_{m-1} + 2 eps_m with eps_m period 6.",
+    "Glider transport in segRLs form: a . block maps G ++ AC^(n+1) to G ++ AC^n, with G = [BC,BE,BC,BC,BE] (trace over blocks 13..30); in the time view the glider moves one block per AC visit (92 glider instances above).",
+    "AB B phase exact: for all 363 throttle states with K = 0..4, the glider reaches cell 618 as exactly five (B,E) visits followed by (A,E) visits (363/363), and the per-B-visit throttle frontier rule holds for 1,815/1,815 visits. The predicate 'an R step is half done after the fifth B visit' predicts K' = K-1 for 363/363 states (56 drops, 307 stays)."
+   ],
+   "remaining_gaps": [
+    "AB tail: how the first normal (A,E) visits finish a half-done R step and remove the marker is not written as a rule. The K outcome is exact; the resulting digits are validated (exhaustive K <= 4, random throttles), not derived.",
+    "MO (MS overflow into the throttle, m ~ 236) was not decoded in this stage. The expected form, overflow carries arriving at cell 618 as B visits under the same B-visit rule, is untested. MO stays a validated set-valued lemma (190 constructed probes).",
+    "The pause-mode left counter is still validated only end-to-end.",
+    "No proof.md yet."
+   ],
+   "evidence": [
+    "data/exact/validate_cl_seed2.jsonl (500) + validate_cl_long_throttle_seed3.jsonl (300): per-visit CL check, summary line at the end",
+    "data/exact/innertable.txt: inner-zone DC table, 27 states",
+    "data/exact/trigger_m9-27.jsonl: creep trigger formula vs actual ending, m = 9..26",
+    "data/exact/bvisit_K0..K4.jsonl + scripts/exact/check_bvisit.py: B-visit throttle rule, 1,815/1,815; K-drop predicate vs data/funded/absorbgrid_*.jsonl 363/363"
+   ],
+   "scripts": [
+    "scripts/exact/common.py",
+    "scripts/exact/validate_cl.py",
+    "scripts/exact/validate_cl_tab.py",
+    "scripts/exact/innertable.py",
+    "scripts/exact/trigger.py",
+    "scripts/exact/abwatch.py",
+    "scripts/exact/bvisit.py",
+    "scripts/exact/check_bvisit.py"
+   ]
+  },
+  {
+   "round": 3,
+   "stage": "proof_now (funded option 'proof_now', 2026-10-10)",
+   "date": "2026-10-10",
+   "confidence": "med",
+   "recommend": "f3_first",
+   "mechanism": "Split at cells 18 and 618. Every b18 visit is AC or DC and every b618 visit is AE or BE (1.3e10 steps), so the left zone L is autonomous. It emits A^N_m D^c_m per counter overflow. The middle M is an exact ternary word (D: +2 at block 5; A: frontier rule; a carry out of the top block becomes B visits). T is the throttle (A: increment; B: frontier rule). Within 300 A visits of each pause M is blank again, so T gets one B-burst per epoch followed by at least 2,700 A visits. proof.md runs Inv(m) -> Inv(m+1) from S0 (step 300,032,133) under three flagged lemmas.",
+   "closed_gaps": [
+    "Zone interfaces: b18 only AC/DC (833,504 visits), b618 only AE/BE (803,803), from blank to 1.3e10; an independent Python run to 1.6e7 gives the same visit runs.",
+    "Zone M exact per visit (MD, MA0..MA3 and the top carry -> c B visits, covering the glider exit and MO): 160 random instances, 14,428/14,428 visits.",
+    "Zone T: TA (increment, K = -1..4) 4,800/4,800 visits; TB (B frontier rule) 1,200/1,200.",
+    "Epoch table m = 9..17 from the full run: c_m, N_m = 3*2^m - delta (delta in {2,4,6,8}), B-bursts only at m = 5 and 14 (5 visits each).",
+    "Ending bound: M is blank again within 300 A visits; the map g ends at 0 or 5 for every v < 3^10, in at most 2*(digits)+3 visits."
+   ],
+   "remaining_gaps": [
+    "F1: zone L per epoch (the pause-mode counter) is validated only (m = 9..17 full run, m = 3..27 constructed).",
+    "F2: the absorption tail holds for all 40 throttles with K <= 2 (the reachable range). For K = 3, 3/81 throttles (RRRP/RRRQ/RRRR) end with a non-canonical dead slot; the earlier 'K' in {K, K-1} always' was too strong.",
+    "F3: MO bursts B^j are unbounded (j_m about doubles per epoch from m ~ 236). 40/40 random bursts (K <= 2, j <= ~2,700) never halt and answer E, but only 34/40 end canonical: dead slots (e.g. T(RRQ), j = 3) and big-region leftovers. So F3 needs a wider invariant family than canonical throttles. Beyond the throttle value, B visits build a third counter in the big region (0011/0111/0001).",
+    "T is not safe for arbitrary visit words (T(RR) on B A^7 B A^8 B answers C), so the proof relies on the one-burst-per-epoch shape."
+   ],
+   "evidence": [
+    "proof.md (conditional proof, sections 2-8)",
+    "check_proof.py + data/proof/check_proof_long_seed1.txt",
+    "data/proof/rle_b18_b618_1.3e10.txt (visit runs at b18 and b618 from blank)"
+   ],
+   "scripts": [
+    "check_proof.py",
+    "scripts/proof/zones.py",
+    "scripts/proof/rle2.c",
+    "scripts/proof/vis.c"
+   ]
+  },
+  {
+   "round": 4,
+   "stage": "f3_first (funded option 'f3_first', 2026-10-11)",
+   "date": "2026-10-11",
+   "confidence": "low",
+   "recommend": "park",
+   "mechanism": "The big region after the throttle marker is a fourth zone shaped like M: a ternary word (s=0011 0, y=0001 1, x=0111 2, _=0000 junk) whose left boundary sees only AC/DC. A adds 1 at block 0, D is the frontier step (map g); a clean D pass appends a block. The throttle passes MO B visits as A A (+2) and carry-outs as D (D D at K=-1). A BR glider leaves the end as exactly five B visits, which build a new throttle level with K=3 on the blank tape (B^j on blank builds K=j-2). Later passes reach that level as A visits, so the far future is an unbounded tower of levels [theta_k | BR_k], each handing the next the same {A,B}->E interface that M hands T.",
+   "closed_gaps": [
+    "BR rules BA/BD exact: 40,766/40,766 visits on 600 random words (2 seeds), every answer C, when no A meets a junk frontier.",
+    "Interface T -> BR exact: IA 16,971/16,971 A visits (D^carry, D^2 at K=-1), IB 2,637/2,637 B visits on all-P throttles (A A), 800 random throttles K=-1..4.",
+    "Glider exit and new level: GX 33/33 (BE^5 then AE only at the new level's boundary), NB 33/33 (new level canonical, K2=3); B^j on blank builds K=j-2 for j=1..10.",
+    "B^j A^n with j up to 991,164: 300 runs (e=30..60, A^2600) with 0 halts and every answer E: 250 one canonical level, 48 two-level towers, 2 dead slots (j=1); 85 large-e runs (e=2000..4000, A^20000, j up to 864,393): 0 halts, all E, all in the tower family.",
+    "Glider-burst safety: B^5 A^n B^5 on all K<=3 throttles (3,751/3,751), 4x B^5 with gaps 0..40 (400/400), 5x B^4 with gaps 0..6 (200/200): no halt, all E."
+   ],
+   "remaining_gaps": [
+    "No closed family: zone T halts on small bursts with short gaps (B^1: 15/200 halt + 28 non-E; B^2: 1/200; B^3: 2/200, e.g. T(RP;34) on B3 A4 B3 B3 A6 B3 A4 B3), and on interleaved words with A on a junk BR frontier (which makes a permanent 0110 block, after which BR only counts up).",
+    "Deeper levels can receive B^3 bursts (an interrupted glider exit gives 1 + 1 + 1 units in 363/3,000 cases) and arbitrary gaps. Excluding the unsafe patterns needs control of pseudo-random timing (level-1 bursts landing within a few D visits of a BR1 sweep/exit), heuristically about 2^-m per epoch from m ~ 236: cryptid-like for a formal proof.",
+    "Level 1 also needs an A-run length lemma and a rule for single-B epochs: with A^2600 per round, 11 of 60 repeated-epoch runs answered C/D on a later burst, all after a j=1 round (11 of the 34 runs with one; 0 of the rest); two replayed cases sit in a dead-slot variant Q [1101] P Q with an unswept BR; with A^100000 per round the same j sequences stay canonical.",
+    "Dead slots (single B, j=1) are reachable at level 1 once MO starts, and at K=3 births (3/81 states); a tower invariant would have to include them."
+   ],
+   "evidence": [
+    "data/f3/validate_br.txt, validate_iface.txt, validate_gx_seed2.txt",
+    "data/f3/bigburst_small_e_seed11.jsonl, bigburst_large_e_seed12.jsonl",
+    "data/f3/twoburst.txt, multiburst.txt, multiburst_bs.txt, halt_interleaved_example.txt",
+    "data/f3/exitsizes_e12.txt, epochs_seed31.jsonl"
+   ],
+   "scripts": [
+    "scripts/f3/tzone.c",
+    "scripts/f3/tz.py",
+    "scripts/f3/explore.py",
+    "scripts/f3/innervis.py",
+    "scripts/f3/validate_br.py",
+    "scripts/f3/validate_iface.py",
+    "scripts/f3/validate_gx.py",
+    "scripts/f3/bigburst.py",
+    "scripts/f3/twoburst.py",
+    "scripts/f3/multiburst.py",
+    "scripts/f3/epochs.py",
+    "scripts/f3/exitsizes.py",
+    "scripts/f3/replay_iface.py"
+   ]
+  }
+ ],
+ "updated": "2026-10-11"
+}

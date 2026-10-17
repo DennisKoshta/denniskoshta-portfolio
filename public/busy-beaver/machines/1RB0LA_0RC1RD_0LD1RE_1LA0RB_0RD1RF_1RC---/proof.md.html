@@ -1,0 +1,626 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---/proof.md · <a href="/busy-beaver/machines/1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---/proof.md.html">raw</a></div>
+<h1 id="1rb0la_0rc1rd_0ld1re_1la0rb_0rd1rf_1rc-never-halts">1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---: never halts</h1>
+<ul>
+<li>Machine: <code>1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---</code>, viewer https://bbchallenge.org/1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---</li>
+<li>Sheet: Results row 921, "Sync bouncer counter", no notes. Archive: "does not halt in 2e13". It is on dyuan01's Oct 1 longitudinal list (ask before submitting) and on mxdys's UBRRBA_TODO.</li>
+<li>Written for the string itself. Its only undefined transition is F1.</li>
+<li>Status: informal proof, not yet formalized. Finite claims (the 21 shift rules, the initial segment, the polygon's vertex check) are executed exactly. Parametric claims (CTR, QC, R1–R5o, the cycle lemma) are derived by hand in §3–§4, and <code>check_proof.py</code> checks them over ranges and random samples (§7).</li>
+<li>Template: <code>verify/SBCv7.v</code> has six solved machines that differ from this one only in F0: TM1 (<code>0LC</code>), TM2 (<code>0RD</code>), TM3 (<code>0LA</code>), TM4 (<code>0RA</code>), TM18 (<code>0LD</code>) and TM37 (<code>1RB</code>). TM4 is used below for its hL/hR/d0/d1 names and its BigStep shape; TM1–TM3 share the same names and lemma list, so any of them would do equally well (§6).</li>
+</ul>
+<h2 id="0-picture">0. Picture</h2>
+<p>The left end of the tape is a binary counter. To its right is a row of 5-cell blocks. The head bounces between the counter and the right edge, adding 1 to the counter on every visit to it.</p>
+<ul>
+<li><strong>P phase.</strong> Each bounce adds one <code>B</code> block at the right edge.</li>
+<li><strong>Overflow.</strong> When the counter overflows, it gains a digit and a 3-cell marker, the <em>front</em> <code>111</code>, appears at its right.</li>
+<li><strong>Q phase.</strong> The front walks right two blocks every three bounces.</li>
+<li><strong>Conversion.</strong> When the front reaches the <code>B</code> blocks, it turns them all into <code>A</code> blocks.</li>
+</ul>
+<p>Each full cycle doubles the counter range. The block counts after a cycle are an affine function of the counts before it, and the function has two branches, chosen by the parity of a count. The proof finds a hexagon in the scaled block counts that both branches map into itself.</p>
+<h2 id="1-notation-and-families">1. Notation and families</h2>
+<p>Tapes are written in directed-head notation. <code>L &lt;S R</code> means the head is in state S on the last cell of L. <code>L S&gt; R</code> means the head is in state S on the first cell of R.</p>
+<table>
+<thead>
+<tr>
+<th>word</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>C_k(n)</code></td>
+<td>n in k binary digits, MSB first, digit 1 = <code>1010</code>, digit 0 = <code>0010</code> (requires 2^(k-1) ≤ n &lt; 2^k)</td>
+</tr>
+<tr>
+<td><code>A = 00111</code>, <code>B = 10111</code>, front <code>111</code></td>
+<td>blocks as they look <strong>left</strong> of the head ("left form")</td>
+</tr>
+<tr>
+<td><code>A' = 00101</code>, <code>B' = 00001</code></td>
+<td>the same blocks <strong>right</strong> of a moving head ("right form")</td>
+</tr>
+<tr>
+<td><code>&lt;A 001</code>, <code>001 E&gt;</code></td>
+<td>the moving head. It always carries the 3 cells <code>001</code> (TM4's <code>hL = (A,[0;0;1])</code>, <code>hR = (E,&lt;[0;0;1])</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The families below are the right-edge visits in state C. Simulation found that 4,711 of 4,722 such visits up to step 1e9 have one of these two shapes; the other 11 are the start and mid-conversion visits.</p>
+<div class="highlight"><pre><span></span><code>P(k,n,X,z)   := 0^inf C_k(n) A^X B^z 00 C&gt; 0^inf                 X,z &gt;= 0
+Q(k,n,x,y,z) := 0^inf C_k(n) A^x 111 A^y B^z 00 C&gt; 0^inf         x &gt;= 1; y,z &gt;= 0
+</code></pre></div>
+
+<h2 id="2-rule-table-busycoq-comment-block-style">2. Rule table (busycoq comment-block style)</h2>
+<div class="highlight"><pre><span></span><code>1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---
+
+C_k(n): n in k bits MSB first, 1 -&gt; 1010, 0 -&gt; 0010;   A = 00111, B = 10111
+P(k,n,X,z)   := 0^inf C_k(n) A^X B^z 00 C&gt; 0^inf
+Q(k,n,x,y,z) := 0^inf C_k(n) A^x 111 A^y B^z 00 C&gt; 0^inf                    (x &gt;= 1)
+
+R1  P(k,n,X,z)      --&gt; P(k,n+1,X,z+1)                     n+1 &lt;= 2^k-1
+R2  P(k,2^k-1,X,z)  --&gt; Q(k+1,2^k+1,1,X-2,z+1)             X &gt;= 2
+R3  Q(k,n,x,y+2,z)  --&gt; Q(k,n+3,x+2,y,z+1)                 n+3 &lt;= 2^k-1
+R4  Q(k,n,x,0,z)    --&gt; P(k,n+z+2,x+z+1,0)                 n+z+2  &lt;= 2^k-1
+R5  Q(k,n,x,1,z)    --&gt; P(k,n+2z+7,x+z+4,0)                n+2z+7 &lt;= 2^k-1
+R5o Q(k,n,x,1,z)    --&gt; Q(k+1,2^k+1+3m,1+2m,x+z+2-2m,0)    m := n+2z+7-2^k &gt;= 0,  x+z+2-2m &gt;= 1,  3m &lt;= 2^k-2
+
+remark (true, never used): R4o Q(k,n,x,0,z) --&gt; Q(k+1,2^k+1+3m,1+2m,x+z-1-2m,0),
+                           m := n+z+2-2^k &gt;= 0, x+z-1-2m &gt;= 1, 3m &lt;= 2^k-2
+
+steps: R1 32X+32z+16t(n)+47,  R2 32X+32z+16k+61,  R3 96x+32y+32z+16(t(n)+t(n+1)+t(n+2))+197
+       (t(n) = number of trailing 1 bits of n)
+
+cycle (N = 2^k):  S(k,Y,Z) := Q(k+1, N+1+3m, 1+2m, Y-2m, Z+m),  m = max(0,-Z)
+  (S(k,.) is the first right-edge visit after the counter grows to k+1 digits; its counter
+   lies in [N,2N) and overflows at 2N)
+  S(k,2j,Z)   --&gt;+ S(k+1, 3j+Z,   N-3-4j-Z)      via R3^(j-m), R4, R1^(N-4-2Y-Z), R2
+  S(k,2j+1,Z) --&gt;+ S(k+1, 3j+3+Z, N-8-5j-2Z)     via R3^(j-m), then R5, R1^*, R2  or  R5o
+invariant (N &gt;= 64):  8Y &gt;= N, 8Y &lt;= 3N, 3Z &lt;= N, 8Z &gt;= -N, 4Y+2Z &gt;= N, 20Y+16Z &lt;= 9N
+start: c0 --&gt;(17215) S(6,16,0) = Q(7,65,1,16,0)
+</code></pre></div>
+
+<p>Every case is covered. For P: n &lt; 2^k-1 uses R1, and n = 2^k-1 uses R2 (X ≥ 2 holds; see §4). For Q: y ≥ 2 uses R3. y = 0 uses R4: on the invariant the counter never overflows during an even conversion (§4), so R4o is never needed. y = 1 uses R5 if the counter does not overflow during the conversion, and R5o if it does. The domain conditions that the run must satisfy (no overflow inside a Q phase, R2's X ≥ 2, no overflow in an even conversion, and the R5o conditions) are exactly what the invariant in §4 guarantees. Outside those domains, the overflow chain of §3.3 fails to apply on every one of the 677 small instances tried (<code>check_proof.py</code> §3c). This shows the conditions matter, not that they are necessary. One out-of-domain instance even halts: <code>Q(4,8,400,0,180)</code> (from the card).</p>
+<h2 id="3-proofs-of-the-rules">3. Proofs of the rules</h2>
+<h3 id="31-shift-rules-level-0">3.1 Shift rules (level 0)</h3>
+<p>Each rule below is a fixed finite run. In the formal proof, each is one <code>es</code> (<code>check_proof.py</code> §1 executes each on its window exactly). Rules marked <code>0^inf</code> need blank tape on that side. All others hold for every context.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>statement</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ENDL</td>
+<td><code>00 C&gt; 0^inf  →  &lt;A 001 0^inf</code></td>
+<td>7</td>
+</tr>
+<tr>
+<td>AL</td>
+<td><code>00111 &lt;A 001  →  &lt;A 001 00101</code></td>
+<td>25</td>
+</tr>
+<tr>
+<td>BL</td>
+<td><code>10111 &lt;A 001  →  &lt;A 001 00001</code></td>
+<td>9</td>
+</tr>
+<tr>
+<td>AR</td>
+<td><code>001 E&gt; 00101  →  00111 001 E&gt;</code></td>
+<td>7</td>
+</tr>
+<tr>
+<td>BR</td>
+<td><code>001 E&gt; 00001  →  10111 001 E&gt;</code></td>
+<td>23</td>
+</tr>
+<tr>
+<td>ENDR</td>
+<td><code>001 E&gt; 0^inf  →  10111 00 C&gt; 0^inf</code></td>
+<td>22</td>
+</tr>
+<tr>
+<td>D1L</td>
+<td><code>1010 &lt;A 001  →  &lt;A 001 0101</code> (carry through a 1 digit)</td>
+<td>12</td>
+</tr>
+<tr>
+<td>FLIP</td>
+<td><code>0010 &lt;A 001  →  1010 001 E&gt;</code> (0 digit becomes 1; turn)</td>
+<td>18</td>
+</tr>
+<tr>
+<td>D0R</td>
+<td><code>001 E&gt; 0101  →  0010 001 E&gt;</code> (carried digit restored as 0)</td>
+<td>4</td>
+</tr>
+<tr>
+<td>OVL</td>
+<td><code>0^inf &lt;A 001 01  →  0^inf 1010 001 E&gt;</code> (counter overflow)</td>
+<td>12</td>
+</tr>
+<tr>
+<td>OVR</td>
+<td><code>001 E&gt; 01 00101  →  0010 &lt;A 001 101</code> (new digit and new front)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>FL</td>
+<td><code>00111 111 &lt;A 001  →  &lt;A 001 001 00001</code> (front, leftward)</td>
+<td>28</td>
+</tr>
+<tr>
+<td>FR1</td>
+<td><code>001 E&gt; 001 00001  →  00111 &lt;A 001 001</code></td>
+<td>13</td>
+</tr>
+<tr>
+<td>FR2</td>
+<td><code>001 E&gt; 001 00101  →  00111 &lt;A 001 101</code></td>
+<td>13</td>
+</tr>
+<tr>
+<td>FR3</td>
+<td><code>001 E&gt; 101 00101  →  00111 111 001 E&gt;</code> (front passes)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>FR4</td>
+<td><code>001 E&gt; 101 00001  →  &lt;A 001 001 00101</code></td>
+<td>36</td>
+</tr>
+<tr>
+<td>FE0</td>
+<td><code>001 E&gt; 001 0^inf  →  00111 00 C&gt; 0^inf</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td>FE1</td>
+<td><code>001 E&gt; 101 0^inf  →  &lt;A 001 001 001 0^inf</code></td>
+<td>36</td>
+</tr>
+<tr>
+<td>FE2</td>
+<td><code>001 E&gt; 001 001 0^inf  →  00111 &lt;A 001 1 0^inf</code></td>
+<td>13</td>
+</tr>
+<tr>
+<td>FE3</td>
+<td><code>001 E&gt; 1 0^inf  →  &lt;A 001 0011 0^inf</code></td>
+<td>36</td>
+</tr>
+<tr>
+<td>FE4</td>
+<td><code>001 E&gt; 0011 0^inf  →  00111 &lt;A 001 001 0^inf</code></td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-repeated-rules-level-1-ind">3.2 Repeated rules (level 1, <code>ind</code>)</h3>
+<ul>
+<li><code>AL^a: A^a &lt;A 001 → &lt;A 001 A'^a</code> (25a steps). Likewise <code>BL^z</code> (9z), <code>AR^a: 001 E&gt; A'^a → A^a 001 E&gt;</code> (7a), <code>BR^z</code> (23z), <code>D1L^t</code>, and <code>D0R^t</code>.</li>
+<li><strong>CTR.</strong> For n+1 ≤ 2^k-1: <code>0^inf C_k(n) &lt;A 001 → 0^inf C_k(n+1) 001 E&gt;</code> in 16t(n)+18 steps. Write <code>C_k(n) = W 0010 1010^t</code>. Then:</li>
+<li><code>D1L^t</code> gives <code>W 0010 &lt;A 001 0101^t</code>;</li>
+<li><code>FLIP</code> gives <code>W 1010 001 E&gt; 0101^t</code>;</li>
+<li><code>D0R^t</code> gives <code>W 1010 0010^t 001 E&gt; = C_k(n+1) 001 E&gt;</code>.</li>
+<li><strong>OV.</strong> <code>0^inf C_k(2^k-1) &lt;A 001 A' A' → 0^inf C_{k+1}(2^k+1) A 111 001 E&gt;</code> in 16k+46 steps:</li>
+<li><code>D1L^k</code> gives <code>0^inf &lt;A 001 0101^k A' A'</code>, which is the same tape as <code>0^inf &lt;A 001 01 0101^(k-1) 01 00101 00101</code>;</li>
+<li><code>OVL</code> gives <code>0^inf 1010 001 E&gt; 0101^(k-1) 01 00101 00101</code>;</li>
+<li><code>D0R^(k-1)</code> gives <code>0^inf 1010 0010^(k-1) 001 E&gt; 01 00101 00101</code>;</li>
+<li><code>OVR</code> gives <code>0^inf C_{k+1}(2^k) &lt;A 001 101 00101</code>;</li>
+<li><code>FLIP</code> (that is, CTR with t = 0) gives <code>0^inf C_{k+1}(2^k+1) 001 E&gt; 101 00101</code>;</li>
+<li><code>FR3</code> finishes.</li>
+</ul>
+<p>The counter gains a digit: 2 of its 4 cells come from the blank left side and 2 from the right. The 13 cells <code>001 A' A'</code> become the 11 cells <code>A 111 001</code>, which are the new front.
+- <strong>QC (one front step).</strong> For every right word G, with x ≥ 1, y ≥ 2, and n+3 ≤ 2^k-1:</p>
+<p><code>C_k(n) A^x 111 A^y &lt;A 001 G
+  -AL^y-&gt;                         C_k(n) A^x 111 &lt;A 001 A'^y G
+  -FL-&gt;                           C_k(n) A^(x-1) &lt;A 001 001 B' A'^y G          front now "001 B'"
+  -AL^(x-1),CTR,AR^(x-1),FR1-&gt;    C_k(n+1) A^x &lt;A 001 001 A'^y G               front "001"
+  -AL^x,CTR,AR^x,FR2-&gt;            C_k(n+2) A^(x+1) &lt;A 001 101 A'^(y-1) G       front "101"
+  -AL^(x+1),CTR,AR^(x+1),FR3-&gt;    C_k(n+3) A^(x+2) 111 001 E&gt; A'^(y-2) G       front back in left form
+  -AR^(y-2)-&gt;                     C_k(n+3) A^(x+2) 111 A^(y-2) 001 E&gt; G</code></p>
+<p>So the front is a 3-state gadget: it reflects the head twice, lets it through on the third visit, and ends up two blocks further right.</p>
+<h3 id="33-macro-rules">3.3 Macro rules</h3>
+<ul>
+<li><strong>R1</strong> is <code>ENDL, BL^z, AL^X, CTR, AR^X, BR^z, ENDR</code>. The step count is 7+9z+25X+(16t+18)+7X+23z+22.</li>
+<li><strong>R2</strong> is <code>ENDL, BL^z, AL^X, OV, AR^(X-2), BR^z, ENDR</code>. It needs X ≥ 2, because OV uses two A' blocks.</li>
+<li><strong>R3</strong> is <code>ENDL, BL^z, QC (with G = B'^z 0^inf), BR^z, ENDR</code>.</li>
+</ul>
+<p><strong>Conversion (R4, R5, R5o; R4o as a remark).</strong> The derivation below treats both parities at once, because the argument is the same. The proof only needs the overflow case for y = 1 (R5o): §4 shows that on the invariant an even conversion never overflows. Start from <code>Q(k,n,x,y,z)</code> with y ∈ {0,1}. Applying <code>ENDL, BL^z, AL^y, FL</code> gives <code>0^inf C_k(n) A^(x-1) &lt;A 001 G_1</code>, where the old front plus the B blocks now form a gadget:</p>
+<ul>
+<li>even (y=0): <code>G_1 = 001 B'^(z+1) 0^inf</code>. Its hits are <code>FR1</code> z+1 times, then <code>FE0</code>.</li>
+<li>odd (y=1): <code>G_1 = 001 B' A' B'^z 0^inf</code>. Its hits are <code>FR1, FR2, (FR4, FR2)^z, FE1, FE2, FE3, FE4, FE0</code>. The gadget word runs through <code>001 B' A' B'^z</code>, <code>001 A' B'^z</code>, <code>101 B'^z</code>, <code>001 A' B'^(z-1)</code>, <code>101 B'^(z-1)</code>, …, <code>101</code>, <code>001 001</code>, <code>1</code>, <code>0011</code>, <code>001</code>, and then the right edge.</li>
+</ul>
+<p>So there are T = z+2 (even) or 2z+7 (odd) hits. Every hit except the last is a reflection <code>001 E&gt; G_t → A^(δ_t) &lt;A 001 G_(t+1)</code>. Here δ_t = 1 for FR1, FR2, FE2 and FE4, and δ_t = 0 for FR4, FE1 and FE3. The last hit, <code>FE0</code>, ends at the right edge and adds one more A; count it as δ_T = 1. In total, Σ_t δ_t = z+2 (even) or z+5 (odd).</p>
+<ul>
+<li><strong>Round without overflow</strong> (n+1 ≤ 2^k-1): <code>C_k(n) A^a &lt;A 001 G_t</code> goes by <code>AL^a, CTR, AR^a, hit_t</code> to <code>C_k(n+1) A^(a+δ_t) &lt;A 001 G_(t+1)</code>. Starting from a_1 = x-1:</li>
+<li><strong>R4/R5.</strong> If all T rounds avoid overflow (n+T ≤ 2^k-1), the run ends at <code>P(k, n+T, x-1+Σδ, 0)</code>, which is R4 or R5.</li>
+<li><strong>R5o (and R4o).</strong> Otherwise the counter overflows in round r = 2^k-n ≤ T, and m := T-r rounds remain after that.</li>
+<li><strong>Rounds 1..r-1</strong> are no-overflow rounds as above: by the choice of r, each one starts with counter ≤ 2^k-2.</li>
+<li><strong>Round r</strong> is <code>AL^a, OV, AR^(a-2), hit_r</code> with a = a_r = x-1+Σ_{t&lt;r}δ_t. OV needs the two A' blocks right of the head, so a_r ≥ 2. If m ≥ 1, round r ends at <code>C_{k+1}(2^k+1) A 111 A^(b) &lt;A 001 G_(r+1)</code> with b = b_(r+1) := a_r-2+δ_r A blocks between the two fronts. A new front has started next to the counter while the old gadget is still converting.</li>
+<li><strong>Each later round s</strong> (r &lt; s ≤ T) is <code>QC, hit_s</code>. QC needs b_s ≥ 2. The new front moves 2 blocks right, the counter gains 3, and the between-count becomes b_(s+1) = b_s-2+δ_s ≤ b_s-1.</li>
+<li><strong>End.</strong> The last hit is FE0 (δ_T = 1), which gives <code>Q(k+1, 2^k+1+3m, 1+2m, y_f, 0)</code> with y_f = (x-1+Σ_{t&lt;r}δ_t) - 2 + Σ_{t≥r}δ_t - 2m = x-3+Σδ-2m. This is x+z+2-2m (odd, R5o) or x+z-1-2m (even, R4o).</li>
+<li><strong>Domain.</strong> Assume y_f ≥ 1 and 3m ≤ 2^k-2.<ul>
+<li>If m = 0, round r is the last round and its hit is FE0, so it ends at <code>Q(k+1, 2^k+1, 1, a_r-1, 0)</code>. Then y_f = a_r-1, and y_f ≥ 1 gives a_r ≥ 2 directly. There are no QC rounds. (The initial segment's last step, which reaches S(6,16,0), is this case; see §5.)</li>
+<li>If m ≥ 1, the last round T is a QC round and y_f = b_T-2+1, so b_T = y_f+1 ≥ 2. The between-counts strictly decrease, so b_s ≥ b_T ≥ 2 for every r &lt; s ≤ T, which is what each QC needs. Also b_(r+1) ≥ b_T ≥ 2 gives a_r = b_(r+1)+2-δ_r ≥ 3.</li>
+<li>The counter fits in k+1 bits: the last QC starts at 2^k+1+3(m-1) and needs that value plus 3 to be ≤ 2^(k+1)-1, that is, 3m ≤ 2^k-2.</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-coverage-invariant-progress">4. Coverage, invariant, progress</h2>
+<p><strong>Cycle states.</strong> Let N = 2^k and m = max(0,-Z). Define <code>S(k,Y,Z) := Q(k+1, N+1+3m, 1+2m, Y-2m, Z+m)</code>. S(k,·) is the first right-edge visit after the counter grows to k+1 digits: its counter lies in [N,2N) and overflows at 2N. (So S's index k is one less than the Q/P level k+1; in the cycle lemma, the next overflow is at 2N and the next cycle state is S(k+1,·) at level k+2.)</p>
+<ul>
+<li>For Z ≥ 1 this is R2's output <code>Q(k+1,N+1,1,Y,Z)</code>.</li>
+<li>For Z ≤ 0 it is R5o's output, written as if those m front steps had been R3 steps from x = 1.</li>
+</ul>
+<p><strong>Cycle lemma.</strong> Write F_N(Y,Z) = (Y',Z') for the two branches in §2. Suppose that:</p>
+<ul>
+<li>(a) Y+2Z ≥ 1;</li>
+<li>(b) 3⌊Y/2⌋ ≤ N-2;</li>
+<li>(c) Y' ≥ 0, Y'+2Z' ≥ 1 and 3⌊Y'/2⌋ ≤ 2N-2;</li>
+<li>(d) if Y is even, then Z' ≥ 1 (equivalently 2Y+Z ≤ N-4).</li>
+</ul>
+<p>Then S(k,Y,Z) →+ S(k+1,Y',Z').</p>
+<p><em>Proof.</em> Let p = Y mod 2 and j = ⌊Y/2⌋. By (a), j ≥ m.</p>
+<ul>
+<li><strong>Q phase.</strong> <code>R3^(j-m)</code> gives <code>Q(k+1, n, x, p, z)</code> with n = N+1+3j, x = 1+2j and z = Z+j ≥ 0. No overflow occurs, by (b).</li>
+<li><strong>Conversion.</strong> Let T = z+2 (even) or 2z+7 (odd), and s = n+T. In both cases Z' = 2N-s (see the formula below).</li>
+<li>If s ≤ 2N-1: R4/R5 gives <code>P(k+1, s, X, 0)</code>, then <code>R1^(2N-1-s)</code> gives <code>P(k+1, 2N-1, X, 2N-1-s)</code>, and R2 gives <code>S(k+1, X-2, 2N-s)</code>. R2's condition X ≥ 2 is Y' ≥ 0. For even Y this case always applies, since s = 2N-Z' ≤ 2N-1 by (d): the even branch is R4, R1^(N-4-2Y-Z), R2.</li>
+<li>If s ≥ 2N, then Y is odd by (d), and R5o with m' = s-2N gives <code>S(k+1, X-2, 2N-s)</code> directly. Its conditions are y_f = Y'+2Z' ≥ 1, and 3m' ≤ 3⌊Y'/2⌋ ≤ 2N-2, where m' ≤ ⌊Y'/2⌋ because Y' ≥ 2m'+1. Both come from (c).</li>
+<li><strong>The formula.</strong> In both cases (Y',Z') = (X-2, 2N-s):</li>
+<li>even: X-2 = x+z-1 = 3j+Z, and 2N-s = N-3-4j-Z;</li>
+<li>odd: X-2 = x+z+2 = 3j+3+Z, and 2N-s = N-8-5j-2Z. ∎</li>
+</ul>
+<p><strong>Invariant.</strong> Let R_N be the integer points (Y,Z) with</p>
+<p><code>8Y ≥ N,  8Y ≤ 3N,  3Z ≤ N,  8Z ≥ -N,  4Y+2Z ≥ N,  20Y+16Z ≤ 9N</code>.</p>
+<p>In u = Y/N and v = Z/N this is the hexagon R with vertices (1/8,1/4), (1/8,1/3), (11/60,1/3), (3/8,3/32), (3/8,-1/8) and (5/16,-1/8). For N ≥ 64:</p>
+<ul>
+<li><strong>(i) R_N gives (a), (b) and (d).</strong> On R, u+2v ≥ 1/16, so Y+2Z ≥ N/16 ≥ 4. Also 3⌊Y/2⌋ ≤ (3/2)(3/8)N = 9N/16 ≤ N-2. For (d): 16(2Y+Z) = (20Y+16Z) + 12Y ≤ 9N + 12·3N/8, so 2Y+Z ≤ 27N/32 (on R, max 2u+v = 27/32, at vertex (3/8,3/32)). Then 2Y+Z ≤ N-4 for N ≥ 26. So on the invariant the even branch always takes R4, then R1^(N-4-2Y-Z), then R2, and Z' = N-3-2Y-Z ≥ 5N/32-3 &gt; 0. The counter never overflows during an even conversion, and R4o is never used.</li>
+<li><strong>(ii) F_N maps R_N into R_2N.</strong> With u' = Y'/2N and v' = Z'/2N, each branch is affine in (u,v):</li>
+<li>even: u' = 3u/4 + v/2 and v' = 1/2 - u - v/2 - 3/(2N);</li>
+<li>odd: u' = 3u/4 + v/2 + 3/(4N) and v' = 1/2 - 5u/4 - v - 11/(4N).</li>
+</ul>
+<p>An affine map sends the hexagon into itself if it sends the 6 vertices in. The image coordinates are affine in 1/N ∈ (0,1/64], so checking 1/N = 0 and 1/N = 1/64 covers every N ≥ 64. All 6 vertices × 2 branches × 2 values × 6 facets hold, with slack at least 3/128 in the integer-coefficient form above (exact rational check in <code>check_proof.py</code> §5). The minimum is attained by the odd images of the edge u = 1/8 against the facet 4Y+2Z ≥ N, at 1/N = 1/64. For the odd branch that slack is 4u'+2v'-1 = u/2 - 5/(2N), which does not depend on v, so both vertices (1/8,1/4) and (1/8,1/3) tie at 1/16 - 5/128 = 3/128.
+- <strong>(i) and (ii) give (c).</strong> Applying (i) at level 2N to the image point gives (c), and Y' ≥ 2N/8 &gt; 0.</p>
+<p>The linear parts of the two branches contract: the even branch's eigenvalues have modulus 0.354, and the odd branch's are 0.25 and -0.5. Their fixed points are (2/7,1/7) and (2/9,1/9).</p>
+<p><strong>Parity, and why this is not a cryptid.</strong> The branch at each level is the parity of Y, a pseudo-random bit; in the real run the sequence is even, odd, even, even, odd, odd, even, …. But R is mapped into itself by <strong>both</strong> branches, so halting does not depend on the parities. Ground rule 6 does not apply.</p>
+<p><strong>Progress.</strong> Every macro rule contains ENDL (7 steps), so each cycle takes at least 1 step; in fact it takes Θ(4^k).</p>
+<p><strong>Conclusion.</strong> The run reaches S(6,16,0), which is in R_64 (the facet 4Y+2Z ≥ N is tight there: 64 = 64). By induction, for every k ≥ 6, the run reaches S(k+1,F(Y,Z)) from S(k,Y,Z), with the invariant holding at each level. So the machine runs forever.</p>
+<p><strong>Why F1 is never reached.</strong> Every step of the run lies inside one application of the 21 shift rules of §3.1, and each of those was executed exactly on its window. F is entered only by E1 = 1RF. That happens only inside FR3, FR4, FE1 and FE3, where E reads the 1 of a front word <code>101</code> or the lone <code>1</code> of FE3. Each time, the next cell is 0, so F0 = 1RC runs and F1 (halt) never does (<code>check_proof.py</code> §1 lists the transitions each rule uses).</p>
+<h2 id="5-initial-segment">5. Initial segment</h2>
+<p><code>c0 = 0^inf A&gt; 0^inf</code> reaches <code>Q(5,17,1,2,2) = S(4,2,2)</code> in 1,507 steps, by direct simulation (exact). From there the rules give:</p>
+<ul>
+<li><code>R3</code> to <code>Q(5,20,3,0,3)</code> (step 1,912);</li>
+<li><code>R4</code> to <code>P(5,25,7,0)</code> (step 2,826);</li>
+<li><code>R1^6</code> to <code>P(5,31,7,6)</code> (step 4,996);</li>
+<li><code>R2</code> to <code>Q(6,33,1,5,7) = S(5,5,7)</code> (step 5,553);</li>
+<li><code>R3^2</code> to <code>Q(6,39,5,1,9)</code> (step 7,003);</li>
+<li><code>R5o</code> with m = 0 to <code>Q(7,65,1,16,0) = S(6,16,0)</code> (step 17,215). Here the overflow round is the last round (its hit is FE0), the case m = 0 of the R5o domain in §3.3.</li>
+</ul>
+<p>Direct simulation also gives <code>c0 --&gt;(17215) Q(7,65,1,16,0)</code>. In Rocq, <code>Lemma init: c0 --&gt;* 0inf &lt;* &lt;[1;0;1;0] &lt;* &lt;[0;0;1;0]^^5 &lt;* &lt;[1;0;1;0] &lt;* &lt;[0;0;1;1;1] &lt;* &lt;[1;1;1] &lt;* &lt;[0;0;1;1;1]^^16 &lt;* &lt;[0;0] {{C}}&gt; 0inf. Proof. esx. Qed.</code> compiles in 2.1 s, closed under the global context (checked 2026-10-10, Coq 8.20.1). The induction starts at k = 6 (N = 64), because S(4,…) and S(5,…) are below the N ≥ 64 bound of the invariant.</p>
+<p>Check against the real run: starting from step 1,507, applying only these rules reproduces all 36 observe.json history rows from that point on (configuration <strong>and</strong> exact step number), up to <code>P(15,25768,7028,0)</code> at step 2,318,632,923. The run's cycle states (k,Y,Z) are (6,16,0), (7,24,29), (8,65,48), (9,147,-8), (10,214,155), (11,476,438), (12,1152,655), (13,2383,1134) and (14,4710,-39), all inside R.</p>
+<h2 id="6-mapping-to-busycoq-and-what-is-new">6. Mapping to busycoq, and what is new</h2>
+<p><strong>Templates.</strong> <code>SBCv7.v</code> has six solved machines that differ from this one only in F0: TM1 (<code>0LC</code>), TM2 (<code>0RD</code>), TM3 (<code>0LA</code>), TM4 (<code>0RA</code>), TM18 (<code>0LD</code>) and TM37 (<code>1RB</code>). Other files have more (IndSBCv1 <code>nonhalt42</code> with <code>1RA</code>, CTLv1 <code>nonhalt22216</code>/<code>nonhalt22724</code> with <code>0LB</code>/<code>1LA</code>), but those are decider certificates, not readable templates. TM1–TM4 share the same notations (<code>hR = (E,&lt;[0;0;1])</code>, <code>hL = (A,[0;0;1])</code>, <code>d0</code>, <code>d1</code>) and the same lemma list (<code>LIncs</code> … <code>BigStep</code>, <code>nonhalt</code>); TM18 adds a second particle pair (<code>hR'</code>, <code>hL'</code>) and TM37 uses different particles. TM4 is used below for those names and its BigStep shape; TM1–TM3 would serve equally well.</p>
+<p><strong>TM4 in brief.</strong> TM4 uses the Longitudinal library. Its segments are <code>segRLs</code>/<code>sideRLs</code>; its counter is handled by <code>LIncs</code> via <code>BC.Mul2</code>/<code>BC.Incs</code> on <code>tm'</code> (<code>d0 = &lt;[0;0;1;0]</code>, <code>d1 = &lt;[1;0;1;0]</code>, which are our 0010 and 1010); its right side is a unary counter <code>UC1.Incs</code> on <code>w0/w1/w0'/w1'</code>. TM4's proof has one <code>BigStep</code> per counter overflow, then <code>progress_nonhalt_cond</code> with the one-line invariant <code>Rn ls &lt;= (2^k-1)*2</code>.</p>
+<p><strong>What carries over:</strong>
+- the particles: TM4's <code>hR</code>/<code>hL</code> are our <code>001 E&gt;</code>/<code>&lt;A 001</code>;
+- the digits;
+- the counter behaviour: D1L, FLIP, D0R, OVL and OVR never enter F (checked), so CTR and OV up to its final FR3 hold verbatim for TM4's machine;
+- the overall shape: init, a big step per cycle, and <code>progress_nonhalt_cond</code> with a linear invariant.</p>
+<p><strong>What is new:</strong>
+- <strong>Blocks.</strong> Our F0 = 1RC changes every right-side word. The blocks are <code>00111</code>/<code>00101</code> and <code>10111</code>/<code>00001</code>, not TM4's.
+- <strong>Front gadget.</strong> A 3-state front gadget (FL, FR1, FR2, FR3) walks right inside the block row.
+- <strong>Conversion gadget.</strong> It has a parity split: even uses FR1 only; odd uses FR1, FR2, (FR4, FR2)^z, then FE1–FE4.
+- <strong>Overflow during an odd conversion (R5o).</strong> The new front's QC rounds run interleaved with the old gadget's hits. This is the main new lemma. Only the odd case is needed: on the invariant an even conversion never overflows (§4), so there is no R4o lemma.
+- <strong>Invariant.</strong> A two-branch affine cycle map with a 6-facet polygon invariant, instead of TM4's one inequality.</p>
+<p><strong>Suggested formalization (IPS style; Longitudinal is not needed).</strong></p>
+<table>
+<thead>
+<tr>
+<th>proof.md</th>
+<th>busycoq</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>21 shift rules (§3.1)</td>
+<td><code>Lemma AL l r: l &lt;* &lt;[0;0;1;1;1] &lt;{{A}} [0;0;1] *&gt; r --&gt;* l &lt;{{A}} [0;0;1;0;0;1;0;1] *&gt; r. Proof. es. Qed.</code> and the like (left-side words written with <code>&lt;[...]</code>; a <code>0^inf</code> side is <code>0inf</code>). All 21 compile with <code>es</code> in this form, 3 s in total (checked 2026-10-10, Coq 8.20.1).</td>
+</tr>
+<tr>
+<td><code>AL^a</code>, <code>BL^z</code>, <code>AR^a</code>, <code>BR^z</code>, <code>D1L^t</code>, <code>D0R^t</code></td>
+<td>Statement <code>forall l r, l &lt;* &lt;[0;0;1;1;1]^^a &lt;{{A}} [0;0;1] *&gt; r --&gt;* l &lt;{{A}} [0;0;1] *&gt; [0;0;1;0;1]^^a *&gt; r</code>. <code>gen l r. ind a AL.</code> does <strong>not</strong> close it: it leaves the reordering goal <code>A'^^a *&gt; A' *&gt; r = A' *&gt; A'^^a *&gt; r</code>. Use <code>induction a as [\|a IH]; intros; [finish \| rewrite !lpow_S, !Str_app_assoc; follow AL; follow IH; rewrite lpow_shift'; finish]</code>. For the rightward rules (AR, BR, D0R) the same with <code>rewrite &lt;-lpow_shift'</code>. Checked for AL, BL and AR (closed under the global context); BR, D1L and D0R follow the same pattern.</td>
+</tr>
+<tr>
+<td>CTR, OV</td>
+<td>the counter as a left side <code>l &lt;* d0 &lt;* d1^^t</code> (generic in the high bits l), so CTR is one induction on t. The value <code>C_k(n)</code> needs a bits-to-side function plus an increment lemma (compare <code>BinaryCounter.v</code>, or TM4's <code>d0^^k &lt;* d1</code> shapes)</td>
+</tr>
+<tr>
+<td>QC, R1–R3</td>
+<td><code>follow</code> chains (<code>mid</code> where useful)</td>
+</tr>
+<tr>
+<td>R4, R5</td>
+<td>one induction over each hit list: R4 on z (FR1 rounds), R5 on z ((FR4, FR2) pairs)</td>
+</tr>
+<tr>
+<td>R5o (the only overflow-during-conversion lemma)</td>
+<td>for the odd hit list only: one lemma "i rounds before overflow" (CTR rounds) and one "i rounds after overflow" (QC rounds), split at r = 2^k-n. The m = 0 case (overflow round = FE0 round) is what the init uses. No R4o lemma is needed.</td>
+</tr>
+<tr>
+<td>cycle lemma</td>
+<td>R3 by <code>ind</code>; then even: R4, R1 by <code>ind</code>, R2; odd: R5, R1 by <code>ind</code>, R2, or R5o</td>
+</tr>
+<tr>
+<td>init</td>
+<td><code>esx</code> (above, 2.1 s)</td>
+</tr>
+<tr>
+<td>nonhalt</td>
+<td><code>multistep_nonhalt</code> with <code>init</code> (17,215 steps), then <code>progress_nonhalt_cond</code> with index (k, Y, Zp, Zm) (Z = Zp - Zm, to avoid negative nats) and P = the six inequalities plus N = 2^k ≥ 64; the arithmetic is <code>lia</code> after splitting Y = 2j or 2j+1 (hypothesis (d) comes from 16(2Y+Z) = (20Y+16Z) + 12Y)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-evidence-check_proofpy-6-s-all-checks-passed">7. Evidence (<code>check_proof.py</code>, 6 s, ALL CHECKS PASSED)</h2>
+<p>What kind of check each item is: §1, §5 and the initial segment in §6 are exact computations, so they prove those finite claims. Everything else is a range or sample check of a parametric claim (CTR for all k and n, QC for every G, R1–R5o, the cycle lemma) whose proof is the hand derivation in §3–§4.</p>
+<ul>
+<li><strong>§1 Shift rules (exact).</strong> All 21 shift rules were executed exactly on their windows. Each step count matches, F1 is never read, and the transitions used are all except F1. For finite rules this is a proof, not a sample.</li>
+<li><strong>§2 Repeated rules (ranges).</strong></li>
+<li>AL/BL/AR/BR were executed exactly for a = 0..24.</li>
+<li>CTR was executed exactly for all 1,013 (k,n) with k ≤ 10, with 16t(n)+18 steps.</li>
+<li>OV was executed exactly for k = 1..10, with 16k+46 steps.</li>
+<li><strong>§3 Macro rules (ranges and samples).</strong> A derivation runner applies exactly the chains of §3 to the concrete tape, checking every rule's pattern at the head. Its result is compared with the formulas of §2 and, for most instances, with direct simulation run for exactly the summed step count.</li>
+<li><strong>Exhaustive over small parameters</strong> (one third also simulated): R1 2,793, R2 210, R3 12,096, R4 1,740, R5 954, R5o 393 instances, and R4o 428 (the remark).</li>
+<li><strong>Random large parameters</strong> (k up to 11, blocks up to 300 or 2^(k-1)): 60 per rule, all also simulated.</li>
+<li>The step formulas for R1–R3 match on every instance.</li>
+<li><strong>§4 Cycle map (samples, plus an exhaustive integer check).</strong></li>
+<li>At k = 6..11, 12 random invariant points per level were checked with the runner, and the k ≤ 8 points also by simulation. Those 72 cycles used R1 13,124, R2 57, R3 5,770, R4 34, R5 23 and R5o 15 times, and R4o never.</li>
+<li>Exhaustively, all 316,911 integer points of R_N for N = 64..2048 map into R_2N and satisfy the cycle-lemma hypotheses (a)–(d). Their conversions are R4 158,810, R5 118,780, R5o 39,321, and R4o 0.</li>
+<li><strong>§5 Polygon (exact).</strong> An exact rational vertex check confirms invariance for all N ≥ 64. The minimum slack is 3/128, attained at both vertices of the edge u = 1/8 (odd branch, facet 4Y+2Z ≥ N, 1/N = 1/64). It also confirms the side conditions, including max(2u+v) = 27/32 at (3/8,3/32).</li>
+<li><strong>§6 Initial segment and orbit.</strong></li>
+<li>Direct simulation confirms c0 reaches Q(5,17,1,2,2) at step 1,507 and S(6,16,0) at step 17,215 (exact).</li>
+<li>From step 1,507 to step 2,318,632,923, the runner applied only §3's rules and hit all 36 history rows at the right configurations and exact step numbers. It used R1 2,459, R2 7, R3 4,548, R4 7, R5 1 and R5o 3 times, and R4o never.</li>
+</ul>
+<p><strong>Gaps.</strong> None in the argument as far as I can see. What remains is formalization, and the CTR value bookkeeping (bits to <code>C_k(n)</code>) is the fiddliest part of it. The domain of R5o is a sufficient condition chosen for the cycle lemma; it is not claimed to be necessary.</p>
+<h2 id="review-log-checkpoint-b-skeptic-2026-10-10">Review log (Checkpoint B skeptic, 2026-10-10)</h2>
+<p>The skeptic found the argument sound and raised seven minor gaps. All seven were accepted.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>gap</th>
+<th>resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>R4o (overflow during an even conversion) never happens on the invariant, but the proof treated it as a needed case and planned an R4o lemma.</td>
+<td>Accepted. Added hypothesis (d) to the cycle lemma (if Y is even, Z' ≥ 1). §4 (i) derives it: 16(2Y+Z) = (20Y+16Z)+12Y gives 2Y+Z ≤ 27N/32 ≤ N-4, so the even branch is always R4, R1^(N-4-2Y-Z), R2, with Z' ≥ 5N/32-3 &gt; 0. R4o is now a remark in §2. §3.3, §4, the §6 "What is new" list and the §6 plan now name only R5o. <code>check_proof.py</code> now checks max(2u+v) = 27/32 exactly, checks (a)–(d) on all 316,911 integer points (R4o: 0), and tallies the rules in the orbit (R4 7, R5 1, R5o 3, R4o 0), matching the skeptic's counts.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The §3.3 "Domain" bullet's "before the last round it is y_f+1" holds only for m ≥ 1, and the m = 0 case (used at S(6,16,0)) was covered only implicitly.</td>
+<td>Accepted. The Domain bullet now has two cases. If m = 0, round r is the FE0 round, y_f = a_r-1, and y_f ≥ 1 gives a_r ≥ 2 directly. If m ≥ 1, b_T = y_f+1 ≥ 2 and b_(r+1) ≥ b_T gives a_r ≥ 3. Round r's a_r ≥ 2 requirement (OV needs two A') is now stated explicitly. §5 notes that the init's R5o step is the m = 0 case.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>The header's "every claim is machine-checked" overstated what check_proof.py does.</td>
+<td>Accepted. The header and the §7 intro now say: finite claims are executed exactly; parametric claims are derived by hand in §3–§4 and checked over ranges and samples. Each §7 item is labelled exact, range or sample. The check_proof.py docstring says the same.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>"Nearest template TM4" is not unique: TM1/2/3/18 also differ only in F0.</td>
+<td>Accepted, and extended. A grep of <code>vendor/busycoq/verify</code> finds six SBCv7 modules differing only in F0: TM1, TM2, TM3, TM4, TM18, and also TM37 (<code>1RB</code>), which the skeptic's list missed. The header and §6 now list them all, and say TM4 is used for its hL/hR/d0/d1 names and BigStep shape (TM1–TM3 have identical names and lemma lists). The decider-certificate variants (IndSBCv1, CTLv1) are mentioned as non-templates.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>gen l r. ind a AL.</code> does not close AL^a; it leaves a reordering goal.</td>
+<td>Accepted and re-checked in Coq 8.20.1 (scratch dir, outside vendor/). <code>ind a AL</code> fails with "Attempt to save an incomplete proof". The manual induction with <code>rewrite lpow_shift'</code> compiles for AL and BL, and with <code>rewrite &lt;-lpow_shift'</code> for AR. All 21 shift rules compile with <code>es</code> (3 s). <code>init</code> compiles with <code>esx</code> (2.1 s). The §6 table now gives the working proof scripts. The test files are <code>work/rocq-scratch/M4Shift.v</code> and <code>M4Init.v</code>, and the result is logged in atlas/rocq-notes.md.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>The tightest polygon case is not unique: along u = 1/8 the odd branch's slack is u/2 - 5/(2N), independent of v.</td>
+<td>Accepted. §4 now names the edge u = 1/8 and the facet 4Y+2Z ≥ N, gives the slack formula, and says both vertices tie at 3/128. check_proof.py §5 now prints every case attaining the minimum (two, as stated).</td>
+</tr>
+<tr>
+<td>7</td>
+<td>S(k,·) is indexed by N = 2^k but sits at counter level k+1, which may trip a reader.</td>
+<td>Accepted. §2 and §4 now say S(k,·) is the first right-edge visit after the counter grows to k+1 digits, with its counter in [N,2N) and overflow at 2N.</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

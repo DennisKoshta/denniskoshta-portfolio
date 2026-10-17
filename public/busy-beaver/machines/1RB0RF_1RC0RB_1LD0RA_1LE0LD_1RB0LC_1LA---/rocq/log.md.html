@@ -1,0 +1,396 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>log.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/rocq/log.md · <a href="/busy-beaver/machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/rocq/log.md.html">raw</a></div>
+<h1 id="w4-3-formalization-log">W4-3 formalization log</h1>
+<p>Machine <code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code> (740 line 341). Kill file:
+<code>machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---.v</code>.</p>
+<h2 id="round-1-2026-10-12">Round 1 (2026-10-12)</h2>
+<h3 id="architecture-chosen">Architecture chosen</h3>
+<p>proof.md section 10 recommends a verified interpreter. Built a <strong>symbolic run-length simulator</strong>
+(<code>ssim</code>) instead of a defect-model interpreter: it runs the machine itself, so the soundness proof is
+generic (it calls <code>tm</code> for single steps) and only the two sweep cycles are machine-specific.</p>
+<ul>
+<li>A run is <code>(first symbol, length)</code>; a length is a linear form <code>LF c [v0; v1; ...]</code> = c + sum v_i x_i
+  over N. A side is <code>(list run, tail)</code>, tail <code>T0</code> = 0^inf or <code>TV k</code> = abstract side k.
+  <code>ev_cfg nu sg c</code> evaluates a data config to a TM config for a valuation <code>nu : list N</code> of the x_i
+  and <code>sg : nat -&gt; side</code> of the abstract sides.</li>
+<li><code>sstep</code>: if the head state and the first symbol of the next run are in a sweep cycle
+  (right <code>B0 C1 A0 B1</code>, left <code>D1 D0 E1 C0</code>) and every coefficient of the run length is 0 mod 4, cross
+  the whole run in one step (state index + c mod 4; the run is pushed, complemented and reversed, onto
+  the other side, merged with its first run when the alternation continues). Otherwise one machine
+  step (<code>pop</code> the head cell; needs c &gt;= 1, or a definitely empty run, which is dropped).
+  Returns a flag: true iff at least one machine step was made.</li>
+<li><code>sstep_spec : sstep c = Some (c', b) -&gt; Rel b (ev_cfg nu sg c) (ev_cfg nu sg c')</code> for ALL nu, sg
+  (<code>Rel true = --&gt;+</code>, <code>Rel false = --&gt;*</code>), and <code>runp_spec</code> for <code>runp p</code> (exactly p steps, p positive).</li>
+<li>Reading an abstract tail makes <code>sstep</code> return None. So a run "until stuck" with abstract sides is a
+  locality proof for free: the lemma holds for every content of the abstract sides.</li>
+</ul>
+<h3 id="proved-rocqssimv-15-s-kill-file-compiles-see-below">Proved (rocq/ssim.v, 1.5 s; kill file compiles, see below)</h3>
+<ul>
+<li>ssim + soundness: <code>push_spec</code>, <code>pop_spec</code>, <code>push_run_spec</code>, <code>accR</code>/<code>accL</code> (+ <code>_S</code> progress versions,
+  induction on the run length over the 4-cycle), <code>single_spec</code>, <code>sstep_spec</code>, <code>runp_spec</code>.</li>
+<li><code>init28 : c0 --&gt;* ev_cfg [] (fun _ =&gt; const S0) cfg28</code> by <code>runp 18571896</code> and <code>native_compute</code>
+  (17 s for the cast). cfg28 = record exit 28 (step 2,629,088,227,408, class r5, e = 2, u = 1, K = 7).
+  It matches proof.md 3.4 (right region B -224493- x1 -673559- x2 -7- x3 -9841- x4 -1942040- x5 -3- hi) and
+  the chain of 3.3 (window 8277, 24912, 74808 = 8316u-39, 24948u-36, 74844u-36).
+  Record exit 16 is reached after 225,240 simulator steps (398,090,000 machine steps) and matches
+  Appendix C cell by cell.</li>
+</ul>
+<h3 id="validated-by-dev-runs-rocqdev_v-not-in-the-kill-file">Validated by dev runs (rocq/dev_*.v, not in the kill file)</h3>
+<ul>
+<li><code>dev_sym.v</code>: the record-exit-28 episode with every long gap symbolic (<code>27 + 4 x0</code>, ...) and the left
+  side abstract: 117 simulator steps, 8 ms, returns <code>Lc D ([], TV 0) [27+4x0, 27+4x1, 8, 20+4x2, 53+4x3]</code>
+  = Appendix B r5 <code>start</code> (7 -&gt; 8, 9841 -&gt; 9836, last gap +30, hi gap absorbed).</li>
+<li><code>dev_visit.v</code>: from cfg28 the head reaches the cut (3 cells after B-2) in state A in 1 step; the
+  first chain visit <code>Lc D ((S0,3) :: chain, T0) ([], TV 1)</code> is 9 simulator steps and ends
+  <code>Rc A</code> with block K's digit moved -1 (8277 -&gt; 8278, inter gap 2737 -&gt; 2736) = Lemma C, U0 -&gt; U1, exit c_K+2.</li>
+</ul>
+<h3 id="conventions-for-the-next-rounds-decided-in-round-1">Conventions for the next rounds (decided in round 1)</h3>
+<ul>
+<li><strong>Cuts.</strong> Every region boundary is a cut inside an alternating stretch, never at a defect:</li>
+<li>chain / right region: after cell B+1 (3 cells after the U0 place of s3 = B-2);</li>
+<li>block j / block j+1: 3 cells after block j's s3 (U0 place); block j+1 gets I-3 &gt;= 2 cells of the
+    inter gap I (residue 2 mod 4);</li>
+<li>left word / chain: between cells A-1 and A (block 1 gets 3 cells before its digit at A+2).
+  All footprints of proof.md (Lemma B, L81, R) stay inside their region, so every regional run is an
+  ssim run with the other sides abstract.</li>
+<li><strong>States at cuts.</strong> Entering a block from the right at its phase c: <code>Lc D</code> reading 0. At c+2:
+  <code>Lc C</code> reading 0. Leaving to the right at phase c+2: <code>Rc A</code> (reads 0); at phase c: <code>Rc B</code> (reads 0).
+  (Block bases differ by 2 mod 4, so "c+2 of block j" = "c of block j-1".)</li>
+<li><strong>Block runs, left side, nearest first (m = 3):</strong> with gap lengths a (digit gap), s, t (separator
+  gaps), lp (left part) and state offsets (dd, d1, d2, d3) from proof.md 3.2:
+  <code>[(S0, 3-d3); (_, t+d3-d2); (_, s+d2-d1); (_, a+d1-dd); (_, lp+dd)]</code>, symbols by the defect rule
+  (next run starts with the far symbol of the previous one). At rest every block starts with S0 at
+  its right cut, in every state (the region length and the defect count are fixed).</li>
+<li><strong>Global config at a visit boundary:</strong> <code>Lc D (chain runs ++ left word runs, T0) (right runs, T0)</code>,
+  the head on cell B+1. Invariant point for Lemma S: <code>Rc A ...</code> at the same cut (after the record visit).</li>
+</ul>
+<h3 id="plan-for-rounds-2-4">Plan for rounds 2-4</h3>
+<ol>
+<li>Generate (script) the 18 single-block runs of proof.md 4.1 / Appendix D as ssim lemmas with symbolic
+   a, s, t, lp and abstract sides; case-split tight gaps (a = 1 vs 5+4x, s,t = 4 vs 8+4x, lp = 2 vs
+   6+4x) where ssim fails. Then Lemma C / C' by induction on the block list (LSB first, like #11's
+   LbS/RbS), with relations <code>Visit c c' p := forall r, side c &lt;{{D}} r --&gt;+ side c' {{st p}}&gt; r</code>.</li>
+<li>Left word: episodes 1-80 as one <code>forallb</code> over i of an ssim check (head enters at A-1, abstract
+   right side); L81 as one ssim run with block 1 in D0.</li>
+<li>Right region: <code>Ep p R R' := forall l, l {{st p}}&gt; R --&gt;* l &lt;{{D}} R'</code>; singles of Appendix B as ssim
+   runs in t (u = 1 + 8t); 4-cycles as one ssim run on fresh variables (composite f(h) = h + d) plus
+   an induction on the cycle count.</li>
+<li>Interleaving: <code>Visits c c' ps -&gt; EpSeq ps R R' -&gt; cfg(c,R) --&gt;* cfg(c',R')</code>; Lemma T gives
+   ps = 2^T 0^(N-T).</li>
+<li>Record visit, regrouping (tape equality), window closing (lia in t), INV, nonhalt.</li>
+</ol>
+<h3 id="added-at-the-end-of-round-1">Added at the end of round 1</h3>
+<ul>
+<li><code>reach fuel c tgt</code> + <code>reach_spec</code> (in ssim.v and the kill file): every regional lemma of rounds 2-4 is
+  <code>apply (reach_spec N). vm_compute. reflexivity.</code> on data configs with symbolic lengths and abstract sides.
+  <code>cfg_eqb</code> compares lengths up to trailing zero coefficients (so <code>zadd</code> padding never matters).</li>
+<li><code>dev_reach.v</code>: block U0 (m = 3) entered from the right at its phase c, symbolic t, s, a, lp
+  (<code>4+4x0, 4+4x1, 1+4x2, 2+4x3</code>): <code>blk_U0 : ev U0c --&gt;+ ev U1o</code> (U0 -&gt; U1: digit gap +1, left part -1,
+  leaves <code>Rc A</code>), closed under the global context. <code>dev_block.v</code>: U1 -&gt; U2 the same way, and the tight
+  digit gap a = 1 needs no case split for these two runs.</li>
+<li>Kill file: 711 lines, compiles in 35.6 s (native); check_kill <code>--text-only</code>: everything PASS except
+  <code>theorem_text</code> (no <code>nonhalt</code> yet, by design: no Admitted anywhere).</li>
+</ul>
+<h3 id="next-round-first-steps">Next round, first steps</h3>
+<ol>
+<li>A script <code>rocq/gen_blocks.py</code> that emits the 18 runs of proof.md Appendix D as <code>reach</code> lemmas, using the
+   block-runs convention above (m = 3 and m = 1, the 8 / 5 states), entry states <code>Lc D</code> (right, phase c),
+   <code>Lc C</code> (right, c+2), <code>Rc A</code>/<code>Rc B</code> (left entries); fall back to <code>destruct</code> on tight gaps where <code>reach</code>
+   fails. Check each event count against Appendix D.</li>
+<li>The chain word as a list (LSB = block K first) and <code>Visit</code> by induction, as in #11's LbS/RbS.</li>
+<li>Left episodes: one <code>forallb</code> over i in 1..80 of a <code>reach</code> check (left word W_i, head entering at A-1).</li>
+</ol>
+<h2 id="round-2-2026-10-12">Round 2 (2026-10-12)</h2>
+<p>Dev files (this folder): <code>chain.v</code> (blocks, chain visit, left word), <code>count.v</code> (Lemma T), <code>right.v</code> (right-region
+executor and the six interval programs), <code>regroup.v</code> (6.2 regrouping), <code>step.v</code> (Lemma S, class r5), <code>rec2.v</code>/<code>rec3.v</code>
+(record-exit episode experiments). All merged into the kill file, which compiles (native) in about 37 s.</p>
+<h3 id="proved-all-qed-no-admitted">Proved (all Qed, no Admitted)</h3>
+<ul>
+<li><strong>Blocks.</strong> <code>lab</code> = U0 U1 U2 W0 W1 D0 D1 D2 (m = 3), <code>lab1</code> = P0 P1 PD0 PD1 PD2 (block 1). <code>blk s</code> = run list from the
+  block's right cut, lengths <code>lens s</code> with variables x0..x3 = (t-4)/4, (s-4)/4, (a-1)/4, (lp-2)/4 (so every tight
+  gap is the instance x = 0). <code>rblk</code> = the full block after a leftward pass (right side). The 18 runs of Appendix D
+  are <code>blk_turn</code>, <code>blk_pass</code>, <code>blk_reset</code>, <code>blk1_turn</code>, <code>blk1_pass</code>, <code>blk1_back</code>, each one <code>reach</code> check with both
+  sides abstract (no case split needed, tight gaps included).</li>
+<li><strong>Left word.</strong> <code>lw i</code> closed form (base-3 digits of i, i = 0..80) and <code>lw 81</code> = output of the left record.
+  <code>lw_ep : i &lt; 81 -&gt; LWs i &lt;{{E}} Y --&gt;+ LWs (S i) {{B}}&gt; Y</code>: one <code>forallb</code> over 81 <code>reach</code> checks. Episode 80 is the
+  left record (L81); no separate lemma is needed. Block 1 hands over to the left word in state E (not D).</li>
+<li><strong>Chain visit (Lemma C, C').</strong> Functions <code>visit3</code>, <code>cb</code>, <code>vis</code> on labels; <code>visit3_spec</code>, <code>pass_spec</code>, <code>cb_spec</code>,
+  <code>vis_spec</code> by list induction; <code>runv n</code> iterates <code>vis</code>; <code>runv_spec</code>: n visits plus the interleaved episodes
+  (<code>EpSeq</code> of the exit phases) on the machine.</li>
+<li><strong>Lemma T (<code>interval</code>)</strong>: <code>runv (81*3^K-1) (U0^m, P0, 0) = Some ((D0^m, PD0, 80), true^T ++ false^(81*3^K-1-T))</code>
+  with 2T+5 = 3^(K+1), K = m+1, for every m &gt;= 2. Pieces CU, CW, S3 (mixed regime), allD (value counting), cyc/cycs.
+  <code>interval_tm</code> and <code>record_visit</code> put it on the machine.</li>
+<li><strong>Right region.</strong> <code>ep_run</code> (simulate until stuck, must end <code>Lc D ([], TV 0) (rr', T0)</code>), <code>jump_run</code> (4-cycle
+  jump: runs the cycle once on the actual config, derives a template with one fresh variable per changing run,
+  checks the cycle on the template, and composes; soundness <code>jump_lemma</code> by induction on the cycle count with
+  shifted valuations), <code>exec</code> over <code>ISingle</code>/<code>IJump</code> programs, <code>prog_check_spec</code>. The six programs of Appendix B
+  (<code>prog_r5</code> .. <code>prog_r4</code>, u = 1 + 8t, jump counts as linear forms in t) are checked by vm_compute in 15-70 ms
+  each; the phase counts come out as T = 3278+26244t / 9839+78732t and F = 173868+1390932t / 521601+4172796t,
+  exactly Lemma T's.</li>
+<li><strong>Regrouping (6.2)</strong>: <code>regroup</code> (list induction, any chain): chain in D2 = (S0,1)(S0,2+4xt_K) ++ chain in U0
+  regrouped one defect later (<code>rshift</code>), and <code>regroup_b1</code> for block 1 + left word (by reflexivity).</li>
+<li><strong>Record-exit episodes</strong>: by <code>reach</code>, all six classes close against the next class's start vector:
+  drop classes r5-&gt;r0, r1-&gt;r2, r3-&gt;r4 directly (target <code>Lc D ([], TV 0) (Rs_next, T0)</code>); take-in classes r0-&gt;r1,
+  r2-&gt;r3, r4-&gt;r5 found by search (rec3.v): the head passes x1..x3, and the new cut is inside a merged run, so it
+  must be split (see next steps). r4-&gt;r5 matches Rs_r5 at t' = 1 + 9t (<code>sub9</code>).</li>
+<li><strong><code>S_r5</code></strong>: the full record interval of class r5 on the machine, for every e &gt;= 2, every deep chain:
+  Gc (U0^m) ([W5t t; W5s t; W5a t; f1] :: deep) (evR [t] Rs_r5) --&gt;+ Gc (U0^m) ([W5s t; W5a t; f1; rtop deep 0] ::
+  rshift deep 0) (evR [t] Rs_r0), given 1 + 8t = 9^(e-2) and length deep = 1 + 2e.</li>
+</ul>
+<h3 id="tactic-notes-also-in-atlasrocq-notesmd">Tactic notes (also in atlas/rocq-notes.md)</h3>
+<ul>
+<li><code>apply (reach_LL 100)</code> on a goal with concrete <code>nu = []</code> hung in unification; <code>refine (reach_LL 100 D E l r [] L R _)</code>
+  with explicit arguments is instant.</li>
+<li>A proof that asserted <code>lw_ok i = true</code> then <code>unfold lw_ok in H</code> and <code>exact</code> hung at Qed (kernel); splitting into
+  <code>lw_ok_spec</code> (exact) and <code>lw_ok_lt</code> (forallb_forall) is instant.</li>
+<li><code>destruct (visit3 ls) ... eqn:</code> also rewrites the IH's premise; use <code>IH _ _ eq_refl</code>.</li>
+<li>Pos.iter-based "run until stuck" loops keep iterating after stopping (slow at fuel 1e5); <code>urun</code> recursion on
+  positive returns early.</li>
+<li>Large nat literals (&gt;= 5000) become <code>Nat.of_num_uint ...</code> and lia cannot read them: write 6561 as 81 * 81.</li>
+<li><code>ZArith</code> (needed for Z.div/Z.modulo in mk_jump) shadows <code>shift</code>/<code>top</code>: renamed to <code>rshift</code>/<code>rtop</code>.</li>
+</ul>
+<h3 id="next-steps-round-3">Next steps (round 3)</h3>
+<ol>
+<li>Take-in record steps (r0-&gt;r1, r2-&gt;r3, r4-&gt;r5): split the 4th run of Re_r (x3 -&gt; x4) as (b,3)(sneg b, n-3) by
+   alt_add, run part (a) with the rest of the right side abstract (<code>TV 1</code>): <code>Rc B ([(S0,1);(S0,L2)], TV 0)
+   (first3 ++ [(b4, cn 3)], TV 1)</code> -&gt; <code>Rc A (comp_runs sigma (blk U0), TV 0) ([], TV 1)</code>, then part (b)
+   <code>ep_run true Re' = Some Rs_next</code>. For r2, r4 the free xt_K is variable 1 (<code>LF 2 [0;4]</code>), sigma's 4th entry
+   <code>LF 0 [0;1]</code>. New nus = q_new :: rshift nus 0.</li>
+<li>Drop classes r1-&gt;r2 (block K' also dropped: left part = [(S0,1);(S0,673558+..)] ++ comp_runs sigma (blk U0)) and
+   r3-&gt;r4: same as <code>step_r5</code>. Then <code>S_r</code> for all six (the <code>S_r5</code> proof is the template; K0 = 3 or 4).</li>
+<li>Invariant: Inv r e t nus with the window shapes (r5: [W5t;W5s;W5a;f] :: deep; r0: [W0t;W0s;f;f'] :: deep;
+   r1: [all four] :: [W1t';f;f';f''] :: deep; r3: [W3t;f;f';f''] :: deep; r2, r4: any), length nus = K0 + 2e - 1,
+   1 + 8t = 9^(e-2). r4 -&gt; r5: e+1, t' = 1 + 9t (<code>sub9</code>).</li>
+<li>Base case: from cfg28 reach <code>Gc (U0^6, P0, 0) nus28 (evR [0] Rs_r5)</code> (concrete target; use a <code>conc</code> lemma
+   ev_runs nu rs X = ev_runs [] (conc nu rs) X to compare by cfg_eqb). nus28 from cfg28's chain (block 7:
+   [18701; 6227; 2069; 683]).</li>
+<li>nonhalt via progress_nonhalt with P c := exists r e t nus, Inv /\ c = Gc ...; then check_kill.</li>
+</ol>
+<h3 id="round-2-later-the-same-session-the-proof-is-complete">Round 2, later the same session: the proof is complete</h3>
+<p>After the checkpoint above, the remaining steps were all done in this round:</p>
+<ul>
+<li><code>step2.v</code>: record steps for all six classes. Drop classes (r5, r3: drop 1; r1: drop 5, the new block K' is part
+  of the left list of the <code>reach</code> start) by <code>drop_step</code>. Take-in classes (r0, r2, r4) by <code>take_step</code>: <code>split4</code>
+  splits the 4th run of the end vector (x3 -&gt; x4) as (b,3)(sneg b, n-3); part (a) is a <code>reach</code> with the rest of the
+  right side abstract (<code>TV 1</code>), ending <code>Rc A (comp_runs sig (blk U0), TV 0) ([], TV 1)</code>; part (b) is
+  <code>ep_run true Rp_r = Some Rs_next</code>. For r2, r4 the free last t gap of the chain is variable 1 (<code>xv = LF 2 [0;4]</code>).
+  r4 -&gt; r5 ends at <code>sub9 Rs_r5</code> (t -&gt; 1 + 9t, <code>ev_runs_sub9</code>).</li>
+<li><code>S_r0</code> .. <code>S_r4</code> (generated from the <code>S_r5</code> template; K0 = 3 or 4; constants written as products, e.g. 243 * 81).</li>
+<li><code>main.v</code>: <code>cls</code>, <code>cfgI</code>, <code>win</code> (window shapes), <code>Inv</code>, <code>inv_step : Inv s -&gt; exists s', cfgI s --&gt;+ cfgI s' /\ Inv s'</code>;
+  <code>nus28</code> (chain of record exit 28 in gap variables: block 7 = [18701; 6227; 2069; 683]), <code>inv28</code>, <code>base28</code>
+  (cfg28 -&gt; 3 cells to the cut -&gt; record-exit episode -&gt; cfgI (C5, 2, 0, nus28); the chain equality
+  <code>b28_chain</code> is plain <code>reflexivity</code>).</li>
+<li>Kill file: <code>nonhalt : ~ halts tm c0</code> via <code>multistep_nonhalt</code> (init28 + base28) and <code>progress_nonhalt_cond</code>
+  (cfgI, Inv, inv_step, inv28). 2,411 lines; compiles with native in 43 s; <code>Print Assumptions nonhalt</code>:
+  Closed under the global context.</li>
+</ul>
+<h3 id="check_kill-round-2">check_kill, round 2</h3>
+<ul>
+<li>First run (<code>rocq/check_kill_r2.log</code>): every check PASS except (h) coqchk: <code>Fatal error: out of memory</code> after
+  112 s (not a timeout, so FAIL). Cause, isolated on the round-1 file (ssim + base case only): coqchk re-checks
+  the single 18,571,896-step <code>runp</code> cast by VM conversion and grows to 7.1 GB (the 8 GB <code>ulimit -v</code> cap) in
+  100 s. The same cast with vm_compute in coqc needs only 433 MB (3:25), so the growth is coqchk's.</li>
+<li>Fix: the base case is cut into 38 pieces (<code>ck_0</code> .. <code>ck_37</code>, 500,000 simulator steps each, the 38
+  intermediate configurations written out as <code>b28_i</code>, generated by <code>gen28.v</code>). coqchk on the base-case-only file
+  then stays at about 3.3 GB and was still running after 9.5 min (the VM re-check is slow, so expect the 600 s
+  coqchk timeout, a warning under policy A). Compile time is unchanged (47 s for the base-case file).</li>
+<li>Second run: <code>rocq/check_kill_r2b.log</code>.</li>
+<li>Second run (chunked base case): <strong>RESULT: PASS, exit 0.</strong> All checks PASS; coqchk SKIP after its 600 s cap
+  (policy A warning: the native/VM computations rest on coqc's checks). Isolated <code>Print Assumptions nonhalt</code>:
+  closed (0 assumptions).</li>
+</ul>
+<h3 id="state-after-round-2">State after round 2</h3>
+<p>The kill file is complete and passes check_kill. Rounds 3-4 are free for: a coqchk that finishes (it would need
+a cheaper base case, e.g. starting the induction at an earlier record exit), clean-up of the file (dead helper
+lemmas such as <code>sum_false_true</code>), and the public write-up.</p>
+</main></body></html>

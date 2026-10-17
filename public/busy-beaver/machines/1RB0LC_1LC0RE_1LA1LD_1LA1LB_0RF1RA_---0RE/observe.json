@@ -1,0 +1,576 @@
+{
+ "tm": "1RB0LC_1LC0RE_1LA1LD_1LA1LB_0RF1RA_---0RE",
+ "rank": 88,
+ "class_sheet": "Bell eats counter",
+ "class_guess": "Bell eats counter: binary counter on 2-cell digits (10 = 1, 00 = 0) with junk separators, bitten once per bell",
+ "confidence": "med",
+ "summary": "Each bounce adds 1 to a binary counter and moves 3 bell cells to a middle field; each bell end eats a counter digit.",
+ "mechanism": [
+  "Turn config R(u,e) = 0^inf u <C 0 1^e 0^inf, u = w 1 (101)^k (w counter, 1 separator, (101)^k middle field). Bounce: R(w 1 (101)^k, e+3) -> R(inc(w) 1 (101)^(k+1), e) in 6k+4t+9 steps (t = trailing 1-digits); exact on all 60,001 turns to 5.1e7.",
+  "Eat (e = r in {0,2}): z = inc(inc(w)); z = p 00 -> R(p 1, 3k+3+3[r=2]); z = q c 10 -> R(q 101, 3k+2+3[r=2]). Matches all 631 checked real eats (287 from A, 344 from the certified start B). So e mod 3 is always 0 or 2.",
+  "Start B (IndBECv1 cert) stays on the clean orbit R(enc(s) 1, 3s) -> R(enc(s+1) 1, 3s+3). Start A keeps leaving it: odd eats make 010 tails and lone-1 separators inside w (90 of 289 cycle starts to 5e7 are not clean); inc passes through separators; w never contains 1111, which every halting inc input up to length 13 but one has. 88 and 280 run the same orbit (identical tape at 1e9): 280's table equals 88's with state B split by entry; they diverge only if 88's F reads 0 or 88's B (entered by D1) reads 1, which are exactly the two halting reads."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, first 10,000 steps",
+   "why": "The site's view. Left edge: the counter. White triangles on the right: one bell each.",
+   "primary": true,
+   "start": "blank",
+   "rows": "10,000 steps squeezed into 500 px rows (1 px row = 20 steps, the site's bilinear squeeze)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:300",
+   "png": "img/every300_3e5.png",
+   "html": null,
+   "steps": 300000,
+   "caption": "Every 300th step to 300,000: bells and counter",
+   "title": "Every 300th step, first 300,000 steps",
+   "why": "Each white triangle is one bell. Compare the triangle sizes going down, and watch the left edge.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every 300 steps (1,001 rows, steps 0..300,000)",
+   "window": "cells -160..74, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom rows: one per cycle start",
+   "png": "img/cyclestarts_A_vs_B.png",
+   "html": null,
+   "steps": 50808142,
+   "caption": "Counter word at each cycle start: ours (left) vs certified start (right)",
+   "title": "Counter at cycle starts: start A vs B",
+   "why": "One row per cycle (first right turn after an eat). Compare colours near each counter's right end in both panels.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one per cycle start, the last 150 cycles before step 5.1e7 (left: start A, steps 5,770,734..50,808,142; right: start B, steps 7,839,008..42,019,600), 3 px per row",
+   "window": "cells 0..39, 1 px = 0.33 cells (3 px per cell), counted from the leftmost 1 of each row (it moves left 2-4 cells per cycle); left panel start A, right panel start B, slate gap between",
+   "legend": "white = 1 and black = 0 in the clean binary part of the counter (digits 10/00), orange = 1 and maroon = 0 in the junk part (from the first non-digit cell to the counter's end), grey = separator 1, middle field and bell, dark grey = 0 in the middle field, slate = gap between the panels",
+   "style": "custom"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e8.png",
+   "html": null,
+   "steps": 100000000,
+   "caption": "Left/right records to 1e8",
+   "title": "Left and right records to 1e8",
+   "why": "One row per new leftmost or rightmost cell. The left edge grows about twice as fast as the right.",
+   "primary": false,
+   "start": "blank",
+   "rows": "left/right records (1,593 rows, steps 0..1e8)",
+   "window": "cells -1068..524, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "cycle start R(w 1 (101)^k, e) after an eat (k = 0 or 1)",
+  "vars": [
+   "e (bell length)",
+   "counter cells |w|",
+   "clean counter (1) or junk (0)",
+   "-lo (left edge)"
+  ],
+  "rows": [
+   {
+    "step": 27,
+    "values": [
+     2,
+     0,
+     0,
+     4
+    ]
+   },
+   {
+    "step": 1714,
+    "values": [
+     39,
+     6,
+     1,
+     32
+    ]
+   },
+   {
+    "step": 10071,
+    "values": [
+     65,
+     11,
+     0,
+     54
+    ]
+   },
+   {
+    "step": 28163,
+    "values": [
+     96,
+     10,
+     1,
+     76
+    ]
+   },
+   {
+    "step": 61843,
+    "values": [
+     125,
+     13,
+     0,
+     96
+    ]
+   },
+   {
+    "step": 113367,
+    "values": [
+     153,
+     12,
+     1,
+     116
+    ]
+   },
+   {
+    "step": 186191,
+    "values": [
+     179,
+     10,
+     1,
+     132
+    ]
+   },
+   {
+    "step": 282524,
+    "values": [
+     216,
+     12,
+     1,
+     156
+    ]
+   },
+   {
+    "step": 416283,
+    "values": [
+     245,
+     15,
+     0,
+     178
+    ]
+   },
+   {
+    "step": 586100,
+    "values": [
+     282,
+     12,
+     1,
+     200
+    ]
+   },
+   {
+    "step": 796806,
+    "values": [
+     306,
+     14,
+     1,
+     218
+    ]
+   },
+   {
+    "step": 1047457,
+    "values": [
+     335,
+     15,
+     0,
+     238
+    ]
+   },
+   {
+    "step": 1342806,
+    "values": [
+     360,
+     14,
+     1,
+     254
+    ]
+   },
+   {
+    "step": 1684524,
+    "values": [
+     393,
+     14,
+     1,
+     276
+    ]
+   },
+   {
+    "step": 2088433,
+    "values": [
+     422,
+     17,
+     0,
+     298
+    ]
+   },
+   {
+    "step": 2553088,
+    "values": [
+     456,
+     14,
+     1,
+     318
+    ]
+   },
+   {
+    "step": 3083256,
+    "values": [
+     483,
+     16,
+     1,
+     338
+    ]
+   },
+   {
+    "step": 3673633,
+    "values": [
+     507,
+     14,
+     1,
+     354
+    ]
+   },
+   {
+    "step": 4335252,
+    "values": [
+     539,
+     17,
+     0,
+     378
+    ]
+   },
+   {
+    "step": 5079378,
+    "values": [
+     570,
+     16,
+     1,
+     396
+    ]
+   },
+   {
+    "step": 5892136,
+    "values": [
+     597,
+     16,
+     1,
+     414
+    ]
+   },
+   {
+    "step": 6791028,
+    "values": [
+     629,
+     17,
+     0,
+     438
+    ]
+   },
+   {
+    "step": 7793930,
+    "values": [
+     669,
+     16,
+     1,
+     462
+    ]
+   },
+   {
+    "step": 8900098,
+    "values": [
+     696,
+     16,
+     1,
+     480
+    ]
+   },
+   {
+    "step": 10105754,
+    "values": [
+     729,
+     16,
+     1,
+     502
+    ]
+   },
+   {
+    "step": 11415984,
+    "values": [
+     755,
+     20,
+     0,
+     522
+    ]
+   },
+   {
+    "step": 12834566,
+    "values": [
+     789,
+     16,
+     1,
+     542
+    ]
+   },
+   {
+    "step": 14368231,
+    "values": [
+     818,
+     17,
+     0,
+     562
+    ]
+   },
+   {
+    "step": 16027820,
+    "values": [
+     851,
+     20,
+     0,
+     586
+    ]
+   },
+   {
+    "step": 17829276,
+    "values": [
+     885,
+     18,
+     1,
+     608
+    ]
+   },
+   {
+    "step": 19738346,
+    "values": [
+     912,
+     18,
+     1,
+     626
+    ]
+   },
+   {
+    "step": 21764234,
+    "values": [
+     936,
+     18,
+     1,
+     642
+    ]
+   },
+   {
+    "step": 23902065,
+    "values": [
+     968,
+     17,
+     0,
+     662
+    ]
+   },
+   {
+    "step": 26202280,
+    "values": [
+     1002,
+     16,
+     1,
+     684
+    ]
+   },
+   {
+    "step": 28653845,
+    "values": [
+     1034,
+     19,
+     0,
+     708
+    ]
+   },
+   {
+    "step": 31274013,
+    "values": [
+     1067,
+     16,
+     1,
+     730
+    ]
+   },
+   {
+    "step": 34056883,
+    "values": [
+     1100,
+     19,
+     0,
+     752
+    ]
+   },
+   {
+    "step": 37005935,
+    "values": [
+     1130,
+     19,
+     0,
+     772
+    ]
+   },
+   {
+    "step": 40111437,
+    "values": [
+     1158,
+     21,
+     0,
+     792
+    ]
+   },
+   {
+    "step": 43354687,
+    "values": [
+     1181,
+     16,
+     1,
+     806
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "R1 bounce (clean counter)",
+   "from": "0^inf enc(v) 1 (101)^k <C 0 1^(e+3) 0^inf",
+   "to": "0^inf enc(v+1) 1 (101)^(k+1) <C 0 1^e 0^inf",
+   "steps": "6k+4t+9",
+   "cases": "v>=1, k>=0, e>=0; enc(v) = v in binary, digit 1 = 10, digit 0 = 00; t = trailing 1-digits of v (overflow included); cross-checked with tools/sim.py on 20 more",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R2 inc through a 110 separator",
+   "from": "enc(a) 110 enc_d(b) 1 (101)^k <C 0 1^(e+3)",
+   "to": "enc(a) 110 enc_d(b+1) ... if b+1 < 2^d, else enc(a+1) 110 (00)^d ...",
+   "steps": null,
+   "cases": "enc_d = d digits with leading 00s; the separator is transparent to the carry",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R3 inc through a lone 1 then 00",
+   "from": "enc(a) 1 enc_d(b) 1 (101)^k <C 0 1^(e+3)",
+   "to": "enc(a) 1 enc_d(b+1) 1 (101)^(k+1) <C 0 1^e",
+   "steps": null,
+   "cases": "b < 2^(d-1) (top digit 00); when the top digit becomes 10 the word is R2's form",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R4 eat, clean counter",
+   "from": "0^inf enc(v) 1 (101)^k <C 0 1^r 0^inf",
+   "to": "0^inf w' <C 0 1^e' 0^inf, w' by the parity of v (see cases)",
+   "steps": null,
+   "cases": "r in {0,2}; v=2m -> 0^inf enc(m+1) 1 <C 0 1^(3k+3+3[r=2]); v=2m+1, m+1 odd -> enc((m+1)//2) 1 101 <C 0 1^(3k+2+3[r=2]); v=2m+1, m+1 even -> enc((m+1)/2) 010 1 <C 0 1^(3k+2+3[r=2]) (010 tail = junk)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R5 eat, any counter word",
+   "from": "0^inf w 1 (101)^k <C 0 1^r 0^inf",
+   "to": "z = inc(inc(w)): z = p 00 -> 0^inf p 1 <C 0 1^(3k+3+3[r=2]); z = q c 10 -> 0^inf q 101 <C 0 1^(3k+2+3[r=2])",
+   "steps": null,
+   "cases": "r in {0,2}, k>=1; random words from the run; also exact on all 631 real eats (A and B)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R6 inc does not depend on k, e",
+   "from": "0^inf w 1 (101)^k <C 0 1^(e+3)",
+   "to": "0^inf inc(w) 1 (101)^(k+1) <C 0 1^e",
+   "steps": null,
+   "cases": "2,000 distinct counter words from the run; random k, e pairs give the same inc(w)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R7 certified orbit (start B)",
+   "from": "0^inf enc(s) 1 <C 0 1^(3s) 0^inf",
+   "to": "0^inf enc(s+1) 1 <C 0 1^(3s+3) 0^inf",
+   "steps": null,
+   "cases": "s>=2; s bounces (R1) then one even eat (R4)",
+   "validated": {
+    "instances": 20,
+    "passed": 20
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "IndBECv1.v:626",
+  "module": "Others (nonhalt17)",
+  "machine": "1LB0RD_1LC1LE_1RA0LB_0RF1RC_1LC1LA_---0RD",
+  "diff": "same table, start B (its A..F = our B,C,A,E,D,F; no mirror); our start A = its C",
+  "applies": "partly",
+  "note": "Cert = hlin with side_binary_inc_rule d1=[0;1] (our names: l 00 (10)^n <C 0 r -> l 10 (00)^n 0 F> r), i.e. R1 on clean words; its orbit is R7 and uses only R4's even case. Ours also needs odd eats (e = 2 mod 3 cycles), separators (R2, R3) and the generic eat R5; 7 hlinx configs already fail on start A."
+ },
+ "strategy": "Find one regular language L of counter words w (clean digits, lone-1 separators, 010 tail) closed under inc (R1-R3, R6) and the eat (R5), with e = 0 or 2 mod 3; halting needs an inc on words with 1111-type runs, which L must exclude. Then a hand proof (Rocq: inc lemmas per word shape + progress_nonhalt_cond), with 280 covered by the shared orbit.",
+ "risks": [
+  "No closed language yet: separators are born at odd eats and die when eaten (29 junk-eat shapes in 83 junk eats); an 8-gram closure (words <= 20) reaches halting words after 3 rounds.",
+  "inc on general words is known only operationally (R1-R3 cover clean and single-separator words; multi-separator words rest on sampling, R6).",
+  "280 halts on different reads (B after D1 reading 1); a shared proof must exclude both 88's and 280's halting reads."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "cyclestarts_A_vs_B: are there orange/maroon (junk) cells near the counter's right end in the left panel (start A) and none in the right panel (certified start B)?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "every300_3e5: do the white triangles (bells) get steadily taller down the picture, with no sudden collapse?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Next stage: spend up to 2 h on an automaton search for a closed counter-word language (then a hand proof), or park? Recommendation: language search.",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 10000000000,
+  "cells": 7346,
+  "nonzeros": 5089,
+  "growth": "span ~ t^(1/3) (3,420 cells at 1e9, 7,346 at 1e10; bell grows ~3 cells per cycle, cycle cost ~ bell^2)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism pinned: every turn to 5.1e7 is a bounce (R1/R6) or an eat (R5); the certified start B is the clean orbit R7. Ours leaves the clean words (junk separators from odd eats), and no closed invariant language is known yet."
+}

@@ -1,0 +1,713 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA/notes.md · <a href="/busy-beaver/machines/1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA/notes.md.html">raw</a></div>
+<h1 id="1rb0ld_0rc-_0ld0rf_1le1ld_0la0rd_0rb1ra">1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA</h1>
+<p>Label: 693 (740 list, line 693). Sheet: Bell eats counter; Level-1 tab note "Chaotic bell eats counter" (mxdys, Discord 2024-11-03). Dennis (2026-10-13): fair game for this look.
+Twins: lines 528, 310 and 548 run time-rescaled copies of this bell trajectory (reports/bec-sweep/ranking.md, Critic).
+Viewer: https://bbchallenge.org/1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA</p>
+<h2 id="693-bursts-2026-10-13">693 bursts (2026-10-13)</h2>
+<p><strong>Verdict: STRUCTURED.</strong> No cryptid flag.</p>
+<p>Every burst starts from a configuration that is an exact function of one integer n (the bell is about 2^n); the n = 12 tapes were predicted from the formulas before the run reached them, and appeared exactly. Between bursts, every reset obeys one drop law, and the catch-up after a reset is a fixed list that depends only on the ruler digit j. The odd-n burst is a 3/4 : 1/4 split followed by halving rounds whose offsets do not depend on n.</p>
+<p>Everything seen is binary arithmetic with small fixed offsets (powers of 2, a period-3 cycle of counter shapes). No rule seen multiplies by 3/2 or branches on residues of the bell. The only case splits are the counter's period-3 shape and, apparently, j mod 3 in the short tails of the catch-up lists. So this is not Collatz-like.</p>
+<p>Two pieces are not yet closed formulas: the catch-up lists for j &gt;= 12 (seen only up to j = 11), and the last few rounds of an odd-n burst (the "cleanup", round 8 onward), which differ from n to n. A proof needs both lemmas.</p>
+<p>Simulation is evidence only. Nothing here is a kill.</p>
+<h3 id="data">Data</h3>
+<ul>
+<li>Left-edge records in state A from the blank tape to 4.1e11 steps: 5,372 records (not kept, ~0.5 MB). Rebuild with <code>scripts/dumpL.py 2.4e11 out.jsonl</code> (about 16 min), then a continuation from its last record with <code>scripts/fromcfg.py</code> for 1.7e11 more steps (steps offset by 239,934,530,469; about 11 min).</li>
+<li>Runs from the canonical burst configuration O(n) (below) for n = 7, 9, 11, 13, 15 (<code>scripts/fromcfg.py</code>; n = 13 to 3.7e10 steps, n = 15 to 2.3e11, both past the ruler restart). Their left-edge records are in <code>work/burst_O&lt;n&gt;.jsonl</code> (steps counted from O(n)).</li>
+<li><code>work/resets_41e11.txt</code>: every reset to 4.1e11 (left-edge record where c falls), labelled <code>ruler</code> or <code>BURST</code>.</li>
+<li><code>work/canon.txt</code>: exact-match check of the predicted canonical tapes (<code>scripts/check_canon.py</code>).</li>
+<li>No accelerated model helps yet: sligocki's simulator (<code>tools/qsim.py</code>) finds block size 1 and proves 0 rules on 693 (4.2e6 steps in 150 s), so everything here is direct simulation with the C core.</li>
+</ul>
+<h3 id="notation">Notation</h3>
+<p>At a left-edge record the tape reads</p>
+<div class="highlight"><pre><span></span><code>0^inf &lt;A  L  (w1)^c (w2)^d  R  0^inf
+</code></pre></div>
+
+<ul>
+<li>L is the counter, in the words 010, 001, 100 (plus 1001 and a few mixed words near events).</li>
+<li>c and d are the two long runs. Their words are the four phases 0011, 1001, 1100, 0110 of one period-4 pattern.</li>
+<li>s = c + d is the bell.</li>
+</ul>
+<p>A head crossing a long run rotates its phase. In state A moving right, 0011 becomes 1001; F right turns 1001 into 1100, C right 1100 into 0110, B right 0110 into 0011. Moving left: D turns 1001 into 0011 and 1100 into 1001, A turns 0011 into 0110, E turns 0110 into 1100.</p>
+<p>A <strong>reset</strong> is a left-edge record at which c falls.</p>
+<h3 id="1-the-ruler-law-between-bursts">1. The ruler law (between bursts)</h3>
+<p>To 4.1e11 there are 882 resets. 836 of them have the counter in the form</p>
+<div class="highlight"><pre><span></span><code>L = (010)^k 011 (001)^j
+</code></pre></div>
+
+<p>and every one of these drops c by exactly</p>
+<div class="highlight"><pre><span></span><code>drop(j) = 3 * 2^(j-2) - 2        (j = 2..11: 1, 4, 10, 22, 46, 94, 190, 382, 766, 1534)
+</code></pre></div>
+
+<p>No exception (0 mismatches; to 8e10 it was 479 of 518, to 2.4e11 696 of 741).</p>
+<ul>
+<li>k + j is constant inside an epoch: n + 2 words while 2^n &lt;= s &lt; 2^(n+1). Ruler resets per epoch:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>k + j</th>
+<th>s range</th>
+<th>resets</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>7</td>
+<td>43-58</td>
+<td>4</td>
+</tr>
+<tr>
+<td>6</td>
+<td>8</td>
+<td>76-124</td>
+<td>8</td>
+</tr>
+<tr>
+<td>7</td>
+<td>9</td>
+<td>142-250</td>
+<td>19</td>
+</tr>
+<tr>
+<td>8</td>
+<td>10</td>
+<td>268-508</td>
+<td>38</td>
+</tr>
+<tr>
+<td>9</td>
+<td>11</td>
+<td>529-1018</td>
+<td>81</td>
+</tr>
+<tr>
+<td>10</td>
+<td>12</td>
+<td>1036-2044</td>
+<td>161</td>
+</tr>
+<tr>
+<td>11</td>
+<td>13</td>
+<td>2068-4090</td>
+<td>328</td>
+</tr>
+<tr>
+<td>12</td>
+<td>14</td>
+<td>4108-5350 (run ends at 4.1e11)</td>
+<td>197</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The largest j in epoch n is n for odd n and n - 1 for even n (j &lt;= 11 in epoch 11, checked to the end of the epoch).</li>
+<li>The j sequence cycles 2, 4, 3, X with X = 5, 6, 5, 7, 5, 6, 5, 8, ...: X = 4 + (1 + v2(t)), a binary ruler.</li>
+<li>After a large reset c catches up in halving rounds. The j = 2 reset that would follow X &gt;= 8 does not show as a separate drop; it falls inside this catch-up.</li>
+</ul>
+<h3 id="1b-the-catch-up-is-a-fixed-function-of-j">1b. The catch-up is a fixed function of j</h3>
+<p>For every ruler reset to 4.1e11 I listed the gains of c at the following left-edge records, up to the next fall of c (<code>scripts/catchup.py</code>, output <code>work/catchup_41e11.txt</code>). The list depends on j only: it is the same at every occurrence, for every k and in every epoch (j = 7: 27 times, j = 8: 11 times, j = 9: 6 times; j = 2, 3, 4: 193-213 times each). The only variants are a last entry that is a canonical wrap (E, V, W), and one list cut off by the end of the data.</p>
+<table>
+<thead>
+<tr>
+<th>j</th>
+<th>drop</th>
+<th>gains of c until the next drop</th>
+<th>rounds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>1</td>
+<td>3, 4</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>5, 1, 5, 1, 4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>4</td>
+<td>10</td>
+<td>8, 1, 4, 5, 4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>5</td>
+<td>22</td>
+<td>14, 3, 6, 4, 3, 5, 1, 4</td>
+<td>9</td>
+</tr>
+<tr>
+<td>6</td>
+<td>46</td>
+<td>26, 7, 10, 6, 5, 5, 1, 4</td>
+<td>9</td>
+</tr>
+<tr>
+<td>7</td>
+<td>94</td>
+<td>50, 19, 16, 9, 7, 2, 5, 4</td>
+<td>9</td>
+</tr>
+<tr>
+<td>8</td>
+<td>190</td>
+<td>98, 43, 28, 15, 10, 3, 4, 3, 5, 1, 4</td>
+<td>12</td>
+</tr>
+<tr>
+<td>9</td>
+<td>382</td>
+<td>194, 91, 52, 27, 16, 5, 6, 5, 5, 1, 4</td>
+<td>12</td>
+</tr>
+<tr>
+<td>10</td>
+<td>766</td>
+<td>386, 187, 100, 51, 28, 11, 9, 7, 2, 5, 4</td>
+<td>12</td>
+</tr>
+<tr>
+<td>11</td>
+<td>1534</td>
+<td>770, 379, 196, 99, 52, 23, 15, 10, 2, 5, 3, 5, 1, 4</td>
+<td>15</td>
+</tr>
+</tbody>
+</table>
+<p>Three regularities, exact on this table:</p>
+<ul>
+<li>For j = 6..11 the m-th gain is <code>3 * 2^(j-2-m) + e_m</code> while j - 2 - m &gt;= 1, with offsets that do not depend on j:</li>
+</ul>
+<p><code>e_1 .. e_9 = 2, -5, 4, 3, 4, -1, 3, 4, -1        (period 3 from m = 4: 3, 4, -1)</code></p>
+<p>The term with 2^0 follows the same rule except for j = 8 (3 where the rule gives 2). After it comes a short tail. j = 5 deviates at m = 2 (3 instead of 1).
+- For j &gt;= 3 the block lasts 3 * floor((j+1)/3) + 3 rounds: the counter eats its 001-words three per three rounds, as in the odd burst.
+- Over the block, c gains exactly 2 per round net, for every j = 2..11: (sum of gains) - drop(j) = 6, 12, 18, 24, 30 for blocks of 3, 6, 9, 12, 15 rounds.</p>
+<p>So the left-edge values of c between canonical events are a closed function of the binary ruler: drop(j), then the fixed gain list of j. The open part shrinks to the gain lists for j &gt;= 12 (they occur from epoch 13 on, beyond direct simulation) and their short tails, which look periodic in j mod 3 (j = 7 and 10 end in 2, 5, 4).</p>
+<p>The odd burst runs the same halving with other constants: for n = 15 the c gains from round 2 are 12292, 6147, 3076, 1535, 771, 388, close to the j = 15 rule (12290, 6139, 3076, 1539, 772, 383) but not equal, because the counter words differ.</p>
+<h3 id="2-the-bursts-are-canonical-events">2. The bursts are canonical events</h3>
+<p>The other 46 drops are all accounted for:</p>
+<ul>
+<li>12 in the start-up before step 127,661 (bell under 40);</li>
+<li>the rest at the canonical events below, or inside an odd-n burst. The 7 non-ruler drops between 8e10 and 4.1e11 are exactly E(12), V(12) and W(12,0..4).</li>
+</ul>
+<p><strong>Odd n: O(n).</strong> The bell reaches exactly 2^n - 1 with d = 0 and the counter all 010:</p>
+<div class="highlight"><pre><span></span><code>O(n) = 0^inf &lt;A (010)^(n+2) (01100)^2 (1100)^(2^n - 1) (1001)^2 100011 0^inf
+</code></pre></div>
+
+<p><strong>Even n: E(n), V(n), W(n,i).</strong> c overflows 2^n and wraps (drop 2^n):</p>
+<div class="highlight"><pre><span></span><code>E(n)   = 0^inf &lt;A (010)^(n+2) (0110)^3 (0011)^(2^n - 1) (001)^2 1 (00110)^2 0^inf                 (c = 3)
+V(n)   = 0^inf &lt;A (010)^(n+1) 011001 (0011)^5 (1001)^(2^n - 1) (0011)^2 0^3 1^2 0^inf              (c = 5)
+W(n,i) = 0^inf &lt;A (010)^(n-1-2i) 01 (100)^(2i+4) (1100)^c_i (0110)^(2^n + c_i - 8) 01 (0011)^2 0^3 1^2 0^inf
+         c_i = 2*4^i + 5 = 7, 13, 37, 133, 517, ...     for i = 0 .. (n-4)/2
+</code></pre></div>
+
+<p>After W(n,i) the ruler runs with largest j = 2i + 3, then the next W follows. After the last W, i = (n-4)/2, that is j up to n - 1, and then O(n+1) occurs.</p>
+<p><strong>Exact matches (whole tape, byte for byte, in this order):</strong></p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>events found</th>
+<th>step of the first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>O(5)</td>
+<td>127,661</td>
+</tr>
+<tr>
+<td>6</td>
+<td>E, W(6,0), W(6,1)</td>
+<td>880,293</td>
+</tr>
+<tr>
+<td>7</td>
+<td>O(7)</td>
+<td>6,149,227</td>
+</tr>
+<tr>
+<td>8</td>
+<td>E, W(8,0..2)</td>
+<td>47,440,191</td>
+</tr>
+<tr>
+<td>9</td>
+<td>O(9)</td>
+<td>366,476,421</td>
+</tr>
+<tr>
+<td>10</td>
+<td>E, W(10,0..3)</td>
+<td>2,905,735,165</td>
+</tr>
+<tr>
+<td>11</td>
+<td>O(11)</td>
+<td>23,042,085,223</td>
+</tr>
+<tr>
+<td>12</td>
+<td>E, W(12,0..4)</td>
+<td>183,927,438,267</td>
+</tr>
+</tbody>
+</table>
+<p>V(n) also matches for n = 6, 8, 10, 12 (steps 958,793; 48,539,363; 2,922,713,505; 184,196,676,959). The steps of W(12,0..3) are 184,601,031,774; 186,224,346,174; 192,812,539,814; 220,718,381,542. W(12,4) follows at 359,177,463,994 (continuation run). In all, 26 of 26 predicted tapes for n = 5..12 occur, in the predicted order.</p>
+<p>The n = 11 to n = 12 step is the first that was predicted before it was seen: E(12) and W(12,0..4) were written down from the formula when the run stood at 8e10 (<code>work/canon_8e10.txt</code> lists them as not seen) and found later at 1.84e11 to 3.59e11.</p>
+<p>So the epoch map is closed at the level of these configurations:</p>
+<div class="highlight"><pre><span></span><code>E(n) -&gt; V(n) -&gt; W(n,0) -&gt; ... -&gt; W(n,(n-4)/2) -&gt; [ruler up to j = n-1] -&gt; O(n+1) -&gt; [burst] -&gt; [ruler up to j = n+1] -&gt; E(n+2)
+</code></pre></div>
+
+<h3 id="3-inside-an-odd-burst">3. Inside an odd burst</h3>
+<p>Put Q = 2^(n-2). Round r is the r-th left-edge record after O(n).</p>
+<table>
+<thead>
+<tr>
+<th>r</th>
+<th>c</th>
+<th>d</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>3Q</td>
+<td>Q + 3</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Q</td>
+<td>3Q + 3</td>
+</tr>
+<tr>
+<td>r = 2..7</td>
+<td>s - d</td>
+<td>3Q / 2^(r-1) - delta_r</td>
+</tr>
+</tbody>
+</table>
+<p>with delta_2..delta_7 = 0, 2, 5, 3, 5, 8 for n = 11, 13 and 15. For n = 9 the same deltas hold up to r = 6, and d runs out at r = 7; n = 7 runs out at r = 5. The counter meanwhile cycles through three shapes, eating three 001 words every three rounds:</p>
+<div class="highlight"><pre><span></span><code>(010)^r 011 (001)^x (100)^2  -&gt;  (010)^(r+1) 01 (100)^(x-1) (1001)^2  -&gt;  (010)^(r+2) 01 (100)^x  -&gt;  ...
+</code></pre></div>
+
+<p>The rounds seen only halve d (d to about d/2, minus a small offset). No round multiplies by 3/2, and nothing Collatz-like was seen; this looks like binary arithmetic, the counter recording the halvings.</p>
+<p><strong>Cleanup (r &gt;= 8) and the flip.</strong> After round 7 the counter changes shape and the remaining d (about 3 * 2^(n-8)) is used up in a few irregular rounds. Then the field flips to a single run and the ruler restarts with d close to 2^n:</p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>d after the halving</th>
+<th>rounds to the flip</th>
+<th>first state after the flip</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>0 at r = 5</td>
+<td>-</td>
+<td>c = 4, d = 131</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0 at r = 7</td>
+<td>-</td>
+<td>c = 11, d = 510</td>
+</tr>
+<tr>
+<td>11</td>
+<td>16 at r = 7</td>
+<td>2</td>
+<td>c = 9, d = 2049</td>
+</tr>
+<tr>
+<td>13</td>
+<td>88 at r = 7</td>
+<td>5 (63, 25, 15, 10, 0)</td>
+<td>c = 14, d = 8191</td>
+</tr>
+<tr>
+<td>15</td>
+<td>376 at r = 7</td>
+<td>5 (207, 97, 47, 18, 0)</td>
+<td>c = 10, d = 32771</td>
+</tr>
+</tbody>
+</table>
+<p>The cleanup words differ with n (n = 7 and 13 both use 1001001 words, n = 15 uses 10011001001001 and 10011001100; n = 13 also has one extra 2^n wrap, c = 8203 to 11, four rounds after the flip). For n = 13 and 15 the cleanup takes 5 rounds. For n = 15 its d values still roughly halve each round (376, 207, 97, 47, 18); for n = 13 the first step does not (88, 63, 25, 15, 10).</p>
+<p>These are not new words, though. The ordinary catch-up after a large ruler reset uses the same counter words: 129 left-edge records of the main run contain 1001001-words. For example, after the j = 7 reset at step 113,589,153,096 the counter passes through</p>
+<div class="highlight"><pre><span></span><code>0 (100)^5 (1001001001)^3        (010)^8 (0100110010)^2 01
+</code></pre></div>
+
+<p>which are the shapes of the n = 13 cleanup (<code>0 (100)^7 (1001001)^4 001</code>, <code>(010)^9 (0100110)^2 (001)^4</code>). So the cleanup looks like the catch-up mechanism acting on a small gap, not a separate process.</p>
+<p>How the ruler restarts, with k + j = n + 2 as in the table of section 1:</p>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>first ruler reset after O(n)</th>
+<th>resets checked</th>
+<th>exceptions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11</td>
+<td>round 19 (j = 3, 5, 2, 4, 3, ...)</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>step 13,473,281,525 after O(13) (j = 5, 2, 4, 3, 6, 2, 4, 3)</td>
+<td>8</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15</td>
+<td>round 21, step 189,144,183,456 after O(15) (j = 2, 5; k + j = 17)</td>
+<td>2 (run stopped at 2.3e11)</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The catch-up lists after these resets are exactly the lists of section 1b (checked for the n = 13 run: j = 2, 3, 4, 5, 6; for n = 15: j = 2, and the start of j = 5). n = 15 has no extra 2^n wrap between the flip and the end of its run, unlike n = 13.</p>
+<p>Reaching E(n+1): the main run checks it for n = 5, 7, 9 and 11, exactly (E(6), E(8), E(10), E(12)). For n = 13 and 15 it is out of reach of direct simulation (E(14) is near 1.2e13 steps, E(16) near 7e14).</p>
+<h3 id="what-is-open">What is open</h3>
+<ul>
+<li>The catch-up law of section 1b for all j: the leading terms 3 * 2^(j-2-m) + e_m fit j = 6..11, but the short tails (after the 2^0 term) are seen only for j &lt;= 11, and they may depend on j mod 3. A proof needs them for every j, from the word-level rules.</li>
+<li>The same halving inside an odd burst, whose offsets (delta_r and the cleanup) differ from the reset catch-up because the counter words differ.</li>
+<li>The cleanup after round 7 of an odd burst, for all odd n. Its input d grows like 3 * 2^(n-8), so it is not a fixed finite patch; it is probably the same catch-up mechanism on a smaller gap. It takes 5 rounds for both n = 13 and n = 15.</li>
+<li>That every odd burst ends in E(n+1): checked to n = 11 only.</li>
+<li>The round map itself at word level (normal round, reset round, catch-up round), from the transition table.</li>
+</ul>
+<h3 id="route-if-funded">Route if funded</h3>
+<ol>
+<li>Word-level round map from the transitions, using the phase rotations above. Check it against all 5,372 left-edge records to 4.1e11.</li>
+<li>Closed form for the catch-up. Check it against every reset to 4.1e11 and the bursts for n = 7..15.</li>
+<li>With that round map, an abstract (record-level) simulator can run past O(13) and E(14), which direct simulation cannot reach. It must reproduce all 5,372 records exactly first.</li>
+<li>proof.md: induction on n, E(n) -&gt; O(n+1) -&gt; E(n+2), with the ruler as a binary counter of n + 2 words.</li>
+<li>The same abstract argument then carries 528, 310 and 548, each with its own word-level rules.</li>
+</ol>
+<p>Stop rule for that stage: if the catch-up offsets do not close within 2 hours, park.</p>
+<h2 id="proof-stage-2026-10-14">Proof stage (2026-10-14)</h2>
+<p>Funded by Dennis ("fund 693", 2026-10-14). About 2 h. <strong>Outcome: parked (STUCK).</strong> The catch-up law was not closed, and it turned out not to be the right lemma. Working version in <code>proof.md</code>, checker <code>scripts/check_proof.py</code> (C1-C7 all pass).</p>
+<p><strong>The left-edge records are not the rounds.</strong> Between two records the machine runs a binary counter with 3-cell digits (<code>000</code>, <code>001</code>, carry <code>010</code>), big-endian, between the marker 1 and a 13-cell interface. Each shuttle of the head between the counter and the wall of the period-4 field is one counter step, and it moves the wall one block (phase 1) or half a block (phases 2-4) to the left. Each time the wall reaches the interface the field has rotated one step and a new wall starts at the right end (phase change). Once per revolution (4 phases) the wall "eats" the lowest digit (it becomes a frozen <code>011</code> and the interface moves 3 cells left). A left-edge record is a counter overflow: the carry runs to the blank end, the counter gains a digit and restarts at 0. Example: the record at 1,128,713 is followed by 127 = 2^7 - 1 counter steps (8 in phase 1, 119 in phase 2) and the next record at 1,173,120 (<code>work/inner_shapes_12rounds_from_1128713.txt</code>, <code>scripts/inner_shapes.py</code>).</p>
+<p><strong>Rules proved or checked this stage</strong> (proof.md sections 2-3):
+- C1 eight rotation rules (4 steps), with B reading only 0 inside them; C2 halting criterion: halt iff A or F reads 0 with a 1 to its right (the undefined entry is B1, not C1).
+- Phase 1: X1(g,c+1,d) -(16c+49)-&gt; X0(g,c,d+1); X0(g,c+1,d) -(16c+49+6t)-&gt; X1(g+1,c,d+1), t = trailing 001 digits. Independent of d.
+- Phase 2: Z1(g,x,y+1) -(8x+19)-&gt; Z0(g,x,y); Z0(g,x+1,y) -(8x+43+6t)-&gt; Z1(g+1,x,y+2). Independent of y.
+- Checked on random constructed tapes (40 per rule in the checker); the pass-by-pass derivations are not written.</p>
+<p><strong>Random-parameter tests (evidence):</strong> 620 runs from tapes the orbit never produces (counter far too long or too short, random digits, random wall position, 5 record skeletons), 1e8-2e8 steps each: 0 halts (<code>work/randparam_*.txt</code>, <code>scripts/randparam_*.py</code>). So safety does not seem to depend on the counter/wall/field correlations that the drop law and the bursts describe.</p>
+<p><strong>Open lemma:</strong> closure of the shape family <code>0^inf 1 &lt;g&gt; I_k (u_k)^x h_k (v_k)^y R_k 0^inf</code> (g any word over {000,001}, x, y free, up to 16 phase types = 4 phases x 4 interface alignments, plus the transient shapes of phase change, eating and overflow) under the machine, with no A/F-on-0-before-1 step. P1a/P1b/P2a/P2b are 4 of its cases.</p>
+<p><strong>Route for a next stage:</strong> a symbolic shape explorer (literals, runs <code>w^(&gt;=m)</code>, a star <code>{000,001}*</code>, C1 as accelerations) to compute that closure, then one checked rule per explored transition. This is a closed-tape-language proof, so it bypasses the catch-up law, the burst tapes and the record-level simulator. Same method for the twins 528, 310, 548 with their own words.</p>
+<h2 id="proof-stage-2-2026-10-14">Proof stage 2 (2026-10-14)</h2>
+<p>Funded by Dennis ("fund_closure" on decision.json, 2026-10-14). About 2 h. <strong>Outcome: parked (STUCK).</strong> The closed-tape-language route does not close. Working version: <code>proof.md</code> section 8. Checker: <code>scripts/check_proof.py --ctl</code> (C1-C9 pass). Answered decision moved to <code>decisions/2026-10-14-fund_closure.json</code>; new <code>decision.json</code> (park, recommended, or a stage 3 with a counter clock).</p>
+<p><strong>Verified deciders (step 0).</strong> busycoq's CTL62 decider, extracted to OCaml (the #7 extraction), with a new driver for every numeric parameter kind (<code>scripts/ctl_extract/main.ml</code>, README there; calibrated on three upstream certificates). About 190 runs on 693, 0 true (<code>work/ctl_sweep_A.jsonl</code>, <code>work/ctl_sweep_B.jsonl</code>):
+- RWL_mod / CPS_LRU, block sizes 3, 4, 6, 8, 12: block 12 (field period 4 x digit width 3) runs out of 6 GB in about 2 min or times out at 120 s; the rest false.
+- NG (n = 2-20), NG_cr, RNGS_mod_QSym_FAR, RWL_mod_FAR, CPS_LRU_FAR in the upstream parameter shapes: all false within a second.
+- RWLAcc is a single-orbit loop detector and cannot handle a binary counter. Not run on the twins (nothing to transfer).</p>
+<p><strong>Shape explorer (step 1).</strong> <code>scripts/ctl_explore.py</code>: tokens are literals, exact runs <code>(w)^n</code>, runs <code>(w)^&gt;=m</code>, the counter <code>{000,001}^&gt;=m</code> and <code>0^inf</code>; steps are single machine steps or run rules (any word that the head crosses in the same state, so C1 and more); exhaustive case splits; normalisation only enlarges the language (merge, absorb, cap at K, fold digits into the counter when a field run lies between counter and head). <code>explore_macro</code> stores only turns and splits (about 10x fewer shapes). <code>scripts/ctl_validate.py</code>: regex membership, step check, member runs, orbit check with C-simulator snapshots.</p>
+<p>Three bugs/artefacts found and fixed on the way, each visible as junk or a spurious halt:
+1. A start-shape typo (<code>0011001101</code> for <code>00110011001</code>) made the first pass turn at the interface.
+2. Eaten digits look like counter digits (<code>001</code> is also a field group). Folding them back into the counter gave 2 spurious halts at K = 4. Fix: digit cells carry a position mark; a digit loses it when it takes a value outside 000/001/010, or when the head enters it from the right in a state other than A (from the left: other than B). In BFS runs the entering rule fires only on the lowest digit, in state D; but the exact replay shows it also fires on real digits after the first eating (source 2 below). No halting step after the fix.
+3. A small cap K (3-5) lets the field be short, and a short field behaves like the start-up (the phase change rebuilds the right end as R1). With K = 64 this did not show up in the runs (a phase ends only after a run with lower bound 64 is used up).</p>
+<p><strong>Validation (step 2).</strong> Step check: 5,996 (C8) plus 12,000 random concrete steps or run passes land in a symbolic successor, 0 failures. Orbit: all 947 head-turn configurations of steps 1,128,893 to 1,188,893 (phases 1-2, the 2-to-3 phase change, early phase 3) lie in the explored set (K = 64, 1.2 million shapes); C9 checks the first 108. Members: 300 random members of explored shapes (half from the newest quarter), 1e7 steps each, 0 halts.</p>
+<p><strong>Why it does not close.</strong> Runs: K = 3/4/5 to 400,000 single-step shapes; K = 20/64 with exact counts to 1.5 million; macro BFS at K = 64 to 2.5 million (Q = 0) and 2.6 million (Q = 3, short counters exact). None closes, no halting step. Distinct skeletons keep growing (Q = 0: 300 at 0.1 M, 1,215 at 1 M, 3,460 at 2.5 M). Late shapes have counter-to-field regions far longer than the orbit's 13-cell interface, e.g.</p>
+<div class="highlight"><pre><span></span><code>0^inf 1 {000,001}* 1001 (0000)^1 01 (0000)^2 00 (0110)^3 0 (1100)^&gt;=59 111 B&gt; 011101 (1001)^3 (0011)^2 00011 0^inf
+</code></pre></div>
+
+<p>(34 cells before <code>(1100)^&gt;=59</code>). <code>0000</code> blocks by themselves are real: the orbit has them in the interface while the head is out in the field during P1a.</p>
+<p>Source 1 (identified): the counter's value is free in the abstraction, so a branch can avoid overflows for ever while the wall eats one digit per revolution. The counter drops to 0-1 digits, then overflows and eatings alternate every few counter steps. On the orbit this never happens because overflows add digits as fast as eatings remove them (k + j constant). Q = 3 does not help: the counter is exact only once written out in full; while it is <code>{000,001}^&gt;=m</code> its value is free and each eating lowers m.</p>
+<p>Source 2 (an explorer defect): an unsound diagnostic run (<code>--no-empty</code>: the counter never runs out of digits) still grows (K = 64: 2,848 skeletons at 1.9 M shapes) with the same long interface regions. <code>scripts/ctl_replay.py</code> replays the orbit exactly through the explorer (X0 with exact counts, counter written out): the eaten-digit rule fires at the real eating (step 1,222,705), but after it the head enters the low digits in state D during ordinary counter steps, and the rule unmarks four real digits within about 440 symbolic steps (replay steps 12,151-12,589). So the rule "entered by a state other than A means eaten" is wrong after the first eating. At step 1,642,188 the real tape is <code>1 000 001 001 001 001 001 001 001 001 100 110 011 ...</code> (head in D at position 6) and the replay shows 2 marked digits plus 5 plain <code>001</code> groups. Plain digits never fold back, so even the orbit's own configurations drift to long counter-to-field regions (the period-3 <code>001001...</code> of the junk shapes). Soundness is not affected, but the closure question cannot be answered until the bookkeeping is faithful on the replay. A quick mark-free variant (<code>--gap G</code>: fold digit groups while G cells remain before the field run) grows faster (G = 13: 1,321 skeletons at 0.7 M; G = 16: 3,935 at 1 M).</p>
+<p><strong>What carries over to 528, 310, 548.</strong> The explorer, the validator and the decider driver are generic in the machine string; the start shape, the digit words (000/001, carry 010) and the eating rule (counter entered in A from the right, in B from the left) are 693's. Since the obstruction is the counter/field coupling, the twins would hit the same wall: this route does not settle them either.</p>
+<p><strong>Route for a stage 3, if funded.</strong> First make the digit bookkeeping faithful: replace the entering rule (it unmarks digits that D enters in ordinary counter steps after the first eating) and require the exact replay to keep every real digit marked over many revolutions while unmarking exactly one digit per revolution; then rerun the no-empty diagnostic. Then a counter token with a clock: digit count D plus the lemma "a counter of D digits overflows within 2^D increments", and the phase lemma "a phase has at least s/2 counter steps". Together they bound the eatings between two overflows and keep D &gt;= log2(s) - c. That is the inequality form of the catch-up law, much weaker than the exact lists of stage 1. Alternatively prove that every malformed interface heals within a bounded number of revolutions, but the list of malformed interfaces kept growing.</p>
+<h2 id="proof-stage-3-2026-10-14">Proof stage 3 (2026-10-14)</h2>
+<p>Funded by Dennis ("fund_clock" on decision.json, 2026-10-14). About 2 h. <strong>Outcome: parked (STUCK)</strong> by the stop rule: the shape set does not close within the stage. Both sources of the stage-2 obstruction are repaired, though, and the explored set now behaves very differently. Working version: <code>proof.md</code> section 9. Checker: <code>scripts/check_proof.py --ctl3</code> (C10, C11). Answered decision moved to <code>decisions/2026-10-14-fund_clock.json</code>.</p>
+<p><strong>The counter is two blocks.</strong> The eating is two local rules: <code>001 &lt;D -&gt; &lt;A 011</code> (an eaten 1 becomes the frozen <code>011</code> and is carried on) and <code>000 &lt;D</code> (an eaten 0 becomes the low end of a counter shifted by one cell). So after a few eatings the counter is <code>1 H sep L</code>, two digit blocks in different alignments with a short separator (<code>1</code>, <code>0011</code>, <code>011</code>); the records' <code>(010)^k 011 (001)^j</code> is H, sep, L at an overflow. Stage 2's positional marks could not represent the shifted block, which is why real digits fell out of the counter (source 2).</p>
+<p><strong>(1) Writer marks</strong> (<code>scripts/ctl_explore3.py</code>). A cell written by a left-moving E, D or A step is marked e, d, a; the carry runs A, D, E right to left, so every real digit reads <code>e d a</code> in its own alignment. A digit = marks <code>e d a</code> and value <code>000</code>/<code>001</code>; several S tokens allowed. Guided replay (<code>scripts/ctl_replay3.py</code>: symbolic shape and real machine in lockstep, the counter folded, the case containing the real tape picked at each split) from step 1,128,893 to 21,129,033: 931,457 symbolic steps, 41,151 splits, 125 overflows, the eatings between them and the odd burst O(7); inside the shapes at every step, at most 40 non-digit cells between marker and field (stage 2: unbounded drift). C10 checks the first 2e6 steps.</p>
+<p><strong>(2) Counter floor = the clock.</strong> S now means "at least Q+1 digits"; splitting it gives <code>S 000 | S 001 | every exact word of Q+1 digits</code> (an identity of languages). S can no longer be eaten to nothing, and a counter that really is short becomes exact, so it overflows within 2^(Q+1) increments, well inside one phase (&gt;= K = 64 counter steps). No symbolic parameter is needed.</p>
+<p><strong>(3) Closure.</strong> Step check (C11 and a larger run): 9,000 random concrete steps/run passes from explored shapes land in symbolic successors, 0 failures. No halting step in any run. Runs (macro BFS, Q = 2 unless stated):</p>
+<table>
+<thead>
+<tr>
+<th>run</th>
+<th>K</th>
+<th>Q</th>
+<th>shapes explored</th>
+<th>closed</th>
+<th>halting steps</th>
+<th>distinct skeletons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>first version: carry runs not compressed</td>
+<td>64</td>
+<td>2</td>
+<td>20,000</td>
+<td>no</td>
+<td>0</td>
+<td>literals up to 361 cells (carry chains through a long all-ones S)</td>
+</tr>
+<tr>
+<td>carry runs compressed, digit runs <code>(000)^&gt;=m</code> not folded</td>
+<td>64</td>
+<td>2</td>
+<td>3,000,000</td>
+<td>no</td>
+<td>0</td>
+<td>724 flat from 0.1 M to 0.4 M, then up to 1,675 (unfolded zero runs)</td>
+</tr>
+<tr>
+<td>final explorer, exact shape sets</td>
+<td>64</td>
+<td>2</td>
+<td>3,500,000</td>
+<td>no</td>
+<td>0</td>
+<td>151 at 0.1-0.2 M, 949 at 1.6 M, 950 at 3.5 M</td>
+</tr>
+<tr>
+<td>final, short fields</td>
+<td>16</td>
+<td>2</td>
+<td>700,000</td>
+<td>no</td>
+<td>0</td>
+<td>2,208 and growing (start-up-like short fields)</td>
+</tr>
+<tr>
+<td>final, digest set</td>
+<td>32</td>
+<td>2</td>
+<td>3,000,000</td>
+<td>no</td>
+<td>0</td>
+<td>971 flat from 1 M to 2.5 M, 1,285 at 3 M</td>
+</tr>
+<tr>
+<td>final, digit and carry runs capped at 3</td>
+<td>64 / 32</td>
+<td>2</td>
+<td>1,000,000</td>
+<td>no</td>
+<td>0</td>
+<td>2,435 / 7,723, growing (too coarse)</td>
+</tr>
+<tr>
+<td>final, digest set</td>
+<td>64</td>
+<td>3</td>
+<td>3,500,000</td>
+<td>no</td>
+<td>0</td>
+<td>175 at 0.5 M, 1,113 flat from 1.5 M to 2.5 M, 1,175 at 3.5 M</td>
+</tr>
+</tbody>
+</table>
+<p>Fixes on the way: carry-digit runs <code>(010)^n</code> are now compressed (a carry through a long all-ones S made literals grow), and digit runs <code>(000)^&gt;=m</code> fold into S only when the block's language has at least Q+1 digits (an unsound shortcut was caught before any result was used).</p>
+<p><strong>What is left.</strong> With K = 64 the skeleton count levels off (949-950 from 1.6 M to 3.5 M shapes, against stage 2's steady growth to 3,460), but the shapes keep coming: the queue holds the same skeletons with new exact counts (two carry runs <code>(010)^n</code>, the run behind the wall, the field's lower bounds, each up to K). Capping the 3-cell runs lower (KD = 3) is too coarse (skeletons 2,435 at 1 M and growing); K = 16 or 32 brings back short-field artefacts (K = 16: 2,208 skeletons at 0.7 M; K = 32: 971 flat to 2.5 M, then 1,285 at 3 M); Q = 3 does not help (1,175 skeletons at 3.5 M). So the next step is mostly engineering: a compiled explorer (C or OCaml) to run K = 64 to 10^8 shapes, or a coarser count abstraction for the carry runs. Even a closed set would then need an independent certificate check (and a formal checker) before it is a proof.</p>
+<p><strong>Twins 528, 310, 548.</strong> Writer marks and the floor are generic; the digit words (000/001, carry 010) and the start shape are 693's. Nothing was run on the twins.</p>
+<p>Data: <code>work/stage3_replay_2e7.txt</code> (guided replay), <code>work/stage3_bfs_*.log</code> (closure runs; logs of the K = 16/32/KD = 3 runs end where they were stopped). Scratch diagnostics (late skeletons, queue samples) were not kept.</p>
+</main></body></html>

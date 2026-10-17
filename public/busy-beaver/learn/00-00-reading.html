@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading a machine</title>
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* page-local pieces: the string-as-table explorer, mini tapes, the TNF stepper and tree, the holdout bars */
+  .strip-str { display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: flex-end; margin: 10px 0 4px; }
+  .strip-str .sep { font: 700 18px/1 ui-monospace, Consolas, monospace; color: var(--muted); padding: 0 1px 9px; }
+  .stgroup { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .stgroup .q { font: 750 13px/1 ui-monospace, Consolas, monospace; }
+  .stgroup .pair { display: flex; gap: 2px; }
+  .chip { font: 650 15px/1 ui-monospace, Consolas, monospace; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    border-radius: 6px; padding: 7px 6px; cursor: pointer; min-height: 34px; }
+  .chip:hover { border-color: var(--accent); }
+  .chip.on { background: var(--accent-weak); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .chip.undef { color: var(--bad); border-style: dashed; border-color: var(--bad); }
+  .chip .sub { display: block; font: 500 10px/1.2 system-ui, sans-serif; color: var(--muted); margin-top: 3px; }
+  .ruleline { font-size: 15.5px; margin: 8px 2px 2px; min-height: 1.6em; }
+  .ruleline b.st { font-weight: 750; }
+  .tm-tablewrap td { cursor: pointer; }
+  .panel { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); padding: 10px 12px 12px; margin: 12px 0 16px; }
+  .panel .ttl { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .panel .lab { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+
+  /* mini tapes */
+  .mt { display: inline-flex; gap: 3px; }
+  .mt .col { display: flex; flex-direction: column; align-items: center; width: 28px; }
+  .mt .hd { height: 26px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+  .mt .bd { min-width: 20px; height: 20px; padding: 0 3px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font: 700 12px/1 system-ui, sans-serif; color: var(--badge-fg); }
+  .mt .bd.halt { font-size: 9.5px; color: #111110; }
+  .mt .ar { width: 0; height: 0; border: 5px solid transparent; border-bottom: 0; border-top-color: currentColor; }
+  .mt .c { width: 28px; height: 28px; border-radius: 5px; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center;
+    font: 700 13px/1 ui-monospace, Consolas, monospace; }
+  .mt .c.s0 { background: var(--c0); color: var(--c0fg); }
+  .mt .c.s1 { background: var(--c1); color: var(--c1fg); border-color: var(--c1); }
+  .mt .c.unv { border-style: dashed; background: var(--unv); color: var(--line); }
+  .mt .p { font: 500 9.5px/1.3 ui-monospace, Consolas, monospace; color: var(--muted); }
+
+  /* the directed-head list */
+  .dhl { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 4px 14px; align-items: center; border: 1px solid var(--line);
+    border-radius: 12px; background: var(--surface); padding: 8px 12px; margin: 10px 0 14px; }
+  .dhl .n { font: 600 13px/1.2 ui-monospace, Consolas, monospace; color: var(--muted); white-space: nowrap; }
+  .dhl .txt { min-width: 0; }
+  .dhl .dh { font: 600 14.5px/1.4 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+  .dhl .dh .hdtok { font-weight: 800; }
+  .dhl .dh .rd { border-bottom: 3px solid currentColor; padding-bottom: 1px; }
+  .dhl .gl { font-size: 13px; color: var(--ink2); }
+  .dhl .rowsep { grid-column: 1 / -1; border-top: 1px solid var(--line); height: 0; }
+  @media (max-width: 560px) {
+    .dhl { grid-template-columns: auto minmax(0, 1fr); }
+    .dhl .txt { grid-column: 1 / -1; padding-left: 2px; margin-bottom: 2px; }
+  }
+
+  /* the step-165 tape: cell width set by the page so the whole E(2,4) fits the box at any width */
+  #w53tape .tm-tapewrap { --cw: var(--m0cw, 46px) !important; }
+
+  /* the 10,000-step picture with two labels on it (the labels sit on the black image in both themes) */
+  figure.pic { margin: 14px 0 16px; }
+  .picwrap { position: relative; max-width: 400px; }
+  figure.pic img { display: block; width: 100%; max-width: 400px; height: auto; border-radius: 8px; border: 1px solid var(--line); image-rendering: pixelated; }
+  .imlab { position: absolute; font: 650 11px/1.25 system-ui, sans-serif; color: #ffffff; background: rgba(17, 17, 16, .82);
+    border: 1px solid rgba(255, 255, 255, .45); border-radius: 5px; padding: 3px 5px; }
+  figure.pic figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; max-width: 72ch; }
+
+  /* TNF stepper */
+  .tnf { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px 22px; align-items: start; }
+  @media (max-width: 560px) { .tnf { grid-template-columns: minmax(0, 1fr); } }
+  .tnft { border-collapse: separate; border-spacing: 3px; font: 14px/1.2 ui-monospace, Consolas, monospace; }
+  .tnft th { font: 600 12px system-ui, sans-serif; color: var(--muted); padding: 2px 8px; }
+  .tnft th.q { font: 750 15px ui-monospace, Consolas, monospace; }
+  .tnft td { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; text-align: center; min-width: 58px; transition: background-color .2s; }
+  .tnft td.empty { border-style: dashed; color: var(--muted); background: transparent; }
+  .tnft td.now { background: var(--accent-weak); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .tnft td.used { box-shadow: 0 0 0 2px var(--axis); }
+  .tnft td b { font-weight: 750; }
+  .tnfnote { font-size: 15px; min-height: 4.6em; margin: 8px 2px 0; }
+  .tnfnote .k { display: block; font-size: 12.5px; color: var(--muted); }
+  .tnfctl { display: flex; gap: 6px; align-items: center; margin: 4px 0 8px; flex-wrap: wrap; }
+  .tnfctl button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 7px; padding: 4px 11px; min-height: 34px; cursor: pointer; }
+  .tnfctl button.primary { background: var(--ink); color: var(--page); border-color: var(--ink); font-weight: 600; }
+  .tnfctl button:disabled { opacity: .4; cursor: default; }
+  .tnfctl .st { font: 13.5px ui-monospace, Consolas, monospace; color: var(--muted); }
+
+  /* TNF tree (SVG drawn by the page) */
+  .tree svg { display: block; width: 100%; max-width: 560px; height: auto; }
+  .tree .ln { stroke: var(--axis); stroke-width: 1.5; fill: none; }
+  .tree .ln.take { stroke: var(--accent); stroke-width: 2.2; }
+  .tree .bx { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+  .tree .bx.halt { fill: transparent; stroke: var(--bad); stroke-dasharray: 3 2; }
+  .tree .bx.take { fill: var(--accent-weak); stroke: var(--accent); stroke-width: 2; }
+  .tree .bx.root { fill: var(--surface); stroke: var(--axis); }
+  .tree text { font: 600 11px ui-monospace, Consolas, monospace; fill: var(--ink); }
+  .tree text.halt { fill: var(--bad); }
+  .tree text.cap { font: 500 11px system-ui, sans-serif; fill: var(--ink2); }
+  .tree text.cap tspan.b { font-weight: 700; fill: var(--ink); }
+  .tree text.leaf { font: 600 11px system-ui, sans-serif; fill: var(--good); }
+  ul.rules { margin: 6px 0 10px; }
+
+  /* first-use annotations in W5-3's table */
+  .fu { display: block; font: 500 10.5px/1.2 system-ui, sans-serif; color: var(--muted); margin-top: 2px; }
+  .fu.never { color: var(--bad); font-weight: 650; }
+
+  /* holdout bars */
+  .bars { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 5px 10px; align-items: center; font-size: 13.5px; margin: 10px 0 4px; }
+  .bars .d { font: 12.5px ui-monospace, Consolas, monospace; color: var(--ink2); white-space: nowrap; }
+  .bars .track { position: relative; height: 22px; }
+  .bars .bar { position: absolute; left: 0; top: 2px; bottom: 2px; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 3px; }
+  .bars .v { position: absolute; top: 50%; transform: translateY(-50%); font: 650 12.5px ui-monospace, Consolas, monospace; color: var(--ink); white-space: nowrap; }
+  .bars .w { font: 12px ui-monospace, Consolas, monospace; color: var(--muted); white-space: nowrap; text-align: right; }
+  .bars .hdr { font: 600 12px system-ui, sans-serif; color: var(--muted); }
+
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); background: var(--surface); border-radius: 10px; padding: 12px 16px; margin: 30px 0 14px; }
+  .kills .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 2px; }
+  .recap { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 16px; margin: 14px 0; }
+  .recap .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .recap ol { margin: 6px 0 2px; }
+  footer.checked details > summary { cursor: pointer; }
+  footer.checked ul.chk { margin: 6px 0 0; padding-left: 18px; max-width: 72ch; }
+  footer.checked ul.chk li { margin: 5px 0; }
+  code.tmstr { overflow-wrap: normal; word-break: normal; }
+
+  /* drills 2 and 3: the linked run cannot be stepped forward before Reveal */
+  .lockrun .tm-predict:not([data-revealed]) .tm-plinked .tm-controls { display: none; }
+  .lockrun .tm-predict:not([data-revealed]) .tm-plinked .tm-hist { pointer-events: none; }
+  .lockmsg { display: none; font-size: 12.5px; color: var(--muted); margin: 2px 0 6px; }
+  .lockrun .tm-predict:not([data-revealed]) .lockmsg { display: block; }
+  /* drill 3: its run must not show its row count before the reveal */
+  .nospoil .tm-predict:not([data-revealed]) .tm-plinked .tm-label,
+  .nospoil .tm-predict:not([data-revealed]) .tm-plinked .tm-status > :nth-child(-n+2) { visibility: hidden; }
+  #k11table[hidden] { display: none; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 0 · Reading a machine</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/01-01-easy-fates.html" title="The easy fates">Module 1 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 0 (of 0–8) · about 12 minutes</div>
+<h1>Reading a machine and its pictures</h1>
+<div class="answer"><b>The answer</b>
+  <p>A machine string is a lookup table: for each state, what to do on reading 0 and on reading 1. A run applies that table once per step. Stack the tapes with time going down and you get the picture every busy beaver tool draws.</p>
+</div>
+
+<!-- ============================================================== 1 -->
+<section class="beat" id="table"><h2><span class="num">1</span>The string is a table</h2>
+<p>This is W5-3, one of our kills. Tap any piece of the string and its transition lights up in the table, with the rule written out in words.</p>
+<div class="panel">
+  <div class="ttl">W5-3 <span class="mono" style="font-weight:500;font-size:13.5px">1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</span></div>
+  <div id="w53str" class="strip-str" aria-label="the machine string, one piece per state"></div>
+  <div id="w53rule" class="ruleline"></div>
+  <div id="w53tbl"></div>
+</div>
+<p>Cut the string at each <code>_</code> and you get one piece per state, A to F. Each piece holds two <b>transitions</b> of three characters: the first for reading 0, the second for reading 1. This format is the community's <b>Standard Text Format (STF)</b>.</p>
+<p><code>1RB</code> means: write 1, move Right, go to state B. <code>---</code> means the transition is undefined: if the run ever needs it, the machine halts. W5-3's only <code>---</code> is F0, so W5-3 halts exactly when it reads a 0 in state F.</p>
+
+<div data-tm-predict data-opts='{"id":"m0-k11-halt","prompt":"<b>Drill 1.</b> Machine #11 (our label for it; it was our third kill) is <code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code>. Which transition halts it?","input":{"kind":"choice","options":[{"label":"A0","value":"A0"},{"label":"E1","value":"E1"},{"label":"F0","value":"F0"},{"label":"F1","value":"F1"}]},"answer":"F1","explain":"The sixth piece is F: <code>1LD---</code>. Reading 0, F does <code>1LD</code>. Reading 1, it has <code>---</code>. So F1 is the only way #11 can halt. (F0 was W5-3&#39;s halting transition, not this one&#39;s.)","checkId":"M0-table-K11 (C-M0-2)"}'></div>
+<div data-tm-predict data-opts='{"id":"m0-k11-e1","prompt":"<b>Drill 1, part 2.</b> Same string. What does #11 do in state E when it reads a 1?","input":{"kind":"choice","options":[{"label":"write 1, move left, go to F","value":"1LF"},{"label":"write 1, move left, go to D","value":"1LD"},{"label":"write 0, move left, go to E","value":"0LE"},{"label":"write 0, move right, go to C","value":"0RC"}]},"answer":"1LF","explain":"E is the fifth piece, <code>1LD1LF</code>. On a 0 it does <code>1LD</code>. On a 1 it does <code>1LF</code>: write 1, move left, go to F.","checkId":"M0-table-K11 (C-M0-2)"}'></div>
+<div id="k11table" hidden></div>
+</section>
+
+<!-- ============================================================== 2 -->
+<section class="beat" id="run"><h2><span class="num">2</span>One run, every step</h2>
+<p>The BB(2) champion <code>1RB1LB_1LA1RZ</code>: no halting 2-state machine runs longer or leaves more 1s. Unless a widget says otherwise, a run starts on a blank tape (all 0s), with the head on cell 0 in state A, the <b>start state</b>.</p>
+<div id="bb2first"></div>
+<p>The round badge sits on the cell the machine reads now, and its letter and colour are the state. The yellow flash marks the cell just written.</p>
+<p>Each step looks up (state, symbol read) in the table, which lights the transition used. Then it writes, moves one cell, and changes state. When the rule line adds <i>new record</i>, the head has just reached a cell further left or right than ever before.</p>
+<p>The <code>Z</code> in <code>1RZ</code> is not a state: it means halt. The run above stops at step 2 on purpose, and the next two drills ask what comes after.</p>
+
+<div class="lockrun" data-tm-predict data-opts='{"id":"m0-bb2-step3","prompt":"<b>Drill 2.</b> At step 2, A reads the left 1. Use the table: after step 3, where is the head, and in which state?","input":{"kind":"choice","options":[{"label":"B, on the blank cell just left of the two 1s","value":"0^inf <B 1^2 0^inf"},{"label":"B, on the blank cell just right of the two 1s","value":"0^inf 1^2 B> 0^inf"},{"label":"A, on the right-hand 1","value":"0^inf 1 A> 1 0^inf"},{"label":"B, still on the left 1","value":"0^inf B> 1^2 0^inf"}]},"answer":"0^inf <B 1^2 0^inf","run":{"tm":"1RB1LB_1LA1RZ","from":2,"rows":"each","count":2,"table":true,"window":[-3,2],"speed":1},"revealTo":3,"actual":"dh","explain":"A reads 1, so transition A1 applies: <code>1LB</code>. Write 1 (the cell stays 1), move left onto a blank cell, go to B. The rule line says <i>new record on the left</i> because the head has never been this far left before.","checkId":"M0-bb2-step3 (C-M0-1)"}'></div>
+
+<div class="lockrun nospoil" data-tm-predict data-opts='{"id":"m0-bb2-halt","prompt":"<b>Drill 3.</b> Keep going from there. At which step does BB(2) halt, and how many 1s are on the tape then?","input":{"kind":"pair","labels":["halts at step","1s"]},"answer":[6,4],"run":{"tm":"1RB1LB_1LA1RZ","rows":"each","count":40,"table":true,"window":[-3,2],"speed":2},"revealTo":{"halted":true},"actual":["step","ones"],"explain":"At step 5, B reads a 1, and B1 = <code>1RZ</code>: write 1, move right, halt. That halting move counts as step 6. Four 1s are left.","checkId":"M0-bb2-run (C-M0-1)"}'></div>
+</section>
+
+<!-- ============================================================== 3 -->
+<section class="beat" id="text"><h2><span class="num">3</span>The same run, as text</h2>
+<p>Proofs and tools write each tape on one line, in <b>directed-head notation</b>. <code>B&gt;</code> means the head is in state B and reads the cell just to its right. <code>&lt;B</code> means it reads the cell just to its left. <code>1^2</code> is two 1s, and <code>0^inf</code> is blank tape forever.</p>
+<div id="dhlist" class="dhl" aria-label="BB(2), every step as a picture and as text"></div>
+<p class="note">The underlined piece is the cell being read. The arrow also shows which way the head last moved: <code>&lt;B</code> after a move left, <code>B&gt;</code> after a move right (step 0 uses <code>A&gt;</code> by convention). Step 6 says <code>Z&gt;</code>, because the run halted there.</p>
+</section>
+
+<!-- ============================================================== 4 -->
+<section class="beat" id="diagram"><h2><span class="num">4</span>Zoom out: the space-time diagram</h2>
+<p>Now draw each step's tape as one thin row, with time going down. This is W5-3 from the blank tape, steps 0 to 165. Solid cells are 1s, and the coloured cell in each row is the head, in its state's colour. Tap a row, or press <b>▶▶</b>, to see that step in the big strip.</p>
+<div data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","rows":"each","count":166,"grow":false,"speed":30,"title":"W5-3, every step from 0 to 165"}'></div>
+<p>The last row, step 165, is <code>0^inf 1 0 1 0^2 1^2 B&gt; 0^5 1^2 0^inf</code>. Up close:</p>
+<div id="w53tape"></div>
+<p>Read it in three parts: two copies of <code>10</code>, a fixed separator <code>0 11 B&gt; 0</code> (the head reads its last 0), and the number 4. The number is in binary, each digit written as two cells (<code>11</code> = 1, <code>00</code> = 0), lowest digit first: <code>00 00 11</code> is 0, 0, 1, so 100 in binary, which is 4. <a href="/busy-beaver/learn/04-04-bells.html">Module 4</a> calls this tape E(2,4), and W5-3's proof starts from it.</p>
+<figure class="pic">
+  <div class="picwrap">
+    <img src="/busy-beaver/learn/img/00-w53-default-1e4.png" width="400" height="500" alt="W5-3 for 10,000 steps in bbchallenge.org's Default view: a striped band that widens to the left, and a staircase on its right">
+    <span class="imlab" style="left:1.5%;top:2%;max-width:22%">10 word: the striped band. It grows left each round.</span>
+    <span class="imlab" style="right:1.5%;top:44%;max-width:19%"><span style="white-space:nowrap">◀ counter:</span> the staircase</span>
+  </div>
+  <figcaption>Colours here are bbchallenge's, not this page's: white = 1, black = 0. This is W5-3 for 10,000 steps (about 20 steps per pixel row, cells −35 to 64), drawn by <code>tools/diagram.py</code> the way bbchallenge.org's Default view draws it. At this scale the head shows only as red and green specks.</figcaption>
+</figure>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC&amp;steps=1e5&amp;style=explore">W5-3 in the explorer (10<sup>5</sup> steps, state colours)</a></p>
+</section>
+
+<!-- ============================================================== 5 -->
+<section class="beat" id="tnf"><h2><span class="num">5</span>Where machines and holdouts come from</h2>
+<p>Nobody writes machines by hand: <b>TNF (Tree Normal Form)</b> builds them while running them. Start with every transition <code>---</code> and run from the blank tape. Each time the run needs a transition that is still empty, branch: one copy halts there, and the others each try a move.</p>
+<div class="panel">
+  <div class="ttl">TNF building BB(2), one step at a time</div>
+  <div class="lab">The table shows only the transitions the run has needed so far. Dashed = still empty.</div>
+  <div class="tnfctl"><button type="button" id="tnfPrev">◀ step</button><button type="button" class="primary" id="tnfNext">step ▶</button><button type="button" id="tnfReset">⟲ reset</button><span class="st" id="tnfStep"></span></div>
+  <div class="tnf"><div id="tnfTape"></div><div id="tnfTbl"></div></div>
+  <div class="tnfnote" id="tnfNote"></div>
+</div>
+<div class="panel tree">
+  <div class="ttl">BB(2)'s path through the TNF tree</div>
+  <div class="lab">One row per empty transition the run needed. Each box is one branch; the blue box is the one BB(2) takes, and a dashed box halts there (a leaf). The whole tree for 2 states, with A0 = 1RB, has 41 leaves.</div>
+  <div id="tnfTree" role="img" aria-label="TNF tree path for BB(2): A0 = 1RB, then 9 branches at B0, 9 at A1, and only the halt at B1"></div>
+</div>
+<p>Three rules keep each machine listed once:</p>
+<ul class="rules">
+  <li><b>Permutation.</b> A new state always gets the next unused letter, so machines that differ only by renaming states are built once.</li>
+  <li><b>Mirror.</b> Swapping every L and R gives the same run, mirrored, so only machines whose first move goes right are kept. The lists go further and fix A0 = <code>1RB</code>.</li>
+  <li><b>Unused transitions.</b> A transition the run never needs stays <code>---</code>, so machines that differ only there are built once too.</li>
+</ul>
+
+<h3>W5-3 was built the same way</h3>
+<p>Each transition below shows the step at which W5-3's run first needed it. The run reaches the states in the order A, B, C, D, E, F: the permutation rule at work. F0 was never needed, so it is still <code>---</code>.</p>
+<div id="w53first"></div>
+<p>Whether a run ever needs its <code>---</code> transition is the whole question. W5-3 does not reach F0 in 10<sup>9</sup> simulated steps, but that proves nothing (module 5 shows machines that halt far later). Our Coq proof shows it never does.</p>
+
+<h3>The holdout lists</h3>
+<p><b>Deciders</b> are programs that each prove one kind of behaviour (module 1), and they settle almost every machine TNF produces. The machines that every decider failed on form the <b>holdout list</b>. The community publishes a new one as proofs land:</p>
+<div class="bars" id="bars" role="img" aria-label="Holdout list sizes from 12,325 in June 2024 to 740 in October 2026"></div>
+<p class="muted" style="font-size:13px">Bars: a selection of the lists in <code>data/holdouts/</code>, one machine per line. Dates are wiki upload dates, except 778 (Discord post) and 740 (the day we received it). Right column: the line W5-3 is on.</p>
+<p>A machine leaves the list when its proof is merged into busycoq, or when it is shown to behave exactly like another holdout, which stays on the list as the representative (nothing is solved by this). Of the 38 machines that left between the 778 and the 740 lists, one was our #2 (our first kill) and 31 left by equivalence. W5-3 has been on every list since June 2024, and will leave once its proof is accepted.</p>
+</section>
+
+<aside class="kills"><span class="tag">From our kills</span>
+  <p><b>W5-3</b> <code>1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</code> is line 134 of the 740 list and our 24th kill (2026-10-13, class "Bell eats counter"). It passes check_kill and has not been submitted upstream yet. Its proof starts from the step-165 tape above. Modules 2, 3, 4, 5 and 8 take this same machine apart.</p>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/index.html">W5-3 machine page</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC&amp;steps=1e5&amp;style=explore">W5-3 in the explorer</a><a href="/busy-beaver/machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/index.html">#11 machine page</a></p>
+</aside>
+
+<div class="recap"><span class="tag">Recap</span>
+  <ol>
+    <li>A machine string is a table of transitions: for each state, a move (write, direction, next state) on 0 and on 1. <code>---</code> (or a move into Z, as in BB(2)'s <code>1RZ</code>) is the only way to halt; holdout-list strings always use <code>---</code>.</li>
+    <li><code>B&gt;</code> and <code>&lt;B</code> mean B reads the cell the arrow points into. A space-time diagram stacks one tape per step, with time going down.</li>
+    <li>TNF builds each machine once, filling a transition only when the run needs it. The holdout list is what no decider settled: 740 machines now, with W5-3 on line 134.</li>
+  </ol>
+</div>
+
+<nav class="pager"><span class="muted">This is the first module.</span><a href="/busy-beaver/learn/01-01-easy-fates.html">Module 1: The easy fates →</a></nav>
+
+<footer class="checked">
+  <details>
+    <summary><b>checked</b> · every number simulated or cited</summary>
+    <ul class="chk">
+      <li><b>Live:</b> every tape here is simulated in the page by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). On load the page re-derives the BB(2) strings, the first-use tables, the TNF branches, the step-165 parts and the #11 answers, and logs an error if any differs from the checks below.</li>
+      <li><b>Simulated</b> with <code>tools/sim.py</code> by <code>python3 -B learn/checks/m00_reading.py</code> (results in <code>learn/checks/m00_results.json</code>, all pass):
+        <ul>
+          <li>M0-table-W53 (only F0 undefined; C-M0-2b) and M0-table-K11 (only F1 undefined, E1 = 1LF; C-M0-2).</li>
+          <li>M0-bb2-run, M0-bb2-step3, M0-bb2-reads (the 7 strings; B on cell −1 reading 0 after step 3; halt at step 6 from B reading 1, four 1s; C-M0-1).</li>
+          <li>M0-bb2-max: all 20,736 two-state machines run for 1,000 steps. None halts after step 6 or with more than four 1s; 40 tie at 6 steps, e.g. <code>1RB1RZ_1LB1LA</code> with three 1s.</li>
+          <li>M0-bb2-first-use, M0-tnf-bb2 (TNF, 1RB variant: 9, 9 and 1 branches on BB(2)'s path; 41 leaves for 2 states, as <code>atlas/curriculum.md</code> §1.1 says).</li>
+          <li>M0-w53-first-use, M0-w53-no-F0-1e9 (no halt in 10<sup>9</sup> steps), M0-w53-165 and M0-w53-165-parts (<code>1010</code> on cells −2 to 1, separator <code>0110</code> on 2 to 5 with B on 5, digits <code>000011</code> on 6 to 11; C-M0-3).</li>
+          <li>M0-w53-word-left: the 8 eat configurations up to step 10,000 (from E(2,4) at step 165 to E(30,34) at step 7,351); the <code>10</code> word's left end moves left at every one.</li>
+          <li>M0-holdouts and M0-holdouts-no-Z (list sizes, W5-3's line in each, all 740 lines start with 1RB, no list line contains Z; C-M0-4).</li>
+        </ul></li>
+      <li><b>Cited, not simulated:</b> that the 2-state machines still running at 1,000 steps never halt (BB(2) = 6 is a known result); the TNF rules (<code>atlas/curriculum.md</code> §1.1); list dates (<code>data/holdouts/SOURCES.md</code>: wiki upload dates, and the 778 list's Discord date from the wiki row); the 740 list's arrival, the 38 removals and the 31 equivalences (<code>reports/holdouts-740-impact.md</code>); #11 as our third kill and W5-3's kill, class and submission state (STATUS.md, 2026-10-13).</li>
+      <li><b>Step counts in Coq:</b> busycoq counts BB(2)'s run as 5 steps, not 6, because <code>halts_in</code> (<code>verify/TM.v</code>) ends on the configuration that has no transition and never runs the halting move.</li>
+      <li><b>Picture:</b> <code>python3 tools/diagram.py '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC' --as-site --steps 10000 --width 100 --ox 0.35 -o learn/img/00-w53-default-1e4.png</code>. The two labels on it are page text placed over the image.</li>
+    </ul>
+  </details>
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, mountTable, mountTape, parseTM, ruleText, Run, dh, decoders, STATES } from './tm.js';
+
+const W53 = '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC';
+const K11 = '1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---';
+const BB2 = '1RB1LB_1LA1RZ';
+const sc = (q) => (q === 'Z' ? 'var(--sZ)' : `var(--s${q})`);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const fail = (msg) => { console.error('m0 page check: ' + msg); (window.__tmErrors ||= []).push(msg); };
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+// a machine string that may break only after an underscore
+function tmStr(text) {
+  const c = el('code', 'tmstr');
+  const parts = text.split('_');
+  parts.forEach((x, i) => {
+    const sp = el('span', null, x + (i < parts.length - 1 ? '_' : ''));
+    sp.style.whiteSpace = 'nowrap';
+    c.append(sp);
+    if (i < parts.length - 1) c.append(document.createElement('wbr'));
+  });
+  return c;
+}
+
+// the rule in words, state letters coloured
+function ruleNode(tm, name) {
+  const span = el('span');
+  const txt = ruleText(tm, name);
+  for (const part of txt.split(/\b([A-F])\b/)) {
+    if (/^[A-F]$/.test(part)) { const b = el('b', 'st', part); b.style.color = sc(part); span.append(b); } else span.append(part);
+  }
+  return span;
+}
+// table entries made by mountTable, by transition name ('A0')
+function tableCells(wrap, tm) {
+  const out = {};
+  const trs = wrap.querySelectorAll('tr');
+  for (let q = 0; q < tm.n; q++) { const tds = trs[q + 1].querySelectorAll('td'); for (let s = 0; s < tm.m; s++) out[STATES[q] + s] = tds[s]; }
+  return out;
+}
+// the step at which a run from the blank tape first needs each transition (state, symbol read)
+function firstUse(tmText, maxSteps) {
+  const r = new Run(tmText, undefined, { maxSteps: maxSteps + 10 });
+  const first = {}, reached = { A: 0 };
+  while (r.t < maxSteps) {
+    const v = r.view();
+    if (v.halted) break;
+    const name = v.state + v.read(v.pos);
+    if (!(name in first)) first[name] = r.t;
+    r.step();
+    const s = r.view().state;
+    if (!(s in reached)) reached[s] = r.t;
+  }
+  return { first, reached };
+}
+
+// ---------------------------------------------------------------- 1. the string is a table
+{
+  const tm = parseTM(W53);
+  const box = document.getElementById('w53str'), line = document.getElementById('w53rule');
+  const table = mountTable(document.getElementById('w53tbl'), { tm });
+  const tds = tableCells(table.el, tm);
+  const chips = {};
+  const pick = (name) => {
+    for (const [k, c] of Object.entries(chips)) c.classList.toggle('on', k === name);
+    table.highlight([name]);
+    line.textContent = '';
+    const b = el('b', null, name + ' = ' + tm.acts[tm.names.indexOf(name)] + ':  ');
+    line.append(b, ruleNode(tm, name));
+  };
+  tm.text.split('_').forEach((piece, q) => {
+    if (q) box.append(el('span', 'sep', '_'));
+    const g = el('div', 'stgroup');
+    const lab = el('span', 'q', STATES[q]);
+    lab.style.color = sc(STATES[q]);
+    const pair = el('div', 'pair');
+    for (let s = 0; s < 2; s++) {
+      const name = STATES[q] + s, act = piece.slice(3 * s, 3 * s + 3);
+      const c = el('button', 'chip' + (act === '---' ? ' undef' : ''));
+      c.type = 'button';
+      c.title = ruleText(tm, name);
+      if (act === '---') c.append('---'); else {
+        c.append(act.slice(0, 2));
+        const nx = el('span', null, act[2]);
+        nx.style.color = sc(act[2]);
+        c.append(nx);
+      }
+      c.append(el('span', 'sub', 'reads ' + s));
+      c.addEventListener('click', () => pick(name));
+      chips[name] = c;
+      pair.append(c);
+    }
+    g.append(lab, pair);
+    box.append(g);
+  });
+  for (const [name, td] of Object.entries(tds)) td.addEventListener('click', () => pick(name));
+  pick('F0');
+  const undef = tm.names.filter((n, i) => tm.acts[i] === '---');
+  if (!same(undef, ['F0'])) fail(`W5-3 undefined transitions ${undef}`);
+}
+
+// drill 1: #11, checked against the parser; the reveal shows #11's table with E1 and F1 lit
+{
+  const tm = parseTM(K11);
+  const undef = tm.names.filter((n, i) => tm.acts[i] === '---');
+  if (!same(undef, ['F1'])) fail(`#11 undefined transitions ${undef}`);
+  if (tm.acts[tm.names.indexOf('E1')] !== '1LF') fail('#11 E1 is not 1LF');
+  const host = document.getElementById('k11table');
+  const t = mountTable(host, { tm, caption: '#11' });
+  const cap = t.el.querySelector('caption');
+  cap.textContent = '';
+  cap.append('#11 ', tmStr(K11), ' (lit: E1 and F1)');
+  t.highlight(['E1', 'F1']);
+  const show = () => { host.hidden = false; };
+  const watch = new MutationObserver(() => { if (document.querySelector('.tm-predict[data-id^="m0-k11"][data-revealed]')) show(); });
+  watch.observe(document.getElementById('table'), { subtree: true, attributes: true, attributeFilter: ['data-revealed'] });
+}
+
+// ---------------------------------------------------------------- 2. BB(2), steps 0 to 2 (the drills ask for the rest)
+mountRun(document.getElementById('bb2first'), {
+  tm: BB2, rows: 'each', count: 3, table: true, window: [-3, 2], speed: 1,
+  title: 'BB(2) champion 1RB1LB_1LA1RZ, steps 0 to 2',
+});
+
+// ---------------------------------------------------------------- mini tapes
+function miniTape(v, a, b) {
+  const wrap = el('div', 'mt');
+  for (let p = a; p <= b; p++) {
+    const col = el('div', 'col');
+    const hd = el('div', 'hd');
+    if (p === v.pos) {
+      const bd = el('div', 'bd' + (v.state === 'Z' ? ' halt' : ''), v.state === 'Z' ? 'halt' : v.state);
+      bd.style.background = sc(v.state);
+      const ar = el('div', 'ar');
+      ar.style.color = sc(v.state);
+      hd.append(bd, ar);
+    }
+    const unv = p < v.lo || p > v.hi;
+    const sym = v.read(p);
+    const c = el('div', 'c ' + (unv ? 'unv' : 's' + sym), unv ? '' : String(sym));
+    if (p === v.pos) c.style.boxShadow = `0 0 0 2px ${sc(v.state)}`;
+    col.append(hd, c, el('div', 'p', String(p).replace('-', '−')));
+    wrap.append(col);
+  }
+  return wrap;
+}
+
+// ---------------------------------------------------------------- 3. directed-head list for BB(2)
+{
+  const WANT = ['0^inf A> 0^inf', '0^inf 1 B> 0^inf', '0^inf 1 <A 1 0^inf', '0^inf <B 1^2 0^inf',
+    '0^inf <A 1^3 0^inf', '0^inf 1 B> 1^3 0^inf', '0^inf 1^2 Z> 1^2 0^inf'];
+  const tm = parseTM(BB2);
+  const r = new Run(tm);
+  const list = document.getElementById('dhlist');
+  const got = [];
+  for (let t = 0; t <= 6; t++) {
+    const v = r.view();
+    const s = dh(r.config());
+    got.push(s);
+    if (t) list.append(el('div', 'rowsep'));
+    const n = el('div', 'n', 'step ' + t);
+    const pic = miniTape(v, -3, 2);
+    const txt = el('div', 'txt');
+    const line = el('div', 'dh');
+    const toks = s.split(' ');
+    const h = toks.findIndex((x) => /^[A-Z]>$|^<[A-Z]$/.test(x));
+    const right = toks[h].endsWith('>');
+    const rd = right ? h + 1 : h - 1;
+    toks.forEach((x, i) => {
+      if (i) line.append(' ');
+      const sp = el('span', i === h ? 'hdtok' : i === rd ? 'rd' : null, x);
+      if (i === h || i === rd) sp.style.color = sc(v.state);
+      line.append(sp);
+    });
+    const tok = toks[rd], blockN = /\^/.test(tok);
+    const sym = v.read(v.pos);
+    let gloss;
+    if (v.state === 'Z') gloss = 'halted; the head stopped on the first cell of ' + tok;
+    else if (tok === '0^inf') gloss = `${v.state} reads a blank 0 ` + (t === 0 ? '(nothing is written yet)' : 'just past the written part');
+    else if (blockN) gloss = `${v.state} reads the ${right ? 'first' : 'last'} cell of ${tok}: ${sym ? 'a 1' : 'a 0'}`;
+    else gloss = `${v.state} reads the ${tok} ${right ? 'to its right' : 'to its left'}`;
+    const rule = v.rule ? ` · used ${v.rule} = ${tm.acts[tm.names.indexOf(v.rule)]}` : ' · the start, written A> by convention';
+    txt.append(line, el('div', 'gl', gloss + rule));
+    list.append(n, pic, txt);
+    r.step();
+  }
+  if (!same(got, WANT)) fail('BB(2) directed-head strings differ: ' + JSON.stringify(got));
+}
+
+// ---------------------------------------------------------------- 4. W5-3 at step 165, with its three parts marked
+// a page-local reading of E(p,N) that also brackets the separator 0 1 1 B> 0 (cells h-3 .. h)
+decoders['m0-w53-E'] = (v) => {
+  const d = decoders['w53-E'](v);
+  if (!d) return null;
+  return { ...d, marks: [d.marks[0], { from: v.pos - 3, to: v.pos + 1, label: 'separator' }, ...d.marks.slice(1)] };
+};
+{
+  const host = document.getElementById('w53tape');
+  let lastW = -1, cw = 46;
+  const mount = () => {
+    host.textContent = '';
+    const small = window.matchMedia && window.matchMedia('(max-width: 480px)').matches, gap = small ? 3 : 4;
+    host.style.setProperty('--m0cw', '46px');
+    const probe = mountTape(host, { tm: W53, step: 165, window: [-3, 12] });
+    const stage = probe.el.querySelector('.tm-stage');
+    const inner = stage ? stage.clientWidth - 24 : 600;
+    host.textContent = '';
+    // 16 cells (one blank on each side) when they fit at 20 px or more, else the 14 cells of E(2,4) itself
+    let win = [-3, 12], n = 16;
+    cw = Math.floor((inner + gap) / n) - gap;
+    if (cw < 20) { win = [-2, 11]; n = 14; cw = Math.floor((inner + gap) / n) - gap; }
+    cw = Math.max(16, Math.min(46, cw));
+    host.style.setProperty('--m0cw', cw + 'px');
+    const t = mountTape(host, { tm: W53, step: 165, label: 'W5-3 at step 165: E(2,4)', mark: { digits: 'm0-w53-E' }, window: win });
+    const v = t.config;
+    if (!v || v.state !== 'B' || dh(v) !== '0^inf 1 0 1 0^2 1^2 B> 0^5 1^2 0^inf') fail('W5-3 step 165 differs: ' + (v && dh(v)));
+    lastW = host.clientWidth;
+  };
+  mount();
+  if (window.ResizeObserver) new ResizeObserver(() => { if (host.clientWidth !== lastW) mount(); }).observe(host);
+  // the parts the text names
+  const r = new Run(W53); r.stepTo(165);
+  const vv = r.view(), cells = (a, b) => { let s = ''; for (let p = a; p <= b; p++) s += vv.read(p); return s; };
+  const parts = [cells(-2, 1), cells(2, 5), cells(6, 11), vv.pos];
+  if (!same(parts, ['1010', '0110', '000011', 5])) fail('W5-3 step-165 parts differ: ' + JSON.stringify(parts));
+  const d = decoders['w53-E'](vv);
+  if (!d || d.p !== 2 || d.N !== 4) fail('W5-3 step 165 is not E(2,4)');
+}
+
+// ---------------------------------------------------------------- 5a. TNF stepper for BB(2)
+const BB2FIRST = firstUse(BB2, 50).first;
+{
+  const tm = parseTM(BB2);
+  const first = BB2FIRST;
+  if (!same(first, { A0: 0, B0: 1, A1: 2, B1: 5 })) fail('BB(2) first-use steps differ: ' + JSON.stringify(first));
+  const run = new Run(tm);
+  const views = [];
+  for (let t = 0; t <= 6; t++) { const c = run.config(); views.push({ c, rule: run.view().rule }); run.step(); }
+  const tapeBox = document.getElementById('tnfTape'), tblBox = document.getElementById('tnfTbl'), note = document.getElementById('tnfNote');
+  const stepLab = document.getElementById('tnfStep');
+  const bPrev = document.getElementById('tnfPrev'), bNext = document.getElementById('tnfNext');
+  let t = 0;
+  const act = (name) => tm.acts[tm.names.indexOf(name)];
+  const actNode = (a) => { const s = el('span'); s.append(a.slice(0, 2)); const b = el('b', null, a[2]); b.style.color = a[2] === 'Z' ? 'var(--bad)' : sc(a[2]); s.append(b); return s; };
+  function render() {
+    const r = new Run(tm); r.stepTo(t);
+    const v = r.view();
+    tapeBox.textContent = '';
+    tapeBox.append(miniTape(v, -3, 2));
+    const cur = v.halted ? null : v.state + v.read(v.pos);
+    const tb = el('table', 'tnft');
+    const hr = el('tr'); hr.append(el('th', null, 'state'), el('th', null, 'reads 0'), el('th', null, 'reads 1')); tb.append(hr);
+    for (const q of 'AB') {
+      const tr = el('tr');
+      const th = el('th', 'q', q); th.style.color = sc(q); tr.append(th);
+      for (const s of '01') {
+        const name = q + s, td = el('td');
+        if (first[name] < t) { td.append(actNode(act(name))); if (name === cur) td.classList.add('used'); }
+        else if (first[name] === t && name === cur) { td.classList.add('now'); td.append(actNode(act(name))); }
+        else { td.classList.add('empty'); td.append('---'); }
+        tr.append(td);
+      }
+      tb.append(tr);
+    }
+    tblBox.textContent = '';
+    tblBox.append(tb);
+    note.textContent = '';
+    const k = el('span', 'k');
+    let msg;
+    if (v.halted) {
+      k.textContent = `step ${t}: halted`;
+      msg = 'Halted with four 1s. This branch is one leaf of the TNF tree for 2 states: the BB(2) champion.';
+    } else {
+      k.textContent = `step ${t}: ${v.state} reads ${v.read(v.pos)}, so the run needs transition ${cur}`;
+      const emptyOthers = ['A0', 'A1', 'B0', 'B1'].filter((n) => n !== cur && !(first[n] < t)).length;
+      if (first[cur] < t) msg = `${cur} is already filled (${act(cur)}). No branching: the run just continues.`;
+      else if (t === 0) msg = `${cur} is empty. The holdout lists use the TNF variant where A0 is always 1RB (write 1, move right, go to a new state B), so this is the only branch kept.`;
+      else if (emptyOthers > 0) {
+        const visited = new Set(views.slice(0, t + 1).map((x) => x.c.state));
+        const nNext = visited.size + (visited.size < tm.n ? 1 : 0);
+        msg = `${cur} is empty, so TNF branches into ${1 + 2 * 2 * nNext} machines: one halts here (1RZ), and 2 × 2 × ${nNext} = ${2 * 2 * nNext} try a move (write 0 or 1, move L or R, go to ${nNext === 2 ? 'A or B' : 'a state'}). This branch takes ${act(cur)}.`;
+      } else msg = `${cur} is the last empty transition. A machine with no empty transition can never halt, so the only branch is the halt: ${act(cur)}.`;
+    }
+    note.append(k, msg);
+    stepLab.textContent = `step ${t} of 6`;
+    bPrev.disabled = t === 0; bNext.disabled = t === 6;
+  }
+  bPrev.addEventListener('click', () => { if (t > 0) { t--; render(); } });
+  bNext.addEventListener('click', () => { if (t < 6) { t++; render(); } });
+  document.getElementById('tnfReset').addEventListener('click', () => { t = 0; render(); });
+  render();
+}
+
+// ---------------------------------------------------------------- 5b. BB(2)'s path through the TNF tree (SVG)
+{
+  const tm = parseTM(BB2);
+  const act = (name) => tm.acts[tm.names.indexOf(name)];
+  const order = Object.entries(BB2FIRST).sort((a, b) => a[1] - b[1]);
+  // the branches at each empty transition the run needs: halt, plus every move when another transition is still empty
+  const levels = order.map(([name, t]) => {
+    const r = new Run(tm);
+    const seen = new Set(['A']);
+    for (let i = 0; i < t; i++) { r.step(); seen.add(r.view().state); }
+    const v = r.view();
+    const vis = [...STATES.slice(0, tm.n)].filter((q) => seen.has(q));
+    const nxt = vis.length < tm.n ? [...vis, STATES[vis.length]] : vis;
+    const others = order.some(([n2, t2]) => n2 !== name && t2 > t);
+    let kids = ['halt'];
+    if (others) for (const w of '01') for (const d of 'LR') for (const q of nxt) kids.push(w + d + q);
+    const a = act(name);
+    const take = a[2] === 'Z' ? 'halt' : a;
+    if (t === 0) kids = [take];                       // the 1RB variant keeps only A0 = 1RB
+    return { name, t, state: v.state, read: v.read(v.pos), kids, take, full: t === 0 ? null : kids.length };
+  });
+  const WANT = [['A0', ['1RB']], ['B0', ['halt', '0LA', '0LB', '0RA', '0RB', '1LA', '1LB', '1RA', '1RB']],
+    ['A1', ['halt', '0LA', '0LB', '0RA', '0RB', '1LA', '1LB', '1RA', '1RB']], ['B1', ['halt']]];
+  if (!same(levels.map((l) => [l.name, l.kids]), WANT)) fail('TNF branches differ: ' + JSON.stringify(levels.map((l) => [l.name, l.kids])));
+
+  const NS = 'http://www.w3.org/2000/svg';
+  const S = (tag, attrs, txt) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v); if (txt != null) e.textContent = txt; return e; };
+  const VW = 360, X0 = 7, BW = 34, GAP = 5, BH = 22, RAIL = X0 + BW / 2;
+  const svg = S('svg', { viewBox: `0 0 ${VW} 100`, 'aria-hidden': 'true' });
+  // root
+  svg.append(S('rect', { class: 'bx root', x: X0, y: 1, width: 150, height: BH, rx: 5 }));
+  svg.append(S('text', { x: X0 + 8, y: 1 + 15 }, 'every transition ---'));
+  let y0 = 1 + BH;
+  for (const L of levels) {
+    // the taken branch goes first, so the path runs straight down the left rail
+    const kids = [L.take, ...L.kids.filter((k) => k !== L.take)];
+    const bus = y0 + 30, top = y0 + 38;
+    const cap = S('text', { class: 'cap', x: RAIL + 10, y: y0 + 18 });
+    cap.append(S('tspan', { class: 'b' }, `step ${L.t}: `), `${L.state} reads ${L.read}, ${L.name} is empty → `,
+      S('tspan', { class: 'b' }, L.t === 0 ? 'keep only 1RB' : L.kids.length === 1 ? 'halt only' : `${L.kids.length} branches`));
+    svg.append(cap);
+    svg.append(S('path', { class: 'ln take', d: `M${RAIL} ${y0} V${top}` }));
+    if (kids.length > 1) svg.append(S('path', { class: 'ln', d: `M${RAIL} ${bus} H${X0 + (kids.length - 1) * (BW + GAP) + BW / 2}` }));
+    kids.forEach((k, i) => {
+      const x = X0 + i * (BW + GAP), isTake = i === 0, isHalt = k === 'halt';
+      if (i) svg.append(S('path', { class: 'ln', d: `M${x + BW / 2} ${bus} V${top}` }));
+      svg.append(S('rect', { class: 'bx' + (isTake ? ' take' : '') + (isHalt ? ' halt' : ''), x, y: top, width: BW, height: BH, rx: 4 }));
+      svg.append(S('text', { class: isHalt ? 'halt' : '', x: x + BW / 2, y: top + 15, 'text-anchor': 'middle' }, k));
+    });
+    y0 = top + BH;
+  }
+  svg.append(S('text', { class: 'leaf', x: X0 + BW + 8, y: y0 - 7 }, '← a leaf: 1RB1LB_1LA1RZ, the BB(2) champion'));
+  svg.setAttribute('viewBox', `0 0 ${VW} ${y0 + 3}`);
+  document.getElementById('tnfTree').append(svg);
+}
+
+// ---------------------------------------------------------------- 5c. W5-3: the step each transition is first needed
+{
+  const tm = parseTM(W53);
+  const { first, reached } = firstUse(W53, 5000);
+  const WANT = { A0: 0, B0: 1, C1: 2, D0: 3, E1: 4, A1: 5, D1: 9, E0: 11, B1: 12, C0: 39, F1: 40 };
+  if (!same(Object.fromEntries(Object.entries(first).sort((a, b) => a[1] - b[1])), WANT)) fail('W5-3 first-use steps differ: ' + JSON.stringify(first));
+  const order = Object.entries(reached).sort((a, b) => a[1] - b[1]).map((x) => x[0]).join('');
+  if (order !== 'ABCDEF') fail('W5-3 states reached in order ' + order);
+  const t = mountTable(document.getElementById('w53first'), { tm, caption: 'W5-3: first needed at step …', highlight: ['F0'] });
+  for (const [name, td] of Object.entries(tableCells(t.el, tm))) {
+    if (name in first) td.append(el('span', 'fu', 'step ' + first[name]));
+    else td.append(el('span', 'fu never', 'never'));
+  }
+}
+
+// ---------------------------------------------------------------- 5d. holdout bars (line counts of data/holdouts/*, checked by m00_reading.py)
+{
+  const LISTS = [['2024-06-14', 12325, 2221], ['2024-07-12', 7296, 1338], ['2024-11-10', 4408, 807], ['2025-08-09', 2728, 499],
+    ['2025-11-28', 1416, 261], ['2026-02-19', 1226, 223], ['2026-08-31', 1003, 183], ['2026-09-29', 815, 149], ['2026-10-07', 778, 141], ['2026-10-10', 740, 134]];
+  const box = document.getElementById('bars');
+  box.append(el('span', 'hdr', 'list'), el('span', 'hdr', 'machines'), el('span', 'hdr', 'W5-3'));
+  const max = LISTS[0][1];
+  for (const [d, n, line] of LISTS) {
+    const tr = el('div', 'track');
+    tr.title = `${d}: ${n.toLocaleString('en-US')} machines; W5-3 on line ${line.toLocaleString('en-US')}`;
+    const frac = n / max;
+    const bar = el('div', 'bar');
+    bar.style.width = (frac * 100).toFixed(2) + '%';
+    const v = el('span', 'v', n.toLocaleString('en-US'));
+    // label inside the bar when it is long enough, otherwise just after it
+    if (frac > 0.42) { v.style.right = (100 - frac * 100).toFixed(2) + '%'; v.style.marginRight = '6px'; v.style.color = 'var(--page)'; }
+    else { v.style.left = `calc(${(frac * 100).toFixed(2)}% + 6px)`; }
+    tr.append(bar, v);
+    box.append(el('span', 'd', d), tr, el('span', 'w', 'line ' + line.toLocaleString('en-US')));
+  }
+}
+
+window.__learnReady = autoMount();
+
+// drills 2 and 3: say why the run has no controls yet, and keep the keyboard from stepping it before Reveal
+for (const run of document.querySelectorAll('.lockrun .tm-plinked .tm-run')) {
+  const ctl = run.querySelector('.tm-controls');
+  if (ctl) ctl.before(el('div', 'lockmsg', 'This run is paused here. Its controls unlock after Reveal.'));
+}
+const LOCKED = '.lockrun .tm-predict:not([data-revealed]) .tm-plinked';
+for (const ev of ['keydown', 'keyup']) {
+  document.addEventListener(ev, (e) => {
+    if (!e.target.closest || !e.target.closest(LOCKED)) return;
+    if (['ArrowRight', 'ArrowLeft', ' ', 'Home', 'End'].includes(e.key)) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
+}
+
+// machine strings in prose and drill prompts break only after an underscore
+for (const c of document.querySelectorAll('main code, .ttl .mono')) {
+  if (c.classList.contains('tmstr') || !/^[0-9A-Z-]{6}(_[0-9A-Z-]{6})+$/.test(c.textContent)) continue;
+  const parts = c.textContent.split('_');
+  c.textContent = '';
+  parts.forEach((x, i) => {
+    const sp = document.createElement('span');
+    sp.style.whiteSpace = 'nowrap';
+    sp.textContent = x + (i < parts.length - 1 ? '_' : '');
+    c.append(sp);
+    if (i < parts.length - 1) c.append(document.createElement('wbr'));
+  });
+  c.classList.add('tmstr');
+}
+
+</script>
+</body>
+</html>

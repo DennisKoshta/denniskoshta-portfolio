@@ -1,0 +1,531 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD/notes.md · <a href="/busy-beaver/machines/1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD/notes.md.html">raw</a></div>
+<h1 id="1rb1lc_1rc-_1ld1lc_1re0lc_1rf0re_1ra0rd">1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD</h1>
+<p>Status: CHECKPOINT_A
+Class guess (agent / Dennis): Structural counter + chaotic edge (sheet agrees). Drifting defect groups = hierarchical counter, fed by a chaotic right edge. / —
+Spreadsheet notes / Discord thread: Results row 862: status, notes, sources, done-by all blank. No link, strikethrough or comment. Not on dyuan01's list. On mxdys's UBRRBA_TODO (Dennis 2026-10-10: fair game).
+Twin: targeting #27 <code>1RB0RA_1RC0RF_1RD1LE_1RE---_1LF1LE_1RA0LE</code> is this exact table started in state E (relabel A→C B→D C→E D→F E→A F→B; tapes identical at 1e7).
+Viewer: https://bbchallenge.org/1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>No halt to 1e11 (C core). Span 352,865 cells, 177,158 nonzeros. Wall: L ≈ 1.08·√t. Right edge: hi ≈ 20·√L.</li>
+<li>At wall visits the tape is (01)^n runs separated by one defect: <code>1</code> (11), <code>0</code> (00) or <code>111</code> (1111). That covers 99.5% of separators; the rare others sit at the edge. No 000 and no 1^5 inside.</li>
+<li>Defect groups drift left at exact speeds in cells/bounce: 1, 3/4, 1/2, 3/8, 3/8, 5/16, 5/16, 9/32, 9/32, … → 1/4. They show as a fan of straight lines in <code>img/recordsL_abs_stride4.png</code> (2 rows per bounce; only every 4th cell is drawn, so a 0101… run is solid white or black and each colour edge is a defect). Group count: 6 at 1e6, 56 at 1e9.</li>
+<li>Furthest group the head reaches in each wall cycle has period 16 for G1–G3 (<code>3 3 3 1 2 2 * 1 2 * 2 1 3 2 * 1</code>). The 3 starred cycles in each 16 are deep trips with irregular depth.</li>
+<li>Compressed history (every 16th wall visit, a fixed phase):
+  <code>0^inf &lt;D 11 01^14 10^a 1^4 01^3 1^2 10^8 01^b 10^12 1 10^c 1^3 10^6 01^18 0 01^d 1^3 01^6 …</code>
+  with (a,b,c,d) = (8n+61, 2n, 2n−2, n) and L = 32n+26 exactly, for n = 25..1051 (25 snapshots, 1e6..1e9).</li>
+<li>Defect views (<code>scripts/defectview.py</code>: black = a 00/11 pair, white = clean 0101…; immune to the phase flips that make plain rows flicker): <code>img/defects_every500k_left_1e9.png</code> (<code>every:500000 1e9 left 0 36470 8</code>) and <code>img/defects_recordsR_right_1e9.png</code> (<code>records:R 1e9 right -1599 0 2</code>). They replace <code>every500k_left_1e9.png</code> and <code>recordsR_rightframe_stride2_1e9.png</code> on the card (2026-10-10): those two were unreadable streaks and moiré.</li>
+<li>Tools: Quick_Sim does not accelerate it. Block 4 gives 0 rules; block 2 gives 9,131 one-off "collatz" rules and reaches only 2.6e6 steps. compress sweep: <code>none</code> (chaotic, 147 tokens). rulefit not used: <code>RULEFIT_FAST=1 test_rulefit.py</code> has 3 TestAntihydra failures.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All were checked by direct simulation (scripts/lowrules.py, scripts/val16b.py; results in data/).</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to</th>
+<th>steps</th>
+<th>tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>left sweep</td>
+<td><code>10^n &lt;C</code> → <code>&lt;C 01^n</code></td>
+<td>2n</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td>right sweep even</td>
+<td><code>E&gt; 01^(2n)</code> → <code>10^(2n) E&gt;</code> (and 10↔01)</td>
+<td>4n</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>right sweep odd</td>
+<td><code>E&gt; 01^(2n+1)</code> → <code>10^(2n+1) D&gt;</code>; <code>E&gt; 10^(2n+1)</code> → <code>01^(2n+1) F&gt;</code></td>
+<td>4n+2</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>wall</td>
+<td><code>0^inf &lt;C</code> → <code>0^inf 1 0 E&gt;</code></td>
+<td>3</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td>edge</td>
+<td><code>E&gt; 0^inf</code> → <code>1 &lt;C 1101 0^inf</code> (only place B is entered: 512× in 1e9)</td>
+<td>8</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td><strong>halt trigger</strong></td>
+<td><code>E&gt; 10^(2n+1) 001</code> → halt</td>
+<td>4n+5 (busycoq 4n+4)</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td>safe sibling</td>
+<td><code>E&gt; 10^(2n) 001</code> → <code>01^(2n) 1 1 &lt;C 1</code></td>
+<td>4n+3</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td><strong>G16</strong></td>
+<td>P(a,b,c) r → P(a+8,b+2,c+2) r′ over 16 wall bounces</td>
+<td>—</td>
+<td>32/32</td>
+</tr>
+</tbody>
+</table>
+<p>P(a,b,c) := <code>0^inf &lt;D 11 01^14 10^a 1^4 01^3 1^2 10^8 01^b 10^12 1 10^c 1^3 10^6 01^18 0 01^2</code> (wall..G3; r = rest of tape).
+G16 holds for a odd ≥ 1, b even ≥ 4 and c even ≥ 2, with a, b, c independent and r any of 4 real right parts. The other parity classes fail (0/12), so the rule really depends on parity.</p>
+<p>Template check (BLv3.v TM1): 8 of 11 transitions differ, so the answer is <strong>partly</strong>. The method carries over: columns (01)^n+defect, signal streams, a per-column transducer, quadRect closure. The lemmas do not: we have an extra 1111 column type and a growing edge. BLv3's own cut tape (<code>0^inf &lt;C</code> + C0 16 ++ bl5_suffix_word ++ E 3) run on this machine <strong>halts</strong> at sim step 20,175.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<h2 id="informal-proof">Informal proof</h2>
+<h2 id="formalization-log">Formalization log</h2>
+<h2 id="outcome">Outcome</h2>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<ul>
+<li>Figures on the card: Fig 1 = <code>img/recordsL_abs_stride4.png</code>, Fig 2 = <code>img/defects_recordsR_right_1e9.png</code>, Fig 3 = <code>img/defects_every500k_left_1e9.png</code>, Fig 4 = <code>img/blaze_1e8.png</code>, Fig 5 = <code>img/default_site_1e4.png</code>. Figs 1-2 are the primary figures, shown beside the checkpoint.</li>
+<li>The card's mechanism is cut to 3 bullets. The full list before the cut:</li>
+<li>Tape = runs of (01)^n split by single defects (11, 00, 1111); head zig-zags between defects, wall grows 2 cells per bounce.</li>
+<li>Defect groups leave the right edge and drift left at exact speeds 1, 3/4, 1/2, 3/8, 3/8, 5/16, 5/16, 9/32.. cells/bounce (limit 1/4).</li>
+<li>Left block (wall..G3) repeats exactly every 16 bounces: gaps (a,b,c,d) = (8n+61, 2n, 2n-2, n), n -&gt; n+1.</li>
+<li>Right edge (hi ~ 20*sqrt(L); groups 6 -&gt; 56 by 1e9) is chaotic; head reaches it in 3 of every 16 bounces.</li>
+<li>Only way to halt: E sweeps an odd-length (10) run that ends in a 00 defect. Never seen in 1e11 steps.</li>
+<li>Checkpoint questions are now yes/no questions about the figures. Moved off the card (strategy calls, not figure reading; settle them in proof.md / Checkpoint B):</li>
+<li>"Blaze - given that ragged right edge, run a closed-language search on the edge before any hand proof?"</li>
+<li><code>scripts/write_observe.py</code> regenerates observe.json; re-running it would drop this pass's titles, order and questions.</li>
+</ul>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Scripts: <code>scripts/deepen_*</code> (C sources compile with <code>gcc -O2</code>; Python with <code>python3 -B</code>). Token notation <code>g:X</code> = defect run X (<code>11</code>, <code>00</code>, <code>1111</code>, ...) after g clean alternating cells (<code>scripts/deepen_tok.py</code>).</p>
+<p><strong>1. Blank tape → G16 lock (regime transition closed).</strong> The left block first matches P(a,b,c) at wall visit 125 (step 190,860; n = 7, a = 117, b = 14, c = 12). It matches again at every 16th visit after that: 193/193 visits checked (125..3197, all ≡ 13 mod 16, a = 8n+61, b = 2n, c = 2n−2, L = 32n+26). Before step 190,860 a proof only needs finite simulation.</p>
+<p><strong>2. Head/defect interaction table (exact, local).</strong> In a clean run, a right-moving head cycles (E,0)→(F,1)→(D,0)→(E,1). <em>E-phase</em> means it reaches a defect's first cell in E. <em>x-phase</em> means it arrives in F (on a 1) or D (on a 0). A left-moving head has no phase: it is C on a 0 and D on a 1. Validated with 1440/1440 random instances: run lengths 3..80 on both sides, 60 per cell, and each cell gave exactly one outcome (<code>deepen_table_validate.py</code>).</p>
+<table>
+<thead>
+<tr>
+<th>defect</th>
+<th>from left, E-phase</th>
+<th>from left, x-phase</th>
+<th>from right (C/D)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11</td>
+<td>pass → 00 (same cells)</td>
+<td>reflect → 00, shift +1</td>
+<td>pass → 11, shift −1</td>
+</tr>
+<tr>
+<td>00</td>
+<td>reflect → 1111, shift −1</td>
+<td>pass → 11</td>
+<td>reflect → 11, shift −1</td>
+</tr>
+<tr>
+<td>1111</td>
+<td>pass → 0000</td>
+<td>reflect → 11, shift +2</td>
+<td>pass → 1111, shift −1</td>
+</tr>
+<tr>
+<td>111</td>
+<td>pass → 000</td>
+<td>reflect → vanishes</td>
+<td>pass, shift −1</td>
+</tr>
+<tr>
+<td>11111</td>
+<td>pass → 00000</td>
+<td>reflect → 111, shift +2</td>
+<td>pass, shift −1</td>
+</tr>
+<tr>
+<td>0000</td>
+<td>reflect → 1^6</td>
+<td><strong>HALT</strong></td>
+<td>reflect → 00</td>
+</tr>
+<tr>
+<td>000</td>
+<td><strong>HALT</strong></td>
+<td>reflect → 1^5</td>
+<td>reflect → vanishes</td>
+</tr>
+<tr>
+<td>00000</td>
+<td>reflect → 1111011</td>
+<td>reflect → 1^7</td>
+<td>reflect → 000</td>
+</tr>
+</tbody>
+</table>
+<p>From the right, 1-runs always pass and 0-runs always reflect and shrink by 2. So a 0^k (k ≥ 3) that one pass leaves behind the head shrinks before any head can reach it from the left. That holds as long as defects stay isolated.</p>
+<p><strong>3. Halting reduction. This is a cell-level argument, not simulation.</strong>
+(a) A left-moving head cannot cross <code>00</code>: C on 0 becomes D, and D on 0 turns right.
+(b) Halting needs <code>E&gt; 0001</code>: E, F and A each read a 0, then B reads a 1.
+(c) <em>Frozen region.</em> A cell to the right of the head was last written by the step that moved the head left off it. Left-moving C always writes 1. A left-moving D writes 0 only when it reads a 1, and it was entered from C on the cell to its right, which C had just set to 1. So such a 0 always has a 1 on its right. The only other leftward 0-write is the turn of a right-moving D on a 1: <code>F&gt; 1 1</code> → <code>&lt;C 0 0</code>. That turn leaves the next cell as it was.
+(d) So the first 0 of any <code>0001</code> ahead of the head is a turn zero, and the step that wrote it saw <code>F&gt; 1 1 0 0 1</code>. <strong>The machine halts only if an x-phase head at some time reaches an <code>11</code> defect immediately followed by a <code>00</code> defect (cells <code>1100</code>).</strong>
+(e) I searched clusters exhaustively (<code>deepen_clusters.py</code>): types {11, 00, 1111, 111, 11111}, 2 defects with gaps 0..9 and 3 defects with gaps 0..4, both phases. The only cluster that one pass from the left leaves with a <code>000</code> ahead of the head, or halts on, contains an adjacent <code>1100</code> met in x-phase (1 two-defect cluster and 16 three-defect clusters, all of them containing <code>1100</code>). This agrees with (d).</p>
+<p><strong>4. Census on the real orbit</strong> (<code>deepen_frozen_census.c</code>, <code>deepen_nearmiss_clusters.c</code>):
+- A right-moving head never has a <code>0001</code> ahead of it: badR = 0 up to 1e10 steps. A 1e11 run was stopped at about 1.3e10 when the stage budget ran out.
+- An x-phase head met the first 1 of an <code>11</code> 603,714 times by 1e10. It was followed by <code>1</code> (a 1111) 86,173 times, by <code>01</code> 517,541 times and by <code>00</code> <strong>0</strong> times.
+- Near misses (<code>deepen_nearmiss_clusters.c</code>, to 1e10). I counted arrivals at the first cell of a 1-run whose original left neighbour was 0. <code>1111·00</code> (cells <code>111100</code>) was hit 3 times: E-phase at step 10,980,420; <strong>x-phase at step 12,975,111</strong>; E-phase at step 162,046,035. The x-phase hit made a bare <code>1100</code> with the head on its left, which is one step of the halting chain. The next arrival, 50 steps later (step 12,975,161), was E-phase, so it passed safely. No x-phase arrival at a bare <code>1100</code> ever happened. Nothing happened between steps 1.6e8 and 1e10. All 4 events were in the edge zone, 367–948 cells left of hi. (An earlier detector keyed on the written left cell was wrong and has been removed.)</p>
+<p><strong>5. The phase is not local.</strong> I checked the arrival phase at an <code>11</code> against the untouched tape ahead (R = 5..20 cells): 7 of 9 up to 104 of 199 contexts see both phases (<code>deepen_phase_context.c</code>). So "a <code>1100</code> is never met in x-phase" is not a local invariant. A proof has to carry the phase as non-local information (BLv3-style signal streams), or show that <code>1100</code> only forms where the next arrival must be E-phase.</p>
+<p><strong>6. Hierarchy beyond G3 (exact, period doubling).</strong> For each period P, I counted how many leading tokens repeat exactly (same types, constant gap growth over 2 periods) at visit 9005, where there are 122 tokens: P = 16 → 10, 32 → 13, 64 → 16, 128 → 17, 256 → 18, 512 → 19, 1024 → 20, 2048 → 25 (<code>deepen_period_depth.py</code>). Each doubling of the period locks about one more defect. This is a period-doubling counter, not pseudo-random arithmetic. Trip depth in tokens follows the fixed 16-pattern <code>3 9 6 * 3 9 8 9 3 5 6 * 3 5 * 5</code>; the 3 starred trips go deeper. P(depth &gt; k) falls slowly: 0.19 for k = 12, 0.09 for 20, 0.04 for 38. Deep trips are common.</p>
+<p><strong>7. Edge zone (open).</strong> The right end only ever grows in steps of 11 cells (151 extensions by 1e9). The tail alternates between two forms:
+- X = <code>…(12:1111 8:1111)^m 12:1111 8:11 (12:11 13:00 9:11)^2 12:11 13:$</code>
+- Y = <code>…(8:1111 12:1111)^m … (11:00 11:11 10:1111)^2 11:00 11:11 13:$</code></p>
+<p>Each +11 step toggles X ↔ Y. Behind the tail sit about 40–100 young tokens with mixed gaps (2..37). All the small gaps, the odd defects (111, 11111) and all 4 near misses (<code>1111·00</code> / <code>1100</code>) live there. The zone only changes on trips that reach it. Its rules are not decoded.</p>
+<p><strong>Verdict.</strong> Confidence stays <strong>med</strong>. The mechanism is much sharper now:
+- Every halt needs one collision type: <code>1100</code> met in x-phase.
+- To 1e10 it never happens.
+- What prevents it is a non-local phase inside an edge zone that is not decoded yet.</p>
+<p>I see no pseudo-random arithmetic, so this is not a cryptid flag. Still, the near miss at step 12,975,111 was decided by the phase alone, which is a warning sign. Next:
+1. Log every <code>1100</code> and <code>1111·00</code> collision with the phase history of the arriving signal.
+2. Build the per-defect signal transducer: right-crossings carry 1 phase bit, left-crossings carry none. Test whether the stream that reaches the edge zone is regular, which is the BLv3 <code>good</code> approach.</p>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Scripts: <code>scripts/deepen2_*</code> (C: <code>gcc -O2</code>, run under <code>ulimit -v 6000000</code>; Python: <code>python3 -B</code>). Phase notation as in pass 1: <em>E-phase</em> = right-moving head reaches the defect's first cell in E; <em>x-phase</em> = in F (on a 1) or D (on a 0).</p>
+<p><strong>1. The near miss is one stage of a recurring halting chain (validated).</strong> A <em>seed</em> is an x-phase head hitting the cluster <code>11·01·00</code> (cells <code>110100</code>). The cluster then reacts to the next arrivals from the left like this:</p>
+<table>
+<thead>
+<tr>
+<th>stage</th>
+<th>arrival</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 (seed)</td>
+<td>x at the <code>11</code></td>
+<td><code>11</code> → <code>00</code> (+1): cells <code>100100</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>E at the new <code>00</code></td>
+<td>reflect → <code>1111</code> (−1): <code>1111·00</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>x at the <code>1111</code></td>
+<td>reflect → <code>11</code> (+2): bare <code>1100</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>x at the <code>11</code></td>
+<td>reflect → <code>000</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>E at the <code>000</code></td>
+<td><strong>HALT</strong></td>
+</tr>
+</tbody>
+</table>
+<p><code>deepen2_chainval.py</code> checks this on the isolated cluster with random run lengths 8..60 on both sides. x,E,x,x,E halts 60/60, while x,E,x,x,x ends in a safe <code>1^5</code> 60/60. It also tried all 30 phase sequences of length 1..4, 40 random instances each, and each gave one outcome. Every prefix other than x,E,x,x sends the head through to the right and dissolves the cluster. Correction to pass 1, §3(d): an x-phase hit on a bare <code>1100</code> is necessary for halting but not enough, because it only writes <code>000</code>. One more E-phase arrival is needed.</p>
+<p>Stages 2-5 never read the cells to the right of the cluster. The <code>00</code> E-reflect reads one cell past the <code>00</code>, which is the <code>1</code> between the two <code>00</code>s; the <code>1111</code> and <code>11</code> x-reflects read only their own cells. So stages 2-5 are decided by the left context alone.</p>
+<p><strong>2. Seeds recur and their stage phases look like coin flips.</strong> <code>deepen2_chain.c</code> was run to about 4e10 steps; it was stopped at the stage budget, and its log is <code>scripts/deepen2_chain_seeds_4e10.txt</code>.</p>
+<table>
+<thead>
+<tr>
+<th>seed</th>
+<th>step</th>
+<th>stage 2</th>
+<th>stage 3</th>
+<th>stage 4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#0</td>
+<td>1,933,834</td>
+<td>x</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#1</td>
+<td>5,464,507</td>
+<td>x</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#2</td>
+<td>10,830,442</td>
+<td>E</td>
+<td>E</td>
+<td></td>
+</tr>
+<tr>
+<td>#3</td>
+<td>12,974,901</td>
+<td>E</td>
+<td>x</td>
+<td>E (the step-12,975,111 near miss)</td>
+</tr>
+<tr>
+<td>#4</td>
+<td>160,012,399</td>
+<td>E</td>
+<td>E</td>
+<td></td>
+</tr>
+<tr>
+<td>#5</td>
+<td>734,602,944</td>
+<td>x</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#6</td>
+<td>898,781,960</td>
+<td>x</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#7</td>
+<td>12,358,956,241</td>
+<td>E</td>
+<td>E</td>
+<td></td>
+</tr>
+<tr>
+<td>#8</td>
+<td>16,912,639,982</td>
+<td>x</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#9</td>
+<td>18,868,953,305</td>
+<td>x</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>#10</td>
+<td>24,518,883,204</td>
+<td>(no return yet)</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>That is about 0.7 seeds per doubling of the step count, with no sign of slowing down. Seed positions are q = 254..1915, while hi grows from 992 to 8043. Generic rates for the same reflections anywhere on the tape (<code>deepen2_reflnext.c</code> to 3e8, <code>deepen2_chain3.c</code> to 1e9):
+- after an <code>11</code> x-reflect, the next arrival at the <code>00</code> is E 49.7%;
+- after a <code>00</code> E-reflect, the next arrival at the <code>1111</code> is x 34.7%;
+- after that <code>1111</code> x-reflects, the next arrival at the <code>11</code> is x 12.7%.</p>
+<p>The seeds match these rates: 4/10, 1/4, 0/1. The 70 cells left of each seed differ in all 7 seeds to 2e9, so seeds do not come from one local template that could force later phases. If the phases are independent coins, each seed halts with probability about 0.5 · 0.35 · 0.13 · 0.5 ≈ 1%. At about 0.7 seeds per doubling, that predicts a halt eventually, but only around 2^100 steps or later.</p>
+<p><strong>3. Negative results (invariant candidates ruled out).</strong>
+- <em>Global phase gauge.</em> θ = (κ − pos) mod 4 over right-moving clean steps, with κ: E0=0, F1=1, D0=2, E1=3. It takes all 4 values in 5,175 of 5,180 wall cycles to 1e8 (<code>deepen2_gauge.c</code>). Phase is not a function of position and time parity.
+- <em>Gap mod 4.</em> <code>deepen2_gapcensus.c</code> measured the gap k from a 1-run to the next <code>00</code>, to 2e9. For x-phase <code>11</code>s, k ≡ 0 mod 4 occurs 10,472 times and k ≡ 2 mod 4 occurs 76 times. The seeds are k = 2 exceptions, so no gap-mod-4 invariant excludes them.
+- <em>Other routes to adjacency.</em> The 1-run/<code>00</code> adjacencies seen (k = 0) were 4 events to 2e9, all inside seed chains #2-#4. No other route to <code>11·00</code> or <code>1111·00</code> was seen to about 4e10.</p>
+<p><strong>4. Global layout</strong> (<code>deepen2_wvsel.c</code> + <code>deepen2_tokpos.py</code>, wall visits 1000..16000):
+- Left: the exact period-doubling counter.
+- Middle: the <em>mixed zone</em>. It holds about 70-100 tokens at a roughly fixed absolute position (about 250..2200), with gaps 1..100 and all defect types. Every seed and every near miss is here.
+- Right: a regular tail of repeated blocks A = (12:11 10:11)^a, B = (12:1111 8:1111)^b and C = (11:00 11:11 10:1111)^c, with fixed separators such as <code>13:00 9:11 12:11</code>. It grows by +11 cells per extension. These block rules are observed only, not validated.</p>
+<p><strong>Verdict: cryptid-like, flagged.</strong> Mechanism confidence stays <strong>med</strong>. Halting reduces exactly to the validated 5-stage chain above, and seeds keep forming. The chain's stages are decided by mod-4 phases coming from an undecoded, disordered mixed zone. They match generic coin rates, and nothing visible forces them. This is not Collatz-style arithmetic, but it has the same consequence: a non-halting proof would need hidden structure in the mixed zone that the data do not show, and the coin heuristic says the machine probably halts eventually, far beyond simulation. Status → CRYPTID_CANDIDATE for Dennis's priority call (stop, or continue by decoding the mixed zone). What would refute the flag: an exact rule for how the counter's signal stream drives the mixed zone that forces stage 2 = x or stage 3/4 = E at every seed.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Stop work on #6 and its twin #27: keep #6 flagged CRYPTID_CANDIDATE and park proof work, rather than spend a stage decoding the mixed zone?
+Answer: <strong>stop</strong> (Stop: keep CRYPTID_CANDIDATE and park). Dennis: go with all recommendations (2026-10-10).
+Stopped by Dennis 2026-10-10: stays cryptid candidate, proof work parked with twin #27 (1RB0RA_1RC0RF_1RD1LE_1RE---_1LF1LE_1RA0LE).</p>
+</main></body></html>

@@ -1,0 +1,20 @@
+{
+ "tm": "1RB0RC_1LC0RD_0LD0LC_1RE0LA_0RA0RF_1LB---",
+ "label": "P-305",
+ "status": "SKIPPED",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "confidence": "high",
+ "holdout_line_740": 305,
+ "class": "Skelet 1-like Class 1 (K42 core)",
+ "upstream_twin": "Sk1like_TC_v1.v Module TM2 = 1RB0RC_1LC0RD_0LD0LC_1RE0LA_0RA1RF_1RB--- (nonhalt); Sk1like_TC_v2.v Module TM1 = 1RB0RC_1LC0RD_0LD0LC_1RE0LA_0RA0RF_0RE--- (nonhalt)",
+ "relation": "same state names, same start A, no mirror; vs TM2 differs in E1 (0RF vs 1RF) and F0 (1LB vs 1RB); vs v2-TM1 differs in F0 only (1LB vs 0RE). All three reach upstream x0 = (1, D0011 27 . D00001 8 . D001T) at step 6039 by the same E1-free run. Same table as 740 lines 124 and 64: in 305's names, 124 is this table started in D (124 renamed A..E -> D,E,A,B,C is 305) and 64 is its mirror started in B (canon checked).",
+ "reason": "Twin port refuted against both upstream machines. Exit lemma D> 0100 -> <C 0001 (TM2, 7 steps) vs <C 0110 (305, 5 steps): at each of the 3 E1 branches 305 writes D0011001 where TM2 writes D0000101 (or D00001 0 . D01 via a new return kind Tp3). Direct re-reads heal (exits 1-2, Inc 99 and 263, +12/+24 steps), but exit 3 (Inc 681, first 0011101 exit) is read through D0011 0 at Inc 690: TM2 -> D0011_000101 -> ... -> exit 4 at Inc 710, 305 -> D0011_011001 -> D00101001 merge, no exit. The orbits never meet again (to 3e6 Inc). On the list strings: E1 at 49248, 172818, 1303231, 8119627 (305) vs 49248, 172806, 1303207, 1338615, ... (TM2). 305 also meets D00101 0 . D0011 (Inc 870), a case upstream's RInc lacks. TM2's S' is never reached and is not a cycle for 305 (reads r at Inc 777); v2-TM1's exits recurse rightwards (F0 0RE), so v2 differs from the first exit (Inc 99) and its S' (518-Inc period, one exit) is not a cycle for 305 (reads r at Inc 2435).",
+ "result": "exact digit-level model RInc3/Inc3 = upstream RInc with the 3 exit branches changed, Tp3 (<C 011001 w^n) with 2 handlers, and the new case D00101 0 . D0011 n0 . r0 -> (r0, 2+n0, Tp0) (25-step local rewrite). RInc_spec, Inc_spec and init for line 305 compile with coqc 8.20 against the pinned framework in 12.8 s (scripts/P305_model.v; model lemmas only, not a kill).",
+ "evidence": "scripts/twin_check.py (checks 1-9; output scripts/twin_check.out); scripts/P305_model.compile.txt",
+ "next": "No port, no delta proof.md. Back to the K42 pool (strategy direction 2): a kill needs an invariant of the Inc3 digit system on this orbit. The Coq-checked model is the exact simulator the K42 F-entry atlas needs for this start; its new case also applies to line 124 (same table).",
+ "siblings": [
+  "1RB0LC_0RC0RF_1RD0RE_1LE0RA_0LA0LE_1LD---",
+  "1RB0LC_0RC0RB_1LD0RE_0LE0LF_1LA0LB_1RA---"
+ ]
+}

@@ -1,0 +1,362 @@
+{
+ "generated_by": "tools/explorer/make_machines.py",
+ "machines": [
+  {
+   "tm": "1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---",
+   "rank": 1,
+   "name": "",
+   "class": "Structural counter + counter",
+   "summary": "Period-5 tape; a binary counter of drifting 3-cell digits feeds a left-edge bit counter that absorbs them",
+   "mechanism": [
+    "Tape is the period-5 pattern 10110; the head sweeps from the left counter to the first 0-digit and back.",
+    "Right counter: little-endian digits 110=1 / 100=0 between background blocks; each sweep adds 1 with carry.",
+    "A carried digit moves 5 cells left, so digit k drifts 1 block per 2^k sweeps; overflow spawns two 0-digits at the right end.",
+    "Left counter: big-endian bits 10=1 / 00=0, +1 every 2 sweeps; on overflow it gains a bit (left edge moves 2 cells).",
+    "When the lowest digit reaches the left counter it is absorbed (left counter halves); phase X/Y and a separator regime follow."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---",
+   "rank": 2,
+   "name": "",
+   "class": "Bell eats counter",
+   "summary": "SOMDCv6 TM7 + one change: A1=0RF runs a +1 pass each time a 110 digit is entered. Fits 208/208 sweeps.",
+   "mechanism": [
+    "Tape = wall 11, then 3-cell digits L=110, 0=000, 1=100: a long L-run, then a short counter.",
+    "Sweep: the eater (D) turns digits into a white bell until it reads a 1-digit; then k drain passes (k = digits eaten) rebuild L's; the wall ends 1 cell left.",
+    "A drain pass that reaches an L restarts the eater there (115 of 208 sweeps), so a sweep can have several eat-then-drain rounds.",
+    "Only change vs TM7: A1 fires once per L entered (by the eater or a drain pass). TM7 turns straight back; ours first runs one +1 pass over the digits to its right (6j+2 extra steps), then is exactly where TM7 is one step after its A1 (same state, same cell).",
+    "Drain arithmetic as TM7: a 1-digit absorbs one pass and becomes L; 0-digits and the right end take the rest by halving. The +1s change the digits ahead, so ours usually eats further."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---",
+   "rank": 3,
+   "name": "",
+   "class": "Skelet 1-like Class 2",
+   "summary": "Binary down-counter on a list of (10)^p(01)^q pairs; overflow re-pairs the list (TM21-like). 7 rules validated.",
+   "mechanism": [
+    "Tape: (10)^h, marker 11001, then pairs (10)^p (01)^q, each ending in a digit block 0001 (=1) or 0010 (=0).",
+    "Each cycle (3 short bounces + 1 long sweep) subtracts 1 from that binary number; pairs the borrow passes get p+1, q-1.",
+    "Counter hits 0: End sweep adds tail 101; next 0: Overflow re-pairs (q_j, p_j+1), adds a pair, h back to 2.",
+    "A q that reaches 0 on a 1->0 digit fuses two pairs. About 1 new pair per 2 epochs, so width ~ t^0.5.",
+    "Far end: one double-merge detour (X1/X2) at 2.5e8; after it, 2^48 abstract cycles show no new case."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_1RC---",
+   "rank": 4,
+   "name": "",
+   "class": "Sync bouncer counter",
+   "summary": "TM4's binary counter + 00111/10111 block bouncer; 7 phase rules validated; parity branch, both branches safe",
+   "mechanism": [
+    "Left: binary counter C_k(n), k bits MSB first, 1=1010, 0=0010 (TM4's d1/d0); +1 per bounce.",
+    "Right: A blocks 00111, one 111 marker (the front) in Q, B blocks 10111 at the right edge.",
+    "P phase: every bounce adds one B block until the counter is all 1s.",
+    "Overflow: counter gains a bit; front starts at the left and moves 2 A blocks per edge visit.",
+    "Front reaches B: all B blocks turn into A blocks (1 bounce each if X even, 2 if odd); next cycle at k+1."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD",
+   "rank": 5,
+   "name": "",
+   "class": "Bouncer + Chaotic Edge",
+   "summary": "Bouncer; chaotic left edge slowly eats the 1-block. No-00 invariant: it can only halt if the edge eats the whole block",
+   "mechanism": [
+    "Bouncer: a solid 1-block on the right gains one 1 per bounce (span ~ t^0.5).",
+    "Left of it is a chaotic edge: 2,205 cells at 1e9, about 0.6 bits of entropy per cell, not periodic.",
+    "Each bounce, C dives into the edge (carry-like zigzag waves, depth heavy-tailed up to 888), then A runs back.",
+    "Invariant: no 00 ever lies between the head and the rightmost 1. Checked at every step to 1e9; local proof.",
+    "So it halts only if the edge eats the block down to 2 cells. Edge drifts +0.057 cells/bounce; block +1."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD",
+   "rank": 6,
+   "name": "",
+   "class": "Structural counter + chaotic edge",
+   "summary": "Defect groups drift left at 1, 3/4, 1/2, 3/8.. cells/bounce: exact 16-bounce counter on left, chaotic edge on right",
+   "mechanism": [
+    "Tape = runs of (01)^n split by single defects (11, 00, 1111); head zig-zags between defects, wall grows 2 cells per bounce.",
+    "Defect groups leave the right edge and drift left at exact speeds 1, 3/4, 1/2, 3/8, 3/8, 5/16, 5/16, 9/32.. cells/bounce (limit 1/4).",
+    "Left block (wall..G3) repeats exactly every 16 bounces: gaps (a,b,c,d) = (8n+61, 2n, 2n-2, n), n -> n+1.",
+    "Right edge (hi ~ 20*sqrt(L); groups 6 -> 56 by 1e9) is chaotic; head reaches it in 3 of every 16 bounces.",
+    "Only way to halt: E sweeps an odd-length (10) run that ends in a 00 defect. Never seen in 1e11 steps."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA",
+   "rank": 7,
+   "name": "",
+   "class": "Bell eats counter",
+   "summary": "BECv1 tm10 twin (E1 differs): spaced-digit counter eats a unary run; 7 rules validated, EatDigit open",
+   "mechanism": [
+    "Tape = a counter on the left, then a long run of 110 blocks with a 2-cell gap (00) marker in it.",
+    "Each round: A sweeps right to the marker, moves it 1 block left, B sweeps back, counter +1 (same as tm10).",
+    "Counter digits are 111110 blocks spread through the 110 run; a carry walks left over filler to the next digit (the E1 change).",
+    "Each overflow grows the left edge by 4-5 cells: 2 5 X -> 2 4 5 X -> 2 5 2 5 X, after 2^f and 2^(f+2) rounds (f = #digits).",
+    "When the marker reaches the lowest digit it eats it, restarts near the right end (+2 cells), and digit gaps reshuffle."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB",
+   "rank": 8,
+   "name": "",
+   "class": "Sync bouncer counter",
+   "summary": "Bouncer carrying a binary counter whose digits sit in its body; each overflow inserts a new digit ~4x farther out",
+   "mechanism": [
+    "Bouncer: the head shuttles from the left edge into the tape; every trip adds one (010) block to the left lead a.",
+    "Inside the (100) body sit 7-cell digits 0b10001 at unary gaps; each trip is a binary +1 (LSB = leftmost digit): run to the first 0-digit, set it, clear the 1s, return.",
+    "The right end is frozen (hi = 11 from step 1527 to 1e10): 12-17 tightly packed high digits plus a fixed tail.",
+    "Overflow (all digits 1) = long pause: a new LSB digit is cut from the lead at gap g' = 2^(2k+5)-4-sum 2^i*g_i (28, 68, 260, 1028, ...).",
+    "If the lead is too short: no insert, the lead drops by 1 and the counter is reloaded with a value linear in a. 4 overflows in 1e10 steps; span ~ t^0.5."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---",
+   "rank": 9,
+   "name": "",
+   "class": "Shift-overflow structural counter",
+   "summary": "Bouncer on 11111010 with 4-state digit blocks (base-4 carry); 1 reset at 3e7 left static walls; no halt to 2e10",
+   "mechanism": [
+    "Tape = runs of P=11111010 split by 6-cell digit blocks D0-D3; head sweeps from the right edge to the first D0/D1.",
+    "Every sweep steps each visited digit D0>D1>D2>D3>D0: D2/D3 pass the carry left, D0/D1 turn the head back.",
+    "D3>D0 moves one P across the digit; the edge grows 4 cells per sweep, so run lengths double leftward.",
+    "At 2.97e7 the carry hit the left end: an 8e6-step rebuild turned old digit boundaries into static walls X=11.",
+    "Since then (to 2e10): carry passes walls unchanged, digits slide through them; no 2nd rebuild seen."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC",
+   "rank": 10,
+   "name": "",
+   "class": "Bell eats counter",
+   "summary": "Mirrored FractalBEC bounce+counter; C1 makes the eat partial: N grows +1/+3/+4+r per epoch, leftovers ride along",
+   "mechanism": [
+    "Mirror of FractalBEC tm10: blocks (110)^a 0 (011)^b on the left, binary counter X on the right.",
+    "Each bounce moves the 0-marker one block and adds 1 to the counter (counter value = a).",
+    "Counter = bit0, then 3-cell digits 00b; a new top digit appears at a = 2^k-1 (right records).",
+    "When b runs out the bell eats the counter only partly: N grows by 1, 3 or 4+r, never doubles.",
+    "Uneaten digits stay as inert 1s inside the next counter (residue); carries pass straight through them."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---",
+   "rank": 11,
+   "name": "",
+   "class": "Skelet 1-like Class 2",
+   "summary": "Binary counter on (10)^u[00](01)^v blocks; carries + re-pairing overflow explain every step to 1e9",
+   "mechanism": [
+    "Tape = list of digits (10)^u J (01)^v (J = 00 is bit 0, empty is bit 1), then a growing (10)^a 000 (10)^b block at the right edge.",
+    "Every 4 right-edge records = +1: the head runs left to the first 0-bit (ruler-depth carry), flips bits, each touched v drops by 1.",
+    "All bits 1 -> overflow: head runs to the far left (the only left records, 3 cells each); blocks re-pair, new digit i = (v_i-1, u_(i+1)).",
+    "A digit whose v runs out fuses with its neighbour (list shrinks); each overflow adds one. Rules alone reproduce all 54 overflows to 1e9 and run to 1e15 without getting stuck.",
+    "Same table as 2 other holdouts (hipparcos's Level-1 twin, an Eqv twin) started in states B and C: one proof, 3 inits."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1LC_1RC1LB_1LD0RB_0LE1RD_---0LF_0LA1LF",
+   "rank": 12,
+   "name": "",
+   "class": "Counter Class 4",
+   "summary": "Run-length counter: epochs double in time, 2 passenger marker 1s; 9 rules validated, inner invariant open",
+   "mechanism": [
+    "Tape = runs of 1s. Gaps left of the pointer (A) are single 0s, and a 00 gap sits just right of it.",
+    "R1: A moves one run right. Its old run loses a 1, the run past the 00 gains one, and the 00 moves right.",
+    "R2: when A sits on a lone 1, it merges into the run on its left and A jumps two runs back. R3: at the left edge the tape grows by one cell.",
+    "Halting needs A on a lone 1 at the far left (0^inf 1 <A). The first run stays at 2-4, so it never happens.",
+    "Epochs alternate: short (40k+288 steps), then long (~1260*2^k). In the long one, run 1 counts 2k+1 down to 1, and each count runs a doubling mini-epoch on the right."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC",
+   "rank": 13,
+   "name": "",
+   "class": "Bouncer + Chaotic Edge",
+   "summary": "Clean period-10 bouncer; every 7 bounces a fixed probe stirs a ~144-564-cell chaotic tail D. Tail = the whole problem.",
+   "mechanism": [
+    "Bulk (1101101101)^a sits on a left wall; each bounce shifts it 1 cell left (70a steps).",
+    "A fixed 54-cell junction X0 cycles through 7 shapes; the bulk gains 1 block per 7 bounces.",
+    "6 of 7 bounces never touch the tail D; the 7th sends the same 16 head crossings into D.",
+    "D stays 144-564 cells (no drift); right edge grows in 30-cell jumps; content chaotic.",
+    "Only way to halt: C reading 0 with 001 on its left (C0, A1, E0, F0). Never seen."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB",
+   "rank": 14,
+   "name": "",
+   "class": "Structural counter + counter",
+   "summary": "Period-5 tape; 5-state walls drift right x1.5 per level (3/2 conveyor); right-edge counter absorbs them; no halt branch.",
+   "mechanism": [
+    "Tape is a period-5 pattern: B sweeping right turns dark 11000 into light 10111; C sweeping left turns it back (5 steps/block).",
+    "Segments are separated by walls (+1 phase step). A wall is a 5-state gadget: B bounces once then passes, C bounces twice then passes; one round moves it 5 cells right.",
+    "So each wall is crossed 3/2 times as often as the wall to its left: walls drift right x1.5 per level, segments 12, 18, 27, 41, 61, 92, 138, 206 blocks.",
+    "Every 2 left records the whole prefix repeats exactly (left edge -8 cells): a new wall is born at the left, the outermost one is absorbed at the right.",
+    "Right barrier = period-4 0001 zone plus a lone 1 behind a growing gap (second counter); right edge about +32 cells per cycle, span ~ t^(1/3)."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1RF_1LC1RE_---0LD_1LE0LD_1RA0RF_0RE0LB",
+   "rank": 15,
+   "name": "",
+   "class": "Bell eats counter",
+   "summary": "Left pair (110)^a 0 (011)^n trades 1 block/trip; right binary counter +1 per 2 trips; reset at n<=2 grows L",
+   "mechanism": [
+    "Tape = 0^inf (110)^a 0 (011)^n, then a binary counter word Q at the right end",
+    "One trip: zig-zag from the right end to the a|n boundary and back; a+1, n-1",
+    "Every 2nd trip Q increments (3-cell digits: 000=0, 001=1, LSB nearest the head)",
+    "At n=1 or 2: reset = two full sweeps; a restarts at 2, L=a+n grows by dL (1 if L even; 2-25 seen if L odd)",
+    "Left pair and counter are decoupled: trips ignore Q, reset ignores a"
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA",
+   "rank": 16,
+   "name": "",
+   "class": "Chaotic Fractal Others",
+   "summary": "Self-similar Jacobsthal transfer staircase + (010)-eating bouncer; middle phase not yet closed-form",
+   "mechanism": [
+    "Right phase: rightmost (01)-run becomes (011)s via transfer (01)^(T+c) (011)^T -> (011)^(T+c) (01)^T; c=3 if T even, 2 if odd",
+    "Converted size T runs 0,3,8,19,40,...,5459 (~2^k*8/3); each transfer replays the whole staircase on the fresh (01)^T: nested domes",
+    "When the leftover run is shorter than T+c, a record-free middle phase (~3*p*T steps) rebuilds the left part",
+    "Left phase: plain bouncer eats (010)^d at the right edge, left edge +2 per bounce; ends in hub <A (10)^a (011010)^b (10)^c ...",
+    "One right sweep turns the hub into the next right phase; segment list grows 3->5 segments, sizes irregular (the 'chaotic' part)"
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB0LF_0RC0RB_1LC1LD_1RE0RD_---0RA_1LA0LF",
+   "rank": 17,
+   "name": "",
+   "class": "Unknown",
+   "summary": "Bouncer on a 10-background with domain walls; self-similar epochs a'=3a+6, c'=3a+c+2 (exact, 5/5)",
+   "mechanism": [
+    "Tape = alternating 10 background plus a few domain walls (00, 11, (010)^2, dense 1011 blocks).",
+    "Head sweeps flip 10<->01 and bounce off walls; each phase repeats a fixed sweep program with run lengths changing linearly.",
+    "A phase ends when a run hits 0; phases chain into epochs. Each epoch ends with a burst where a 11 wall races to the left edge.",
+    "Epoch anchors P(a,c,T): a'=3a+6, c'=3a+c+2 exactly (a_n = 171*3^n-3); span x3, time x8.5-9.9 per epoch.",
+    "Tail T (right part) is rewritten every epoch; its rule T->T' is the open question."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---",
+   "rank": 18,
+   "name": "",
+   "class": "Bell eats counter",
+   "summary": "BMO7-like bell + walking marker; counter is base 3, not binary; the eat step rebuilds it irregularly",
+   "mechanism": [
+    "Tape = long 10-sea (the bell) + short counter at its right end.",
+    "A marker walks right through the bell one block per bounce; each bounce adds 1 to the counter.",
+    "Counter is base 3: each digit is a wall at offset 1/2/3 inside its own frame; overflow appends a digit.",
+    "When the marker hits the counter, the bell eats its low end: bell grows by g>=2, counter is rebuilt.",
+    "g and the rebuilt counter depend only on the counter, not on bell size; bell ~ t^0.34."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF",
+   "rank": 19,
+   "name": "",
+   "class": "Shift-overflow structural counter",
+   "summary": "Bouncer whose turn-back point is a base-4 counter; digits = separators between growing (110101) zones.",
+   "mechanism": [
+    "Tape = left end … Z2 S1 Z1 S0 Z0 W: each zone Z is one 6-cell block (110101, some rotation) repeated; W = fixed 99-cell right wall.",
+    "Right pass: C> (011111)^n -> (110101)^n C> (1 cell/step). Left pass: F carries a 0^6 packet: (111010)^n <F 0^6 -> <F 0^6 (111110)^n (20 steps/block).",
+    "A left sweep stops at the first separator that is closed. Each separator has 4 states: 3 bounce the head back, the 4th lets it through to the next one.",
+    "So bounce depth follows the base-4 ruler (0,0,0,1, 0,0,0,1, 0,0,0,1, 0,0,0,2 …). Z0 gains 1 block per 2 sweeps, Z_k ≈ Z_(k-1)/4, edge ≈ sqrt(t/0.432).",
+    "Left end: new digits appear rarely. The left end reorganised at the left records (1.45e6, 1.8e8) and is NOT characterised yet."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB1LE_0RC1RC_0RD0RB_1RE0RF_1LA0LE_---1RB",
+   "rank": 20,
+   "name": "",
+   "class": "Chaotic Fractal Type 1",
+   "summary": "Nested bouncer call stack: Y(a,b,c)->Y(a+2,b-1,c+3) per round; epochs grow x2.5-3; mod-3 gap cases",
+   "mechanism": [
+    "Inner loop Y(a,b,c) = 1^a 001 (10)^b 11 (01)^c E>: each round a+2, b-1, c+3, eats 6 blank cells.",
+    "When b hits 0, E wipes the 1^a block and walks left (Return), leaving 0^(a+1) 1100 1^(2c+1).",
+    "The level to the left resumes the same loop: eats zeros 3 per half-round, then ones 1 per half-round.",
+    "When its gap runs out it calls the level to its right again: a call stack, so each epoch replays shrunken copies.",
+    "Top epochs b = 11, 30, 75, 225, 676, 1783, 5351, 13413 (x2.5 or x3); no halt to 2e13 steps (qsim)."
+   ],
+   "status": "CHECKPOINT_A",
+   "pilot": true
+  },
+  {
+   "tm": "1RB2RA1LC_2LC1RB2RB_---2LA1LA",
+   "name": "Bigfoot",
+   "class": "3-symbol cryptid (BB(3,3) holdout)",
+   "summary": "Pseudo-random Collatz-like behaviour; 3 symbols (1 = grey, 2 = white in Default)."
+  },
+  {
+   "tm": "1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---",
+   "name": "TM7 (template of #2)",
+   "class": "SOMDCv6 template",
+   "summary": "Differs from pilot #2 only at A1 (0RC instead of 0RF): compare the two to see eating and draining."
+  },
+  {
+   "tm": "1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA",
+   "name": "Antihydra",
+   "class": "cryptid (Collatz-like)",
+   "summary": "Hydra-like 3n/2 iteration; open problem. Records rows in the right frame show the counter."
+  },
+  {
+   "tm": "1RB1LA_0LA0RB_------_------_------_------",
+   "name": "Example.v counter",
+   "class": "binary counter",
+   "summary": "States C-F are unreachable (greyed). Records rows read as a binary odometer."
+  },
+  {
+   "tm": "1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA",
+   "name": "BB(5) champion",
+   "class": "halts at step 47,176,870",
+   "summary": "The 5-state champion; '1RZ' is a halt state.",
+   "steps": 50000000
+  },
+  {
+   "tm": "1RB1LC_0RC0RB_1LD0LA_1LE---_1LF1RA_1LA1LC",
+   "name": "holdout (pixel-test machine)",
+   "class": "holdout",
+   "summary": "Used by the pixel tests against tools/diagram.py and bbchallenge goldens."
+  }
+ ]
+}

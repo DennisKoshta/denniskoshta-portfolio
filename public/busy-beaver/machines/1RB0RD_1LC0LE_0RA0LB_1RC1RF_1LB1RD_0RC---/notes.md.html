@@ -1,0 +1,525 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC---/notes.md · <a href="/busy-beaver/machines/1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC---/notes.md.html">raw</a></div>
+<h1 id="w6-2-1rb0rd_1lc0le_0ra0lb_1rc1rf_1lb1rd_0rc-740-line-96">W6-2 · 1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC--- (740 line 96)</h1>
+<p>Observe stage, 2026-10-14 (Wave 6). Sheet class: Unknown. Claimed in coord/claims.tsv (<code>Wave 6 W6-2</code>).</p>
+<h2 id="checks">Checks</h2>
+<ul>
+<li>Byte-exact on data/holdouts/BB6_holdouts_740.txt, line 96.</li>
+<li>No claim: the sheet rows (2026-10-09 classifications and results) give only the class Unknown, with empty Status, Notes, Sources and Done By. Nothing in data/discord/*.txt.</li>
+<li>Not in upstream busycoq BB6 at cdaf693 except as an Eqv_v2 mention (TM1194, TM1468, TM1778: equivalences, not verdicts).</li>
+<li><strong>Siblings on the 740 list: none.</strong> Canon (renaming + mirror) over all 6 starts: only start A is on the list (line 96). Starts B, D and E are eqv-1590 members (<code>1RB0RE_0LC0RA_1LA0LD_1LB1LF_1RA1LD_0LB---</code>, <code>1RB1RF_0RC0LD_1RD0RA_1LB0LE_1LD1RA_0RB---</code>, <code>1RB1LE_1RC0RA_0LD0RB_1LB0LE_1LC1LF_0LC---</code>), all off the list. A proof would cover them through upstream's Eqv modules.</li>
+<li>Nearest kill: W5-5's table (KILLED_HALT) started in its D is <code>1RE0RD_1LC0LE_0RA0LB_1RC1RF_1LB0LD_0RC---</code> in our naming (canon check: yes). It differs in <strong>A0</strong> (ours 1RB, W5-5 1RE) and <strong>E1</strong> (ours 1RD, W5-5 0LD).</li>
+</ul>
+<h2 id="long-runs">Long runs</h2>
+<ul>
+<li>tools/sim.py: no halt to 1e9 (span -69..25596, 8,997 ones).</li>
+<li>scripts/lt.c (direct C): no halt to 1.55e11 steps (88 deep cycles; still running at the end of the stage, output work/lt_2e11_comp.txt).</li>
+<li>Local windows around the head (scripts/win.c): (state, 2r+1 cells) with r = 4, 6, 8, 10 give 357, 856, 1,615 and 2,588 distinct windows. The counts are identical at 1e7, 1e8, 1e9 and 1e10 steps: nothing new appears after 1e7.</li>
+</ul>
+<h2 id="the-tape-segments-and-markers">The tape: segments and markers</h2>
+<p>Read the tape as the gaps between consecutive 1s (scripts/toks.py). Almost every gap is 2, so the tape is long runs of <code>100</code> blocks ("segments") joined by a few markers:</p>
+<table>
+<thead>
+<tr>
+<th>token</th>
+<th>cells</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>2^n</code></td>
+<td><code>(100)^n</code></td>
+<td>a segment of n blocks</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td>an extra <code>0</code> (<code>1000</code>)</td>
+<td>the <strong>hub</strong> marker (W5-5's <code>0001</code> defect, mirrored)</td>
+</tr>
+<tr>
+<td><code>10</code></td>
+<td><code>1011</code> (one <code>101</code> block)</td>
+<td>a separator between segments</td>
+</tr>
+<tr>
+<td><code>(10)^(c-1) 1</code></td>
+<td><code>(101)^c</code> at the right end</td>
+<td>the <strong>round counter</strong> c</td>
+</tr>
+</tbody>
+</table>
+<p>At a round start the head is at the right end in state B:</p>
+<div class="highlight"><pre><span></span><code>K(a, b, m_1..m_k, c) = 0^inf L 1 (100)^a 0 (100)^b [101 (100)^m_i]_(i=1..k) (101)^c B&gt; 0^inf
+</code></pre></div>
+
+<p>Example at step 986,714,482 (compress view): <code>... 0110 (010)^839 1 (100)^4736 0 (100)^6 (101)^445 B&gt;</code>, so k = 0, b = 6, c = 445.</p>
+<h2 id="rule-hubk-exact-validated">Rule HUB(k): exact, validated</h2>
+<div class="highlight"><pre><span></span><code>K(a, b, m, c)  -&gt;  K(a + 3^(k+1), b - 3^(k+1), m, c + 1)
+steps = 24c + 12·3^(k+1)·b + sum_i 12·3^(k+1-i)·m_i + d_k     (b, c before the round)
+d_0 = -29, d_1 = -329, d_2 = -3821, d_3 = -37625
+conditions: a &gt;= 1, c &gt;= 2, every m_i &gt;= 1, b &gt;= 3^(k+1); L is never read
+</code></pre></div>
+
+<ul>
+<li>k = 0: steps = 24c + 36b - 29. k = 1: 24c + 108b + 36m_1 - 329.</li>
+<li>How a round goes (img/hub_round_k0.png): the head zigzags left through the (101)^c field, carrying a defect at 1/5 speed. At the hub it makes 3^(k+1) short trips, each moving one 100 block from the b side to the a side. Every <code>101</code> separator between the hub and the counter triples the number of trips (img/hub_round_k1.png: 9 per round with one separator). Then a straight sweep returns right and adds one 101 block to the counter.</li>
+<li>The head never goes more than 2 cells left of the hub marker, so a and L play no part.</li>
+<li><strong>Random instances</strong> (scripts/val_hub2.py, seed 11; work/val_hub2_seed11.json): 1,200/1,200 exact, step count included (k = 0: 415, k = 1: 370, k = 2: 218, k = 3: 197; a 1..50, b up to 3^(k+1)+80, c 2..120, m_i 1..30, random L).</li>
+<li><strong>Real run</strong> (scripts/ev.c + scripts/check_real.py): every round that ends at the right edge up to 1e9, 8,363 of them (k = 0: 7,666, k = 1: 673, k = 2: 24), matches the rule exactly, step count included. 0 failures.</li>
+<li>b + a is conserved and c counts rounds: the "conserved budget plus a round counter" seen by the scouts. Their hub rule <code>C1(a,b+3,c+1) -&gt; C1(a+3,b,c+2)</code> is HUB(0); their <code>+9/-9</code> skeleton is HUB(1).</li>
+</ul>
+<h2 id="what-is-not-modelled-yet">What is NOT modelled yet</h2>
+<ol>
+<li><strong>Exhaustion</strong> (b &lt; 3^(k+1)). 99 events up to 1e9 at the right edge. The outcome depends on the residue b and on the neighbours:
+   - k = 0, b = 2: the hub turns into a gap-0 marker (<code>11</code>): <code>2^a 3 2^2 (10)^(c-1) 1 -&gt; 2^(a+4) 0 (10)^(c-1) 1</code> (e.g. steps 6,644, 20,511, 155,831, 200,100).
+   - b = 0 or 1: usually a sweep to the far left (a deep sweep, below).
+   - k = 1, b = 1, 4, 6, 7: the hub moves and the segments are re-cut (e.g. step 152,444: <code>... 2^22 3 2^1 10 2^12 10 1 -&gt; 2^4 3 2^54 10 2^28 3 2^8 (10)^2 1</code>).</li>
+<li><strong>Drain phase.</strong> After a deep sweep the counter field shrinks one 101 block at a time, <code>(100)^j (101)^c -&gt; (100)^(j+1) (101)^(c-1)</code>, each step being a long trip with many inner hub rounds in the old segments (e.g. steps 856.8M to 966M: c goes 1056 -&gt; 1040 -&gt; ... with no right-edge record for 110M steps).</li>
+<li><strong>Deep cycle.</strong> Once per cycle the head reaches the left edge in state C, and the left edge moves one cell left. 88 cycles to 1.55e11; the gaps between them grow (1.2e8 at 1e9, 2.9e10 at 1.5e11). At a deep sweep the tape reads <code>[fossils] 2^X (10)^Y</code> (deep-sweep alignment). Often X' = X + Y + δ with δ in {0, 4, 6, 12}, but the active part is sometimes re-cut (steps 3.65e9, 6.2e9, 15.8e9, 50e9-103e9). Y has no clean law: 554, 1830, 2018, 2632, 3316, 1397, 2505, 989, 3807, 4138, 5409, 2262, 8592, 9348, 12214, ...</li>
+<li><strong>Fossils.</strong> Segments left of the active part stay frozen: 58, 106, 1452, 393, 165, 338, 838, 12269 (frozen at ~3.6e9), 41798 (at ~5e10). Their lengths follow no visible law.</li>
+</ol>
+<h2 id="template-comparison-w5-5">Template comparison (W5-5)</h2>
+<ul>
+<li>Same 3-cell words, mirrored. W5-5's bell <code>101 (001)^b 0001 (001)^c</code> is our <code>(100)^a 0 (100)^b</code> read right to left: our hub marker <code>0</code> is W5-5's <code>0001</code> defect.</li>
+<li>W5-5's .v rules: <code>bellpart</code> (<code>B&gt; 0 bellw (S b) c --&gt;+ K b (S c)</code>: the defect moves <strong>one</strong> block per round) and <code>round</code> = a counter call (<code>callw</code>) + bellpart, with base-4 digit lemmas (<code>abs0</code>, <code>abs1</code>, <code>absm</code>, <code>pass2</code>, <code>callw_inc</code>) for a signed base-4 counter on 3-cell digits.</li>
+<li>Here the two changed transitions (A0, E1) replace W5-5's base-4 counter by a unary counter (101)^c and make the defect jump 3^(k+1) blocks per round. HUB(0) is W5-5's <code>round</code> with a unary counter; none of W5-5's digit lemmas carry over.</li>
+<li>W5-5's checked-runner HALT technique applies only if this machine halts; nothing points that way (below).</li>
+</ul>
+<h2 id="cryptid-check">Cryptid check</h2>
+<ul>
+<li>Arithmetic: the transfer unit is 3^(k+1), and exhaustion branches on b mod 3^(k+1). Fossil lengths and the counter values at deep sweeps look irregular. This is the Collatz-type signal the scouts saw (qsim: 31 of 33 rules Collatz-type).</li>
+<li>Halting branch: <strong>none found.</strong> Halting needs D to read <code>1</code> with a <code>1</code> right of it (D1 = 1RF, F1 = halt), i.e. D arriving inside a <code>1011</code> marker in the wrong phase.</li>
+<li>Random tapes built from the segment vocabulary (segments with <code>0</code>/<code>101</code> markers, a counter field): 0 halts in 300 runs of 2e5 steps (Python), and 1 halt in 2,000 runs of 2e7 steps (scripts/runc.c + gen_seg.py, seed 3, tape 1,726).</li>
+<li>That one tape is malformed at its left end (an empty first segment, so it starts <code>1101 101</code>). It halts after 676 steps as <code>A&gt; 1 1 1</code>: A1 = 0RD, D reads 1 (1RF), F reads 1. The local halting pattern is a <code>111</code> met from the left in state A or D.</li>
+<li>The real tape does contain <code>111</code>: the <code>0^2</code> tokens at every deep sweep (<code>... 2^106 3 0^2 2^1452 ...</code>). The head meets them there in state C, moving left, and the next pass restores them. Whether the orbit can ever meet a <code>111</code> in state A or D moving right is the open halting question.</li>
+<li>Random dirty gap tapes (gaps 0, 1, 3, 4 mixed in): 1 halt in 400 runs of 3e5 steps.</li>
+<li>Plain NGramCPS (scripts/ngcps.py, untrusted) reaches a halting configuration for every n from 2 to 20 (n = 24: too big). So the obvious n-gram invariant fails; the saturated head windows still suggest a regular invariant on 3-cell words might close.</li>
+<li>Verdict: not a cryptid stop under the Wave 6 rule (that needs pseudo-random residues <strong>and</strong> a halting branch). The residue arithmetic is real, though, and a proof that tracks it would be a tarpit. The promising route is one that does not track it: a closed regular language.</li>
+</ul>
+<h2 id="figures">Figures</h2>
+<ul>
+<li>img/default_site.png: the site's Default view (10,000 steps).</li>
+<li>img/hub_round_k0.png: 3 HUB(0) rounds from a constructed start (b = 9 -&gt; 6 -&gt; 3 -&gt; 0), every step, scale 2.</li>
+<li>img/hub_round_k1.png: 2 HUB(1) rounds with one separator (b = 20 -&gt; 11 -&gt; 2), every step, scale 2.</li>
+<li>img/every2e6_1e9.png: one row every 2,000,000 steps to 1e9.</li>
+<li>img/records_1e9.png (records to 3.4e7, 5,000 rows) and img/viewer.html (all site views) are extra.</li>
+</ul>
+<h2 id="files">Files</h2>
+<ul>
+<li>scripts/tm.py, rules.py (K and run_to_Bright), toks.py (gap tokens), val_hub2.py, fit_hub.py, check_real.py, ev.c (round-end tokens), lt.c (deep sweeps), win.c (head windows), ngcps.py, gen_seg.py + runc.c, halt_probe2.py.</li>
+<li>work/val_hub2_seed11.json, work/lt_2e11_comp.txt (deep sweeps to 1.55e11), work/ngcps_big.txt.</li>
+</ul>
+<h2 id="wave-6-stage-1-2026-10-14">Wave 6, stage 1 (2026-10-14)</h2>
+<p>Goal: find a closed regular language that contains the blank-start orbit and no halting configuration. <strong>Result: none found.</strong> Every generic search fails, and the failures show why. The stage did find two facts that point to a better route: the exact halting route, and a small, finite alphabet of junction words.</p>
+<h3 id="1-generic-searches-all-fail-exploratory-untrusted">1. Generic searches: all fail (exploratory, untrusted)</h3>
+<table>
+<thead>
+<tr>
+<th>search</th>
+<th>script</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NGramCPS on cells, n = 22, 24, 26, 28</td>
+<td>scripts/ngc.c (C port of ngcps.py, same semantics; agrees with it for n = 8-20)</td>
+<td>HALT reachable for every n (1.1M, 4.1M, 6.0M, 5.5M configs); work/ngc_22_28.txt</td>
+</tr>
+<tr>
+<td>CTL, last n cells + position mod 3, n = 6-12</td>
+<td>scripts/ctl2.py + absn.py <code>NGPhase</code></td>
+<td>HALT</td>
+</tr>
+<tr>
+<td>CTL, gap tokens run-length coded, last m tokens</td>
+<td>absn.py <code>GapTok</code></td>
+<td>m = 4, 5: HALT; m = 6: over 3M configs</td>
+</tr>
+<tr>
+<td>CTL, segments + junction words, last m items</td>
+<td>absn.py <code>SegJ</code>, <code>SegJ2</code></td>
+<td>m = 4, 5, 6: HALT or over 4M configs</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>ctl2.py is a generic closed-set explorer: each tape side is a deterministic push automaton, pops use the recorded edges, and the left and right sides keep separate edge sets. Its output has the same shape as Astra's regular certificate (edges plus keys), so a closed result could be exported to that checker.</li>
+<li><strong>Why they fail: stitching.</strong> The closure glues windows from different places into junctions the orbit never has, for example gaps <code>3 1 0 0</code> or <code>0 1 1 1 3</code>. The fake junctions then feed back, and one of them leads to a halt. Larger windows only delay this, and the state count grows too fast.</li>
+<li>A check version (absn.py <code>SegJ3</code>, scripts/run5.py) stops as soon as a finished junction falls outside the alphabet in section 3. It stops at once on <code>0 0</code>. That word is real, but only next to the head (a passing transient). So the check has to skip a local zone around the head.</li>
+</ul>
+<h3 id="2-the-halting-route-exactly">2. The halting route, exactly</h3>
+<ul>
+<li>F reading 1 is the only halt. F comes only from D reading 1. D comes from A reading 1, or from E reading 1; in the E case D reads the 0 that B has just written, so that route is safe.</li>
+<li>So <strong>a halt is exactly A moving right and reading 1 1 1</strong>: the right-moving run C, A, D, F meets <code>111</code>.</li>
+<li><strong>Right runs</strong> (states C, A, D, F) start from A on a 1:</li>
+<li>gap 2 continues the run, and the 1 moves one cell right;</li>
+<li>gap 0 then gap 2 continues the run, and the <code>11</code> loses a 1;</li>
+<li>gap 1, or a gap of 3 or more, turns the head left;</li>
+<li><strong>gaps 0, 0 (a <code>111</code>) halt.</strong></li>
+<li><strong>Left runs</strong> (states B, C, E) swap neighbouring cell pairs (<code>01</code> and <code>10</code>). They turn right at <code>00</code> (C on a 0) or at <code>11</code> (E on a 1).</li>
+<li>On the real tape every <code>111</code> sits inside the junction <code>300</code> (gaps 3, 0, 0). The 3 in front of it turns a right run before the run reaches the <code>111</code>.</li>
+<li>Turns open other routes. For example, <code>0 0 E&gt;0 1</code> halts in 5 steps. work/danger_patterns.txt lists 38 minimal local halting patterns of up to 9 cells (scripts/danger.py).</li>
+</ul>
+<h3 id="3-away-from-the-head-junction-words-come-from-a-small-finite-set">3. Away from the head, junction words come from a small finite set</h3>
+<p>Read the tape as segments <code>(100)^n</code> joined by junction words, the gap sequences between segments (scripts/junc.c).</p>
+<ul>
+<li>Far from the head (more than 40 cells away), every junction seen is one of the words below (samples every ~1e6 steps to 2e9: work/junc_2e9.txt; every 3e7 steps to 3e10: work/junc_3e10_raw.txt):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>junction (gaps)</th>
+<th>count to 2e9</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>10</code> (one <code>101</code> block)</td>
+<td>11,164</td>
+</tr>
+<tr>
+<td><code>3</code> (hub)</td>
+<td>5,289</td>
+</tr>
+<tr>
+<td><code>40</code></td>
+<td>821</td>
+</tr>
+<tr>
+<td><code>120</code></td>
+<td>803</td>
+</tr>
+<tr>
+<td><code>300</code></td>
+<td>761</td>
+</tr>
+<tr>
+<td><code>23</code></td>
+<td>98</td>
+</tr>
+<tr>
+<td><code>310</code></td>
+<td>52</td>
+</tr>
+<tr>
+<td><code>50</code></td>
+<td>44</td>
+</tr>
+<tr>
+<td><code>0</code></td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The counter <code>(101)^c</code> sits at the right end and is entered through one of a few prefixes: <code>30</code>, <code>4</code>, <code>12</code>, <code>3</code>, <code>5</code>, <code>31</code>, <code>1202</code>, <code>3002</code>, <code>402</code>.</li>
+<li><code>40</code>, <code>120</code> and <code>300</code> may be three phases of one junction that changes each time the head passes it. This is a guess and has not been checked.</li>
+<li>Near the head the words vary more (<code>1</code>, <code>00</code>, <code>4</code>, <code>30</code>, <code>330</code>, <code>321</code>, <code>4300</code>, ...). These are transients while the head passes.</li>
+<li>So the static tape is close to the regular language <code>(segment junction)*</code> with junctions from this alphabet. Segment lengths carry the residue arithmetic, and a regular invariant can ignore it by letting segment lengths be anything at least some small T.</li>
+</ul>
+<h3 id="next-step-stage-2">Next step (stage 2)</h3>
+<p>Build the invariant by hand at the junction level instead of searching blindly.
+1. List exactly how each alphabet word changes when the head passes through it: the right run, the left zigzag, the hub trips, a deep sweep.
+2. Run the closure with a side automaton that accepts only <code>(segment junction)*</code> with junctions from the alphabet, plus an exact local zone around the head. Head windows saturate by 1e7, so the zone is finite.
+3. If the closure needs a junction outside the alphabet, check it against a longer run: either the alphabet grows, or it is a spurious stitch to remove.</p>
+<p>If that does not close, fall back to modelling the exhaustion branches exactly and decide whether this is a cryptid.</p>
+<h3 id="files-stage-1">Files (stage 1)</h3>
+<p>scripts/ngc.c, ctl2.py, absn.py, run3.py, run5.py, junc.c, samp.c, danger.py; work/ngc_22_28.txt, junc_2e9.txt, junc_3e10_raw.txt, danger_patterns.txt.</p>
+<h2 id="wave-6-stage-2-2026-10-14">Wave 6, stage 2 (2026-10-14)</h2>
+<p>Goal: build the invariant at the junction level (stage 1's plan). <strong>Result: no closed language, so still no proof.</strong> The stage did produce one solid new fact: the real tape's junction alphabet, collected exactly rather than by sampling, is tiny and complete by step 2.1 million.</p>
+<h3 id="1-the-exact-junction-alphabet-scriptscwc-cw2c">1. The exact junction alphabet (scripts/cw.c, cw2.c)</h3>
+<p>Method:
+- Keep a zone of k = 20 cells on each side of the head.
+- A cell is <em>committed</em> on a side while it lies outside that zone. Committed cells cannot change: the head is too far away to write them.
+- The collector keeps, for each side, a stack of the committed 1s. It pushes and pops as the head moves, and records every junction word the moment a following <code>2 2</code> completes it.
+- Nothing is sampled, so every committed word that ever occurs is recorded.</p>
+<p>Result to 1e9 steps (work/cw2_1e9_k20.txt). Junctions are written as gap words, left to right on the tape:</p>
+<table>
+<thead>
+<tr>
+<th>side</th>
+<th>junction words</th>
+<th>where the side ends</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>left of the head</td>
+<td><code>3</code>, <code>10</code>, <code>310</code>, <code>1023</code>, <code>3210</code>, <code>0</code></td>
+<td>the left end: nothing, <code>3</code> or <code>23</code></td>
+</tr>
+<tr>
+<td>right of the head</td>
+<td><code>120</code>, <code>40</code>, <code>300</code>, <code>50</code>, <code>310</code>, <code>0</code></td>
+<td>the counter <code>(101)^c</code>, then one of a few short words</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The last new word first appears at step 2,106,481. Nothing new appears after that, up to 1e9.</li>
+<li><strong>To 1e10</strong> (work/cw2_1e10_k20.txt): the same words and segment-length classes. The only extra entries are counter words cut short: after step 1.9e9 the counter passes 2,000 blocks, and the collector stops each word at 4,000 gaps.</li>
+<li>The two sides use different forms. Left of the head the hub is <code>3</code> and a separator is <code>10</code>. Right of the head they appear as <code>40</code>, <code>120</code> and <code>300</code>. The head turns one form into the other as it passes.</li>
+<li><strong>Segment lengths next to the words</strong> (the run of 100 blocks just before each word on its side):</li>
+<li><code>3</code>, <code>10</code>, <code>120</code>, <code>40</code> and <code>300</code> follow segments of every length from 2 blocks up.</li>
+<li>The rare words (<code>1023</code>, <code>3210</code>, <code>310</code>, <code>0</code>, <code>50</code>) only ever follow segments of 9 blocks or more.</li>
+</ul>
+<h3 id="2-closure-runs-on-fixed-languages-exploratory-untrusted">2. Closure runs on fixed languages (exploratory, untrusted)</h3>
+<p>Each run uses scripts/ctl2.py's explorer. Each side automaton has two parts: an exact zone of k cells next to the head, and a fixed language for the committed part.
+- A run fails when a push leaves the language. That is an "escape", and it is not a halt.
+- Every run starts from the real configuration at step 1e6 (scripts/cfgat.c). Starting from blank fails at once, on early-orbit shapes.</p>
+<table>
+<thead>
+<tr>
+<th>committed-part language</th>
+<th>script</th>
+<th>k</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gap contexts compressed into tokens, m = 2-6 tokens, learned from samples</td>
+<td>fl2.py, fl3.py</td>
+<td>12, 20</td>
+<td>escape after 300-13,000 configs</td>
+</tr>
+<tr>
+<td>junction words in any order, data alphabet, open tails</td>
+<td>fl4.py</td>
+<td>12, 20, 30</td>
+<td>escape after 16-3,700 configs</td>
+</tr>
+<tr>
+<td>the same, adding each escaped word and rerunning</td>
+<td>fl5.py</td>
+<td>20</td>
+<td>segments of 2 blocks or more: 85 words added, all compounds at the right end (stopped). Segments of 1 block or more: 113 words added, then over 1M configs</td>
+</tr>
+<tr>
+<td>exact alphabet plus a segment-length class per word (2-8, or 9+)</td>
+<td>fl6.py</td>
+<td>20</td>
+<td>escape after 9,975 configs</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Why they fail.</strong> The real tape keeps order and length constraints that a free-order junction language forgets:</li>
+<li>rare junctions sit only next to long segments;</li>
+<li>the hub, the separators and the counter stay in a fixed order;</li>
+<li>the counter is open on the left of the head while the head zigzags through it.</li>
+<li>The closure builds tapes the orbit never builds. Examples: a hub followed directly by the counter (<code>3 (10)^c</code> committed), and a <code>50</code> junction next to a short segment. Each fake word then produces new compound words.</li>
+<li>The Python explorer tops out near 1M configurations, so a closure with more state needs a C port.</li>
+</ul>
+<h3 id="3-the-cryptid-question">3. The cryptid question</h3>
+<p><strong>Not a cryptid under the Wave 6 rule.</strong> That rule needs pseudo-random residues <strong>and</strong> a halting route.
+- The residue arithmetic is real: transfers of 3^(k+1) blocks per round, and exhaustion that branches on b mod 3^(k+1).
+- The halting route is not arithmetic. A halt needs A, moving right, to read <code>111</code>. On the real tape, every <code>111</code> sits inside the right-hand junction <code>300</code>. Its <code>3</code> turns every right run before the run reaches the <code>111</code>.
+- The real alphabet is finite and complete by step 2.1e6.</p>
+<p>So a regular invariant very likely exists. What is missing is an abstraction precise enough to keep the order constraints. Verdict: <strong>STUCK on tooling</strong>, confidence low.</p>
+<h3 id="if-a-third-stage-is-funded">If a third stage is funded</h3>
+<ol>
+<li>Port the closure to C (10-50M configurations).</li>
+<li>Learn the language from the exact collector, not from samples. The side state is the last junction word, the class of the segment before it (2-8 blocks or 9+), and a counter flag (open counter field, yes or no). Raise the zone to k = 30.</li>
+<li>A closed result has the edges-plus-keys shape that Astra's baseline-safe NFA certificate package accepts (astra/autonomous-20261014/certificate-package/package.py, with <code>--startup</code> for the 1e6-step entry).</li>
+</ol>
+<h3 id="files-stage-2">Files (stage 2)</h3>
+<ul>
+<li>scripts/cw.c, cw2.c: the exact committed-word collector (cw2 also records segment lengths).</li>
+<li>scripts/dump.c, cfgat.c: sampling, and the exact configuration at step N.</li>
+<li>scripts/lang2.py, lang3.py, fl2.py-fl6.py: the side languages and the closure runs.</li>
+<li>work/cw2_1e9_k20.txt, work/cw2_1e10_k20.txt: the exact alphabet to 1e9 and to 1e10.</li>
+</ul>
+</main></body></html>

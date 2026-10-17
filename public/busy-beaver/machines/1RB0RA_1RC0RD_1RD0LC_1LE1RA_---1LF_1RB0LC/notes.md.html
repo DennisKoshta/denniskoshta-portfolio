@@ -1,0 +1,614 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC/notes.md · <a href="/busy-beaver/machines/1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC/notes.md.html">raw</a></div>
+<h1 id="w4-7-1rb0ra_1rc0rd_1rd0lc_1le1ra_-1lf_1rb0lc-740-line-317-observe-notes">W4-7 · 1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC (740 line 317), observe notes</h1>
+<p>Date: 2026-10-11. Stage: PLAN §6 step 1 (Observe). Sheet class: Bell eats counter. Confidence: <strong>med</strong>.</p>
+<h2 id="checks-before-starting">Checks before starting</h2>
+<ul>
+<li>Byte-exact on <code>data/holdouts/BB6_holdouts_740.txt</code> line 317 (also on every older list back to 2024-07-12_7296).</li>
+<li>No claim: <code>data/discord/*.txt</code> has nothing; <code>data/sheet/2026-10-09_results.csv</code> row 1035 has Status/Notes/Done By empty, class "Bell eats counter".</li>
+<li><code>data/solved_index.tsv</code> lists it only as <code>tm'</code> of <code>Eqv_v2.v</code> Module TM1815 (<code>halts tm c0 &lt;-&gt; halts tm' c0</code>, tm = <code>1RB0LC_1RC0RD_1RD0LC_1LE1RF_---1LA_1RB0RF</code>, mapping FBCDEA, 1 step each). That is an equivalence between two holdouts, not a decision.</li>
+</ul>
+<h2 id="table-starts-and-siblings-canon-up-to-renaming-mirror">Table, starts and siblings (canon up to renaming + mirror)</h2>
+<table>
+<thead>
+<tr>
+<th>start</th>
+<th>what it is</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>ours (740 line 317)</td>
+<td>holdout</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>1LB0LC_1LC0RB_1RD1LF_---1RE_1LA0RB_1LA0LF</code> (mirror, ours A..F = its F,A,B,C,D,E)</td>
+<td><strong>proved</strong>: upstream IndBECv1.v <code>_3ary</code> nonhalt3, line 258 (vendor 0940bb9 has it too, same line)</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>1RB0LA_1LC1RF_---1LD_1RE0LA_1RA0RB_1RE0RF</code> (740 line 707)</td>
+<td>holdout, sibling</td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>1RB0LC_1RC0RD_1RD0LC_1LE1RF_---1LA_1RB0RF</code> (eqv list line 843)</td>
+<td>Eqv_v2.v proves it halts iff ours halts (A and F both start 1RB)</td>
+</tr>
+<tr>
+<td>D, E</td>
+<td>halt at step 1 / 0</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>88 (<code>1RB0LC_1LC0RE_1LA1LD_1LA1LB_0RF1RA_---0RE</code>) and 280 (<code>1RB0LC_1LC0RE_1LA1LD_1LA1LF_0RB1RA_1LC---</code>) do <strong>not</strong> share this table (canon checked from all 6 starts); separate family.</p>
+<p>Start A's trajectory never meets start B's or start C's within 20,000 steps (translation-invariant config compare; B vs C not checked), so "trajectory twins" holds only at the level of mechanism, not as identical runs.</p>
+<h2 id="simulation">Simulation</h2>
+<ul>
+<li>1e10 steps, no halt; span -2866..5597 (8,464 cells), 5,627 nonzeros, head in D at cell 600. Span ~ t^0.33.</li>
+<li>Halting analysis: the only undefined cell is E0. E is entered only by D0 = 1LE; after C0 = 1RD the cell to its left is 1, so only B1 = 0RD can lead to E reading 0, i.e. <code>B&gt; 1 0</code>, which needs <code>A&gt; 0 1 0</code> (F0 = 1RB lands on a cell E just set to 1, then on a cell D just set to 1).</li>
+</ul>
+<h2 id="mechanism-our-orientation">Mechanism (our orientation)</h2>
+<p>Tape at a pass boundary, field 2 active (step ~2.0e6):
+<code>0^inf (101)^3 00 (101)^90 | 111 (110)^k 100 (101)^(65-k) 11 C&gt; [idle field 3: (110)^3] [counter] 0^inf</code>
+and with field 1 active (step ~2.01e6):
+<code>0^inf (101)^a 00 (101)^b 11 C&gt; [idle field 2: 00 (011)^66 | (110)^67 | 0 (101)^66 1] [idle field 3] [counter] 0^inf</code>.</p>
+<ol>
+<li><strong>Bell step F</strong> (validated 200/200): <code>(101)^a 00 (101)^(b+1) 1 &lt;C 0  -&gt;[8b+16]  (101)^(a+1) 00 (101)^b 11 C&gt;</code>. Context-free on both sides (a &gt;= 1).</li>
+<li><strong>Counter K1-K6</strong> (validated 200/200 each): exactly the six clauses of <code>side_3ary_Pos_inc_rule [0;0;0;0] [1;1;0;0] [0;1;0;0] [1;1] [0;1] [1;1;1;1] [1] [0] B B</code> of the cert, mirrored: digits read left to right from the head 0000 = 0, 1100 = 1, 0100 = 2, carry 1111; top digit 11 = 1, 01 = 2; qL = the second 1 of <code>11 C&gt;</code>, qR = the 0 left behind.</li>
+<li><strong>Wide digits</strong> (the "idle fields"). The counter digit format generalises to <code>d (110)^n 0</code> with d = 000 / 110 / 010 for 0 / 1 / 2; n = 0 gives the 4-cell digits 0000 / 1100 / 0100. Rules (all validated 200/200, context-free in l and r):
+   - I2 <code>1 C&gt; 000 (110)^n -&gt; &lt;C 0 (110)^(n+1)</code> (0 -&gt; 1, 4 steps), I0 <code>1 C&gt; 110 (110)^n -&gt; &lt;C 0 010 (110)^n</code> (1 -&gt; 2, 2 steps),
+   - I1a <code>1 C&gt; 010 (110)^n 0 -&gt; 1111 (011)^n 1 C&gt;</code> (2 carries: the head crosses the digit, 3n+4 steps; n = 0 is K3),
+   - I1b <code>1111 (011)^n &lt;C 0 -&gt; &lt;C 0 000 (110)^n 0</code> (carry cleared on the way back, 5n+4 steps; n = 0 is K4).
+   So a wide digit is touched only in its first block except when it carries. The digit right after a wide 2 is read with the crossed wire on its left and uses another encoding: 0011 -&gt; 1111 -&gt; 0111 -&gt; carry (J0, J1 validated; J2 leaves in state A, next encoding not pinned).</li>
+<li><strong>Two big fields take turns.</strong> When field 2's marker reaches its right end, field 2 goes idle and field 1's marker restarts moving right; when field 1's marker reaches its end, field 1 restarts at its left end and field 2 becomes active again (traces at 2,011,920 -&gt; 2,013,101 and 2,082,683 -&gt; 2,083,906; and again at 1e8). Fields grow: field 1 = 93 -&gt; 318 -&gt; 669 blocks, field 2 = 66 -&gt; 282 -&gt; 627 blocks at 2e6, 1e8, 0.98e9. A third, small wide digit (3-4 blocks) sits before the 4-cell digits. Hand-over E (from the traces): <code>l 111 (110)^k 100 (101)^3 11 C&gt; R  -&gt;  l' 11 C&gt; 000 (110)^(k+4) R'</code>: the finished bell becomes a wide digit 0 and the bell on its left takes a step. Field counts at pass boundaries: 2 big bells + 1 small wide digit at 2e6, 1e8, 1e9 (674 / 630 blocks) and 5e9 (1,144 / 1,071 blocks).</li>
+<li><strong>Certified start B</strong> (same table) has one field only: <code>(101)^a 00 (101)^b 11 C&gt; [counter]</code>, marker moves right one block per pass; the field grows by 2 blocks per traversal.</li>
+</ol>
+<p>Right records (counter overflows: the right end is a run of 1s from carries, K3) see markers at unrelated phases, so the field data at right records look irregular; at pass boundaries they are regular.</p>
+<h2 id="template-check">Template check</h2>
+<ul>
+<li>Nearest proved neighbour: IndBECv1.v <code>_3ary</code> nonhalt3 (same table, start B). Its rule set is the 3-ary counter (K1-K6) plus whatever the hlin decider finds with block size 3 after 745 steps; that is one bell + counter. Ours needs a second big field and idle-field phases.</li>
+<li>Decider grid on the flipped table <code>1LB0LA_1LC0LD_1LD0RC_1RE1LA_---1RF_1LB0RC</code> with the same 3ary rule (QL = QR = C): <code>config_T_bsz T 3</code>, T = 746, 1000, 2000, 5000, 20000: decider returns false each time (104-129 s each). Calibration: the cert lemma itself compiles in 12 s (4.4 s Qed) with our coqc setup. Files and log: <code>rocq/</code> (<code>grid.log</code>). Grid 2: mnc 3 and mnc 4 at T = 5000 fail (125 s each); sibling 707 (flipped <code>1LB0RA_1RC1LF_---1RD_1LE0RA_1LA0LB_1LE0LF</code>, QL = QR = A) fails at T = 745 and 5000; block size 0 at T = 5000 (<code>g2_bsz0_T5000.v</code>) was still running when the session ended and did not finish; rerun it first in the next decider stage.</li>
+<li>A hand-proof template for this class exists upstream (not in vendor): <code>BellEatsCounter_1RB0RF.v</code> (HEAD 9cf9e88), built on SOMDCv6/Longitudinal.</li>
+</ul>
+<h2 id="cryptid-check-ground-rule-6">Cryptid check (ground rule 6)</h2>
+<p>No pseudo-random arithmetic seen: the counter is plain base 3, the bells step by one block per pass, the field alternation is driven by marker positions. Not a cryptid candidate. Caveat: E and J2 are not formalized, and the number of fields is only observed (2 big bells + 1 small wide digit) up to 5e9.</p>
+<h2 id="open">Open</h2>
+<ul>
+<li>Pin E (bell hand-over, both directions: bell 2 -&gt; bell 1 and back) and J2 (carry past the digit after a wide 2) with exact case splits; then the full right-part grammar.</li>
+<li>Decide whether the field count stays bounded (needed for a bounded invariant / the decider).</li>
+<li>Proof options: (a) more decider configs (cheap), (b) hand proof: two-bell invariant + ternary counter, rules in Rocq, then Flip.v.</li>
+</ul>
+<h2 id="scripts-and-data">Scripts and data</h2>
+<ul>
+<li><code>scripts/validate_rules.py</code> (13 rules, 200 random instances each, seed 3 -&gt; <code>data/validation.json</code>).</li>
+<li><code>data/compress_track_1e9.json</code>, <code>data/history.json</code>.</li>
+<li><code>rocq/run_grid.sh</code>, <code>rocq/*.v</code>, <code>rocq/grid.log</code>.</li>
+</ul>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: Spend one more short stage on decider configurations, or go straight to a hand proof (two bells + ternary counter)?
+Answer: <strong>decider2</strong> (One more decider stage (about 1 h)). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="funded-stage-2026-10-10-decider2">Funded stage (2026-10-10, decider2)</h2>
+<p>Run 2026-10-11 (Dennis: go with recommendations). Outcome: <strong>no certificate</strong>. All 384 hlin decider runs are false, and so are the 178 runs of a small CTL tail (2 of them time out). Confidence stays <strong>med</strong> on the mechanism. The cheap route is closed for the pinned framework. Scripts: <code>scripts/hlin_extract/</code> (README.txt, summary.json), <code>scripts/ctl_tail/</code>, <code>scripts/left_visits.py</code>.</p>
+<p><strong>1. The hlin decider now runs natively.</strong> busycoq's hlin decider (<code>Inductive BB62 . decide_hlin_nonhalt</code>, the one behind IndBECv1.v) is extracted to OCaml (<code>Ext.v</code>, 6 s). The driver <code>hlinx</code> takes the whole <code>Config</code> as <code>key=value</code> arguments: T, block size, mnc, max_repeater_len/size, arithseq, exp loop, max_period, allowed repeaters, fuel and any ExtraRules. Calibration against Coq:
+- the certified start B (<code>config_T_bsz 745 3</code> + the 3ary rule) is true in 0.01 s (Coq: 4.4 s; fuel 1,000 is enough);
+- IndBECv1 Bell nonhalt1 is true in 2.35 s;
+- our flipped table with the cert's config is false in 59 s at fuel 1e6, as in Coq (115 s).</p>
+<p>A false costs 5-14 s at fuel 1e5 (50-127 s at 1e6) and about 8 MB, so the grids ran 2 at a time with no coqc. A trace driver (<code>tracex</code>) prints the decider's layer stack.</p>
+<p><strong>2. Grids.</strong> 317f = our flipped table <code>1LB0LA_1LC0LD_1LD0RC_1RE1LA_---1RF_1LB0RC</code> with the cert's 3ary rule at QL = QR = C. 707f = <code>1LB0RA_1RC1LF_---1RD_1LE0RA_1LA0LB_1LE0LF</code> with QL = QR = A (707 is this table started in our C). Fuel is 1e5 unless noted. 0 true and 0 errors in 384 runs (<code>summary.json</code>).</p>
+<table>
+<thead>
+<tr>
+<th>grid</th>
+<th>runs</th>
+<th>what</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>192</td>
+<td>317f, 707f × block size 0/3/6 × T = 745, 1000, 2000, 5000, 1e4, 2e4, 5e4, 1e5 × {plain, mnc 4, max_repeater_len 32, exp loop}</td>
+</tr>
+<tr>
+<td>2</td>
+<td>24</td>
+<td>fuel 1e6: block size 0/3/6 × T = 745, 5000, 2e4, 1e5 (settles the block-size-0 Coq file <code>rocq/g2_bsz0_T5000.v</code> that never finished: false)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>48</td>
+<td>no ex-rule: 317, 707 (unflipped) and 317f, 707f × block size 0/3/6 × T = 0, 1000, 1e4, 1e5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>80</td>
+<td>10 variants × 4 T (745, 5000, 2e4, 1e5) × 2: block size 9, 12; mnc 3; max_repeater_len 12/16/32/64; arithseq (max_period 0/4); exp loop with block size 0/3/6</td>
+</tr>
+<tr>
+<td>3</td>
+<td>40</td>
+<td>allowed repeaters {101, 110, 011} (block size 0/3, exp loop) and {101, 110, 011, 0000, 1100, 0100, 1111} (block size 0, len 12) × 4 T × 2; T = 3e5 and 1e6 at block size 0/3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CTL tail</strong> (<code>scripts/ctl_tail/</code>, the extracted CTL62 decider from #7, both orientations of our table): 79 NG settings (len 2-20) and 10 CPS_LRU settings (size 3/6/9) per orientation, 178 runs. 176 are false, and CPS_LRU size 9 times out at 120 s in both orientations. The larger CPS_LRU lines (size 9-18) were stopped to stay in budget. No true.</p>
+<p><strong>3. Why it fails (trace).</strong> The decider closes only when it finds a one-parameter family <code>c0 =lb=&gt; config(n)</code>. For the cert this is <code>1 (101)^5 00 (101)^(2n+6) 0inf &lt;A 0 TER(3n+9)</code>. On our table the traces (<code>scripts/hlin_extract/runs/trace_*.txt</code>) keep the wide digits as explicit segments in front of the 3ary side. For example, at T = 1e5 the left side reads <code>0 (110)^6 0 0 1 0 (110)^15 0 (110)^5 0 TER(6)</code> (flipped orientation). The top layer only steps forward: l = 608 → 8,109 for a period guess of r = 8,192, and it never closes. 707f looks the same (two fields, then <code>TER(44)</code>). Two facts make the needed family unavailable:
+- <strong>The framework has no rule for wide digits.</strong> <code>ExtraRules</code> in the pinned Inductive.v has 7 constructors, and none is a ternary counter with digits of free width <code>d (110)^n 0</code>. The binary rules carry <code>d1^^n</code> runs, and BL ties each digit's width to the value of the digits above it. So the decision's "extra side rule for wide digits" is not a configuration. It would need a new constructor with its own soundness proof inside the decider, i.e. a change to vendor code; not done.
+- <strong>The left-end visits are not a one-parameter family.</strong> These are the state-F left records (<code>scripts/left_visits.py</code>, <code>data/left_visits_3e7.json</code>, 200 visits to 3e7). At each one the tape reads <code>011 (110)^k</code>, then the second field as <code>011 (110)^m</code> (form A) or <code>00 (011)^m</code> (form B), then small digits.
+  - k grows by exactly 1 per visit (199/199).
+  - The form cycles B, B, A with period 3, like a wide ternary digit.
+  - m stays constant for runs of 1-7 visits, then jumps. Increments: 0 (133 times), +1 (23), +2 (15), +3 (10), +4 (6), +5 (4), +6 (2), +7 (4), +8 (2). Jumps happen at all three form transitions; e.g. m = 125, 129, 135, 142, 143, 144, 146, 150, 154, 162, ... while k runs 156 → 216.
+  - So (k, m) is not (n, a·n + b). This is an orbit measurement, not a rule, and m is only the first segment of the second field.</p>
+<p><strong>4. No new local rules this stage</strong>, so there are no new validation counts. The 13 observe-stage rules stand (200/200 each, <code>data/validation.json</code>).</p>
+<p><strong>Still open</strong> (unchanged from observe; now the only route):
+- pin E (both directions) and J2;
+- the law for the second field's size (the m jumps above);
+- then proof.md (two bells + ternary counter with wide digits) and Rocq from BellEatsCounter_1RB0RF.v / SOMDCv6.</p>
+<p>The answered decision is in <code>decisions/2026-10-10-decider2.json</code>. The new <code>decision.json</code> asks: hand proof (recommended; its first stage pins these rules, with a stop rule) or park.</p>
+<h2 id="decision-2026-10-12">Decision (2026-10-12)</h2>
+<p>Question: The decider route found nothing (384 hlin and 178 CTL runs, all false): start the hand proof with one stage that pins the open rules, or park W4-7 and its sibling 707?
+Answer: <strong>hand</strong> (Hand proof, first stage: pin the open rules (about 2 h)). Dennis: apply recommendations (2026-10-12).</p>
+<h2 id="funded-stage-2026-10-10-hand">Funded stage (2026-10-10, hand)</h2>
+<p>Run 2026-10-12 (Dennis: apply recommendations). First hand-proof stage: pin the hand-over E (both directions), J2 and the second field's size law. Outcome: <strong>the field-size law is exact</strong> (a local "bell eats the next digit" law, 673/673 bell-2 ends to 1e9), six new local rules validated 200/200, J2 and the right-part grammar still open. Confidence stays <strong>med</strong>. The stop rule (park if the size law is not exact) does not fire. Scripts: <code>scripts/handover/</code> (<code>validate_handover.py</code>, <code>merge_law.py</code>, <code>wsim.c</code> = small C tracer for head turning points and snapshots, <code>tok.py</code>). Data: <code>data/validation_handover.json</code>, <code>data/merge_law_1e9.json</code>.</p>
+<p><strong>1. What a traversal is (from the head turning points, 3e7 steps).</strong> One field-1 traversal = field 1's marker moving through all k blocks (rule F, one block per pass). Each pass increments the digit chain that starts at field 2. Field 2 is a wide ternary digit (I-rules), so it carries every third pass. The <strong>first</strong> carry into field 2 after a left visit makes field 2 run as a bell (rule F2 below, m passes, each incrementing the chain from field 3 on). Later carries in the same traversal only cross it (I1a/I1b). The same holds one level down: field 3 sometimes runs as a short bell inside a traversal (the 'two runs per traversal' cases, e.g. step 8,320,923: width 3 → 4). So "bell" and "wide digit" are one object in two modes. A digit runs as a bell when a carry reaches it in the form the last long left sweep left behind.</p>
+<p><strong>2. New rules (all 200/200 from random instances, random far contexts with a window check: the head never reads l or r before the RHS; seed 5, <code>data/validation_handover.json</code>).</strong></p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>LHS → RHS</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F2 bell-2 step</td>
+<td><code>111 (110)^j 100 (101)^(b+1) 1 &lt;C 0  →  111 (110)^(j+1) 100 (101)^b 11 C&gt;</code></td>
+<td>8b+16</td>
+</tr>
+<tr>
+<td>G bell exhausted (both bells)</td>
+<td><code>00 1 &lt;C 0  →  1011 B&gt;</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td>SD D-sweep</td>
+<td><code>(110)^n 111 D&gt; 0  →  111 D&gt; 0 (011)^n</code></td>
+<td>5n</td>
+</tr>
+<tr>
+<td>SE E-sweep</td>
+<td><code>(101)^n 11 &lt;E  →  11 &lt;E (101)^n</code></td>
+<td>5n</td>
+</tr>
+<tr>
+<td>H2 bell-2 collapse (hand-over bell 2 → bell 1)</td>
+<td><code>00 (101)^b 111 (110)^n 111 D&gt; 0 (011)^j 0  →  0 &lt;F 11 (110)^b 000 (011)^(n+j+1) 0</code></td>
+<td>20-380 seen</td>
+</tr>
+<tr>
+<td>H1 bell-1 collapse at the left edge (hand-over bell 1 → left visit)</td>
+<td><code>0^inf (101)^b 111 D&gt; 0 (011)^j 0  →  0^inf 0 &lt;F 11 (110)^b (011)^(j+1) 0</code></td>
+<td>12-207 seen</td>
+</tr>
+</tbody>
+</table>
+<p>H2 matches the orbit: at step 8,309,027 the tape is <code>... 00 (101)^141 111 (110)^105 111 D&gt; 0 (011)^6 000 (011)^3 ...</code>, and the next field-1 marker visit (step 8,310,267) has <code>000 (011)^112</code> (105+6+1). H1 is validated as a local rule. Which right contexts actually occur when it starts in the orbit is not pinned.</p>
+<p><strong>3. The field-size law (exact; orbit check <code>scripts/handover/merge_law.py</code>).</strong> Look at the last field-2 bell pass, where the tape reads <code>111 (110)^j 1 [F0] 11 (110)^3 Y</code> ([F0]: head on a 0 in state F). After the collapse, field 2 is a wide 0 of width <strong>m' = j + 4 + w</strong>. Here w is the number of <code>011</code> blocks at the very start of Y: the next digit, in its adjacent (011) form, is eaten. When Y starts with 0, w = 0 and the width is unchanged.
+- 3e7 steps: 180/180 (120 with w = 0, 60 merges).
+- <strong>1e9 steps: 673/673</strong> (451 with w = 0; 222 merges, w = 1..10: 81, 53, 28, 24, 6, 10, 8, 7, 3, 2). The last width is 631.
+- 60 of the 734 bell-2 ends have another shape and are not counted: field-3 bell runs inside a traversal, and the first visits.</p>
+<p>This explains the jumps of m seen in decider2 (+0 in 133 visits, +1..+8 in 66): m grows exactly when the bell's last pass finds the next digit in adjacent (011) form. Field 1 grows by exactly 1 block per left visit (199/199, decider2). It is the bell at the blank left end, so what it eats is blank. The law is exact as a local rule, but it is not a closed form in the visit count. It depends on the counter's state, as in every bell-eats-counter machine.</p>
+<p><strong>4. Not pinned (honest gaps).</strong>
+- The piece between G and the start of the D-sweep (the B&gt; carry into the next digit, where the merge happens) is pinned only through the orbit law above, not as a local rule from random instances. Field 3's forms at the last pass are many (<code>000 (011)^w</code>, <code>00 (101)^w 1</code>, <code>(011)^w 0</code>, and over 60 shapes of 4-cell digits in shifted encodings).
+- J2 (the carry past the digit after a wide 2) is not pinned. Probing <code>1 C&gt; 010 (110)^5 0 0111 R</code> gives different outcomes for each R, and R = <code>0100 ...</code> / <code>01 0^inf</code> runs off.
+- Context matters for halting. The collapse started with <code>Y = (011)^4 0 1 0^inf</code> (not a grammatical tail) halts. So a proof needs the exact right-part grammar (digit encodings by phase, plus which digits are in bell-ready form), not just these rules.
+- Bounded nesting is not shown: field 3 also runs as a bell, so the "2 big bells + 1 small digit" picture is one level of a recursion.</p>
+<p><strong>Next (proof route, unchanged in kind).</strong> Pin the right-part grammar as a finite set of digit encodings with phase and ready flags, closed under F/F2/G/H1/H2, the I/K/J increments and the B&gt; carry. Each transition is validated from random grammatical instances, with an abstract simulator that must reproduce the left-visit configurations exactly to 1e9. Then proof.md, then Rocq (BellEatsCounter_1RB0RF.v / SOMDCv6 templates). This is several stages. <code>decision.json</code> asks: grammar stage (recommended) or park.</p>
+<h2 id="decision-2026-10-12_1">Decision (2026-10-12)</h2>
+<p>Question: The hand-over rules and an exact field-size law are now pinned: fund a grammar stage (exact digit encodings, J2, the merge carry, checked by an abstract simulator), or park W4-7 and 707?
+Answer: <strong>grammar</strong> (Grammar stage (about 2-3 h)). Dennis: b (fund all five), 2026-10-12.</p>
+<h2 id="funded-stage-2026-10-10-grammar">Funded stage (2026-10-10, grammar)</h2>
+<p>Run 2026-10-12 (Dennis: b (fund all five)). Goal: pin the right-part grammar (digit encodings, ready flags), J2 and the B&gt; merge carry; check them with an abstract simulator against the real left-visit tapes. Outcome: <strong>the grammar does not keep growing.</strong> Six digit encodings cover 99.29% of all bell-1 marker turns to 1e9. A digit-level abstract simulator built on five rule groups reproduces 1,540 consecutive turns exactly, 18 left visits among them. It first fails on a narrow edge case at the top of the counter. The stop rule does not fire, but closure is not shown. Confidence stays <strong>med</strong>, now on a concrete, finite rule set. Scripts: <code>scripts/grammar/</code> (README.txt, <code>b1z.c</code>, <code>census.py</code>, <code>absim.py</code>, <code>passcheck.py</code>). Data: <code>data/grammar_census_1e9.json</code>, <code>data/absim_orbit_check.json</code>, <code>data/validation_grammar_R600.json</code>, <code>data/validation_grammar_U300.json</code>.</p>
+<p><strong>1. Where to look.</strong> The checkpoints are the bell-1 marker turns: head in F on a 0, left part exactly <code>0^inf (101)^a</code>, right part <code>11 (110)^b</code> followed by the counter. There are 227,415 of them to 1e9 (<code>b1z</code>, 6 s), and the left visits are the case a = 0. No inner bell is active at these moments.</p>
+<p><strong>2. Grammar (6 encodings, widths free).</strong> Parsed from the cell right after field 1, the counter is a list of digits. Each digit is one of two kinds:
+- <strong>rest</strong> <code>(v, n)</code>: <code>0 d (110)^n</code>, with d = 000 / 110 / 010 for v = 0 / 1 / 2;
+- <strong>ready</strong> <code>(v, n)</code>: <code>d' (110)^n</code>, with d' = 000 / 011 / 001. A ready digit has no boundary cell of its own: its left neighbour is one cell longer.</p>
+<p>Narrow and wide digits use the same encoding: n = 0 gives the old 4-cell digits 0000 / 1100 / 0100, and the top <code>11</code> / <code>01</code> is just the last digit. The "60+ digit shapes" of the last stage were block-phase artifacts of the tokenizer. Census (<code>census.py</code>, backtracking parse):
+- 225,804 of 227,415 turns (99.29%) parse completely;
+- the 1,611 others all fail at the very top, which reads <code>...0001111</code> or <code>...000111</code> (1,592 of them at a &gt;= 3);
+- the 6 encodings appear at every depth, and no new encoding appears as the run goes on.</p>
+<p><strong>3. Rules (digit level; <code>absim.py</code> docstring).</strong> One bell-1 pass is <code>inc(field 2)</code>.
+- inc on a rest digit: v &lt; 2 gives v+1; v = 2 gives 0 and carries on (K1-K6, I0/I2/I1a/I1b).
+- inc on a ready digit: v &lt; 2 gives v+1 (000 → 011 → 001). <strong>v = 2 runs the digit as a bell:</strong> n increments of the next digit, then the collapse. The digit becomes rest 0, one cell further right, and passes a <strong>B&gt; carry</strong> to the next digit. A bell run therefore delivers exactly n+1 increments.
+- <strong>B&gt; carry (the merge carry)</strong> into the next digit:
+  - rest 0 becomes ready 1;
+  - rest 2 becomes ready 0, and the carry is absorbed;
+  - rest 1 is <strong>eaten</strong> by the collapsing bell (new width n_i + n_j + 1), and the digit after it is incremented;
+  - a ready digit takes an ordinary inc.</p>
+<p>In the last stage's notation this is the size law j+4+w, with w = n_j + 1.
+- <strong>H1</strong> (the field-1 pass with b = 0) is a B&gt; carry into field 2, then b' = a + 1. Of the 667 H1 passes to 1e9, 661 parse with field 2 rest (2: 438, 0: 218, 1: 5); the other 6 fail at the top. Field 2 at H1 is rest in all 18 that the abstract run covers.
+- <strong>Top:</strong> an inc past the last digit appends rest (1, 0).</p>
+<p>Recursion: field 2 is ready after every left visit, so its first carry runs it as bell 2. Each collapse makes the next digit ready, so field 3, field 4 and so on later run as nested bells. This is the "field 3 sometimes runs as a short bell" of the last stage.</p>
+<p><strong>4. Validation.</strong>
+- <strong>One bell-1 pass from random grammatical instances</strong> (<code>passcheck.py</code>: real TM until the next marker turn vs the abstract render; a &lt;= 6, b &lt;= 8, up to 6 digits, widths &lt;= 8):
+  - <strong>600/600</strong> (seed 5) on the grammar with no two adjacent ready digits, and at H1 field 2 rest and not 1. That is 562 ordinary passes and 38 H1 passes.
+  - Unrestricted (seed 6, 300): ordinary passes 217/217 without adjacent ready digits and 40/47 with them. The 7 failures all start a width-0 ready-2 bell next to a ready digit. H1 passes fail only when field 2 is ready, which never happens in the orbit; 7 instances raise (H1 with field 2 = 1).
+- <strong>Orbit</strong> (<code>absim.py</code>): the run starts from the left visit at step 1,016,724 (field 1 = 76 blocks; digits (1,45,ready) (0,7) (1,1) (0,0) (2,0)). It reproduces <strong>all 1,540 following marker turns exactly</strong> (full right part, string-equal), through 18 left visits (field 1 = 77..94 blocks). That covers every bell-2 run, nested runs of fields 3 and 4, and the merges (e.g. field 2: 45 → 53 = 45+7+1).
+  - First mismatch, at step 2,083,626: at the top, a ready (2, 0) receives a B&gt; and runs a width-0 bell, whose B&gt; meets a rest (1, 0) top digit. The machine leaves <code>...000111</code> instead of the merge. This is the same top family as the 1,611 unparsed turns.</p>
+<p><strong>5. J2.</strong> The observe-stage J0/J1/J2 ('digit after a wide 2': 0011 / 1111 / 0111) are not needed in the new frame. The increment of a ready 2 is the bell rule, validated within the pass rule. No marker turn to 1e9 outside the top family needs another encoding.</p>
+<p><strong>Still open:</strong>
+- the top family: width-0 ready-2 bells and merges of a narrow top digit, which leave <code>111</code> / <code>1111</code> forms (0.71% of turns);
+- the width-0 ready-2 bell next to a ready digit (7/47 failures);
+- H1 with field 2 = 1 (at most 5 of 667 H1 passes);
+- running the orbit check past 2.08e6 to 1e9 once these are pinned;
+- then proof.md (invariant = this grammar + an arithmetic argument that no top form reaches <code>A&gt; 0 1 0</code>) and Rocq.</p>
+<p>The answered decision is in <code>decisions/2026-10-10-grammar.json</code>. The new <code>decision.json</code> asks: one more grammar stage to close the top family (recommended), or park.</p>
+<h2 id="decision-2026-10-12_2">Decision (2026-10-12)</h2>
+<p>Question: The grammar stage found 6 digit encodings and a digit-level rule set that reproduce 1,540 consecutive turns exactly: fund one more stage to pin the top case and run the check to 1e9, or park W4-7 and 707?
+Answer: <strong>grammar2</strong> (Close the top case (about 2 h)). Dennis: 'fund w4-7' (2026-10-12).</p>
+<h2 id="funded-stage-2026-10-10-grammar2">Funded stage (2026-10-10, grammar2)</h2>
+<p>Run 2026-10-12 (Dennis: 'fund w4-7'). Goal: pin the width-0 bell and narrow-top merge forms, extend the abstract simulator until it matches every bell-1 marker turn to 1e9. Outcome: <strong>done. The abstract simulator <code>absim2.py</code> reproduces every bell-1 marker turn from step 10 to 1e9 exactly (227,414 turns, 667 left visits).</strong> The stop rule does not fire: there is no separate top family. Confidence stays <strong>med</strong>: the rules are validated and the orbit is matched, but an invariant that excludes the few unsupported configurations is not shown yet. Scripts: <code>scripts/grammar/absim2.py</code>, <code>opcheck2.py</code>, <code>passcheck2.py</code>, <code>orbit_check2.py</code>, <code>ready00_contexts.py</code>, <code>tm47.py</code>. Data: <code>data/absim2_orbit_check_1e9.json</code>, <code>data/validation_grammar2_op20000.json</code>, <code>data/validation_grammar2_pass2000.json</code>, <code>data/grammar2_ready00_contexts_1e9.json</code>.</p>
+<p><strong>1. The '111/1111 top family' was a parser artifact.</strong> <code>census.py</code> needed every <code>(110)</code> block complete. But the last cell of the top digit lies in the blank 0^inf. With zero-padded tops, <strong>all 227,415</strong> marker turns to 1e9 parse in the 6 encodings. For example, <code>...0001111</code> is rest (0,0) followed by ready (1,1) = <code>0000 011 11[0]</code>.</p>
+<p><strong>2. The real gap: a B&gt; carry into a ready digit.</strong> The old rule "B&gt; into ready = ordinary inc" (absim.py) is wrong for every ready kind. That is the first mismatch at step 2,083,626. A ready digit is <code>0 e (110)^n</code> with a 2-cell core e = 00 / 11 / 01, and a rest digit is <code>0 e 0 (110)^n</code>. Cell-level traces give the full B&gt; table. The bell is the collapsing digit, of width n; the "next" digit is the one after the target.</p>
+<table>
+<thead>
+<tr>
+<th>B&gt; target</th>
+<th>result</th>
+<th>bell ends as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rest (0,m)</td>
+<td>ready (1,m)</td>
+<td>rest (0,n)</td>
+</tr>
+<tr>
+<td>rest (2,m)</td>
+<td>ready (0,m), carry absorbed</td>
+<td>rest (0,n)</td>
+</tr>
+<tr>
+<td>rest (1,m)</td>
+<td>eaten: bell width n+m+1, then inc(next)</td>
+<td>rest (0,n+m+1)</td>
+</tr>
+<tr>
+<td>blank top</td>
+<td>ready (1,0)</td>
+<td>rest (0,n)</td>
+</tr>
+<tr>
+<td>ready (2,m)</td>
+<td>ready (0,m), absorbed</td>
+<td>ready (0,0) + n × ready (1,0)</td>
+</tr>
+<tr>
+<td>ready (1,m)</td>
+<td>runs as a bell (m × inc(next)), is eaten (width + m + 1), then B&gt; into next</td>
+<td>as for next</td>
+</tr>
+<tr>
+<td>ready (0,m), m ≥ 1</td>
+<td>ready (0,0), ready (1,m-1), then inc(next)</td>
+<td>ready (0,0) + n × ready (1,0)</td>
+</tr>
+<tr>
+<td>ready (0,0)</td>
+<td>depends on next digit Y (below)</td>
+<td>rest (0,n)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>"ready (0,0) + n × ready (1,0)" is the cell string <code>000 (011)^n</code>. The bell does not take the target's leading cell, which is the same tape as a rest (0,n) whose last cell is lent to the target. The orbit uses this split 5 times.</li>
+<li><strong>B&gt; into ready (0,0)</strong> sets the leading cell of Y to 1. The re-read in the 6 encodings is a closed form:</li>
+<li>Y = rest (0,m): ready (1,0), ready (0,m);</li>
+<li>Y = rest (1,m): ready (1, m+1);</li>
+<li>Y = ready (0,m), m ≥ 1: rest (1,0), rest (1, m-1);</li>
+<li>Y blank (top): rest (1,0).</li>
+<li>Any other Y (rest 2, ready 1 or 2, or a non-top ready (0,0)) leaves a <strong>flagged digit</strong> (leading cell 1). That is outside the grammar and can halt: ready (2,0) followed by a flagged rest 2 halts at its next inc, through the <code>B&gt; 1 0</code> path.</li>
+<li><strong>H1</strong> (field 1's B&gt; into field 2) follows the same table:</li>
+<li>rest 1 is eaten: the next b is a + 1 + m + 1, then inc(next);</li>
+<li>ready (1,0) is eaten, then B&gt; passes into the next digit.</li>
+<li>Field 2 ready (0,·), ready (2,·) or ready (1, m ≥ 1) at H1 is unsupported. With ready (1, m ≥ 1) the next marker turn is not a left visit (a' = a + 2).</li>
+</ul>
+<p><strong>3. Validation from random instances</strong> (unrestricted grammar: adjacent ready digits allowed, widths 0-8).
+- <strong>Op level</strong> (<code>opcheck2.py</code>, seed 41): an inc arrives at digit 0 (<code>1 C&gt;</code>, left stub <code>11</code>) and the real TM runs until the head leaves to the left. <strong>19,907/19,907</strong> pass, 0 fail, 93 unsupported (all B&gt; into ready (0,0) with an unsupported Y). Rule uses in passing instances:
+  - bell 4,170, split 276;
+  - B&gt; into rest 0 / 1 / 2: 973 / 1,113 / 982; into the blank top: 402;
+  - B&gt; into ready 2 / 1: 475 / 422; into ready (0, ≥1): 125; into ready (0,0): 100 (top 45, rest 1 21, ready 0 20, rest 0 14).
+- <strong>Pass level</strong> (<code>passcheck2.py</code>, seed 13, real TM to the next bell-1 marker turn): <strong>1,405/1,405</strong> (840 H1, 565 ordinary), 0 fail, 595 unsupported (592 H1 into a ready field 2, 3 B&gt; into ready (0,0)). H1 with field 2 = rest 0 / rest 1 / rest 2 / ready (1,0): 233 / 267 / 277 / 63.</p>
+<p><strong>4. Orbit check to 1e9</strong> (<code>orbit_check2.py</code>). Start: the first bell-1 marker turn, at step 10 (a = 0, b = 0, digits [rest (1,0)]; it is 10 concrete steps from blank).
+- <strong>Every later marker turn matches</strong>: 227,414 of 227,414 (a and the full right part, exact string), 667 left visits, at most 9 digits.
+- Final state at step 999,967,828: a = 2, b = 672, digits ready (2,631), rest (1,3), rest (2,0) ×3, rest (1,0), rest (2,0).
+- Rule uses: inc rest 0/1/2 = 212,722 / 212,587 / 211,566; inc ready 0/1 = 1,037 / 1,978; bell 1,956; B&gt; into rest 0/1/2 = 779 / 623 / 1,017; blank top 163; ready 2 21, ready 1 13, ready (0,0) 20 (10 top, 10 rest 1); split 5.
+- H1 667 times. Field 2 is rest each time: rest 0 221, rest 1 5, rest 2 441.
+- <strong>No unsupported case occurs.</strong> The dangerous pattern (a ready 2, any ready 1 digits, a ready (0,0)) appears at marker turns only at the very top: 587 turns, with Y blank, ready (1,0) or rest (1,0) (<code>data/grammar2_ready00_contexts_1e9.json</code>).</p>
+<p><strong>Still open</strong> (the step to proof.md):
+- an <strong>invariant on digit lists</strong>, closed under the rules, that excludes both unsupported configurations:
+  - (a) field 2 ready at a left visit;
+  - (b) B&gt; into a ready (0,0) whose next digit is rest 2, ready 1 or 2, or a non-top ready (0,0).</p>
+<p>The orbit data say (b) is a top-of-counter effect: the ready (0,0) is always within the last two digits.
+- then the non-halting argument (the rules compose into passes, E0 is read only in the excluded configurations), then proof.md and Rocq (BellEatsCounter_1RB0RF.v / SOMDCv6; start B = IndBECv1 <code>_3ary</code> nonhalt3).</p>
+<p>The answered decision is in <code>decisions/2026-10-10-grammar2.json</code>. The new <code>decision.json</code> asks: an invariant stage (recommended) or park.</p>
+<h2 id="decision-2026-10-12_3">Decision (2026-10-12)</h2>
+<p>Question: The digit-level simulator now matches all 227,414 marker turns to 1e9 with validated rules: fund an invariant stage that shows the unsupported cases never occur (then proof.md), or park W4-7 and 707?
+Answer: <strong>invariant</strong> (Invariant stage (about 2-3 h)). Dennis: 'Invariant stage' (2026-10-12).</p>
+<h2 id="funded-stage-2026-10-10-invariant">Funded stage (2026-10-10, invariant)</h2>
+<p>Run 2026-10-12 (Dennis: 'Invariant stage'). Goal: a property of digit lists, closed under the absim2 rules, that excludes the two unsupported cases: (a) field 2 ready at a left visit; (b) B&gt; into a ready (0,0) whose next digit Y is rest 2, ready 1 or 2, or a non-top ready (0,0). Stop rule: park if no small invariant closes.</p>
+<p>Outcome: <strong>the stop rule fires, and W4-7 (with 707) is parked.</strong> No property of the digit word can exclude these cases. The orbit avoids them because of exact sizes: changing one field size by 1 makes nearby orbits reach them. Most cases reached this way do not halt: about half are parse artifacts (the same tape has another parse that absim2 handles), and the rest need top rules that absim2 does not have. But <strong>3 of the 69 do halt</strong> in the real TM, within 400,000 steps. All three have a ready (2,0) as Y, and all three come from a large change of one width. So halting tapes sit inside the 6-encoding grammar at the level of the digit word. A proof needs a quantitative invariant (counter value against the field sizes), which is not small. Line 707 (start C) is now matched by absim2 to 1e9 as well. Confidence stays <strong>med</strong> on the mechanism; not a cryptid candidate (see 3). Scripts: <code>scripts/invariant/</code> (README.txt). Data: <code>data/invariant_*.json</code>, <code>data/absim2_orbit_check_707_1e9.json</code>.</p>
+<p><strong>1. Where the ready digits are.</strong> Call a ready digit a <em>wave</em>: the collapse of the bell to its left made it ready, and it will run as a bell itself. <code>waves.py</code> runs absim2 alone for 20 million passes (the 1e9-step orbit is 227,414 passes): 0 flags, at most 10 digits, field 2 width up to 6,214.
+- At all 6,317 left visits, every ready digit is among the last three digits (1,022 / 92 / 310 at distance 0 / 1 / 2 from the last digit), and case (a) never occurs.
+- Of two consecutive ready digits at a marker turn, the upper one is always among the last four digits (258,397 / 19,150 / 1,584 / 15 at distance 0 / 1 / 2 / 3).
+- Every B&gt; into a ready digit (139 times) happens among the last three digits.</p>
+<p>Below the top a wave climbs one digit per bell. It dies at the first rest 1 (it eats it), and it cannot pass an older wave. Case (b) needs a new wave to reach an older one. On the orbit this happens only at the top, because each field-2 bell (n0 increments into the rest of the counter) pushes all older waves up there. At left visits the counter above field 2 has a value close to n0 (for example 2,333 vs n0 = 2,366). So the safety is a balance of sizes, not a matter of form.</p>
+<p><strong>2. The stop rule: no invariant on the digit word.</strong> <code>perturb_check.py</code> takes 237 orbit states at left visits (passes 2,000 to 300,000). It changes one number, keeps the digit word (kinds, widths 0 / &gt;= 1) and everything else, and runs absim2 for 30,000 passes.</p>
+<table>
+<thead>
+<tr>
+<th>change</th>
+<th>reach an unsupported case (of 237)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>none</td>
+<td>0</td>
+</tr>
+<tr>
+<td>field-2 width n0 -1 / +1</td>
+<td>3 / 2</td>
+</tr>
+<tr>
+<td>n0 -3 / +3</td>
+<td>3 / 4</td>
+</tr>
+<tr>
+<td>n0 -10 / +10</td>
+<td>28 / 3</td>
+</tr>
+<tr>
+<td>field-1 size a -1 / +1</td>
+<td>1 / 3</td>
+</tr>
+<tr>
+<td>a -3 / +3</td>
+<td>4 / 4</td>
+</tr>
+<tr>
+<td>a -10 / +10</td>
+<td>9 / 7</td>
+</tr>
+<tr>
+<td>n0 redrawn in 1..20</td>
+<td>12</td>
+</tr>
+<tr>
+<td>every width &gt;= 1 redrawn in 1..itself</td>
+<td>9</td>
+</tr>
+<tr>
+<td>a redrawn in 1..a</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>Every hit is case (b). In 94 of the 98 hits Y is ready (1,0) (else ready (2,0) or ready (1,1)). An invariant that excludes the unsupported cases must therefore tell apart field sizes that differ by 1. Any invariant that depends only on the digit word (and a, b) contains one of these perturbed states, so closure would carry it to an unsupported case. A quantitative invariant (counter value against n0 and a) would not be small, and it was not attempted.</p>
+<p><strong>3. What the unsupported cases are: mostly missing rules, a few halts.</strong>
+- <strong>Where:</strong> all 69 distinct flagged runs hit case (b) within the last four digits (<code>flag_where.py</code>: distance 1 / 2 / 3 from the last digit: 2 / 57 / 10). 55 of them are the same top: ready (0,0), ready (1,0), rest (1,0).
+- <strong>Parse artifacts</strong> (<code>reparse_check.py</code>, <code>data/invariant_reparse.json</code>). The 6 encodings are ambiguous at digit borders: ready (1,0) rest (1,m) = rest (1,m+1), and ready (1,0) rest (0,m) = rest (1,0) ready (0,m). Every parse of each pre-flag tape was tried; 3,238 parses in all:
+  - 35 of the 69 states have another parse on which the pass is supported;
+  - all 1,578 unflagged parses give exactly the real TM's next marker turn (0 mismatches; this also cross-checks the rules);
+  - 34 states have no supported parse.
+- <strong>Real TM</strong> (<code>flag_tm.py</code>, <code>data/invariant_flag_tm.json</code>): from each of the 69 pre-flag marker turns, up to 2e9 steps.
+  - 66 do not halt. Eight of them were followed for 300 more marker turns: in 7 all 300 turns parse in the 6 encodings again, in the eighth 261 do.
+  - <strong>3 halt</strong>, at steps 61,670 / 307,823 / 376,776. Each is a B&gt; into ready (0,0) followed by ready (2,0), near the top: <code>... ready (2,0), ready (0,0), ready (2,0)</code> (twice) and <code>... ready (2,0), ready (1,0), ready (1,0), ready (0,0), ready (2,0)</code>. They come from the redraws (n0 redrawn twice, all widths once), less than 1.1 traversals after the change.
+  - The runs started from the ±1 / ±3 / ±10 changes all reach Y = ready (1,0), and none of them halts in 2e9 steps (that is far beyond the 30,000 abstract passes).
+- <strong>Op level</strong> (<code>flag_probe.py</code>, seed 7, <code>data/invariant_flag_probe_op4000.json</code>): 4,000 random instances of a width-n bell into ready (0,0), Y, tail; 1,586 of them absim2 calls unsupported. Real TM: 0 halts, 0 timeouts. 185 results parse in the 6 encodings (Y = ready (0,0): 127, ready (1,0): 58). 1,401 leave a digit whose leading cell is 1 (a <em>flagged</em> digit, outside the 6 encodings).
+- Known from grammar2: a flagged rest 2 after a ready (2,0) halts at its next inc. In the three halts above the flagged digit is a ready (2,0) instead; their cell-level path to E0 was not traced.
+- Cryptid check: the halts need a drastic size change and happen at once, and the long perturbed runs never halt. So there is no sign of pseudo-random arithmetic deciding halting. The orbit looks like a stable balance (counter value near n0) that nearby states rejoin. Not a cryptid candidate, but no proof route in reach either.</p>
+<p><strong>4. Line 707 (start C of this table).</strong> <code>b1zs</code> (b1z with a start state) to 1e9, then <code>orbit_check_start.py</code>. absim2 reproduces every bell-1 marker turn from step 117 (a = 0, b = 3, no digits) to 1e9: <strong>226,216 / 226,216</strong>, 669 left visits, at most 8 digits (<code>data/absim2_orbit_check_707_1e9.json</code>). The six turns before step 117 include an H1 into a lone top ready (2,0), which absim2 does not support. In the TM that digit simply disappears (b' = a + 1). A proof covers these turns by direct simulation.</p>
+<p><strong>Still open (restart route, if the machine is picked up again).</strong>
+- (i) Make absim2 total near the top. Re-parse the ambiguous border pairs, and pin B&gt; into ready (0,0) for every Y together with the flagged-digit forms it leaves. Validate from random instances, and use the perturbed orbits as a stress test.
+- (ii) That alone is not enough, because the halting tops (ready (2,0), ready (1,0)*, ready (0,0), ready (2,0), then B&gt;) are word-level grammatical. The invariant must be quantitative: for example, every ready digit at a left visit lies in the last three digits, kept true by a size balance (counter value near n0, a - n0 small). No candidate was found.
+- Then proof.md and Rocq.</p>
+<p>The answered decision is in <code>decisions/2026-10-10-invariant.json</code>. Parked by the stage's own stop rule, as Dennis agreed when funding it, so no new <code>decision.json</code>.</p>
+</main></body></html>

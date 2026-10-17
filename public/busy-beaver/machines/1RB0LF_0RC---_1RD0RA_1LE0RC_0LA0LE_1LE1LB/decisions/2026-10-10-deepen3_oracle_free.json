@@ -1,0 +1,68 @@
+{
+ "tm": "1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB",
+ "bucket_reason": "Medium confidence after two deepen passes. The counter, pause and overflow rules are exact, but the right-end tail that decides each overflow has no general rule, so proof work waits for Dennis.",
+ "question": "#8's left counter and overflow pause are fully ruled. Only the right-end tail, which decides NO / emit / SILENT at each overflow, lacks a general rule. Fund a third deepen round aimed at a tail-independent proof, or park #8?",
+ "options": [
+  {
+   "id": "deepen3_oracle_free",
+   "label": "Fund deepen round 3, scoped to an oracle-free proof",
+   "consequence": "Two cheap tests first. (1) Run the macro model (deepen2_macro.py) under arbitrary NO/emit/SILENT sequences and check that no degenerate parameter appears (p <= 2 at a PO, wall < 3, a < 2). (2) Check that the tail shape (five fixed units with free 0? bits, then (0?)^m 01) is closed under the overflow carry for every bit setting, exhaustively for small m. If both pass, the proof needs neither the Zeckendorf-like schedule nor the super-cycle induction, and proof.md is next. If (1) fails, the round falls back to decoding the tail schedule, and the machine goes to STUCK if that does not fit the budget."
+  },
+  {
+   "id": "deepen3_full_tail",
+   "label": "Fund round 3 on the full tail schedule",
+   "consequence": "Decode the end unit's Fibonacci-like change intervals and prove the super-cycle induction (silent overflows 7 or 11 apart; POs at p = 2^x+5, 2^y+2, 8). This follows the orbit most closely, but it gives the biggest proof and probably takes more than one stage."
+  },
+  {
+   "id": "park",
+   "label": "Park #8 as STUCK (stage deepen2)",
+   "consequence": "No compute. The rules, the macro model and the 40,000-overflow tail driver are kept. Nobody else has an easy route either: SBCv2's family parameter search already failed on it."
+  }
+ ],
+ "recommended": "deepen3_oracle_free",
+ "rationale": "#8 has moved steadily: round 2 found and fixed round 1's wrong tail driver and decoded the tail's decision rule. All of its arithmetic is linear (gaps p+2, values 2v+4, powers of 2 plus constants), so nothing is cryptid-like. The remaining gap is a deterministic transducer on a tail of fixed shape. A proof does not have to predict which overflows are silent if the left dynamics stays non-degenerate under any outcome sequence. Two outcome sequences have already run clean: strict e0/e1 alternation for 40 cycles, and the true sequence for 8,000 overflows (min p 8, min wall 50). SILENTP also covers a silent overflow inside a pause. So the oracle-free test is plausible and cheap, and if it holds, the tail lemma shrinks to a closure check on a regular shape. The .v will be large either way (estimated 30-80 KB), but the stage itself is low-risk.",
+ "evidence": [
+  {
+   "kind": "rules",
+   "text": "Pause rules P100, WX, P010, ZX, ZXN, ZXP1 and ZXP2: 150/150 each, with an exact whole-tape match at the next inner record. Step formulas exact on 60/60.",
+   "href": "scripts/deepen_rules_s7.result.json"
+  },
+  {
+   "kind": "data",
+   "text": "The macro model with the tail oracle reproduces every normal-mode entry from step 36,124 to 555,048,797 exactly (a, counter bits, all gaps, R count).",
+   "href": "notes.md"
+  },
+  {
+   "kind": "data",
+   "text": "The corrected tail driver reproduces all 12 real RC transitions (steps 8,109 to 400,944,248). It then ran 40,000 overflows: 34,984 NO and 5,016 SILENT, nothing else, no halt. The right edge moved +2 at overflows 9,057 and 24,241.",
+   "href": "scripts/deepen2_rc_chain_40k.summary.json"
+  },
+  {
+   "kind": "data",
+   "text": "The macro model with the true oracle ran 8,000 overflows (2,495 NO, 1,004 SILENT, 4,501 PO) with no degenerate case: min p at a PO 8, min wall 50, min a 121, min gap 7, and no silent overflow inside a pause.",
+   "href": "scripts/deepen2_macro_8000.result.json"
+  },
+  {
+   "kind": "rules",
+   "text": "SILENTP (a silent overflow inside a pause) 60/60, and the SILENT re-check 60/60. The NO/PO transition forms also hold at tiny parameters: a in {0,1}, p <= 2, wall <= 2 (12 probes).",
+   "href": "scripts/deepen2_validate_s5.result.json"
+  },
+  {
+   "kind": "open",
+   "text": "Still open: there is no parametric rule for the end unit (0?)^m 01. Its change intervals (2048, 1648, 2048 | 5744, ...) satisfy F(n) = F(n-1) + F(n-2). The super-cycle induction is only observed, and ZX/ZXP at small parameters are unvalidated.",
+   "href": "deepen.json"
+  },
+  {
+   "kind": "context",
+   "text": "Pool #8, on mxdys's UBRRBA_TODO list (2026-08-24). SBCv2_6x2 tm108 is 1 transition away, but its LInc/RInc0 pass 0/10 here, and the family's parameter search already failed on this machine.",
+   "href": "notes.md"
+  }
+ ],
+ "effort_if_yes": "One ~2 h deepen stage with 1-2 processes (the macro model in Python and the rc_chain C driver); no new long simulations. If both tests pass, proof.md is next, though the Rocq file will still be large (3 nested levels).",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "deepen3_oracle_free",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

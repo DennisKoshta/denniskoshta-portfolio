@@ -1,0 +1,208 @@
+{
+ "pass": "funded stage seed_clause (2026-10-12)",
+ "confidence": "high",
+ "recommend": "proof.md (no new decision.json)",
+ "mechanism": "Unchanged core: one left-turn-frame bouncer X (10)^P <A Y (010)^d Z (P-mode) / 0^inf <A Y (010)^d Z (edge mode), bulk rules BounceP/BounceE/Eat*/Transfer. Round 2 closed the P-exhaustion events in closed form: Push (P=3 at a wall: X (10)^p (101)^q (10)^3 <A (10)(011010)^b1 M (10)^ak (010)^d Z -> X (10)^(p-1) <A (10)(011010)^1 (010)^q (011010)^(b1+1) M (10)^(ak+4) (010)^(d-4) Z, p>=3, d>=4), AbsorbChain (P=2: walls (10)^pj (101)^qj, j=1 nearest, carry r1=2, e_j=floor((q_j+r_j)/2), r_{j+1}=(q_j+r_j) mod 2, absorption continues while r=1 and stops at the first wall J with r_{J+1}=0, giving X' (10)^pJ <A (10)(011010)^eJ (10)^p(J-1) ... (10)^p1 (011010)^(e1+b1) M (10)^(ak+2) (010)^d Z; if it never stops, edge mode with a0=p_m+3), ToEdge1 (0^inf 10 <A -> 0^inf <A (10)^5 ..., ak+2, d-2), ToEdge2 (= BounceP into the edge). KEY NEW FINDING: the grammar with free exponents is NOT closed: random grammar instances halt (40 of 150 with L-chunks only, 55 of 150 with mixed chunk alignments, within 3e7 steps). Minimal witness: 0^inf (10)^3 (101)^1 (10)^3 <A (10)(011010)^1 (10)^1 (010)^12 0^inf halts at step 1277; factor test: Push at an odd wall (q odd) with odd ak halts, while q even or ak even or P even does not. Reachable Push-at-odd-wall events from blank all have ak even (e.g. 536,736: q=71, ak=32), so non-halting rests on parity invariants that must be carried through every event, not on value-free closure. Whether those parities are forced (regular invariant) or arithmetic (cryptid-like) is now the open question.",
+ "closed_gaps": [
+  "Middle (underflow) phase identified: it is the P-mode bouncer BounceP (X (10)^(P+2) <A (10)(011010)^b1 M (10)^ak (010)^(d+2) Z -> X (10)^P <A (10)(011010)^(b1+1) M (10)^(ak+2) (010)^d Z, steps 22+20*Sum(b)+6*Sum_{i>=1}(a_i)), 140/140 with arbitrary walls X and pending chunks Z; the same rule drives every Transfer",
+  "Left phase generalised to a multi-segment Y and pending chunks Z: BounceE (a0+2, ak+2, d-2; steps 10+20*Sum(b)+6*Sum(a)), 140/140",
+  "New odd-alignment eat-through regime (from 5.6e5 steps on) found and ruled: EatP6, EatP2, EatE6, EatE2 (2 trips each; exact step formulas), 60/60 each",
+  "Regime transitions identified: underflow = P-exhaustion of the last Transfer's bouncer at its (101) wall; middle->left = P-exhaustion at 0^inf (ToEdge); left->right = hub (d=0, Z empty) then Sweep; d=0 next to an even-aligned chunk is not an event (the chunk just extends Y)",
+  "Coverage: accelerated simulator (BounceP/E + Eat* + Transfer in bulk, everything else direct) equals the C engine exactly (tape, head, state, step) at 1e5, 1e6, 1.45e7, 5.3e7, 2.1e8, 1.05e9, 1.16e10; ran to 1.02e12 steps (span 1.4M cells) with no halt; between rule applications only O(1)-trip events occur",
+  "Negative controls die: BounceP ak+1 0/6, EatE6 ak+2 0/6, BounceE steps+2 0/6",
+  "Round 2: Push (P=3 at a wall, any q parity, p>=3, d>=4) closed form, 40/40 (scripts/val_events2.py seed 22) + 10/10 seed 21 with p>=3; 2 extra trips folded in (first frame after the wall is a non-standard frame Y=[1], d=0)",
+  "Round 2: AbsorbChain (P=2 at a wall, carry propagation across any number of walls, stop or reach the edge) closed form, 12/12 seed 21 + 39/40 seed 22 (the one miss has p_J=1: P=1 next to a wall is not a left-turn frame, see remaining gaps)",
+  "Round 2: ToEdge1 (P=1 at 0^inf: a0 1->5, ak+2, d-2) 52/52 and ToEdge2 (P=2 at 0^inf = BounceP into edge mode) 52/52",
+  "Round 2: negative controls die: AbsorbChain stopping at the first wall 0/16, Push with ak+2 instead of ak+4 0/16",
+  "Round 2: event census to 1.2e10 steps (accel sim, 25,136 frames): about 200 non-bulk transitions in total; left-exhaustion events are Push (q even and odd), Absorb, ToEdge P=1/P=2; right-exhaustion events are d=1/d=0 at chunk boundaries (merge/eat-through), right-end restarts and the hub/Sweep",
+  "Round 2: generic regular-CTL (MITM-DFA, busycoq CTL.v semantics, lazy, native) ruled out for cheap DFA families: n-gram(+seen-1 flag) n<=13 reach HALT, n>=14 exceed 2e7 abstract configs; busycoq-style RWL_mod blocks (bsz 1,2,3,6; mnc 1-6; mod 2-6; len1 3-10; len2 1-3; 20 settings) all reach HALT; an alignment-free run-compressing DFA (K 4-12 runs) reaches HALT. The stress-test finding explains why: value-free over-approximations contain halting configurations"
+ ],
+ "remaining_gaps": [
+  "Parity invariant: find and prove the parity constraints (at least: ak even whenever Push meets an odd wall; likely a joint parity condition on ak, q, P and chunk exponents) that every reachable frame satisfies, and show every event preserves them. Without it there is no non-halting argument: free-exponent grammar instances halt",
+  "Decide regular vs arithmetic: if the needed parities are local and preserved by the closed-form events, a grammar-aware CTL (DFA tracking token parities) should exist; if they depend on accumulated sums, this is cryptid-like. Not yet known",
+  "Closed forms still missing: Push with p=2 (double Push: (10)^1 lands next to the next wall), AbsorbChain with p_J=1, Push with d<4 (eats into the next chunk), the right-exhaustion events (d=0/d=1 at L- and R-aligned chunks, eat-through entry/exit), the P-mode right-end restart (nested Conv) and Sweep for k segments",
+  "Transfer acceleration beyond the C horizon still assumes Transfer for any wall l (validated for l=(10)^p(101)^q and (10)^p(011)^a; cross-checked against C to 1.16e10)",
+  "Init: first 46,734 steps irregular (fine for direct computation)"
+ ],
+ "evidence": [
+  "scripts/val_bounce.py (seeds 1 and 11): BounceP 140/140, BounceE 140/140, step formulas exact",
+  "scripts/val_eat.py (seeds 2 and 12): EatP6/EatP2/EatE6/EatE2 60/60 each; step formulas fitted exactly on 40 instances each",
+  "scripts/val_neg_deepen.py seed 13: 3 wrong variants 0/6 each",
+  "scripts/cmp_accel_vs_c.py: accel sim == C engine at 1.0e5, 1.0e6, 1.45e7, 5.3e7, 2.1e8, 1.05e9, 1.1555e10 (exact tape/head/state/step)",
+  "scripts/far_accel.py: no halt to 1,024,363,910,710 steps, span 1,405,632 cells; 844k bounces in about 194 bulk applications, 237,507 Transfers, 37 eat applications",
+  "Event census to 1.1e9 (scripts/events_log.py + events_classify.py): Push P=3 even wall (206,227: [10^68 101^52] P=3 Y=[1,23,44] d=52 -> P=65 Y=[1,2,2] d=50 Z=(011010)^24 (10)^48 (010)^48), Push P=3 odd wall (536,736), Absorb P=2 (51,601: P=84 Y=[1,11,6]), ToEdge P=1 (75,609) and P=2 (542,125), plus eat-through boundary steps, restarts and Sweeps",
+  "scripts/val_events2.py seed 21 (N=12) and seed 22 (N=40, output scripts/val_events2_22.txt): Push 40/40, AbsorbChain 39/40 (miss = p_J=1 frame-definition case), ToEdge1 40/40, ToEdge2 40/40, negatives 0/8 each",
+  "scripts/stress_grammar.py: random grammar instances (tiny exponents, 0-4 walls, 1-4 Y segments, 0-3 Z chunks) on the accelerated simulator for 3e7 steps: mode L seed 31 and mode LR seed 32 (outputs scripts/stress_grammar_31_L.txt, _32_LR.txt) : 40/150 and 55/150 halt",
+  "Factor test (direct sim, 3e6 steps) on 0^inf (10)^p (101)^q (10)^P <A (10)(011010)^b (10)^a (010)^d 0^inf: halts iff P odd (Push), q odd and a odd in all 12 probes (e.g. p=3,q=1,P=3,b=1,a=1,d=12 halts at 1277; q=2 or a=2 or P=4 runs on)",
+  "CTL attempts: scripts/ctl_try_ngram.py (+ctl_mitm_eager.py), scripts/ctl_grid_rwl.py + ctl_lazy.py, scripts/ctl_afrwl.py; all reach an abstract HALT"
+ ],
+ "rounds": [
+  {
+   "pass": "funded stage parity_round (2026-10-10)",
+   "confidence": "med",
+   "recommend": "macro_closure (new decision.json)",
+   "mechanism": "Halting has exactly one local cause: eat-through (d=1 next to a chunk) of a chunk with an odd (10)-run. Reachable frames satisfy the parity rules G1-G5: G1 Z and inner-Y (10)-runs even; G2 a0 odd in edge mode; G3 walls p=q mod 2, at most one odd wall, and if there is one then P is odd; G4 the eat cascade (e,s)=(ak,d) mod 2, where a merge needs e=0 and an eat sets e+=B, s=c+1; G5 ak even in P-mode with walls. Magnitudes do not matter, because same-parity perturbations never halt. The right phase is now in closed form: from a hub or P-mode right end with last run ak and S=max staircase level <= ak-1, HubClean (ak<2S-1) gives walls (a0-1,2b1),(a1,2b2),... and a bouncer start (ak-S, S-1); HubTop (ak=S_next-1) drops the last wall (p,q) and starts at (p-1, q+ak). G1-G5 alone are not closed: closure also needs the underflow inequality (a P-mode bouncer with walls reaches its wall first), d>=4 at Push, and the exact relation ak+d = S-1 carried by BounceP, AbsorbChain and RightEnd (Push/merge carry it in chunks), which makes every right end clean or top. These are identities and linear inequalities, not pseudo-random arithmetic, so the machine is not a cryptid. They do rule out a generic DFA/CTL certificate.",
+   "closed_gaps": [
+    "Halting mechanism isolated: eat-through of an odd (10)-run halts 40/40 vs 0/40 with all runs even (scripts/eat_odd_test.py seed 61); exact direct simulation 19/20 (the survivor has its odd run last before 0^inf); all 95 halts of round 2's stress sets are of this kind (40/40 seed 31, 55/55 seed 32; scripts/halt_classify.py)",
+    "Right-exhaustion events in closed form (scripts/val_eatchunk.py seed 71): EatChunkP 40/40, EatChunkE 40/40, RightEndP 40/40, RightEndE 40/40; negatives (ak+B+1, d=c) 0/10 each",
+    "Right phase in closed form (scripts/val_hubsweep.py): HubClean 40/40 (seed 92) + 30/30 (seed 93), HubTop 30/30 (seed 93), PModeClean 30/30 and PModeTop 30/30 (seed 94, random walls X in a third of them); controls one level too low 0/10 twice, HubTop read as HubClean 0/10; validated at the first P-exhaustion frame (the start frame is not a valid target: a wrong-level control matched it 10/10)",
+    "Parity census from blank to 1.02e12 (scripts/parity_census.py + parity_census_report.py, parity_census_1e12.txt): 804 frames, 488 regular, G1-G5 hold at all 454 judged frames (34 mid-chunk eat frames not parsed); 43 Pushes (ak even, d>=4), 4 Absorbs (none at an odd wall), 207 walls (all p=q mod 2), right ends 16 clean + 8 top (E-mode) and 3 clean + 8 top (P-mode, never with walls), every top case with ak = S_next-1 exactly",
+    "Magnitudes do not decide halting (scripts/perturb_test.py, rebuild identity 40/40): m2 0/80, r2 0/80, r2all 0/80, r2 from frames in 3e8-1e10 0/24 (2e10 steps each); odd1 2/40; single-field flips 7/165 (5 Z (10)-runs on the eat path, plus q and ak of one Push frame), P/d split flips 0/20 (scripts/flip_fields.py)",
+    "Parity-aware DFA (MITM) search run natively, CTL.v semantics (scripts/ctl_parity_rl.py): run-length parser with no truncation (K=48), counts exact below mnc and mod 2 above; mnc 3/4/5 reach an abstract HALT after 114,818-213,932 abstract configs, and mod 4 caps at 3e6. The witnesses have many odd walls (never seen), so the abstraction loses the inequality and staircase facts"
+   ],
+   "remaining_gaps": [
+    "Closed macro-level invariant: G1-G5 leak on random instances (good_closure.py seed 82: 73/120 leave the predicate, 2/120 halt, one via Push with d<4 and one via a P-mode right end with walls). The predicate needs the underflow inequality for P-mode bouncers with walls, d>=4 at Push, and the ak+d staircase relation (right ends only clean or top), then a closure check with good_closure.py",
+    "Closed forms still missing, none of them seen from blank: window values ak in [2S-1, S_next-2], Push with d<4 or p=2, AbsorbChain with p_J=1",
+    "Decision: the funded stop rule ('parity of a sum over segments -> cryptid-like') fires on its wording (G4 uses ak + sum B mod 2), but the evidence says halting is not arithmetic; Dennis decides (decision.json: macro_closure recommended)"
+   ],
+   "evidence": [
+    "scripts/eat_odd_test.py, scripts/halt_classify.py, scripts/halt_precursor.py",
+    "scripts/val_eatchunk.py -> val_eatchunk_71.json/.txt; scripts/val_hubsweep.py -> val_hubsweep_92.json, val_hubsweep_93.json, val_hubsweep_top_93.json, val_hubsweep_pmode_94.json",
+    "scripts/parity_census.py (python -B parity_census.py 1e12 OUT.pkl 25, about 5 min) + parity_census_report.py -> parity_census_1e11.txt, parity_census_1e12.txt",
+    "scripts/perturb_test.py -> pt_m2_41.txt, pt_odd1_42.txt, pt_r2_43.txt, pt_r2all_44.txt, pt_r2_45_late.txt; scripts/flip_fields.py -> flip_51.txt",
+    "scripts/good_closure.py -> good_closure_82_good.txt, good_closure_83_bad.txt; scripts/good_diag.py",
+    "scripts/ctl_parity_rl.py -> ctl_parity_rl.txt"
+   ],
+   "date": "2026-10-10"
+  },
+  {
+   "pass": "funded stage macro_closure (2026-10-10)",
+   "confidence": "med",
+   "recommend": "hub_invariant (new decision.json)",
+   "mechanism": "Counter-level macro simulator (scripts/macro_sim.py) built only from validated rules. It reproduces the from-blank trajectory exactly (278/278 visible frames, 46,734 to 1.024e12 steps) and runs 260,000 macro events from blank (runs > 10^4300 cells) with no unruled event. The left traversal is a stack of nested bouncers. Each wall (p,q) becomes a bouncer (p-1, q) at its Push and either cascades left (p-1 < q) or merges back (p-1-q >= 3). Walls and chunks grow to 7 deep. The decided predicate (G1-G5 plus underflow, Push d>=4, staircase, as a one-traversal lookahead) is not closed, because whether the NEXT traversal underflows depends on how the new hub's walls relate to its staircase level. From blank, exact linear relations keep underflow: after a merge-back the outer bouncer reaches the next wall with d = q or q-1; Absorb happens only at the last wall; every right end is clean or top. Random hubs mostly settle into this regime within 3 cycles but not completely (0.3% later underflow failures). Small-value corner events and EatToWall (an eat-through that runs out of P at a wall, after a P-mode right end with walls) remain unruled; the reference passes them without halting. 0 halts in all closure tests.",
+   "closed_gaps": [
+    "Macro simulator from validated rules: equals the parity census from blank on 278/278 visible frames to 1.024e12 (scripts/macro_vs_census.py); on 80 random G1-G5 frames all 1,358 macro frames before the horizon appear in the accelerated reference run (val_macro.py trace seed 102)",
+    "New rules validated by exact simulation: EatToEdge (P0 = 2..5, unit (011010) or (10)^2) 8 x 20/20, RightPhaseLong 20/20 (val_macro.py rules seed 101), PushFresh 30/30 (val_push0.py seed 141), HubTopK1 25/25 (val_topk1.py seed 171); negatives 0/10, 0/10, 0/8, 0/10",
+    "From blank far past the C horizon: 260,000 macro events (runs > 10^4300) with no unruled event (far_macro.py; the first run then stopped on Python's int-printing limit, not on a machine event). First 60,000 events: up to 7 walls, 7 chunks, 17 runs in Y, 122 traversal signatures (shapes_census.py)",
+    "Exact relations from blank (push_relations.py, absorb_parity.py, 40,000 events): merge-back arrival d = q (264) or q-1 (303) of the next wall (567 of 570; the other 3 inside a nested bouncer); nested bouncers cascade (p-1<q, 1,700) or merge back with p-1-q>=3 (2,428), never p-1-q in {1,2}; Absorb only at the last wall (1,475 + 10 AbsorbToEdge)",
+    "Decided closure test run and answered (good_closure2.py): D=1 54/80 leave within 3e7 steps (seed 151), D=3 22/80 (seed 152), 0 halts in 160 (plus 0 in 120 earlier instances)"
+   ],
+   "remaining_gaps": [
+    "Explicit hub predicate H: parity (a0 odd, inner a even, P0 even only with one wall), staircase (t top or clean with P0>=c), minimum run size, and the linear underflow relations for every wall but the leftmost; then closure under one traversal on random H-hubs (macro sim) and for bounded k with an SMT solver",
+    "Unruled small-value corner events (P-mode right end with P<4, start with P0<2, Push d<4 or p<3, ToEdge1 d<4, RightEndP P<4) and EatToWall (its P0=3 case leaves an odd (10)-run in a chunk): exclude by H or rule them; none occurs from blank, the reference passes them without halting",
+    "Lookahead predicates are not closed: hub-level H4 (next 4 traversals ruled) leaks 5/1,724 at large scale (hub_random_4_S_D40.txt) and 5/80 on the accelerated simulator at S<=680 (hub_closure_accel_161_H4.txt)",
+    "#39 / R7 transfer not started (no closed invariant yet); the macro simulator is #16-specific"
+   ],
+   "evidence": [
+    "scripts/macro_sim.py, scripts/macro_vs_census.py (needs a parity_census.py pickle), scripts/val_macro.py -> val_macro_rules_101.json, val_macro_trace_102.txt; scripts/val_push0.py -> val_push0_141.json; scripts/val_topk1.py -> val_topk1_171.json",
+    "scripts/far_macro.py, scripts/shapes_census.py, scripts/push_relations.py -> push_relations_40k.txt, scripts/absorb_parity.py -> absorb_parity_40k.txt",
+    "scripts/good_closure2.py -> good_closure2_151_D1.txt, good_closure2_152_D3.txt (131/132: before PushFresh; 121/122: superseded, P=1 bug)",
+    "scripts/hub_perturb.py -> hub_perturb_2_*.txt; scripts/hub_random.py -> hub_random_3_S.txt, hub_random_3_W.txt, hub_random_4_S_D40.txt, hub_random_5_S_D40_smax700.txt; scripts/depth_g15.py -> depth_g15_5_W.txt; scripts/hub_closure_accel.py -> hub_closure_accel_161_H4.txt; scripts/derive_eat_to_wall.py"
+   ],
+   "date": "2026-10-10"
+  },
+  {
+   "pass": "funded stage hub_invariant (2026-10-10)",
+   "confidence": "med",
+   "recommend": "corner_rules (new decision.json)",
+   "mechanism": "Each right end is one sequence z: its walls (p_i, q_i), far to near, plus a virtual last wall for the start frame ((t-S+1, S-1) clean, (p_m, q_m+t) top). With tail sums B(k) = sum_{l>=k} (-1)^l z_l and tau = S-1 (clean) or t (top), the left traversal is a stack process whose running excess is T_i = 1 + B(2i-1). So B(odd k>=3) >= 0 is the underflow inequality (no P-mode right end with walls), and B(1) < 0 means a collapse. Every transition from blank is growth G (prepend h = 5 + B(1) - e, e in {0,1}; B'(k) = 2 tau - B(k-1)), collapse C (B(1) < 0; head replaced by the odd pair (P-2, 2b1+1)) or short S (a new block seed). Interior B's satisfy exact zipper relations (k even: B(k) = 2B(k+1)+4+e; k odd: B(k) = 2B(k+1)-2tau-4-e; e = B(k+1) mod 2), which the shift-reflection maps onto each other. So a block is fixed by its tail, its deviations double with alternating sign (h_(n+1) = 2h_(n-1) - h_n), and it ends when B(1) < 0. H* = parity + staircase + band 0 <= B(k) <= 2 tau + zipper relations. It is closed over one traversal on 10^4 random hubs (target met) and over 40 traversals at levels >= 10^9. It leaks only through small-value corner events (9 families, unruled) and a too-wide clause for short right ends. Linear throughout, so not a cryptid.",
+   "closed_gaps": [
+    "Hub invariant written out: H* (scripts/hubinv_H.py) = H0 shape, H1 parity (a0/P odd except at top k=1 and Absorb starts), H2 staircase (clean or top with P0>=2; P0 even only with <=1 real wall; top tail clean at level t+1), H3 band 0<=B(k)<=2tau (2<=k<=2m-1), HR zipper relations at interior positions",
+    "From blank: 12,000/12,000 right ends in H* (runs to ~10^4000); 2,999/2,999 transitions are G (1,329), C (470) or S (1,200); shift-reflection 1,329/1,329; C <=> B(1)<0 (470/470)",
+    "Identities on random H* orbits (seed 721, 3,000 x 20): G 23,134 shift-reflection ok, head e in {0,1}, B(1)>=0; C 12,130 with B(1)<0",
+    "One-traversal closure (decided target): 10,000/10,000 random H* hubs (1-7 walls, levels to 1e30, margin 64; seed 902) ruled and next right end in H*; band-only predicate also 10,000/10,000 (seed 5264)",
+    "Multi-traversal closure: 9,999/10,000 over 40 traversals (margin 64 at the start, seed 901; 1 small-value leak); 10,000/10,000 at levels >= 1e9 without margin (seed 904; 399,990 transitions); band-only fails (2,741/3,000, seed 811), so the zipper relations are needed",
+    "Accelerated simulator (seed 704, 300 hubs, 2e9 steps, S<=21,843): 0 halts; 2,336 right ends on the macro orbit in order (all 300 instances), 114 after the macro run stopped at a corner event; 294/300 stay in H* (6 leave, all t<=167)",
+    "Corner events on the accelerated simulator (seed 711): 175 instances of 9 families, 0 halts, 161 back in H* at the next right end"
+   ],
+   "remaining_gaps": [
+    "Corner families not ruled (census of 4,000 orbits at S<=5,459: P-mode right end P<4 104, Push d<4 96, ToEdge1 d<4 91, Push p<3 90, clean P0<2 75, top P0<2 35, eat_to_edge exact finish 21, RightEndP P<4 3, hub a0<3 3). 9,896/10,000 orbits from small levels stay in H* (104 corner events); none at levels >= 1e9, but nothing excludes them from blank",
+    "Seed clause too wide: H* asks only parity/staircase/band of short right ends; 43/4,979 random short clean seeds (runs >= 1000) leave H* after a double collapse, and 2/10,000 seeds reach a P-mode right end with walls within 200 traversals. The S transitions (collapse completion, Absorb start) need closed forms",
+    "proof.md not started: hub-to-hub induction on H* with lemmas G, C, S and the corner rules",
+    "#39 / R7: no folders; transfer means a macro simulator per machine and a recheck of band, shift-reflection and zipper relations"
+   ],
+   "evidence": [
+    "scripts/hubinv_classify.py, hubinv_zipper.py, hubinv_bsums.py (from blank: G/C/S classes, shift-reflection, B(1) sign)",
+    "scripts/hubinv_H.py -> hubinv_H_blank_12000_HR.txt, hubinv_H_R1_mu64_902.txt, hubinv_H_band1_mu64_5264.txt, hubinv_H_R40_mu64_901.txt, hubinv_H_R40_mu0_smin1e9_904.txt, hubinv_H_R40_mu0_903.txt, hubinv_H_band40_mu64_811.txt",
+    "scripts/hubinv_identities.py -> hubinv_identities_721.txt; scripts/hubinv_seeds.py -> hubinv_seeds_905_Hstar_E_c1000.txt, hubinv_seeds_905_dyn200.txt (hubinv_seeds_202.txt: seeds without the H filter)",
+    "scripts/hubinv_accel.py -> hubinv_accel_704_R_v2.txt; scripts/hubinv_corners.py -> hubinv_corners_711.txt"
+   ],
+   "date": "2026-10-10"
+  },
+  {
+   "pass": "funded stage corner_rules (2026-10-10 decision, run 2026-10-11)",
+   "confidence": "med",
+   "recommend": "corner_rules_2 (new decision.json)",
+   "mechanism": "Corner events are the old left-side rules taken one bounce further, to two virtual frames: V1 = X (10)^p (101)^q (10)^1 <A Y (010)^d Z and V0 = X (10)^p (101)^q <A Y ... Three primitive moves: BounceP31 (P 3->1, b1+1, ak+2, d-2), Push1 (V1, d>=2 -> X (10)^(p-1) <A (10)(011010)^1 (010)^q (011010)^b1 M (10)^(ak+2) (010)^(d-2) Z) and Absorb0 (AbsorbChain entered with carry 0). Old Push = BounceP31 + Push1; old AbsorbChain = BounceP(2->0) + Absorb0. Right ends with P0 = ak-S in {0,1}, ak equal to a level (P0 = 0), top with p_m in {1,2}, P-mode P = 3 and first walls with p = 0 all start at V1/V0 or as usual; top with a single p = 0 wall reflects off the edge to a clean start on n = 2T+4+(T mod 2), T = q+ak. RightEndP from P = 1/2 at the edge gives E hubs with a0 = 5/1. Implemented in scripts/macro_sim2.py (macro_sim unchanged). TM5 (FractalType4.v, same table, states A..F = #16 B,C,D,E,A,F): P/P_S/P_S' are our staircase (S' = 2S+2/2S+3) and Incs1 is the Transfer bouncer; they port to the Conv/Transfer lemmas. They do not cover the wall-side corner events.",
+   "closed_gaps": [
+    "Corner rules in closed form, each by exact simulation from random instances (vrules.reach, frame after the corner plus 1-2 more events): push_d, push_p, absorb_p1, toedge1_d, hub_clean1, hub_level, hub_top0, hub_top1, pmode_P3, eat_exact 40/40 each (val_corner_11.json); v1_rightend, rightendp1, reflect, clean_p0 30/30 each (val_corner_22.json); rightendp2 30/30 (val_corner_23.json). Negative controls 0/150",
+    "From blank: macro_sim2 gives the same 4,000 right ends as macro_sim, and all 4,000 are in H*c (blank_macro2_4000.txt)",
+    "Closure without margin at small levels (S <= 5,459; seed 1002): 9,977/10,000 orbits ruled by validated rules for 40 traversals (9,910 also in H*c); levels <= 1e30 (seed 1003): 9,998/10,000 (9,991). 0 halts, with the exact fallback continuing the orbit past every open corner",
+    "All 9 corner families of the hub_invariant stage are ruled at least in part. Fully ruled: Push p<3, ToEdge1 d<4, clean P0<2, top P0<2, eat_to_edge exact. Partly ruled: Push d<4 (all but V1 with d = 1 when q is odd or Z is not empty), P-mode right end P<4 (P = 3 and P = 2; P = 1 open), RightEndP P<4 (P = 1 and P = 2 at the edge; P = 3 or with walls open), hub a0<3 (a0 = 1 as a p = 0 first wall; the later meeting with that wall open)"
+   ],
+   "remaining_gaps": [
+    "P-mode right end with P = 1 (also via RightEndP from P = 3): its sweep makes a segment-less bouncer 0^inf <A (10)^a0 (010)^d (a0 grows by 4 per trip), which macro_sim2's grammar lacks; 14 orbits in 10^4 at S <= 5,459",
+    "A wall with p = 0 (from a0 = 1 hubs or P = 2 right ends) reached later by Push1/Absorb: 9 orbits in 10^4",
+    "V1 with d = 1 when q is odd or Z is not empty (probes: E hub [2p+8+q, ., 12+q] for odd q); not met in 2 x 10^4 orbits",
+    "H*c clause for the RightEndP1 output (E hub a0 = 5, a P = 1 collapse): the band fails at k = 2 (B(2) = 2 tau + 1) and further positions; 67 orbits in 10^4 at small levels (all still ruled)",
+    "Seed clause as linear relations not narrowed; no end-to-end accel trace of macro_sim2 orbits through corners"
+   ],
+   "evidence": [
+    "scripts/val_corner.py -> val_corner_11.json/.txt, val_corner_22.json/.txt, val_corner_23.json",
+    "scripts/hubinv_Hc.py + corner_hybrid.py -> hubinv_Hc_1002_smax5459.txt, hubinv_Hc_1003_smax1e30.txt",
+    "scripts/macro_sim2.py (corner rules), blank_macro2_4000.txt",
+    "vendor/busycoq/verify/FractalType4.v Module TM5 (P, P_S, P_S', Inc1/Incs1)"
+   ],
+   "date": "2026-10-11"
+  },
+  {
+   "pass": "funded stage corner_rules_2 (2026-10-12 decision, run 2026-10-12)",
+   "date": "2026-10-12",
+   "confidence": "med",
+   "recommend": "seed_clause (new decision.json)",
+   "mechanism": "The left edge acts as a wall with p in {-1, 0}: a P = 1 P-mode right end has first wall (-1, 2b1+1), an a0 = 1 hub or P = 2 end has (0, q); always leftmost (interior p = 0 walls glue: normX). Absorb0 passing it -> edge a0 = p+3; stopping at p = 0 -> edge a0 = 1; Push1 at it -> segment-less bouncer 0^inf <A (10)^(2p+5) (010)^q (old edge rules with a0 = ak: +4/trip, RightEndE +3, EatChunkE +5B+2A); its right end (10)^a restarts the staircase clean with P0 = a-S-1, X empty. RightEndP from P = 3 -> P = 1 end. Push1End (V1, d = 1, Z empty): tape-end chunk (011010)^(b1+1) M (10)^(ak+3), c = 0; EatLast eats it (E: a0 += 4B+2A+2, ak += B; P: P -= 4B+2A+2, b1 += 2B+A+1, ak += B; d = 0). H*c2 = H*c + segment-less hub clause + one unit band defect (B = -1 or 2tau+1 at one position, created by the RightEndP1 a0 = 5 hub and moved one position per G step by B'(k) = 2tau - B(k-1)). scripts/macro_sim3.py, hubinv_Hc3.py.",
+   "closed_gaps": [
+    "CORNER2 rules by exact simulation (val_corner2.py): pmode_p1, pmode_p1_long, rightendp3, absorb_p0, push_p0, segless, segless_hub, hub_p0, push1end, push1end_long, eatlast 40/40 each (440/440; val_corner2_11/12/13.json); negative controls 0/110",
+    "Closure without margin, macro_sim3 only (no exact fallback), every right end in H*c2: seed 1002 (S <= 5,459) 10,000/10,000; seed 1003 (S <= 1e30) 10,000/10,000; fresh seeds 4001/4002 20,000/20,000 each; seed 4003 200 traversals 5,000/5,000; 0 halts",
+    "Restarts from all 806 new-kind right ends met at seed 3001 (a0 = 5 hubs, band-defect hubs, P = 1 ends, segment-less hubs): 806/806 stay in H*c2 for 40 traversals (hc3_special_3001.txt)",
+    "From blank: macro_sim3 = macro_sim2 on 4,000 right ends, 4,000/4,000 in H*c2 (blank_macro3_4000.txt)",
+    "End-to-end vs accel_sim from the right end before the first CORNER2 event: 30 orbits, 238 right ends matched in order, 0 mismatches, 0 halts (e2e3_1002.txt)"
+   ],
+   "remaining_gaps": [
+    "Seed clause of H*: random short H* right ends do not all stay in H*c2 (Ec/Et runs >= 1,000: 9,971/10,000; all kinds from 1 at S <= 5,459: 9,233/10,000; mostly P-mode ends with P even and band k = 2). The short right ends produced by S transitions stay in; they need closed forms as linear relations",
+    "V1 with d = 1 and Z nonempty leaves a 1-cell separator (10)^(ak+2) 1 Z outside the grammar; probes return without halting (8/8); never met on H* orbits (0 in 6.5 x 10^4)",
+    "Generator-only sub-cases: EatLast with P < 4B+2A+2, top with the p = -1 wall alone, Absorb0 stopping at the p = -1 wall",
+    "H3d tested on dynamically produced defects only, not on synthetic defect hubs"
+   ],
+   "evidence": [
+    "scripts/val_corner2_11.json",
+    "scripts/val_corner2_12.json",
+    "scripts/val_corner2_13.json",
+    "scripts/hubinv_Hc3_1002_smax5459.txt",
+    "scripts/hubinv_Hc3_1003_smax1e30.txt",
+    "scripts/hubinv_Hc3_4003_D200_smax5459.txt",
+    "scripts/hc3_seeds_905_c1000.txt",
+    "scripts/e2e3_1002.txt"
+   ]
+  },
+  {
+   "pass": "funded stage seed_clause (2026-10-12 decision, run 2026-10-12)",
+   "date": "2026-10-12",
+   "confidence": "high",
+   "recommend": "proof.md (no new decision.json)",
+   "mechanism": "Short right ends (<= 1 real wall) are produced by closed-form S/C maps, each a composite of validated macro rules. CW (exact, all P-odd P-mode right ends): B(2) = 2tau + 3 + (B(3) mod 2), 47,668/47,668. First collapse of a short E hub (B(1) < 0): tau unchanged, B'(1) = B(1) + 2tau + 6 + 2r (r = 1 iff RightEndP), 5,842/5,842. Short P-odd end with P0 odd: collapses iff B(1) + 4 z3 <= -6, else E hub [a0', (P-1)/2, B(2) + z3/2], 2,521/2,521. A second P-mode collapse gives a P-even end with v1 = b1 of the starting E hub (3,538/3,538), so P0 = b1 - 1 must be even: the old seed clause leaked because it allowed b1 even. H*c3 = H*c2 + CW + PE (P even: B(2) >= 2tau + 3) + SB (band of the E outcome of a short P-odd end) + EB (collapse-chain parity) + Hs_K (the next K <= 3-4 short successors through the closed-form maps satisfy the local clauses; 93 one-step families, 237 three-step paths: piecewise linear). V1 with d = 1 and Z nonempty excluded by parity: at P-mode frames with walls, chunks are even except the deepest, Z nonempty => d + P odd, P-even bouncers never push.",
+   "closed_gaps": [
+    "Seed clause closed: random short seeds of every kind from H*c3 (Hs_4): 10,000/10,000 at levels <= 1e30 (seed 41) and <= 5,459 (seed 42), 40 traversals; 2,000/2,000 over 200 traversals (seed 46); K = 3: 4,000/4,000 at each scale; vs H*c2 on the same generator 9,788 and 9,375",
+    "No false rejections: rnd_R orbits 10,000/10,000 at S <= 5,459 (seed 1002) and <= 1e30 (seed 1003) in H*c3, 594,729 short right ends; from blank 4,001/4,001",
+    "Closed forms fitted on macro_sim3 (validated rules): first collapse 5,842/5,842 (seed_fit_21.txt), short P-odd -> E hub 2,521/2,521 (seed_pe_fit_51.txt), collapse boundary (seed_boundary_52.txt), chain parity v1 = b1 3,538/3,538 (seed_chain_fit_4.txt), CW 47,668/47,668",
+    "Exact simulation (accel_sim, seed_e2e_41.txt): 60 short seeds starting with a collapse, 383 macro right ends matched in order (+35 skipped by the reference), first-collapse closed form 39/39, 1 extra reference right end = the segment-less hub inside the validated Reflect composite, 0 halts",
+    "V1 with d = 1 and Z nonempty excluded by the parity invariant (v1d1_parity.py): 65,273 + 61,747 frames with walls and Z nonempty satisfy it 100%"
+   ],
+   "remaining_gaps": [
+    "Hs_K is defined through the closed-form S/C maps but not yet written out as explicit polyhedra (93 one-step families); inductiveness of H*c3 is shown by sampling, not symbolically (proof.md task)",
+    "corner_rules_2 generator-only sub-cases (EatLast with P < 4B+2A+2, top with the p = -1 wall alone, Absorb0 stopping at the p = -1 wall) never met on H*c3 orbits/seeds; proof.md must exclude them explicitly",
+    "H3d tested on dynamically produced defects only"
+   ],
+   "evidence": [
+    "scripts/seedcl_K4_seeds_41_smax1e30.txt",
+    "scripts/seedcl_K4_seeds_42_smax5459.txt",
+    "scripts/seedcl_K4_seeds_46_D200_smax5459.txt",
+    "scripts/seedcl_K4_orbits_1002_smax5459.txt",
+    "scripts/seedcl_K4_orbits_1003_smax1e30.txt",
+    "scripts/seedcl_K4_blank_4000.txt",
+    "scripts/seed_e2e_41.txt",
+    "scripts/v1d1_parity_7.txt"
+   ]
+  }
+ ]
+}

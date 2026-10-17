@@ -1,0 +1,648 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---/proof.md · <a href="/busy-beaver/machines/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---/proof.md.html">raw</a></div>
+<h1 id="1rb0ra_1lc0re_1ld0lc_1ra0lb_1ra0rf_1le-never-halts-delta-proof-from-w4-3">1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---: never halts (delta proof from W4-3)</h1>
+<p>This machine is W4-3, <code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code> (the parent), with its states renamed. It starts
+in the parent's state B instead of A. So it runs the parent's transition table, only from a different start.</p>
+<p>The parent's proof is an induction over record exits. Its invariant C_r(e) fixes the left word, a window of the
+chain and the right region exactly. The deep part of the chain is free, apart from residues and minimums.</p>
+<p>This start reaches a record exit in C_r5(2) after 2,629,088,387,088 steps. From there the parent's induction runs
+unchanged. The two runs differ in one deep chain gap, 4 cells longer here, and nothing in the parent's argument
+reads that gap's value.</p>
+<ul>
+<li><strong>Machine:</strong> <code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code>, viewer
+  https://bbchallenge.org/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</li>
+<li><strong>Holdout:</strong> line 512 of the 740 list, byte for byte, exactly once. Sheet (Results tab): class "Skelet 1-like
+  Class 2", no status, notes, sources or "Done By". busycoq has no completed proof of it; it occurs only as an
+  equivalence endpoint.</li>
+<li><strong>Parent:</strong> W4-3 (line 341), KILLED_NONHALT, check_kill PASS (sha256 <code>7bda36dc…3f4c</code>). Below, <strong>P§n</strong> is section n
+  of the parent's write-up (<code>submission/proof.md</code> of the parent; sections 1-8 have the same numbers in its internal
+  proof.md).</li>
+<li><strong>Adjusted invariant:</strong> none. Only the base case changes.</li>
+<li><strong>Evidence:</strong> <code>check_proof.py</code>, SUMMARY PASS (section 7).</li>
+<li><strong>Status:</strong> the informal delta is complete and validated (Checkpoint B).</li>
+<li>The formal delta of section 6 is the .v in this directory, written by the formalization stage.</li>
+<li>It has a check_kill PASS: sha256 <code>ef701290…2296</code>, 2,621 lines, compile 72 s, 0 assumptions, coqchk timeout at
+    600 s (policy A).</li>
+<li>That run is the formalization stage's (<code>rocq/check_kill.log</code>); it has not been re-run independently here.</li>
+<li>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</li>
+</ul>
+<h2 id="1-the-renaming">1. The renaming</h2>
+<p>Write σ for the map from the parent's states to this machine's states, and φ for its inverse:</p>
+<div class="highlight"><pre><span></span><code>sigma:             A -&gt; E,  B -&gt; A,  C -&gt; B,  D -&gt; C,  E -&gt; D,  F -&gt; F
+phi = sigma^-1:    A -&gt; B,  B -&gt; C,  C -&gt; D,  D -&gt; E,  E -&gt; A,  F -&gt; F
+</code></pre></div>
+
+<p>Row σ(q) of this table is the parent's row q, with every target state t replaced by σ(t). Symbols and directions
+are unchanged, so there is no mirror.</p>
+<table>
+<thead>
+<tr>
+<th>this state</th>
+<th>0</th>
+<th>1</th>
+<th>= σ(parent state)</th>
+<th>parent 0</th>
+<th>parent 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1RB</td>
+<td>0RA</td>
+<td>σ(B)</td>
+<td>1RC</td>
+<td>0RB</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1LC</td>
+<td>0RE</td>
+<td>σ(C)</td>
+<td>1LD</td>
+<td>0RA</td>
+</tr>
+<tr>
+<td>C</td>
+<td>1LD</td>
+<td>0LC</td>
+<td>σ(D)</td>
+<td>1LE</td>
+<td>0LD</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1RA</td>
+<td>0LB</td>
+<td>σ(E)</td>
+<td>1RB</td>
+<td>0LC</td>
+</tr>
+<tr>
+<td>E</td>
+<td>1RA</td>
+<td>0RF</td>
+<td>σ(A)</td>
+<td>1RB</td>
+<td>0RF</td>
+</tr>
+<tr>
+<td>F</td>
+<td>1LE</td>
+<td>---</td>
+<td>σ(F)</td>
+<td>1LA</td>
+<td>---</td>
+</tr>
+</tbody>
+</table>
+<p>For example, the parent's C1 = 0RA becomes 0Rσ(A) = 0RE, which is this machine's B1. Among all 720 renamings, with
+and without the mirror, σ is the only map from the parent's table to this one.</p>
+<p><strong>Lemma R (relabelling).</strong> For a configuration c of the parent's table, let σc be c with its head state renamed by
+σ; the tape and the head cell stay the same. Then c → c′ in the parent's table exactly when σc → σc′ here. And c is
+halted exactly when σc is, since F1 is the only undefined cell of both tables and σ fixes F.</p>
+<p><strong>Start.</strong> This machine starts from <code>0^inf A&gt; 0^inf</code>, which is σ of <code>0^inf B&gt; 0^inf</code>. So its run is σ of the
+parent's table run from state B, step for step.</p>
+<p><strong>Halting cell.</strong> Here only E1 = 0RF enters F, and the machine halts only when F then reads 1. E1 is σ of the
+parent's A1 = 0RF, which occurs only in the wiggle of P§2.2. So a halt here is σ of the parent's halt: a rightward
+d = 1 event at a defect e with e + 1 also a defect.</p>
+<p>From here on, configurations are written in the parent's state names. In particular the head state at a record exit
+is the parent's B, which is this machine's A.</p>
+<h2 id="2-the-opening-run">2. The opening run</h2>
+<h3 id="21-records">2.1 Records</h3>
+<p>The parent numbers its records by the moves of λ, the leftmost cell that has held 1 so far (P§3.1). A <strong>left
+record</strong> is a move of λ by 3 cells in 3 consecutive steps.</p>
+<p>On this start, λ moves by 1 or 2 cells only during the start-up, at steps</p>
+<div class="highlight"><pre><span></span><code>1, 4-5, 18-19, 930-931, 7984, 17719-17720
+</code></pre></div>
+
+<p>Every other move is by 3 cells in 3 consecutive steps. The first sixteen such moves begin at steps</p>
+<div class="highlight"><pre><span></span><code>34, 75, 1042, 1265, 29525, 91614, 443229, 648082,
+1213303, 4665524, 6953169, 12290878, 43671313, 65535690, 114514475, 398094148
+</code></pre></div>
+
+<p>So record n is the n-th 3-cell move, exactly as in the parent (whose small moves are at steps 1, 6-7, 838-839, 7820
+and 17531-17532). The third start of this table, line 588, has one extra 3-cell move in its start-up; this one has
+none.</p>
+<h3 id="22-record-exits">2.2 Record exits</h3>
+<p>P§3.3 defines the record exit of record n operationally. It is the first configuration after left record n in which</p>
+<ul>
+<li>the head is in state B reading 1, moving right, and</li>
+<li>exactly 10 + 4K - 2 edges in (lo, h - 1] are defects in the pre-sweep frame,</li>
+</ul>
+<p>where h is the head cell, lo = λ - 1, and K = K0(r) + 2e for the class r = (n - 11) mod 6 and the epoch
+e = (n - 16) div 6.</p>
+<p>On this start the record exits 16 to 28 are at these steps. Cells are numbered from the start cell 0.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">n</th>
+<th>class</th>
+<th style="text-align: right;">K</th>
+<th style="text-align: right;">step here</th>
+<th style="text-align: right;">step in the parent</th>
+<th style="text-align: right;">head cell here</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">16</td>
+<td>r5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">398,095,384</td>
+<td style="text-align: right;">398,090,000</td>
+<td style="text-align: right;">1,156</td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td>r0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">597,243,065</td>
+<td style="text-align: right;">597,235,689</td>
+<td style="text-align: right;">185</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td>r1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1,041,324,370</td>
+<td style="text-align: right;">1,041,314,994</td>
+<td style="text-align: right;">12,172</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td>r2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3,599,637,037</td>
+<td style="text-align: right;">3,599,625,653</td>
+<td style="text-align: right;">111</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td>r3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5,399,938,718</td>
+<td style="text-align: right;">5,399,921,502</td>
+<td style="text-align: right;">1,158</td>
+</tr>
+<tr>
+<td style="text-align: right;">21</td>
+<td>r4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9,400,225,459</td>
+<td style="text-align: right;">9,400,202,219</td>
+<td style="text-align: right;">187</td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td>r5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">32,438,633,112</td>
+<td style="text-align: right;">32,438,603,840</td>
+<td style="text-align: right;">12,174</td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td>r0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">48,672,682,441</td>
+<td style="text-align: right;">48,672,647,129</td>
+<td style="text-align: right;">3,895</td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td>r1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">84,694,260,570</td>
+<td style="text-align: right;">84,694,207,762</td>
+<td style="text-align: right;">111,894</td>
+</tr>
+<tr>
+<td style="text-align: right;">25</td>
+<td>r2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">292,080,203,157</td>
+<td style="text-align: right;">292,080,132,229</td>
+<td style="text-align: right;">189</td>
+</tr>
+<tr>
+<td style="text-align: right;">26</td>
+<td>r3</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">438,267,588,230</td>
+<td style="text-align: right;">438,267,499,174</td>
+<td style="text-align: right;">12,176</td>
+</tr>
+<tr>
+<td style="text-align: right;">27</td>
+<td>r4</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">762,523,755,619</td>
+<td style="text-align: right;">762,523,648,427</td>
+<td style="text-align: right;">3,897</td>
+</tr>
+<tr>
+<td style="text-align: right;">28</td>
+<td>r5</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;"><strong>2,629,088,387,088</strong></td>
+<td style="text-align: right;">2,629,088,227,408</td>
+<td style="text-align: right;">111,896</td>
+</tr>
+</tbody>
+</table>
+<p>None of these runs halts. The proof needs only the last line: the run from the blank tape to record exit 28 is one
+finite computation.</p>
+<h3 id="23-record-exit-28">2.3 Record exit 28</h3>
+<p>At step 2,629,088,387,088 the configuration is:</p>
+<div class="highlight"><pre><span></span><code>lo = -94,    A = lo + 34 = -60,    B = 111,897,    hi = 2,961,840
+head on cell B - 1 = 111,896, in state B (this machine's A), reading 1, moving right
+</code></pre></div>
+
+<p>The left word is the ten defects</p>
+<div class="highlight"><pre><span></span><code>A - 32, -27, -26, -21, -20, -15, -14, -9, -8, -4
+</code></pre></div>
+
+<p>The chain has K = 7 blocks in state U0, with these gaps (block 1 has m = 1, the others m = 3):</p>
+<table>
+<thead>
+<tr>
+<th>block</th>
+<th style="text-align: right;">inter gap before its digit</th>
+<th style="text-align: right;">digit gap</th>
+<th>separator gaps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align: right;">–</td>
+<td style="text-align: right;">1</td>
+<td>–</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td>4, 4</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td>4, 4</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">1</td>
+<td>4, 4</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"><strong>17</strong></td>
+<td>24, 44</td>
+</tr>
+<tr>
+<td>6</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">37</td>
+<td>36, 972</td>
+</tr>
+<tr>
+<td>7</td>
+<td style="text-align: right;">2737</td>
+<td style="text-align: right;">8277</td>
+<td>24912, 74808</td>
+</tr>
+</tbody>
+</table>
+<p>Block 1's digit is at A + 2 and its separator at A + 3. The last separator of block 7 is at B - 2 = 111,895.</p>
+<p>The right region, read from B, is</p>
+<div class="highlight"><pre><span></span><code>B  -224493-  x1  -673559-  x2  -7-  x3  -9841-  x4  -1942040-  x5  -3-  hi
+</code></pre></div>
+
+<p><strong>Against the parent's record exit 28</strong> (the example of P§3.4):</p>
+<ul>
+<li>the left word, K, every chain gap except one, and the whole right region are the same;</li>
+<li>the digit gap of block 5 is 17 here and 13 in the parent;</li>
+<li>A is 2 cells further left here (-60 against -58), so B is 2 cells further right (111,897 against 111,895);</li>
+<li>this run takes 159,680 more steps.</li>
+</ul>
+<h2 id="3-the-invariant-holds-at-record-exit-28">3. The invariant holds at record exit 28</h2>
+<p>Record 28 has class r5 and epoch e = 2, so u = 9^(e-2) = 1 and K = K0(r5) + 2e = 3 + 4 = 7. Take the four parts of
+C_r5(2) in P§3.3 in turn.</p>
+<p><strong>(L) Left word.</strong> lo = A - 34, and the defects left of A are exactly the ten of 2.3. Also λ = lo + 1 = -93 is the
+leftmost cell that has ever held 1, so this lo is the parent's lo.</p>
+<p><strong>(C) Chain.</strong> The defects in [A, B] are 4K - 2 = 26 defects forming K = 7 blocks in U0, with block 1 =
+(A+2; A+3) and the last separator at B - 2. Every gap has the residue and at least the smallest value of its role:</p>
+<div class="highlight"><pre><span></span><code>digit gaps      1, 1, 1, 1, 17, 37, 8277                      all 1 mod 4, all &gt;= 1
+separator gaps  4, 4, 4, 4, 4, 4, 24, 44, 36, 972, 24912, 74808   all 0 mod 4, all &gt;= 4
+inter gaps      5, 5, 5, 9, 37, 2737                           all 1 mod 4, all &gt;= 5
+</code></pre></div>
+
+<p>Consecutive bases then differ by 2 mod 4, as (C) requires.</p>
+<p><strong>(W) Window.</strong> J(r5) = 3. The last three chain gaps and the right region are V_r5(1) of P§3.4:</p>
+<div class="highlight"><pre><span></span><code>chain window:  8316u - 39,  24948u - 36,  74844u - 36                       = 8277, 24912, 74808
+right region:  224532u - 39,  673596u - 37,  7,  (19683u - 1)/2,  1942056u - 16,  3
+            =  224493,  673559,  7,  9841,  1942040,  3
+</code></pre></div>
+
+<p><strong>(H) Head.</strong> The head is on cell B - 1 in state B, the cell holds 1, and state B moves right.</p>
+<p>So record exit 28 is in C_r5(2). Its deep chain (blocks 1 to 6 and the inter gap of block 7) differs from the
+parent's in one gap. (C) asks of the deep chain only residues and minimums, and those hold.</p>
+<h2 id="4-the-argument">4. The argument</h2>
+<p><strong>Theorem.</strong> <code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code> does not halt from the blank tape.</p>
+<ol>
+<li><strong>Opening run.</strong> By Lemma R, the run of this machine is σ of the parent's table run from <code>0^inf B&gt; 0^inf</code>.
+   That run reaches record exit 28 after 2,629,088,387,088 steps without halting (section 2).</li>
+<li><strong>Base.</strong> Record exit 28 is in C_r5(2) (section 3).</li>
+<li><strong>Induction.</strong> Lemma S (P§6) is the step:</li>
+</ol>
+<p><code>C_r(e)  --&gt;+  C_(r+1)(e)      for e &gt;= 2, without halting
+   C_r4(e) --&gt;+  C_r5(e + 1)</code></p>
+<p>Its only hypothesis is the invariant (P§7 for the halting part). The deep chain enters only through the residues
+   and minimums of (C).
+4. <strong>The deep chain is free.</strong> The parent's formal proof states Lemma S this way. Its invariant <code>Inv</code> lists the chain
+   as gap variables, and the deep part of that list is arbitrary (P§10.3).
+5. <strong>Conclusion.</strong> So the parent's table, run from B, passes through infinitely many record exits and never halts.
+   By Lemma R this machine does the same, with its states renamed. ∎</p>
+<p>Nothing in the parent's argument after its base case depends on the parent's own orbit. Its base case (P§8) and its
+twelve concrete steps 16 → 28 are not used here: the configuration at record exit 28 is reached directly.</p>
+<h2 id="5-why-the-runs-agree-so-closely-explanation-not-a-premise">5. Why the runs agree so closely (explanation, not a premise)</h2>
+<p>The record exits 16 to 27 of this start are in C_r(e) too, with exactly the parent's start-up windows (the values
+of the parent's Appendix C). In fact, at every record exit from 12 on (the earliest checked) the two runs differ in
+only one gap, 4 cells longer here.</p>
+<p>At every record the new left digit joins the chain, so the parse moves one defect along. The extra 4 cells stay in
+one physical gap, whose index in the chain grows by one per record:</p>
+<ul>
+<li>at record exit 12 it is the 10th gap from lo, among the first defects of the tape (records 12 to 15 are not yet in
+  the invariant's form, which starts at record 16);</li>
+<li>at record exit 16 it is the digit gap of block 2 (K = 3);</li>
+<li>at record exit 28 it is the digit gap of block 5 (K = 7).</li>
+</ul>
+<p>Its role cycles digit → separator → separator → inter → digit. The regrouping offsets of P§6.2 change it in the same
+way in both runs, so the difference stays exactly 4.</p>
+<p>Over an epoch K grows by 2, so the chain gains 8 gaps, while the gap moves 6 places. It falls further behind the
+right end of the chain and stays in the deep part, where only residues and minimums matter. This is an observation
+(checked at record exits 16 to 28, and to 33 with <code>--full</code>); the induction in section 4 does not need it.</p>
+<p>The start-ups differ before that: λ moves at different steps (2.1), and the extra 4 cells first appear somewhere
+before record exit 12.</p>
+<h2 id="6-formalization-delta">6. Formalization delta</h2>
+<p>The .v in this directory proves <code>Lemma nonhalt : ~ halts tm c0.</code> along these lines. It is the parent's file with the
+following changes, and nothing else:</p>
+<ol>
+<li><strong>Two tables.</strong> <code>tm</code> is this machine and <code>tmP</code> is the parent. The library part of the parent's file is copied
+   byte for byte, with <code>tm</code> renamed <code>tmP</code>.</li>
+</ol>
+<p>That part holds the simulator and its soundness, the chain and region lemmas, Lemma S, <code>Inv</code> and <code>inv_step</code>.
+2. The base case: <code>init28 : B;; tape0 --&gt;* cfg28</code> for <code>tmP</code>, in 38 <code>native_compute</code> pieces of at most 500,000
+   simulator steps (18,571,902 in all). <code>cfg28</code> is the record exit 28 of section 2.3.
+3. <code>L28</code> and <code>nus28</code> are those of this run. <code>inv28</code>, <code>base28</code> and the record-exit episode are the parent's text. In the
+   gap variables (each block lists t, s, a, lp as (gap - minimum)/4, nearest block first):</p>
+<p><code>this start:  [18701; 6227; 2069; 683] [242; 8; 9; 8] [10; 5; 4; 1] [0; 0; 0; 0]^3
+   parent:      [18701; 6227; 2069; 683] [242; 8; 9; 8] [10; 5; 3; 1] [0; 0; 0; 0]^3</code></p>
+<p>The third block is block 5 of section 2.3, whose digit gap a = 1 + 4 x 4 = 17 against 1 + 4 x 3 = 13.
+4. The conjugacy: <code>perm_sib : Perm tm tmP phi</code> by computation, and busycoq's <code>perm_halts</code> (Permute.v), give
+   <code>halts tm c0 -&gt; halts tmP (B;; tape0)</code>. Then <code>nonhalt_P : ~ halts tmP (B;; tape0)</code> closes it.</p>
+<p><code>check_proof.py</code> S5 checks that <code>cfg28</code>, <code>L28</code> and <code>nus28</code> of the .v are the tape of the independent run of section
+2 at record exit 28, and that the rest of the file is the parent's text. Whether it compiles is check_kill's verdict:
+PASS on sha256 <code>ef701290f44d323062af1f5a08583de0158bdb2ba450fbd0c10ad7217e042296</code> (status line above).</p>
+<h2 id="7-evidence">7. Evidence</h2>
+<p><code>nice -n 10 python3 -B check_proof.py</code> (default about 1 min; <code>--full</code> about 4 min). Output in <code>check_proof.out</code> and
+<code>check_proof_full.out</code>.</p>
+<p>The opening run is computed by <code>scripts/rlsim.py</code>, a run-length simulator written for this stage. It is independent
+of the parent's defect model and of the Coq simulator, and it runs this machine's own table, not the renamed one.</p>
+<table>
+<thead>
+<tr>
+<th>§</th>
+<th>what</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>line 512 of the 740 list byte-exact and once, parent line 341; <code>holdouts.py contains</code>; sheet row (class, no claim); not in busycoq</td>
+<td>PASS 4/4</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>σ the only map (720 × 2), 12/12 cells; start = σ(B); F1 the only undefined cell, F entered only by E1; lockstep with the parent's table from B, 2·10⁶ steps; same tape as it after 10⁹ steps (<code>tools/sim.py</code>); rlsim = <code>tools/sim.py</code> at 7 step counts up to 10⁸ for both machines; rlsim's λ = direct simulation's</td>
+<td>PASS 7/7</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>λ moves (start-up and 3-cell moves); record numbering as the parent's; operational record exits 12-28 (12-33 with <code>--full</code>) at the steps and head cells of the parent's defect-model snapshots for this start, for both runs; defect states equal to those snapshots</td>
+<td>PASS 6/6</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>V table parsed from the parent's write-up; (L), (C), (H) at record exits 16-28 for both runs (an independent reading of P§3.3); C_r5(2) at 28 with V_r5(1) (C_r(2) with V_r(1) at 28-33 with <code>--full</code>); against the parent: from record exit 12 on one gap differs, by +4, with its index growing by one per record; from 16 on it is a deep chain gap, with the same K, window and right region; block 5's digit gap at 28 (17 vs 13)</td>
+<td>PASS 7/7 (8/8)</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>the .v's <code>cfg28</code> = the rlsim tape at record exit 28 (and the parent's <code>cfg28</code> = the parent's), <code>L28</code>/<code>nus28</code> decode, only <code>nus28</code> block 3 differs; library and base-step text = the parent's with <code>tm</code> → <code>tmP</code>; <code>tm</code>, <code>tmP</code>, <code>init28</code>, <code>phi</code>, <code>perm_sib</code>, <code>nonhalt</code> present; 38 pieces, 18,571,902 simulator steps</td>
+<td>PASS 6/6</td>
+</tr>
+<tr>
+<td>S6 (<code>--full</code>)</td>
+<td>the parent's own <code>check_proof.py --only S10</code>, including its claims for this start (line 512)</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

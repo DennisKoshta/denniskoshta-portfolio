@@ -1,0 +1,888 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC/proof.md · <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC/proof.md.html">raw</a></div>
+<h1 id="1rb0rf_1rc1rf_1ld0re_-0le_1la0le_0ra0lc-never-halts-informal-proof">1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC: never halts (informal proof)</h1>
+<ul>
+<li>Machine: <code>1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC</code>, viewer https://bbchallenge.org/1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC</li>
+<li>Holdout lists: byte-exact in <code>data/holdouts/2026-10-07_778.txt</code> (line 748). Sheet: results.csv row 1053, class "Bell eats counter", status/notes blank. No Discord thread found.</li>
+<li>Written for the string itself (no mirror, no state permutation).</li>
+<li>Status of this text: every rule in sections 3 and 4 is an exact configuration transition with a proof by composition of finite runs. Lemma D (section 5) is proved from those rules. The overflow count per digestion, the open link of the first version, is now bounded by Lemma C (D.0), which needs no orbit data; the constants of D.2–D.7 depend on it, and the threshold is <strong>N* = 14,796</strong> (first version: 2917 under the unproved c ≤ 1). Epochs below N* are the explicit rules-only orbit (D.8).</li>
+<li>Checks: <code>check_proof.py</code> (machine dir) tests every numbered claim against the TM: exhaustive small cases plus random large ones. The Lemma D links are tested on the rules-only orbit. Results are in section 9.</li>
+</ul>
+<h2 id="0-picture-in-one-paragraph">0. Picture in one paragraph</h2>
+<p>The tape is <code>(110)^a 0 (011)^b C&gt; X</code>. The <code>0</code> between the two block runs is a marker. Each <strong>bounce</strong> moves the marker one block to the right, adds 1 to the counter word <code>X</code>, and costs one <code>011</code> block of budget (rule B). This is FractalBEC's marker bounce. When the budget <code>b</code> reaches 1, the machine <strong>eats</strong> the lowest digit of the counter. The eat either gives more budget (E1g) or sweeps the whole <code>(110)^a</code> run into a new left record <code>L(k, T)</code> (E2g). At a left record the next <strong>epoch</strong> restarts with budget <code>N = k + 1</code> and residue <code>T = 000 Y</code>. The residue <code>Y</code> is not a clean counter, and the first bounces of the new epoch <strong>digest</strong> it. The digestion is recursive: when it meets a 1-digit, one single bounce runs a whole sub-epoch on the rest of the word (rule D6). Halting needs an eat to happen before the digestion has finished. Lemma D shows the digestion always fits in the budget. Its cost is about <code>2^(k/2)</code> with <code>k ≈ log2 N - 3</code>, so roughly <code>sqrt(N)</code>, against a budget of <code>N</code>.</p>
+<h2 id="1-the-machine-and-its-only-halting-transition">1. The machine and its only halting transition</h2>
+<div class="highlight"><pre><span></span><code>      0     1
+ A   1RB   0RF
+ B   1RC   1RF
+ C   1LD   0RE
+ D   ---   0LE
+ E   1LA   0LE
+ F   0RA   0LC
+</code></pre></div>
+
+<p>The only undefined transition is <strong>D reading 0</strong>. Every rule below is an exact run that never executes D0. So the machine halts only if the run reaches a configuration that no rule covers. Section 4 shows that the only such configurations are eats at a word outside the grammar G, and Lemma D shows these never occur.</p>
+<h2 id="2-notation-families-words">2. Notation, families, words</h2>
+<ul>
+<li>Configurations use the wiki/busycoq notation. <code>l q&gt; r</code> means the head is in state q and reads the first symbol of <code>r</code>. <code>l &lt;q r</code> means it reads the last symbol of <code>l</code>.</li>
+<li>Chunks: <code>a = 001</code>, <code>b = 101</code>, <code>z = 000</code>.</li>
+<li>A <strong>block</strong> is <code>c = d01 a^e</code>: an <strong>a-block</strong> if the digit <code>d = 0</code>, a <strong>b-block</strong> if <code>d = 1</code>. The <strong>exponent</strong> is <code>e ≥ 0</code>.</li>
+<li>Words are finite 0/1 strings taken up to trailing zeros. Written words are normalized: they have no trailing 0, and <code>X 0^inf</code> follows them. For example <code>'10' ≡ '1'</code> and <code>'00' ≡ ''</code>.</li>
+<li><strong>Tails:</strong> <code>t0 = ''</code>, <code>t1 = 1</code>, <code>t2 = 010001</code>, <code>t3 = 110001</code>.</li>
+<li><strong>Grammar G (counter words):</strong> <code>G ::= t_s | c (z c)* [z t_s]</code> with <code>s ∈ {1,2,3}</code> after a <code>z</code>.</li>
+<li>The digits are LSB first. A word <code>W = c_0 z … z c_{k-1} [z t_s]</code> has <strong>k = k(W)</strong> blocks.</li>
+<li>Its <strong>value</strong> is <code>m(W) = (4+s)·2^k + Σ d_i 2^i</code>, which lies in <code>[4·2^k, 8·2^k)</code>.</li>
+<li>The clean words <code>D(k,s,v)</code> of the observe stage are the case where every block except the last has e = 1 and the last block has e = 0.</li>
+<li><strong>One-level residues O:</strong> <code>'11' a^x z W</code>, <code>'01' a^x z W</code>, <code>'00' W</code>, <code>'10' W</code>, with <code>x ≥ 0</code> and <code>W ∈ G</code> (when <code>W = ''</code> the <code>z W</code> vanishes). O also contains the 23 <strong>end words</strong> <code>E*</code> listed in 3.4.</li>
+<li><strong>Hub words H:</strong> <code>H ::= G | O | c z H</code>, i.e. a run of blocks in front of a G or O word.</li>
+<li>Families (a, b, k ≥ 0 as stated):</li>
+<li><strong>Hub:</strong> <code>K(a, b, X) := 0^inf (110)^a 0 (011)^b C&gt; X 0^inf</code> with <code>b ≥ 1</code>. The <code>0</code> after <code>(110)^a</code> is the <strong>marker</strong>. The cells <code>x0-3..x0-1</code> hold the last <code>011</code>, and <code>X</code> starts at cell <code>x0</code>.</li>
+<li><strong>Left record:</strong> <code>L(k, T) := 0^inf &lt;A 101 (001)^k T 0^inf</code>. Here A reads a blank.</li>
+<li><strong>Pre-record:</strong> <code>L'(k, T) := 0^inf E&gt; 0 01 (001)^k T 0^inf</code>. This is one step before <code>L(k,T)</code>, since E0 = 1LA.</li>
+</ul>
+<h2 id="3-rules">3. Rules</h2>
+<h3 id="31-window-rules-finite-runs-each-is-one-es">3.1 Window rules (finite runs; each is one <code>es</code>)</h3>
+<p>In each rule, every executed transition reads a cell inside the shown window. So each rule holds in <strong>every</strong> context. <code>check_proof.py</code> runs each one with random junk around the window.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>W1</td>
+<td><code>1 F&gt; 1 → 1 1 F&gt;</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td>W2</td>
+<td><code>F&gt; 001 → 011 F&gt;</code></td>
+<td>3</td>
+</tr>
+<tr>
+<td>W3</td>
+<td><code>F&gt; 000 → 011 C&gt;</code></td>
+<td>3</td>
+</tr>
+<tr>
+<td>W4</td>
+<td><code>C&gt; 101 → 111 F&gt;</code></td>
+<td>9</td>
+</tr>
+<tr>
+<td>W5</td>
+<td><code>011 E&gt; 0 → E&gt; 0 010</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td>W6</td>
+<td><code>0 E&gt; 0 → 1 1 F&gt;</code> (marker turn)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>W7</td>
+<td><code>F&gt; 01 → 00 F&gt;</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td>W8</td>
+<td><code>011 &lt;A 100 → E&gt; 001 000</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>W9</td>
+<td><code>011 &lt;A 101 → E&gt; 001 001</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>W10</td>
+<td><code>011 E&gt; 1 → &lt;A 100 0</code> (D6 exit)</td>
+<td>4</td>
+</tr>
+<tr>
+<td>W11</td>
+<td><code>C&gt; 10 → 11 F&gt;</code></td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-shift-rules-induction-on-n-one-ih-use-each">3.2 Shift rules (induction on n, one IH use each)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>steps</th>
+<th>proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1 (SL)</td>
+<td><code>(011)^n E&gt; 0 → E&gt; 0 (010)^n</code></td>
+<td>5n</td>
+<td>ind n: [W5, IH]</td>
+</tr>
+<tr>
+<td>S2 (SR)</td>
+<td><code>F&gt; (001)^n → (011)^n F&gt;</code></td>
+<td>3n</td>
+<td>ind n: [W2, IH]</td>
+</tr>
+<tr>
+<td>S3</td>
+<td><code>1 F&gt; 1^n → 1^(n+1) F&gt;</code></td>
+<td>5n</td>
+<td>ind n: [W1, IH]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-region-pass-any-left-context-l">3.3 Region pass (any left context <code>l</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>domain</th>
+<th>steps</th>
+<th>proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RP0</td>
+<td><code>l 0 (011)^n &lt;A 100 X → l 110 0 (011)^n C&gt; X</code></td>
+<td>n ≥ 1, any l, X</td>
+<td>8n+4</td>
+<td>W8, S1(n−1), W6, W7, S2(n−1), W3</td>
+</tr>
+<tr>
+<td>RP1</td>
+<td><code>l 0 (011)^n &lt;A 101 000 X → l 110 0 (011)^(n+1) C&gt; X</code></td>
+<td>n ≥ 1</td>
+<td>8n+7</td>
+<td>W9, S1(n−1), W6, W7, S2(n), W3</td>
+</tr>
+</tbody>
+</table>
+<p>The region pass reads nothing to the left of the marker. That is why a bounce works in any left context (used in D6).</p>
+<h3 id="34-local-pass-lp">3.4 Local pass LP</h3>
+<p><strong>Definition.</strong> <code>LP(X)</code> is the run from <code>011 C&gt; X 0^inf</code> until the head first enters the cell left of that <code>011</code>, which is cell <code>x0-4</code>. LP never reads cell <code>x0-4</code> or anything to its left. Every rule below ends in one of two exit forms:
+- <strong>d = 0:</strong> <code>&lt;A 100 X'</code>;
+- <strong>d = 1:</strong> <code>&lt;A 101 000 X'</code>.</p>
+<p>We write <code>LP(X) = (X', d)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>domain</th>
+<th>steps</th>
+<th>proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LP0</td>
+<td><code>011 C&gt; 0 r → &lt;A 100 1 r</code></td>
+<td>any r (incl. X = '')</td>
+<td>4</td>
+<td>C0, D1, E1, E0</td>
+</tr>
+<tr>
+<td>LP11</td>
+<td><code>011 C&gt; 110 r → &lt;A 101 000 r</code></td>
+<td>any r</td>
+<td>8</td>
+<td>C1, E1, E0, A1, F1, C0, D1, E0</td>
+</tr>
+<tr>
+<td>LPC (carry)</td>
+<td><code>011 C&gt; 101 a^e z R → &lt;A 100 001 a^(e+d_R) z R'</code> with <code>(R', d_R) = LP(R)</code></td>
+<td>e ≥ 0, R with an LP rule (R = '' allowed)</td>
+<td>s(R)+8e+20</td>
+<td>right (3e+12): W4, S2(e), W3; then LP(R), whose exit reads the last cell of <code>(011)^e</code> or of <code>111</code>; left (5e+8): for e ≥ 1, W8 or W9, S1(e−1), then 9 fixed steps through <code>111</code> and the old <code>011</code>; for e = 0, 8 fixed steps</td>
+</tr>
+<tr>
+<td>LP5 (D5)</td>
+<td><code>011 C&gt; 10 001 a^e z R → &lt;A 100 01 001 a^(e+d) z inc R</code></td>
+<td>R ∈ G (R = '' allowed)</td>
+<td>by execution</td>
+<td>right: 4 + W1-type step + S2; LP(R) = GI; left as in LPC</td>
+</tr>
+<tr>
+<td>LP6 (D6)</td>
+<td><code>011 C&gt; 10 101 a^e z R → &lt;A 100 a^(k+1) z Y</code>, where <code>Φ(1, e+1, R) = L'(k, 000 Y)</code></td>
+<td>R ∈ G (R = '' allowed)</td>
+<td>(3e+14) + sub-epoch + 4</td>
+<td>section 3.8</td>
+</tr>
+<tr>
+<td>LPT</td>
+<td>six constant words, by execution (steps in brackets): <code>1 → 010001</code> [18]; <code>10010001 → 01001000010010001</code> [70]; <code>10110001 → 0001000010001</code> [44]; <code>1000010001 → 01000010010001</code> [40]; <code>1001000010001 → 010010001000010001</code> [62]; <code>10010010001 → 010010010001000010001</code> [100] (all d = 0)</td>
+<td>—</td>
+<td>18–100</td>
+<td>es</td>
+</tr>
+</tbody>
+</table>
+<p><strong>GI (inc on G) is a corollary.</strong> Write <code>inc W</code> for the LP result on a G word. It is a binary +1, LSB first:
+- An a-block toggles to a b-block (LP0).
+- A b-block carries (LPC): it becomes an a-block, and the rest is incremented.
+- Tails step <code>'' → 1 → 010001 → 110001</code> (LP0, LPT, LP0).
+- <code>110001 → 001</code> with d = 1 (LP11). This is an <strong>overflow</strong>: a new block, and the absorbed <code>001</code> goes into the block in front of it (LPC with <code>d_R = 1</code>), or into the hub when the word is a bare tail.</p>
+<p>G is closed under inc. For a word with at least one block, inc returns d = 0. Positions are stable: inc changes digits, and on an overflow it adds +1 to the last block and appends a new last block with e = 0. It never changes any other exponent.</p>
+<p><strong>The old names are instances:</strong>
+- HT (toggle), D2 (<code>'01' V → '11' V</code>), D4 (<code>'00' V → '10' V</code>) and the tail steps are LP0.
+- D1 (<code>'11' a V → '01' V</code>, d = 1), D3 (<code>'11' z V → '00' V</code>, d = 1) and <code>'11' → ''</code> are LP11.
+- HC (carry into a nested word) is LPC with any rest that has an LP rule.
+- D5 is LP5, D6 is LP6, and T is LPT.</p>
+<p><strong>End words</strong> E<em> is the closure of the LPT outputs and of <code>010010001</code> under LP until G (23 words, computed in <code>check_proof.py</code>). Its largest own-level cost until G is </em><em>τ = 13</em>* bounces.</p>
+<h3 id="35-bounce">3.5 Bounce</h3>
+<p><strong>B.</strong> <code>K(a, b+1, X) → K(a+1, b+d, X')</code> for <code>b ≥ 1</code>, <code>a ≥ 0</code> and <code>LP(X) = (X', d)</code>. Steps: <code>s_LP(X) + 8b + 4</code> (d = 0) or <code>+ 8b + 7</code> (d = 1).
+- Proof: LP(X), then RP0 or RP1 with <code>n = b</code>.
+- The run never reads left of the marker, so B also holds with any <code>l</code> in place of <code>0^inf (110)^a</code>.</p>
+<h3 id="36-eats-b-1-the-lp-exit-then-meets-the-marker-a-reads-0">3.6 Eats (b = 1; the LP exit then meets the marker, A reads 0)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>statement</th>
+<th>context fact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>E1g</td>
+<td><code>K(a, 1, a^(e+1) z R) → K(a+2, e+1, R)</code>, R ∈ G</td>
+<td>never reads left of the marker</td>
+</tr>
+<tr>
+<td>E2g</td>
+<td><code>K(a, 1, 101 a^e z R) →* L'(a, 000 11 a^(e+d') z R')</code>, <code>(R', d') = inc R</code>, R ∈ G</td>
+<td>the sweep <code>110 → 010</code> through <code>(110)^a</code> reaches cell <code>first−1</code> only at the last step</td>
+</tr>
+<tr>
+<td>E0</td>
+<td><code>K(a, 1, '') →* L'(a+1, 0001)</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td>Et1</td>
+<td><code>K(a, 1, 1) →* L'(a, 000 01 a z 1)</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td>Et2</td>
+<td><code>K(a, 1, 010001) →* L'(a, 000 10 00 010001)</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td>Et3</td>
+<td><code>K(a, 1, 110001) → K(a+1, 1, 001)</code>, then E1g gives <code>K(a+3, 1, '')</code>, then E0</td>
+<td>never reads left of the marker</td>
+</tr>
+</tbody>
+</table>
+<p>These cover every G word at b = 1. A G word is <code>''</code>, a tail, an a-block first, or a b-block first. Here <code>first</code> is the first cell of <code>(110)^a</code>. <code>L'(k,T) → L(k,T)</code> takes one step (E0 = 1LA on a blank).</p>
+<h3 id="37-restart">3.7 Restart</h3>
+<p><strong>R.</strong> <code>L(k, 000 Y) → K(1, k+1, Y)</code> in <code>3k + 7</code> steps, for any Y. The run never moves left of the A cell.</p>
+<h3 id="38-d6-the-nested-bounce">3.8 D6, the nested bounce</h3>
+<p><strong>Epoch map.</strong> For <code>N ≥ 1</code> and a word <code>R</code>, <code>Φ(a, N, R)</code> is the deterministic sequence:
+- B while b ≥ 2;
+- the eats of 3.6 at b = 1;
+- it stops at the first pre-record <code>L'(k, T)</code>.</p>
+<p>Φ is defined when every eat it meets is at a G word. Inside D6 this holds: <code>R ∈ G</code> and G is closed under inc and under E1g.</p>
+<p><strong>Φ terminates</strong> for every <code>R ∈ G</code> (D.0, Lemma P): only E1g moves the front, finitely many positions are ever created, and between two eats the budget falls by 1 per bounce except for at most one bare-tail absorption. So Φ reaches E2g, E0, Et1, Et2 or the Et3 chain after finitely many steps, and LP6 below is a total rule. The same argument shows that the counting phase of every epoch (after its digestion) ends.</p>
+<p><strong>LP6 proof.</strong> Write <code>x0</code> for the first cell of X.
+1. <strong>Right pass (<code>3e + 14</code> steps).</strong> It goes W11 (<code>C&gt; 10 → 11 F&gt;</code>), then W1, then F0 and A1, then S2(e), then W3:
+   - from <code>011 C&gt; 10 101 a^e z R</code>
+   - to <code>011 1 · 110 0 (011)^(e+1) C&gt; R</code>.</p>
+<p>The part after <code>·</code> is the hub <code>K(1, e+1, R)</code> whose <code>0^inf</code> has been replaced by <code>… 011 1</code>. Its <code>first</code> cell is <code>x0+1</code>, so <code>first−1 = x0</code> holds a 1.
+2. <strong>Sub-epoch.</strong> By 3.5 and 3.6, every bounce and every E1g of <code>Φ(1, e+1, R)</code> reads only cells at or right of its marker. Its final eat (E2g, E0, Et1, Et2, or the Et3 chain) reaches cell <code>first−1</code> for the first time in state E, exactly when the standalone run reaches <code>L'(k, T)</code>. So, cell for cell, the run in context equals the standalone run up to that moment, except that cell <code>first−1</code> holds 1 instead of 0.
+3. <strong>Exit (W10, 4 steps).</strong> <code>011 E&gt; 1 01 (001)^k T → &lt;A 100 0 01 (001)^k T = &lt;A 100 a^(k+1) T</code>. Every pre-record has <code>T = 000 Y</code>, so <code>X' = a^(k+1) z Y</code> and d = 0.</p>
+<p>The sub-residue Y is one of:
+- <code>'11' a^x z W'</code> with <code>W' ∈ G</code> (from E2g);
+- <code>'1'</code> (from E0 and from the Et3 chain);
+- <code>'01' a z 1</code> (from Et1);
+- <code>'10 00 010001'</code> (from Et2).</p>
+<p>All of these are in O ∪ G.</p>
+<h2 id="4-coverage">4. Coverage</h2>
+<p><strong>Lemma H.</strong> Every H word has exactly one LP rule, and LP maps H into H.</p>
+<p>Case split on the normalized word w:
+1. <strong>w ∈ G.</strong> GI applies (LP0, LPC or LPT).
+2. <strong>w = c z H' with H' ∉ G.</strong>
+   - a-block: LP0.
+   - b-block: LPC with <code>R = H'</code>, which has an LP rule by induction on length.
+3. <strong>w ∈ O</strong>, by its prefix:
+   - <code>11</code>: LP11. The result is <code>01 a^(x−1) z W</code>, or <code>00 W</code>, or <code>''</code>.
+   - <code>01</code>: LP0. The result is <code>11 …</code>.
+   - <code>00 W</code> with W ≠ '': LP0. The result is <code>10 W</code>.
+   - <code>10 W</code>: by W.
+     - W = '' or <code>t1</code>: the word is <code>t1</code>, or b-block <code>101</code> with R = ''.
+     - W = <code>t2</code> or <code>t3</code>: LPT.
+     - W starts with an a-block: LP5. The result is <code>01 a^(e+1+d) z inc R</code> ∈ O.
+     - W starts with a b-block: LP6. The result is <code>a^(k+1) z Y</code> ∈ H.
+   - E* words: by the table.</p>
+<p>Closure holds because every output listed above is in H. Since normalization identifies <code>10</code> with <code>1</code> and <code>00</code> with <code>''</code>, each word has exactly one rule.</p>
+<p><strong>Eats.</strong> By 3.6 every G word at b = 1 has an eat rule. The eat leaves either a hub with a G word or a pre-record <code>L'(k, 000 Y)</code> with <code>Y ∈ H</code>. An eat at a word outside G is not covered and may halt; such an eat is <strong>unsafe</strong>.</p>
+<p><strong>Corollary (one epoch).</strong> Start an epoch at <code>K(1, N, Y)</code> with <code>Y ∈ H</code>.
+- Bounces follow B while b ≥ 2. The budget b never increases: each bounce changes it by <code>d − 1 ≤ 0</code>.
+- Let β be the budget used until the first hub whose word is in G ("digestion").
+- If <code>β ≤ N − 2</code>, every eat of the epoch is at a G word. After digestion every word stays in G (GI, E1g), and the first non-E1g eat gives <code>L'(k', 000 Y')</code> with <code>Y' ∈ H</code>.
+- The counting phase terminates (D.0), so this first non-E1g eat exists.
+- Then <code>L</code> and R give the next epoch <code>K(1, k'+1, Y')</code>.
+- The next budget satisfies <code>N' = k'+1 = N + 1 + A + Σ_{E1g}(e_i + 2) ≥ N + 1</code>, where A is the top-level absorption count.</p>
+<h2 id="5-lemma-d-the-digestion-fits-in-the-budget">5. Lemma D (the digestion fits in the budget)</h2>
+<p><strong>Lemma D.</strong> For every epoch <code>t ≥ 3</code> of the orbit from the blank tape, <code>β_t ≤ N_t − 2</code>.</p>
+<p>Notation for epoch t:
+- The residue <code>Y_t</code> is <strong>ordinary</strong>, <code>'11' a^x z W</code> with <code>W ∈ G</code> (from E2g), or <strong>special</strong>: <code>Y_t ∈ G</code> (<code>'1'</code> from E0 or the Et3 chain; <code>t2</code> at epoch 3) or <code>Y_t ∈ E*</code> (<code>'01' a z 1</code> from Et1, <code>'10 00 010001'</code> from Et2).
+- <code>k = k(W)</code> (k = 0 for a special residue). The exponents of W are <code>e_q</code> at <strong>position</strong> <code>q = 0..k−1</code>.
+- The <strong>excess</strong> of a block is <code>η_q = e_q − 1</code>, or <code>e_q</code> for the last block. Suffix sums are <code>S_t(q) = Σ_{q' ≥ q} η_{q'}</code>, with <code>S_t(q) = 0</code> for <code>q ≥ k</code>.
+- <code>L_t</code> is the number of D6 steps in the digestion. Level 1 is the top level; the sub-epoch of the j-th D6 creates level j+1.
+- <code>c_t</code> is the number of positions created during the digestion (D.0).
+- <code>κ_t = max_{3 ≤ s ≤ t} k_s</code> is the running maximum of k.</p>
+<h3 id="d0-positions-the-front-and-the-overflow-bound">D.0 Positions, the front, and the overflow bound</h3>
+<p>Fix an ordinary residue and follow its digestion.</p>
+<p><strong>Positions.</strong> The blocks of W are positions <code>0..k−1</code>. A new position is created only by an <strong>overflow</strong>, a tail step <code>110001 → 001</code>. This can happen anywhere: inside GI, in the inc of LP5 or E2g, in a counting bounce of a sub-epoch, or as Et3. The new block <code>a(0)</code> is appended at the end. The absorbed <code>001</code> goes to the old last block if there is one. If the word being incremented is a bare tail, it goes to the context instead: the block <code>c'</code> of LP5, the exponent of E2g's residue, or the budget or <code>a</code> of the sub-hub. <code>c_t</code> counts all of these, Et3 included. Positions keep their index.</p>
+<p><strong>Actions on W.</strong> The <strong>front</strong> f is the lowest unconsumed position. Every step of the digestion that touches W is one of two kinds:
+- an <strong>increment</strong> of the G word R formed by the unconsumed positions: a sub-epoch bounce (GI), the inc of LP5 or E2g, or Et3;
+- a <strong>consumption</strong> of the front block: LP5 (strip, a-block), LP6 (trigger, b-block), E1g (a-block) or E2g (b-block).</p>
+<p>All other steps leave W alone: LP0/LP11 on a level's O-prefix, and HT/HC through the merged blocks, which carry one step down to the deepest level. Positions are consumed in increasing order, because each level works to the right of the one before it.</p>
+<p>The <strong>W-phase</strong> ends when the word of the deepest level enters G or E*. At that moment every position has been consumed. The reason: an O word followed by at least one block never parses as a G word. For example, <code>'00' 101 …</code> starts with <code>001 010 …</code>, which is not a block followed by <code>z</code>.</p>
+<p><strong>(P1) One extra unit per position.</strong> A block's exponent changes before its consumption at most once: +1, when it is the last block at an overflow. In that case a later position exists, so at its own consumption the rest R is not a bare tail, and the consumption absorbs nothing. Hence every position satisfies</p>
+<p><code>e_cur + d ≤ e_orig + 1</code>,</p>
+<p>where d is the absorption at its consumption (LP5's d, E2g's d') and <code>e_orig = 0</code> for created positions.</p>
+<p><strong>(P2) Increments per front.</strong> Let <code>D_f</code> be the number of increments while the front is f.
+- <code>D_0 = 0</code>, since level 1 strips its prefix before it consumes position 0.
+- For f ≥ 1, <strong><code>D_f ≤ e_orig(f−1) + 1</code></strong>:
+  - after LP5 or E2g at f−1 there is exactly one increment;
+  - after LP6 or E1g at f−1 the (sub-)hub has budget <code>e_cur(f−1)+1</code>, which gives <code>e_cur(f−1)</code> bounces;
+  - add at most one more, from a bare-tail absorption (b stays) or from Et3. Not both: after a bare-tail overflow, R has a block for as long as the front stays at f;
+  - if <code>e_cur(f−1) = e_orig(f−1) + 1</code>, then R is never bare (P1), and there is no extra increment.</p>
+<p><strong>Lemma P (potential).</strong> Let V be the value of R, n its number of blocks, and <code>Z = 2^f·V</code>.
+- <code>V ∈ [4·2^n, 8·2^n)</code>, so <code>⌊log2 Z⌋ = f + n + 2 =</code> (number of positions so far) + 2.
+- An increment adds <code>2^f</code> to Z, since inc is binary +1 on the value, overflow included.
+- A consumption replaces <code>(f, V)</code> by <code>(f+1, (V − d_f)/2)</code>, so Z does not increase.</p>
+<p>Hence at every moment <code>Z ≤ m(W) + Σ_{f' ≤ f} 2^{f'} D_{f'}</code>.</p>
+<p><strong>Lemma C (overflow bound).</strong> If <code>c ≥ 1</code>, then</p>
+<p><code>3·2^{k+c} ≤ 9·2^k + Σ_{q&lt;k} 2^{q+1} η_q − 5</code>.</p>
+<p><em>Proof.</em> Let <code>P = k + c</code>. Take the overflow that creates the last position, P−1. Just after it, <code>Z ≥ 2^{P+2}</code>, and the front is at most P−1. By Lemma P and (P2), with <code>m(W) ≤ 8·2^k − 1</code>, <code>e_orig + 1 = η + 2</code> for non-last original blocks, <code>η + 1</code> for the last one, and 1 for created ones:</p>
+<p><code>2^{P+2} ≤ 8·2^k − 1 + Σ_{q=0}^{P−2} 2^{q+1}(e_orig(q)+1) = 8·2^k − 1 + Σ_{q&lt;k} 2^{q+1}η_q + 2^k − 4 + 2^P</code>. ∎</p>
+<p>By Abel summation, <code>Σ_{q&lt;k} 2^{q+1}η_q = 2S(0) + Σ_{q=1}^{k−1} 2^q S(q)</code>. So Lemma C reads</p>
+<p><code>2^c &lt; 3 + (2/3)·[2^{−k}S(0) + Σ_{q=1}^{k−1} 2^{q−k−1} S(q)]</code>.</p>
+<p>Consequences:
+- A clean word (η ≡ 0) has c ≤ 1.
+- A deep trigger with a large exponent in front of a short all-ones suffix can push c to about <code>log2(excess)</code>. This is the effect of the Checkpoint B examples, which reach c = 2 to 6 inside the old invariant.
+- On the orbit itself, c ∈ {0, 1} on every epoch checked (section 9). The proof does not use this.</p>
+<p><strong>Termination.</strong> Lemma P applies unchanged to a lone sub-epoch <code>Φ(1, e+1, R)</code>, or to the counting phase of an epoch. There only E1g moves the front, and <code>D_0 ≤ e + 1</code>. It gives <code>3·2^P ≤ 9·2^{k(R)} + Σ 2^{q+1}η_q + e − 4</code>. So finitely many positions are ever created, there are finitely many E1g, and each phase between two eats is at most budget + 1 bounces. This is the termination used in 3.8.</p>
+<h3 id="d1-cost-recursion-from-the-rules">D.1 Cost recursion (from the rules)</h3>
+<p>Let <code>J(w)</code> be the number of own-level bounces until <code>w ∈ G</code>. Then:
+- <code>J('11' a^x z W) ≤ 2x + 2 + J('10' W)</code>. The terms are LP11 and LP0 alternately: D1/D2 pairs, then D3 and D4. Equality holds unless a tail coincidence (D.3) ends the word earlier.
+- <code>J('10' a-block(e) z R) = 2 + J('11' a^(e+1+d) z inc R)</code> (LP5, then LP0).
+- <code>J('10' b-block(e) z R) = 1 + 2·J(Y)</code> (LP6). After LP6 the word is <code>a^(k+1) z Y</code>. Its first block alternates LP0 and LPC, so Y is incremented once every 2 bounces and no absorption reaches the hub.
+- End words: by the table, at most <strong>τ = 13</strong>.</p>
+<p>At the top level the D1/D3 steps absorb (d = 1), so <code>β = J − A</code>. Unfold over the levels <code>j = 1..L+1</code>, where <code>x_j</code> is the residue exponent and <code>S_j</code> the set of a-block strips of level j:</p>
+<p><code>β ≤ (x_1 + 1) + Σ_{S_1}(e + d + 4) + Σ_{j ≥ 2} 2^j [(x_j + 1) + Σ_{S_j}(e + d + 3)] + (2^L − 1) + 2^L·τ</code>.</p>
+<p>Check: the recursion <code>nest_cost.JA</code> equals the bounce-by-bounce β on every epoch (D.1 row in section 9).</p>
+<h3 id="d2-levels-consume-positions">D.2 Levels consume positions</h3>
+<ul>
+<li>Level 1 strips positions <code>0..p_1−1</code> and meets its trigger b-block at <code>p_1</code>.</li>
+<li>For <code>j ≥ 2</code>, the sub-epoch of level j consumes the trigger <code>p_{j−1}</code>, then its E1g a-blocks, then the E2g block <code>q_j ≥ p_{j−1}+1</code>. Its exponent gives <code>x_j = e_cur(q_j) + d'</code>.</li>
+<li>Level j then strips <code>q_j+1..p_j−1</code> and meets trigger <code>p_j ≥ q_j + 1</code>.</li>
+</ul>
+<p>This gives <code>q_j ≥ 2j − 3</code> and <code>p_j ≥ 2j − 2</code>. The trigger <code>p_L</code> is an existing position, so <code>p_L ≤ k + c − 1</code>, and</p>
+<p><strong><code>L ≤ ⌊(k + c + 1)/2⌋</code>.</strong></p>
+<p>A position q consumed at level j has <code>j ≤ (q+3)/2</code>. Positions include created ones, and created positions can be triggers. A position created while the front is at the bare tail cannot be a trigger: when a level meets it, it is still <code>a(0)</code>, unless its own sub-epoch has already eaten it.</p>
+<p>Check: <code>L ≤ ⌊(k+c+1)/2⌋</code> and <code>2(L−1) + #strips ≤ k + c</code>.</p>
+<h3 id="d3-shape-after-digestion-and-the-merged-blocks">D.3 Shape after digestion, and the merged blocks</h3>
+<p><strong>Shape.</strong> The digestion ends exactly when the deepest level's word enters G. By D.0 the front is then at the bare tail. This happens either through an end word (E<em>) or through a </em><em>tail coincidence</em>*:
+- <code>'11' a z 1 → '01' z 1 = 010001 = t2</code> (LP11);
+- <code>'11' z 1 → '00' 1 = 001</code> (LP11);
+- <code>'10' t0 = t1</code> and <code>'10' t1 = 101</code> (already in G after normalization), and <code>'11' z '' = 11 → ''</code> (LP11).</p>
+<p>(The first version's "none of D1–D5 outputs is in G" was wrong exactly at these tails.)</p>
+<p>Enumerating every O word over a bare tail and every E* word shows the final word ρ of the deepest level is one of <code>''</code>, <code>1</code>, <code>010001</code>, <code>110001</code>, <code>001</code>, <code>101</code>, <code>001000010001</code> (<code>section_D3</code> of <code>check_proof.py</code>). So ρ has at most one block, and that block has e = 0. The post-digestion word is</p>
+<p><code>B_1 z B_2 z … z B_L z ρ</code>,</p>
+<p>so <strong><code>k_post ∈ {L, L+1}</code></strong> and <code>m_post &lt; 2^(L+4)</code>.</p>
+<p><strong>Merged blocks, itemized.</strong> <code>B_j</code> is the D6 block <code>a^(k'+1)</code> of level j, of exponent k'. It grows by the absorptions of level j+1 (via HC). Let <code>C_j</code> be the positions consumed by the sub-epoch of level j+1 and by level j+1's strips.</p>
+<ul>
+<li><strong>For j &lt; L</strong>, <code>C_j = {p_j, …, p_{j+1}−1}</code> and <code>e(B_j) = Σ_{q∈C_j}(e_cur(q) + 2) − 2</code>.</li>
+<li>The sub-record is <code>k' = 1 + e_cur(p_j) + Σ_{E1g}(e_cur + 2)</code>: <code>a</code> starts at 1, gains 1 per bounce and 2 per E1g, and the budgets are <code>e+1</code>.</li>
+<li>Level j+1 then absorbs <code>x_{j+1} + 1 = e_cur(q_{j+1}) + 1</code> on its prefix (LP11 steps), and <code>e_cur + 2</code> per strip.</li>
+<li>None of these levels meets a bare tail, because the front is left of <code>p_{j+1}</code>. So there are no other absorptions.</li>
+<li><strong>For B_L</strong>, <code>C_L = {p_L, …}</code> is every remaining position, created ones included, and</li>
+</ul>
+<p><code>e(B_L) = Σ_{q∈C_L}(e_cur(q) + 2) − 2 + (bare-tail absorptions) + τ_end</code>, with <strong><code>τ_end ≤ T := 5</code></strong>.</p>
+<p>The value of <code>τ_end</code> depends on how the deepest level ends:</p>
+<table>
+<thead>
+<tr>
+<th>ending</th>
+<th>τ_end</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sub-epoch ends in E2g, then strips; the end chain from <code>'10' t2</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td>same, end chain from <code>'10' t3</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td>same, ending in G otherwise</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Et2: +1 for the missing E2g, plus 4 for the chain of <code>'10 00 010001'</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td>Et1: +1 for the missing E2g, plus 1 for the chain of <code>'01' a z 1</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td>E0: +1 from E0's <code>a+1</code>, +1 for the missing E2g</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Et3 chain: the created position is in <code>C_L</code>, Et3's +1 is its overflow absorption, then E0</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p><code>check_proof.py</code> computes T from these chains (<code>end_extra</code>).</p>
+<p><strong>Mass bound.</strong> For <code>1 ≤ J ≤ L</code>:</p>
+<p><code>Σ_{j=J}^{L} e(B_j) ≤ S_t(p_J) + 3(k + c − p_J) − 2(L − J + 1) + T</code>.</p>
+<p>Reason: the positions consumed by levels ≥ J+1 are exactly those ≥ <code>p_J</code>.
+- Each original one brings <code>e_orig + 2 ≤ η + 3</code>.
+- Each overflow brings 1 (its absorption, wherever it lands in these levels), and its created position brings 2.
+- The overflows counted here map injectively to created positions ≥ <code>p_J</code>.</p>
+<h3 id="d4-excess-flow">D.4 Excess flow</h3>
+<ul>
+<li><strong>(e)</strong> Every non-last block of every W has <code>e ≥ 1</code>, i.e. <code>η ≥ 0</code>.</li>
+<li>A merged block has <code>e ≥ k' ≥ 1</code>.</li>
+<li>ρ's block and blocks created after the digestion have e = 0 while last and e = 1 once an overflow passes them.</li>
+<li>Counting does not change any η. On an overflow, the old last block gains 1 and stops being last.</li>
+<li>The eat removes <code>h ≥ 1</code> leading blocks of the counted word. So <code>W_{t+1}[q]</code> is <code>B_{q+h+1}</code>, ρ's block, or a block created after the digestion. The last two kinds have η = 0.</li>
+</ul>
+<p><strong>(a)</strong> If <code>S_{t+1}(q) &gt; 0</code>, then</p>
+<p><code>S_{t+1}(q) ≤ S_t(2q+2) + 3(k_t + c_t) + T − 8 − 6q</code>.</p>
+<p><em>Proof.</em> Let <code>J = q + h + 1 ≥ q + 2</code>. A positive suffix needs a merged block at position ≥ q, so <code>J ≤ L</code>.
+1. Among <code>B_J..B_L</code> at most one is last, i.e. has <code>η = e</code> rather than <code>e − 1</code>. So <code>S_{t+1}(q) ≤ Σ_{j=J}^{L} e(B_j) − (L − J)</code>.
+2. By the mass bound this is <code>≤ S_t(p_J) + 3(k + c − p_J) − 3(L − J + 1) + 1 + T</code>.
+3. Use <code>p_J ≥ 2J − 2 ≥ 2q + 2</code>, <code>L − J + 1 ≥ 1</code>, and S nonincreasing (by (e)). ∎</p>
+<p><strong>(b)</strong> <code>x_{t+1} ≤ S_t(0) + 3(k_t + c_t) + T − 1</code>.
+- By (P1) applied after the digestion, <code>x_{t+1} = e_cur + d' ≤ e(W_post[h−1]) + 1</code>.
+- For <code>h ≤ L</code>, use <code>e(B_h) ≤ Σ_{j ≥ h} e(B_j)</code> and the mass bound.
+- Otherwise <code>x_{t+1} ≤ 1</code>.</p>
+<p><strong>(r) Resets.</strong> After a special residue, or an ordinary epoch with <code>L_t = 0</code>, the post-digestion word has at most one block with e = 0. So <code>S_{t+1} ≡ 0</code> and <code>x_{t+1} ≤ 1</code>. The special residues have c = 0 (no W) and <code>β ≤ τ</code>:
+- <code>'1'</code> and <code>t2</code> are in G, so β = 0;
+- <code>'01' a z 1 → '11' a z 1 → t2</code> costs 2;
+- <code>'10 00 010001'</code> costs 11.</p>
+<p><strong>(c) Unrolling.</strong> Let <code>Δ_s := 3(k_s + c_s) + T − 8</code>, which is ≥ 0 when <code>k_s + c_s ≥ 1</code>. Apply (a) along <code>q_0 = q</code>, <code>q_{i+1} = 2q_i + 2</code>, i.e. <code>q_i + 2 = 2^i(q+2)</code>. The chain stops at the first i with <code>q_i ≥ k_{t−i}</code> (there the suffix is 0), at a reset (r), or at epoch 3 (whose residue <code>t2</code> is special). Since <code>k_{t−i} ≤ κ_t</code>:</p>
+<p><strong><code>S_t(q) ≤ n(κ_t, q)·max_{s&lt;t} Δ_s</code></strong>, where <code>n(κ, q) := max(1, ⌈log2((κ+2)/(q+2))⌉)</code>.</p>
+<p>Compared with the first version, this uses the running maximum κ, not the current k. It also needs no condition on the epochs before <code>t − ⌈log2 K⌉</code>.</p>
+<h3 id="d5-value-bound">D.5 Value bound</h3>
+<ul>
+<li>After digestion, <code>m_post &lt; 2^(L+4)</code> (D.3).</li>
+<li>Counting adds at most one per bounce, and there are at most <code>N_{t+1} − 2</code> bounces.</li>
+<li>E1g halves the value.</li>
+<li>E2g leaves <code>m(W_{t+1}) = (m_eat + 1)/2</code>.</li>
+<li>Since <code>m(W) ≥ 4·2^k</code>:</li>
+</ul>
+<p><strong><code>2^(k_{t+1}+3) ≤ N_{t+1} + 2^(L_t + 4)</code></strong>, with <code>L_t ≤ ⌊(k_t + c_t + 1)/2⌋</code> (D.2), and <code>L_t = 0</code> after a special residue.</p>
+<h3 id="d6-constants-along-the-orbit-closes-the-first-versions-open-link">D.6 Constants along the orbit (closes the first version's open link)</h3>
+<p>Lemma C bounds <code>c_t</code> by the profile <code>S_t</code>. D.4(c) bounds the profile by the earlier <code>k_s + c_s</code>. A fixed point turns the two into one induction. For <code>κ ≥ 0</code>, define (<code>check_proof.py</code>: <code>Gfix</code>, <code>gamma_k</code>):
+- <code>U(κ, q) := n(κ, q)·Δ(κ)</code> and <code>xmax(κ) := U(κ, 0) + Δ(κ) + 7</code>, where <code>Δ(κ) := 3G(κ) + T − 8</code>;
+- <code>Γ(k, κ) :=</code> the largest c with <code>3·2^(k+c) ≤ 9·2^k + A_k − 5</code>, where <code>A_k = 2U(κ,0) + Σ_{q=1}^{k−1} 2^q U(κ,q)</code> (and <code>A_0 = 0</code>). This is Lemma C with <code>S ≤ U(κ,·)</code> inserted.
+- <code>G(κ) :=</code> the least <code>G ≥ κ</code> with <code>max_{k ≤ κ}(k + Γ(k, κ)) ≤ G</code> when Δ is computed from this G. It is reached by iterating from <code>G = κ</code>. The map is monotone in G and in κ, so G(κ) is nondecreasing in κ, and so are Δ, U and xmax.</p>
+<table>
+<thead>
+<tr>
+<th>κ</th>
+<th>1</th>
+<th>2</th>
+<th>4</th>
+<th>8</th>
+<th>11</th>
+<th>12</th>
+<th>16</th>
+<th>20</th>
+<th>26</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G(κ)</td>
+<td>2</td>
+<td>4</td>
+<td>7</td>
+<td>11</td>
+<td>15</td>
+<td>16</td>
+<td>20</td>
+<td>24</td>
+<td>31</td>
+</tr>
+<tr>
+<td>Γ(κ, κ)</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Orbit invariant.</strong> For every epoch t ≥ 3 the following holds:
+- <strong>(I1)</strong> <code>Y_t</code> is ordinary or special.
+- <strong>(I2)</strong> If ordinary: <code>η ≥ 0</code>, <code>S_t(q) ≤ U(κ_t, q)</code> and <code>x_t ≤ xmax(κ_t)</code>.
+- <strong>(I3)</strong> <code>c_t ≤ Γ(k_t, κ_t)</code>, hence <code>k_t + c_t ≤ G(κ_t)</code> (c = 0 if special).
+- <strong>(I4)</strong> <code>N_t ≥ N_lo(κ_t) := 2^(κ_t+3) − 2^(⌊(G(κ_t)+1)/2⌋+4)</code>.</p>
+<p><em>Proof by induction on t.</em>
+- <strong>Epoch 3:</strong> <code>κ = 0</code>, special.
+- <strong>(I2) at t+1:</strong> from D.4(a)–(c) and (r). If <code>L_t = 0</code> (in particular whenever <code>k_t + c_t = 0</code>, since a trigger needs a position), (r) gives <code>S_{t+1} ≡ 0</code> and <code>x_{t+1} ≤ 1 ≤ xmax</code>. Otherwise <code>k_t + c_t ≥ 1</code>, so <code>Δ_t ≥ 0</code>. Use <code>Δ_s ≤ 3G(κ_s) + T − 8 = Δ(κ_s) ≤ Δ(κ_{t+1})</code> by (I3) at the epochs s ≤ t. Also <code>n(κ_t, q) ≤ n(κ_{t+1}, q)</code>, and <code>x_{t+1} ≤ S_t(0) + Δ_t + 7 ≤ xmax(κ_{t+1})</code>. (<code>U(κ, q)</code> is only used for <code>q &lt; k ≤ κ</code>, so <code>κ ≥ 1</code> and <code>Δ(κ) ≥ 0</code> there; <code>xmax(0) = 1</code>.)
+- <strong>(I3) at t+1:</strong> Lemma C with (I2).
+- <strong>(I4) at t+1:</strong> if <code>κ_{t+1} = κ_t</code>, use <code>N_{t+1} &gt; N_t</code>. Otherwise <code>k_{t+1} = κ_{t+1}</code>, and D.5 with <code>L_t ≤ ⌊(G(κ_t)+1)/2⌋ ≤ ⌊(G(κ_{t+1})+1)/2⌋</code> gives it.
+- The induction also needs epoch t to finish, i.e. <code>β_t ≤ N_t − 2</code>. That is D.7.</p>
+<h3 id="d7-assembly-and-the-threshold">D.7 Assembly and the threshold</h3>
+<p>By D.1 and D.2, a position q consumed at level j carries weight <code>2^j ≤ 2^⌊(q+3)/2⌋</code>. By (P1), its cost is at most <code>e_orig + 4</code>:
+- <code>x_j + 1 ≤ e_orig + 2</code>;
+- a level-j strip costs <code>e_cur + d + 3 ≤ e_orig + 4</code>;
+- a level-1 strip costs <code>e_orig + 5 ≤ 2(e_orig + 4)</code>.</p>
+<p>The D6 terms and the end word give <code>(2^L − 1) + 2^L τ ≤ 2^⌊(k+c+3)/2⌋(τ+1)</code>. So</p>
+<p><strong><code>β ≤ Bnd := x + 1 + Σ_{q &lt; k + c} 2^⌊(q+3)/2⌋ (e_q + 4) + 2^⌊(k + c + 3)/2⌋ (τ + 1)</code></strong>, with <code>e_q := e_orig</code> (0 for created positions).</p>
+<p><strong>Worst case.</strong> Write <code>Σ_q w_q e_q = Σ_q (w_q − w_{q−1}) S(q) + const</code>. The weights <code>w_q</code> are nondecreasing, so Bnd is largest at <code>S = U(κ, ·)</code>, <code>c = Γ(k, κ)</code> and <code>x = xmax(κ)</code>. Call the maximum over <code>k ≤ κ</code> <strong><code>Bnd_worst(κ)</code></strong>. Under (I2) and (I3), <code>Bnd_t ≤ Bnd_worst(κ_t)</code>.</p>
+<p><strong>Threshold.</strong> Let <code>F := {κ : Bnd_worst(κ) + 2 &gt; N_lo(κ)}</code>.
+- Exactly, for κ &lt; 160: <code>F = {0, …, 11}</code>.
+- With <strong>T = 5</strong> and <strong>τ = 13</strong>: <strong><code>N* := max_{κ ∈ F} Bnd_worst(κ) + 2 = 14,796</code></strong>, attained at κ = 11.</p>
+<p>For an epoch with <code>N_t ≥ N*</code>:
+- if <code>κ_t ∉ F</code>: <code>β_t ≤ Bnd_worst(κ_t) ≤ N_lo(κ_t) − 2 ≤ N_t − 2</code> by (I4);
+- if <code>κ_t ∈ F</code>: <code>β_t ≤ Bnd_worst(κ_t) ≤ N* − 2 ≤ N_t − 2</code>.</p>
+<p><strong>Tail κ ≥ 64 (closed form).</strong>
+1. <em>G is small.</em> Let <code>ℓ = log2(κ+2)</code> and <code>γ = log2(5κℓ)</code>. Then <code>G(κ) ≤ G' := κ + ⌊γ⌋</code>. Indeed <code>A_k ≤ 2^k U(κ,0)</code> and <code>U(κ,0) ≤ ℓ·3G'</code>, so <code>2^c ≤ 3 + ℓG' ≤ 5κℓ</code> while <code>G' ≤ 2κ</code>. The fixed-point iteration therefore stays ≤ G'.
+2. <em>Bnd is small.</em> With <code>Σ_q e_q ≤ S(0) + κ</code>:
+   - <code>Bnd_worst(κ) ≤ 2^((G+3)/2)·(2U + Δ + κ + 4G + 22)</code>;
+   - <code>2U + Δ + κ + 4G + 22 ≤ 20κℓ</code>;
+   - so <code>Bnd_worst(κ) + 2 ≤ 2^(κ/2)·128(κℓ)^1.5</code>.
+3. <em>The subtracted term in N_lo is small.</em> <code>2^(⌊(G+1)/2⌋+4) ≤ 2^(κ/2)·51(κℓ)^0.5</code>.
+4. <em>Conclusion.</em> Both together are <code>≤ 2^(κ+3)</code> as soon as <code>2^(κ/2) ≥ 23(κℓ)^1.5</code>. This holds at κ = 64 (<code>4.3·10^9</code> against <code>1.8·10^5</code>), and the ratio increases from there on.</p>
+<p><code>check_proof.py</code> checks both inequalities, and that the closed form dominates the exact value, for 64 ≤ κ &lt; 160. It also checks <code>G(κ) ≤ κ + γ</code> for 16 ≤ κ &lt; 160. So <code>F = {0..11}</code> for every κ.</p>
+<h3 id="d8-finite-part">D.8 Finite part</h3>
+<ul>
+<li><strong>Epochs with <code>N_t &lt; 14,796</code></strong> (epochs 3 to 593, i.e. 591 epochs; epoch 594 has N = 14,819; printed by the checker as <code>finite_part</code>): the rules-only orbit is computed explicitly. It is the composition of the rules above, with no TM inside. None of these epochs has an unsafe eat or a word without a rule, and every one has <code>β_t ≤ N_t − 2</code>.</li>
+<li>The same orbit equals the TM left records to <code>10^11</code> steps: 517 epochs, N up to 12,668 (O2).</li>
+<li>The explicit check runs on to N = 400,000 (11,074 epochs) with every D-link verified (section 9). The nest-stage run reached N = 3.49·10^6 with no unsafe eat.</li>
+</ul>
+<h2 id="6-initial-segment">6. Initial segment</h2>
+<p>From <code>c0 = 0^inf A&gt; 0^inf</code>, by direct simulation:
+- <code>L(1, 0001)</code> at step 28;
+- <code>L(2, 0001000010001)</code> at step 124;
+- <code>L(7, 000010001)</code> at step 304. The second epoch, <code>K(1,3,1000010001)</code> at step 137, eats at the non-G words <code>11000010010001</code> (step 213, giving <code>K(4,1,00010010001)</code> at step 228) and <code>00010010001</code>, and does not halt.</p>
+<p>From <code>L(7, 000010001)</code> (epoch 3) on, everything follows from the rules: R, then B/LP, then the eats, then L', then L.</p>
+<h2 id="7-conclusion">7. Conclusion</h2>
+<p>By induction on t ≥ 3:
+- the TM reaches <code>L(k_t, 000 Y_t)</code> with <code>Y_t ∈ H</code>;
+- <code>N_t = k_t + 1</code> grows by at least 1 per epoch;
+- Lemma D gives <code>β_t ≤ N_t − 2</code> (jointly with the orbit invariant of D.6, which is carried along the same induction), so every eat of epoch t is at a G word (section 4);
+- the epoch ends at <code>L(k_{t+1}, 000 Y_{t+1})</code>.</p>
+<p>Every epoch takes at least <code>3k + 7 ≥ 1</code> steps, so the sequence of left records is infinite and the machine never halts.</p>
+<p><strong>Why D0 is never read:</strong>
+- The only D-on-0 situations in the transducer are an F-turn two cells right of a 0, and E finding the pattern <code>010</code>.
+- Every rule above is an exact run that avoids both.
+- The only uncovered situation is an eat at b = 1 on a non-G word (for example <code>11 z Dn(3)</code> or <code>00 Dn(3)</code>, the unsafe states seen in observe).
+- Lemma D rules that out.</p>
+<h2 id="8-lemma-plan-for-rocq">8. Lemma plan for Rocq</h2>
+<p><strong>Nearest template:</strong> <code>verify/FractalBEC.v</code>, module tm10 (<code>1LB0LF_1LC1LF_1RD1LB_---0RE_1RA0RE_0LA0RC</code>). Mirrored, it differs from ours only in C1 (1RB vs our 0RE).</p>
+<p><strong>What carries over:</strong>
+- <strong>RInc ≈ RP0</strong> (marker bounce <code>l |&gt; R(1+n) m r --&gt;+ l &lt;| R n (1+m) r</code>, with <code>w1 = 110</code>, <code>w0 = 00</code>). Our RP0/RP1 are the same <code>es</code> + shift-rule proofs (W5/S1 and W2/S2).
+- Window rules W1–W10: <code>es</code> each. Shift rules S1–S3: <code>ind n</code> with one IH.</p>
+<p><strong>What does not carry over:</strong>
+- LInc and Ov (BinaryCounter_0 with 2-cell digits, whole-counter eat). Our counter has 3-cell blocks with exponents, z separators, a 4-stage tail and nesting.
+- The FractalBEC section therefore cannot be instantiated. We would copy its proof style, not its hypotheses.</p>
+<p><strong>Proposed files and lemmas:</strong>
+1. <code>Word</code> type: blocks <code>(d, e)</code>, tails <code>s</code>, nested <code>H</code> as an inductive type; <code>enc : H → list sym</code>.
+2. <code>LP_rule : ∀ w ∈ H, 011 C&gt; enc w →+ &lt;A 100 enc w'</code> (or the d = 1 form), by induction on <code>w</code> (LP0, LP11, LPC recursive, LP5, LPT by <code>es</code>).
+3. LP6 needs the epoch map. Define <code>phi : nat → H → option (nat × H)</code> (fuel-bounded, computable) and prove <code>phi_sound</code> (TM simulation of the abstract run, using B and the eats). LP6 is then <code>phi_sound</code> composed with the context lemma (bounce and E1g read only cells at or right of the marker, as an <code>l</code>-generic statement) and W10. Lemma P (D.0) gives an explicit fuel: the number of positions is bounded by <code>3·2^P ≤ 9·2^k + Σ 2^(q+1) η_q + e − 4</code>, and each phase between eats is at most budget + 1 bounces.
+4. <code>epoch_step : Lemma D hypothesis → L t →+ L (t+1)</code>, and <code>progress_nonhalt_cond</code> with the invariant (I1)–(I4) of D.6 (residue ∈ H, the D.4 profile against <code>U(κ, ·)</code>, the bound on x, <code>k + c ≤ G(κ)</code>, <code>N ≥ N_lo(κ)</code>); κ is carried as part of the state.
+5. Finite part: <code>vm_compute</code> of the abstract orbit for 591 epochs (N &lt; 14,796) inside Rocq, using the computable <code>phi</code>. This is heavier than the first version's 150 epochs (which rested on the unproved c ≤ 1) but far below the nest stage's 40,112 threshold; the constants of D.7 (factor 2 slack in the τ term, the <code>+4</code> per position) could be tightened if it matters.
+6. The analytic part (D.4–D.7) is integer arithmetic plus induction; <code>G</code>, <code>Γ</code>, <code>U</code> and the threshold table are computable and can be checked by <code>vm_compute</code> for κ &lt; 64, with the closed-form tail for κ ≥ 64. The hard pieces are the bookkeeping lemmas over a nested digestion: the front/positions abstraction of D.0 (Lemma P), and the itemized merged blocks of D.3.</p>
+<p><strong>Risk:</strong> the nested epoch map (D6 calls the epoch map) is new for busycoq. No existing file has a "bounce that runs a sub-epoch". Estimated effort: large.</p>
+<h2 id="9-evidence-check_proofpy-seeds-1-and-2-datacheck_proof_seed12json">9. Evidence (<code>check_proof.py</code>, seeds 1 and 2; <code>data/check_proof_seed{1,2}.json</code>)</h2>
+<ul>
+<li><strong>W1–W10, S1–S3:</strong> in random contexts, n ≤ 13.</li>
+<li><strong>RP0/RP1:</strong> n ≤ 30 with random X and l, step formulas 8n+4 and 8n+7.</li>
+<li><strong>LP rules:</strong></li>
+<li>LP0: all r with |r| ≤ 10.</li>
+<li>LP11: all r with |r| ≤ 9.</li>
+<li>LPC and LP5: e ≤ 8 against G rests and non-G O rests, plus 100 large G words (exponents to 40).</li>
+<li>GI as their composition, against the G-level inc: 300.</li>
+<li>LPT: the 6 constant words.</li>
+<li><strong>D6:</strong> the right pass (e ≤ 11, step formula 3e+14), and one TM bounce against the rules-only epoch map (250).</li>
+<li><strong>B:</strong> in random left contexts, with the step formula and "never reads left of the marker" (500).</li>
+<li><strong>Eats:</strong> E1g and E2g with a ≤ 400 and e ≤ 80 (600 each); E0 and Et1–Et3 for a ≤ 59.</li>
+<li><strong>R:</strong> k ≤ 60 with random Y (200).</li>
+<li><strong>H1:</strong> every word of an enumerated H sample (10,505 words: G with up to 3 blocks and exponents ≤ 2, all O forms, E*, 1–2 extra front blocks) has exactly one rule, its image is in H, and 700 are checked against a TM bounce.</li>
+<li><strong>H2:</strong> every enumerated G word has an eat rule.</li>
+<li><strong>I:</strong> initial segment exact (steps 28, 124, 304).</li>
+<li><strong>O1/O2:</strong> rules-only orbit = TM left records (fresh Python run to 2e7 steps; stored C log to 1e11 steps, 517 records).</li>
+<li><strong>D.0/D.3 end of digestion:</strong> an O word whose W has a block is never in G (random, 11,360 words for seed 1); from every O word over a bare tail and every E* word, LP reaches G by LP0/LP11/LPT steps only and ends in ρ ∈ {'', 1, t2, t3, 001, 101, 001000010001} (87 words). T = 5 and τ = 13 are computed from the end chains.</li>
+<li><strong>Lemma D on the orbit:</strong> every epoch of the rules-only orbit to N ≥ 400,000 (11,074 epochs; special residues: 4 in G, 1 end word). Overflows are now counted everywhere: GI inside LP5/E2g/LPC, GI and the fast counting <code>add_G</code> inside D6 sub-epochs, and Et3. The first version missed the fast-counting ones.</li>
+<li>Lemma C, <code>c_t ≤ Γ(k_t, κ_t)</code>, <code>k_t + c_t ≤ G(κ_t)</code>;</li>
+<li>D.1 (exact), D.2, D.3, D.4(a)/(b)/(c)/(e)/(r), the bound on x;</li>
+<li>D.5, <code>N_t ≥ N_lo(κ_t)</code>;</li>
+<li><code>β ≤ Bnd ≤ Bnd_worst(κ_t)</code> and <code>β ≤ N − 2</code>.</li>
+<li>Observed on the orbit: c_t ∈ {0, 1} (7,137 / 3,937 epochs), β/Bnd ≤ 0.38. This is not used.</li>
+<li><strong>Adversarial residues (Checkpoint B round 1):</strong> 1,504 per seed, plus 2 × 12,004 in a stand-alone stress run (<code>check_proof.py --adv N</code>, seeds 11 and 12; <code>data/check_proof_adv_seed{11,12}.txt</code>). Two thirds come from inside the invariant for random κ ≤ 16 (extreme or random profiles, all-ones suffixes, x up to <code>xmax</code>). One third are unconstrained, with η ≥ 0 and exponents up to 40.</li>
+<li>Checked: Lemma C, D.2, D.3, D.4(a)/(b)/(e), <code>β ≤ Bnd</code>, and <code>c ≤ Γ</code>, <code>Bnd ≤ Bnd_worst</code> for the in-invariant ones.</li>
+<li>40 whole epochs per seed against the TM.</li>
+<li>Named cases: the skeptic's <code>'11' z b(17) z b(1) z t3</code> (c = 2), <code>'11' z b(8) z t1</code> at N = 100 (x_{t+1} = 17), the k = 3 case at N = 2917, and the k = 16 case (c = 4).</li>
+<li>Largest slack used: D.4(a) −5 against the bound −3 (T − 8); D.4(b) 2 against the bound 4 (T − 1); c up to 6.</li>
+<li><strong>Threshold:</strong> exact table for κ &lt; 160 (F = {0..11}, N* = 14,796), monotonicity of G and U, <code>G ≤ κ + γ</code> for κ ≥ 16, and the closed-form tail for 64 ≤ κ &lt; 160.</li>
+</ul>
+<p>Numbers from the latest full run are in the review log.</p>
+<h2 id="review-log">Review log</h2>
+<ul>
+<li>2026-10-10 (informal_proof stage, agent):</li>
+<li>First version. The bounce is now split into LP (word-local) and RP (region), which turns every word rule of the deepen/nest stages into an exact run built from 10 window rules and 3 shift rules:<ul>
+<li>D1/D3 are one rule (LP11);</li>
+<li>D2/D4/HT and two tail steps are one rule (LP0);</li>
+<li>HC is LPC;</li>
+<li>D6 is proved: right pass, context-free sub-epoch, W10 exit.</li>
+</ul>
+</li>
+<li>Lemma D: D.1–D.5 and D.7 are written from the rules. The new constants give <strong>N* = 2917</strong>, replacing 40,112 from the nest stage; the finite part is now about 150 epochs.</li>
+<li><strong>Open:</strong> D.6 (c_t ≤ 1, checked on every epoch, argument only sketched). D.3's absorption bookkeeping at end words is folded into the <code>+c+1</code> and <code>+5</code> slack, not itemized. D.4(c) needs the epochs before t − ⌈log2 K⌉ to be in range; this is covered by the finite part.</li>
+<li>Checker: <code>check_proof.py</code> ALL PASS on seeds 1 and 2 (about 45 s each; <code>data/check_proof_seed{1,2}.{log,json}</code>).</li>
+<li>Confidence: high for sections 3–4 and for the mechanism; <strong>medium-high</strong> for Lemma D as written (one open link, and the D.3/D.4 bookkeeping deserves a careful second read at Checkpoint B).</li>
+<li>2026-10-10 (Checkpoint B, skeptic round 1, agent):</li>
+<li><strong>Fatal gap (D.6, c_t ≤ 1):</strong> correct. The invariant allows c ≥ 2: the skeptic's residues are reproduced in the checker, with c = 2 and c = 4, and up to c = 6 in the stress run. Replaced by <strong>Lemma C</strong> (D.0), proved from the rules alone:<ul>
+<li>the front and positions abstraction;</li>
+<li>(P1), at most one extra unit per position;</li>
+<li>(P2), at most <code>e + 1</code> increments per front;</li>
+<li>the potential <code>Z = 2^f·V</code>, which consumption never increases;</li>
+<li>result: <code>3·2^(k+c) ≤ 9·2^k + Σ 2^(q+1) η_q − 5</code>.</li>
+</ul>
+</li>
+<li>D.2–D.7 are redone with c-dependent constants. The fixed point <code>G(κ)</code> makes "k + c ≤ G(κ)" part of the orbit induction (D.6). New <strong>N* = 14,796</strong>. The finite part below it (591 epochs) is the explicit rules-only orbit: the 1e11 TM log covers its first 517 epochs (N ≤ 12,668), and the checker's explicit run reaches N = 400,000.</li>
+<li><strong>Major gap (D.4(b) false; D.3 formula incomplete):</strong> correct (TM-confirmed: <code>x_{t+1} = 17</code> for <code>'11' z b(8) z t1</code>, N = 100). D.3 now itemizes <code>e(B_j)</code>:<ul>
+<li>exact for j &lt; L;</li>
+<li>for B_L: bare-tail absorptions plus <code>τ_end ≤ T = 5</code>, tabulated per ending (E2g + <code>'10' t2</code> chain 5, <code>'10' t3</code> 2, Et2 1+4, Et1 1+1, E0 2, Et3 chain 2).</li>
+<li>A mass bound over suffixes of merged blocks gives D.4(a): <code>S_{t+1}(q) ≤ S_t(2q+2) + 3(k+c) + T − 8 − 6q</code> when positive, and D.4(b): <code>x_{t+1} ≤ S_t(0) + 3(k+c) + T − 1</code>.</li>
+<li>With Et3 counted as an overflow, the skeptic's example has c = 2 and bound 21 ≥ 17.</li>
+</ul>
+</li>
+<li><strong>Major gap (checker undercounted overflows inside add_G):</strong> correct. The counter now also wraps <code>add_G</code> and Et3. The orbit's c-histogram changed from about 23% to 35.6% c = 1; c ≤ 1 still holds on the orbit, but the proof no longer uses it. Wording in sections 5 and 9 is corrected, and <code>data/check_proof_seed{1,2}.*</code> are regenerated.</li>
+<li><strong>Minor (threshold mixed epochs):</strong> the threshold now uses the running maximum κ throughout:<ul>
+<li>D.4(c) unrolls against κ and stops at epoch 3 or at a reset;</li>
+<li>(I4) gives <code>N_t ≥ N_lo(κ_t)</code>;</li>
+<li><code>Bnd_t ≤ Bnd_worst(κ_t)</code>;</li>
+<li>the case split is on <code>κ_t ∈ F</code>;</li>
+<li>closed-form tail for κ ≥ 64, so "every κ" is proved, not only κ &lt; 120.</li>
+</ul>
+</li>
+<li><strong>Minor (D.3 "none of D1–D5 is in G"):</strong> replaced by the D.0 fact (an O word whose W has a block is not in G) and the list of tail coincidences, with an exhaustive check of the end words (ρ has at most one block).</li>
+<li><strong>Minor (Φ termination):</strong> Lemma P bounds the positions of a lone sub-epoch, which gives termination and an explicit fuel (3.8, D.0, section 8).</li>
+<li><strong>Minor (special residues):</strong> D.4(r): after a special residue (or L = 0) the next W has S ≡ 0 and x ≤ 1; special residues have c = 0 and β ≤ τ; checked.</li>
+<li>Checker: <code>check_proof.py</code> ALL PASS on seeds 1 and 2; stress run <code>--adv 12000</code> on seeds 11 and 12 ALL PASS.</li>
+<li>Confidence: <strong>high</strong> for Lemma D as now written. What is left is a careful human read of D.0 (the front abstraction over a nested digestion) and of the D.3 itemization; both are checked on the orbit and on about 27,000 adversarial residues.</li>
+</ul>
+</main></body></html>

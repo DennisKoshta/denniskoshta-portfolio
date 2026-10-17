@@ -1,0 +1,607 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC/notes.md · <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC/notes.md.html">raw</a></div>
+<h1 id="1rb0rf_1rc1rf_1ld1ra_-0le_1la0le_0ra0lc">1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC</h1>
+<p>Status: CRYPTID_CANDIDATE (2026-10-10; the funded lemma_x stage reached its agreed exit)
+Class guess (agent / Dennis): Bell eats counter, partial eat with residue digits / –
+Spreadsheet notes / Discord thread: Results row 1047, class "Bell eats counter", status/notes/sources blank; no link, no strikethrough, no xlsx comment. Not on dyuan01's 24 or mxdys's UBRRBA 86. Twin <code>1RB0RE_1RC1RE_1LD1RA_1LA0LD_0RA0LF_1LD---</code> (row 1032) is also blank.
+Viewer: https://bbchallenge.org/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>1e9 steps: no halt; span 5,243 cells (-556..4686), 2,610 nonzeros. Span ~t^0.34.</li>
+<li>Hub <code>K(a,b,X) := 0^inf (110)^a 0 (011)^b C&gt; X 0^inf</code>: blocks on the left, counter X on the right (mirror of FractalBEC).</li>
+<li>Epoch: a runs 1..N-1 while b runs N-1..1, then the bell eats the counter, sweeps left (left record <code>0^inf &lt;E (010)^n T</code>), and the next epoch starts at <code>K(1, N'-1, X0)</code>.</li>
+<li>278 epochs to 1e9; N ≈ +6/epoch (1,712 at 1e9); epoch ≈ 4N² steps.</li>
+<li>Right records: <code>0^inf (110)^(2^k-1) 0 (011)^b J 1^(3k+c) C&gt;</code>, i.e. a new counter digit at a = 2^k-1, also when residue J is present.</li>
+<li>Left-record residue T: no <code>11</code> after the start, 6-factor set stable at 23 from epoch 23, 8-factors still new at epoch 178, zero runs ≤ 20, length 3–85 cells (fluctuates, no trend).</li>
+<li>Real orbit: dn = +1 after every odd n (93/93); after even n, dn ranges 2–27.</li>
+<li>Images: <code>img/compare_ours_vs_template_stateCR.png</code> (most telling: both from blank, 0..3e5 steps, one row per C-right entry, so the panels' rows do not line up in time; each down-right diagonal is one epoch: ours 25, template 8), <code>img/counter_zoom.png</code>, <code>img/records_1e8.png</code>, <code>img/default_site.png</code>, <code>img/blaze_1e7.png</code>, viewer <code>img/viewer.html</code>.</li>
+<li>Tools: qsim finds 0 rules (bs 3, 6); with <code>-b</code>, 2,756 single-use rules. rulefit fit: overfits only (coverage 2–5%; <code>rulefit.txt</code>). compress track gives the right-record skeletons above.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p><code>enc(v) = v0 010 (00 v1)…(00 vk)</code> (LSB first) · <code>enc3(m) = (00 m0)(00 m1)…</code> · <code>F(v) = 1 0 v0 (00 v1)…</code>, <code>F(0) = 1</code></p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to</th>
+<th>cases</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1c</td>
+<td><code>K(a, b+1, enc(a)) → K(a+1, b, enc(a+1))</code> in 8b+8 (+6t+8 if t&gt;0, t = trailing 1s of a) steps</td>
+<td>a≥1, b≥1, incl. overflow</td>
+<td>127/127 (a ≤ 1e6, b ≤ 2000)</td>
+</tr>
+<tr>
+<td>R1g</td>
+<td><code>K(a, b+1, X) → K(a+1, b, X⁺)</code>, X⁺ independent of a, b</td>
+<td>residue words from epochs N=37 and N=331</td>
+<td>160/160</td>
+</tr>
+<tr>
+<td>E0</td>
+<td><code>K(1, N-1, 101) →* K(1, N, 110 enc3(N/2))</code></td>
+<td>N even</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>E1</td>
+<td><code>K(1, N-1, 101) →* K(1, N+2, F((N+1)/4))</code></td>
+<td>N ≡ 3 mod 4</td>
+<td>40/40</td>
+</tr>
+<tr>
+<td>E2</td>
+<td><code>K(1, N-1, 101) →* K(1, N+3+r, F(N &gt;&gt; (3+r)))</code></td>
+<td>N ≡ 1 mod 4, r = run of 1-bits from bit 2 (r = 0..7)</td>
+<td>50/50</td>
+</tr>
+</tbody>
+</table>
+<p>E0–E2 were tested up to N = 14,077. Scripts: <code>scripts/val_r1.py scripts</code>, <code>scripts/val_r1g.py scripts data/khub_epoch37.txt data/khub_epoch331.txt</code>, <code>scripts/val_r2.py scripts</code>.</p>
+<p>Wrong guesses that died here:
+- My first enc (bit k at cell 3k+2) failed 64/142.
+- My first R1c step formula (8t+6) failed.
+- R1c with b = 0 fails: that is the eat phase, not a bounce.</p>
+<p>Open: the epoch map with residue. Residue changes dN only in the r ≥ 1 branch (for example N=21: clean +5, with residue +10; N=309: +5 vs +8). The ≡3 mod 4 and ≡1 mod 8 cases matched clean in 15 probes.</p>
+<p>Template check (FractalBEC.v tm10, mirror differs only in C1 = 1RB vs our 1RA), simulated on our machine:
+- RInc 4/4 and Ov 8/8 hold.
+- LInc holds 8/16: it fails for every odd counter, where C reads LSB 1 and goes 1RA.
+- config i → i+1 holds 1/6.</p>
+<p>Verdict: <strong>partly</strong>. The bounce shape carries over; the counter digits and the doubling epoch map do not.</p>
+<p>Not a cryptid by ground rule 6: branching is on the low bits of N, N grows linearly, and nothing is exponential or ×3/2.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>Questions in observe.json → checkpoint_questions.</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>Not started (waiting on Checkpoint A).</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>–</p>
+<h2 id="outcome">Outcome</h2>
+<p>CRYPTID_CANDIDATE (2026-10-10). Not a kill. See "Funded stage (2026-10-10, lemma_x)".</p>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<ul>
+<li>Figures on the card: Fig 1 = <code>img/compare_ours_vs_template_stateCR.png</code>, Fig 2 = <code>img/counter_zoom.png</code>, Fig 3 = <code>img/records_1e8.png</code>, Fig 4 = <code>img/default_site.png</code>, Fig 5 = <code>img/blaze_1e7.png</code>. Figs 1-2 are the primary figures, shown beside the checkpoint.</li>
+<li>The card's mechanism is cut to 3 bullets. The full list before the cut:</li>
+<li>Mirror of FractalBEC tm10: blocks (110)^a 0 (011)^b on the left, binary counter X on the right.</li>
+<li>Each bounce moves the 0-marker one block and adds 1 to the counter (counter value = a).</li>
+<li>Counter = bit0, then 3-cell digits 00b; a new top digit appears at a = 2^k-1 (right records).</li>
+<li>When b runs out the bell eats the counter only partly: N grows by 1, 3 or 4+r, never doubles.</li>
+<li>Uneaten digits stay as inert 1s inside the next counter (residue); carries pass straight through them.</li>
+<li>Checkpoint questions are now yes/no questions about the figures. Moved off the card (strategy calls, not figure reading; settle them in proof.md / Checkpoint B):</li>
+<li>"Go for a residue-word invariant (BECv7-style Inductive digits) rather than first trying a CTL/regular-language closed set?"</li>
+</ul>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p><strong>Result:</strong> every regime from the blank tape is covered by exact rules. The abstract epoch map reproduces all 1,142 TM epochs up to 1e11 steps (n = 2 → 8,416). Non-halting comes down to one size invariant. It holds along the trajectory (checked for 200,000 abstract epochs, n up to 2.28M), but I have not yet found a version that is proven to be inductive. Confidence: <strong>med</strong>. Not a cryptid: the condition is a size inequality whose slack does not shrink, not a parity or Collatz-style coincidence.</p>
+<h3 id="notation">Notation</h3>
+<ul>
+<li>Hub <code>K(a,b,X) = 0^inf (110)^a 0 (011)^b C&gt; X 0^inf</code> (as before). Record <code>L(n,Q) = 0^inf &lt;E (010)^n 001 Q 0^inf</code>, so the old <code>T</code> is <code>001 Q</code>.</li>
+<li><code>X = x0 g1 g2 …</code> uses 3-cell groups: <code>000</code> = digit 0, <code>001</code> = digit 1, <code>010</code> = inert <strong>i</strong>, <code>100</code> = pending <strong>S</strong> (only in residue-derived words).</li>
+<li>A word is normalized when it has no <code>100</code> group. Its value is <code>x0 + Σ 2^j</code> over the digit groups, skipping the inert ones.</li>
+<li>Language <code>L_X = x0 {000,001,010}* {100,010,000}*</code>: a normalized prefix followed by a residue part.</li>
+</ul>
+<h3 id="micro-automaton-how-all-the-rules-were-derived">Micro-automaton (how all the rules were derived)</h3>
+<ul>
+<li>Moving right, with F split by its predecessor:</li>
+<li>A: <code>0→1,B</code> / <code>1→0,Fa</code></li>
+<li>Fa: <code>0→A</code> / <code>1</code>: turn, cells <code>(q-1,q):=(1,0)</code>, then D at q-2</li>
+<li>B: <code>0→1,C</code> / <code>1→Fb</code></li>
+<li>Fb: <code>0→A</code> / <code>1→B</code> (cell kept)</li>
+<li>C: <code>1→A</code> / <code>0</code>: write 1, turn, D at q-1</li>
+<li>Moving left:</li>
+<li>D: <code>1→0,E</code> / <code>0</code>: <strong>halt</strong></li>
+<li>E: <code>1→0,E</code>. On <code>0</code> at p: if p-1 = 1, keep both and go to D at p-2. If p-1 = 0, write <code>11</code> at (p-1,p) and continue as Fb at p+1.</li>
+<li>So the only ways to halt are (a) Fa turning at a cell whose second-left neighbour is 0, and (b) E finding <code>010</code>. Neither happens on L_X words in the regimes below.</li>
+</ul>
+<h3 id="rules-all-exact-validated-by-deepen_valpy-3-seeds-1000-random-instances-per-rule-90009000">Rules (all exact, validated by deepen_val.py: 3 seeds × 1,000 random instances per rule, 9,000/9,000)</h3>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to</th>
+<th>cases</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R restart</td>
+<td><code>L(n,Q) → K(1,n,1Q)</code> in exactly 3n+5 steps</td>
+<td>n ≥ 1, Q ∈ {100,010,000}*</td>
+</tr>
+<tr>
+<td>B bounce</td>
+<td><code>K(a,b+1,X) → K(a+1,b,inc X)</code></td>
+<td>b ≥ 1, X ∈ L_X; inc keeps L_X; a and b are inert</td>
+</tr>
+<tr>
+<td>inc</td>
+<td>x0=0: set x0=1. x0=1: x0:=0, carry in state A at g1: <code>010</code> pass · <code>001→000</code> pass · <code>000→001</code> stop · end: append <code>001</code> · <strong><code>100→010</code> and toggle the groups after it up to and including the next <code>000</code> (<code>010↔000</code>, <code>100</code> untouched, past the end the <code>000</code> becomes <code>010</code>), then go on to the next group</strong></td>
+<td>the toggle is a binary +1 on the i/0 string (i=1), skipping S</td>
+</tr>
+<tr>
+<td>E eat</td>
+<td><code>K(n,1,X) → L(n',Q')</code>, X normalized</td>
+<td>n odd: H = carry(g1…), n' = n+1. n even: J-walk with a = n+1 over g1…: <code>001</code> drop, a+1 · <code>010</code> drop, carry(rest), a+1 · <code>000</code> drop, stop; H = rest; n' = a+1 (a counted before this drop)</td>
+</tr>
+<tr>
+<td>map</td>
+<td><code>Q' = regroup(cells(H)[1:])</code>, i.e. per group of H: <code>010→100</code> (S), <code>001→010</code> (i), <code>000→000</code></td>
+<td>the old inert groups become S, the old 1-digits become i</td>
+</tr>
+</tbody>
+</table>
+<p>Bounce-phase facts:
+- X0 = 1Q has value 1. After the n-1 bounces the value is n, so <code>K(n,1,X_end)</code> holds the binary of n spread over the digit groups.
+- The S groups disappear only when a carry first reaches them, at increment <code>2^D - 1</code>, where D is the normalization depth. That depth is fixed by Q alone (<code>deepen_model.bounce_phase</code>).
+- The intermediate hubs <code>K(a+2,1,·)</code> and <code>K(a+3,1,·)</code> seen during the eat are the C&gt; moments of the J-walk.
+- The clean E0, E1 and E2 rules of the observe pass are special cases of R + B + E with Q = i.</p>
+<h3 id="cross-checks">Cross-checks</h3>
+<ul>
+<li><code>deepen_xcheck.py</code> on TM left records to 1e11 steps (<code>deepen_lrec.c</code>): <strong>1,142/1,142 epochs exact</strong> (n, Q). The 1e9 dump gives 276/276; the one non-match is the degenerate n=0 record at step 5.</li>
+<li>Mutation test: deepen_val with a deliberately wrong inc passes only 49/300, so the check is not vacuous.</li>
+</ul>
+<h3 id="non-halting-argument-and-the-remaining-gap">Non-halting argument and the remaining gap</h3>
+<ul>
+<li><strong>Closure.</strong> R, B and E never halt on L_X or on normalized words, and they map back into L_X. So the machine runs forever if <strong>the counter is normalized at every eat</strong>, i.e. <code>D(Q_t) ≤ B(n_t) - 1</code> with B the bit length (since n ≥ 2^(B-1)).</li>
+<li><strong>Trajectory, 200,000 abstract epochs (<code>deepen_invariant.py</code>).</strong></li>
+<li>The slack <code>B-1-D</code> is ≥ 2 for every t ≥ 16. The tight cases are t ≤ 15 (slack 0 at n=2 and n=5) and then t=90, 93, 138, 595, 2,027 and 62,386 (D=17, B=20).</li>
+<li>D is distributed with mean ≈ B/4 and a geometric-looking tail (ratio ≈ 0.4).</li>
+<li><strong>Candidate inductive invariant</strong> <code>I(n,Q): Z*(Q) ≤ B(n)-2</code>, where <code>Z*</code> counts the digit groups before the last inert group of the fully processed 1Q (<code>deepen_model.zstar</code>).</li>
+<li>Lemma 1*: <code>D(Q') ≤ 1 + Z*(Q)</code>. Structural reason: the S groups of Q' are exactly the inert groups of the uneaten counter, and those all lie in the processed Q region. Holds on all 199,999 trajectory transitions and on 26,185/26,185 random states (<code>deepen_induct.py</code>).</li>
+<li>Lemma 2<em>: <code>I(n,Q) ⇒ I(n',Q')</code>. Holds along the trajectory for every t ≥ 16 (fails only at t = 7, 8, 14, 15 with Z</em> = B-1). Equality Z* = B-2 recurs about once per doubling (t = 92, 594, 2,026, 3,621, 11,521, 26,321, 62,386, 140,996, 182,462) and never goes over.</li>
+<li><strong>But Lemma 2* is not inductive on arbitrary states:</strong> 2 failures in 22,747 random states with B ≥ 10 (e.g. n=8107, Q=<code>0SSii000ii</code> → Z*'=12=B'-1), plus 66 failures with B &lt; 10.</li>
+<li>So the true inductive invariant must use more of the structure of reachable residues. <strong>This is the open gap.</strong></li>
+<li><strong>Why the invariant matters.</strong> On artificial records where the counter is not normalized at the eat, 1 of 113 runs halted within 5 epochs (n=2, T=<code>00100010010010000001</code>, step 245); the rest continued. A violation can be fatal, so a proof has to establish the invariant.</li>
+</ul>
+<h3 id="scripts-new-run-with-python3-b-from-scripts">Scripts (new; run with python3 -B from scripts/)</h3>
+<ul>
+<li><code>deepen_model.py</code>: the abstract model. <code>epoch</code> costs O(|Q|² + log n), so 200k epochs take 13 s.</li>
+<li><code>deepen_val.py SEED N</code>: rule validation.</li>
+<li><code>deepen_xcheck.py RECORDS</code>: epoch-map check against TM records.</li>
+<li><code>deepen_lrec.c</code>: TM record dumper (1e11 steps in about 7 min).</li>
+<li><code>deepen_invariant.py EPOCHS [TRIALS]</code></li>
+<li><code>deepen_induct.py SEED TRIALS</code></li>
+</ul>
+<h3 id="next-step">Next step</h3>
+<p>Informal proof stage. Find a version of <code>I</code> that is provably inductive, for example by adding to Z* the constraint that reachable Q are images of counters whose top run sits above every inert group, or by a weighted count. If no inductive invariant turns up within budget, re-flag the machine as a cryptid candidate with this heuristic. On a borderline tail fit (ratio about 0.4 against B growing like log n), the expected number of violations over all time is not clearly finite.</p>
+<h2 id="informal-proof-pass-overnight-2026-10-10">Informal proof pass (overnight 2026-10-10)</h2>
+<p><strong>Result:</strong> I wrote <code>proof.md</code>. The informal proof is complete except for one arithmetic lemma, <strong>Lemma N</strong>. Status OPEN, stage informal_proof. <code>check_proof.py</code> passes every check (seed 2; log in <code>scripts/check_proof_full.log</code>; <code>--quick</code> gives a fast pass).</p>
+<h3 id="new-the-epoch-map-in-closed-form">New: the epoch map in closed form</h3>
+<p>The state at an eat is <code>(n, c)</code>:
+- the layout is <code>λ = i^c0 d i^c1 d …</code>, and its d-slots hold bits 1, 2, … of n;
+- <code>C = Σ c_j 2^j</code>, and <code>J</code> is the index of the top inert slot.</p>
+<p>The map:
+- <strong>n odd:</strong> <code>M = (n+1)/2 + C</code>, <code>H = c</code>, <code>n' = n+1</code>.
+- <strong>n even:</strong> <code>V = n/2 + C</code>, t = number of trailing 1-bits of V, <code>M = V &gt;&gt; (t+1)</code>, <code>H = c[t+1:]</code>, <code>n' = n + 2 + t + Σ_{r≤t} c_r</code>.
+- <strong>Next layout:</strong> <code>merge(H, M)</code>. That is H's inert groups, plus one <code>i</code> for each 1-bit of M, with a <code>d</code> at each 0-bit of M.
+- <strong>Normalization depth:</strong> <code>D = 1 + #{0-bits of M below J(H)}</code>. The next eat is normalized iff <code>D ≤ B(n') - 1</code>.</p>
+<p>Agreement:
+- with the deepen map: 20,000/20,000 epochs along the orbit, 17,169/17,169 random states;
+- with the TM: 276/276 records to 1e9 steps.</p>
+<p>This replaces Z<em> and D from the deepen pass. Z</em> = J(c) = #zeros(M_prev).</p>
+<h3 id="proven-sufficient-conditions">Proven sufficient conditions</h3>
+<ul>
+<li>Lemma S-odd: <code>C &lt; 2^(B(n+1)-1)</code> implies the next eat is normalized.</li>
+<li>Lemma S-even: <code>J ≤ B(n)-1</code> implies the next eat is normalized.</li>
+</ul>
+<p>Both hold at every eat for 20 ≤ t &lt; 200,000. The orbit's margins are <code>max C/2^(B-1) = 0.688</code> (t = 62,386) and <code>J ≤ B-2</code> at every even n.</p>
+<h3 id="open-lemma-n">Open: Lemma N</h3>
+<ul>
+<li><strong>Inv_S is not inductive.</strong> Witness: n = 2049, c = [1023]; two epochs later it reaches odd n with C = 1.5·2^(B-1).</li>
+<li><strong>Slack-0 pattern.</strong> The only one seen is the cascade lemma: an odd n with M = 2^(B-1) forces V' = 2^B, and then D'' = B-1. Checked 20,000/20,000.</li>
+<li><strong>Evidence that a structural invariant exists:</strong></li>
+<li>6M eats from 2,000 other orbits: 0 violations and 964 slack-0 events.</li>
+<li>Arbitrary starts (any c): violations only in epochs 0–4 ({0:70, 1:36, 2:12, 3:6, 4:1} per 20,000 starts), and after epoch 0 only at B(n) ≤ 10.</li>
+</ul>
+<p>This looks like a hard barrier on the image of the map, not a rare-event tail.
+- <strong>Next step:</strong> describe the image Φ^k for small k, i.e. c = merge(H_prev, M_prev) with M_prev ≈ (n/2 + C_prev) &gt;&gt; s. Then prove slack ≥ 0 on that image. Candidate potential: V = ⌈n/2⌉ + C against 2^B(n), together with J ≤ B(n)-1.
+- <strong>Fallback:</strong> ground rule 6, i.e. flag as a cryptid candidate. The condition depends on the bit patterns of ⌈n/2⌉ + C.</p>
+<h3 id="cell-level">Cell level</h3>
+<ul>
+<li>Verified shift rules: <code>A&gt;(001)^k</code>, <code>A&gt;(010)^k</code>, <code>B&gt;(010)^k</code>, <code>F&gt;(001)^k</code>, <code>(110)^k&lt;E</code>, <code>1^k&lt;E</code>, and the bouncer left pass <code>(011)^k &lt;D 1 -&gt; &lt;A 1 (010)^(k-1) 001</code> (5k-2 steps).</li>
+<li>R decomposes as 6 single steps, then <code>A&gt;(010)^(n-1)</code>, then 2 single steps, for 3n+5 steps in total.</li>
+<li>The S-toggle case of inc zigzags: E meets 0 with 0 on its left, and the Fb branch fires. It still needs its own L1 lemma for the formalization.</li>
+</ul>
+<h3 id="formalization-plan">Formalization plan</h3>
+<p>Templates are BECv7.v (Inductive digit words, <code>bin_inc</code>, <code>progress_nonhalt_cond</code> with <code>P := canonical</code>), FractalBEC.v (bounce shape) and BinaryCounterFull.v (N-valued counters). The rule layer can be formalized now. Only the final <code>progress_nonhalt_cond</code> is blocked, on Lemma N.</p>
+<h2 id="skeptic-revision-pass-overnight-2026-10-10-proofmd-revision-2">Skeptic revision pass (overnight 2026-10-10, proof.md revision 2)</h2>
+<p><strong>Result:</strong> STUCK at informal_proof. The skeptic's fatal gap stands. Revision 1's Lemma N in the Inv_S form is false on the orbit. A cascade starts at t = 350,272 (M = 2^21 at odd n). The slack is exactly 0 at t = 350,273, and Inv_S fails at t = 350,274 (C = 1.5001·2^{B-1}). The slack itself never goes below 0. Lemma N now keeps only the slack form, and <code>P := Inv_S</code> is gone from the busycoq plan. Not a kill.</p>
+<h3 id="new-and-proved-proofmd-5455">New and proved (proof.md §5.4–5.5)</h3>
+<ul>
+<li><strong>Cascade lemma (i)–(iii).</strong> Hypotheses: odd n, B = B(n+1), M = 2^{B-1}.</li>
+<li>(i) V' = 2^B, M' = 2^{B-1}, J(c') = B-1 and D' = B-1. The slack is exactly 0 iff n'' &lt; 2^B, and 1 otherwise.</li>
+<li>(ii) If c_0 is odd and n''+1 &lt; 2^B: C'' = 3·2^{B-2} + (C-c_0)/2, so Inv_S fails, and M'' = 5·2^{B-2} + (3-C)/2.</li>
+<li>(iii) D'' ≤ B-1, so the eat right after is still normalized.</li>
+<li><strong>Lemma Z.</strong> J(c') = max(D-1, Z(M)), where Z(M) = B(M) - popcount(M).</li>
+<li><strong>Lemma R.</strong> If slack_{t-1} ≥ 0 and P_{t-1} = ⌈n/2⌉+C &lt; 2^{B(n_t)}, then slack_t ≥ 0. The proof uses the cascade lemma in its equality case.</li>
+<li><strong>Reduction.</strong> Lemma N ⇐ <strong>Lemma X (open)</strong>: slack ≥ 0 at every epoch that follows an excursion, i.e. an epoch with P ≥ 2^{B(n')}.</li>
+<li><strong>Super-cascade.</strong> Odd n with M = 2^{B(n+1)} exactly gives slack -1 one epoch later. Example: (1019, [0,1,0,0,0,0,0,0,2]), C/2^{B-1} = 1.004. So Lemma X needs exact values; magnitude bounds alone cannot prove it.</li>
+</ul>
+<h3 id="evidence-check_proofpy-revision-2-seed-2-all-pass-69-s">Evidence (check_proof.py revision 2, seed 2, all PASS, 69 s)</h3>
+<ul>
+<li>Orbit, 400k epochs:</li>
+<li>excursions for t ≥ 20 only at 350,273 and 350,274;</li>
+<li>Lemma R covers every other epoch;</li>
+<li>the two uncovered epochs have slack 15 and 17.</li>
+<li>Other orbits (6M eats):</li>
+<li>0 violations;</li>
+<li>1,052 slack-0 eats, all right after a cascade start;</li>
+<li>155 slack-1 eats;</li>
+<li>longest excursion 2 epochs;</li>
+<li>of 1,087 excursion entries, 1,052 follow a cascade and 35 do not.</li>
+<li>Constructed cascade and near-cascade starts: 22,472 in the check plus 302,484 in scratch runs, with 0 violations and excursions of at most 4 epochs.</li>
+<li>Arbitrary starts do violate. The TM confirms (20,[0,0,0,22]): eats at n = 22, 25, 26, 55, 56, and then 58, which is non-normalized (check 8c).</li>
+</ul>
+<h3 id="rule-layer-proofmd-25">Rule layer (proof.md §2.5)</h3>
+<ul>
+<li>L1 lemmas now have exact statements: TG (toggle, induction on τ), CA (carry, lexicographic induction on (#100, length); the S case calls TG and then the IH on tog(w')), BL = BLa (5b+2) + BLb (3b+4) = 8b+6, JW-001/010/000 with JW* by induction on μ = 2·#010 + #digits, FT (5k+3), and E odd/even as compositions.</li>
+<li>All are checked as exact window runs (check 2.5).</li>
+<li>The <code>100</code> bullet is fixed: the carry resumes right after the former S. The other reading disagrees with the TM on 1,524 of 14,580 words.</li>
+<li>Lemma V (value(inc X) = value(X)+1) makes value(X) = a part of the family predicate. E is restated as K(a,1,X).</li>
+<li>An even eat can pass through a genuine intermediate hub K(a+2,1,·). This is harmless, since E is a <code>--&gt;+</code> statement.</li>
+</ul>
+<h3 id="cryptid-assessment">Cryptid assessment</h3>
+<p>Not flagged. Excursions start with a coincidence, ⌈n/2⌉+C (nearly) a power of two, but every follow-up examined is kept safe by exact arithmetic. This is a priority call for Dennis: spend another stage on Lemma X (a finite case analysis over excursion entry types), or flag CRYPTID_CANDIDATE and formalize only the rule layer, AntiHydra-style.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Fund one more stage on Lemma X (classify the excursion entries exactly), on the condition that if the entry types do not close into a finite list within the stage, #10 gets flagged CRYPTID_CANDIDATE?
+Answer: <strong>lemma_x</strong> (One more stage on Lemma X, with the cryptid flag as the exit). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-lemma_x">Funded stage (2026-10-10, lemma_x)</h2>
+<p><strong>Result: the stop rule fires. CRYPTID_CANDIDATE.</strong> The excursion entries do not close into a finite list of safe types. Every entry comes from an odd eat (proved), but the entry shapes form an infinite family. More decisively, whether an entry is safe depends on the exact residue counts, not on its shape. For one shape there is an explicit family of states, one for every B ≥ 8, that satisfy everything Lemma X may assume (slack ≥ 0, no excursion) and still reach a non-normalized eat 4 epochs later. So Lemma X cannot be proved by a case analysis over entry types. A proof would have to show that this one orbit's residues never solve an exact equation of the form <code>P = 2^B</code>. That is ground rule 6.</p>
+<h3 id="notation-as-proofmd-3">Notation (as proof.md §3)</h3>
+<ul>
+<li>State (n, c) at an eat; <code>P = ⌈n/2⌉ + C(c)</code>; <code>B1 = B(n')</code>.</li>
+<li><code>m(M) = Σ_{1-bits p of M} 2^{r(p)}</code>, where <code>r(p)</code> = number of 0-bits of M below p. This is the weight that M's 1-bits carry into the next layout.</li>
+<li><code>L(H,M) = Σ_j H_j (2^j - 2^{r(j)}) ≥ 0</code>, the weight that H's inert groups lose in the merge. So <code>C' = m(M) + C(H) - L(H,M)</code>.</li>
+</ul>
+<h3 id="new-lemmas-proved-checked-by-scriptsfs_lemmaxpy-seeds-1-and-2-n-20000-each-all-pass-logs-scriptsfs_lemmax_seed12log">New lemmas (proved; checked by <code>scripts/fs_lemmax.py</code>, seeds 1 and 2, N = 20,000 each, all PASS, logs <code>scripts/fs_lemmax_seed{1,2}.log</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>statement</th>
+<th>proof idea</th>
+<th>check (both seeds)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F4</td>
+<td>odd n: <code>P' = P + m(P) - L(c,P)</code></td>
+<td><code>⌈n'/2⌉ = (n+1)/2 = P - C</code>, then the merge</td>
+<td>19,952/19,952</td>
+</tr>
+<tr>
+<td>F5</td>
+<td>even n: <code>P' = V + 1 + ⌈(s+σ_s)/2⌉ - C_lo - (2^{s+1}-1)·C(H) + m(M) - L(H,M)</code></td>
+<td>the same, with <code>n/2 = V - C</code> and <code>C = C_lo + 2^{s+1} C(H)</code></td>
+<td>20,048/20,048</td>
+</tr>
+<tr>
+<td>A</td>
+<td><strong>no excursion starts at an even eat</strong>: even n and <code>P &lt; 2^{B1}</code> imply <code>P' &lt; 2^{B1}</code></td>
+<td><code>P' ≥ 2^{B1}</code> would need <code>C' ≥ 2^{B1-1}</code>, and <code>m(M) ≤ 2^{B(M)-1} ≤ 2^{B1-s-2}</code>. For s ≥ 1 that forces <code>C ≥ 3·2^{B1-1} &gt; V</code>. For s = 0, F5 gives <code>P' ≤ 2M + 2m(M) + 1 - 2^{B1-1} ≤ 2^{B1} - 1</code></td>
+<td>32,448 even non-excursion states, 0 entries</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>P + m(P) ≤ 2^b + 2^{b-2}</code> for <code>1 ≤ P &lt; 2^b</code>, so an odd entry has <code>P' ≤ 1.25·2^{B1}</code></td>
+<td>split P into its top run of ones and the rest, then induct on b</td>
+<td>exhaustive for b = 2..18 (the maximum is exactly 2^{b-2}); 32,110 odd states</td>
+</tr>
+<tr>
+<td>R2</td>
+<td>if slack(σ) ≥ 0 and slack(σ') &lt; 0, then σ is (odd with <code>P = 2^{B1}</code>, the super-cascade), or <code>P ≥ 2^{B1+1}</code>, or (even with <code>V = 2^{B1}</code> and B(n) &lt; B1)</td>
+<td>Lemma Z gives <code>J(c') ≤ max(B1-2, Z(M))</code>. At odd σ, n' is even, so <code>D' ≤ max(B1-2, Z(P))</code>, and <code>Z(P) ≥ B1</code> needs <code>P = 2^{B1}</code>. At even σ, <code>M &lt; 2^{B1}</code>, so only <code>M = 2^{B1-1}</code> (V = 2^{B1}) at odd n' is dangerous; EC covers B(n) = B1</td>
+<td>238,873 slack ≥ 0 pairs: 36 failures (15 super-cascade, 21 <code>P ≥ 2^{B1+1}</code>), 0 unclassified</td>
+</tr>
+<tr>
+<td>EC</td>
+<td>even cascade: even n, <code>V = 2^{B1}</code>, B(n) = B1 and slack ≥ 0 give slack' ≥ 0 and <code>1.125·2^{B1} &lt; P' ≤ 1.25·2^{B1} + 1</code></td>
+<td>slack ≥ 0 forces <code>J(H) ≤ B1-2</code>, so <code>L = 0</code>. For odd n', <code>P' = 3·2^{B1-1} + (3-C)/2</code> with <code>2^{B1-1} &lt; C ≤ 3·2^{B1-2}</code>, so P' has a 1-bit below B1-1</td>
+<td>39,535 states; P'/2^{B1} ∈ [1.125, 1.25]</td>
+</tr>
+</tbody>
+</table>
+<p>EC extends cascade lemma (iii) to any residue. Together with A, B and R2 it shows that every slack failure passes through a super-cascade or through a potential <code>≥ 2^{B1+1}</code>. Both of these can only be reached from inside an excursion.</p>
+<h3 id="the-counter-family-proved-for-every-b-8-by-exact-symbolic-computation">The counter-family (proved for every B ≥ 8, by exact symbolic computation)</h3>
+<p><code>σ0(B) = (3·2^{B-2} - 7, c = [3, 0^{B-6}, 10, 0, 2])</code>, i.e. c_0 = 3, c_{B-5} = 10, c_{B-3} = 2.</p>
+<table>
+<thead>
+<tr>
+<th>epoch</th>
+<th>parity</th>
+<th>P</th>
+<th>slack</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>odd</td>
+<td><code>15·2^{B-4}</code> (not an excursion; entry shape: top run w = 4)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>even</td>
+<td><code>V = 17·2^{B-4}</code>, s = 0, <code>M = 2^{B-1} + 2^{B-5}</code></td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>odd, n = 3·2^{B-2} - 1</td>
+<td><strong><code>2^B</code> (super-cascade)</strong>, c = [.., 10 at B-6, 7 at B-5, 1 at B-2]</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>even, n = 3·2^{B-2}</td>
+<td><code>V = 2^{B+1}</code>, M = 2^B, J(H) = B-1, D = B</td>
+<td><strong>-1</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>even, n = 3·2^{B-2} + 2</td>
+<td>the eat is <strong>non-normalized</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Every step was derived by hand with the merge rule, and it matches the map exactly for B = 8..300 (check FAM, 293/293).</li>
+<li><strong>The TM confirms it</strong> (check TM): from <code>K(185,1,X(σ0(8)))</code>, the eats are n = 186, 191 and 192 (normalized), then n = 194, which is non-normalized at step 613,881, as predicted.</li>
+<li><strong>The TM does not halt there.</strong> I continued it in a scratch run. Normalized eats resume at n = 207 (step 796,668), with 14 eats by 2.9M steps. B = 9 (n0 = 377) gives a non-normalized eat at n = 386 and recovers at 389. B = 10 (n0 = 761) gives one at n = 770 and recovers at 773; 14 eats by 36M steps.</li>
+<li>So this family breaks the proof strategy (Lemma N), not the machine. A non-normalized eat is survivable here; random ones halt about 1% of the time (earlier passes).</li>
+</ul>
+<h3 id="search-data-scratch-runs-then-saved-as-scripts">Search data (scratch runs, then saved as scripts)</h3>
+<ul>
+<li><strong>Random states with slack ≥ 0 and no excursion</strong> (the hypotheses Lemma X may use):</li>
+<li>89,993 states × 30 epochs: 0 violations.</li>
+<li>Biased toward sparse P: 100,393 states with B = 5..26 gave 2 violations, both at B = 6. 294,682 states with B = 10..30 × 40 epochs gave 0.</li>
+<li>Max <code>P/2^{B1}</code> = 1.25.</li>
+<li>Random sampling misses the dangerous region. Targeted search finds it:<ul>
+<li><code>fs_super_search.py</code>: 400k tries at B = 8..20 gave super-cascade hits at B = 9 and 16, and 1 violation (B = 9).</li>
+<li><code>fs_struct_search.py</code>: 41,539 states at B = 10..40 gave violations at B = 10 (×2), 16 and 28. The B = 28 one led to σ0(B).</li>
+</ul>
+</li>
+<li><strong>Excursion chains</strong> (<code>fs_chains.py</code>, 104,325 such states × 30 epochs):</li>
+<li>patterns: EO 2,616, EE 2,567, E 14, EOEO 3, EOE 2, EOEE 1, EOEOE 1;</li>
+<li>every entry from an odd eat (Lemma A);</li>
+<li>entry shapes: cascade and top runs w = 1..5;</li>
+<li>an odd excursion eat came as close as <code>(P - 2^{B1})/2^{B1}</code> = 0.00098 to a super-cascade (at small B).</li>
+<li><strong>Natural orbits</strong> (<code>fs_natural_entries.py</code>):</li>
+<li>2,000 orbits × 3,000 epochs (5.9M eats after burn-in): 0 violations. Entries: 1,769 from cascades, 11 from w = 1, <strong>0 from w ≥ 2</strong>. Max C/2^{B-1} at odd non-excursion eats is 0.80 (n = 917).</li>
+<li>Main orbit, 400k epochs: 1 entry (the cascade at t = 350,272). Max C/2^{B-1} at odd non-excursion eats is 0.688 (t = 62,386).</li>
+<li>A w = 2 entry needs only C ≳ 0.5·2^{B-1} once n is near 2^B, and the orbit reaches 0.69. Magnitude bounds therefore do not keep the orbit away from the family's regime. Only the exact top-run shape and the exact equation <code>P_{t+2} = 2^B</code> do.</li>
+</ul>
+<h3 id="why-this-is-the-cryptid-exit">Why this is the cryptid exit</h3>
+<ul>
+<li>What happens after an entry is decided by linear equations in the residue counts, e.g. <code>P_{t+2} = 2^B</code> after an entry with V = 2^B + 2^{B-4}.</li>
+<li>An entry needs <code>⌈n/2⌉ + C</code> to have a sparse top bit pattern. Both are coincidences along one deterministic orbit, of the kind that ground rule 6 names.</li>
+<li>The heuristic for non-halting is still strong:</li>
+<li>0 non-normalized eats in more than 2·10^9 natural eats, and to 10^10 epochs on the main orbit;</li>
+<li>natural orbits enter excursions only through cascades and w = 1 near-cascades;</li>
+<li>even a non-normalized eat recovered on the TM in all 3 family runs.</li>
+<li>None of this is a proof.</li>
+</ul>
+<h3 id="still-open">Still open</h3>
+<ul>
+<li>A proof would need an orbit-specific invariant that excludes w ≥ 2 entries with residues that solve <code>P = 2^B</code>. No candidate is known.</li>
+<li>The other route, rules that tolerate non-normalized eats, does not close either, because some of them halt.</li>
+<li>Per the cryptid protocol, the rule layer (proof.md §1–§4, §2.5) can still be formalized AntiHydra-style at low priority, as for the other cryptid candidates.</li>
+<li>The twin <code>1RB0RE_1RC1RE_1LD1RA_1LA0LD_0RA0LF_1LD---</code> shares this verdict.</li>
+<li>Scripts (new): <code>scripts/fs_lemmax.py</code> (the checks above, about 8 s per seed; seed 3 also passes), <code>fs_gen.py</code>, <code>fs_chains.py</code>, <code>fs_struct_search.py</code>, <code>fs_super_search.py</code>, <code>fs_natural_entries.py</code>.</li>
+</ul>
+</main></body></html>

@@ -40,15 +40,15 @@ if (catalog) {
   fromURL();
 }
 
-// The inline application starts paused. Removing its frame also stops its audio.
+// Keep a visible preview, but load the application only after an explicit start.
+// Removing its frame also stops its animation, workers, and audio.
 for (const panel of document.querySelectorAll('[data-demo]')) {
   const mount = panel.querySelector('[data-demo-mount]');
   const rest = panel.querySelector('[data-demo-rest]');
   const start = panel.querySelector('[data-start-demo]');
   const stop = panel.querySelector('[data-stop-demo]');
   const status = panel.querySelector('[data-demo-status]');
-  const initialFrame = mount.querySelector('iframe');
-  const template = initialFrame.cloneNode();
+  const template = panel.querySelector('[data-demo-template]').content.querySelector('iframe');
   stop.addEventListener('click', () => {
     mount.replaceChildren();
     rest.hidden = false;

@@ -1,0 +1,626 @@
+{
+ "tm": "1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA",
+ "rank": 37,
+ "class_sheet": "Sync bouncer counter",
+ "class_guess": "Sync bouncer counter: binary counter on the left, eroding 1-block timer on the right, doubling reset",
+ "confidence": "med",
+ "summary": "Left binary counter +1 per visit; right 1-block loses 2 cells/visit, pad gains 4; reset doubles it. Digit grammar open",
+ "mechanism": [
+  "Each visit (right record in C) maps `0^inf L 1^n 0^g C> 0^inf` to `0^inf inc(L) 1^(n-2) 0^(g+4) C> 0^inf`: the head stripes the block going left, adds 1 to the counter L, zigzags back and erases the block's last 2 cells (early in a phase, filler cells of L can merge into the block).",
+  "inc is a binary +1: the carry depth follows the ruler sequence (27,084/27,124 visits). Digits are 1 or 2 cells, separated by `00` gaps or 1-runs the carry passes; the layout is rebuilt at each reset and migrates early in a phase (the open part).",
+  "Reset at n=2: `L0 0 1^2 0^g C>` -> `L0 1^(g+6) C>` with g = 4(visits-1), so the block about doubles. All 12 resets to 2.5e9 hit a bit-0 = 0 visit; 35/36 off-sync variants leave an odd pad and halt next visit. Not a cryptid: plain +1, linear timer."
+ ],
+ "diagrams": [
+  {
+   "mode": "records",
+   "png": "img/records_9.4e6.png",
+   "html": null,
+   "steps": 9400000,
+   "caption": "Phases: block eaten from the right, pad grows, reset doubles",
+   "title": "Left/right records to 9.4 million steps",
+   "why": "One row per new edge cell. Follow each white triangle down to the full-width white row that ends it.",
+   "primary": true,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new leftmost or rightmost cell (3,398 rows, steps 0..9,400,000; rows are not equal time)",
+   "window": "cells -73..3324, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head just moved right/left",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom:visit-starts",
+   "png": "img/counter_128visits_phase10.png",
+   "html": null,
+   "steps": 43105312,
+   "caption": "The counter: 128 consecutive visits, cells -104..-36",
+   "title": "The left counter, one row per visit",
+   "why": "Each row is the tape at a visit start. Read right to left from the white block; compare flip rates.",
+   "primary": true,
+   "start": "mid-run: step 38014318 (visit 3,346; phase 10, block n = 6,702)",
+   "rows": "one row per visit start (right record in state C): visits 3,346..3,473, steps 38,014,318..43,105,312; each row is 4 px tall",
+   "window": "cells -104..-36, 1 px = 0.167 cells (each cell is 6 px wide)",
+   "legend": "white = 1, black = 0; no head drawn (the head is at the far right, off the window, in every row)",
+   "style": "custom"
+  },
+  {
+   "mode": "every:1",
+   "png": "img/carry_closeup_step10090380.png",
+   "html": null,
+   "steps": 280,
+   "caption": "One deep carry up close: stripe left, turn, zigzag back, erase",
+   "title": "One carry, every step",
+   "why": "Every step of one visit's counter part. Top: sweep left; middle: turn at the carry; bottom: zigzag back.",
+   "primary": true,
+   "start": "mid-run: step 10090380 (head at cell -8 in state A sweeping left; this visit carries through 4 digits)",
+   "rows": "every step (281 rows: steps 10,090,380..10,090,660); each row is 3 px tall",
+   "window": "cells -72..-4, 1 px = 0.33 cells (each cell is 3x3 px)",
+   "legend": "white = 1, black = 0 or never visited, red/green = head just moved right/left",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, 10,000 steps",
+   "why": "The site's own view: the first four phases as growing bands.",
+   "start": "blank",
+   "rows": "every step 0..10,000, squeezed to 500 rows by the site's bilinear filter (20 steps per row)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head just moved right/left",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom:phase-runs",
+   "png": "img/follow_lowruns_real.png",
+   "html": null,
+   "steps": null,
+   "caption": "Lowest 48 counter runs at each phase start, phases 12..1857",
+   "title": "Lowest 48 runs per phase, real orbit",
+   "why": "Columns are runs above the block. Vertical stripes are frozen runs; diagonal bands are the waves after excursions.",
+   "primary": false,
+   "start": "mid-run: step 603,050,744 (start of phase 12; rows from the C jump simulator, phases 12..1857)",
+   "rows": "one row per phase start, every 3rd phase plus every phase whose bottom run is 2 (617 rows); each row is 1 px tall",
+   "window": "runs a0..a47 counted up from the block (a0 = bottom run), 1 run = 8 px; not a cell window: run lengths range from 2 to over 5,000 cells",
+   "legend": "grey = run length on a log scale, black = 5 cells, white = 4,096 cells or more; orange = run of 1 to 4 cells; dark blue = no run (word shorter than 48 runs)",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf L 1^m 0^g C> 0^inf",
+  "vars": [
+   "phase",
+   "m",
+   "g",
+   "visit",
+   "span"
+  ],
+  "rows": [
+   {
+    "step": 13,
+    "values": [
+     1,
+     6,
+     0,
+     2,
+     7
+    ]
+   },
+   {
+    "step": 112,
+    "values": [
+     2,
+     14,
+     0,
+     5,
+     19
+    ]
+   },
+   {
+    "step": 472,
+    "values": [
+     2,
+     10,
+     16,
+     9,
+     32
+    ]
+   },
+   {
+    "step": 836,
+    "values": [
+     2,
+     2,
+     32,
+     13,
+     44
+    ]
+   },
+   {
+    "step": 911,
+    "values": [
+     3,
+     38,
+     0,
+     14,
+     47
+    ]
+   },
+   {
+    "step": 3589,
+    "values": [
+     3,
+     25,
+     44,
+     25,
+     78
+    ]
+   },
+   {
+    "step": 6027,
+    "values": [
+     3,
+     2,
+     88,
+     36,
+     108
+    ]
+   },
+   {
+    "step": 6214,
+    "values": [
+     4,
+     94,
+     0,
+     37,
+     111
+    ]
+   },
+   {
+    "step": 19282,
+    "values": [
+     4,
+     50,
+     96,
+     61,
+     160
+    ]
+   },
+   {
+    "step": 30190,
+    "values": [
+     4,
+     2,
+     192,
+     85,
+     216
+    ]
+   },
+   {
+    "step": 30585,
+    "values": [
+     5,
+     198,
+     0,
+     86,
+     219
+    ]
+   },
+   {
+    "step": 90277,
+    "values": [
+     5,
+     105,
+     208,
+     138,
+     332
+    ]
+   },
+   {
+    "step": 138567,
+    "values": [
+     5,
+     2,
+     412,
+     189,
+     438
+    ]
+   },
+   {
+    "step": 139402,
+    "values": [
+     6,
+     418,
+     0,
+     190,
+     441
+    ]
+   },
+   {
+    "step": 379634,
+    "values": [
+     6,
+     210,
+     416,
+     294,
+     650
+    ]
+   },
+   {
+    "step": 576706,
+    "values": [
+     6,
+     2,
+     832,
+     398,
+     866
+    ]
+   },
+   {
+    "step": 578381,
+    "values": [
+     7,
+     838,
+     0,
+     399,
+     869
+    ]
+   },
+   {
+    "step": 1543463,
+    "values": [
+     7,
+     421,
+     836,
+     608,
+     1287
+    ]
+   },
+   {
+    "step": 2333933,
+    "values": [
+     7,
+     2,
+     1672,
+     817,
+     1706
+    ]
+   },
+   {
+    "step": 2337288,
+    "values": [
+     8,
+     1678,
+     0,
+     818,
+     1709
+    ]
+   },
+   {
+    "step": 6208302,
+    "values": [
+     8,
+     841,
+     1676,
+     1237,
+     2548
+    ]
+   },
+   {
+    "step": 9377196,
+    "values": [
+     8,
+     2,
+     3352,
+     1656,
+     3394
+    ]
+   },
+   {
+    "step": 9383911,
+    "values": [
+     9,
+     3358,
+     0,
+     1657,
+     3397
+    ]
+   },
+   {
+    "step": 24898377,
+    "values": [
+     9,
+     1681,
+     3356,
+     2496,
+     5088
+    ]
+   },
+   {
+    "step": 37597555,
+    "values": [
+     9,
+     2,
+     6712,
+     3335,
+     6770
+    ]
+   },
+   {
+    "step": 37610990,
+    "values": [
+     10,
+     6718,
+     0,
+     3336,
+     6773
+    ]
+   },
+   {
+    "step": 99808022,
+    "values": [
+     10,
+     3362,
+     6720,
+     5016,
+     10154
+    ]
+   },
+   {
+    "step": 150715866,
+    "values": [
+     10,
+     2,
+     13440,
+     6696,
+     13518
+    ]
+   },
+   {
+    "step": 150742757,
+    "values": [
+     11,
+     13446,
+     0,
+     6697,
+     13521
+    ]
+   },
+   {
+    "step": 399462331,
+    "values": [
+     11,
+     6725,
+     13444,
+     10058,
+     20243
+    ]
+   },
+   {
+    "step": 602996957,
+    "values": [
+     11,
+     2,
+     26888,
+     13419,
+     26970
+    ]
+   },
+   {
+    "step": 603050744,
+    "values": [
+     12,
+     26894,
+     0,
+     13420,
+     26973
+    ]
+   },
+   {
+    "step": 1597795614,
+    "values": [
+     12,
+     13449,
+     26892,
+     20143,
+     40428
+    ]
+   },
+   {
+    "step": 2411745732,
+    "values": [
+     12,
+     2,
+     53784,
+     26866,
+     53878
+    ]
+   },
+   {
+    "step": 2411853311,
+    "values": [
+     13,
+     53790,
+     0,
+     26867,
+     53881
+    ]
+   },
+   {
+    "step": 9646815518,
+    "values": [
+     14,
+     107582,
+     0,
+     "-",
+     107697
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "V visit",
+   "from": "0^inf L 1^m 0^g C> 0^inf",
+   "to": "0^inf inc(L) 1^(m+d) 0^(g+4) C> 0^inf",
+   "steps": "6m+2g+c(L)",
+   "cases": "m >= 4; g even; (inc(L), d) depend on L only (d = -2 except when bit 0 flips or filler merges); tested on every visit to 2.5e9 with random m' (same parity) and g' (both residues mod 4)",
+   "validated": {
+    "instances": 54248,
+    "passed": 54248
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Inc binary +1",
+   "from": "carry depth of visit k in a phase",
+   "to": "v2(k+c)+1 digits flipped",
+   "steps": null,
+   "cases": "one offset c per phase; 40 misses are early-phase digit migrations (a filler zero joins a digit)",
+   "validated": {
+    "instances": 27124,
+    "passed": 27084
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R0 bit-0 visit",
+   "from": "0^inf L0 0 1^n 0^g C> 0^inf",
+   "to": "0^inf L0 1^(n-1) 0^(g+4) C> 0^inf",
+   "steps": "6n+2g-10",
+   "cases": "n even >= 4, g even, any word L0",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R1s bit-1 carry (1 cell)",
+   "from": "0^inf L0 1 0 00 1 1^n 0^g C> 0^inf",
+   "to": "0^inf L0 1 1 00 0 1^(n-2) 0^(g+4) C> 0^inf",
+   "steps": "6n+2g+10",
+   "cases": "n even >= 4, g even, any L0 (phase-10 layout)",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R1d bit-1 carry (2 cells)",
+   "from": "0^inf L0 1 0 00 00 00 1 1^n 0^g C> 0^inf",
+   "to": "0^inf L0 1 0 00 11 00 0 1^(n-2) 0^(g+4) C> 0^inf",
+   "steps": "6n+2g+14",
+   "cases": "n even >= 4, g even, any L0 (phase-9 layout)",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R reset",
+   "from": "0^inf L0 0 1^2 0^g C> 0^inf",
+   "to": "0^inf L0 1^(g+6) C> 0^inf",
+   "steps": null,
+   "cases": "g = 0 mod 4 (always: g = 4(visits-1)); any L0; all 12 real resets plus random g",
+   "validated": {
+    "instances": 636,
+    "passed": 636
+   },
+   "source": "manual"
+  },
+  {
+   "name": "P pad fill",
+   "from": "0^inf X 1^n 0^g C> 0^inf",
+   "to": "0^inf X 1^(n-1) <F 1^(g+3) 0^inf",
+   "steps": "g+4",
+   "cases": "g even, n >= 1",
+   "validated": {
+    "instances": 400,
+    "passed": 400
+   },
+   "source": "manual"
+  },
+  {
+   "name": "H odd pad",
+   "from": "0^inf X 1^n 0^g C> 0^inf",
+   "to": "halt",
+   "steps": "g+4",
+   "cases": "g odd: E reads the last block cell",
+   "validated": {
+    "instances": 5825,
+    "passed": 5825
+   },
+   "source": "manual"
+  },
+  {
+   "name": "S stripe",
+   "from": "L 1^(2k+1) <F R",
+   "to": "L <A 1 01^k R",
+   "steps": "2k+1",
+   "cases": "k >= 0",
+   "validated": {
+    "instances": 400,
+    "passed": 400
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Z zigzag",
+   "from": "1^a C> 01^k 1^b 0^inf",
+   "to": "1^(a+2k-1) C> 1^(b+1) 0^inf",
+   "steps": "10k-5",
+   "cases": "a, k, b >= 1",
+   "validated": {
+    "instances": 400,
+    "passed": 400
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "vendor/busycoq/verify/SBCv7.v",
+  "module": "TM4 (line 610); also SBCv11.v GenericNonhalt",
+  "machine": "1RB0LA_0RC1RD_0LD1RE_1LA0RB_0RD1RF_0RA---",
+  "diff": "11 of 12 transitions differ: a class-level match, not a delta",
+  "applies": "partly",
+  "note": "Same macro shape (left binary counter, right side reset in sync, progress_nonhalt_cond). TM4's fixed digit words d0/d1 and BC.Mul2 do not fit: here digits are 1 or 2 cells with phase-dependent fillers. No solved machine within 3 transitions (nearest: CTLv1, RWL_mod, CPS_LRU deciders at 4)."
+ },
+ "strategy": "Visit-level proof: invariant = L in a counter language K (with bit-0 alignment to the block), g = 0 mod 4.\nProve V for L in K from S, P, Z and per-digit carry lemmas; R for the reset (plus the absorption visits); then progress_nonhalt_cond.\nOpen: write down K (digit/filler grammar) and prove it closed under inc and the reset, including the sync.",
+ "risks": [
+  "The counter's digits (1 or 2 cells) and fillers change layout at each reset and migrate early in a phase; the grammar K is not pinned, and its closure is the proof.",
+  "Sync: all 12 resets landed on a bit-0 = 0 visit, but visits per phase are not always odd (phase 5: 104, after 10 absorbed cells). 35/36 off-sync resets halt on the next visit (tested), so the sync must come out of the grammar.",
+  "No close template (SBCv7/SBCv11 are class-level only): expect a long custom .v, kill #4-sized or larger."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 1: does each white triangle read as one phase (the block eaten from its right while the black pad grows), ended by a full-width white row (the reset), each phase about twice as wide as the last?",
+   "figs": [
+    0
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fig 2: reading each row right to left from the white block, do the flickering columns form a binary counter (the rightmost column flips every row, the next every 2 rows, then every 4, 8, ...)?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Confidence is med: the open part is the counter's digit grammar (1- or 2-cell digits, fillers that shift each phase). Should we spend a deepen stage pinning that grammar and its closure, or park this machine behind the others?",
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 12000000000,
+  "cells": 115087,
+  "nonzeros": 114968,
+  "growth": "span ~ t^0.5: the block about doubles each phase and a phase costs ~2.5 n^2 steps (~4x the last); left edge -175 at 1.2e10"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism found (binary counter + eroding block + doubling reset); 10 rules validated (V on every visit to 2.5e9, 54,248/54,248; reset 636/636); confidence med because the counter's digit grammar and its closure under resets are open."
+}

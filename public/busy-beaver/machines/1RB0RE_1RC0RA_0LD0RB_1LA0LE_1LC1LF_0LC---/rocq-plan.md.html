@@ -1,0 +1,501 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>rocq-plan.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/rocq-plan.md · <a href="/busy-beaver/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/rocq-plan.md.html">raw</a></div>
+<h1 id="w5-5-halting-proof-rocq-plan">W5-5 halting proof: Rocq plan</h1>
+<p>Target: <code>Lemma halt: halts tm c0.</code> in
+<code>machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---.v</code>,
+passing <code>tools/check_kill.sh --halt</code> (compile cap 1800 s, <code>ulimit -v 8000000</code>, coqchk cap 600 s).
+Written 2026-10-13 after a design pass with small prototypes (section 6).</p>
+<h2 id="verdict">Verdict</h2>
+<p>Feasible with <strong>one machine-specific lemma family</strong> (the round) and <strong>one generic engine</strong> (a verified
+run-length macro simulator). The cycle model is never trusted: the checker re-derives every eat and every
+dirty carry by simulating the TM itself, and only the clean increments are taken from a proved closed form.</p>
+<ul>
+<li>No flip. The counter stays left of the head, the bell right of it. The busycoq call-stream machinery
+  (<code>segRLs</code>/<code>sideRLs</code>) is not needed: a single call protocol and an induction over the digit list do the job.</li>
+<li>The proof is a <strong>checked certificate runner</strong> in the C2-552 shape (<code>next</code>, <code>next_spec</code>,
+  <code>Eqb.N_iter_until_spec</code>, chunked <code>run_ok</code>/<code>run_halt</code> casts), but its <code>next</code> has three cases:
+  1. <strong>batch</strong>: n clean increments in closed form (proved round lemma + digit arithmetic);
+  2. <strong>oracle round</strong>: one round whose carry reaches a dirty digit, by the macro simulator;
+  3. <strong>eat</strong>: the whole eat (all sub-rounds) by the macro simulator.</li>
+<li>The macro simulator is generic (any TM, block rules found at run time by a window simulation), so the
+  eat needs <strong>no parametric eat lemma</strong>: the bell lengths c ~ 1.2e6 are N counts that block rules cross in O(1).</li>
+<li>The opening is direct execution (<code>solve_init</code>, 288 steps); the endgame is not a separate phase: the
+  halting round of cycle 611,577 is an oracle round whose simulation returns <code>Halt</code>.</li>
+</ul>
+<p>The riskiest pieces were prototyped (section 6): the round lemma and the clean counter call compile with
+plain <code>es</code>; a Python mirror of the exact planned simulator + batch arithmetic, written from the TM table
+only, reproduces the model's words on all checked cycles and <strong>halts in cycle 611,577 after 7,434 complete
+rounds</strong>, as predicted.</p>
+<h2 id="1-run-facts-the-design-rests-on-all-measured-this-stage">1. Run facts the design rests on (all measured this stage)</h2>
+<table>
+<thead>
+<tr>
+<th>quantity</th>
+<th>value</th>
+<th>source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cycles (K0 to K0)</td>
+<td>611,578 (0..611,577, halt in the last)</td>
+<td>fastabs2, 8 s</td>
+</tr>
+<tr>
+<td>oracle rounds (carry into a dirty digit)</td>
+<td>2,096,689 (3.4 per cycle)</td>
+<td>instrumented fastabs2</td>
+</tr>
+<tr>
+<td>TM steps inside the counter, oracle rounds</td>
+<td>3.45e8 (2.36e8 left of the clean low part; max 89k in one round)</td>
+<td>same</td>
+</tr>
+<tr>
+<td>eat steps not proportional to c</td>
+<td>8.8e7 in all (max 3,623 per eat); bell work 41.8 c per eat</td>
+<td>same</td>
+</tr>
+<tr>
+<td>macro steps per plain round (any b)</td>
+<td>38 (36 single + 2 block rules)</td>
+<td>Python mirror</td>
+</tr>
+<tr>
+<td>macro steps per eat</td>
+<td>mean 187, max 318 (681 sampled eats)</td>
+<td>Python mirror</td>
+</tr>
+<tr>
+<td>macro steps per oracle round</td>
+<td>mean 75, max 653 (2,399 sampled)</td>
+<td>Python mirror</td>
+</tr>
+<tr>
+<td>batches per cycle</td>
+<td>4.5</td>
+<td>Python mirror</td>
+</tr>
+<tr>
+<td>checker iterations, whole run</td>
+<td>about 5.4M (0.61M eats + 2.1M oracles + 2.7M batches)</td>
+<td>extrapolated</td>
+</tr>
+<tr>
+<td>macro steps, whole run</td>
+<td>about 2.7e8 (1.14e8 eats + 1.6e8 oracles)</td>
+<td>extrapolated</td>
+</tr>
+</tbody>
+</table>
+<p>Block rules the machine needs (all 3-cell, found by brute force over window contexts, <code>shift_rule_R/L</code> form
+with a fixed context d next to the head):
+- zigzag right over the bell: <code>B</code>, d = <code>10</code>, <code>001 -&gt; 001</code>, 9 steps per block;
+- left sweep over the bell: <code>C</code>/<code>D</code>/<code>E</code> on the three rotations (<code>010 -&gt; 100</code>, <code>001 -&gt; 010</code>, <code>100 -&gt; 001</code>), 3 steps;
+- counter carry left through trailing 2s: <code>C</code>, <code>100 -&gt; 010</code>, 5 steps; through a dirty run: <code>C</code>, <code>010 -&gt; 100</code>, 3 steps;
+- counter return right: <code>C</code>, d = <code>1</code>, <code>100 -&gt; 001</code>, 9 steps.
+The simulator does not hard-code these; it tries contexts of 0..2 cells and keeps a rule when the window
+run exits forward in the same state with the context unchanged.</p>
+<h2 id="2-a-tape-representation-and-the-proved-lemmas">2. (a) Tape representation and the proved lemmas</h2>
+<h3 id="the-round-start-form-and-the-counter-call-prop-side">The round-start form and the counter call (Prop side)</h3>
+<div class="highlight"><pre><span></span><code>bellw b c = [1;0;1] ++ [0;0;1]^^b ++ [0;0;0;1] ++ [0;0;1]^^c
+K X b c   = X &lt;* [0] {{E}}&gt; bellw b c *&gt; 0inf          (X: the counter, a left stream, low cell first)
+callw X X' = forall r, X &lt;{{C}} 0 &gt;&gt; r --&gt;* X' {{B}}&gt; 0 &gt;&gt; r
+</code></pre></div>
+
+<p>A round starts with <code>E1 -&gt; 1LF</code>, <code>F0 -&gt; 0LC</code>: the head enters the counter's low cell in C. The counter call
+ends with the head back on the boundary cell (still 0) in B. Only then does the bell part run (zigzag, defect
+move, left sweep), and it ends with <code>D0 -&gt; 1LA</code>, <code>A1 -&gt; 0RE</code> on the boundary and the 101 cell, never reading X.</p>
+<ul>
+<li><code>bellpart X b c : X {{B}}&gt; 0 &gt;&gt; bellw (S b) c *&gt; 0inf --&gt;+ K X b (S c)</code> by <code>es</code>
+  (the two bell shift rules are found automatically). <strong>Prototyped.</strong></li>
+<li><code>round : callw X X' -&gt; K X (S b) c --&gt;+ K X' b (S c)</code> (two steps, <code>follow H</code>, then <code>bellpart</code>). <strong>Prototyped.</strong></li>
+<li>It holds for every b &gt;= 0, c &gt;= 0 (the rounds at b = 1, 2 are ordinary too: checked by direct simulation).</li>
+</ul>
+<h3 id="clean-digits-and-the-call-by-induction">Clean digits and the call by induction</h3>
+<div class="highlight"><pre><span></span><code>dg = Dm | D0 | D1 | D2        (001 = -1, 000 = 0, 101 = 1, 100 = 2; near-first cells [y;0;x])
+cells ds                      (LSB first)
+inc : list dg -&gt; option (list dg)   (D2 passes the carry, the first other digit absorbs; None = overflow)
+</code></pre></div>
+
+<ul>
+<li>Absorb lemmas <code>absm</code>, <code>abs0</code>, <code>abs1</code>: <code>callw (dcell d *&gt; H) (dcell (succ d) *&gt; H)</code>, by <code>es</code>.</li>
+<li>Pass lemma <code>pass2 : callw X X' -&gt; callw ([0;0;1] *&gt; X) ([1;0;0] *&gt; X')</code>: five steps, <code>follow H</code>, <code>es</code>.
+  The return through a passed digit peeks one cell to the right (C0 -&gt; 0LD, the "bounce" seen at the cuts);
+  that cell is always the 0 of the boundary or of the next lower passed digit, which is exactly why <code>callw</code>
+  is stated with <code>0 &gt;&gt; r</code> on the right.</li>
+<li><code>callw_inc : inc ds = Some ds' -&gt; callw (cells ds *&gt; H) (cells ds' *&gt; H)</code> by list induction. <strong>Prototyped.</strong></li>
+<li>H is arbitrary: the dirty high part of the word is never read when the carry is absorbed in the clean part.</li>
+</ul>
+<h3 id="batch-lemma-n-rounds-and-its-arithmetic">Batch lemma (n rounds) and its arithmetic</h3>
+<ul>
+<li><code>val ds = sum e_i 4^i</code> in Z, <code>maxv f = 2 (4^f - 1)/3</code>.</li>
+<li>Pure lemmas:</li>
+<li><code>inc_val</code>: inc ds = Some ds' gives val ds' = val ds + 1 and the same length;</li>
+<li><code>inc_some</code>: val ds &lt; maxv (length ds) gives inc ds = Some _;</li>
+<li><code>val_inj</code>: equal length and equal value give equal lists (the digits -1..2 are distinct mod 4).</li>
+<li><code>rounds n : val ds + n &lt;= maxv (length ds) -&gt; length ds' = length ds -&gt; val ds' = val ds + n -&gt; n &lt;= b -&gt;
+  K (cells ds *&gt; H) b c --&gt;* K (cells ds' *&gt; H) (b - n) (c + n)</code>, by induction on n (nat, symbolic only).</li>
+<li>Leading zeros: <code>[0;0;0]^^k *&gt; 0inf = 0inf</code> (from <code>const_unfold</code>), so a fully clean word is padded with D0
+  digits until <code>maxv</code> covers n; the result is trimmed by the same lemma.</li>
+</ul>
+<h3 id="checker-data-computed-side">Checker data (computed side)</h3>
+<div class="highlight"><pre><span></span><code>krec = { w : list code (3-cell codes, LSB first, 8 values); b : N; c : N }
+denote k = K (wcells (w k) *&gt; 0inf) (N.to_nat (b k)) (N.to_nat (c k))
+</code></pre></div>
+
+<ul>
+<li><code>split w = (D, H)</code>: D = the longest clean prefix (as <code>list dg</code>), H = the rest (cells).</li>
+<li>The batch computes <code>D'</code> by balanced base-4 addition in Z and <em>checks</em> <code>length</code>, <code>val D' = val D + n</code>,
+  <code>val D + n &lt;= maxv</code>, <code>n &lt;= b</code>; the proposal n (untrusted) is <code>b</code> when H = [] (whole word clean, padded)
+  and <code>min b (maxv f - val D)</code> otherwise. n = 0 falls through to the oracle round.</li>
+<li>Never compute <code>N.to_nat</code> on b or c in the checker: they reach 1.2e6 (unary nat).</li>
+</ul>
+<h3 id="the-macro-simulator-generic-used-for-oracle-rounds-eats-and-the-halt">The macro simulator (generic, used for oracle rounds, eats and the halt)</h3>
+<div class="highlight"><pre><span></span><code>sd  = list (list Sym * N)          runs (block, count), near-first, then 0inf
+cfg = Q * sd * sd * dn             dn = DL | DR: the head is on the first cell of L or of R
+</code></pre></div>
+
+<ul>
+<li><code>pop</code> (with rotation: popping the first cell z of (z::u)^n leaves (u++[z])^(n-1) ++ u), <code>push</code>
+  (merges equal blocks; three singletons equal to the next run's block are folded into it), <code>take k</code>.</li>
+<li>One macro step: if the run under the head has n &gt;= 2, try a <strong>block rule</strong>: take k = 0..2 context cells d
+  from the other side, run <code>wsim</code> (a fuel-64 window simulator with the moves mirrored for DL) on d ++ block;
+  if it exits forward in the same state with d unchanged, cross the whole run (<code>shift_rule_R</code>/<code>shift_rule_L</code>
+  with that d). Otherwise make one TM step by calling <code>tm</code> itself.</li>
+<li>Soundness lemmas: <code>pop_spec</code>, <code>push_spec</code>, <code>take_spec</code> (stream equalities via <code>lpow_add</code>,
+  <code>lpow_rotate_list</code>, <code>const_unfold</code>), <code>wsim_spec</code> (induction on fuel, <code>step_left</code>/<code>step_right</code>),
+  <code>try_rule_spec</code> (wsim_spec + shift_rule_R/L), <code>mstep_spec</code> (--&gt;* or halts), <code>isK_spec</code>
+  (a K-form parser over runs: 101, a run-aware count of 001 blocks, 0001, 001 blocks, all-zero tail),
+  <code>urun_spec</code> (an early-exit recursion on positive fuel: returns <code>Kf</code>, <code>Halt</code> or <code>Fuel</code>).</li>
+<li>
+<p>The window simulator is the only place <code>tm</code> is evaluated besides single steps; nothing in it is
+  machine-specific, so a wrong rule simply never fires.</p>
+</li>
+<li>
+<p><strong>Alternative engine considered: <code>verify/ES_v3.v</code></strong> (the verified symbolic executor behind <code>es'</code>: <code>vside</code>
+  with named exponents, rotation, <code>try_sr</code> shift rules over bounded windows, <code>vconfig_es_spec</code>,
+  <code>vconfig_es_halt_spec</code>). It would save the simulator soundness proofs, and its named exponents would even make
+  each eat hold for all c. Not chosen as the default: it runs to a <em>given</em> target and compares configurations
+  syntactically after rotation, so every eat and oracle round would need its exact normal-form target proposed
+  from outside, and its string-named exponents and per-step window searches are untested at 2.7e8 steps.
+  Time-box half an hour at the start of stage 2: if <code>vconfig_er_sr</code> can be driven to the next K-form with a
+  proposed target that the generator reproduces exactly, use it and skip the own soundness proofs.</p>
+</li>
+</ul>
+<h2 id="3-b-executing-the-611577-cycles-inside-coq">3. (b) Executing the 611,577 cycles inside Coq</h2>
+<div class="highlight"><pre><span></span><code>next k := if b k = 0 then eat k                          (urun from kcfg k to the first K-form with b &gt;= 1)
+          else match batch k with Some k' =&gt; inl k'
+               | None =&gt; oracle k end                     (urun from kcfg k to the next K-form)
+</code></pre></div>
+
+<ul>
+<li><code>eat</code>/<code>oracle</code> return <code>inr tt</code> on <code>Halt</code> (then <code>halts tm (denote k)</code> by <code>urun_spec</code>).</li>
+<li>A failed parse or fuel-out returns <code>inl k</code> unchanged (sound, and the fuel count exposes it).</li>
+<li><code>eat</code> stops at the first K-form with b &gt;= 1 (not the model's b &gt;= 3): every K-form satisfies the round lemma,
+  so any stopping point is sound. Only the first cycles (c below the model's bell size 40) decompose
+  differently from fastabs2; the TM trajectory is the same.</li>
+<li><code>next_spec</code>: <code>denote k --&gt;* denote k'</code> or <code>halts tm (denote k)</code>; <code>check_spec</code> and the chunk lemmas are copied
+  from C2-552 (<code>run T k = inl k'</code> -&gt; <code>--&gt;*</code>, <code>run T k = inr tt</code> -&gt; halts).</li>
+<li>About 5.4M iterations and 2.7e8 macro steps in all. Chunks of 4,000 iterations (about 2e5 macro steps):
+  about 1,350 chunks.</li>
+<li>The chunk boundary states are <strong>literals</strong> written by a generator, not <code>Eval vm_compute</code> definitions:
+  the kernel then runs each chunk once (at the <code>vm_cast_no_check</code> Qed), not twice.</li>
+<li>Generator and mirror: OCaml extraction of the same <code>next</code> (<code>Extraction</code> of the checker module), run
+  natively; it prints the chunk states as Coq terms and the exact fuel. This also replaces a hand-written
+  mirror (the Python mirror in <code>rocq/mirror/macro.py</code> remains the design reference).</li>
+<li>Optional speed-up if the VM time is too high: run oracle rounds as <code>round</code> + a counter-only simulation
+  (an abstract right tail after the boundary cell), which drops the 38 bell macro steps per oracle round
+  (about 8e7 of the 2.7e8).</li>
+</ul>
+<h2 id="4-c-opening-and-endgame">4. (c) Opening and endgame</h2>
+<ul>
+<li><strong>Opening:</strong> <code>init : c0 --&gt;* denote (krec [] 0 2)</code> by <code>solve_init</code> (288 steps; K0('', 2) is
+  <code>0inf &lt;* [0] {{E}}&gt; bellw 0 2 *&gt; 0inf</code>).</li>
+<li><strong>Endgame:</strong> none separate. Cycle 611,577 is eat, then batches and oracle rounds; after 7,434 complete
+  rounds the next oracle round's simulation hits <code>F1 = ---</code> and <code>urun</code> returns <code>Halt</code>
+  (the Python mirror reproduces exactly this). The last chunk is <code>run T k_last = inr tt</code>.</li>
+<li>The 108,456,557,258 direct steps of the last cycle are never executed one by one; the bell crossings are
+  block rules with N counts.</li>
+<li>Final theorem: <code>Lemma halt: halts tm c0.</code> by <code>halts_evstep</code> over <code>init</code> and the chunk lemmas, as in C2-552.
+  No flip, so no <code>functional_extensionality_dep</code> is expected (<code>Print Assumptions</code> should be empty).</li>
+</ul>
+<h2 id="5-d-compile-time-and-memory">5. (d) Compile-time and memory</h2>
+<ul>
+<li>Lemma part: the round, digit and simulator lemmas are small (<code>es</code> runs a few hundred steps); budget under
+  1 minute.</li>
+<li>The run: measured 2.2 µs per macro step in the VM (section 6), so about 600 s for 2.7e8 macro steps. With
+  literal chunk states the kernel evaluates the run once. Do not also <code>Eval vm_compute</code> the chunk states in the
+  kill file (that would double it to about 20 minutes, too close to the 1800 s cap).</li>
+<li>Native casts have a per-call compilation overhead: the prototype's one <code>native_compute</code> took 1.1 s wall
+  for 0.32 s of run. With about 1,350 casts that is 15-20 minutes of overhead, so use <code>vm_cast_no_check</code>.
+  If the VM is too slow, use native casts in a few large chunks, but larger chunks raise the coqchk memory risk.</li>
+<li><strong>coqchk will hit its 600 s cap</strong> (a warning under policy A). It re-checks casts by lazy kernel conversion,
+  far slower than the VM, so it only gets through the first chunks.</li>
+<li><strong>coqchk out-of-memory is a FAIL</strong>: kernel conversion memory grows with the length of one cast
+  (C2-552: OOM at 110k iterations in one cast, fine at 5k; W4-3: 3.3 GB at 500k simulator steps per cast).
+  Keep each cast at about 2e5 macro steps. Before the first full check_kill, measure coqchk RSS on a 3-chunk
+  file.</li>
+<li>Memory in coqc: the VM is small for this data (states under 1 KB; words up to about 130 digits, N
+  numbers under 2^21, Z values up to about 2^260).</li>
+</ul>
+<h2 id="6-prototype-results-this-stage">6. Prototype results (this stage)</h2>
+<p>Files: <code>rocq/proto/round.v</code>, <code>rocq/proto/perf.v</code> (compiled from a temp dir with the standard flags,
+<code>ulimit -v 8000000</code>; logs <code>rocq/proto/*_out.txt</code>), <code>rocq/mirror/</code> (Python mirror and C instrumentation).</p>
+<table>
+<thead>
+<tr>
+<th>piece</th>
+<th>content</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>round.v</code></td>
+<td><code>bellpart</code> (bell part of a round, symbolic b and c) by plain <code>es</code>; <code>round</code> (two steps, <code>follow H</code>, <code>evstep_refl</code>); <code>absm</code>/<code>abs0</code>/<code>abs1</code> by <code>es</code>; <code>pass2</code> (<code>do 5 step1. follow H. es.</code>); <code>callw_inc</code> by list induction; <code>round_inc</code></td>
+<td>all Qed, 1.9 s, <strong>Closed under the global context</strong></td>
+</tr>
+<tr>
+<td><code>perf.v</code></td>
+<td>executable part of the macro simulator in Coq (pop with rotation, push with merge, take, <code>wsim</code>, <code>try_k</code> contexts 0..2, <code>mstep</code>, run-aware <code>isK</code>, early-exit <code>urun</code>), run on the real K0 of cycle 611,000 (c = 1,217,710)</td>
+<td>returns b' = 1,217,710, the same as the Python mirror (181 macro steps); 2,000 such eats: <strong>0.80 s vm_compute</strong> (2.2 µs per macro step), 0.32 s user with native_compute</td>
+</tr>
+<tr>
+<td><code>mirror/macro.py</code> + <code>measure.py</code> (needs <code>fast2_all.txt</code> from <code>fastabs2 - 2 611578 40 1</code> in the working dir)</td>
+<td>the same algorithm in Python plus the batch arithmetic (no model input except the batch sizes)</td>
+<td>matches fastabs2's K0 word and c on 681 cycles (103 sampled from 1e5..6.1e5 and the last 578), and <strong>halts in cycle 611,577 after 7,434 complete rounds</strong></td>
+</tr>
+<tr>
+<td><code>mirror/shiftrules.py</code></td>
+<td>brute-force list of 3-cell shift rules with context 0..2</td>
+<td>the rules in section 1</td>
+</tr>
+<tr>
+<td><code>mirror/fa.c</code>, <code>fc.c</code></td>
+<td>fastabs2 instrumented: eat cost split, oracle counts, steps inside the dirty part</td>
+<td>the numbers in section 1</td>
+</tr>
+</tbody>
+</table>
+<p>Extrapolated run cost: 2.7e8 macro steps at 2.2 µs is about <strong>10 minutes of vm_compute</strong> (about 4 with
+native_compute), plus 2.7M batches of digit arithmetic. That leaves the 1800 s compile cap a 3x margin;
+the counter-only oracle variant (section 3) would cut it by about 30%.</p>
+<p>Not prototyped: the simulator soundness proofs (routine but the largest piece), the batch arithmetic
+lemmas, chunking, and coqchk memory per chunk.</p>
+<h2 id="7-work-order-stages-are-non-blocking-about-2-h-each">7. Work order (stages are non-blocking, about 2 h each)</h2>
+<ol>
+<li><strong>proof.md</strong> (CLAUDE.md: before the .v): K-form, round, clean increments, the checked-simulation
+   argument for eats and dirty carries, the final halting round. Short, since the eat needs no closed form.</li>
+<li><strong>Simulator + soundness</strong> (<code>rocq/dev/macro.v</code>): <code>pop</code>/<code>push</code>/<code>take</code>/<code>wsim</code>/<code>try_rule</code>/<code>mstep</code>/<code>isK</code>/<code>urun</code>
+   and their specs. Test on the opening and on one real eat (<code>urun</code> result equals the extraction's).</li>
+<li><strong>Batch</strong> (<code>rocq/dev/batch.v</code>): <code>val</code>, <code>inc_val</code>, <code>inc_some</code>, <code>val_inj</code>, <code>rounds</code>, padding/trim lemmas, <code>batch</code>.</li>
+<li><strong>Checker, extraction, chunk generator</strong>: <code>next</code>, <code>next_spec</code>, <code>run_ok</code>, <code>run_halt</code>; extract, run all cycles,
+   write <code>k_i</code> literals; smoke-test a prefix (<code>c0 --&gt;* denote k_100</code>) under check_kill-like flags.</li>
+<li><strong>Full file and <code>check_kill --halt</code></strong>; then status.json, STATUS.md and the Eqv_v2 TM291 partner note.</li>
+</ol>
+<h2 id="8-risks-most-serious-first">8. Risks, most serious first</h2>
+<ol>
+<li><strong>Total VM time</strong>: about 600 s estimated (2.7e8 macro steps from the mirror times 2.2 µs measured in Coq).
+   The margin to the 1800 s cap is about 3x; a slower real <code>next</code> (soundness-friendly data structures) eats into
+   it. Mitigations: the counter-only oracle variant (-30%), native casts in a few large chunks, or
+   <code>check_kill --timeout</code>, which needs Dennis's OK because the task names the default command.</li>
+<li><strong>coqchk OOM</strong> on the first chunks: measure RSS early; shrink the chunks if needed (timeout is fine).</li>
+<li><strong>Simulator soundness proofs</strong>: rotation, merging and the run-aware K parser are the fiddly stream
+   equalities. Keep <code>pop</code>/<code>push</code> minimal and prove each against <code>sdn</code> with list lemmas only.</li>
+<li><strong>Unhandled shapes</strong> make <code>urun</code> run long but never unsound. A fuel-out shows up in the extraction run
+   before any Coq compile.</li>
+<li><strong>Model trust is not a risk to soundness</strong>: the cycle model only supplies the batch sizes. If the model were
+   wrong, the extraction run would not halt and nothing would be claimed.</li>
+</ol>
+</main></body></html>

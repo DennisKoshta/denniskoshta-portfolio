@@ -1,0 +1,57 @@
+{
+ "tm": "1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE",
+ "bucket_reason": "Stuck after the chain-law stage: the chain law fits, but the steady state ends at k = 650,686 (walls merge, D and F meet double walls), so the planned invariant is false; confidence low.",
+ "question": "W4-6 and its twin (line 612) have no steady state past 1e11 (walls merge and the far walls turn irregular): keep both parked, fund one merge-tolerant closed-language search, or only watch for a misaligned tape?",
+ "options": [
+  {
+   "id": "park",
+   "label": "Keep both lines parked",
+   "consequence": "No compute. Both stay STUCK with the exact model, the chain law, the fast simulator (scripts/hyb.c) and the event list kept for a later multi-level-counter method."
+  },
+  {
+   "id": "merge_lang",
+   "label": "One ~2 h merge-tolerant language search",
+   "consequence": "Native search for a wall-level closed language (capped gap values, wall status, phase) that contains merges and right-end visits in every phase and excludes A at a double wall and misaligned tapes; a hit is the invariant. Low odds: the far walls are irregular and history-dependent."
+  },
+  {
+   "id": "watch",
+   "label": "Only watch the long run",
+   "consequence": "Several hours of one core: give scripts/hyb.c a leaner TM fallback and run on from 2^28 to 2^30 or beyond (about 2e18 steps), reporting whether A ever meets a double wall or the tape misaligns (the only route to a halt seen so far). No proof value either way."
+  }
+ ],
+ "recommended": "park",
+ "rationale": [
+  "Chain law exact but with 2^q irregular masks per level; the masks of levels >= 5 change at each merge.",
+  "To 2^26: D at a double wall 6x, F 1x, right end in phase D 5x; the planned invariant (ii)/(iii) is false.",
+  "A safe invariant must cover an irregular far region; K(n; a) alone is not closed (random words misalign)."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Far run to 2^25: the left walls stay put, the right part jumps at each merge.",
+   "href": "img/farmap_2e25.png"
+  },
+  {
+   "kind": "fact",
+   "text": "Non-C zero gaps after start-up: R10 at k = 650,686 ... 61,730,238 (6x), R12 at 44,953,023; A 0x; none new and no halt to 2^28.",
+   "href": "data/hyb_A_2e28.out"
+  },
+  {
+   "kind": "fact",
+   "text": "Chain law l = t1(((k^c)>>(2q+1)) ^ m_q[s]): 0 conflicts to 1e11 and at k ~ 2^24; joint fit conflicts at levels 5..9.",
+   "href": "data/chainlaw_fit_joint_A.out"
+  },
+  {
+   "kind": "fact",
+   "text": "Random K(n; a): R13 misaligns or leaves the rule set in 275 of 1,897 cases; 0 halts in 1e6 one-cycle runs.",
+   "href": "data/eventclass_random.out"
+  }
+ ],
+ "effort_if_yes": "park: none; merge_lang: ~2 h agent time, light native compute; watch: a small simulator change, then hours of one core.",
+ "updated": "2026-10-12",
+ "answer": {
+  "option": "park",
+  "note": "Dennis 2026-10-12: 'go with recommendations'",
+  "date": "2026-10-12"
+ }
+}

@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invariants, not long runs</title>
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* page-local pieces: the step-count line, the (p,N) plane, the W4-7 block strips, the #11 fuel ledger, kills box, recap */
+  .panel { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); padding: 10px 12px 12px; margin: 14px 0 18px; }
+  .panel .ttl { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .panel .lab { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; overflow-wrap: anywhere; }
+  .panel button, .plane button, .plane input { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    border-radius: 7px; padding: 4px 11px; min-height: 34px; cursor: pointer; }
+  .panel button:hover:not(:disabled), .plane button:hover { border-color: var(--accent); }
+  .panel button:disabled { opacity: .45; cursor: default; }
+  .panel button.primary { background: var(--ink); color: var(--page); border-color: var(--ink); font-weight: 600; }
+  .ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0 2px; }
+  .out { font-size: 14px; overflow-wrap: anywhere; }
+  .out b { font-weight: 700; }
+  .yes { color: var(--good); }
+  .no { color: var(--bad); }
+  /* machine strings: break only after an underscore, never inside a state's six characters (---) */
+  code.tms { overflow-wrap: normal; word-break: normal; }
+  code.tms span { white-space: nowrap; }
+
+  /* the step-count line (log scale) */
+  .nl { position: relative; height: 92px; margin: 6px 10px 0 6px; }
+  .nl .track { position: absolute; left: 0; right: 0; top: 26px; height: 10px; border-radius: 5px; background: var(--surface); border: 1px solid var(--axis); }
+  .nl .simz { position: absolute; left: 0; top: 26px; height: 10px; border-radius: 5px 0 0 5px; background: var(--accent); }
+  .nl .page { position: absolute; left: 0; top: 39px; height: 5px; width: 0; border-radius: 3px; background: var(--ink); transition: width .25s ease; }
+  .nl .tick { position: absolute; top: 74px; transform: translateX(-50%); font: 11px/1 ui-monospace, Consolas, monospace; color: var(--muted); white-space: nowrap; }
+  .nl .tick::before { content: ""; position: absolute; left: 50%; top: -5px; height: 4px; border-left: 1px solid var(--axis); }
+  .nl .mk { position: absolute; width: 2px; margin-left: -1px; background: var(--ink); }
+  .nl .mk.up { top: 17px; height: 25px; }
+  .nl .mk.dn { top: 24px; height: 27px; }
+  .nl .mk.ref { background: var(--muted); }
+  .nl .tag { position: absolute; font: 650 12.5px/1.2 system-ui, sans-serif; color: var(--ink); white-space: nowrap; transform: translateX(-50%); }
+  .nl .tag.up { top: 1px; }
+  .nl .tag.dn { top: 53px; }
+  .nl .tag.r { transform: translateX(calc(-100% + 4px)); }
+  .nl .tag.ref { color: var(--muted); font-weight: 500; font-size: 12px; }
+  .nl-key { list-style: none; padding: 0 !important; margin: 10px 0 0; font-size: 13.5px; color: var(--ink2); }
+  .nl-key li { margin: 3px 0; }
+  .nl-key i { display: inline-block; width: 18px; height: 8px; border-radius: 3px; margin-right: 6px; vertical-align: 1px; }
+  .nl-key .k-sim { background: var(--accent); }
+  .nl-key .k-page { background: var(--ink); height: 5px; }
+
+  /* the (p, N) plane */
+  .plane { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); padding: 10px 12px 12px; margin: 14px 0 18px; }
+  .plane .ttl { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .plane .lab { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .pl-ctl { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 4px 0 8px; font-size: 14px; }
+  .pl-ctl label { display: inline-flex; gap: 4px; align-items: center; }
+  .pl-ctl input { width: 5.4em; cursor: text; }
+  .pl-seg { display: inline-flex; }
+  .pl-seg button { border-radius: 0; }
+  .pl-seg button:first-child { border-radius: 7px 0 0 7px; }
+  .pl-seg button:last-child { border-radius: 0 7px 7px 0; }
+  .pl-seg button + button { margin-left: -1px; }
+  .pl-seg button.on { background: var(--accent-weak); border-color: var(--accent); font-weight: 650; position: relative; }
+  .pl-svg { position: relative; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; touch-action: manipulation; }
+  .pl-svg svg { display: block; width: 100%; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+  .pl-svg .grid { stroke: var(--line); stroke-width: 1; }
+  .pl-svg .axis { stroke: var(--axis); stroke-width: 1; }
+  .pl-svg .tl { fill: var(--muted); font: 11px ui-monospace, Consolas, monospace; }
+  .pl-svg .al { fill: var(--muted); font: 12px system-ui, sans-serif; }
+  .pl-svg .regJ { fill: var(--accent); fill-opacity: .13; }
+  .pl-svg .regW { fill: url(#hatch); }
+  .pl-svg .hatchl { stroke: var(--caution); stroke-width: 1.2; stroke-opacity: .45; }
+  .pl-svg .line2p { stroke: var(--accent); stroke-width: 2; }
+  .pl-svg .rl { fill: var(--accent); font: 650 12.5px system-ui, sans-serif; }
+  .pl-svg .rlw { fill: var(--caution); font: 650 12.5px system-ui, sans-serif; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; }
+  .pl-svg .orbit { fill: none; stroke: var(--axis); stroke-width: 1; }
+  .pl-svg .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+  .pl-svg .dot.dot0 { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+  .pl-svg .nr { stroke: var(--bad); stroke-width: 2.2; stroke-linecap: round; }
+  .pl-svg .sel { fill: none; stroke: var(--ink); stroke-width: 2.2; }
+  .pl-svg .arr { stroke: var(--ink); stroke-width: 2.2; fill: none; }
+  .pl-svg .arr.real { stroke: var(--caution); stroke-dasharray: 6 4; }
+  .pl-svg .dst { fill: var(--ink); stroke: var(--surface); stroke-width: 2; }
+  .pl-svg .dst.real { fill: var(--caution); }
+  .pl-svg .ahead { fill: var(--ink); }
+  .pl-svg .ahead.real { fill: var(--caution); }
+  .pl-svg .seltxt { fill: var(--ink); font: 650 12px system-ui, sans-serif; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; }
+  .pl-tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--page); font: 12.5px/1.3 system-ui, sans-serif; padding: 4px 8px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, -130%); }
+  .pl-info { margin-top: 8px; font-size: 14.5px; line-height: 1.5; min-height: 4.5em; }
+  .pl-info .ln { margin: 2px 0; overflow-wrap: anywhere; }
+  .pl-info .k { color: var(--muted); font-size: 13px; margin-right: 6px; }
+  .pl-legend { font-size: 12.5px; color: var(--muted); margin-top: 6px; line-height: 1.9; }
+  .pl-legend i { display: inline-block; vertical-align: -1px; margin: 0 4px 0 12px; }
+  .pl-legend i:first-child { margin-left: 2px; }
+  .pl-legend .lgdot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  .pl-legend .lgdot0 { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--accent); }
+  .pl-legend .lgj { width: 14px; height: 10px; background: var(--accent); opacity: .25; border-radius: 2px; }
+  .pl-legend .lgw { width: 14px; height: 10px; border-radius: 2px; background: repeating-linear-gradient(45deg, var(--caution) 0 1.5px, transparent 1.5px 5px); opacity: .7; }
+  .pl-legend .lgx { width: 10px; height: 10px; position: relative; }
+  .pl-legend .lgx::before, .pl-legend .lgx::after { content: ""; position: absolute; left: 4px; top: -1px; width: 2px; height: 12px; background: var(--bad); transform: rotate(45deg); }
+  .pl-legend .lgx::after { transform: rotate(-45deg); }
+  .pl-legend .lga { width: 16px; height: 2px; background: var(--ink); vertical-align: 3px; }
+  .pl-legend .lgr { width: 16px; height: 0; border-top: 2px dashed var(--caution); vertical-align: 3px; }
+  details.rules { margin: 8px 0 0; font-size: 14px; }
+  details.rules summary { cursor: pointer; color: var(--accent); }
+
+  /* W4-7: two tapes drawn as block strips */
+  .bs { display: grid; grid-template-columns: 1.6em minmax(0, 1fr); gap: 2px 8px; align-items: start; margin: 10px 0; }
+  .bs-name { font: 750 16px/1.4 system-ui, sans-serif; padding-top: 22px; }
+  .bs-strip { display: flex; flex-wrap: wrap; gap: 10px 6px; align-items: flex-start; padding: 6px 8px 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+  .bs > :not(.bs-name):not(.bs-strip) { grid-column: 2; }
+  .bs-p { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .bs-top { height: 20px; display: flex; align-items: flex-end; }
+  .bs-badge { min-width: 20px; height: 20px; border-radius: 10px; background: var(--sF); color: var(--badge-fg); font: 700 12px/20px system-ui, sans-serif; text-align: center; }
+  .bs-body { display: flex; gap: 3px; align-items: center; padding: 2px; border: 2px solid transparent; border-radius: 6px; }
+  .bs-dig .bs-body { border-color: var(--line); }
+  .bs-dig.chg .bs-body { border-color: var(--accent); background: var(--accent-weak); }
+  .bs-cells { display: inline-flex; gap: 1px; }
+  .bs-c { width: 11px; height: 17px; border-radius: 2px; }
+  .bs-c.s1 { background: var(--c1); }
+  .bs-c.s0 { background: var(--c0); box-shadow: inset 0 0 0 1px var(--axis); }
+  .bs-c.here { box-shadow: inset 0 0 0 1px var(--axis), 0 0 0 2px var(--sF); }
+  .bs-blk { display: inline-flex; gap: 3px; align-items: center; padding: 1px 4px 1px 2px; border: 1px dashed var(--axis); border-radius: 5px; font: 650 12px/1 ui-monospace, Consolas, monospace; color: var(--ink2); }
+  .bs-cap { font: 12px/1.15 system-ui, sans-serif; color: var(--muted); text-align: center; white-space: nowrap; min-height: 2.3em; }
+  .bs-cap b { display: block; font: 750 15px/1.15 system-ui, sans-serif; color: var(--ink); }
+  .bs-dig.chg .bs-cap { color: var(--accent); font-weight: 650; }
+  .bs-what { font-size: 13px; color: var(--muted); }
+  .bs-txt { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+  .bs-txt code { font-size: 12px; }
+  .bs .res { font-size: 14px; min-height: 1.4em; overflow-wrap: anywhere; }
+  .bs-legend { font-size: 12.5px; color: var(--muted); margin: 4px 0 0; line-height: 1.8; }
+  .bs-legend .bs-c { display: inline-block; vertical-align: -4px; margin: 0 3px 0 8px; }
+  .bs-legend .bs-c:first-child { margin-left: 0; }
+  @media (max-width: 480px) { .bs-c { width: 9px; height: 15px; } .bs-strip { gap: 8px 4px; padding: 6px 4px 4px; } }
+
+  /* #11: the fuel ledger */
+  .fl { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px; margin: 12px 0 8px; overflow-x: auto; overscroll-behavior-x: contain; }
+  .fl-title { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .fl-label { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+  .fl-grid { display: grid; grid-template-columns: auto auto auto max-content minmax(14em, 1fr); gap: 8px 14px; align-items: center; }
+  .fl-h { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .fl-step { font: 12.5px ui-monospace, Consolas, monospace; color: var(--muted); text-align: right; }
+  .fl-read { font: 700 15px ui-monospace, Consolas, monospace; }
+  .fl-S { font: 13px ui-monospace, Consolas, monospace; white-space: nowrap; }
+  .fl-S.zero { color: var(--bad); font-weight: 700; }
+  .fl-digits { display: flex; gap: 8px; align-items: flex-start; }
+  .fl-dig { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 2px 3px; border: 2px solid transparent; border-radius: 6px; }
+  .fl-dig.bad { border-color: var(--bad); background: var(--bad-weak); }
+  .fl-dig.fall { border-color: var(--caution); }
+  .fl-cells { display: flex; gap: 1px; padding: 2px; border: 1px solid var(--axis); border-radius: 4px; background: var(--sunk); }
+  .fl-c { width: 8px; height: 15px; border-radius: 2px; border-bottom: 3px solid transparent; }
+  .fl-c.s1 { background: var(--c1); }
+  .fl-c.s0 { background: var(--c0); box-shadow: inset 0 0 0 1px var(--axis); }
+  .fl-c.gap { border-bottom-color: var(--bad); }
+  .fl-c.fuel { border-bottom-color: var(--caution); }
+  .fl-cap { font: 600 12px/1.2 ui-monospace, Consolas, monospace; color: var(--ink2); white-space: nowrap; }
+  .fl-dig.bad .fl-cap { color: var(--bad); }
+  .fl-v { font-size: 13.5px; }
+  .fl-v .y { color: var(--good); font-weight: 700; }
+  .fl-v .n { color: var(--bad); font-weight: 700; }
+  .fl-legend { font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height: 1.9; }
+  .fl-legend i { display: inline-block; width: 16px; height: 0; border-bottom: 3px solid; vertical-align: 3px; margin: 0 4px 0 10px; }
+  .fl-legend i:first-child { margin-left: 0; }
+  @media (max-width: 600px) {
+    .fl-grid { grid-template-columns: 4.2em 2.6em minmax(0, 1fr); gap: 3px 10px; }
+    .fl-grid .fl-h:nth-child(n+4) { display: none; }
+    .fl-digits, .fl-v { grid-column: 1 / -1; }
+    .fl-v { margin-bottom: 10px; }
+  }
+
+  .drills .tm-pexplain button.showpt { font: inherit; font-size: 13.5px; border: 1px solid var(--line); background: var(--surface); color: var(--accent); border-radius: 7px; padding: 2px 9px; min-height: 30px; cursor: pointer; margin: 2px 0; }
+  .drills .tm-pexplain button.showpt:hover { border-color: var(--accent); }
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); background: var(--surface); border-radius: 10px; padding: 12px 16px; margin: 30px 0 14px; }
+  .kills .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 2px; }
+  .kills ul { margin: 6px 0; }
+  .kills code { font-size: 12px; }
+  .recap { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 16px; margin: 14px 0; }
+  .recap .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .recap ol { margin: 6px 0 2px; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 5 · Invariants, not long runs</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/04-04-bells.html" title="Bells eating counters">← Module 4</a><a class="ui-btn" href="/busy-beaver/learn/06-06-astronomical-halts.html" title="Astronomical halts">Module 6 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 5 of 8 · about 15 minutes</div>
+<h1>Invariants: why a long run is not a proof</h1>
+<div class="answer"><b>The answer</b>
+  <p>A long run without a halt proves nothing. Three of our machines ran a billion steps without halting, and all three halt later. A proof needs an <b>invariant</b>: a fence around a set of tapes that the run gets into, that no rule can carry a tape out of (the fence is <b>closed</b>), and that holds no halting tape.</p>
+</div>
+
+<!-- ============================================================== 1 -->
+<section class="beat" id="long"><h2><span class="num">1</span>A billion steps tells you nothing</h2>
+<div class="panel" id="race">
+  <div class="ttl">How far simulation reaches (steps, log scale)</div>
+  <div class="nl" id="nl"></div>
+  <ul class="nl-key">
+    <li><i class="k-sim"></i>our runs: 10<sup>9</sup> steps each of C2-552, W5-5 and W5-7, and no halt</li>
+    <li><i class="k-page"></i>this page, live: press the button</li>
+    <li>the marks named <b>W5-5</b> and <b>C2-552</b>: where they halt, at 1.8·10<sup>18</sup> and 1.765·10<sup>44</sup> steps (computed; the proofs do not contain these counts). <b>W5-7</b> halts far off this line, at a step that is not computed, only estimated as a tower of powers about 195 high.</li>
+    <li class="muted">since the Big Bang: a computer doing 254 million steps a second for 13.8 billion years gets to about 10<sup>26</sup></li>
+  </ul>
+  <div class="ctl"><button type="button" class="primary" id="raceGo">run C2-552 for 100 million steps</button><span class="out mono" id="raceOut">not started</span></div>
+</div>
+<p>Press the button: on a laptop, your browser simulates C2-552 at about a hundred million steps a second, and it does not halt. We proved that it halts; the halting step, about 1.765·10<sup>44</sup>, is computed (it is not part of the proof). The same goes for W5-5's 1.8·10<sup>18</sup>.</p>
+
+<div data-tm-run data-opts='{"tm":"1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB","rows":"each","count":80,"table":true,"speed":6,"title":"C2-552 from a blank tape, every step"}'></div>
+<p>Simulating is only this: one table lookup per step. No finite stretch of steps can tell you that the next one is not the halt. You need an argument that covers every step at once.</p>
+</section>
+
+<!-- ============================================================== 2 -->
+<section class="beat" id="closed"><h2><span class="num">2</span>An invariant is a fence the rules cannot cross</h2>
+<div data-tm-tape data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","step":165,"label":"W5-3 at step 165, the eat configuration E(2,4): p = 2 pairs 10 on the left; right of the head the counter, digits 00 = 0 and 11 = 1, lowest first: 0, 0, 1 = 4, so N = 4","mark":{"digits":"w53-E"},"blocks":true,"compress":{"words":["10","00","11"]}}'></div>
+<p>Module 4's W5-3 moves from one eat configuration E(p,N) to the next. Five proved rules, M1 to M5, say where E(p,N) goes next. They cover almost every (p,N), and beat 3 shows the gaps. So the whole run is a walk of points (p,N).</p>
+
+<div class="plane" id="planeJ"></div>
+<p>Each dot is an eat configuration of the real run, up to step 3,000,000. From E(2,4) at step 165 on, all 62 lie on or under the line N = 2p. That region is the fence <b>J: 1 ≤ N ≤ 2p</b>. Tap any point in it: the page applies the rule, draws the arrow, and runs the real machine from that tape to check. The arrow lands inside again, every time. That is what <b>closed</b> means.</p>
+<div class="panel">
+  <div class="ttl">Check closure for every point, not just the ones you tap</div>
+  <div class="ctl"><button type="button" class="primary" id="allGo">check every point with p ≤ 3,000</button><span class="out" id="allOut"></span></div>
+</div>
+<p>Now the proof is three lines. The run is inside J at step 165 (its first eat configuration, E(0,1) at step 31, is just outside, so the proof replays those 165 steps exactly). J is closed. And none of the five rules ever uses F0, the machine's only undefined transition. So the run never leaves J, and never halts.</p>
+<p class="note">Why the deciders miss fences like this: the automatic deciders describe tapes with a fixed pattern-matcher, which can count a block only up to a fixed size or modulo a fixed number. J compares two numbers that both keep growing, so they cannot express it. (<a href="/busy-beaver/learn/01-01-easy-fates.html#deciders">Module 1: what the deciders catch</a>)</p>
+</section>
+
+<!-- ============================================================== 3 -->
+<section class="beat" id="weak"><h2><span class="num">3</span>Failure 1: a fence too wide to close</h2>
+<div class="plane" id="planeW"></div>
+<p>Try a simpler fence: drop "N ≤ 2p" and keep only N ≥ 1 (the hatched area). Now E(0,62) is inside, and no rule covers it. Its N is rule M5's case: N + 2 = 64 = 2<sup>3+3</sup>, so t = 3.</p>
+<p>M5 walks a defect left through the 10 pairs, two pairs per walk, 2<sup>t−1</sup> − 1 times, so it needs enough pairs on the left: p + 7 ≥ 2<sup>t</sup>. From E(0,62) that is three walks, and the third finds only 1 of the 2 pairs it needs. Each red cross is such a point, and one point with no rule is enough: closure cannot be shown.</p>
+
+<div id="e062run"></div>
+<p>The machine itself does not care. From E(0,62) it reaches E(12,7) at step 688, back under the line, and every red cross does the same at its next eat (tap one). A fence only has to be one you can prove closed. It may leave out tapes that never halt.</p>
+</section>
+
+<!-- ============================================================== 4 -->
+<section class="beat" id="shape"><h2><span class="num">4</span>Failure 2: the shape alone is not enough</h2>
+<div class="panel" id="w47cmp">
+  <div class="ttl">W4-7: two tapes made of the same pieces</div>
+  <div class="lab">W4-7 (<code class="tms"><span>1RB0RA</span>_<wbr><span>1RC0RD</span>_<wbr><span>1RD0LC</span>_<wbr><span>1LE1RA</span>_<wbr><span>---1LF</span>_<wbr><span>1RB0LC</span></code>) is a bell eating a base-3 counter, like module 4's machines. Right of the head sit its counter digits, lowest first. Each digit is a short word followed by w copies of <code>110</code>: its width.</div>
+  <div class="bs"><span class="bs-name">A</span><div class="bs-strip" id="stripA"></div>
+    <span class="bs-what">the real run's tape at step 17,855,559</span>
+    <span class="bs-txt">as text: <code>0^inf (101)^183 F&gt; 0 11 0000 (110)^150 0110 (110)^3 0010 0010 011 001 011 0^inf</code></span>
+    <span class="res" id="resA"></span></div>
+  <div class="bs"><span class="bs-name">B</span><div class="bs-strip" id="stripB"></div>
+    <span class="bs-what">tape A with the two outlined widths shrunk: 150 → 7 and 3 → 1</span>
+    <span class="bs-txt">as text: <code>0^inf (101)^183 F&gt; 0 11 0000 (110)^7 0110 (110)^1 0010 0010 011 001 011 0^inf</code></span>
+    <span class="res" id="resB"></span></div>
+  <div class="bs-legend" id="bsLegend"></div>
+  <div class="ctl"><button type="button" class="primary" id="cmpGo">run both</button><span class="out muted" id="cmpNote">A: from a blank tape to step 17,855,559, then 20 million more steps. B: from tape B until it stops.</span></div>
+</div>
+<p>Press <b>run both</b>. A is the real run and keeps going (we ran it 2·10<sup>9</sup> more steps). B halts at step 203,453. Below are B's last 40 steps: at the end E reads 0, which is <code>---</code>.</p>
+
+<div data-tm-run data-opts='{"tm":"1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC","start":"0^inf (101)^183 F> 0 11 0000 (110)^7 0110 (110)^1 0010 0010 011 001 011 0^inf","startLabel":"tape B","from":203413,"rows":"each","count":41,"window":{"follow":14},"table":true,"view":"both","compress":{"words":["101","110"]},"speed":4,"title":"Tape B, its last 40 steps"}'></div>
+<p>So a fence that only says which pieces a tape has, in which order, contains tape B, and B halts. No such fence can be closed. What keeps the real run safe is a balance of sizes, between its counter value and its widths, and we found no size fence that closes. W4-7 is parked.</p>
+<p class="note">Where B comes from: we took 237 tapes of the real run, changed sizes (one at a time, or redrawn at random) and kept the pieces. Our digit-level simulator flagged 69 distinct tapes (34 have no rule under any reading of the digits), and 3 of them halt in the real machine, 61,670, 307,823 and 376,776 steps later. B is tape A, one of the 237, with its widths redrawn. B's run reaches, at step 141,783, the flagged tape that halts 61,670 steps later.</p>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC&amp;start=dh:0%5Einf%20(101)%5E183%20F%3E%200%2011%200000%20(110)%5E7%200110%20(110)%5E1%200010%200010%20011%20001%20011%200%5Einf&amp;steps=210000">tape B's whole run in the explorer</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC&amp;steps=2e7">the real run to 2·10<sup>7</sup> in the explorer</a></p>
+</section>
+
+<!-- ============================================================== 5 -->
+<section class="beat" id="success"><h2><span class="num">5</span>Success: #11's fuel invariant</h2>
+<div id="k11ledger"></div>
+<p>#11 is a binary counter whose digits carry fuel (<a href="/busy-beaver/learn/03-03-counters.html#fuel">module 3, beat 3</a>): v is the number of <code>01</code>s in a digit. R is the number of carries still coming to that digit before the next overflow. Between overflows, each carry takes one <code>01</code> from v and one from R, so the spare fuel v − R never shrinks.</p>
+<p>The rules break only if a carry reaches a 0-digit with no <code>01</code> left. Phase A of the invariant rules that out by asking every digit for spare fuel: v ≥ R + 1. Steps 283 and 383 fail it, because their low digit has v = R.</p>
+<p>Step 142 fails on the end block, the <code>10</code>s right of the digits. Its counter is all 1s, so an overflow comes next, and the end block becomes the fuel of a new low digit. S is the spare that digit will get: here S = 0, which is the low digit with v = R at step 283.</p>
+<p>Phases B and C cover the cycles in which the top digit runs out and falls (at step 752 its v = 1 is used by the next carry, and it merges into the digit below). There the invariant uses parity instead: every 1-digit has an even number of <code>01</code>s, so a carry that turns it into a 0-digit leaves it at least one. From step 483 on every row is inside, so the proof replays the first 483 steps exactly and the invariant takes over from there.</p>
+</section>
+
+<section class="drills">
+<h2>Predict, then reveal</h2>
+<p>Each box keeps your guess in this browser. Reveal shows the answer, and plays the real run where one decides it.</p>
+
+<div data-tm-predict data-opts='{"id":"m5-e40-78","prompt":"<b>Drill 1.</b> Start W5-3 at E(40,78). Which rule covers it, and where is the next eat configuration E(p′, N′)? The five rules are in the first plane (beat 2), under “the five rules”.","input":{"kind":"pair","labels":["p′","N′"]},"answer":[48,6],"run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","start":"0^inf (10)^40 0 1 1 B> 0 00 11 11 11 00 00 11 0^inf","startLabel":"E(40,78)","startRow":true,"rows":{"decoded":"w53-E"},"count":2,"window":{"follow":12},"view":"both","compress":{"words":["10","00","11"]},"mark":{"digits":"w53-E"},"speed":1},"revealTo":{"row":1},"actual":["decoded.p","decoded.N"],"explain":"78 is even, not a multiple of 4, not 8m + 2 (78 = 8·9 + 6) and not 16m + 6 (78 = 16·4 + 14). So it is M5: N + 2 = 80 = 5·2<sup>4</sup>, which gives t = 1 and m = 2, and M5 needs p + 7 ≥ 2<sup>1</sup>, which holds. M5 gives (40 + 7 + 1, 2 + 2<sup>1</sup> + 1 + 1) = (48, 6), and the real machine gets there 566 steps later.","checkId":"M5-drill-e40-78"}'></div>
+
+<div data-tm-predict data-opts='{"id":"m5-n254","prompt":"<b>Drill 2.</b> E(p, 254) is rule M5&#39;s case: 254 + 2 = 256 = 2<sup>8</sup>. What is the smallest p for which M5 covers it? (For every smaller p, E(p, 254) is a red cross in beat 3.)","input":{"kind":"number"},"answer":25,"explain":"256 = 1·2<sup>5+3</sup>, so t = 5 and m = 0. M5 needs p + 7 ≥ 2<sup>5</sup> = 32, so p ≥ 25. From E(25,254) the real machine reaches E(37,38), M5&#39;s answer (25 + 7 + 5, 0 + 32 + 5 + 1), 9,066 steps later. From E(24,254) no rule applies, and the machine goes to E(38,9) instead. <button type=\"button\" class=\"showpt\" data-plane=\"W\" data-p=\"24\" data-n=\"254\">show E(24,254) on the plane</button> <button type=\"button\" class=\"showpt\" data-plane=\"W\" data-p=\"25\" data-n=\"254\">show E(25,254)</button>","checkId":"M5-drill-n254"}'></div>
+
+<div data-tm-predict data-opts='{"id":"m5-fence","prompt":"<b>Drill 3.</b> J is not the only possible fence for W5-3. Which of these also works: the run gets in, and no rule carries a point out?","input":{"kind":"choice","options":[{"label":"1 ≤ N ≤ p","value":"p"},{"label":"1 ≤ N ≤ 3p","value":"3p"},{"label":"both","value":"both"},{"label":"neither","value":"neither"}]},"answer":"3p","explain":"Only 1 ≤ N ≤ 3p. N ≤ p is not closed, and the real run shows it: E(28,5) at step 3,521 is inside (5 ≤ 28), and rule M1 sends it to E(30,34) at step 7,351, outside (34 > 30). <button type=\"button\" class=\"showpt\" data-plane=\"J\" data-p=\"28\" data-n=\"5\">show E(28,5) on the plane</button><br>N ≤ 3p is a bigger fence than J, so the run is inside it from step 165, and it still closes: <span class=\"fence3p\">checking every point with p ≤ 3,000 in your browser…</span> A fence does not have to hug the run. It only has to be closed.","checkId":"M5-drill-fence"}'></div>
+</section>
+
+<aside class="kills"><span class="tag">From our kills</span>
+  <ul>
+    <li><b>W5-3</b> (claimed): the fence J: 1 ≤ N ≤ 2p is closed. In its Coq file, closure is one lemma, <code>step_J</code> (module 8).</li>
+    <li><b>#11</b> (accepted upstream): the fuel and parity invariant of beat 5, entered at step 483.</li>
+    <li><b>C2-552</b> (submitted, halts): a counter whose digits burn fuel, like #11's, but here no fuel invariant holds. During increment 11,<wbr>631,<wbr>266,<wbr>794,<wbr>472,<wbr>450,<wbr>654,<wbr>093 a carry reaches a 0-digit with no fuel left, and the machine halts. <a href="/busy-beaver/learn/06-06-astronomical-halts.html">Module 6</a> shows how its fuel runs out.</li>
+    <li><b>W4-7</b> (parked): no fence on the pieces alone can work, as beat 4 shows, and no size fence was found.</li>
+    <li><b>#16</b> <code class="tms"><span>1RB0LC</span>_<wbr><span>1RC0RA</span>_<wbr><span>1RD0RF</span>_<wbr><span>0LE---</span>_<wbr><span>1LB1LA</span>_<wbr><span>1LD1RA</span></code> (parked): our candidate fence had a look-ahead clause, "the next few short rounds are fine". The rules do not keep that clause: when we checked larger tapes, some tapes inside the fence stepped out of it. So it is not closed.</li>
+  </ul>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/index.html">W5-3</a><a href="/busy-beaver/machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/index.html">#11</a><a href="/busy-beaver/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/index.html">C2-552</a><a href="/busy-beaver/machines/1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC/index.html">W4-7</a><a href="/busy-beaver/machines/1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA/index.html">#16</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC&amp;steps=1e5&amp;style=explore">W5-3 in the explorer</a></p>
+</aside>
+
+<div class="recap"><span class="tag">Recap</span>
+  <ol>
+    <li>A long run is evidence of nothing: C2-552 ran 10<sup>9</sup> steps without halting, and it halts, at about 1.765·10<sup>44</sup> steps.</li>
+    <li>An invariant is a fence: the run gets in, every rule keeps it in (closed), and nothing inside halts. W5-3's J: 1 ≤ N ≤ 2p is one, and so is the wider 1 ≤ N ≤ 3p.</li>
+    <li>A fence fails when a point inside has no rule (E(0,62) with N ≤ 2p dropped), or when it sees only the pieces of a tape, not their sizes (W4-7's tape B).</li>
+    <li>#11's fence is about fuel: every digit keeps spare fuel for the carries still coming to it.</li>
+  </ol>
+</div>
+
+<nav class="pager"><a href="/busy-beaver/learn/04-04-bells.html">← Module 4: Bells eating counters</a><a href="/busy-beaver/learn/index.html">all modules</a><a href="/busy-beaver/learn/06-06-astronomical-halts.html">Module 6: Halting at astronomical times →</a></nav>
+
+<footer class="checked" id="checked">
+  <b>checked:</b> every tape on this page is simulated in the page by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). When it loads, the page re-derives its own numbers (the 63 eat configurations, the E(0,62) run, the drill runs, the red crosses at N = 254, the W4-7 strips against their tape text, the #11 ledger) and logs an error if any differs from the list below.
+  Simulated with <code>tools/sim.py</code> by <code>python3 -B learn/checks/m05_invariants.py</code> (18 checks, about 20 s; results in <code>learn/checks/m05_results.json</code>):
+  M5-w53-orbit (63 eat configurations to step 3,000,000: E(0,1) at step 31, just outside J, then 62 on or under N = 2p, each arrow by M1–M5; C-M4-1) · M5-w53-closure-arith (9,003,000 points with p ≤ 3,000 each have a rule that lands in J; C-M5-1) · M5-w53-closure-sim (from every E(p,N) in J with p ≤ 30 the real machine's next eat configuration is the rule's) · M5-drill-e40-78 (E(40,78) → E(48,6) by M5, 566 steps) · M5-drill-n254 (at N = 254 exactly p = 0 … 24 have no rule; E(25,254) → E(37,38) in 9,066 steps, E(24,254) → E(38,9) in 4,334) · M5-drill-fence (E(28,5) at step 3,521 → E(30,34) at step 7,351; 1 ≤ N ≤ 3p closed at all 13,504,500 points with p ≤ 3,000, the real machine agreeing for p ≤ 20) · M5-weak-norule (the 36 red crosses; from each, the next eat configuration is in J; C-M5-2) · M5-weak-062-case (t = 3; M5's three walks start with 5, 3 and 1 pairs, W5-3's <code>submission/proof.md</code> §3.5, notes on M5 (d)) · M5-w47-tapes (A and B built with W4-7's own encoder <code>absim2.py</code>: digits 0, 1, 2, 2, 1, 2, 1, widths 150 and 3 against 7 and 1) · M5-w47-orbit-step (A is the real tape at step 17,855,559) · M5-w47-A-runs-on (2·10<sup>9</sup> steps from A, no halt) · M5-w47-B-halts (step 203,453 at E0, through the flagged case-57 tape at step 141,783, which halts 61,670 steps later) · M5-k11-inv (the invariant, as defined in #11's <code>submission/proof.md</code> §1 and §3, holds at all 493 counter readings from step 483 to 10<sup>6</sup> and at none before) · M5-k11-fuel (the ledger's digits, v, R, S and phases; 49 readings to step 20,000) · M5-k11-483.
+  Also <code>python3 -B learn/checks/verify_plan.py</code>: C-M4-1, C-M5-1, C-M5-2, C-M5-3 (no halt by 10<sup>9</sup> for C2-552, W5-5, W5-7, C engine).
+  Cited, not simulated (M5-w47-cited, M5-k16-cited and M5-halters read the files): the halting steps, computed and not proved in Coq, W5-7's estimated tower and the C2-552 increment (STATUS.md, 2026-10-12/13; C2-552's <code>submission/proof.md</code>); W4-7's 237 tapes, 69 flagged, 34 with no reading that has a rule, and 3 halts (its <code>status.json</code>, <code>notes.md</code> §3, <code>data/invariant_flag_tm.json</code>, <code>data/invariant_reparse.json</code>); #16's failed clause (its <code>status.json</code>); the decider remark (<code>atlas/curriculum.md</code> §5.1). The 10<sup>26</sup> mark is arithmetic: 254 million steps per second for 13.8 billion years. The race button prints the speed it measures in your browser.
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, Run, parseConfig, decoders, at, dh } from './tm.js';
+
+const W53 = '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC';
+const C2552 = '1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB';
+const W47 = '1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC';
+const K11 = '1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---';
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const fmt = (n) => n.toLocaleString('en-US');
+const fail = (msg) => { console.error('m5 page check: ' + msg); (window.__tmErrors ||= []).push(msg); };
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const tick = () => new Promise((r) => setTimeout(r, 0));
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+// ---------------------------------------------------------------- W5-3: the counter word, E(p,N), the rules M1-M5
+const Cw = (N) => (N === 0 ? '' : (N % 2 ? '11' : '00') + Cw(Math.floor(N / 2)));
+const Etape = (p, N) => '0^inf ' + '10 '.repeat(p) + '0 1 1 B> 0 ' + Cw(N).split('').join(' ') + ' 0^inf';
+/** M5's split of N: N + 2 = (2m + 1)·2^(t+3). */
+function split5(N) { const x = N + 2; let t3 = 0; while (((x >> t3) & 1) === 0) t3++; return { x, t3, t: t3 - 3, m: (x >> t3) >> 1 }; }
+/** W5-3's macro rules (its submission/proof.md section 3.5) as [p', N', rule], or null when no rule covers (p, N). Lean, for bulk checks. */
+function nextE(p, N) {
+  const o = p & 1;
+  if (N & 1) return [p + 2 + o, (N + 1) / 2 + p + 3, 1];
+  if (N % 4 === 0) return [p + 3 + o, N / 4 + p + 4, 2];
+  if (N % 8 === 2) return [p + 4 + o, (N - 2) / 8 + p + 6, 3];
+  if (N % 16 === 6) return [p + 7, (N - 6) / 16 + 5, 4];
+  const { t, m } = split5(N);
+  if (t >= 1 && p + 7 >= 2 ** t) return [p + 7 + t, m + 2 ** t + t + 1, 5];
+  return null;
+}
+/** The same rule, with its reason and the numbers plugged in, for the info line. */
+function M(p, N) {
+  const r = nextE(p, N), o = p & 1;
+  const oddNote = o ? ' <span class="muted">(the + 1 is there because p is odd)</span>' : ' <span class="muted">(+ 0 because p is even; it is + 1 when p is odd)</span>';
+  if (r && r[2] === 1) return { p: r[0], N: r[1], r: 'M1', why: 'N is odd', g: `(${p} + 2 + ${o}, (${N} + 1)/2 + ${p} + 3)`, note: oddNote };
+  if (r && r[2] === 2) return { p: r[0], N: r[1], r: 'M2', why: 'N is a multiple of 4', g: `(${p} + 3 + ${o}, ${N}/4 + ${p} + 4)`, note: oddNote };
+  if (r && r[2] === 3) return { p: r[0], N: r[1], r: 'M3', why: 'N leaves 2 when divided by 8', g: `(${p} + 4 + ${o}, (${N} − 2)/8 + ${p} + 6)`, note: oddNote };
+  if (r && r[2] === 4) return { p: r[0], N: r[1], r: 'M4', why: 'N leaves 6 when divided by 16', g: `(${p} + 7, (${N} − 6)/16 + 5)`, note: '' };
+  const { x, t3, t, m } = split5(N);
+  const head = `N + 2 = ${x} = ${2 * m + 1}·2<sup>${t3}</sup>, so t = ${t}, m = ${m}`;
+  if (r) return { p: r[0], N: r[1], r: 'M5', why: `${head}, and p + 7 = ${p + 7} ≥ 2<sup>${t}</sup> = ${2 ** t}`, g: `(${p} + 7 + ${t}, ${m} + 2<sup>${t}</sup> + ${t} + 1)`, note: '' };
+  return { none: true, why: `${head}. That is rule M5's case, and M5 needs p + 7 ≥ 2<sup>${t}</sup> = ${2 ** t}, but p + 7 = ${p + 7}` };
+}
+const inJ = (p, N) => N >= 1 && N <= 2 * p;
+/** run the real machine from E(p,N) to its next eat configuration */
+function nextEat(p, N, max = 2e7) {
+  const r = new Run(W53, parseConfig(Etape(p, N)), { maxSteps: max });
+  const s = r.until(at.decoded('w53-E'), { max });
+  if (s === null) return { none: true, halted: r.halted, steps: r.t };
+  const d = decoders['w53-E'](r.view());
+  return { p: d.p, N: d.N, steps: s };
+}
+
+/** E(p,N) including p = 0 (learn/tm.js's w53-E decoder reads p >= 1 only; 0^inf 0 1 1 B> 0 C(N) has a blank before the 11). */
+function decE(v) {
+  const d = decoders['w53-E'](v);
+  if (d) return d;
+  if (v.state !== 'B' || v.read(v.pos) !== 0) return null;
+  const h = v.pos;
+  if (v.read(h - 1) !== 1 || v.read(h - 2) !== 1) return null;
+  for (let q = v.lo; q <= h - 3; q++) if (v.read(q) !== 0) return null;
+  let b = v.hi;
+  while (b > h && v.read(b) === 0) b--;
+  const R = b - h;
+  if (R <= 0 || R % 2 || R / 2 > 52 || v.read(b - 1) !== 1) return null;
+  let N = 0;
+  for (let i = R / 2 - 1; i >= 0; i--) { const c0 = v.read(h + 1 + 2 * i), c1 = v.read(h + 2 + 2 * i); if (c0 !== c1) return null; N = 2 * N + c0; }
+  return { p: 0, N, label: `E(0,${N})` };
+}
+
+// the real run's eat configurations to step 3,000,000 (the dots): E(0,1) at step 31, then 62 from E(2,4) at step 165
+const orbit = [];
+{
+  const r = new Run(W53);
+  const pred = (v) => decE(v) !== null;
+  while (r.t < 3e6) {
+    const s = r.until(pred, { max: 3e6 - r.t });
+    if (s === null) break;
+    const d = decE(r.view());
+    orbit.push([s, d.p, d.N]);
+  }
+  if (orbit.length !== 63 || !same(orbit[0], [31, 0, 1]) || !same(orbit[1], [165, 2, 4]) || !same(orbit[62], [2988441, 227, 293])) fail('W5-3 eat configurations differ: ' + orbit.length + ' ' + JSON.stringify([orbit[0], orbit[1], orbit[orbit.length - 1]]));
+  if (!orbit.slice(1).every(([, p, N]) => inJ(p, N)) || inJ(0, 1)) fail('an eat configuration of the run from step 165 is outside J');
+  for (let i = 0; i + 1 < orbit.length; i++) { const m = nextE(orbit[i][1], orbit[i][2]); if (!m || m[0] !== orbit[i + 1][1] || m[1] !== orbit[i + 1][2]) fail(`rule mismatch after ${orbit[i]}`); }
+  // drill 3: E(28,5) at step 3,521 is inside N <= p, and its next eat E(30,34) at step 7,351 is not
+  const k = orbit.findIndex(([s, p, N]) => s === 3521 && p === 28 && N === 5);
+  if (k < 0 || !same(orbit[k + 1], [7351, 30, 34]) || nextE(28, 5)[2] !== 1) fail('drill 3: E(28,5) at 3,521 -> E(30,34) at 7,351 by M1 differs');
+}
+
+// ---------------------------------------------------------------- 1. the step-count line and the live C2-552 run
+{
+  const nl = document.getElementById('nl');
+  const X = (lg) => `${(lg / 50 * 100).toFixed(3)}%`;
+  nl.append(el('div', 'track'));
+  const sz = el('div', 'simz'); sz.style.width = X(9); nl.append(sz);
+  for (let k = 0; k <= 50; k += 10) { const t = el('div', 'tick'); t.innerHTML = k === 0 ? '1' : `10<sup>${k}</sup>`; t.style.left = X(k); nl.append(t); }
+  // short tags on the line (the key under it says the rest); 'up' above the track, 'dn' below
+  const marks = [
+    { lg: 9, at: 'up', tag: 'our runs' },
+    { lg: Math.log10(1816824067232869945), at: 'dn', tag: 'W5-5' },
+    { lg: Math.log10(254e6 * 13.8e9 * 3.156e7), at: 'up', tag: 'since the Big Bang', ref: true },
+    { lg: Math.log10(1.76522930997643289094e44), at: 'up', tag: 'C2-552', right: true },
+    { lg: 50, at: 'dn', tag: 'W5-7 →', right: true, nomark: true },
+  ];
+  for (const mk of marks) {
+    if (!mk.nomark) { const m = el('div', `mk ${mk.at}${mk.ref ? ' ref' : ''}`); m.style.left = X(mk.lg); nl.append(m); }
+    const t = el('div', `tag ${mk.at}${mk.right ? ' r' : ''}${mk.ref ? ' ref' : ''}`, mk.tag);
+    t.style.left = X(mk.lg);
+    nl.append(t);
+  }
+  const bar = el('div', 'page');
+  nl.append(bar);
+  const go = document.getElementById('raceGo'), out = document.getElementById('raceOut');
+  let run = null;
+  go.addEventListener('click', async () => {
+    go.disabled = true;
+    run = run || new Run(C2552, 'blank', { maxSteps: 1e12 });
+    const target = run.t + 1e8, t0 = performance.now();
+    while (run.t < target && !run.halted) {
+      run.stepTo(Math.min(target, run.t + 5e6));
+      const v = run.view();
+      out.textContent = `step ${fmt(run.t)} · not halted · tape ${fmt(v.hi - v.lo + 1)} cells`;
+      bar.style.width = X(Math.log10(run.t));
+      await tick();
+    }
+    const sec = (performance.now() - t0) / 1000;
+    out.textContent = run.halted ? `halted at step ${fmt(run.t)} (page error)` : `step ${fmt(run.t)} · not halted · ${(1e8 / sec / 1e6).toFixed(0)} million steps a second · the halt is ${(44.2468 - Math.log10(run.t)).toFixed(1)} powers of 10 further on`;
+    if (run.halted) fail('C2-552 halted in the page');
+    go.textContent = 'run 100 million more';
+    go.disabled = false;
+  });
+}
+
+// ---------------------------------------------------------------- 2-3. the (p, N) plane
+function mountPlane(host, o) {
+  host.append(el('div', 'ttl', o.title));
+  const lab = el('div', 'lab'); lab.innerHTML = o.lab; host.append(lab);
+  const ctl = el('div', 'pl-ctl');
+  let range = o.ranges[0];
+  if (o.ranges.length > 1) {
+    const seg = el('span', 'pl-seg');
+    o.ranges.forEach((rg, i) => {
+      const b = el('button', i === 0 ? 'on' : '', rg.name); b.type = 'button';
+      b.addEventListener('click', () => { range = rg; [...seg.children].forEach((x) => x.classList.toggle('on', x === b)); draw(); });
+      seg.append(b);
+    });
+    ctl.append(seg);
+  }
+  const pIn = el('input'), nIn = el('input');
+  for (const [inp, nm] of [[pIn, 'p'], [nIn, 'N']]) { inp.type = 'number'; inp.min = nm === 'p' ? '0' : '1'; inp.max = nm === 'p' ? '400' : '1000'; inp.inputMode = 'numeric'; inp.setAttribute('aria-label', nm); }
+  const lp = el('label'); lp.append('p =', pIn);
+  const ln = el('label'); ln.append('N =', nIn);
+  const goB = el('button', null, 'show'); goB.type = 'button';
+  goB.addEventListener('click', () => { const p = Math.round(+pIn.value), N = Math.round(+nIn.value); if (pIn.value !== '' && nIn.value !== '' && p >= 0 && N >= 1 && p <= 400 && N <= 1000) select(p, N); else info.innerHTML = '<div class="ln">Pick p from 0 to 400 and N from 1 to 1,000.</div>'; });
+  for (const inp of [pIn, nIn]) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') goB.click(); });
+  ctl.append(el('span', 'muted', 'pick a point:'), lp, ln, goB);
+  host.append(ctl);
+  const box = el('div', 'pl-svg');
+  const tip = el('div', 'pl-tip'); tip.hidden = true;
+  box.append(tip);
+  host.append(box);
+  const info = el('div', 'pl-info');
+  host.append(info);
+  const legend = el('div', 'pl-legend');
+  legend.innerHTML = o.legend;
+  host.append(legend);
+  if (o.rulesTable) { const d = el('details', 'rules'); d.innerHTML = o.rulesTable; host.append(d); }
+
+  let sel = o.pick, geo = null, pts = [];
+  const real = new Map();
+  const realOf = (p, N) => { const k = p + ',' + N; if (!real.has(k)) real.set(k, nextEat(p, N)); return real.get(k); };
+
+  function S(tag, attrs, parent) { const e = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (parent) parent.append(e); return e; }
+  function draw() {
+    const W = Math.max(280, box.clientWidth || 600), H = Math.round(Math.min(460, Math.max(280, W * 0.6)));
+    const ml = 46, mr = 14, mt = 12, mb = 40;
+    const { pMax, nMax } = range;
+    const x = (p) => ml + (p / pMax) * (W - ml - mr), y = (N) => H - mb - (N / nMax) * (H - mt - mb);
+    geo = { x, y, ml, mr, mt, mb, W, H, pMax, nMax };
+    pts = [];
+    box.querySelector('svg')?.remove();
+    const svg = S('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': o.title });
+    const defs = S('defs', {}, svg);
+    const pat = S('pattern', { id: 'hatch', width: 7, height: 7, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' }, defs);
+    S('line', { x1: 0, y1: 0, x2: 0, y2: 7, class: 'hatchl' }, pat);
+    for (const cls of ['', 'real']) {
+      const mk = S('marker', { id: 'ah' + cls, viewBox: '0 0 10 10', refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
+      S('path', { d: 'M0,0 L10,5 L0,10 z', class: 'ahead ' + cls }, mk);
+    }
+    const stepP = pMax <= 60 ? 10 : 40, stepN = nMax <= 120 ? 20 : nMax <= 300 ? 40 : 80;
+    for (let p = 0; p <= pMax; p += stepP) { S('line', { x1: x(p), x2: x(p), y1: y(0), y2: y(nMax), class: 'grid' }, svg); S('text', { x: x(p), y: y(0) + 15, 'text-anchor': 'middle', class: 'tl' }, svg).textContent = p; }
+    for (let N = 0; N <= nMax; N += stepN) { S('line', { x1: x(0), x2: x(pMax), y1: y(N), y2: y(N), class: 'grid' }, svg); S('text', { x: x(0) - 6, y: y(N) + 4, 'text-anchor': 'end', class: 'tl' }, svg).textContent = N; }
+    S('text', { x: (x(0) + x(pMax)) / 2, y: H - 6, 'text-anchor': 'middle', class: 'al' }, svg).textContent = 'p (pairs 10 on the left)';
+    S('text', { x: 12, y: (y(0) + y(nMax)) / 2, 'text-anchor': 'middle', class: 'al', transform: `rotate(-90 12 ${(y(0) + y(nMax)) / 2})` }, svg).textContent = 'N (the counter)';
+    if (o.fence === 'weak') S('rect', { x: x(0), y: y(nMax), width: x(pMax) - x(0), height: y(1) - y(nMax), class: 'regW' }, svg);
+    const top = Math.min(2 * pMax, nMax);
+    const poly = [[0.5, 1], [pMax, 1], [pMax, top]];
+    if (2 * pMax > nMax) poly.push([nMax / 2, nMax]);
+    S('polygon', { points: poly.map(([p, N]) => `${x(p)},${y(N)}`).join(' '), class: 'regJ' }, svg);
+    S('line', { x1: x(0), y1: y(0), x2: x(top / 2), y2: y(top), class: 'line2p' }, svg);
+    S('line', { x1: x(0), y1: y(0), x2: x(pMax), y2: y(0), class: 'axis' }, svg);
+    S('line', { x1: x(0), y1: y(0), x2: x(0), y2: y(nMax), class: 'axis' }, svg);
+    const pl = Math.min(pMax * 0.42, top / 2 * 0.6);
+    S('text', { x: x(pl) - 6, y: y(2 * pl) - 6, 'text-anchor': 'end', class: 'rl' }, svg).textContent = 'N = 2p';
+    const jl = range.jLabel || [pMax * 0.93, 1];
+    S('text', { x: x(jl[0]), y: y(jl[1]) - 6, 'text-anchor': 'end', class: 'rl' }, svg).textContent = 'J: 1 ≤ N ≤ 2p';
+    if (o.fence === 'weak') S('text', { x: x(pMax * 0.97), y: y(nMax * 0.62), 'text-anchor': 'end', class: 'rlw' }, svg).textContent = 'weak fence: N ≥ 1';
+    // the real run's eat configurations
+    const vis = orbit.filter(([, p, N]) => p <= pMax && N <= nMax);
+    if (vis.length > 1) S('polyline', { points: vis.map(([, p, N]) => `${x(p)},${y(N)}`).join(' '), class: 'orbit' }, svg);
+    for (const [st, p, N] of vis) {
+      const out = !inJ(p, N);
+      S('circle', { cx: x(p), cy: y(N), r: 4.5, class: out ? 'dot dot0' : 'dot' }, svg);
+      pts.push({ sx: x(p), sy: y(N), p, N, tip: out ? `E(${p},${N}) at step ${fmt(st)}: outside J, before the proof starts` : `E(${p},${N}) at step ${fmt(st)}` });
+    }
+    // points with no rule (weak fence picture)
+    if (o.fence === 'weak') {
+      const d = Math.min(4.5, (x(1) - x(0)) * 0.42);
+      for (let p = 0; p <= pMax; p++) for (let N = 1; N <= nMax; N++) {
+        if (nextE(p, N)) continue;
+        const cx = x(p), cy = y(N);
+        S('path', { d: `M${cx - d},${cy - d}L${cx + d},${cy + d}M${cx - d},${cy + d}L${cx + d},${cy - d}`, class: 'nr' }, svg);
+        pts.push({ sx: cx, sy: cy, p, N, tip: `E(${p},${N}): no rule` });
+      }
+    }
+    box.prepend(svg);
+    drawSel(svg);
+  }
+  function clip(p0, N0, p1, N1) {
+    let t = 1;
+    if (p1 > geo.pMax) t = Math.min(t, (geo.pMax - p0) / (p1 - p0));
+    if (N1 > geo.nMax) t = Math.min(t, (geo.nMax - N0) / (N1 - N0));
+    return { p: p0 + t * (p1 - p0), N: N0 + t * (N1 - N0), cut: t < 1 };
+  }
+  function drawSel(svg) {
+    if (!sel) return;
+    const [p, N] = sel, { x, y } = geo;
+    const m = M(p, N), rr = realOf(p, N);
+    const g = S('g', {}, svg);
+    const inside = p <= geo.pMax && N <= geo.nMax;
+    const arrow = (dst, cls) => {
+      if (!inside || dst.none) return;
+      const c = clip(p, N, dst.p, dst.N);
+      const x0 = x(p), y0 = y(N), x1 = x(c.p), y1 = y(c.N), len = Math.hypot(x1 - x0, y1 - y0);
+      if (len < 9) return;
+      const sh = c.cut ? 0 : 6;
+      S('line', { x1: x0 + (x1 - x0) * 8 / len, y1: y0 + (y1 - y0) * 8 / len, x2: x1 - (x1 - x0) * sh / len, y2: y1 - (y1 - y0) * sh / len, class: 'arr ' + cls, 'marker-end': `url(#ah${cls})` }, g);
+      if (!c.cut) { S('circle', { cx: x1, cy: y1, r: 5, class: 'dst ' + cls }, g); S('text', { x: x1 + 8, y: y1 + 4, class: 'seltxt' }, g).textContent = `E(${dst.p},${dst.N})`; }
+    };
+    if (m.none) arrow(rr, 'real'); else arrow(m, '');
+    if (inside) { S('circle', { cx: x(p), cy: y(N), r: 8, class: 'sel' }, g); const lx = x(p) - 11 < 50 ? x(p) + 11 : x(p) - 11; S('text', { x: lx, y: y(N) - 9, 'text-anchor': lx < x(p) ? 'end' : 'start', class: 'seltxt' }, g).textContent = `E(${p},${N})`; }
+  }
+  function select(p, N) {
+    sel = [p, N];
+    pIn.value = p; nIn.value = N;
+    const m = M(p, N), rr = realOf(p, N);
+    const lines = [];
+    const where = inJ(p, N) ? `inside J: ${N} ≤ 2·${p} = ${2 * p} <span class="yes">✓</span>` : `outside J: ${N} > 2·${p} = ${2 * p}`;
+    lines.push(`<div class="ln"><b>E(${p},${N})</b> · ${where}${p > geo.pMax || N > geo.nMax ? ' · <span class="muted">(off this picture)</span>' : ''}</div>`);
+    if (m.none) lines.push(`<div class="ln"><span class="k">rule</span><span class="no">no rule covers this point.</span> ${m.why}.</div>`);
+    else {
+      lines.push(`<div class="ln"><span class="k">rule</span>${m.r}, because ${m.why}: ${m.g} = <b>(${m.p}, ${m.N})</b>${m.note}</div>`);
+      lines.push(`<div class="ln"><span class="k">lands</span>${inJ(m.p, m.N) ? `inside J: ${m.N} ≤ 2·${m.p} = ${2 * m.p} <span class="yes">✓</span>` : `outside J: ${m.N} > 2·${m.p} = ${2 * m.p}`}</div>`);
+    }
+    if (rr.none) lines.push(`<div class="ln"><span class="k">real machine</span>${rr.halted ? '<span class="no">halts</span>' : 'no eat configuration'} within ${fmt(rr.steps)} steps</div>`);
+    else {
+      const agree = !m.none && m.p === rr.p && m.N === rr.N;
+      lines.push(`<div class="ln"><span class="k">real machine</span>started from this tape, its next eat configuration is <b>E(${rr.p},${rr.N})</b>, ${fmt(rr.steps)} steps later${m.none ? (inJ(rr.p, rr.N) ? `, back inside J (${rr.N} ≤ ${2 * rr.p})` : '') : agree ? ' <span class="yes">✓ same as the rule</span>' : ' <span class="no">✗ differs from the rule (page error)</span>'}</div>`);
+      if (!m.none && !agree) fail(`rule and machine differ at E(${p},${N})`);
+    }
+    info.innerHTML = lines.join('');
+    if (geo) { box.querySelector('svg')?.remove(); draw(); }
+  }
+  // pointer to the nearest drawn point (dot or cross) within 12 px, so close points never steal each other's taps
+  const svgPoint = (ev) => { const svg = box.querySelector('svg'), r = svg.getBoundingClientRect(), k = geo.W / (r.width || geo.W); return { sx: (ev.clientX - r.left) * k, sy: (ev.clientY - r.top) * k, bx: ev.clientX - box.getBoundingClientRect().left, by: ev.clientY - box.getBoundingClientRect().top }; };
+  const nearest = ({ sx, sy }) => { let best = null, bd = 12 * 12; for (const q of pts) { const d = (q.sx - sx) ** 2 + (q.sy - sy) ** 2; if (d < bd) { bd = d; best = q; } } return best; };
+  box.addEventListener('pointermove', (ev) => {
+    if (!geo) return;
+    const pt = svgPoint(ev), q = nearest(pt);
+    if (!q) { tip.hidden = true; return; }
+    tip.textContent = q.tip; tip.hidden = false;
+    tip.style.left = Math.min(Math.max(pt.bx, 70), box.clientWidth - 70) + 'px'; tip.style.top = pt.by + 'px';
+  });
+  box.addEventListener('pointerleave', () => { tip.hidden = true; });
+  box.addEventListener('click', (ev) => {
+    if (!geo) return;
+    const pt = svgPoint(ev), q = nearest(pt), g = geo;
+    if (q) { select(q.p, q.N); return; }
+    const p = Math.round(((pt.sx - g.ml) / (g.W - g.ml - g.mr)) * g.pMax), N = Math.round(((g.H - g.mb - pt.sy) / (g.H - g.mt - g.mb)) * g.nMax);
+    if (p < 0 || p > g.pMax || N < 1 || N > g.nMax) return;
+    if (o.fence === 'J' && !inJ(p, N)) { info.innerHTML = `<div class="ln">E(${p},${N}) is outside J (${N} > 2·${p}). Pick a point on or under the line, or see beat 3 for points outside.</div>`; sel = null; draw(); return; }
+    select(p, N);
+  });
+  new ResizeObserver(() => { const w = box.clientWidth; if (w && (!geo || Math.abs(w - geo.W) > 2)) draw(); }).observe(box);
+  draw();
+  if (sel) select(sel[0], sel[1]);
+  return { select, real: realOf, host, points: () => pts };
+}
+
+const RULES = `<summary>the five rules (from module 4)</summary>
+<table class="plain"><tr><th>rule</th><th>when</th><th>E(p,N) goes to</th></tr>
+<tr><td>M1</td><td>N odd</td><td>(p + 2 + [p odd], (N + 1)/2 + p + 3)</td></tr>
+<tr><td>M2</td><td>N a multiple of 4</td><td>(p + 3 + [p odd], N/4 + p + 4)</td></tr>
+<tr><td>M3</td><td>N = 8m + 2</td><td>(p + 4 + [p odd], m + p + 6)</td></tr>
+<tr><td>M4</td><td>N = 16m + 6</td><td>(p + 7, m + 5)</td></tr>
+<tr><td>M5</td><td>N + 2 = (2m + 1)·2<sup>t+3</sup>, t ≥ 1, <b>and p + 7 ≥ 2<sup>t</sup></b></td><td>(p + 7 + t, m + 2<sup>t</sup> + t + 1)</td></tr></table>
+<p class="muted">[p odd] is 1 when p is odd and 0 when it is even. Every N ≥ 1 falls in exactly one row; only M5 has a condition on p. Source: W5-3's <code>submission/proof.md</code> §3.5 and §4.</p>`;
+
+const planeJ = mountPlane(document.getElementById('planeJ'), {
+  title: 'W5-3: each eat configuration E(p,N) as a point',
+  lab: 'Dots: the real run (tap one, or anywhere in the blue region). The arrow is where the rule sends that point.',
+  fence: 'J', pick: [28, 5],
+  ranges: [{ name: 'p ≤ 60', pMax: 60, nMax: 120 }, { name: 'all 63 (p ≤ 240)', pMax: 240, nMax: 480, jLabel: [192, 100] }],
+  legend: '<i class="lgdot"></i>eat configuration of the real run<i class="lgdot0"></i>E(0,1), before the proof starts<i class="lgj"></i>the fence J<i class="lga"></i>the rule\'s arrow',
+  rulesTable: RULES,
+});
+const planeW = mountPlane(document.getElementById('planeW'), {
+  title: 'The same plane, with the weak fence N ≥ 1',
+  lab: 'Red crosses: points inside the weak fence with no rule. Tap one, or type its p and N: the dashed arrow is where the real machine goes.',
+  fence: 'weak', pick: [0, 62],
+  ranges: [{ name: 'p ≤ 30', pMax: 30, nMax: 280 }, { name: 'p ≤ 60', pMax: 60, nMax: 280 }],
+  legend: '<i class="lgw"></i>weak fence N ≥ 1<i class="lgj"></i>J<i class="lgx"></i>no rule<i class="lgdot"></i>real run<i class="lgr"></i>the real machine\'s next eat',
+});
+{
+  const r = planeW.real(0, 62);
+  if (!same([r.p, r.N, r.steps], [12, 7, 688])) fail('E(0,62) does not reach E(12,7) at step 688: ' + JSON.stringify(r));
+  let n = 0;
+  for (let p = 0; p <= 60; p++) for (let N = 1; N <= 280; N++) if (!nextE(p, N)) n++;
+  if (n !== 36) fail('no-rule points in the weak picture: ' + n);
+  // drill 1: E(40,78) -> E(48,6) by M5, 566 steps; its start text is E(40,78)
+  const d1 = nextEat(40, 78), m1 = nextE(40, 78);
+  if (!same([d1.p, d1.N, d1.steps], [48, 6, 566]) || !same(m1, [48, 6, 5])) fail('drill 1: E(40,78) ' + JSON.stringify([d1, m1]));
+  if (dh(parseConfig('0^inf (10)^40 0 1 1 B> 0 00 11 11 11 00 00 11 0^inf')) !== dh(parseConfig(Etape(40, 78)))) fail('drill 1 start is not E(40,78)');
+  // drill 2: at N = 254 exactly p = 0..24 have no rule; E(25,254) -> E(37,38) by M5 in 9,066 steps; E(24,254) -> E(38,9) in 4,334
+  const holes = []; for (let p = 0; p <= 60; p++) if (!nextE(p, 254)) holes.push(p);
+  const d25 = nextEat(25, 254), d24 = nextEat(24, 254);
+  if (holes.length !== 25 || holes[24] !== 24 || !same(nextE(25, 254), [37, 38, 5]) || !same([d25.p, d25.N, d25.steps], [37, 38, 9066]) || !same([d24.p, d24.N, d24.steps], [38, 9, 4334])) fail('drill 2: N = 254 ' + JSON.stringify([holes.length, d25, d24]));
+}
+
+// closure for every point with p <= 3000 (arithmetic, the same check as M5-w53-closure-arith)
+document.getElementById('allGo').addEventListener('click', async (ev) => {
+  const b = ev.currentTarget, out = document.getElementById('allOut');
+  b.disabled = true;
+  const t0 = performance.now();
+  let pts = 0, bad = null;
+  for (let p = 0; p <= 3000 && !bad; p++) {
+    for (let N = 1; N <= 2 * p; N++) { pts++; const m = nextE(p, N); if (!m || !inJ(m[0], m[1])) { bad = [p, N]; break; } }
+    if (p % 250 === 0) { out.textContent = `p = ${p}…`; await tick(); }
+  }
+  const s = ((performance.now() - t0) / 1000).toFixed(1);
+  out.innerHTML = bad ? `<span class="no">✗ E(${bad[0]},${bad[1]}) fails</span>` : `<span class="yes">✓</span> ${fmt(pts)} points in ${s} s: every one has a rule, and every arrow lands inside J.`;
+  if (bad || pts !== 9003000) fail('closure check: ' + JSON.stringify({ pts, bad }));
+  b.disabled = false;
+});
+// drill 3's reveal: the fence 1 <= N <= 3p, checked live for p <= 3000 (the same check as M5-drill-fence)
+async function check3p(span) {
+  let pts = 0, bad = null;
+  for (let p = 0; p <= 3000 && !bad; p++) {
+    for (let N = 1; N <= 3 * p; N++) { pts++; const m = nextE(p, N); if (!m || m[1] < 1 || m[1] > 3 * m[0]) { bad = [p, N]; break; } }
+    if (p % 500 === 0) { span.textContent = `checking… p = ${p}`; await tick(); }
+  }
+  span.innerHTML = bad ? `<span class="no">✗ E(${bad[0]},${bad[1]}) fails (page error)</span>` : `<span class="yes">✓</span> checked just now in your browser: all ${fmt(pts)} points with p ≤ 3,000 have a rule, and every arrow lands inside 1 ≤ N ≤ 3p.`;
+  if (bad || pts !== 13504500) fail('3p fence check: ' + JSON.stringify({ pts, bad }));
+}
+// "show on the plane" buttons inside the drill explanations
+document.addEventListener('click', (ev) => {
+  const b = ev.target.closest && ev.target.closest('button.showpt');
+  if (!b) return;
+  const pl = b.dataset.plane === 'W' ? planeW : planeJ;
+  pl.select(+b.dataset.p, +b.dataset.n);
+  pl.host.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+// ---------------------------------------------------------------- 4. W4-7: A (real run) and B (two widths shrunk), as block strips
+const TAPE_A = '0^inf (101)^183 F> 0 11 0000 (110)^150 0110 (110)^3 0010 0010 011 001 011 0^inf';
+const TAPE_B = '0^inf (101)^183 F> 0 11 0000 (110)^7 0110 (110)^1 0010 0010 011 001 011 0^inf';
+// the counter digits [value, width, ready] as W4-7's digit-level simulator (scripts/grammar/absim2.py) parses them; it writes
+// a resting digit v as 0 + REST[v] and a ready one as READY[v], each followed by (110)^width
+const REST = { 0: '000', 1: '110', 2: '010' }, READY = { 0: '000', 1: '011', 2: '001' };
+const DIG_A = [[0, 150, false], [1, 3, false], [2, 0, false], [2, 0, false], [1, 0, true], [2, 0, true], [1, 0, false]];
+const DIG_B = [[0, 7, false], [1, 1, false], [2, 0, false], [2, 0, false], [1, 0, true], [2, 0, true], [1, 0, false]];
+const digWord = ([v, , r]) => (r ? READY[v] : '0' + REST[v]);
+function w47strip(host, D, changed) {
+  const piece = (cls) => { const p = el('div', 'bs-p' + (cls ? ' ' + cls : '')), top = el('div', 'bs-top'), body = el('div', 'bs-body'), cap = el('div', 'bs-cap'); p.append(top, body, cap); host.append(p); return { top, body, cap }; };
+  const cells = (s, here) => { const c = el('span', 'bs-cells'); for (const ch of s) c.append(el('span', 'bs-c s' + ch + (here ? ' here' : ''))); return c; };
+  const blk = (w, n) => { const b = el('span', 'bs-blk'); b.append(cells(w), `×${n}`); b.title = `(${w})^${n}: ${n} copies of ${w}`; return b; };
+  piece().body.append(blk('101', 183));
+  const h = piece(); h.top.append(el('span', 'bs-badge', 'F')); h.body.append(cells('0', true)); h.cap.textContent = 'head';
+  piece().body.append(cells('11'));
+  D.forEach((d, i) => {
+    const q = piece('bs-dig' + (changed.includes(i) ? ' chg' : ''));
+    q.body.append(cells(digWord(d)));
+    if (d[1]) q.body.append(blk('110', d[1]));
+    q.cap.innerHTML = `<b>${d[0]}</b>w ${d[1]}`;
+    q.body.parentElement.title = `counter digit ${i + 1} (lowest first): value ${d[0]}, width ${d[1]}`;
+  });
+}
+w47strip(document.getElementById('stripA'), DIG_A, [0, 1]);
+w47strip(document.getElementById('stripB'), DIG_B, [0, 1]);
+document.getElementById('bsLegend').innerHTML = '<span class="bs-c s1"></span>1<span class="bs-c s0"></span>0 · a dashed box ×n is n copies of its word · under each counter digit: its value (0, 1 or 2, lowest digit first) and its width w · outlined: the two widths that differ';
+// the strips are the tape text, cell for cell
+for (const [nm, txt, D] of [['A', TAPE_A, DIG_A], ['B', TAPE_B, DIG_B]]) {
+  const c = parseConfig(txt), s = Array.from(c.tape).join('');
+  const left = s.slice(0, c.head).replace(/^0+/, ''), right = s.slice(c.head + 1).replace(/0+$/, '');
+  const want = ('11' + D.map((d) => digWord(d) + '110'.repeat(d[1])).join('')).replace(/0+$/, '');
+  if (left !== '101'.repeat(183) || c.tape[c.head] !== 0 || c.state !== 'F' || right !== want) fail(`W4-7 strip ${nm} is not its tape text`);
+}
+const trimCells = (cfg) => { const s = Array.from(cfg.tape).join(''); const a = s.search(/1/); return { s: s.replace(/^0+|0+$/g, ''), head: cfg.head - a }; };
+document.getElementById('cmpGo').addEventListener('click', async (ev) => {
+  const b = ev.currentTarget, rA = document.getElementById('resA'), rB = document.getElementById('resB');
+  b.disabled = true;
+  const runB = new Run(W47, parseConfig(TAPE_B), { maxSteps: 1e7 });
+  runB.stepTo(1e7);
+  rB.innerHTML = runB.halted ? `<span class="no">halts at step <b>${fmt(runB.t)}</b></span>: E reads 0, which is <code>---</code>` : `no halt by ${fmt(runB.t)} (page error)`;
+  if (!runB.halted || runB.t !== 203453 || runB.view().rule !== 'E0') fail('tape B does not halt at step 203,453 from E0');
+  const runA = new Run(W47, 'blank', { maxSteps: 1e9 });
+  const goal = 17855559;
+  while (runA.t < goal) { runA.stepTo(Math.min(goal, runA.t + 4e6)); rA.textContent = `simulating from a blank tape: step ${fmt(runA.t)}…`; await tick(); }
+  const got = trimCells(runA.config()), want = trimCells(parseConfig(TAPE_A));
+  const ok = got.s === want.s && got.head === want.head && runA.view().state === 'F';
+  if (!ok) fail('the real W4-7 run at step 17,855,559 is not tape A');
+  const end = goal + 2e7;
+  while (runA.t < end && !runA.halted) { runA.stepTo(Math.min(end, runA.t + 4e6)); rA.innerHTML = `${ok ? '<span class="yes">✓</span> the real run reaches exactly tape A at step 17,855,559.' : '<span class="no">✗ tape differs</span>'} Now at step ${fmt(runA.t)}…`; await tick(); }
+  rA.innerHTML = `${ok ? '<span class="yes">✓</span> the real run reaches exactly tape A at step 17,855,559' : '<span class="no">✗ tape differs</span>'}; at step ${fmt(runA.t)} it is <span class="yes">still running</span>`;
+  if (runA.halted) fail('the real W4-7 run halted');
+  b.textContent = 'run both again';
+  b.disabled = false;
+});
+
+// ---------------------------------------------------------------- 5. #11: the invariant INV, computed from each K configuration
+/** INV = Common and (A or B or C), from #11's submission/proof.md sections 1 and 3. Returns the phase or null. */
+function inv11(d) {
+  const ds = d.digits, m = ds.length;
+  let U = 0;
+  const vbar = [], ubar = [];
+  ds.forEach((x, i) => { const j = i + 1; U = 2 * U + x.bit; const R = 2 ** j - 1 - U; vbar.push(x.v - R); ubar.push(x.u + (R + 1 - x.bit) / 2); });
+  const Rtot = 2 ** m - 1 - U, S = d.a + Rtot - (2 ** (m + 1) - 2), T = d.b - (2 * U - 1);
+  const canon = ds.every((x) => x.v >= 1 && (x.bit === 0 || x.u >= 1));
+  const common = m >= 1 && canon && d.a >= 1 && d.b % 2 === 1 && (d.a + Rtot) % 2 === 0 && S >= 0 && T >= 0 && vbar[m - 1] >= 1;
+  if (!common) return null;
+  const d1 = ds[0], par = ds.every((x) => (x.v + x.bit) % 2 === 1);
+  if (((d1.u === 0 && d1.bit === 0 && d1.v >= 2) || (d1.u === 1 && d1.bit === 1)) && vbar.every((v) => v >= 1) && ubar.every((u) => u % 2 === 1) && S >= 1) return 'A';
+  if (d1.u === 0 && d1.bit === 0 && d1.v === 1 && par && ubar.every((u, i) => i === 0 || u >= 2 ** i)) return 'B';
+  if (par && ubar.every((u, i) => u >= 2 ** (i + 1)) && S >= 1 && T >= 2) return 'C';
+  return null;
+}
+/** each digit's fuel v and coming carries R (R_j = 2^j - 1 - U_j, high digit first), and S, the spare the next overflow gives its new low digit */
+function k11info(d) {
+  const m = d.digits.length; let U = 0;
+  const digs = d.digits.map((x, i) => { U = 2 * U + x.bit; const R = 2 ** (i + 1) - 1 - U; return { u: x.u, bit: x.bit, v: x.v, R, from: x.from, to: x.to }; });
+  return { digs, S: d.a + (2 ** m - 1 - U) - (2 ** (m + 1) - 2), phase: inv11(d) };
+}
+const K11ROWS = [];
+{
+  const run = new Run(K11, 'blank', { maxSteps: 20001 });
+  const pred = (v) => decoders.k11(v) != null;
+  while (run.t < 20000 && run.until(pred, { max: 20000 - run.t }) !== null) {
+    const d = decoders.k11(run.view()), inf = k11info(d);
+    K11ROWS.push({ step: run.t, bits: d.bits, ...inf, cells: run.t <= 1064 ? inf.digs.map((g) => [...run.cells(g.from, g.to - 1)]) : null });
+  }
+}
+{
+  const host = document.getElementById('k11ledger');
+  const box = el('div', 'fl');
+  box.append(el('div', 'fl-title', '#11 from a blank tape: each counter reading, steps 142 to 1,064'),
+    el('div', 'fl-label', 'Computed live from the real run. Each box is one digit, high digit on the left, drawn from its tape cells. Under it: v, its fuel, and R, the carries still coming to it before the next overflow.'));
+  const grid = el('div', 'fl-grid');
+  grid.append(el('span', 'fl-h', 'step'), el('span', 'fl-h', 'reads'), el('span', 'fl-h', 'S'), el('span', 'fl-h', 'digits (high … low)'), el('span', 'fl-h', 'inside the invariant?'));
+  for (const r of K11ROWS.filter((x) => x.step <= 1064)) {
+    const m = r.digs.length, low = r.digs[m - 1];
+    const badLow = !r.phase && low.v - low.R < 1, badS = !r.phase && !badLow && r.S < 1;
+    const ds = el('span', 'fl-digits');
+    r.digs.forEach((g, i) => {
+      const cls = badLow && i === m - 1 ? ' bad' : r.phase === 'B' && i === 0 ? ' fall' : '';
+      const dig = el('span', 'fl-dig' + cls), cs = el('span', 'fl-cells');
+      r.cells[i].forEach((c, j) => cs.append(el('span', `fl-c s${c}${j < 2 * g.u ? '' : g.bit === 0 && j < 2 * g.u + 2 ? ' gap' : ' fuel'}`)));
+      cs.title = g.bit === 1 ? `(10)^${g.u} (01)^${g.v}: a 1` : `(10)^${g.u} 00 (01)^${g.v}: a 0`;
+      dig.append(cs, el('span', 'fl-cap', `v ${g.v} · R ${g.R}`));
+      ds.append(dig);
+    });
+    const vd = el('span', 'fl-v');
+    if (badLow) vd.innerHTML = `<span class="n">✗ outside</span>: the low digit has v = R = ${low.v}, no spare fuel`;
+    else if (badS) vd.innerHTML = `<span class="n">✗ outside</span>: S = ${r.S}, so the next overflow's new low digit gets no spare fuel`;
+    else if (!r.phase) vd.innerHTML = '<span class="n">✗ outside</span>';
+    else if (r.phase === 'A') vd.innerHTML = '<span class="y">✓ inside</span>, phase A: every digit has v ≥ R + 1';
+    else if (r.phase === 'B') vd.innerHTML = '<span class="y">✓ inside</span>, phase B: the top digit (v = 1) falls when a carry reaches it';
+    else vd.innerHTML = '<span class="y">✓ inside</span>, phase C: the top digit has fallen';
+    grid.append(el('span', 'fl-step', fmt(r.step)), el('span', 'fl-read', r.bits), el('span', 'fl-S' + (badS ? ' zero' : ''), `S ${r.S}`), ds, vd);
+  }
+  box.append(grid);
+  const lg = el('div', 'fl-legend');
+  const sw = (color, txt) => { const i = el('i'); i.style.borderColor = color; lg.append(i, txt); };
+  sw('var(--caution)', 'fuel: the 01s');
+  sw('var(--bad)', 'the 00 that makes a digit 0');
+  lg.append(' · S: the spare fuel the next overflow gives its new low digit (if no digit drops first)');
+  box.append(lg);
+  host.append(box);
+  // the rows, values and phases (the same as M5-k11-fuel and M5-k11-inv)
+  const shown = K11ROWS.filter((x) => x.step <= 1064).map((r) => [r.step, r.digs.map((g) => [g.u, g.bit, g.v, g.R]), r.S, r.phase]);
+  const want = [[142, [[3, 1, 1, 0]], 0, null], [283, [[0, 0, 3, 1], [1, 1, 2, 2]], 0, null], [383, [[1, 1, 2, 0], [1, 0, 1, 1]], 0, null], [483, [[1, 1, 2, 0]], 6, 'A'],
+    [752, [[0, 0, 1, 1], [2, 1, 8, 2]], 4, 'B'], [908, [[3, 0, 7, 1]], 8, 'C'], [1064, [[4, 1, 6, 0]], 8, 'C']];
+  if (!same(shown, want)) fail('#11 ledger rows differ: ' + JSON.stringify(shown));
+  if (K11ROWS.length !== 49 || K11ROWS[48].step !== 19774 || !K11ROWS.slice(3).every((r) => r.phase)) fail('#11: counter readings to step 20,000 differ, or one after step 483 is outside the invariant');
+}
+
+// ---------------------------------------------------------------- the E(0,62) run of beat 3
+const e062 = mountRun(document.getElementById('e062run'), {
+  tm: W53, start: Etape(0, 62), startLabel: 'E(0,62) = 0^inf 0 1 1 B> 0 00 11 11 11 11 11 0^inf (62 = 111110 in binary, digits lowest first)',
+  rows: (v) => decE(v) !== null, count: 5, window: { follow: 12 }, view: 'both', compress: { words: ['10', '00', '11'] }, mark: { digits: 'w53-E' }, speed: 1,
+  label: (row) => (row.decoded ? row.decoded.label : row.step === 0 ? 'E(0,62)' : ''),
+  title: 'W5-3 started from E(0,62), one row per eat configuration',
+});
+e062.ready.then(() => {
+  const lab = e062.el.querySelector('.tm-label');
+  if (lab) lab.textContent = lab.textContent.replace('Rows: selected steps', 'Rows: each eat configuration E(p,N)');
+  const got = e062.rows().map((r) => [r.step, r.label]);
+  if (!same(got, [[0, 'E(0,62)'], [688, 'E(12,7)'], [1830, 'E(14,19)'], [3220, 'E(16,27)'], [4898, 'E(18,33)']])) fail('E(0,62) widget rows differ: ' + JSON.stringify(got));
+});
+{
+  const r = new Run(W53, parseConfig(Etape(0, 62)));
+  const got = [];
+  while (got.length < 4) { const s = r.until(at.decoded('w53-E'), { max: 1e5 }); if (s === null) break; const d = decoders['w53-E'](r.view()); got.push([s, d.p, d.N]); }
+  if (!same(got, [[688, 12, 7], [1830, 14, 19], [3220, 16, 27], [4898, 18, 33]])) fail('E(0,62) run differs: ' + JSON.stringify(got));
+  if (Etape(0, 62) !== '0^inf 0 1 1 B> 0 0 0 1 1 1 1 1 1 1 1 1 1 0^inf') fail('E(0,62) tape text differs');
+}
+window.__learnReady = autoMount();
+window.__learnReady.then(() => {
+  const box = document.querySelector('.tm-predict[data-id="m5-fence"]');
+  if (!box) { fail('drill 3 box missing'); return; }
+  new MutationObserver(() => {
+    const sp = box.dataset.revealed && box.querySelector('.fence3p');
+    if (sp && !sp.dataset.done) { sp.dataset.done = '1'; check3p(sp); }
+  }).observe(box, { attributes: true, attributeFilter: ['data-revealed'] });
+});
+</script>
+</body>
+</html>

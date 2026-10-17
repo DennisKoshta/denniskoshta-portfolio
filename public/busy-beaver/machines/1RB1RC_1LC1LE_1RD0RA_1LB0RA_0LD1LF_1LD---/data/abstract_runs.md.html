@@ -1,0 +1,307 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>abstract_runs.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---/data/abstract_runs.md · <a href="/busy-beaver/machines/1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---/data/abstract_runs.md.html">raw</a></div>
+<h1 id="w7-1-abstract-runs-evidence-for-proofmd-52-and-64">W7-1 abstract runs (evidence for proof.md §5.2 and §6.4)</h1>
+<p>Scripts: <code>work/proof_runs/</code> (scratch copies). <code>absmap.py</code> is the scratch version of <code>step()</code> in <code>check_proof.py</code>: it lacks PLUS with x = 2 and the j != L guard of DEATH-MERGE. Neither situation arose in these runs (no UNKNOWN event; the one DEATH-MERGE has j != L).</p>
+<h2 id="1-oracle-checked-runs-to-1e13-accel2py">1. Oracle-checked runs to 1e13 (<code>accel2.py</code>)</h2>
+<p>ODD and PLUS steps are applied by the abstract map; every other event is run on the real TM (C core, <code>tools/sim</code>) from the rebuilt tape and compared with the abstract map (tokens and exact steps).</p>
+<table>
+<thead>
+<tr>
+<th>line</th>
+<th>start</th>
+<th>steps</th>
+<th>half-cycles</th>
+<th>TM-run events</th>
+<th>mismatches against <code>check_proof.py</code> step()</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>75</td>
+<td>A</td>
+<td>1.0000e+13</td>
+<td>2,208,665</td>
+<td>158</td>
+<td>2 (the two opening gap-4 events, outside cases o5/o8 before the base)</td>
+</tr>
+<tr>
+<td>597</td>
+<td>B</td>
+<td>1.0000e+13</td>
+<td>2,208,668</td>
+<td>161</td>
+<td>2 (the two opening gap-4 events, outside cases o5/o8 before the base)</td>
+</tr>
+<tr>
+<td>265</td>
+<td>C</td>
+<td>1.0000e+13</td>
+<td>2,208,676</td>
+<td>161</td>
+<td>2 (the two opening gap-4 events, outside cases o5/o8 before the base)</td>
+</tr>
+<tr>
+<td>179</td>
+<td>D</td>
+<td>1.0000e+13</td>
+<td>2,208,676</td>
+<td>162</td>
+<td>2 (the two opening gap-4 events, outside cases o5/o8 before the base)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-abstract-map-runs-from-kc-to-1e16-analyze2py">2. Abstract-map runs from K(c) to 1e16 (<code>analyze2.py</code>)</h2>
+<p>No outside case on any of the four orbits.</p>
+<table>
+<thead>
+<tr>
+<th>line</th>
+<th>half-cycles</th>
+<th>fields at 1e16</th>
+<th>rule counts</th>
+<th>first-field prefix shapes at non-ODD events</th>
+<th>margins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>75</td>
+<td>68,096,601</td>
+<td>25</td>
+<td>odd 68095979, plus 435, death 40, hash-odd 39, bounce 39, odd-plus 28, overflow-even 16, overflow-odd 9, plus-farend-1 7, death-farend 5, plus-merge-1 2, hash-farend-0 1, death-merge 1</td>
+<td><code>1 +</code> 295, <code>(none)</code> 196, <code>1 + 1 +</code> 85, <code>0 |</code> 30, <code>1 + 0 |</code> 7, <code>1 + 0 | 1 |</code> 5, <code>1 + 1 + 3 |</code> 1, <code>1 + 0 | 0 |</code> 1, <code>0 | 0 |</code> 1, <code>0 #</code> 1</td>
+<td>death b &gt;= 29, hash-odd a &gt;= 6, bounce a &gt;= 5, PLUS x &gt;= 5, ODD-PLUS d &gt;= 1</td>
+</tr>
+<tr>
+<td>597</td>
+<td>67,915,198</td>
+<td>26</td>
+<td>odd 67914577, plus 438, death 40, hash-odd 40, bounce 40, odd-plus 24, overflow-even 14, overflow-odd 10, plus-farend-1 8, death-farend 6, plus-merge-1 1</td>
+<td><code>1 +</code> 247, <code>(none)</code> 226, <code>1 + 1 +</code> 61, <code>1 + 3 +</code> 51, <code>0 |</code> 21, <code>1 + 0 |</code> 13, <code>0 | 3 |</code> 1, <code>2 |</code> 1</td>
+<td>death b &gt;= 29, hash-odd a &gt;= 6, bounce a &gt;= 5, PLUS x &gt;= 3, ODD-PLUS d &gt;= 1</td>
+</tr>
+<tr>
+<td>265</td>
+<td>71,865,805</td>
+<td>26</td>
+<td>odd 71865191, plus 427, death 42, hash-odd 42, bounce 42, odd-plus 23, overflow-even 15, plus-farend-1 9, overflow-odd 8, death-farend 5, plus-merge-1 1</td>
+<td><code>1 +</code> 337, <code>(none)</code> 183, <code>1 + 1 +</code> 61, <code>0 |</code> 21, <code>1 + 0 |</code> 12</td>
+<td>death b &gt;= 29, hash-odd a &gt;= 6, bounce a &gt;= 5, PLUS x &gt;= 5, ODD-PLUS d &gt;= 1</td>
+</tr>
+<tr>
+<td>179</td>
+<td>71,865,805</td>
+<td>26</td>
+<td>odd 71865191, plus 427, death 42, hash-odd 42, bounce 42, odd-plus 23, overflow-even 15, plus-farend-1 9, overflow-odd 8, death-farend 5, plus-merge-1 1</td>
+<td><code>1 +</code> 337, <code>(none)</code> 183, <code>1 + 1 +</code> 61, <code>0 |</code> 21, <code>1 + 0 |</code> 12</td>
+<td>death b &gt;= 29, hash-odd a &gt;= 6, bounce a &gt;= 5, PLUS x &gt;= 5, ODD-PLUS d &gt;= 1</td>
+</tr>
+</tbody>
+</table>
+<p>Final configurations at 1e16:</p>
+<ul>
+<li>line 75: <code>1 + 102 | 2291 | 7641 | 12843 | 32183 | 28866 | 51781 | 19478 | 212965 | 374813 | 35639 | 188853 | 29540 | 899601 | 1637660 | 890529 | 9613307 | 10652555 | 8162056 | 2900946 | 12302489 | 15322246 | 30677023 | 42138061</code></li>
+<li>line 597: <code>1 + 109 + 255 | 2005 | 7616 | 12790 | 32079 | 28660 | 51367 | 18651 | 211308 | 371502 | 29018 | 175612 | 3052 | 846628 | 1531720 | 678643 | 9189536 | 13999313 | 3321238 | 19322547 | 1078444 | 4276018 | 44269459 | 36373093</code></li>
+<li>line 265: <code>1 + 17 + 101 + 246 | 1987 | 7577 | 12714 | 31926 | 28355 | 50760 | 17436 | 208876 | 366638 | 19291 | 156154 | 804663 | 1447786 | 510776 | 8853804 | 13327847 | 1978304 | 16636680 | 41844052 | 21012207 | 14777432 | 21636271</code></li>
+<li>line 179: <code>1 + 15 + 101 + 246 | 1987 | 7577 | 12714 | 31926 | 28355 | 50760 | 17436 | 208876 | 366638 | 19291 | 156154 | 804663 | 1447786 | 510776 | 8853804 | 13327847 | 1978304 | 16636680 | 41844052 | 21012207 | 14777432 | 21636271</code></li>
+</ul>
+<h2 id="3-divergence-of-the-four-orbits-lemma-sp">3. Divergence of the four orbits (Lemma SP)</h2>
+<p>Compared at non-ODD events, up to one field differing by an even amount:</p>
+<ul>
+<li>75 vs the others: agree on 490 non-ODD events; first difference at 5.98e14 (75: far-end <code>0 | 0 | 117 ...</code>, DEATH at depth 21 next to a 0 first field, then HASH-FAR-0 at 7.07e14).</li>
+<li>597 vs 265/179: agree on 544 non-ODD events; first difference at 2.13e15 (597: DEATH-FAR <code>0 | 109 | ...</code>).</li>
+<li>265 vs 179: agree on all 614 non-ODD events to 1e16 (first fields differ by 2).</li>
+</ul>
+<h2 id="4-far-end-probe-farprobepy-datafarprobeout">4. Far-end probe (<code>farprobe.py</code>, <code>data/farprobe.out</code>)</h2>
+<p>Prefixes of 1-3 fields (values 0..3, separators <code>| + #</code>) in front of <code>20 | 14 | 8 | 22</code> (all even) or <code>21 | 14 | 8 | 22</code> (first bulk field odd): 3,768 cases; 2,847 match the map; 921 are outside cases (o1)-(o8), of which 60 halt, every one of them with a 0-field between two <code>+</code> reached by the scan (o1).</p>
+</main></body></html>

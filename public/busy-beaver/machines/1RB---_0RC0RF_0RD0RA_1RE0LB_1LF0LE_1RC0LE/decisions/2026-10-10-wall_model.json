@@ -1,0 +1,57 @@
+{
+ "tm": "1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE",
+ "bucket_reason": "Low confidence at observe: the local rules are exact, but the cycle-level rules and the non-halting argument are open, so proof work waits.",
+ "question": "W4-6 and its E-start twin (740 line 612) are a nested wall-bouncer with a clean 2^(j+1)-periodic hierarchy: fund a ~2 h wall-model stage, run only a bigger CTL search in the background, or park both?",
+ "options": [
+  {
+   "id": "wall_model",
+   "label": "Fund one ~2 h wall-model stage for both lines",
+   "consequence": "Build an abstract simulator on K(n; a) from R1-R11/L1-L3 plus a ruled right-end routine, check it against the TM to 1e11 for both starts, then derive the cycle map and look for the carry invariant (a1 >= 1, wall spacing). Output: an exact model and a go/no-go on proof.md; no invariant guaranteed."
+  },
+  {
+   "id": "ctl_only",
+   "label": "Bigger CTL sweep in the background only",
+   "consequence": "No agent analysis; one ctlx process runs ~100 more parameter sets (longer NG/RWL_mod windows, under the 6 GB cap). A certificate would close both lines via solve_cert; 25 sets have already failed."
+  },
+  {
+   "id": "park",
+   "label": "Park both now",
+   "consequence": "No compute. Both lines go to STUCK at observe with these notes, rules and the 1e11 data; resume if a multi-level-counter method appears elsewhere."
+  }
+ ],
+ "recommended": "wall_model",
+ "rationale": [
+  "Local rules cover all but the right-end routine; a_j is exactly 2^(j+1)-periodic, so a counter, not a cryptid.",
+  "One model serves 2 holdouts (same table, orbits equal from entry 2 on).",
+  "400 random K(n; a) with a1 >= 1 never halted in 2e7 steps: a wide safe set favours an invariant."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Fig 2: walls per cycle; the walls next to the buffer wiggle fastest, deep walls are frozen.",
+   "href": "img/gapmap_1024.png"
+  },
+  {
+   "kind": "fact",
+   "text": "20 local rules, 6,000/6,000 random-context checks; 9.29M rule applications cover the blank run to 2e7 apart from the edge step, C-at-double-wall (now R11) and ~600 right-end steps.",
+   "href": "data/check_rules.out"
+  },
+  {
+   "kind": "fact",
+   "text": "a_j has period 2^(j+1) for j = 1..8 (k = 1e5..2.2e5); right-end reaches at 3520 + 8192(2^m - 1); no halt to 1e11.",
+   "href": "data/avec_1e11_events.txt"
+  },
+  {
+   "kind": "fact",
+   "text": "CTL62 (extracted) on 25 parameter sets: 20 false, 4 out of memory, 1 timeout.",
+   "href": "scripts/ctl/sweep_A.jsonl"
+  }
+ ],
+ "effort_if_yes": "~2 h agent time, 1-2 light processes (C tracker ~6 min per 1e11 steps).",
+ "updated": "2026-10-11",
+ "answer": {
+  "option": "wall_model",
+  "note": "Dennis: go with recommendations (2026-10-11)",
+  "date": "2026-10-11"
+ }
+}

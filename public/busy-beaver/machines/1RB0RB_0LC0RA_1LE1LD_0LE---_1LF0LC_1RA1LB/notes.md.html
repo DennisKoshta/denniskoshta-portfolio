@@ -1,0 +1,546 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB/notes.md · <a href="/busy-beaver/machines/1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB/notes.md.html">raw</a></div>
+<h1 id="1rb0rb_0lc0ra_1le1ld_0le-_1lf0lc_1ra1lb">1RB0RB_0LC0RA_1LE1LD_0LE---_1LF0LC_1RA1LB</h1>
+<p>Label: H-1 (halting hunt). 740 list line 686. Class: Bell eats counter (our class claim; this machine got its own claims line on 2026-10-13).</p>
+<p>Family: this is 347's table (<code>1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</code>, ours, STUCK "cryptid-margin suspect"), relabeled and mirrored (347 A,B,C,D,E,F -&gt; 686 C,E,F,A,B,D). 441 is the same table from another start. A 686 phase start</p>
+<div class="highlight"><pre><span></span><code>0^inf rev(W) (01)^M &lt;C 0^inf        (C reads the last 1)
+</code></pre></div>
+
+<p>is 347's <code>0^inf A&gt; (10)^M W 0^inf</code>. So 347's rules, invariant G1 and margin analysis apply verbatim (347 notes.md, rounds 1-3).</p>
+<p>Halting comes only from margin breaks. A break is k_align(W) &gt; M-1, where k_align is the number of Incs until the counter is aligned.</p>
+<h2 id="halting-hunt-exact-model-2026-10-13">Halting hunt: exact model (2026-10-13)</h2>
+<p>Result: <strong>no halt to phase 127,822,269 (M = 2,055,209,149; about 3.5e26 steps). No margin break.</strong></p>
+<ul>
+<li>The closest approach is a new near-miss at phase 43,355,647: k_align/(M-1) = <strong>0.9893</strong> (M = 662,347,287, 7.06e6 Incs spare). Before that, the record was 0.9755 at phase 1572.</li>
+<li>Not cryptid: the model is exact and the arithmetic is regular (bijective base 3 on fixed widths, plus a fixed walk). What is open is a margin bound.</li>
+</ul>
+<h3 id="the-model">The model</h3>
+<p>Scripts are in <code>scripts/</code>.</p>
+<p><strong><code>fastmap.py</code></strong> is 347's validated fast phase map (<code>deepen3_fast.phase</code>) with one more exact acceleration, for the Incs before alignment:
+- Write the counter as P X. P is the longest prefix of wide aligned frames (d in 1..3, even width &gt;= 4). X is the rest, the "head".
+- While some digit of P is below 3, an Inc changes only P, as bijective base 3 with fixed widths. This is 347's Inc rule (1300/1300), the same one <code>deepen3_fast.add</code> already applies to aligned counters.
+- So the Incs until P is all 3s are added arithmetically.
+- The single Inc that carries out of P into X runs at cell level (<code>deepen2_orbit.bounce_ctr</code>, bell reduced to 3 blocks). It is a Gap-Inc, a J-rule sub-phase, or a d3/T overflow.
+- X does not change during prefix Incs, so the result is Inc-for-Inc identical to <code>while not aligned(c) and k &lt; M-1: c = bounce_ctr(c)</code>.
+- The marker walk is still <code>deepen2_orbit.crossing</code>, at cell level.</p>
+<p><strong>Cost</strong> per phase is O(cell-level carries + crossing), independent of M:</p>
+<table>
+<thead>
+<tr>
+<th>implementation</th>
+<th>time per phase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>old map (<code>t347fam.py</code>), M = 1.5e5</td>
+<td>0.3 s</td>
+</tr>
+<tr>
+<td><code>fastmap.py</code> (Python)</td>
+<td>2 ms</td>
+</tr>
+<tr>
+<td><code>fastmap.c</code> (C)</td>
+<td>45 us</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Other scripts:</strong>
+- <code>fastmap.c</code> is a C port with the same semantics; binaries <code>fastmap686</code> and <code>fastmap686d</code> are both builds of it. The long run used a build from before the <code>--dump</code> option was added, which gives identical P and C lines on 15,000 phases.
+- <code>run686.py</code> is the Python driver.
+- Model phase starts map to 686's real configurations through the mirror map above.</p>
+<h3 id="validation">Validation</h3>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python map vs the old map (<code>fam686.txt</code>): M, k_align and len(W), phases 304..15,303</td>
+<td>15,000/15,000</td>
+</tr>
+<tr>
+<td>C map vs <code>fam686.txt</code></td>
+<td>15,000/15,000; full counters equal Python's at all 32 checkpoints</td>
+</tr>
+<tr>
+<td>C vs Python, phases 15,304..90,000</td>
+<td>9/9 checkpoints (M and full counter); identical X line and histogram</td>
+</tr>
+<tr>
+<td>C vs Python, forward from C checkpoints</td>
+<td>M equal at 6 far phases (31,857..821,496)</td>
+</tr>
+<tr>
+<td>C map on 347's own orbit (<code>deepen3_orbit_ext.txt</code>, phases 1,323..11,798, written by the old code)</td>
+<td>10,476/10,476 phase starts; 10,475/10,475 k_align</td>
+</tr>
+<tr>
+<td><strong>Direct, continuous:</strong> 686 itself (<code>tools/sim</code> C core), chained phase by phase from the direct start 304 (step 999,091,126 of the run from the blank tape)</td>
+<td><strong>1,300/1,300 phases</strong> (304..1,604; M 2,313 -&gt; 13,516; 1.84e11 steps). Includes <strong>phase 725 (0.73) and the 0.9755 near-miss, phase 1572</strong>. Steps per phase = 2M²·(1.0008..1.0088)</td>
+</tr>
+<tr>
+<td><strong>Direct, one whole phase:</strong> phase 31,857 (ratio 0.9071, M = 330,841)</td>
+<td>ok: 218,919,745,095 steps -&gt; M' = 330,891 and W' equal to the model's</td>
+</tr>
+<tr>
+<td><strong>Direct component checks at full bell size</strong> (<code>dcheck686.c</code> on 686's own table: every cell-level carry, 4-10 random arithmetic Incs as the counter after k vs k+1 Incs, and the crossing, each on 686's real tape with the full bell; <code>compcheck686.py</code>)</td>
+<td><strong>286/286 items ok</strong> over 13 phases, M from 3.3e5 to 1.19e9: phases 31,857; 38,295; 102,646; 289,482; 803,608; 821,496; 1e6; 5e6; 1e7; 2e7; 4e7; <strong>43,355,647 (the 0.9893 near-miss, M = 6.6e8)</strong>; and 7.5e7 (M = 1.19e9). Also 17/17 on a forced-break phase (below)</td>
+</tr>
+<tr>
+<td>Mutation check of <code>dcheck686</code></td>
+<td>14/14 corrupted expectations (a flipped counter cell, or a wrong M') flagged</td>
+</tr>
+</tbody>
+</table>
+<p>A shifted Inc index is not flagged, which is correct: the result does not depend on the bell position.</p>
+<h3 id="the-run">The run</h3>
+<ul>
+<li><code>fastmap686</code> was run from phase 15,304 (M = 153,097, the old run's end) to phase 127,822,269 (M = 2,055,209,149). Output: <code>work/c_long.txt</code>.</li>
+<li>C lines: the full counter every 100,000 phases.</li>
+<li>P lines: ratio &gt; 0.2 and every 1000th phase.</li>
+<li>X lines: ratio &gt; 0.9.</li>
+<li>BREAK, HALT and ERR lines: none were written.</li>
+<li>Steps, estimated as the sum of 2M² per phase: 3.5e26.</li>
+<li>Ratio tail, phases 15,304..127,822,269: number of phases with k_align/(M-1) above each threshold.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>&gt; 0.1</th>
+<th>&gt; 0.2</th>
+<th>&gt; 0.3</th>
+<th>&gt; 0.4</th>
+<th>&gt; 0.5</th>
+<th>&gt; 0.6</th>
+<th>&gt; 0.7</th>
+<th>&gt; 0.8</th>
+<th>&gt; 0.9</th>
+<th>&gt;= 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>23,937</td>
+<td>8,950</td>
+<td>67</td>
+<td>23</td>
+<td>8</td>
+<td>8</td>
+<td>8</td>
+<td>3</td>
+<td>2</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Every phase above 0.5 on the whole orbit (q = floor(log3 M)):</p>
+<table>
+<thead>
+<tr>
+<th>phase</th>
+<th>M</th>
+<th>k_align</th>
+<th>ratio</th>
+<th>M/3^q</th>
+<th>k/3^q</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>725</td>
+<td>5,853</td>
+<td>4,293</td>
+<td>0.7336</td>
+<td>2.676</td>
+<td>1.963</td>
+</tr>
+<tr>
+<td>1,572</td>
+<td>13,204</td>
+<td>12,879</td>
+<td>0.9755</td>
+<td>2.012</td>
+<td>1.963</td>
+</tr>
+<tr>
+<td>31,857</td>
+<td>330,841</td>
+<td>300,105</td>
+<td>0.9071</td>
+<td>1.868</td>
+<td>1.694</td>
+</tr>
+<tr>
+<td>38,295</td>
+<td>405,709</td>
+<td>308,367</td>
+<td>0.7601</td>
+<td>2.290</td>
+<td>1.741</td>
+</tr>
+<tr>
+<td>102,646</td>
+<td>1,156,546</td>
+<td>890,655</td>
+<td>0.7701</td>
+<td>2.176</td>
+<td>1.676</td>
+</tr>
+<tr>
+<td>289,482</td>
+<td>3,467,681</td>
+<td>2,657,231</td>
+<td>0.7663</td>
+<td>2.175</td>
+<td>1.667</td>
+</tr>
+<tr>
+<td>289,972</td>
+<td>3,474,132</td>
+<td>2,676,215</td>
+<td>0.7703</td>
+<td>2.179</td>
+<td>1.679</td>
+</tr>
+<tr>
+<td>803,608</td>
+<td>10,192,162</td>
+<td>9,039,111</td>
+<td>0.8869</td>
+<td>2.131</td>
+<td>1.890</td>
+</tr>
+<tr>
+<td>821,496</td>
+<td>10,436,128</td>
+<td>8,013,087</td>
+<td>0.7678</td>
+<td>2.182</td>
+<td>1.675</td>
+</tr>
+<tr>
+<td>43,355,647</td>
+<td>662,347,287</td>
+<td>655,286,211</td>
+<td><strong>0.9893</strong></td>
+<td>1.710</td>
+<td>1.691</td>
+</tr>
+</tbody>
+</table>
+<p>Max ratio per window q (M in [3^q, 3^(q+1))):</p>
+<table>
+<thead>
+<tr>
+<th>q</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+<th>11</th>
+<th>12</th>
+<th>13</th>
+<th>14</th>
+<th>15</th>
+<th>16</th>
+<th>17</th>
+<th>18</th>
+<th>19 (to M/3^q = 1.77)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>max ratio</td>
+<td>0.734</td>
+<td>0.976</td>
+<td>0.424</td>
+<td>0.423</td>
+<td>0.907</td>
+<td>0.770</td>
+<td>0.770</td>
+<td>0.887</td>
+<td>0.425</td>
+<td>0.426</td>
+<td>0.427</td>
+<td>0.989</td>
+<td>0.311</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-the-margin-looks-like-new">What the margin looks like (new)</h3>
+<p><strong>k_align is a sum of carry costs.</strong>
+- Each chain head needs two cell-level carries: a Gap-Inc merge (<code>o2</code>), then a J-rule sub-phase.
+- A carry with an aligned prefix of q frames costs r+1 Incs, where r is the prefix's distance to all-3s. That is 3^q - 1 when all digits are 1, the state chain resolution leaves.
+- Examples:
+  - Phase 31,857: carries at prefix lengths 5, 5, 7, 8, 10, 10 and 11, giving k_align = 300,105.
+  - Phase 1572: k = 12,879 = 3^8 + 2·(3^7 + 3^6 + 3^5).</p>
+<p><strong>Empirical bound.</strong> Over every phase, k_align/3^q &lt;= 1.963 (q = floor(log3 M)). Unlogged phases have ratio &lt;= 0.2, so k/3^q &lt; 0.6 there. So the ratio is below 1.963·3^q/M &lt;= 1.963.
+- The nearly full chains (k/3^q &gt; 1.5) are only 10 phases so far, and all have M/3^q &gt;= 1.71.
+- A break needs k/3^q &gt; M/3^q: a nearly full chain while M is less than about 1.96·3^q.</p>
+<p><strong>How deep a break has to be to halt (new, <code>scripts/forcebreak.py</code>).</strong>
+- Method: take the 3,169 orbit phase starts with ratio &gt; 0.2 from phases 15,304..1.5e7 (<code>fastmap686d --dump 0.2</code> -&gt; <code>work/c_dump.txt</code>). Force each bell down to M = f·k_align and run 3 exact phases.</p>
+<table>
+<thead>
+<tr>
+<th>f</th>
+<th>0.95</th>
+<th>0.75</th>
+<th>0.70</th>
+<th>0.65</th>
+<th>0.60</th>
+<th>0.56</th>
+<th>0.53</th>
+<th>0.51</th>
+<th>0.50</th>
+<th>0.33</th>
+<th>0.20</th>
+<th>0.10</th>
+<th>0.03</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>halts / 3169</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>91</td>
+<td>261</td>
+<td>311</td>
+<td>140</td>
+<td>208</td>
+<td>170</td>
+<td>824</td>
+<td>753</td>
+<td>944</td>
+<td>820</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Breaks up to depth k/M = 1.43 never halt: 0 of 9,507 runs at f = 0.70, 0.75 and 0.95.</li>
+<li>From depth about 1.54 (f = 0.65) on, 3-30% halt, almost always in the next phase (3,489 of 3,511). The broken phase leaves a counter whose next walk halts.</li>
+<li>The 0.9893 phase itself does not halt under any forced bell, down to 1% of k_align (ratio 100): no halt in 12 phases at any of 13 depths (<code>scripts/perturb.py</code> -&gt; <code>work/perturb_43355647.txt</code>).</li>
+</ul>
+<p><strong>A forced halt reproduced on 686 itself at scale</strong> (W5-5 style; <code>work/forced_halt_*</code>):
+1. Start: orbit phase 10,562,630 (M = 151,485,246, k_align = 41,977,788), with its bell forced to 20,988,894 (f = 0.5).
+2. The broken phase was checked directly: 17/17 components on 686 at full bell.
+3. The model says the next phase (M = 20,988,895) halts at the carry after k = 4,865 Incs.
+4. Running 686 from the configuration <code>reproduce686.py</code> builds just before that carry halts after 41,968,189 steps (D reads 1).
+5. So the model's halts are real halts of the machine at M ~ 2e7, and the certification path (model -&gt; configuration just before the halt -&gt; tools/sim) works.</p>
+<p><strong>Consequence for the hunt.</strong>
+- A halt on the orbit needs a break of depth about 1.5 or more. That means k/3^q &gt;= 1.5·M/3^q, so a nearly full chain (k/3^q up to 1.96) while M/3^q &lt;= 1.3.
+- In 127,822,269 phases, nearly full chains appeared only at M/3^q &gt;= 1.71. So the deepest "break" seen is 0.989, against the roughly 1.5 a halt needs.
+- The yield estimate is lower than the ranking's. Even a mild break (ratio 1-1.43) would not halt. The ranking's "mild break every 1e6-1e7 phases" did not happen either: 0 breaks in 127.8 million new phases.</p>
+<p><strong>Possible proof lead (not a result).</strong> Non-halting would follow from two lemmas:
+1. k_align &lt; 2·3^floor(log3 M) together with a coupling between chain depth and M/3^q that keeps the ratio below about 1.4.
+2. Breaks of depth below 1.43 recover. This is supported by the forced tests: 0 of 9,507.</p>
+<p>This is the margin lemma that 347's round 3 could not find, restated in log3 terms. It would cover 347, 441 and 686 together.</p>
+<h3 id="outcome-and-what-is-left">Outcome and what is left</h3>
+<ul>
+<li>No halt to the horizon (phase 127,822,269, M = 2,055,209,149, about 3.5e26 steps). Every model step type was checked directly on 686 at full bell size up to M ≈ 1.2e9.</li>
+<li>Certification route if a halt ever appears:
+  1. The C map writes a HALT line with the phase start.
+  2. <code>reproduce686.py</code> builds 686's configuration just before the halting carry or crossing and runs <code>tools/sim</code> to the halt.
+  3. Certificate: <code>RWLAcc62_BigUint</code> <code>solve_halt'</code> with raised budgets, or a W5-5-style chunk replay.</li>
+<li>Resume: <code>scripts/fastmap686 work/c_long.txt NPH OUT</code> starts from the last C line. About 2e4 phases per second; M grows about 16 per phase.</li>
+<li>Files:</li>
+<li><code>scripts/{fastmap.py, fastmap.c, run686.py, direct686.py, dcheck686.c, compcheck686.py, reproduce686.py, forcebreak.py, perturb.py, startat.py}</code></li>
+<li><code>work/{orbit_ref.txt, c_ref.txt, c_ck10k.txt, orbit_long.txt, c_long.txt, c_347check.txt, direct_chain.txt, direct_points.txt, comp.txt, anchors_starts.txt, c_dump.txt, forcebreak.txt, forcebreak_fine.txt, forced_halt_starts.txt, forced_comp.txt, forced_halt_reproduce.txt, perturb_43355647.txt}</code></li>
+</ul>
+</main></body></html>

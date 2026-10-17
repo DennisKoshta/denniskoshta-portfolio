@@ -1,0 +1,40 @@
+{
+ "tm": "1RB0RA_1LC0RE_0LD0LB_1LA1LF_1RA0LF_1LC---",
+ "rounds": [
+  {
+   "round": 1,
+   "stage": "rules_stage (funded option 'rules_stage', decided 2026-10-10, run 2026-10-11)",
+   "date": "2026-10-11",
+   "confidence": "low",
+   "recommend": "park (the decision's stop rule: no invariant handle found)",
+   "mechanism": "Records are (side, pair-frame token list); oracle.c runs the TM exactly between records. Six record-level rules: L (left-end carry transducer, domain now stated), R6 (end rule), RE (right-end eat bounce = one right-to-left parity transducer P0/P1 with +2/+1 start, P0: even 0 / odd -1, P1: even +2 / odd +3, stopping in P0 at a 000 marker or an extra 1, balance absorbed so the total is +1 pair; E is its all-even case), F and FM (full returns RA>LA, plain and through a double marker), LR (left-end run-off, two endings). RA records live in a tiny language (all extras 0 except 268 records with one 1; 0-3 markers); the counter lives on the LA side.",
+   "closed_gaps": [
+    "Random validation against the TM (oracle.c, canonical configs): R6, RE, F, FM, LR, L each 2,000/2,000 (validate.py seeds 6, 7; validation_final.txt)",
+    "Abstract simulator (absim.py) reproduces every A-record of all four orbits (starts A/B/D/E = holdouts 156/450/188/564) to 1e10 with 0 mismatches; start A: 98,334 moves = RE 67,063 + L 30,720 + F 153 + LR 150 + R6 133 + FM 52 + 63 unruled",
+    "Unruled moves 668 -> 63 per orbit (0.064%): 57 LA>RA run-offs with other endings or zero-segment merges, 3 LA>LA merges, 2 triple-marker returns, 1 double-marker RA>RA",
+    "Of the 5 families named in the decision: the 6-step end rule (R6) and the first eat bounces (RE, odd segments) are ruled; full returns 205/207 (F + FM); run-offs 150/207 (LR); merges still open",
+    "L transducer domain corrected: in all four orbits every chain that reaches the end entry runs off to the right, so the end entries are unused, and zero segments break L (it fired wrongly once, at start D record 103, before the domain fix)"
+   ],
+   "remaining_gaps": [
+    "No invariant handle: no closed record language containing the orbit and excluding the halting window 1 1 0 <C; random RA configs outside the record language halt (104/4,000)",
+    "Macro hierarchy not probed beyond observe (the LA-side counter, driven by parities of large segments)",
+    "63 unruled moves per orbit in about 6 fixed shapes"
+   ],
+   "evidence": [
+    "scripts/rules/absim_1e10.txt (python3 -B absim.py r_X.txt ./oracle for X = A, B, D, E; records from rec.c to 1e10)",
+    "scripts/rules/validation_final.txt (python3 -B validate.py 6|7 1000 ./oracle)",
+    "scripts/rules/model.py (rules), oracle.c, rec.c, lend.py (L-path classes), turns.py (turn trace of one move)"
+   ],
+   "scripts": [
+    "scripts/rules/rec.c",
+    "scripts/rules/oracle.c",
+    "scripts/rules/model.py",
+    "scripts/rules/validate.py",
+    "scripts/rules/absim.py",
+    "scripts/rules/lend.py",
+    "scripts/rules/turns.py"
+   ]
+  }
+ ],
+ "updated": "2026-10-11"
+}

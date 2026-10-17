@@ -1,0 +1,63 @@
+{
+ "tm": "1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---",
+ "bucket_reason": "Priority call (cryptid protocol). STUCK at informal_proof with cryptid_flag set: the absorption-safety lemma Safe is not inductive, and no strengthening X is known.",
+ "question": "Stop proof work on #1 and file it as a cryptid candidate (rules written out, Rocq rule reduction later), or spend another stage searching for the missing invariant clause X?",
+ "options": [
+  {
+   "id": "stop",
+   "label": "Stop: mark CRYPTID_CANDIDATE; Rocq rule reduction later, low priority",
+   "consequence": "Proof search ends and status.json becomes CRYPTID_CANDIDATE, as with #5. The rule table and the executable models (scripts/review/absmodel.c, scripts/deepen/model3.py) are the write-up. The owed AntiHydra-style reduction first has to turn L and the ABS rules into proved multisteps (the open major gap), so it costs 1-2 stages whenever it is scheduled. Trio twins #21/#22 (not observed yet) drop in priority with it."
+  },
+  {
+   "id": "continue",
+   "label": "Continue: one more stage (2 h) searching for X",
+   "consequence": "The stage would look for a quantitative u-vs-Delta relation at each leading-O birth, plus an analysis of each episode (proof.md 3.4, 5.1). A margin argument is already ruled out, because the top edge of the u/Delta band (2.0006) sits on the 3/4 unsafe point. Success needs a new structural idea, so the likely outcome is STUCK again after 2 h."
+  },
+  {
+   "id": "park",
+   "label": "Park as STUCK, no rule reduction",
+   "consequence": "No further spend. The formal half of the cryptid protocol (the rule reduction) stays undone, and the machine sits in the STUCK list rather than the cryptid list."
+  }
+ ],
+ "recommended": "stop",
+ "rationale": "This is the case the cryptid protocol covers: formalize the rules, flag, and stop. Non-halting comes down to whether a coupled counter system avoids a sparse target set. The left counter u must miss O(1)-wide unsafe values at about one leading-O birth per doubling of Delta. The trajectory came within 2 sweeps of a configuration that is verified to halt (step 86,265). Later margins are only 7-13% of Delta, and the band edge sits on an unsafe point, so the obvious margin route is already closed. Heuristically the machine never halts, but no structural reason is known. Another search stage has poor odds, and stopping frees the budget for machines with validated mechanisms. The rule table itself is clean (1,096,578 sweeps exact to 1e10), so it is worth keeping as the write-up.",
+ "evidence": [
+  {
+   "kind": "proof",
+   "text": "proof.md 3.3-3.4: Safe(w, 2g-1-d_1) can be decided on any single configuration, but it is not inductive. Configurations satisfying every proved clause still halt, e.g. Dep(1O100; 1; 11; 2,0) at step 940, and 85 of 323 random starts failing only this clause halted within 2e6 steps.",
+   "href": "proof.md"
+  },
+  {
+   "kind": "near-halt",
+   "text": "Step 86,265: Dep(O111000; 1; 111100; 9,4,2,0,0,0). The same configuration two sweeps later (word O111100) halts 18,861 steps on (unsafe_probe.c).",
+   "href": "scripts/review/unsafe_probe.c"
+  },
+  {
+   "kind": "data",
+   "text": "At marker-free ABS0 events, u/Delta fills [1.6066, 2.0006], and the 3/4 unsafe point is at 2.0. Margins at the five ABS0 events with a marker (to 1e10 sweeps): 2 sweeps, then 7-13% of Delta.",
+   "href": "proof.md"
+  },
+  {
+   "kind": "rules",
+   "text": "The rules are exact. GEN/ABS1/ABS0 match all 1,096,578 sweeps from step 2,000 to 1e10, random validation passes 8,540/8,540, and check_proof.py reports SUMMARY PASS 36/36.",
+   "href": "deepen.json"
+  },
+  {
+   "kind": "status",
+   "text": "status.json: STUCK at informal_proof, cryptid_flag true, next = Dennis decides: stop or continue.",
+   "href": "status.json"
+  },
+  {
+   "kind": "figure",
+   "text": "Card Fig 1: the hub map, one row per right sweep, showing both counters.",
+   "href": "card.html#fig-1"
+  }
+ ],
+ "effort_if_yes": "No compute now. When scheduled, the Rocq rule reduction takes about 1-2 stages (2-4 h), because L and the ABS rules must become proved multisteps first.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "stop",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

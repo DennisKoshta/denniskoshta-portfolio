@@ -1,0 +1,25 @@
+{
+ "tm": "1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA",
+ "label": "P-500",
+ "status": "STUCK",
+ "stage": "twin_port_refuted",
+ "updated": "2026-10-14",
+ "holdout_line_740": 500,
+ "parent": "SBCv9.v Module TM2 (1RB0RF_0LC---_1LD1LC_0LE0LD_1RE1RF_0RC1RA), HALT",
+ "relation": "mirror(500) with states A,B,C,D,E,F -> TM2's A,C,D,E,G,F equals TM2 except A0 (TM2: A0 1RB, B0 0LC, C1 1LC = 3 steps, halts if B reads 1; 500: 1 step) and the E self-loop (500 alternates D/E over 0s and halts at E1 after an odd number of 0s); same start, same tape at all times",
+ "reason": "Twin port refuted (different halting event). 500 follows TM2's macro run exactly: 220/220 recorded counter words equal to the follow-stage simulator, to phase 370, and TM2's b = n-1 per phase. TM2 exits 16 macro steps after its 374th overflow (early in 500's phase 375) and halts at step 13,297 when B reads 1. On the same configuration, with a and b kept symbolic, 500 makes the A0 turn, runs 72,652 steps without halting and re-enters TM2's own cfgL' a b r'' (next rule LIncs). TM2's left lemmas (LInc, LRst_101, LRst_11) hold for 500 iff a is odd, and a = 3 mod 4 throughout the orbit, so 500 can only halt on the counter side. It was already followed to phase 1,857 with no halt. Machine stays parked.",
+ "checks": {
+  "check_twin": "scripts/port/check_twin.py (T1-T6, ~6 min; work/port/check_twin.log)",
+  "layouts": "work/port/cmp_tm2_vs_500_layouts.log (202/202 with b = n-1; check_twin T4: 220/220 words)",
+  "exit_window": "work/port/exit_window.log"
+ },
+ "confidence": "high",
+ "funded": {
+  "option": "follow",
+  "date": "2026-10-10",
+  "auto": true
+ },
+ "parked": "Parked 2026-10-11 (Dennis: go with recommendations): Park #37 behind the other machines.",
+ "prior_reason": "Parked 2026-10-11 (Dennis: go with recommendations): Park #37 behind the other machines. Follow (funded 2026-10-10, auto-applied recommendation) done; new priority call in decision.json (recommended: park). A C port of the jump simulator (exact: 160/160 phases equal to Python, random instances 90/90 vs Python and 90/90 vs exact fastphase) followed the real orbit to the start of phase 1,857 (n ~ 2^1860): no off-sync, no halt. Excursions at phases 91, 119, 215, 487 were all benign, with 14, 77, 93 and 700 cells in the run that became the bottom; the 3-run that sat 16 runs up at phase 171 was absorbed by a merge wave at phases 231-233. Between excursions the bottom run loses 1 cell per phase (1,777/1,779 steady phase pairs) and the runs below the wave front are frozen; after each excursion a merge wave climbs at ~0.5 runs per phase. A fast-forward check (bottom run cut short) reproduces the real excursion at phase 487 and its cascade exactly (45/45 phases) and predicts the next excursions at phases 3,321, 4,866 and 5,172 as benign. Candidate maturation rule M (the new bottom and the new a1 are merge products after every cascade, so a1 >= 6 at each excursion) holds in 4 real + 3 predicted cascades but is not derived; a proof would need a wave grammar on unbounded run words, with no busycoq template near. Not a cryptid as tested.",
+ "next": "No port. #37 stays parked (Dennis 2026-10-11). Asset: TM2's representation (cfgL'/cfgR', rest/RIncs, LInc/LIncs/LOv/LRst) is an exact accelerator for #37 under 'a odd'; a nonhalt proof still needs the counter-side invariant (lemma B'/rule M of the follow stage)."
+}

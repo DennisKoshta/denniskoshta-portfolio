@@ -1,0 +1,546 @@
+{
+ "tm": "1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---",
+ "rank": 409,
+ "class_sheet": "Shift-overflow counter",
+ "class_guess": "Shift-overflow counter (SOC_2_5_v1 TM10 with A1 = 0RF); halting hinges on the bits of a counter value: cryptid-like",
+ "confidence": "med",
+ "summary": "TM10's two binary counters; it can halt only if a counter value x ever has every 1-bit at an odd position",
+ "mechanism": [
+  "SOC_2_5_v1.v TM10's macro rules (A1 = 0LB there, 0RF here): a left counter LC (digits 11/10) counts down, a right counter RC (digits 10000/00000) counts up, and overflows shift digits between them. Every TM10 lemma except ROv3_0/ROv3_1 compiles for this string.",
+  "From blank (cfgL(3,6,1) at step 35) every cycle is LOv at cfgL(L,0,2x+1), RC1_Ov_0, c >= 0 RC4_Ov_1, RC4_Ov_0. The chain eats x's 1-bits from the bottom and stops at the first one at an even position, which gives an explicit map (L,x) -> (L',x'). All 20,000 cycles computed (L to 172,193) are like this. The history table has one row per cycle (step column = cycle t).",
+  "If every 1-bit of x is at an odd position, the chain empties and the run leaves TM10's cycle into ROv3, where A reads 1. With 0RF that can halt (cfgL(8,0,17) halts at step 10,189,718). Even-position 1-bits grow ~0.36 per cycle (min 7 at cycle 13); chain lengths look random. No invariant is known, so ground rule 6 applies."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, 10,000 steps",
+   "why": "The site's view. Left: the slowly growing left counter. Right: the right counter's carry sweeps.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step: steps 0..9,999 squeezed into 500 px rows as on bbchallenge.org (1 px row = 20 steps)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move (pale = blended by the squeeze)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom",
+   "png": "img/xbits_low340.png",
+   "html": null,
+   "steps": 20000,
+   "caption": "Bits of x at each left overflow, cycles 1..240",
+   "title": "Counter value x, one row per cycle",
+   "why": "Each row is x in binary, lowest bit at the right. Look for any row without orange.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per left overflow cfgL(L,0,2x+1), cycles t = 1..240 (2 px per row); computed with the cycle map F (scripts/Fmap.py), which matches the TM10 macro rules and the TM itself",
+   "window": "cells 0..339, 1 px = 1/2 cell: here a 'cell' is a bit position of x (2 px per bit), bit 0 at the right edge; for t >= 46 the top bits of x lie further left and are cut off",
+   "legend": "orange = 1-bit at an even position, blue = 1-bit at an odd position, white = 0-bit, grey = above the top bit of x",
+   "style": "custom"
+  },
+  {
+   "mode": "explore",
+   "png": "img/halt_r3_explore.png",
+   "html": null,
+   "steps": 91,
+   "caption": "Constructed RC3 overflow halts at step 91",
+   "title": "Where A1 = 0RF matters: a halt",
+   "why": "Row 0 is TM10's ROv3 situation. Watch the red A on a 1 head right; F (cyan) later reads 1.",
+   "primary": true,
+   "start": "constructed: LC(43,k) 10 C> RC3(4,0,15), reached from cfgL(8,0,17) (full tape in data/r3_overflow_config.txt)",
+   "rows": "every step, steps 0..91 (6 px per row); the last row is the halt",
+   "window": "cells -89..47, 1 px = 1/6 cell (6 px per cell)",
+   "legend": "slate = 0, white = 1, head cell coloured by state: A red, B orange, C blue, D green, E magenta, F cyan",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e10.png",
+   "html": null,
+   "steps": 10000000000,
+   "caption": "Left and right records to 1e10 steps",
+   "title": "Records to 10^10 steps",
+   "why": "Rows are records only. The staircase of right records is the right counter's carry sweep writing 1s.",
+   "primary": false,
+   "start": "blank",
+   "rows": "the start, then one row per new leftmost or rightmost cell (218 rows, steps 0..1e10; 3 px per row); not evenly spaced in time",
+   "window": "cells -6..211, 1 px = 1/3 cell (3 px per cell)",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "explore",
+   "png": "img/explore_400.png",
+   "html": null,
+   "steps": 400,
+   "caption": "First 50 steps from blank; A reads 1 only at step 10",
+   "title": "From blank: the only A1 step",
+   "why": "Row 10: the red A on a white 1. Through 3e10 steps A never reads 1 again.",
+   "primary": false,
+   "start": "blank",
+   "rows": "every step, steps 0..49 (10 px per row; the site's 800x500 Explore view)",
+   "window": "cells -40..39, 1 px = 1/10 cell (10 px per cell)",
+   "legend": "slate = 0, white = 1, head cell coloured by state: A red, B orange, C blue, D green, E magenta, F cyan",
+   "style": "bbchallenge-explore"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf <B 1^(2L+3) RC(2x+1) 0^inf",
+  "vars": [
+   "L",
+   "1-bits of x",
+   "E (1-bits at even positions)"
+  ],
+  "rows": [
+   {
+    "step": 1,
+    "values": [
+     3,
+     2,
+     1
+    ]
+   },
+   {
+    "step": 2,
+    "values": [
+     6,
+     4,
+     2
+    ]
+   },
+   {
+    "step": 3,
+    "values": [
+     14,
+     6,
+     3
+    ]
+   },
+   {
+    "step": 4,
+    "values": [
+     37,
+     25,
+     11
+    ]
+   },
+   {
+    "step": 5,
+    "values": [
+     40,
+     23,
+     13
+    ]
+   },
+   {
+    "step": 6,
+    "values": [
+     48,
+     19,
+     8
+    ]
+   },
+   {
+    "step": 8,
+    "values": [
+     84,
+     21,
+     10
+    ]
+   },
+   {
+    "step": 10,
+    "values": [
+     95,
+     23,
+     11
+    ]
+   },
+   {
+    "step": 13,
+    "values": [
+     124,
+     18,
+     7
+    ]
+   },
+   {
+    "step": 16,
+    "values": [
+     163,
+     39,
+     19
+    ]
+   },
+   {
+    "step": 20,
+    "values": [
+     190,
+     37,
+     15
+    ]
+   },
+   {
+    "step": 25,
+    "values": [
+     235,
+     30,
+     18
+    ]
+   },
+   {
+    "step": 30,
+    "values": [
+     265,
+     29,
+     15
+    ]
+   },
+   {
+    "step": 40,
+    "values": [
+     345,
+     31,
+     17
+    ]
+   },
+   {
+    "step": 50,
+    "values": [
+     435,
+     69,
+     31
+    ]
+   },
+   {
+    "step": 75,
+    "values": [
+     650,
+     92,
+     51
+    ]
+   },
+   {
+    "step": 100,
+    "values": [
+     815,
+     82,
+     46
+    ]
+   },
+   {
+    "step": 150,
+    "values": [
+     1215,
+     133,
+     65
+    ]
+   },
+   {
+    "step": 200,
+    "values": [
+     1640,
+     172,
+     95
+    ]
+   },
+   {
+    "step": 300,
+    "values": [
+     2355,
+     240,
+     140
+    ]
+   },
+   {
+    "step": 400,
+    "values": [
+     3190,
+     305,
+     167
+    ]
+   },
+   {
+    "step": 500,
+    "values": [
+     4010,
+     378,
+     202
+    ]
+   },
+   {
+    "step": 750,
+    "values": [
+     6015,
+     554,
+     284
+    ]
+   },
+   {
+    "step": 1000,
+    "values": [
+     8245,
+     749,
+     394
+    ]
+   },
+   {
+    "step": 1500,
+    "values": [
+     12405,
+     1080,
+     551
+    ]
+   },
+   {
+    "step": 2000,
+    "values": [
+     16920,
+     1432,
+     705
+    ]
+   },
+   {
+    "step": 3000,
+    "values": [
+     25530,
+     2197,
+     1084
+    ]
+   },
+   {
+    "step": 4000,
+    "values": [
+     33625,
+     2886,
+     1417
+    ]
+   },
+   {
+    "step": 5000,
+    "values": [
+     42020,
+     3601,
+     1769
+    ]
+   },
+   {
+    "step": 7500,
+    "values": [
+     63420,
+     5483,
+     2791
+    ]
+   },
+   {
+    "step": 10000,
+    "values": [
+     85235,
+     7355,
+     3725
+    ]
+   },
+   {
+    "step": 12500,
+    "values": [
+     106850,
+     9032,
+     4638
+    ]
+   },
+   {
+    "step": 15000,
+    "values": [
+     129520,
+     10788,
+     5523
+    ]
+   },
+   {
+    "step": 17500,
+    "values": [
+     150875,
+     12599,
+     6415
+    ]
+   },
+   {
+    "step": 20000,
+    "values": [
+     172160,
+     14392,
+     7299
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "init",
+   "from": "0^inf A> 0^inf",
+   "to": "cfgL(3,6,1) = LC(3,6) <B 11 RC(1)",
+   "steps": "35",
+   "cases": null,
+   "validated": {
+    "instances": 1,
+    "passed": 1
+   },
+   "source": "manual"
+  },
+  {
+   "name": "LC_Inc",
+   "from": "LC(L,k+1) <B 11 RC(n)",
+   "to": "LC(L,k) 10 C> RC(n)",
+   "steps": null,
+   "cases": "k+1 < 2^L; LC(L,k) = 0^inf 1 + L digits of 2^L-1-k (11 = 1, 10 = 0), RC(n) = n LSB first (10000 = 1, 00000 = 0)",
+   "validated": {
+    "instances": 54,
+    "passed": 54
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC_Inc",
+   "from": "LC(L,k) 10 C> RC(n)",
+   "to": "LC(L,k) <B 11 RC(n+1)",
+   "steps": null,
+   "cases": null,
+   "validated": {
+    "instances": 60,
+    "passed": 60
+   },
+   "source": "manual"
+  },
+  {
+   "name": "LC_Ov",
+   "from": "LC(L,0) <B 11 RC((2x+1)2^i)",
+   "to": "LC(L,2^L-1) 10 C> RC1(i,2^(i+1)-2,x)",
+   "steps": null,
+   "cases": "n != 2^L (n = 2^L: corner case, 10/10, never reached from blank since n is odd)",
+   "validated": {
+    "instances": 83,
+    "passed": 83
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RCj_Inc + LC_Inc",
+   "from": "LC(L,k+1) 10 C> RCj(r,n+1,m)",
+   "to": "LC(L,k) 10 C> RCj(r,n,m)",
+   "steps": null,
+   "cases": "j = 1, 3, 4 (RCj = TM10's BinDec2 words with tails 10000, 0010000, 00010000)",
+   "validated": {
+    "instances": 181,
+    "passed": 181
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC1_Ov_0",
+   "from": "LC(L,k) 10 C> RC1(2r,0,m)",
+   "to": "LC(L+1+5r,(2k+1)2^(5r)-1) 10 C> RC4(i,2^(i+1)-2,m') if m = (2m'+1)2^i, else C> RC(1)",
+   "steps": null,
+   "cases": "m > 0 (47/47) and m = 0 (29/29); odd lenR: RC1_Ov_1/_1_0 77/77 (only after an exhaustion)",
+   "validated": {
+    "instances": 76,
+    "passed": 76
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC4_Ov_0",
+   "from": "LC(L,k) 10 C> RC4(2r,0,m)",
+   "to": "LC(L+2+5r,(2k+1)2^(5r+1)-1) 10 C> RC(2m+1)",
+   "steps": null,
+   "cases": "ends every cycle",
+   "validated": {
+    "instances": 70,
+    "passed": 70
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC4_Ov_1",
+   "from": "LC(L,k) 10 C> RC4(2r+1,0,m)",
+   "to": "LC(L+5+5r,(2k+1)2^(5r+4)-1) 10 C> RC4(i,2^(i+1)-1,m') if m = (2m'+1)2^i; m = 0: C> RC(0) (RC4_Ov_1_0 = exhaustion)",
+   "steps": null,
+   "cases": "m > 0 (46/46), m = 0 (33/33)",
+   "validated": {
+    "instances": 79,
+    "passed": 79
+   },
+   "source": "manual"
+  },
+  {
+   "name": "cycle map F",
+   "from": "cfgL(L,0,2x+1)",
+   "to": "cfgL(L',0,2x'+1), x' = (2k_c+1)2^(5q) + (x >> s)",
+   "steps": null,
+   "cases": "x has a 1-bit at an even position; the chain stops there (q = half its gap, s = bits consumed, k_c from the chain). Checked on the real TM at the next left record: chain length 0 (28), 1 (19), 2 (3), L' <= 21; F = macro-rule simulator on 783 orbit cycles",
+   "validated": {
+    "instances": 50,
+    "passed": 50
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RC3 overflow, A1 = 0RF",
+   "from": "LC(L,k) 10 C> RC3(2r,0,2m+1)",
+   "to": "halt",
+   "steps": "30r+30 (r = 0: 30)",
+   "cases": "TM10's ROv3_0 needs A1 = 0LB. Here A reads the 1 of the 1 00 10000 tail and moves right; with m odd, F later reads a 1. Other RC3 cases: 13 halts, 56 no TM10 result in 2e5 steps",
+   "validated": {
+    "instances": 16,
+    "passed": 16
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "SOC_2_5_v1.v:5186",
+  "module": "TM10",
+  "machine": "1RB0LB_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---",
+  "diff": "A1: 0LB -> 0RF",
+  "applies": "partly",
+  "note": "Every TM10 lemma except ROv3_0/ROv3_1 compiles with this string (the scout's Iter.v, which admits those two). They are false here, not just unproved: TM10's invariant P contains halting configurations of this machine (cfgL(8,0,17) halts at step 10,189,718). A proof needs P plus an orbit-specific digit condition (the chain never empties), and that condition is the open part. No other upstream file proves this table from any start."
+ },
+ "strategy": "No non-halting proof is known. Rule 6: formalize the reduction (Rocq: 'no cycle empties the chain -> ~halts tm c0', from TM10's lemmas and F), then park unless a digit invariant turns up.",
+ "risks": [
+  "Non-halting depends on the binary digits of an exponentially growing orbit (all 1-bits at odd positions must never happen): cryptid-like.",
+  "The scout's Iter.v 'nonhalt' admits ROv3_0/ROv3_1, which are false for this machine; it is not evidence.",
+  "After an exhaustion the dynamics are unmodelled; halting is shown only from constructed starts, not from blank."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Counter value x: every row should contain orange (a 1-bit at an even position). A row with no orange is what halting needs. Does every row show orange?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Halt run: from TM10's ROv3 situation, A reads a 1 (row 3) and heads right instead of left; F reads a 1 at step 91. Do you see the A1 = 0RF difference doing this?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Priority call: halting hinges on the digits of x (cryptid-like, ground rule 6). Should we park it now, or fund one 2 h stage to formalize the reduction in Rocq and search for a digit invariant?",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 30000000011,
+  "cells": 228,
+  "nonzeros": 70,
+  "growth": "exponential (two binary counters); A reads 1 only at step 10 through 3e10 steps; abstract orbit checked for 20,000 cycles (L to 172,193)"
+ },
+ "status": "CRYPTID_CANDIDATE",
+ "status_reason": "Mechanism understood (TM10's macro rules, validated); non-halting needs the orbit of an explicit digit map never to put every 1-bit of x at an odd position. Heuristically never; no invariant known."
+}

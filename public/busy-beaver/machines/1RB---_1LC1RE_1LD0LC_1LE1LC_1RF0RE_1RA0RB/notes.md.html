@@ -1,0 +1,700 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB/notes.md · <a href="/busy-beaver/machines/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB/notes.md.html">raw</a></div>
+<h1 id="1rb-_1lc1re_1ld0lc_1le1lc_1rf0re_1ra0rb">1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB</h1>
+<p>Status: KILLED_NONHALT (stage done, 2026-10-13; see ## Kill at the end)
+Class guess (agent / Dennis): 3/2 wall conveyor + right-edge counter (sheet: Structural counter + counter) / —
+Spreadsheet notes / Discord thread: Results row 842, no status, notes, links, strikethrough or comments. Not in data/discord lists (dyuan 24, mxdys UBRRBA 86).
+Viewer: https://bbchallenge.org/1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>1e9 steps: span 4,258 (lo −859, hi 3,398), 2,660 nonzeros, not halted. Span ~ t^0.33 (445 / 935 / 1,993 / 4,258 cells at 1e6 / 1e7 / 1e8 / 1e9).</li>
+<li>The tape is a period-5 pattern. B moving right turns dark <code>11000</code> into light <code>10111</code>, and C moving left turns it back.</li>
+<li>The pattern is cut into segments by +1 phase steps (walls). See <code>img/phase_solid_every100_from1139175.png</code> (colour = phase; one row every 100 steps, steps 1,139,200..1,469,300; <code>python3 -B phaseview.py img/phase_solid_every100_from1139175.png every:100 330206 --from @cfg_step1139175_pos-97.txt --pos -97 --step 1139175 --max-rows 3400 --solid 1 --head 0</code>; it replaces <code>phase_cycle_every100.png</code>, whose dark/light shading of half-swept blocks looked like sideways hatching): the walls drift right and fan out, new walls are born at the left edge, and the outermost wall is absorbed at the right barrier.</li>
+<li>Every wall is a 5-state gadget: W0 → W1 → Lw1 → Lw2 → Lw3 → W0, and a full round moves it 5 cells right. B arrives twice per round (bounce, then pass); C arrives three times (bounce, bounce, pass). Flow balance gives p(k+1) = 3/2 · p(k).</li>
+<li>Left records alternate between two forms, X and Y. X (every second left record) has the skeleton
+  <code>0^inf &lt;C 1^6 0 (00011000011)^2 (00011)^2 (10001)^3 10 (00011)^6 (10001)^8 (11000)^12 1 (11000)^18 (01100)^27 0^2 (11000)^41 (01100)^61 (00110)^92 (00011)^138 (10001)^206 (11000)^a R 0^inf</code>.
+  Its prefix repeats exactly, with the left edge moving −8 cells per cycle. 28 consecutive X records (411M–997M steps) match it. a = 6, 14, 22, 26, 38, … , 214, 218 (increments 8, 8, 4, 12, repeating). The right edge moves about +32 cells per cycle.
+  Y segments are 7, 10, 15, 23, 34, 51, 77, 115, 173, 259 blocks.</li>
+<li>R (the right barrier) is a period-4 <code>0001</code> zone plus a lone 1 behind a gap <code>0^(4j+3)</code> that grows. This is the second counter.</li>
+<li>Tools: qsim found 0 prover rules at block size 1 and at block size 5 (chain moves only). <code>rulefit fit</code> validated no rules: every candidate it fitted at the L:C, L:D, L:E and R:E record hubs failed validation. compress <code>track</code> gives the X skeleton above. Its test suite has 1 failure, <code>test_cryptid_flag</code>, recorded in open issues.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>Checked by <code>validate_rules.py</code>: random n, m (0–3, 4–40, 100–3000), random context words on both sides, exact step counts. Each rule passed 140/140. A mutation check (wrong steps, wrong RHS, Lw2 claimed to pass) fails 0/140, as it should.</p>
+<div class="highlight"><pre><span></span><code>S_R   B&gt; (11000)^n                 --&gt; (10111)^n B&gt;                          5n
+S_L   (11110)^n &lt;C                 --&gt; &lt;C (00011)^n                          5n
+S_L'  (10111)^n &lt;C                 --&gt; &lt;C (11000)^n                          5n
+EdgeR E&gt; 0^inf                     --&gt; 1^3 &lt;C 1 0^inf                        4
+EdgeL 0^inf &lt;C                     --&gt; 0^inf 1 0 B&gt; 1                        4
+W0    B&gt; (11000)^n 0               --&gt; &lt;C (11000)^n 1                        10n+1   (bounce; wall -&gt; W1)
+W1    B&gt; (11000)^n 1 (11000)^m     --&gt; (10111)^n 1 00111 (10111)^(m-1) B&gt;    5n+5m+1 (pass; m&gt;=1)
+Lw1   1 00111 (10111)^m &lt;C         --&gt; 000111 (10111)^m B&gt;                   10m+11  (bounce)
+Lw2   000111 (10111)^m &lt;C          --&gt; 101111 (10111)^m B&gt;                   10m+11  (bounce)
+Lw3   101111 (10111)^m &lt;C          --&gt; &lt;C 110000 (11000)^m                   5m+6    (pass; wall now 5 cells right)
+</code></pre></div>
+
+<p>Cycle (<code>validate_cycle.py</code>): X(a, R) reaches X(a', R') two C-left-records later with the prefix unchanged in 40/40 random cases (a in 60..300, the 4 observed R). a' − a ranges over 4..12 and depends on a. The observed successor R' is reproduced only at the run's own a. Spot-checked at a = 182 and 198: both match the run, including the step count (25,925,018).
+Robustness: 200 random perturbations of segment lengths (±1..5 blocks in 1–3 segments) of the step-1,139,175 tape. None halted within 1e8 steps.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<ul>
+<li>Template CounterCmp_v1 TM1 does not apply: 11 of 12 transitions differ, and from its configurations our machine reaches its targets 0/60 times and halts 25/60.</li>
+<li>Not flagged as a cryptid. The 3/2 arithmetic only sets the wall spacings, and no wall state leads to the halt (A reading 1).</li>
+<li>Proposed: a list-of-(segment, wall state) invariant with an Inductive trip relation; the right barrier needs its own case analysis.</li>
+</ul>
+<h2 id="informal-proof">Informal proof</h2>
+<p>proof.md (2026-10-12, round-3 self-review), validated by check_proof.py S1-S12. Every lemma is proved; nothing in the informal argument is open. Next: Checkpoint B (Dennis), then the Rocq formalization (proof.md §10). See the last stage section.</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>rocq/log.md (rounds 1-4; kill file assembled in round 4).</p>
+<h2 id="outcome">Outcome</h2>
+<p>KILLED_NONHALT (2026-10-13): check_kill PASS, independently re-verified, packaged in submission/. See ## Kill.</p>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<p>The card now shows at most 3 short mechanism bullets and yes/no questions that point at figures by number (primary figures first). The text they replaced is kept here.
+- Figure order on the card: Fig 1 = <code>img/zigzag_every8_from1139175.png</code>, Fig 2 = <code>img/phase_solid_every100_from1139175.png</code>, Fig 3 = <code>img/default_site_1e4.png</code>, Fig 4 = <code>img/records_1e8.png</code>, Fig 5 = <code>img/blaze_1e8.png</code> (Figs 1-2 primary).
+- Mechanism, full observer version:
+  - Tape is a period-5 pattern: B sweeping right turns dark 11000 into light 10111; C sweeping left turns it back (5 steps/block).
+  - Segments are separated by walls (+1 phase step). A wall is a 5-state gadget: B bounces once then passes, C bounces twice then passes; one round moves it 5 cells right.
+  - So each wall is crossed 3/2 times as often as the wall to its left: walls drift right x1.5 per level, segments 12, 18, 27, 41, 61, 92, 138, 206 blocks.
+  - Every 2 left records the whole prefix repeats exactly (left edge -8 cells): a new wall is born at the left, the outermost one is absorbed at the right.
+  - Right barrier = period-4 0001 zone plus a lone 1 behind a growing gap (second counter); right edge about +32 cells per cycle, span ~ t^(1/3).
+- Checkpoint questions before the rewrite (some were decisions, not questions about a figure):
+  - Diagram 1: do the colour bands read as walls drifting right and fanning out, with new bands born at the left edge?
+  - Diagram 2: is each long vertical line a wall the head bounces off (1 bounce from the left, 2 from the right, then a pass)?
+  - Not a cryptid (the 3/2 rounding only sets wall spacings, no halting branch): go for a list-of-walls invariant proof?</p>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Outcome: confidence stays <strong>med</strong> (better evidence, one named gap). Not a cryptid. Recommend one more targeted observation pass (the right-zone language) before proof work. Scripts are in <code>scripts/</code>, results in <code>scripts/results/</code>.</p>
+<p><strong>1. Every head event to 2e10 steps is one of 19 rules</strong> (<code>scripts/junctions.py</code>, <code>results/junctions_2e10.json</code>). The coverage simulator applies 6 sweep macros with a variable length n ≥ 1. Everything else is simulated directly as a "junction" and stored by its visited window. From the blank tape to 20,000,003,117 steps it sees only <strong>13 junction types</strong>. The final tape, head and state match the C core exactly (also at 1e8 and 1e9). Macro counts: SR 8.5M, SR6 2.6M, SL' 4.3M, SL 4.3M, KB 4.3M, KC 5.6M.</p>
+<div class="highlight"><pre><span></span><code>sweeps:  SR  B&gt; (11000)^n -&gt; (10111)^n B&gt;  5n     SL' (10111)^n &lt;C -&gt; &lt;C (11000)^n  5n
+         SR6 B&gt; (111000)^n -&gt; (100111)^n B&gt; 6n    SL  (11110)^n &lt;C -&gt; &lt;C (00011)^n  5n
+         KB  B&gt; (1000)^n -&gt; (1111)^n B&gt;   4n      KC  1^n &lt;C -&gt; &lt;C 0^n              n
+junctions (count to 2e10):
+ J1 B&gt; 0 -&gt; &lt;C 1                          1   (5.2M)  W0 bounce / set a counter digit
+ J2 0 0 0 &lt;C -&gt; 1 0 B&gt; 1                  4   (2.6M)  C bounce at a dark wire; EdgeL
+ J3 1 0 0 &lt;C 0 0 0 -&gt; 0 0 0 1 1 1 B&gt;      8   (2.6M)  Lw1 core (E-F-A run over 000; halts if that cell is 1)
+ J4 1 &lt;C -&gt; &lt;C 0 (isolated 1)             1   (1.3M)
+ J5 1 0 0 &lt;C 0^4 -&gt; 0 0 0 1 1 1 &lt;C 1      9   (1,145)  J3 + J1 with a 0-block wire (wall meets the zone)
+ J6-J10: 5 left-edge (nursery) windows, 7-22 steps, 287-863 each (1-3 per cycle); J11-J13: the first 75 steps only
+</code></pre></div>
+
+<p><code>scripts/validate_deepen.py</code>: all 13 rewrites hold with random context outside the window (520/520).</p>
+<p><strong>2. Right barrier = binary counter</strong> (closes the "second counter" gap). Its digits are period-4 cells: <code>1000</code> = 1, <code>0000</code> = 0, least significant digit next to the last wire. Rule <strong>K</strong>: <code>(10111)^m B&gt; (1000)^j 0 --&gt; &lt;C (11000)^m (0000)^j 1</code> in 5m+8j+1 steps, 192/192 (random m, j from 0, random context). Each B arrival is one increment. A dark block <code>11000</code> inside the zone passes carries through (B sweeps it), so the zone is digits plus single wire blocks and lattice shifts. One cell per new top digit is the only way the counter itself moves the right edge. The +32 cells per cycle come from the wires getting longer.</p>
+<p><strong>3. Walls are rotors: 2 arrivals in, 3 out</strong> (the 3/2 law, now exact). The event order at a wall is fixed by its state: b b c c c. An arrival from the left at W1 forwards exactly 3 arrivals to the next wall, and one at W0 forwards none. A binary digit is the same kind of rotor with 2 in, 1 out. Lemma (derived, not yet machine-checked): the leftward crossings of an interior wire alternate between "no change" (the right wall's W0 bounce) and "+1 block" (its Lw3 pass). Its left wall eats one block per 3 such crossings. So the wire length, read at each W1 pass of its left wall, never decreases (+0, +1 alternately), and interior walls never collide. The last wire is different: only its left wall acts on it, so it shrinks by 1 per round until the wall is absorbed into the zone (J5).</p>
+<p><strong>4. Left edge = exactly periodic nursery.</strong> From 203,465 steps on there are 2,251 left records. All of them come in the fixed 8-record cycle XC XD XE YC YD YE ZD ZE, each with its own fixed prefix. The 282 X records have the identical prefix <code>1^6 0 00011000011^2 00011^2 10001^3 10 00011^6 10001^8 11000^12 1</code>, and the left edge moves −8 exactly per X record. Each cycle the nursery sends one wall into the conveyor.</p>
+<p><strong>5. Levels (regime transitions) to 2e10.</strong> The frozen wire lengths at X records are 12, 18, 27, 41, 61, 92, 138, 206, 309, 463, 695. The last one is the latest level, frozen at about 1.54e10. Each new level freezes when the growing last wire reaches about 1.5× the one before it. Level start times: 18 @4.6e5, 27 @1.1e6, 41 @3.4e6, 61 @1.1e7, 92 @3.9e7, 138 @1.24e8, 206 @4.1e8, 309 @1.38e9, 463 @4.59e9, 695 @1.54e10, about ×3.3 in time per level. Every level-up is made of the same 19 rules (item 1). There is no new regime.</p>
+<p><strong>6. Closure tests.</strong> These run random members of the abstract family: the real X nursery, random W0/W1 wall states, random wire lengths and a random zone.
+- <code>closure_test.py</code> (junction catalog): 100/100 runs at 5e7 steps with wires 1..20, and 60/60 at 1e8 steps with wires 1..400. No halt and no new junction type.
+- <code>closure_records.py</code> (C core, every left record): with the zone lattice offset ≡ 3 mod 4 after the last wall cell, the offset seen in the blank-tape run, 150/150 runs reach 5e7 steps without halting. Offsets 0/4: 48/48 no halt. <strong>Offsets 1/5: 31/48 halt; 2/6: 48/48 halt.</strong> A random nursery prefix P with random walls also halted (1 of 8).
+- So the machine is NOT robust to any zone alignment. The invariant has to fix the zone lattice phase relative to the last wire (≡ 0 or 3 mod 4). The blank-tape run keeps offset ≡ 3 at every left record. Random wall states and wire lengths do not break it, so the alignment is held structurally (absorption puts it back), not by arithmetic luck. The strict zone regex <code>0^(4k+3) (0000|1000|11000)* 1</code> is too narrow: 110 of 150 aligned runs leave it without halting, through single-0 lattice shifts inside the zone, the same as the 56 blank-tape records it misses.</p>
+<p><strong>Non-halting argument (sketch).</strong> A halt needs A to read 1. A runs only inside an E-F-A pass over cells that every rule above requires to be 000. So a halt needs a junction outside the catalog. The tape at left records is nursery · (wire ≥ 1, wall)<em> · aligned zone. Each piece keeps its form: the nursery is exactly periodic, interior wires never shrink (item 3), the zone is a binary counter (rule K), and absorption is J5 plus the standard rules. </em><em>Open:</em>* the exact closed language of the aligned right zone (where single-0 shifts may sit, and that the alignment survives every absorption). This is the one remaining gap before proof.md.</p>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Outcome: confidence stays <strong>med</strong>. Recommend more observation, aimed at one coincidence condition (below). The zone-language gap from round 1 is closed: the exact language is now known, and the open point is narrower than before. Not flagged as a cryptid, but see item 5. Scripts are in <code>scripts/deepen2/</code>. All numbers are in <code>scripts/deepen2/results/summary.json</code>.</p>
+<p><strong>1. One cell language for everything right of the nursery (L_gap).</strong> Read the tape as 1-runs and the 0-gaps between them. At every left record from 2e5 to 2e10 (2,251 records), every run after the first 3 (the left edge) satisfies three conditions (<code>realcheck.py</code>, 0 violations):
+- each run has length 1, 2 or 3;
+- each gap is at least 3 and is 0 or 3 mod 4;
+- each 3-run follows a gap that is 3 mod 4.</p>
+<p>The residue of the gap before a run tells you what the run is:</p>
+<div class="highlight"><pre><span></span><code>gap = 3 mod 4:  run 1 = counter digit 1 (1000)   run 2 = P (11000, wire/pass block)   run 3 = W (W1 wall: 1 11000)
+gap = 0 mod 4:  run 1 = S1 (shift + digit, 0 1000)   run 2 = SP (W0 wall: 0 11000)     run 3 = forbidden ("sW")
+each extra 4 zeros in a gap = one 0 digit (0000)
+</code></pre></div>
+
+<p>Walls, wires, the binary counter, round 1's "single-0 lattice shifts" and the 11000 blocks inside the zone are all units of this one alphabet. A wall Wx:n is the unit SP or W followed by n-1 P units. The halting offsets 1 and 2 from round 1 are gaps of 1 or 2 mod 4, which means two shifts in one gap.</p>
+<p><strong>2. One B arrival is an exact carry rewrite</strong> (<code>unitinc.py</code>; matches the machine on 79,527 of 79,527 random arrivals, <code>checkinc.py</code>). The carry enters at the bottom unit:</p>
+<div class="highlight"><pre><span></span><code>0 digit -&gt; 1, stop        1 digit -&gt; 0, carry on        P -&gt; P, carry on
+S1 -&gt; P, stop             SP (W0) -&gt; W (W1), stop
+W -&gt; its rest gets 3 carries, then W becomes P and a shift (one 0 cell) attaches to the first run above
+</code></pre></div>
+
+<p>Rule K, the rotor rules W0/W1/Lw1-3 and wall absorption (J5) are special cases.
+- <strong>Absorption</strong> is the W rule when the last wall's wire is down to 1 block. The shift lands on the first run above: on a 1 digit it becomes S1, which becomes P on its next carry. On a zone P it becomes SP, a zone wall that climbs through P blocks and dissolves at the next 1 digit.
+- <strong>Lattice alignment is self-repairing.</strong> Every shift ends as P or as a wall, so the counter never sees gaps of 1 or 2 mod 4.</p>
+<p><strong>3. Closure tests.</strong> Each test applies repeated arrivals to the right end, using the machine in isolation (<code>arr.py</code>). This is exact, because the right end only ever gets B from the left and returns C.
+- Random L_gap words (<code>explore4.py</code>): 2,984 of 3,000 stay in L_gap for 60 arrivals and 0 halt. All 16 exits are a shift landing on a W.
+- Natural family (<code>explore6.py</code>): conveyor walls with wires 1..12 plus a random digit/P zone stay in L_gap for 400 arrivals in 1,500 of 1,500 cases. With one S1 or SP planted in the zone, 1,498 of 1,500 stay in. Both exits are an interior 1-block wire directly followed by a wall (<code>SP W</code>, <code>W W</code>), which the interior-wire lemma rules out outside the periodic nursery.
+- A looser language that allows 4-runs degrades: runs grow up to 18, gaps of 1 appear, and 1 of 3,000 runs halts (<code>explore5.py</code>). So L_gap is the right invariant shape.</p>
+<p><strong>4. The one open point: a wrap coincidence.</strong> The W rule leaves L_gap only in one situation:
+- a W whose wire is down to 1 block finishes a round,
+- the k digits between it and the next non-digit unit X wrap to exactly 0 under its 3 carries (value 2^k−3 before, k ≥ 2), and
+- X is a wall (SP or W).</p>
+<p>The shift then lands on a wall (cells <code>0111000</code>). In the blank run to 2e10 (<code>zonewalls2.py</code>; to 2e9 and to 2e10 give the same counts, and no zone wall appears after 2e9):
+- at most 1 zone wall exists at a time, and 11 of 2,251 left records have one;
+- no two wall units are ever separated by digits alone;
+- but 6 of those 11 zone walls sit on digits only, directly above the last conveyor wire. These are the candidates for the coincidence when the next last wall arrives.</p>
+<p>Timing makes the coincidence unlikely. A zone wall over k digits moves on after 2^(k+1) carries. The next last wall needs about 3× its wire length in carries (the wire is 100s of blocks) to reach the digits. The coincidence also needs the k digits to wrap at that exact round. This is a counting argument, not a structural one.</p>
+<p>Forcing the coincidence (<code>coinc.py</code>, 400 cases) leaves L_gap in 154 cases, and none halt within 3,000 arrivals. So a shift on a wall is not immediately fatal, but its rules are not written yet.</p>
+<p><strong>5. Cryptid assessment.</strong> The local dynamics are a fixed, fully validated rewrite, so this is not a cryptid in the rule sense. However, the L_gap invariant holds only if a counter-value coincidence never happens. Closing that needs one of two things:
+- <strong>(a)</strong> a timing invariant: "a zone wall that sits on digits only is gone before the next last wall reaches it". This has to be argued from the 3/2 wire growth.
+- <strong>(b)</strong> a larger closed language that also gives rules for the <code>0111000</code> (shift-on-wall) states.</p>
+<p>Next step: derive the shift-on-wall rules with <code>arr.py</code> (two to four arrivals on <code>0111000</code>+context). If they always reduce back to L_gap, (b) gives a purely structural invariant and the proof can start (proof.md = nursery period + interior-wire lemma + L_gap closure under the unit rewrite). If they do not, (a) is needed, and Dennis should decide whether that counts as pseudo-random arithmetic.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Spend one short targeted stage on rules for the shift-on-wall (0111000) states before proof.md, start proof.md now with the wrap coincidence as an open lemma, or park?
+Answer: <strong>targeted_deepen</strong> (One targeted stage (at most 2 h): rules for the shift-on-wall states). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-targeted_deepen">Funded stage (2026-10-10, targeted_deepen)</h2>
+<p>Outcome: confidence stays <strong>med</strong>. The shift-on-wall states now have exact rules and every single or double hit returns to L_gap, but no purely structural closed superset of L_gap exists: a third hit on the same wall can halt. The coincidence itself is now understood exactly. At the conveyor top it is impossible (a divisibility lemma). Inside the zone it happens exactly when 3m+1 = 2^k. Scripts are in <code>scripts/deepen3/</code>, numbers in <code>scripts/deepen3/results/summary.json</code>.</p>
+<p><strong>1. One alphabet for all states: head words.</strong> Every unit is <code>h 1000</code> (h a 0/1 word with no <code>000</code>), plus the 0 digit <code>0000</code>. The L_gap units are h = ε (digit 1), 0 (S1), 1 (P), 01 (SP), 11 (W). A shift s lands on the first unit above and prepends a 0 to its h. Two rules cover every unit:
+- the first cell is 0: it flips to 1 and the carry stops (<code>B&gt; 0 -&gt; &lt;C 1</code>, J1). This is the rule for SP, S1 and every shifted unit;
+- otherwise the rule depends only on h (<code>hrules_all.py</code>, all 94 head words of length ≤ 6, 300 random rests each). 64 have one exact local rule <code>h 1000 r -&gt; h' 1000 s^e inc^f(r)</code>, 16 halt, 4 exit left in state D/E (they act on the unit below), 10 have no unit form.</p>
+<div class="highlight"><pre><span></span><code>h (unit)        one carry                         h (unit)        one carry
+0     (S1)   -&gt; 1 (P), stop                       011  (sW)    -&gt; 111 (Q), stop
+1     (P)    -&gt; 1, 1 carry on                     111  (Q)     -&gt; 01 + s, 2 carries on
+01    (SP)   -&gt; 11 (W), stop                      001  (sSP)   -&gt; 101, stop
+11    (W)    -&gt; 1 + s, 3 carries on               101          -&gt; 01 + s, 1 carry on
+0111         -&gt; 1111, stop                        0101         -&gt; 1101, stop
+1111         -&gt; 111 + s, 2 carries on             1101         -&gt; 111 + s, 1 carry on
+01111, 01101 -&gt; 11111, 11101: E runs left out of the unit (no local rule; halts in context, item 3)
+</code></pre></div>
+
+<p>The <strong>depth</strong> of a unit is the number of shifts it emits before it is P: 1 for SP and W, 2 for 001/011/101/111, 3 for 0101/0111/1101/1111. A shift landing on a wall of depth d (right after the carries it brought) gives depth d+1. Starting from L_gap and letting a shift land after 1-3 carries, 22 head words are reachable (tower closure). All 12 of depth ≤ 3 have local rules, and depth 4 is the first that does not.</p>
+<p><strong>2. The extended carry model equals the machine.</strong> <code>incplus.py</code> (the two rules plus the table) against <code>arr.arrive</code> (<code>checkplus.py</code>): 79,839 of 79,839 arrivals with a planted sW or Q, and 78,765 of 78,765 with planted depth-2/3 towers, 0 mismatches and 0 halts. Every arrival the model could not handle (45) has a depth-4 head (11111 ×28, 11101 ×15, 111101 ×2).</p>
+<p><strong>3. Towers of depth ≤ 3 always come back. Depth 4 can halt</strong> (<code>tower.py 1 40 3000</code>, one tower planted in a natural word: conveyor walls with wires 1..30 and a random zone):
+- depth ≤ 3 (11, 011, 111, 0111, 1111): 200 of 200 runs return to L_gap, 0 halts;
+- depth 4 (01111, 11111): 13 of 80 halt;
+- depth 5-6: 7 of 160 halt or exit left; 01111111 and 11111111: 80 of 80 halt.
+- Forced coincidences (<code>ctrack.py 2 3000 3000</code>, as in coinc.py with richer contexts): 635 of 3,000 leave L_gap, all 635 return, 0 halts. The longest excursion is 2,260 arrivals, and depth-3 heads (0111, 1111, 001, 101) occur. 3,000 random L_gap words × 3,000 arrivals (<code>hexplore.py</code>): 0 halts, 31 reach depth 2 and all return.
+- So the closed superset of the decision exists only with a cap on hits per wall. L_gap plus all depth ≤ 3 states is closed exactly when no wall is hit 3 times. That cap is a counting statement, not a structural one.</p>
+<p><strong>4. When a shift lands on a wall (exact).</strong> A wall emits s with f ≥ 1 carries, and s lands on the first run above after those carries. It lands on a wall X only if the whole digit block between emitter and X wraps to exactly 0 at that moment.
+- <strong>Creation lemma</strong> (structural). Digit positions can turn into P (via S1) but never back, and a wall that moved leaves a P behind. So a wall X directly above a pure digit block was put there by a shift that jumped that block when the block was 0. The emitter was the unit directly below the block, and it is P right afterwards. After every absorption the bottom zone block is all 0: either it wrapped, or s split it at its lowest 1 digit.
+- <strong>Conveyor-top lemma</strong> (structural, mod 3). Between two absorptions the zone receives carries only from the last conveyor wall, exactly 3 per round. A zone wall X over the bottom block (k digits, created at an absorption with the block 0) has N = 3n carries after n rounds. A hit on X needs N = 2^k (X = SP after 1 carry) or N = 2^(k+1), and neither is a multiple of 3. After 2 carries X has moved on. So <strong>the coincidence named in the decision (last wall W:1 → shift on a zone wall) never happens.</strong> <code>toplemma.py</code>: n = 1..120 rounds, k = 0..8 digits, last wall in W or SP state, 2,160 of 2,160 stay in L_gap through the absorption. A zone wall over a nonzero block, which the creation lemma rules out, is what coinc.py forced.
+- <strong>Zone-internal coincidence</strong> (arithmetic). The remaining way needs 2 zone walls. U1 sits over the bottom block B0 (k0 digits) and jumps the next block B1 (k1 digits) to create X. A later absorption makes B0 wrap exactly again (the last wall ran n = m·2^k0 rounds), which puts a wall back on U1. When U1 fires again, B1 has received 3m+1 carries since X was created. So <strong>X is hit exactly when 3m+1 = 2^k1</strong> (m = 1, 5, 21, …). Constructed in <code>zcoinc.py</code>: 6 of 6 cases with 3m+1 = 2^k1 reach sW, and 4 of 4 with 3m+1 ≠ 2^k1 stay in L_gap for 4,000 arrivals. For depth 3 on the same X the simplest chain needs the next absorption interval to be the same n again. Other chains (blocks split at an absorption, longer nestings) each add one more condition on the interval lengths mod powers of 2.</p>
+<p><strong>5. Blank run: no hit at all to 2e10.</strong> A stacked unit that takes its second carry runs a junction outside the 13-type catalog (<code>jstack.py</code>: 40 of 40 planted sW/Q configurations with the real nursery make new types). The blank run to 20,000,003,117 steps uses only the 13 types, and L_gap holds at all 2,251 left records. So no wall was ever hit in that range, not only at the sampled records. <code>zoneview.py 2e10</code>: zone walls at 11 of 2,251 records, never 2 at once.</p>
+<p><strong>Still open.</strong>
+- Show that no zone wall is hit 3 times (depth 4). The hits are fixed by the absorption intervals n_j (rounds of each last wall between absorptions) mod powers of 2 and by 3m+1 = 2^k. The n_j come from the 3/2 conveyor. The next step is to extract n_j from the blank run, drive an abstract zone automaton with them (exact by items 1-2), and list the interval patterns that give 1, 2 and 3 hits on one wall. If 3 hits need a pattern the conveyor structurally avoids (for example equal consecutive intervals), the proof is structural. If they need only n_j mod 2^k conditions, this is Mahler-type 3/2 arithmetic, and the machine is a cryptid candidate.
+- The nursery period and the interior-wire lemma are still argued and sampled, as before.
+- Answered decision moved to <code>decisions/2026-10-10-targeted_deepen.json</code>. New <code>decision.json</code>: chain_stage (recommended: one stage on hit chains vs absorption intervals), cryptid_flag, proof_conditional, park.</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: Spend one more targeted stage testing whether the conveyor's absorption intervals can ever give one wall three hits, flag the machine as a cryptid candidate now, or park?
+Answer: <strong>chain_stage</strong> (One more targeted stage (at most 2 h): hit chains vs absorption intervals). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-chain_stage">Funded stage (2026-10-10, chain_stage)</h2>
+<p>Outcome: <strong>not a cryptid candidate</strong>; confidence stays <strong>med</strong>, with a much narrower and structural gap. The absorption intervals follow an exact counter-type law (a period-32 table plus a ruler term), not 3/2 arithmetic. Under that law no zone wall is ever hit, and three stacked hits would need repeated intervals of exactly 2^p, which the law never produces. Per this stage's stop rule, proof.md can start. Two lemmas are still observed rather than proved (below). Scripts are in <code>scripts/deepen4/</code>, numbers in <code>scripts/deepen4/results/summary.json</code>.</p>
+<p><strong>1. The blank run's right end replayed exactly from record to record.</strong> <code>match.py</code> takes the top K conveyor walls plus the zone at each left-record group, feeds carries at the bottom with the deepen3 unit model, and finds the record's successor. K starts at 3 and grows when all K walls are absorbed in one interval; the Y→Z intervals absorb 3 walls each. Results: 843/843 intervals to 2e10 and 988/988 to 3.18e10 reproduce the next record exactly (0 failures). This gives every absorption: 2,238 to 2e10 and 2,623 to 3.18e10, about 8 per nursery cycle.</p>
+<p><strong>2. Zone automaton driven only by the intervals.</strong> Let N_j be the carries that cross the zone boundary between absorption shifts j-1 and j. One step of the automaton is "N_j carries at the zone bottom, then the absorption shift". Leading P units join the next wire.
+- <code>zcheck.py</code>: it reproduces the zone at every record group (843/843 to 2e10, 988/988 to 3.18e10).
+- <code>fastzone.py</code> (bulk carries) matches it after every one of the 2,238 absorptions.
+- <code>fzmachine.py</code>: against the machine itself on random zone words with zone walls, 2,000/2,000 instances and 7,010 carry batches plus shifts, 0 mismatches.</p>
+<p><strong>3. Correction to the round-3 conveyor-top lemma.</strong> That lemma assumed N = 3n (3 carries per round of the last wall). In the real run N mod 3 is 747/744/747. When a wall is absorbed, the rest of the triple the wall below was emitting goes straight to the zone (in-flight carries). The lemma's conclusion (the last wall never lands a shift on a zone wall) still holds, but for the reason in item 4. The 2,160 toplemma cases only covered δ = 0.</p>
+<p><strong>4. Absorption-interval law (observed, exact).</strong> N_j = j + 50 + g(j), where j is the absorption index:
+- g(j) depends only on j mod 32 for residues 1..25: <code>-3 -2 -4 -6 3 1 -1 0 -3 -2 -4 -6 0 3 -1 0 -3 -2 -4 -6 3 -5 -6 -6</code> for residues 2..25 (residue 1 gives 0). There are 0 violations in 2,623 absorptions.
+- The other 7 residues (26..31 and the next 0) form one of 7 tuples per 32-block b, chosen by ν2(b+2) (a ruler sequence). There are 0 violations in 80 blocks, ν2 = 0..6 seen; ν2 = 2 and 4 share a tuple, and ν2 = 5 and 6 each brought a new tuple. A 32-block is 4 nursery cycles, matching the 8,8,4,12 growth of the X-record wire.
+- Consequences: N grows by exactly 1 per absorption on average, and level-ups (11 of them) leave the law untouched, so the 3/2 conveyor does not enter the zone's input arithmetic. N = 2^k (k = 6..11) occurs exactly once per k, at j = 2^k − 50 (≡ 14 mod 32), between N = 2^k − 7 (odd) and 2^k + 4. The longest run of equal consecutive N is 2.</p>
+<p><strong>5. Hit chains, listed exactly (<code>chains.py</code>).</strong> A zone wall is created at absorption j at depth p (the shift jumps a zero block of p digits onto a P, which needs 2^p | N_j). It survives to the next absorption only if the next interval is a small multiple of 2^p. From each of the 11 real creation kinds, N_{j+1..j+4} = a_i·2^p with a_i in 1..4 (256 patterns):
+- depth 2 (one hit) in 115-120 patterns, depth 3 in 46-50;
+- depth ≥ 4 (three stacked hits, off the rule table, halts in 13/80 planted runs) in exactly 10 patterns: 1111, 1112, 1113, 1114, 1121, 1211, 1311, 2111, 3111, 4111. That is, three intervals of exactly 2^p among the four after creation.</p>
+<p>In the natural range (N ≥ 49, consecutive N differ by at most 18), these patterns mean intervals that repeat and equal a power of 2. Law 4 never produces them. The law also rules out the direct one-hit route: a hit by the very next absorption needs N_{j+1} = 2^p after 2^p | N_j, but N_{j+1} = 2^p only follows the odd 2^p − 7. Every other route needs a wall to survive an interval with N_{j+1} ≤ 4·2^p, so the creation depth p must be about log2 N − 2. In the blank run the creation depth is at most 4 and the next interval is always ≥ 8.25·2^p. Checks:
+- with natural-size intervals (real N + offset −40..40), 81/81 runs per kind have no hit;
+- perturbation census (<code>perturb.py</code>): one interval changed by up to ±128, then 12 real ones, gives 558,940 trials with 0 hits; ±16 then 6 real ones gives 71,424 trials with 0 hits;
+- blank run: 369 zone walls created to 2e10 (432 to 3.18e10), at depths 1 (307), 2 (53) and 4 (9). <strong>No zone wall is alive at any absorption</strong> (0/2,238; 0/2,623). Hits: 0.</p>
+<p><strong>Non-halting argument now.</strong> Halting needs a depth-4 unit. Every hit needs a zone wall alive at a shift, and only absorptions create zone walls (absent earlier hits). So it is enough that (A) the interval law holds forever and (B) under it, every zone wall dissolves within the interval after its creation. Both are counter (2-adic) statements, so this is not Mahler-type arithmetic.</p>
+<p><strong>Still open.</strong>
+- (A) Derive the interval law from the conveyor top. Why does each successive top wall add exactly one carry per absorption? Where do the period-32 table and the ν2(b+2) tuples come from (zone P feedback into the wire)? Does a new tuple at ν2 ≥ 7 keep the low depth of creations? This is unseen: the first ν2 = 7 block is near j ≈ 4,060, about 1.2e11 steps. A zoneview run toward 1.3e11 was stopped at 3.18e10 for the time budget, and nothing new appeared up to there.
+- (B) Prove that under the law no zone wall survives an interval (creation depth ≤ 4 so far; this needs the marker (zone P) positions, which the ν2 pattern of N sets).
+- The nursery period and the interior-wire lemma are still argued and sampled, as before.
+- Answered decision moved to <code>decisions/2026-10-10-chain_stage.json</code>. New <code>decision.json</code>: law_stage (recommended), proof_md, park.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: Spend one more targeted stage deriving the absorption-interval law and the no-survivor zone lemma, start proof.md now with both as lemmas to prove, or park?
+Answer: <strong>law_stage</strong> (One targeted stage (at most 2 h): derive the interval law and the zone lemma). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-law_stage">Funded stage (2026-10-10, law_stage)</h2>
+<p>Outcome: confidence stays <strong>med</strong>; neither lemma closed, and the interval law in its stated form is <strong>false from ν2 = 7</strong>. Not a cryptid: every new irregularity traces to a binary counter in the zone, not to 3/2 arithmetic. No zone wall is alive at any absorption to 1.93e11 (0/4,820), 0 hits. Scripts are in <code>scripts/deepen5/</code>, numbers in <code>scripts/deepen5/results/summary.json</code>.</p>
+<p><strong>1. Longer blank replay (to 1.93e11).</strong> <code>deepen3/zoneview.py</code> on the C core (stopped for the time budget), then <code>deepen4/nstruct.py</code>:
+- 1,812/1,812 record intervals reproduced exactly by the unit model, 4,820 absorptions; the zone automaton equals the real zone at 1,812/1,812 record groups.
+- First ν2 = 7 block (b = 126) seen. New tuple (−4, 4, −1, −5, −5, −1, 0); the ν2 = 6 tuple was (−4, 4, −1, −5, −5, 5, −1).
+- <strong>8 violations of the period-32 table</strong>, all at j = 4065..4072 (block 127, residues 1..8, right after the ν2 = 7 block): g = −1, 2, −4, 2, −4, 2, −4, 1 instead of 0, −3, −2, −4, −6, 3, 1, −1. So at ν2 = 7 the irregular window grew from 7 residues (26..0) to 15 (26..8). Up to ν2 = 6 there were 0 violations.
+- The prediction N = 2^12 at j = 4046 = 2^12 − 50 (between 4089 = 2^12 − 7 and 4100) held.
+- Zone walls: 792 created, depths 1 (659), 2 (113), 3 (1), 4 (19); alive at an absorption 0/4,820; hits 0.</p>
+<p><strong>2. Where the law comes from (partly derived).</strong>
+- <em>Conveyor top</em> (<code>toptrace.py</code>). When the last wall is absorbed, the next wall's wire is w + L/3 (w = its own wire, L = the absorbed wall's wire when it became last). The conveyor wires grow ×1.5 per level, so w ≈ 2L/3 is the fixed point. In record interval 802 all 5 walls absorbed had L = 724, 723, 725, 724, 724, and N ≈ 3L. That is why consecutive N differ by only a few carries.
+- <em>Periodic input.</em> Within a level, the number of carries fed at the bottom of the top-K part per record interval is constant for each group type: 729, 810, 1,095, 1,215, 1,644, 1,821, 2,466, 2,733 (K = 3) and 2,043, 3,063, 4,593, 6,888 (K = 6), ×3/2 per level.
+- <em>The zone holds a counter of the 32-block index</em> (<code>zcount.py</code>). At the start of step j = 32b + r, the zone digits above digit position 6 read exactly b+1 for r = 0..17 (68/68 blocks at each residue; at r = 3 they read b), and b+2 for r = 28..31. The increment happens in r = 18..27.
+- <em>Low part</em> (<code>lowform.py</code>). The units below digit 6 have exactly one form per residue for r = 1..18 (68/68 blocks). At r = 18 the low part is all zero, so the absorption shift lands in the counter at its lowest 1. The forms then branch by ν2 class (34/17/9/… blocks) for r = 19..0 and merge again at r = 1. This is why the irregular tuples sit at residues 26..0 and are typed by ν2(b+2): ν2(b+2) is the length of the increment's carry chain.
+- Not derived: the +1-per-absorption trend, the values of the period-32 table, and why the window lengthens at ν2 = 7. These need the conveyor top and the zone treated as one closed system with the periodic input above. Taking N as an external law is not enough.</p>
+<p><strong>3. Lemma B under weaker hypotheses</strong> (exact zone automaton driven by synthetic N; <code>lawdrive.py</code>, <code>lawdrive_rand.py</code>, <code>hdrive.py</code>, <code>randdrive.py</code>):
+- Law + each observed tuple for every ν2 ≥ 7, to j = 3e5: 6/6 runs with 0 alive and 0 hits, creation depth ≤ 5.
+- Law + random tuples (±8): for ν2 ≥ 7, 20/20 runs to j = 1e5; for every ν2, 20/20 runs to j = 2e4; 0 alive, 0 hits in all.
+- H = table on residues 1..25 plus independent random values on residues 26..0 of every block: ±8, ±16 and ±32 give 300/300 runs to j = 2e4 with 0 alive and 0 hits, creation depth ≤ 7.
+- Longer random windows break this: with the table only on 9..25 (15 random residues, ±16), 2/100 runs have a zone wall alive at an absorption (0 hits); with the table only on 13..25, 1/100 runs, creation depth up to 11. With no table (±8 on every residue), 2/100 runs alive and creation depth up to 12; <code>randdrive.py</code> ±8 gives a hit in 1/20 runs.
+- Reading: B is safe for a 7-residue irregular window at every block, but not for a random 15-residue window. The real ν2 = 7 window has 15 residues. So B cannot be proved from a bounded-window hypothesis; it needs the exact N, including how the window grows with ν2. This answers the decision's exit question ("can a tuple lift the creation depth?"): not in the real run (max depth 4), but a longer window could in principle.</p>
+<p><strong>Still open.</strong>
+- (A) Derive N from the closed top system: the last frozen level, the growing top wire and the zone, driven by the constant per-interval input. A proof would likely be an induction over 32-blocks, with the zone counter b+1 symbolic and the ν2 class of b+2 as the case split. It must explain the window length per ν2 (7 residues up to ν2 = 6, 15 at ν2 = 7).
+- (B) Then show no survivors by the same block induction. The real run gives 0/4,820 and the synthetic law runs give 0, but B depends on the exact window values.
+- The nursery period and the interior-wire lemma are still argued and sampled, not proved.
+- Answered decision moved to <code>decisions/2026-10-10-law_stage.json</code>. New <code>decision.json</code>: top_system (recommended), proof_md, park.</p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: Spend one more stage deriving the intervals from the closed conveyor-top + zone system and proving the zone lemma by induction over 32-blocks, start proof.md now with both open, or park?
+Answer: <strong>top_system</strong> (One stage (at most 2 h): derive N from the closed top system, then the zone lemma by block induction). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="funded-stage-2026-10-10-top_system">Funded stage (2026-10-10, top_system)</h2>
+<p>Outcome: confidence stays <strong>med</strong>, but the gap is much narrower. N is no longer an external law: the conveyor top and the zone close into one autonomous zone automaton with a single period-8 constant. Its block map takes the canonical state for b to the one for b+1 (or b+2, b+3, … for deep ruler classes) with a closed-form delay, and no zone wall is alive at any absorption in any test. Not a cryptid. The stop rule does not fire: the window does grow with ν2, linearly, but it has a closed form. Scripts are in <code>scripts/deepen6/</code>, numbers in <code>scripts/deepen6/results/summary.json</code>.</p>
+<p><strong>1. Top relation (new rule, exact).</strong> Let A_j be the P units that leave the zone bottom during step j (the N_j carries), and D_j the P units that left before step j. Then</p>
+<div class="highlight"><pre><span></span><code>N_j = 3*A_j + D_j + p(j mod 8),   p = (47, 48, 48, 47, 48, 47, 48, 47)  for j mod 8 = 0..7
+</code></pre></div>
+
+<ul>
+<li>Blank run: exact for j = 1..4,819 (4,819/4,819; j = 0 is the partial first interval), through every level-up and the ν2 = 7 block (<code>dropfit.py</code>).</li>
+<li>Random instances (<code>relcheck.py</code>): a random zone (0/1 digits, P, S1, SP) on the top K real conveyor walls, run with the exact unit model. E_i = N_i − 3A_i − D_i equals the real zone's sequence in 3,000/3,000 zones (2e10 replay, K = 4, 9,000 intervals) and 1,200/1,200 (1.93e11 replay, K = 6, 6,000 intervals).</li>
+<li>Why (sketch, to be written as a lemma). The last wall j does wire_j + A_j + 1 rounds, so every dropped P costs one more round, which is 3 carries. Carries flow only upward, so the walls below never see the zone. In carry units, 3·wire_j + (in-flight carries) is 3·Zb − (carries wall j emitted), where Zb is the zone-bottom position. One more round of wall j−1 costs wall j 2 carries, so this quantity moves by +1 per dropped P (slope 1 in D). What is left depends only on the birth data of walls j−1 and j, which repeats with the nursery cycle (8 walls per cycle), hence period 8.</li>
+<li>So the "+1 per absorption" trend is D_j ≈ j (one drop per step), and the 3/2 conveyor enters N only through p.</li>
+</ul>
+<p><strong>2. Closed system (<code>topsys.py</code>).</strong> State = (zone, D, j mod 8). Step j: feed D_j + p(j mod 8) carries, add 3 for every P that drops, then the absorption shift.
+- Reproduces the blank run's N for 4,819/4,819 steps (792 zone walls, 0 alive, 0 hits).
+- Run to j = 4.2e6 (131,250 blocks, ν2(b+2) up to 17, 49 s): 690,078 zone walls created, <strong>0 alive at an absorption, 0 hits</strong>, zone ≤ 27 units, D − j always in [−5, −1].
+- <strong>Canonical block state</strong> (<code>canon.py</code>): at j = 32b + 17 the zone is <code>S1 0 1 1 1 1</code> followed by the binary digits of b+1 (LSB first), with D = j − 1. This holds at 131,250/131,250 blocks (b = 0..131,249).</p>
+<p><strong>3. Block map and window per ν2.</strong>
+- <code>symb.py</code> starts from the canonical state C(b) for random b (up to 2^120 and 2^400) with ν2(b+2) = k and runs whole blocks:
+  - k = 0..40, 20 b each (820 runs): C(b) → C(b+1) for every k ≤ 22. For k = 23..40, C(b+1) is skipped and C(b+2) is reached. Within one class (k ≥ 2) the g sequence is the same for every b.
+  - k = 0..260, 2 b each (522 runs): the next canonical state comes after exactly <strong>1 + ⌊(k+9)/32⌋ blocks</strong> (thresholds k = 23, 55, 87, …, 247).
+  - All 1,342 runs: 0 alive, 0 hits.
+- Mechanism. At r = 18 the low part is all zero, and the absorption shift lands on the counter's lowest 1, at height 6 + ν2(b+2). That unit becomes a P marker. Carries pass through it, and it sinks about one unit per step (one drop per step). The irregular g window ends when the marker leaves the bottom.
+- Window in the 4.2e6 run (irregular offsets from 32b):
+  - k = 0: 26; k = 1: 27–28; k = 2, 3, 4, 6: 27–32; k = 5: 27–30.
+  - k = 7..14: 27–40; k = 15..17: 27–48.
+  - tuple(k+8) = tuple(k) shifted by 8 offsets after a common prefix (k = 6..9 against 14..17).
+- So the window grows linearly with ν2. That is why the period-32 table broke at ν2 = 7, and why a bounded random window (law stage) was the wrong hypothesis.</p>
+<p><strong>Non-halting argument now.</strong> Halting needs a depth-4 unit, which needs a hit, which needs a zone wall alive at an absorption. Given (1), the right end is the closed system in (2). By induction over blocks, C(b) leads to C(b + 1 + ⌊(ν2(b+2)+9)/32⌋), the steps between have no zone wall alive at an absorption, and the classes of the blocks it skips are the small ruler values ν2(t), t &lt; 2^k. That covers every b, given a uniform version of item 3.</p>
+<p><strong>Still open.</strong>
+- (A) Write the top relation as a proved lemma (conservation sketch above). The constant p needs the nursery period.
+- (B) The block map for all k needs a marker-descent lemma uniform in the marker height: a P marker at height h above canonical low forms sinks one unit per drop, and nothing below it changes until it reaches the low part. It is checked for k ≤ 260 with random high bits, and exhaustively for b ≤ 131,249, but not proved.
+- The nursery period and the interior-wire lemma are still argued and sampled, as before.
+- Answered decision moved to <code>decisions/2026-10-10-top_system.json</code>. New <code>decision.json</code>: marker_stage (recommended), proof_md, park.</p>
+<h2 id="decision-2026-10-12">Decision (2026-10-12)</h2>
+<p>Question: Spend one more stage proving a marker-descent lemma uniform in the marker height (the block map for every ruler class), start proof.md now with it open, or park?
+Answer: <strong>marker_stage</strong> (One stage (at most 2 h): the marker-descent lemma, then proof.md). Dennis: apply recommendations (2026-10-12).</p>
+<h2 id="funded-stage-2026-10-10-marker_stage">Funded stage (2026-10-10, marker_stage)</h2>
+<p>Outcome: confidence stays <strong>med</strong>, with a much smaller gap. The marker-descent lemma is now proved symbolically, uniformly in the marker height. The block map is proved for every ruler class k = ν2(b+2) &lt; 32,759 (o ≥ 3). The stop rule does not fire, because the computation below the marker does not depend on the height h. It does depend on the time since planting, through a number w ≈ off, but in an affine way. There is one new structural item: the end of a deep descent can plant a second, nested marker of height ν2(k+9)+1. Not a cryptid. Scripts are in <code>scripts/deepen7/</code>, numbers in <code>scripts/deepen7/results/summary.json</code>. (deepen7's run-length printer had a bug in its first version, fixed before any result below.)</p>
+<p><strong>1. Descent lemma (symbolic, <code>symdesc.py</code> + <code>rundesc.py</code>).</strong> Let b = o·2^k − 2 with o = 2q+1 and k = ν2(b+2), let j = 32b + off, and write off = 8m + φ with off ≥ 32. Then the zone is F_φ:
+- heads_φ at fixed digit positions inside a low word of L = k + λ_φ − off digits, whose value is 2^(L−1) + w_φ(off);
+- then the marker P;
+- then <code>0 1^(off−20) 0 bin(q)</code>;
+- and D = j + d_φ.</p>
+<div class="highlight"><pre><span></span><code>phi  heads        lam  w          d        phi  heads        lam  w          d
+0    S1@0         24   off-20    -2        4    S1@0 PP@0    24   off-24    -4
+1    S1@0         24   off-20    -2        5    S1@2         24   off-21    -2
+2    S1@1         24   off-20    -2        6    S1@1 P@1     24   off-24    -3
+3    SP@1         25   2off-42   -3        7    S1@0 PP@0    24   off-24    -4
+</code></pre></div>
+
+<ul>
+<li>Entry. C(b) goes to off 18 (low word 0^(k+6), S1 at height k+6) and then to off 19, by two hand-checked steps that need q ≥ 1. Off 19..31 are 13 concrete forms E(off).</li>
+<li>The engine runs one closed-system step (fastzone semantics) with m, k and q symbolic. Numbers are affine in m, and the o·2^(k+5) part of the feed is carried as one packet. <strong>21/21 steps (13 entry, 8 phase) give exactly the next form.</strong> In each step the part above the marker gets exactly one packet (2q+1)·2^(off−19), D − j is as stated, the g values equal the observed table, 0 zone walls are alive at the absorption, and there are 0 hits.</li>
+<li>The only side conditions are growth conditions |t| &lt; 2^(Lt−1), with t ≤ 2·off + 40.</li>
+<li>So the step below the marker is the same for every height. The height enters only through the growth condition.</li>
+</ul>
+<p><strong>2. Value form (marker transparent).</strong> P passes carries unchanged, and a shift lands on the marker only if every digit below it is 0. So the marker is invisible to the digit arithmetic:
+- Vtot (all digits, with P weightless) = o·2^(k+5) + w_φ(off) − 3·2^(L−1). Phase 3 instead has o·2^(k+6) + 2off − 42 − 3·2^(L−1).
+- Every decision in a step (head rules, shift landing at bit ≤ 2, drops) reads only the low bits, so this should stay exact after the growth condition fails. This part is argued, not run through the engine.
+- <code>vtot.py</code>: 300 random (k, o) pairs, 60,509 states from off 32 down to L = 2. It is exact at every L ≥ 3 (60,203/60,203), and at L = 2 for 254/306.</p>
+<p><strong>3. Endgame by locality (<code>endgame.py</code>, <code>egread.py</code>, <code>egcheck.py</code>).</strong>
+- Method. Start from the value-form state at L = 4, compress o·2^(k+5) to o·2^G, and run to the next canonical state. If no shift lands at or above digit R, the run depends on k only through k mod 2^R.
+- k = 65,536..131,071 (all residues mod 2^16): 65,536/65,536 reach C(b + 1 + ⌊(k+9)/32⌋), with 0 alive and 0 hits. Mod 2^12: 8,192/8,192 (o = 3, 5).
+- Compressed runs match the real run from C(b) in 150/150 random cases: same g sequence, same delay.
+- <strong>Nested marker.</strong> The landing digit is ≤ 8, or exactly ν2(k+9) + 1 (65,536/65,536). When k+9 has a high power of 2, the low word wraps as the marker reaches the bottom, and the shift plants a second marker at height ν2(k+9)+1. It sinks over a 1-run (<code>egtrace.py 1015 3 4 40</code>), in a different form from F_φ. Residues with ν2(k+9) ≥ 15 (2 of 65,536) are not covered.</p>
+<p><strong>4. Small classes (<code>smallk.py</code>).</strong> For k = 0..40, every odd o mod 2^8 was run (2 high-bit variants each). 10,495/10,495 reach C(b + 1 + ⌊(k+9)/32⌋) with 0 alive and 0 hits. The highest landing digit is k+6 (the plant), which is below the locality bound k+13. So the block map holds for every b with ν2(b+2) ≤ 40. For o = 1 (b+2 = 2^k), k = 1..259: the delay formula holds 259/259, with 0 alive and 0 hits.</p>
+<p><strong>Coverage.</strong> Items 1-4 together give C(b) → C(b + 1 + ⌊(k+9)/32⌋) with no zone wall alive at an absorption and no hit, for every b with k = ν2(b+2) &lt; 32,759 and o ≥ 3. The proof uses the symbolic descent, finite checks and locality. The first class not covered is k = 32,759 (k+9 = 2^15).</p>
+<p><strong>Top relation as a conservation lemma (written, not derived).</strong> Lemma T: N_j = 3A_j + D_j + p(j mod 8). The argument has three parts:
+- (i) The last wall j does wire_j + A_j + 1 rounds, and each round sends 3 carries up.
+- (ii) Carries only move up, so the walls below never see the zone. The quantity 3·wire_j + (in-flight carries) + (carries wall j has emitted) is fixed by the zone-bottom position, and one extra round of wall j−1 costs wall j 2 carries. That gives slope 1 in D.
+- (iii) The rest depends only on the birth data of walls j−1 and j, which repeat with the 8-wall nursery cycle.</p>
+<p>This stage spent its time on the marker, so T is still checked (4,819 steps plus 4,200 random zones in deepen6) but not proved.</p>
+<p><strong>Still open.</strong>
+- <strong>(B′) Nested-marker lemma.</strong> A descent lemma for the second marker (height ν2(k+9)+1, over a 1-run), uniform in its height. Its own end may plant a third marker at about ν2(ν2(k+9)+c), which would make it a ruler of rulers. Without it the block map is proved only for k &lt; 32,759.
+- The o = 1 entry step, symbolically.
+- The symbolic engine and the locality argument are written against fastzone.py semantics; nothing is machine-checked.
+- Lemma T, the nursery period and the interior-wire lemma.
+- No proof.md: none of these give high confidence.
+- The answered decision is moved to <code>decisions/2026-10-10-marker_stage.json</code>. The new <code>decision.json</code> has the options nested_stage (recommended), proof_md and park.</p>
+<h2 id="decision-2026-10-12_1">Decision (2026-10-12)</h2>
+<p>Question: Spend one more stage on the nested-marker lemma (and the o = 1 entry), start proof.md now with it open, or park?
+Answer: <strong>nested_stage</strong> (One stage (at most 2 h): the nested-marker lemma, then proof.md). Dennis: b (fund all five), 2026-10-12.</p>
+<h2 id="funded-stage-2026-10-10-nested_stage">Funded stage (2026-10-10, nested_stage)</h2>
+<p>Outcome: confidence <strong>high</strong>. The nested marker is the marker-descent lemma one level down, not a new form. The stop rule does not fire: the third marker that a deep enough nested marker plants has the same form again, so the recursion closes by induction on the class. The entry steps are now symbolic for every o, o = 1 included. With this, the block map is covered for every b. The pieces still to be written up as proofs are the ones on the conveyor side: Lemma T, the nursery period and the interior-wire lemma. Not a cryptid. Next: proof.md. Scripts are in <code>scripts/deepen8/</code>, numbers in <code>scripts/deepen8/results/summary.json</code>.</p>
+<p>Notation: k + 9 = s·2^v with s odd and v = ν2(k+9); off' = off − (k+9); S = s + U·2^(k+5−v) (odd), Q = (S−1)/2. U is the part above the counter (U = o at level 1).</p>
+<p><strong>1. Plant lemma (symbolic in v and Q, <code>symplant.py</code>).</strong> The level-1 endgame starts at off' = 12, in phase 4, with marker height 3. There the zone is <code>S1 PP 000 P [1 0 1^(v−5)] X</code> with X = S − 1 = 2Q from digit v up, and D = j − 4. A new engine runs 5 closed-system steps with v and Q symbolic. It allows words of symbolic length v + c with value A·2^(len−1) + x, a high part a·Q + b, and the feed's S·2^v packet, which must arrive exactly at digit v. It reaches exactly</p>
+<div class="highlight"><pre><span></span><code>off' = 17:  S1 . LOW2 . P . above,   LOW2 = v−3 digits of value 2^(v−4) − 3,   above = 16Q + 6 = 0 1 1 0 bin(Q),   D = j − 2
+</code></pre></div>
+
+<ul>
+<li>Mechanism. At 12 → 13 the absorption shift lands on marker 1 (it becomes SP). At 13 → 14 it fires, and its 3 carries wrap the 1-run, so its shift lands at digit v + 1 (bit 1 of X = 4Q + 2). That S1 becomes the nested marker.</li>
+<li>0 walls alive at an absorption, 0 hits.</li>
+<li>Side conditions: growth |x| ≤ 11 &lt; 2^(v−5), so the lemma holds for every v ≥ 9 (<code>results/symplant_V0_9..16.json</code>). One S1 receives a symbolic carry count Q, which is fine because Q ≥ 2^(k+4−v) ≥ 1.</li>
+<li>Against the machine semantics (<code>nested.py plant</code>): 5,000/5,000 random (v ≤ 400, s &lt; 2^30, o &lt; 2^20, compression G) give identical unit lists and D − j at all 6 states.</li>
+</ul>
+<p><strong>2. The nested marker is the level-1 descent of class K' = v − 10 (exact identification).</strong> Take the state at off' = 17 and set U' = 32S. It is deepen7's F_1 for class K' and upper part U':
+- Vtot = U'·2^(K'+5) + w_φ(off') − 3·2^(L2−1), with L2 = K' + 24 − off';
+- j = U'·2^(K'+5) − 64 + off', and D = j + d_φ.</p>
+<p>So the nested marker sinks by the same 8 symbolic phase steps:
+- They never use the parity of the upper part or a lower bound on m (deepen7's <code>nonneg</code> is never called). So they hold from off' = 17 (m = 2).
+- Their growth conditions, read with K = v − 10, hold until L2 ≤ log2(v) + 2.97 (<code>nestgrowth.py</code>; L2 at the first failure is between 4 and 21 for v ≤ 10^6).
+- After that, the value form takes over, as at level 1.</p>
+<p>Checks:
+- <code>nested.py vform</code>: 400 random (v in 12..300): 60,572/60,572 states from off' = 17 down to L2 = 3 equal the class-K' value form with U' = 32S. 40 more with v in 300..1500: 30,993/30,993.
+- <code>nested.py ident</code>: 400/400 runs (v in 14..400), plus 40/40 with v in 400..1500, go from L2 = 4 to the next canonical state with the same g sequence and end offset as deepen7's level-1 compressed endgame of class K' (o = 3).</p>
+<p><strong>3. Recursion and coverage for every class.</strong>
+- Let PlantRun(v, S) be the run from the off' = 12 state.
+  - Every shift in it lands at digit ≤ v + 1. The plant is the only landing that high, and bit v+1 is fixed symbolically. So the run depends only on S mod 4.
+  - <code>nested.py range 600 2</code>: every v in 10..600, s mod 4 ∈ {1, 3}, o ∈ {3, 5}. 2,364/2,364 runs reach the next canonical state, with 0 alive, 0 hits and max landing v + 1.
+- For v &gt; 600, items 1-2 reduce PlantRun(v, S) to the class-K' endgame with K' = v − 10 &gt; 590.
+  - That endgame lands only at digits ≤ max(8, ν2(K'+9) + 1) &lt; K' + 5, so it does not see U'. It is therefore deepen7's residue run (egread R16) when ν2(K'+9) ≤ 14.
+  - When ν2(K'+9) ≥ 15, it is PlantRun(ν2(K'+9), ·) again: its start state is the same value form at marker height 3, phase 4.
+  - The class shrinks from K to ν2(K+9) − 10 &lt; K, so induction on the class terminates. The level-1 classes are covered the same way: k ≤ 40 by smallk, ν2(k+9) ≤ 14 by egread, otherwise PlantRun(ν2(k+9), S).
+- Direct checks of the recursion (<code>deep.py</code>): v = 1025, 1537, 2049, 4097, 8193, 16385, 3 (s, o) each.
+  - Every run reaches the canonical state with 0 alive and 0 hits.
+  - Landings above digit 8 occur only at v + 1 (off' 13) and at ν2(v−1) + 1 (off' = v + 12, the third marker, the same plant one level further down).
+- Real uncompressed runs from C(b) (<code>realdeep.py</code>):
+  - k = 1015 (o = 3): canonical after 33 blocks.
+  - k = 32,759, the first class deepen7 did not cover, for o = 3 and o = 1: the next canonical state at off 32,817 (delay 1,025), 0 walls alive, 0 hits (859 s and 866 s). Landings above digit 8 occur only at k + 6 (marker 1, off 17) and at 16 = v + 1 (the nested marker, off' 13).</p>
+<p><strong>4. Delay correction (not needed for non-halting).</strong>
+- deepen6/7's delay 1 + ⌊(k+9)/32⌋ holds only while ν2(k+9) &lt; 33. Each nested level adds its own term: delay = 1 + ⌊(k+9)/32⌋ + ⌊(v−1)/32⌋ + ⌊(e−1)/32⌋ + …, with v = ν2(k+9) ≥ 10, e = ν2(v−1) ≥ 10, and so on.
+- It matches in 2,364/2,364 range runs and in all deep runs (v = 1025: +32 blocks; v = 16385: +512).
+- The induction only needs some later canonical state, so this changes nothing in the argument.</p>
+<p><strong>5. Entry steps, symbolic for every o (<code>symentry1.py</code>, <code>symentryq.py</code>).</strong>
+- Why the hand steps needed q ≥ 1: with q = 0 the part above the marker would be −1 at off 19, so the machine keeps the marker as S1 (one pending carry).
+- The symbolic engine (S = 1, v = k + 5) runs C(2^k − 2) = <code>S1 0 1^(k+4)</code> → <code>0^(k+6) S1</code> → <code>S1 0^(k+4) 1 S1</code> → <code>0 S1 0^(k+2) 1 P</code>. The last state is exactly E(20) with q = 0, D = j − 2, and the run has 0 walls alive and 0 hits. It holds for every k ≥ 3 (growth checked at V0 = 8).
+- From E(20) on, deepen7's entry and phase steps apply unchanged.
+- <code>entry1check.py</code>: 598/598 k in 3..600 match the machine at all 4 states.
+- <code>entry1forms.py</code>: 45,290/45,290 states (k = 30..300, o = 1) equal E(20..31) and then the value form down to L = 3.
+- The same engine now also does deepen7's two hand-checked q ≥ 1 steps, with k and q symbolic (<code>symentryq.py</code>): <code>S1 0 1^(k+4) 0 bin(q)</code> → <code>0^(k+6) S1 bin(q)</code> → E(19) → E(20). It has 0 walls alive and 0 hits for every k ≥ 3. <code>entryqcheck.py</code>: 2,000/2,000 random (k ≤ 500, q &lt; 2^60) match the machine at all 4 states. So the entry is symbolic for every o.</p>
+<p><strong>Non-halting argument now.</strong>
+- Halting needs a depth-4 unit, which needs a hit, which needs a zone wall alive at an absorption.
+- Given Lemma T, the right end is the closed zone system (deepen6).
+- For every b, C(b) leads to a later canonical state C(b′), with no zone wall alive at any absorption in between. The cases:
+  - the symbolic entry (every o, item 5);
+  - the symbolic descent;
+  - the value form;
+  - the endgame by locality: small classes, the 2^16 residues, and the nested recursion by induction on the class (items 1-3).
+- Base: the closed system started from the blank run's zone is canonical at every block b = 0..131,249 (deepen6 <code>canon.py</code>).</p>
+<p><strong>Still open (proof.md work, not new mechanism).</strong>
+- Lemma T, the top relation. Checked on 4,819 blank steps and 4,200 random zones; the conservation argument is still a sketch.
+- The nursery period and the interior-wire lemma (argued and sampled, as before).
+- The value form below the growth range and the locality principle are argued, and checked by 60,203 + 91,565 states and by the residue and range runs.
+- The symbolic engines run against the fastzone semantics, which were checked against the machine.
+- Nothing is machine-checked in Rocq yet. proof.md is not written; it is the next stage.
+- The answered decision is moved to <code>decisions/2026-10-10-nested_stage.json</code>. No new decision.json: confidence is high, and per CLAUDE.md work goes on to proof.md without blocking.</p>
+<h2 id="informal-proof-stage-2026-10-12">Informal proof stage (2026-10-12)</h2>
+<p>Outcome: proof.md written; status OPEN. Not a complete proof: three conveyor lemmas are stated exactly and checked but not proved. Not a cryptid. <code>check_proof.py quick</code> (30 s) and <code>full</code> (2.5 min) both pass.</p>
+<p><strong>Proved in this stage.</strong>
+- Unit lemmas by <strong>oracle simulation</strong>: run the machine on one unit's cells only, with the rest of the word replaced by the induction hypothesis (head steps onto the rest only in B, comes back in C). This is a finite computation for each unit, so it is a proof. Exact chains and step constants: D1 4+4, P 5+5, W 6/11/11/6 (κ 34), 111 κ 25, 101 κ 14, 1111 κ 27, 1101 κ 16, first-cell-0 rule 1 step. Depth-4 heads 11111 and 11101 fail it (state E walks onto the rest).
+- Theorem U (machine arrival = inc on unit words, cells and exact step counts) by strong induction; checked on 38,415 exhaustive words (up to 4 units of 14 kinds) + 20,000 random, 0 mismatches.
+- Initial segment: blank to the X record at 203,465 (zone D0 D0 D1 D1 D1 D1, the closed system's start).</p>
+<p><strong>Corrected.</strong> The interior-wire statement must exclude the first unit of the unit word: Y records start with <code>W W</code> inside the nursery (195 of 523 records to 3e8). With that exclusion, 0 violations in 1,022 records to 2e9.</p>
+<p><strong>Found.</strong> No static cell boundary separates the nursery from the conveyor: at every cell within 120 of the left edge, the head crosses in E/F/A rightward and D/E leftward within one cycle (walls pass through every cell). So Lemma N cannot be closed as a finite oracle computation like the unit lemmas; it needs a symbolic conveyor model.</p>
+<p><strong>Still open (next stage).</strong>
+- Lemma N (nursery 8-record cycle), Lemma I (interior wires), Lemma T (N_j = 3A_j + D_j + p(j mod 8)): proofs. A likely route is a symbolic conveyor state (wall states and wire lengths) driven by the left gadget, with T as a conservation identity.
+- The symbolic zone engines are executable models, checked against the machine but not machine-checked; the locality principle and the value-form continuation are argued.</p>
+<h2 id="skeptic-round-1-revision-2026-10-12">Skeptic round 1 revision (2026-10-12)</h2>
+<p>Outcome: status OPEN. The two fatal gaps (Lemmas N and T) are now proved, and the invariant is restated. The only major gap left is the zone layer (§6, Theorem B), which is still executable-model computation plus argued locality and value form. Not a cryptid. New code: <code>scripts/proof2/lemma_nt.py</code>; check_proof S5/S6 rewritten. quick and full both pass.</p>
+<p><strong>Lemma N by a moving-boundary window.</strong> Run the head cell and the gadget explicitly, with the rest R opaque. The W unit lemma holds for any left context. So when the window's last six cells read <code>111000</code> and B enters them, apply it: R gets 3 arrivals, then the shift pops R's first unit, which is P by Lemma C1 (inc^3 of a P/S1/SP/W-led word starts with P), into the window. With only this rule, all 8 record types succeed and close the cycle:
+- XE: 3 W-rule uses, F = <code>W W P SP</code>;
+- YE: 12 uses, F = <code>W P W P P SP P P P P SP</code>;
+- ZE: 2 uses, F = <code>P SP</code>;
+- the C/D records are single steps.</p>
+<p>The earlier "no static boundary" finding is explained: a W straddling a static boundary touches R in state E. Machine cross-check: next record = G' F (pop o inc^3)^k (U), cells, state and exact steps, at 1,021/1,021 transitions to 2e9.</p>
+<p><strong>Index frame.</strong> In U_0's index frame, F lands at fixed indices every cycle. So the 8 births per cycle have fixed (index, state): (2,SP) (0,W) (-1,W) from XE; (10,SP) (5,SP) (2,W) (0,W) from YE; (1,SP) from ZE. The net units per cycle are 0. U grows at the zone top, which slides up about one index per absorption.</p>
+<p><strong>Lemma T = flux identity.</strong> A wall sits at b + floor((R+s)/2). Wall j-1 receives H_(j-1) carries before wall j's birth and then only wall j's emissions. Absorption j-1 is its (z - b_(j-1))-th firing. This gives</p>
+<p>N_j = 3A_j + D_j + [z0 - 3b_j + 2b_(j-1) + s_(j-1) + H_(j-1)]</p>
+<p>with z0 = 43 and H = 0 / 36 / 6 / 9 (same record / after XE / after YE / after ZE). The bracket reproduces p = (47,48,48,47,48,47,48,47) exactly, including j = 1..6 with U_0's walls.</p>
+<p>FIFO means wall j is the j-th born, through every level-up. S6 checks this (1,192 absorptions, conveyor walls 6 -&gt; 14). Round-1 review's objection, that a level-up shifts the birth index against j, mixes up the pairing with the time slot inside a cycle.</p>
+<p><strong>Unit-level run.</strong> The right part driven by the proved cycle from U_0 equals the machine at every S5 record. Its zone after absorption 0 is Z_1, and the closed system from Z_1 gives the same N_j. The stored machine replay agrees on the overlap.</p>
+<p><strong>Still open.</strong> Theorem B (zone layer): machine-check the symbolic engines (Rocq: lia/nia on 2^k), prove locality and the value form as closed-system lemmas, and make the class recursion a well-founded induction.</p>
+<h2 id="skeptic-round-2-revision-2026-10-12">Skeptic round 2 revision (2026-10-12)</h2>
+<p>Outcome: status <strong>OPEN</strong>. One major gap is fixed (the invariant) and one is narrowed to two named lemmas. All four minor gaps are fixed. Not a cryptid. New code is in <code>scripts/proof3/</code> (<code>invariant.py</code>, <code>locality.py</code>, <code>results/</code>), and check_proof S3/S6/S10/S10s are updated.</p>
+<p><strong>Invariant (major): fixed.</strong> Inv(n, J) now pins the configuration. The gadget row, base(n mod 8), born(n), the birth tables, the carry chain (R_youngest = 0, R_(w−1) = H + 3⌊(R_w+s_w)/2⌋), the zone feed m from the top wall's emissions, zone = inc^m(CS_J), z = 43 + D_J + drops, and an all-P conveyor determine U_n from (n, J).
+- S6 rebuilds U_n from (n, J) at every record of the unit-level run: 481 (quick) / 1,201 (full) records, 0 mismatches.
+- It rejects all 483 perturbations (one P less, one P more, top wall moved up) for every J′ in J±4.
+- Closure is Lemma N plus the Lemma T algebra. The absorption comes at the closed system's least fixed point, because earlier triple boundaries have m ≤ c + 3A − 3.</p>
+<p><strong>Lemma L (locality): new, proved.</strong> It compares two closed-system runs with feeds differing by Δ ≡ 0 mod 2^R.
+- Proof: upward flow; after T0 carries the low part is clean, so it is a counter; value bookkeeping H_(t+1) = (H_t/2^a + Δ)/2^b, with the cut following ν2(κ).
+- Representative runs check (H0)-(H2) and κ = 1 at the end.
+- Endgame: 65,534/65,534 residues mod 2^16 (1 min; the 2 with ν2(k+9) ≥ 15 go nested).
+- Nested range: v ≤ 600, both s mod 4: 1,182/1,182 (1.5 min).
+- Small classes: k ≤ 40, o mod 16: 328/328 representatives + 327/327 direct runs.
+- This proves the endgame, the compression, the S-mod-4 claim and the small classes, given VF.
+- Found: a fixed cut fails, because every endgame step loses one digit, so the cut must follow ν2(κ). The o = 1 block b = 2^k − 2 is not in its class: its k+6 marker gets no carry, so it is run directly.</p>
+<p><strong>Class recursion.</strong> E(K): VF_4(K, U) reaches a canonical state for every U. It is proved by strong induction on K, with base ν2(K+9) ≤ 600 (no hypothesis used); v &gt; 600 uses the plant lemma, VF for K′ = v − 10 &lt; K, and E(K′).</p>
+<p><strong>Minor gaps fixed.</strong>
+- U-term: now an induction on the wall count (S3 checks walls(inc w) ≤ walls(w)).
+- FIFO placement table: 17 / 3 / 5 / 5 against ≤ 10 / 1 / ≤ 2 / ≤ 2 (S6 checks every birth).
+- Absorption definition: a top-wall firing with no move up.
+- §6.7 split.</p>
+<p><strong>Still open (major, the only one).</strong> Two lemmas of the zone layer:
+- <strong>VF:</strong> the value form from C(b) down to marker height 3, at level 1 and from the plant's off′ = 17 state. Today it rests on the entry/descent engines, whose growth conditions are recorded but not discharged, plus a prose argument checked on about 150,000 states.
+- <strong>Plant for v &gt; 600:</strong> a symbolic engine, not machine-checked.</p>
+<p><strong>Proposed route.</strong> Extend Lemma L so that Y may contain the marker P and members may have different L. Each descent step then follows from finitely many one-step representatives: the landings are at digit ≤ 2, and the bookkeeping (H + Δ)/2 matches the next form because w has slope 1. The 3 entry steps and the 5 plant steps would be checked by hand on their closed forms.</p>
+<h2 id="decision-2026-10-12_2">Decision (2026-10-12)</h2>
+<p>Question: #14's proof is down to one major gap (lemma VF and the plant step for v &gt; 600): fund one more revision round to close it, or park #14?
+Answer: <strong>vf_round</strong> (Close lemma VF, about 2 h). Dennis 2026-10-12: "go with recommendations".</p>
+<h2 id="funded-stage-2026-10-10-vf_round">Funded stage (2026-10-10, vf_round)</h2>
+<p>Outcome: both open zone lemmas are closed, and <strong>confidence stays high</strong>. No new engine was needed, so the stop rule did not fire.
+- proof.md §6.1-§6.3, §6.5, §6.7, §7, §9 and §10 are updated, with a review-log entry.
+- New code is <code>scripts/proof4/vf.py</code>, with results in <code>scripts/proof4/results/</code>.
+- New check section S11 in check_proof.py. Quick and full both pass (numbers below).
+- Not a cryptid. Next: skeptic round 3 on proof.md, then the Rocq formalization.</p>
+<p><strong>1. Lemma L′ (one-step locality with the marker above the cut).</strong> This is Lemma L for one step, with one change: Y and Y′ may each hold one P unit, at different digit positions.
+- Why the P is harmless:
+  - it passes carries and has no weight;
+  - (H1) keeps every landing in X;
+  - it never reaches the bottom while X keeps a digit unit (checked: r_end ≥ 1);
+  - X's landings move it down a + b digit positions.
+- Result: a member's next zone is X_next · Y′_next, with value V0_next + (H/2^a + Δ)/2^b.</p>
+<p><strong>2. Lemma VF by one-step representatives (cut R = 8, T0 = 2^12).</strong> The value form VF(k, Ω, off) is the binary word of Vtot = μΩ + w(off) − 3·2^(L−1), with the heads and the marker at their places, j = Ω − 64 + off and D = j + d.
+- It uses the entry table for off 20..31 at level 1 and the phase table otherwise. μ = 2 for the λ = 25 forms.
+- Each step VF(off) → VF(off+1) needs L(off) ≥ 5, which holds before off_end. It is one of:
+  - (E) off 20..31: 24 representatives (k0 = 41, o0 = 1 and 3);
+  - (A) L ≥ 9: one representative per off mod 256 (L0 = 11), 256 in all;
+  - (B) 5 ≤ L ≤ 8: one per (L, off mod 256), 1,024 in all.
+- All <strong>1,304/1,304</strong> representatives satisfy (H0′)-(H2) and give exactly the next form, with 0 alive walls and 0 hits. Max landing digit 3; X keeps ≥ 6 digits.
+- The member conditions are Ω ≡ 0 (mod 2^8) and the same off mod 2^8, with L ≥ 9 for both, or the same L. Then H and Δ are 0 mod 2^8.
+- The next value follows from two identities per representative, both checked:
+  - (μ/2^a + 1)/2^b = μ′ and (wa/2^a + 1)/2^b = wa′;
+  - L′ − L = −(a + b).
+  - (a, b) is (0, 1) for every step except (0, 0) at phase 2 and off 20, 24, and (1, 1) at phase 3 and off 21, 25.
+- Members at level 2 have the upper part Ω = S·2^v = 32S·2^(K′+5), so their "o" is the even number 32S. That is fine: only Ω mod 2^8 enters.
+- This removes the growth conditions entirely. The value form is the definition, and no claim about the size of the low word is used.
+- R = 6 also works (24 + 64 + 128 representatives). Negative controls: R = 3 gives landings in Y, and a wrong w at phase 5 is rejected by 320 representatives.</p>
+<p><strong>3. Lemma E (entry, by hand).</strong> The forms at off 17..20:
+- off 17: C(b) = <code>S1 D0 D1^(k+4) D0 bin(q)</code>
+- off 18: <code>D0^(k+6) S1 bin(q)</code>
+- off 19: <code>S1 D0^(k+4) D1 P D1 bin(q−1)</code> (q ≥ 1), or <code>S1 D0^(k+4) D1 S1</code> (q = 0)
+- off 20: <code>D0 S1 D0^(k+2) D1 P D0 D0 bin(q)</code>, which is VF(k, o·2^(k+5), 20)</p>
+<p>The feeds are o·2^(k+5), o·2^(k+5) + 1 and o·2^(k+5). Each step is one S1 event and binary addition. Checked on <strong>2,000/2,000</strong> random (k ≤ 1,500, o up to 400 bits, 405 with o = 1).</p>
+<p><strong>4. Lemma P (plant, by hand, every v ≥ 9, Q ≥ 1).</strong> With n = v − 3, the six forms at off′ 12..17 are written out in proof.md §6.5. The key event comes at 13 → 14:
+- the marker-turned-SP fires;
+- its 3 carries wrap [2^n − 3]_n to zero;
+- its shift lands on bit 1 of 4Q + 2, at digit v + 1, which becomes the new marker.</p>
+<p>The off′ = 17 state is VF(v − 10, S·2^v, 17) at level 2 (identification by algebra). Checked on <strong>3,000/3,000</strong> random (v ≤ 2,998, S up to 600 bits), with all six forms and the identification.</p>
+<p><strong>5. Chains and members (S11, beyond the proof).</strong>
+- Real runs from C(b), random k in 41..400 and random o: entry forms and then VF at every offset to off_end, <strong>300/300 runs, 68,308 states</strong>.
+- From the plant start, v in 12..400: plant forms and then level-2 VF to off_end, <strong>300/300 runs, 62,723 states</strong>.
+- Random members (k ≤ 3,000, o up to 300 bits, both levels), one real step: <strong>2,969/2,969</strong>.</p>
+<p><strong>6. check_proof.py.</strong>
+- New S11: the representatives, entry, plant, chains and members.
+- quick: ALL PASS (S11 in 5 s).
+- full: ALL PASS (7.6 min; S11 42 s).
+- S9 (the old symbolic engines) still runs, as a cross-check only.</p>
+<p><strong>7. Figure.</strong> <code>img/lprime_step_R8_off33.png</code> (<code>scripts/proof4/fig_lprime.py</code>; a folded card figure, observe.json diagram 7) shows one representative step at phase 1 and two of its members, with marker heights 11, 35 and 60. Left of the cut the before-rows match across all three, and so do the after-rows.</p>
+<p><strong>Still open.</strong>
+- Skeptic round 3 on the revised §6.
+- The Rocq formalization (§10). VF becomes Lemma L′ plus vm_compute of 1,304 one-step representatives; E and P are 8 closed-form steps for lia/nia.
+- Nothing in the informal argument is open.</p>
+<h2 id="informal-proof-stage-round-3-self-review-2026-10-12">Informal proof stage, round-3 self-review (2026-10-12)</h2>
+<p>Outcome: proof.md revised into a complete informal proof; status OPEN (stage informal_proof), confidence high. One real gap found and closed (below); nothing in the informal argument is open. Not a cryptid. New code: <code>scripts/proof5/z1.py</code>; check_proof.py gets S12, an S7 landing check and an S4 transition-table check.</p>
+<p><strong>Added.</strong> A <code>Machine</code> section with the transition table (A1 marked as the halting transition) and a <code>Rule table (summary)</code> comment block listing every rule the proof uses (sweeps, unit lemmas, Theorem U, the 8 window runs, C1/C2, Lemma T, the zone lemmas) with parameters, domains and proof method. S4 checks that the printed table equals the holdout string and that A1 is the only undefined entry.</p>
+<p><strong>Gap found: absorption shift on an S1.</strong>
+- §1 counts a shift landing on S1 as a hit, but the old Lemma Z0 argued only about wall shifts.
+- The zone model's hit counter (deepen4 fastzone) counts landings on SP, W and stacked heads, not on S1. An S1 landing would have surfaced only later, as an alive <code>00</code> head, an undefined step or a wrong next form. So the "0 hits" of S7 did not by itself exclude it.
+- Fixed by <strong>Lemma Z1</strong> (structural): after a carry phase with feed c ≥ 1, the first non-D0 unit is never an S1. Take the last event among step start, a drop, or the S1's creation. After it, the units below the S1 are a pure counter that ends at 0 without carrying out, so it received no carries. But a step start gives c ≥ 1 carries, a drop gives ≥ 3, and the creation leaves the emitter's P below, which must drop later.
+- Lemma Z0 is restated for defined runs, with "alive" covering every head outside {ε, 0, 1}.
+- Checks (S12): every shift of the orbit from Z_1 to j = 32·131,250 classified by kind and target. Only D1 and P occur: absorption shifts 3,509,921 on D1 and 690,078 on P, wall shifts 690,078 on D1 and 480,973 on P. Lemma Z1 holds on every zone of ≤ 6 units over D0/D1/S1/P/SP/W with every feed 1..40 (1,866,200 phases) and on 200,000 random zones. The c = 0 negative control finds S1, as it should. In the blank-run orbit every zone wall born at an absorption dissolves on a D1 in the next step (wall→D1 count = abs→P count).</p>
+<p><strong>Smaller corrections.</strong>
+- Lemma VF level 2 was stated for v ≥ 9, but Lemma VS needs the feed c ≥ T0 = 2^12, which fails for v ≤ 10 with small S. It is now stated for v ≥ 12; the recursion only uses v &gt; 600.
+- Lemma VS step 4: after a step with a + b landings the X-part is the digits below 8 − a − b, and the member/representative values differ by a multiple of 2^(8−a−b) (not 2^8). The conclusion is unchanged.
+- "Halting unreachable" now lists the initial segment too.</p>
+<p><strong>Re-derived by hand, no change.</strong> Lemma T's bracket for all 8 birth phases and for the U_0 walls j = 1..6 (gives p exactly); Lemma E's feeds; Lemma P step 13 → 14 digit by digit; the off′ = 17 identification value; Lemma L instances (members, Δ, cuts, T0); invariant clauses.</p>
+<p><strong>Still open (not informal-proof work).</strong> Dennis's Checkpoint B read of proof.md. The Rocq formalization (proof.md §10) is large: zone layer with Lemma L/L′ as two-run statements and about 68,000 vm_compute representative runs.</p>
+<p><strong>Rocq plan: a smaller split (proof.md §10).</strong> With Lemmas P and VF (level 2) proved for every v ≥ 12, the class recursion can use the induction hypothesis from v &gt; 50 (K′ = v − 10 ≥ 41). Then the endgame needs only the cut R = 12 (4,094 residue runs; <code>locality.py endgame 12 52 15</code>, 4,094/4,094, now in S10) and the nested range 11 ≤ v ≤ 50 (80 runs). That is 4,829 representative runs instead of 67,371. The written proof keeps the larger split.</p>
+<p><strong>check_proof.py.</strong> quick ALL PASS (46 s); full ALL PASS (8.6 min, 70 checks, 0 failures). Scratch files now go to a per-run temp dir instead of fixed /tmp/cp_* names, so concurrent check runs cannot clash.</p>
+<h2 id="skeptic-round-1-on-the-complete-proof-2026-10-13">Skeptic round 1 on the complete proof (2026-10-13)</h2>
+<p>Outcome: the skeptic found proof.md sound, with 5 minor gaps (no fatal, no major). All 5 are fixed and re-checked; status <strong>CHECKPOINT_B</strong> (stage informal_proof), confidence high. Not a cryptid.</p>
+<p><strong>1. Absorption at the least fixed point (§5, §7).</strong> The missing step was "no fixed point lies between triple boundaries".
+- Let r ∈ {0,1,2} be the carries of wall j's triple still to come at absorption j−1. Lemma T's items give c = 3(z0 + D_j − b_j − f) + r, so c ≡ r (mod 3).
+- Triple boundaries of interval j are exactly m ≥ r, m ≡ r (mod 3). A fixed point m = c + 3A(m) has m ≡ c ≡ r and m ≥ c ≥ 47 &gt; r.
+- New S6 check (f): r_j read off the unit-level run (wall j's received carries at absorptions j−1 and j). r_j ∈ {0,1,2}, c_j ≡ r_j (mod 3), wall j fires z_j − b_j times: 1,191/1,191 absorptions (full), r = 0/1/2 occur 397/393/401 times.</p>
+<p><strong>2. Strict (H0), (H1), (H0′).</strong> Now "at most r − 1 digit units below" for non-digit units and for every landing target. <code>vf.py</code> already tested this. <code>locality.py</code> now flags any landing target (digit or not) with more than r − 1 digit units below it. All Lemma L runs redone: endgame R = 16 65,534/65,534, R = 12 4,094/4,094, nested v ≤ 600 1,182/1,182, small classes 328 + 327. Stored artifacts in scripts/proof3/results and scripts/proof5/results regenerated.</p>
+<p><strong>3. Normal form.</strong> Unit words without trailing D0 (D0 0^inf = 0^inf); bin(0) empty; q = 0 forms spelled out. <code>z1.py orbit</code> checks no zone ends in D0: 0 cases to j = 4.2e6.</p>
+<p><strong>4. Head order.</strong> §6.2 legend: X@p has p digit units below; heads at one position listed bottom to top; marker never shares a position with a head.</p>
+<p><strong>5. Theorem B.</strong> The b′ formula is dropped; only b′ &gt; b (canonical state at a later j). The formula stays as an unproved observation for k ≤ 130 (S8).</p>
+<p><strong>check_proof.py.</strong> quick ALL PASS (42 s, 70 checks); full ALL PASS (8.2 min, 71 checks).</p>
+<p><strong>Next.</strong> Dennis's Checkpoint B read (non-blocking), then the Rocq formalization (proof.md §10, smaller split).</p>
+<h2 id="kill">Kill</h2>
+<ul>
+<li>2026-10-13: <strong>KILLED_NONHALT.</strong> Kill file <code>1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB.v</code> (4,422 lines, sha256 a4144ade7c58e6c1ff15e9f905ed01bb0ec5c945e0ced0acc6cba043e050c65e). No template applies (nearest verify/CounterCmp_v1.v Module TM1 differs in 11 of 12 transitions); only Example.v's counter pattern. Imports Individual62 + Coq stdlib.</li>
+<li>check_kill PASS three times on the same sha256: round 4 (rocq/check_kill_r4.log), the independent auditor (fresh run, read the .v end to end, holdout line 301 of the 740 list confirmed by holdouts.py and grep -nx), and a fresh packaging run (rocq/check_kill_submission.log, 2026-10-13T12:10:55Z: compile 315.6 s native, coqchk -norec pass 299.9 s under the 600 s cap, Print Assumptions closed, all 17 checks PASS).</li>
+<li>Proof shape (rocq/log.md): unit lemmas arr_Z/arr_D1/arr_P/arr_W + Theorem U (inc_arr); 8 window runs (wrun/window) + init (203,465 steps) + nonhalt_of_abs via progress_nonhalt_cond over Reach; closed system cs_step; Theorem B (thmB) from family runs (small classes 327 + 328, endgame 4,094 families cut 12, nested 11 &lt;= v &lt;= 50 80 families), vs_gen (12 entry rows + 256 x 5 phase classes), VF1/VF2, LemmaE/LemmaP by hand, EK well-founded; conveyor WdR + cascade + RInv_step/RInv_U0 -&gt; AbsDefined_proof -&gt; nonhalt. Hits are unrepresentable (shift returns None), so Lemmas Z0/Z1 are subsumed by zone_forever.</li>
+<li>Package: submission/ = the .v (byte-identical), public proof.md (rewritten from the working proof.md: plain-language opening, header with status and a 20-row .v map, summary, §1-§8 math unchanged, §9 the Coq route (hits unrepresentable, cut steps + affine families, the smaller split, WdR/cascade invariant), §10 checks S1-S12 as evidence, §11 rule table; writeup_lint 0 errors 0 warnings), check_kill.txt (fresh run; local paths replaced by placeholders), README.md, discord.md (1,621 chars before the link; not posted).</li>
+<li>Not done: Discord post and upstream PR (Dennis's call). Checkpoint B notes: none on file at packaging time. Previous status.json saved as rocq/status_before_done.json.</li>
+</ul>
+</main></body></html>

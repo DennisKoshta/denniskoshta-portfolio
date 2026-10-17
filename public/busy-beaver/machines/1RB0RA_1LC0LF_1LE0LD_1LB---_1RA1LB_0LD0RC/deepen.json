@@ -1,0 +1,82 @@
+{
+ "tm": "1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LD0RC",
+ "pass": "size_invariant (funded 2026-10-10)",
+ "confidence": "med",
+ "recommend": "STUCK at one inequality (R1: T_k + 1 <= I_k); wait for the shared size-invariant work on #29 / R3, or fund a crossing-lemma stage",
+ "mechanism": "In 3-cell G0 units the left word is a binary counter over z=000 (0), o=100 (1), s=010 (spacer) and t=001 (pending increment). INC (two rounds) carries through o/s/t and sets the first z. Each t a carry passes bounces the A sweep, becomes s and adds one increment to the part left of it. When f hits 0 the eat drops the suffix from the last z/t on (even eat; e' = 2 + #units after it) or nothing (odd eat; e' = 1). It then re-reads the rest one cell to the right (o->s, s->t, z->z, t->z), followed by ceil(ns/2) increments, where ns is the number of spacers eaten. e' is a regular function of the digits, so there is no cryptid flag. Non-halting reduces to one size invariant: every t created by an eat is cleared before the next eat.",
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "deepen",
+   "confidence": "med",
+   "model": {
+    "config": "clean round: 0^inf cells(W) 1 A> 1 (110)^e (010)^f 1 0^inf, W over z o s t (MSB left, G0 units end at L[-2]; prefix 10 = leading s, 1 = leading t)",
+    "left_sweep_dfa": "B0->1 C, B1->0 F, C0->1 E, C1->0 D, D0->1 B, E1->1 B, F0->0 D; stop at E0 / F1, halt at D1. Unit table from B: s->101, o->111, t->100 continue; 000 turn; 011/111 bump turn; 101/110 halt",
+    "inc": "B: s->S, o->D, t->T, set first z (or new leading o); A: S->s, D->z, T->S and bounce (B restarts left of the T)",
+    "eat_even": "j = last index of z/t (-1 if none); e' = 2 + (k-1-j); W* = inc^ceil(ns/2)(shift(W[:j])), ns = #s in W[j+1:]; first round deep iff ns odd",
+    "eat_odd": "e' = 1; W* = shift(inc(W))",
+    "shift": "new unit i = (u[i-1][3], u[i][1], u[i][2]); c=0: z->z o->s s->t t->z; after t: z->o t->o o->110 s->101 (halting units)",
+    "epoch": "first round (e', Nold); Nold+1 rounds alternating clean/deep; N_new = Nold + e'"
+   },
+   "closed_gaps": [
+    "Stop-rule test: e' and the leftover word are a regular function of L. The eat is one pass of the TM's 5-state left DFA, and in units it is 'drop the suffix from the last z/t, then shift the grid by one cell'. It does not use the counter's value.",
+    "The carry automaton on mixed words: INC with t bounces, exact on 1,967,317/1,967,317 clean-to-clean transitions from blank to 1e11.",
+    "The eat automaton: e', f', first-round parity and the post-eat word, exact on 1,082/1,082 eats from blank to 1e11.",
+    "The F1 bump is always followed by a turn, and the A sweep cannot halt, so D1 can be reached only by a left sweep meeting a 101 or 110 unit.",
+    "Language: clean words to 1e10 lie in {z,o,s,t}*. INC is total and closed on it. EAT is safe when no t is present at the eat; t in the eaten path, a final t, or t o / t s in the kept part halt. Other t contexts are not modeled, so the epoch model counts them as failures."
+   ],
+   "remaining_gaps": [
+    "Size invariant, not proven: with h = #digits below the highest pending t, every t clears before the next eat. Observed in the epoch model to N = 1e7 (808,539 epochs): h <= log2 N - 3 and a clearing margin >= 4.6x (>= 16x for N >= 1e6). The worst cases sit just below powers of two (N ~ 2^14, 2^16, 2^19, 2^22: top-digit overflows), with margins 4.6x, 8.3x, 16x. N-perturbation fuzz shows the bound is needed: failures for N <= 10|W|, none for N in [N/2, 2N].",
+    "The inductive reason for h << log2 N (overflow digits form a spacer-free top block; spacers stay low) is not derived.",
+    "Init segment before step 241 (epoch model start); step counts per macro rule."
+   ],
+   "evidence": [
+    "scripts/deepen/udump.c: unit dumps from blank. Mode 0 (every round) to 1e10: 869,366 rounds. Mode 1 (resets and t rounds) to 1e11: 3,936,491 rounds, 1,083 epochs, bad=0 (results/udump_1e11_mode1.txt.gz).",
+    "results/eatcheck_1e11.txt: 602 even + 480 odd resets match. The one 'False' row is a duplicate of the step-7 line in the dump, not a reset.",
+    "results/lockstep_1e11.txt: INC 1,967,317/1,967,317; eats 1,082/1,082 (e', parity, W*), streamed from udump mode 0 to 1e11.",
+    "results/lockstep_1e10.txt: INC 434,229/434,229; eats 532/532 (e', parity, W*).",
+    "results/epochmodel_check_1e11.txt: 1,079/1,079 epochs (Nold, e') reproduced from the step-241 state. results/epochmodel_1e6.txt: 92,514 abstract epochs to N = 1e6 inside the rule set; h distribution and clearing margins.",
+    "valunits_{1..5}.json: UB/UA unit tables, INC, EAT-even, EAT-odd by direct simulation from random instances (400/400 each on seeds 2-5, 60/60 on seed 1).",
+    "results/nfuzz_7.txt, nfuzz_8.txt: size-bound fuzz (4 epochs, 300 samples per band).",
+    "results/tstats_1e10.txt: no t at any eat (532/532); t-life <= 49 rounds; min N - tlife = 67 over N >= 50.",
+    "results/epochmodel_1e7.txt: 808,539 abstract epochs to N = 10,000,018 inside the rule set; h distribution; slowest t clearings at N just below 2^14, 2^16, 2^19, 2^22.",
+    "results/nfuzz_direct_11.txt: direct TM simulation of 120 real states with small N (3 epochs). The 3 model failures all halt in the TM; the 117 passes do not halt within the budget."
+   ],
+   "scripts": "scripts/deepen/: udump.c (gcc -O2 -o udump udump.c; ./udump MAXSTEPS 0|1), umodel.py (unit model), lockstep.py (python3 -B lockstep.py DUMP), eatcheck.py, epochmodel.py (check ../../epochs_1e11.txt | run NMAX), valunits.py (COUNT SEED), nfuzz.py (SAMPLES K SEED), tstats.py, hstats.py, trace.py"
+  },
+  {
+   "date": "2026-10-10",
+   "option": "size_invariant",
+   "confidence": "med",
+   "outcome": "STUCK",
+   "model": {
+    "balls": "non-digit units s/t are balls; gap = #digits to the right; t = pending 2^gap; INC adds exactly 1 to digit value + sum_t 2^gap",
+    "birth": "each o unit of the eaten word U*_k becomes an s ball at gap h0 = #z right of it; inert in epoch k+1, a t from eat k+1 on",
+    "R1": "T_k + 1 <= I_k, T_k = digit value + sum_t 2^gap at the epoch start, I_k = floor((Nold_k - c0_k)/2)"
+   },
+   "closed_gaps": [
+    "Lemma A (by hand): a t at gap h with digit value d below clears within 2^h - d INCs.",
+    "Lemma B (by hand): ball gaps never grow (identity = distance from the right end; new gap = #z of U* right of it, minus 1 at an even eat). 20,596,783 ball-eats on the trajectory to N = 1e7 and 743,436 from random starts, 0 violations.",
+    "Lemma C: safety reduces to each ball's first t-epoch: 2^h1 <= I_{k+2}.",
+    "Lemma D (by hand): unless V*_k = 2^m with eats k and k+1 both odd, every ball born at eat k has 2^h1 <= V*_k/2, so it is safe when T_k + 1 <= I_k. Trajectory to 1e7: 7,454,109 births, max 2^h1/I = 0.286 (N = 13), 0.250 for N >= 1024. Random: 188,785 births, 0 violations.",
+    "Lemma E (sketch): in the special case (V*_k = 2^m, both odd) one ball is born at gap m, with h1 = Z_m(Delta + 1) <= m - 1 and I_{k+2} >= 2^(m-1) given T_k + 1 <= I_k and Delta + 1 < 2^m. Trajectory: 3 special eats to 1e7 (none after N = 8,139). Random: 414 special cases, 0 violations."
+   ],
+   "remaining_gaps": [
+    "R1, not proven: T_k + 1 <= I_k at every epoch, plus Delta + 1 < 2^m in the special case. It holds at all 808,539 epochs to N = 1e7. T/I peaks at 0.875 (N in [16,32)), 0.41 (N >= 64) and 0.284 (2^13 octave), and stays <= 0.13 for N >= 2^14 to 1e7.",
+    "Why it does not close: near a crossing V* = 2^m + delta (small delta), Z_gap(V*) = gap for every ball above bitlen(delta), so the whole ball potential moves into T, while P grows by about 2^(m - popcount delta) per eat. Crossings last ~100 epochs (V* moves ~e/2 per epoch). Crude bounds give T_{k+1} <= T_k + P_s(W_k) at odd eats, which does not close.",
+    "Native search: size-only candidates Ja/Jb/Jc/Jd are not inductive on near-power-of-two random states (broken 44 / 601 / 668 / 1614 of 2000 within 3 epochs). The real trajectory breaks Jb and Jc at its two post-special epochs (2^D/N = 0.538, 0.503).",
+    "Needed: a crossing lemma, i.e. sum over balls of 2^(Z_gap(2^m + delta_k)) <= c 2^m (c < 1/2) along a passage of V* through 2^m. A possible route is a scale-invariant crossing automaton over (delta mod 2^r, low word) for m >= m0, with the epoch model below m0.",
+    "Init segment before step 241; step counts per macro rule."
+   ],
+   "evidence": [
+    "scripts/sizeinv/results/firstt_1e7.txt: to N = 1e7 (808,539 epochs): gap monotonicity 20,596,783 checks with 0 violations; 7,454,109 general births with max 2^h1/I = 0.286 (0.250 for N >= 1024); 3 special eats; R1 holds at every epoch.",
+    "scripts/sizeinv/results/firstt_1e6.txt: gap monotonicity (1,854,480, 0 violations), first-t-epoch ratios (general max 0.286; 0.250 for N >= 1024; special 0.33 / 0.126), R1 at every epoch to N = 1e6.",
+    "scripts/sizeinv/results/binned_1e7.txt: per-octave maxima of 2^D/N, 2^hmax/I, P/N, T/I to N = 1e7 (808,539 epochs).",
+    "scripts/sizeinv/results/reduce_rand_11.txt, reduce_rand_12.txt: Lemmas B, D and E on random starts (near-power-of-two and uniform), 6 epochs each, 0 violations.",
+    "scripts/sizeinv/results/randinv2_2.txt, randinv2_13.txt, randsafe_3.txt: candidate invariants broken on near-power-of-two random states; safety itself 1,497/1,500 over 20 epochs (the 3 failures are off the reachable range).",
+    "scripts/sizeinv/results/special_check_21.txt: Lemma E formulas (I_{k+2} and Delta) exact on 300/300 random special cases."
+   ],
+   "scripts": "scripts/sizeinv/: peek.py (trajectory words), ratios.py / binned.py (size ratios), qlib.py, firstt.py (reduction checks on the trajectory), reduce_rand.py (the same checks from random starts), randinv.py / randinv2.py (candidate-invariant inductiveness, uniform / near-power-of-two), randsafe.py, bigD.py, exact.py, special_check.py (Lemma E formulas)"
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "tm": "1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF",
+ "label": "W6-1",
+ "status": "KILLED_NONHALT",
+ "stage": "done",
+ "updated": "2026-10-16",
+ "reason": "Complete blank-start nonhalting proof; three unchanged check_kill passes and completed kernel replays on the same source.",
+ "confidence": "high",
+ "confidence_note": "The exact transition table reaches a 919-step cycle translating three cells left. Blank entry, finite counter rounds, nested trigger, and exit are proved in Rocq with only the allowed functional extensionality.",
+ "template": "SOBCv10.v (same table; ours A..F = SOBCv10 D,E,F,A,B,C, mirrored); sobc1_canonical_nonhalt at line 3847",
+ "siblings_same_table": {
+  "1LB0RD_1LC0RC_1RA1LC_1LE0RB_1LF---_0LA0LE": "start D, mirrored: SOBCv10.v (solved upstream)",
+  "1RB---_0RC0RA_1RD0LF_1RE0LE_1LC1RE_1RA0LD": "start B: TCv1.v (solved upstream)"
+ },
+ "next_goal": "Await upstream review of PR #29.",
+ "wave6_stage1": {
+  "tail_law": "tail U^(2k+1) y, level(y) in -1..4 (A, B, E t, D t, A t, B t); per exception k' = k+1, L' = k+1-L; last column w -> w-1, v -> 2^(w-1) - v//2",
+  "chain": "exc 6 (k=1, L=3) -> exc 7 (k=2, L=-1) -> exc 8 (k=3, L=4) -> exc 9 (k=4, L=0): decode trigger",
+  "exit": "decode trigger in exception 9, then a second counter phase (P1 ~256 long sweeps, P2 ~200 in the toy), then a translated cycler: state B at the right end of 1000100010001000100010001000100010010001000100010001000100010010100100, period 919, shift 3, backswing 67",
+  "evidence": "work/tail/*.out: modelA 80/80, modelD 23/25 (2 expected), rawlaw 48/48 + 16/16, decodetrig2 60/60 + 30/30, decodetrig3 8/8, mintrig 20/20, cycverify, sweeps2_n900",
+  "cryptid": "no"
+ },
+ "wave6_stage2": {
+  "exit": "decode trigger in exception 9 on call h_t = 4*2^W - S - 2 (n9 = h_t + c, c >= 0 pending) -> E' (T2 k=5: tail U^13 B t, last column 25 -> 24) with n' = h_t calls -> E'' on E' call h'' = 3*2^(W-1) - S - 2 -> raw pass right over the all-B counter -> overflow at B^24 U^13 B t (local, 1208 + 14(w-1) steps) -> cycler window Y, +3 cells per 919 steps",
+  "correction": "stage 1's P1 = exception 9's own call phase, P2 = the nested exception E' call phase; v/x blocks = exception_call_left's pending/finished calls",
+  "evidence": "work/s2: nested_a/b.out 52/52, eprime.out 32/32 (n' = f+1 threshold), overflow_check.out 90/90 + 50/50, t1_deficit.out 120/120, fam_a_m30.out (family (a) exact at m = 30)",
+  "proof_md": "written (informal chain from blank to the cycler; status table in section 7)",
+  "cryptid": "no"
+ },
+ "formal_planning": {
+  "date": "2026-10-14",
+  "proved": "rocq/W61Exit.v: raw_tail_base/column/columns (T2 k=0..5), overflow_base/column/columns (O), cycler_step/cycler_nonhalt (C), exit_nonhalt, nested_pre_left, launch_far, relaunches_far, nested_launch, nested_counter, nested_exit; Print Assumptions: funext only",
+  "stated": "rocq/W61Plan.v: tail_round, tail_round_trigger, opening, entry_pre (Admitted); sobc_D_nonhalt, perm and nonhalt proved from them",
+  "library": "unmodified SOBCv10.v compiled as W61.SOBCv10 (84 s, 0.8 GB)",
+  "estimate": "about 10 x 2 h (range 9-12): R1-R2 counter to trigger + T1, R3-R4 decode T3, R5 next post + invariant, R6 trigger round, R7-R8 opening, R9 single-file kill + check_kill",
+  "plan": "rocq/plan.md"
+ },
+ "outcome": "killed_nonhalt",
+ "killed_at": "2026-10-16T18:56:21Z",
+ "next": "Await upstream review of PR #29.",
+ "funded": {
+  "option": "spike",
+  "date": "2026-10-16",
+  "outcome": "Complete proof within the funded stage."
+ },
+ "kill": {
+  "file": "1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF.v",
+  "sha256": "cd0bfee325f897047164a4cc11325ca3e30d2acfadedf4c2abecec0a859327ca",
+  "lines": 7149,
+  "check_kill": "PASS in all three roles on identical source; Coq 8.20.1 native compilation and independent coqchk replays completed.",
+  "route": "Exact blank opening, finite safe-column budgets, signed last-column values, three returning rounds, nested overflow into a translated cycle.",
+  "submission": "submission/",
+  "checks": [
+   "submission/formalizer-gate.json",
+   "submission/independent-gate.json",
+   "submission/orchestrator-gate.json"
+  ]
+ },
+ "completed_spike": {
+  "ended_at": "2026-10-16T11:57:40-07:00",
+  "source_sha256": "cd0bfee325f897047164a4cc11325ca3e30d2acfadedf4c2abecec0a859327ca",
+  "historical_plan": "rocq/plan.md",
+  "historical_plan_note": "The earlier plan and draft statements are retained as history; the complete proof uses a finite-horizon invariant and has no unfinished statements.",
+  "public_proof": "submission/proof.md"
+ },
+ "pr": "https://github.com/ccz181078/busycoq/pull/29",
+ "pr_state": "open",
+ "pr_file": "verify/SOBCv10Tail.v",
+ "pr_opened": "2026-10-16T19:10:32Z",
+ "pr_head_sha": "bcb95301c93afb961cb3ac3bcd83917767c12d1e",
+ "pr_comments": 0,
+ "posted": "2026-10-16 (Discord; user confirmed sent)"
+}

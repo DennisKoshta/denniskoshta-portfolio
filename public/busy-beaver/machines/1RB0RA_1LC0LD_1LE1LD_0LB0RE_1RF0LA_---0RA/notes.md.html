@@ -1,0 +1,859 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA/notes.md · <a href="/busy-beaver/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA/notes.md.html">raw</a></div>
+<h1 id="1rb0ra_1lc0ld_1le1ld_0lb0re_1rf0la_-0ra">1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA</h1>
+<p>Status: KILLED_NONHALT (2026-10-11; delta of kill #30, see ## Kill at the bottom). Not a cryptid candidate.
+Class guess (agent / Dennis): Bell eats counter, BECv1 tm10 with a broken carry (spaced-digit binary counter + unary marker) / –
+Spreadsheet notes / Discord thread: Results row 1022, "Bell eats counter", no status/notes/sources/done-by. Not in links, strikethrough, xlsx comments, dyuan01 or UBRRBA lists. Not in solved_index. No Discord check needed (template neighbours are fair game, 2026-10-10).
+Viewer: https://bbchallenge.org/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>1e9 steps (C core): no halt; span 7,783 cells (-7511..271), 4,191 nonzeros. Left edge ~t^0.36, right edge ~t^0.27.</li>
+<li>Diagrams in img/: <code>stateEL_3e5.png</code> (best: one row per E-left entry, left frame), <code>recordsL_left_1e7.png</code>, <code>blaze_1e7.png</code>, <code>default_site.png</code>, <code>viewer.html</code> (all views).</li>
+<li>Commands: <code>--mode state:E:L --frame left --steps 3e5 --scale 2</code> and <code>--mode records:L --frame left --steps 1e7 --width 150 --scale 2</code>. The records view shows only the 150 leftmost cells. Every card diagram's labels (start, rows, window, legend, style) are in <code>observe.json</code> → <code>diagrams</code>.</li>
+<li>Picture: counter on the left, then a long run of <code>110</code> blocks with a <code>00</code> marker. One round = A sweeps right to the marker, marker moves 1 block left, B sweeps back, counter +1.</li>
+<li>Counter digits are <code>111110</code> ("5") blocks spread through the <code>110</code> run; the MSB end has a <code>11110</code> ("4") mode. A carry walks left over filler blocks to the next digit.</li>
+<li>Left-edge E records (dense form) are the clean observation point: <code>0^inf &lt;E 110 W (110)^G 00 (110)^M 0^inf</code>.
+  Epoch from step 20,053,019: W = <code>5 2^3 5 2^7 5</code>, <code>4 5 2^3 5 2^7 5</code>, <code>5 2 5 2^3 5 2^7 5</code>, … G drops 8, 32, 16, 64, 32, 128, 64 (= 2^f, 2^(f+2)).</li>
+<li>When the marker reaches the lowest digit (EatDigit): the digit is eaten, a fresh marker starts near the right end (+2 cells), and the gap list reshuffles irregularly (<code>3,7</code> → <code>10</code> → <code>17</code> → <code>11</code> → <code>8,4</code> …). The transition shows <code>3</code>/<code>6</code> blocks and a transient second marker.</li>
+<li>Tools: qsim (block 3) gets only 3.6e7 steps in 200k loops, 17 local rules: no acceleration. rulefit: 2 rules, coverage 6–8 %, not useful. compress: fine at left E records.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All validated by simulation from concrete configs, random small/large parameters and random contexts (<code>validate_rules.py</code> → <code>validation.json</code>).</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to</th>
+<th>steps</th>
+<th>passed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 A-sweep (=BECv1 HR1)</td>
+<td><code>l A&gt; (011)^n r</code> → <code>l (010)^n A&gt; r</code></td>
+<td>5n</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R2 B-sweep (=HR3)</td>
+<td><code>l (010)^n &lt;B r</code> → <code>l &lt;B (011)^n r</code></td>
+<td>3n</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R3 marker step (=HR2)</td>
+<td><code>l A&gt; 011 00 011 r</code> → <code>l &lt;B 00 011 011 r</code></td>
+<td>11</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R4 marker birth (=HE2)</td>
+<td><code>l 010 A&gt; 0^inf</code> → <code>l &lt;B 00 011 0^inf</code></td>
+<td>6</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>L0 round, low digit 0→1</td>
+<td><code>l 0 &lt;E 11 (011)^(a+1) 00 (011)^b</code> → <code>l 1 &lt;E 11 (011)^a 00 (011)^(b+1)</code></td>
+<td>8a+16</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>OP overflow</td>
+<td><code>0^inf &lt;E 110 111110 X (110)^(G+2^f) 00 (110)^M</code> → <code>0^inf &lt;E 110 11110 111110 X (110)^G 00 (110)^(M+2^f)</code></td>
+<td>–</td>
+<td>120/120</td>
+</tr>
+<tr>
+<td>OQ overflow</td>
+<td><code>0^inf &lt;E 110 11110 111110 X (110)^(G+2^(f+2)) 00 (110)^M</code> → <code>0^inf &lt;E 110 111110 110 111110 X (110)^G 00 (110)^(M+2^(f+2))</code></td>
+<td>–</td>
+<td>120/120</td>
+</tr>
+</tbody>
+</table>
+<p>X = <code>(110)^g1 111110 … (110)^gk 111110</code>, gi ≥ 1, k ≥ 0, f = k+1, G, M ≥ 0.</p>
+<p>Open: the EatDigit case table (G &lt; 2^f or 2^(f+2)). Small cases are probed: P/Q with X ∈ {[], [1], [3]} and every G below the threshold all reach a new left record, none halts. The outcomes are varied (<code>2 4 3</code>, <code>2 4 6</code>, <code>2^2 4</code>, <code>z3</code> inside W).</p>
+<p>Template check (BECv1_6x2_solved.v tm10, line 88; diff E1 0LA vs 1LE): our TM satisfies 10/11 cert hypotheses (HR1-3, HE0-3, HL1, HL3, HL4/5: 25/25 each). HL2, the binary carry <code>1 &lt;E 1 → &lt;E 1 1</code>, fails 0/25. <strong>Partly</strong>: the unary half carries over, the counter does not.</p>
+<p>Cryptid check: no. Halting does not hinge on arithmetic in the observed shape family:
+- 0 halts in 1,500 random realistic shapes (4e6 steps each) and 60 more at 1e8 steps;
+- 0 halts in 106 marker shifts (±1, ±2) and 145 gap edits (insert/delete 110, move a digit) of real records.
+- "Wild" shapes (random 3/4/5 blocks anywhere, adjacent 5s) do halt, so the invariant must be the right language.</p>
+<p>Pitfall: a 3-cell <code>000</code> marker is not the machine's marker (it's <code>00</code>); an early fuzz with <code>000</code> produced false halts.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<h2 id="informal-proof">Informal proof</h2>
+<p>(not started; proof.md after Checkpoint A)</p>
+<h2 id="formalization-log">Formalization log</h2>
+<h2 id="outcome">Outcome</h2>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<ul>
+<li>Figures on the card: Fig 1 = <code>img/stateEL_3e5.png</code>, Fig 2 = <code>img/recordsL_left_1e7.png</code>, Fig 3 = <code>img/blaze_1e7.png</code>, Fig 4 = <code>img/default_site.png</code>. Figs 1-2 are the primary figures, shown beside the checkpoint.</li>
+<li>The card's mechanism is cut to 3 bullets. The full list before the cut:</li>
+<li>Tape = a counter on the left, then a long run of 110 blocks with a 2-cell gap (00) marker in it.</li>
+<li>Each round: A sweeps right to the marker, moves it 1 block left, B sweeps back, counter +1 (same as tm10).</li>
+<li>Counter digits are 111110 blocks spread through the 110 run; a carry walks left over filler to the next digit (the E1 change).</li>
+<li>Each overflow grows the left edge by 4-5 cells: 2 5 X -&gt; 2 4 5 X -&gt; 2 5 2 5 X, after 2^f and 2^(f+2) rounds (f = #digits).</li>
+<li>When the marker reaches the lowest digit it eats it, restarts near the right end (+2 cells), and digit gaps reshuffle.</li>
+<li>Checkpoint questions are now yes/no questions about the figures. Moved off the card (strategy calls, not figure reading; settle them in proof.md / Checkpoint B):</li>
+<li>"OK to aim for a shape-invariant proof (any digit gaps, any G/M) instead of tracking the irregular gap values?"</li>
+</ul>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Result: the mechanism is now exact at the round level for ~99 % of the run, but <strong>confidence stays med</strong>. Not cryptid. No non-halting argument yet.</p>
+<p><strong>What the counter is.</strong> Look at the tape just left of the LSB at each round start. After the A-sweep it is in <em>swept</em> form: dense <code>1^k 0</code> becomes swept <code>1 0^k</code>. Write a swept token <code>1^a 0^k</code> as <code>k</code> when a = 1, else as <code>a.k</code>.
+- <code>2</code> = <code>100</code> is filler.
+- A token with k ≥ 4 zeros is a binary <strong>digit</strong>. Its bit cell is index k−3 (the cell E reads when the B-sweep stops there). Bit 1 splits the token:
+  - 5-digit: <code>5</code> / <code>1 3</code>
+  - 4-digit: <code>4</code> / <code>2.3</code>
+  - 6-digit: <code>6</code> / <code>2 3</code>
+  - 7-digit: <code>7</code> / <code>3 3</code>
+- A plain <code>3</code> token always reads as bit 1, so a carry continues through it.
+- Left end: <code>3</code> (P-mode) or <code>3 4</code> (Q-mode).
+- The LSB sits next to the unary. Each round is one increment plus one marker step. So tm10's binary counter is still there; only the digit encoding changed.</p>
+<p><strong>Round start.</strong> <code>RS(S,P,b,g,m) = 0^inf S P b &lt;E (110)^(g+1) 00 (110)^m 0^inf</code>.
+- P is the LSB prefix: <code>1</code> (=10) for a 5-digit LSB, <code>0</code> (a single 1) for a 4-digit LSB.
+- b is the LSB bit, g is the marker distance, m is the run right of the marker.
+- No-marker state: <code>NM(S,P,b,n) = 0^inf S P b &lt;E (110)^n 0^inf</code>.
+- A round start is an E-left event whose right side is exactly <code>(110)^+ [00 (110)^+]</code>.</p>
+<p><strong>Rules.</strong> All validated from random concrete instances: random left words, every bit value, small and large h/g/m. Script: <code>scripts/deepen_rules.py</code>, results in <code>scripts/deepen_validation.json</code>, 440/440 passed.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to (next round start)</th>
+<th>steps</th>
+<th>passed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INC0 (any P)</td>
+<td><code>RS(S,P,0,g+1,m)</code> → <code>RS(S,P,1,g,m+1)</code></td>
+<td>8g+16</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>CARRY5</td>
+<td><code>RS(S 5 Y 2^h0, 1, 1, g+1, m)</code> → <code>RS(S (1 3) Y' 2^h0, 1, 0, g, m+1)</code>; Y = ∏(2^hj (1 3)), Y' = ∏(2^hj 5), hj ≥ 1</td>
+<td>–</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>EAT0</td>
+<td><code>RS(S D 2^h, 1, 0, 0, m)</code> → <code>RS(S, 1, c, h, m+2)</code>; D = 5-digit with bit c, h ≥ 1</td>
+<td>3h+14</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>EAT1</td>
+<td><code>RS(S 5 2^h, 1, 1, 0, m)</code> → <code>NM(S (1 3) 2^h, 0, 0, m+2)</code> (marker absorbed; the LSB becomes a 4-digit)</td>
+<td>8h+29</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>BIRTH</td>
+<td><code>NM(S,P,0,n+2)</code> → <code>RS(S,P,1,n,1)</code> (INC0, then R4)</td>
+<td>–</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>WALK4</td>
+<td><code>RS(S 2^(h+1), 0, 1, g+1, m)</code> → <code>RS(S 2^h, 0, 0, g+1, m+1)</code>: a 4-digit LSB carry moves the digit one filler left, with no propagation</td>
+<td>–</td>
+<td>60/60</td>
+</tr>
+</tbody>
+</table>
+<p>EAT0 is BECv1's EatDigit: drop an LSB whose bit is 0, and the next digit becomes the LSB with g = its gap.</p>
+<p><strong>Generic carry transducer.</strong> Derived from the micro-steps (B/C/E/A) and checked only against the blank-tape run, not validated separately. It scans the counter from the right:
+- <code>2</code>: skip.
+- <code>(a,k≥4)</code>: set the bit, giving <code>(a,k−4)(1,3)</code>. Stop.
+- <code>2.3</code>: the previous token gains 2 zeros and <code>2.3</code> becomes <code>2</code>. Stop. This is the 4-digit walking left. It is how the record-level <code>4</code> moves and how 6/7-digits are made (<code>5</code>+2 → <code>7</code>).
+- <code>3</code>: borrows a zero.
+  - <code>(a,j≥2)(1,3)</code> → <code>(a,j−1)(1,4)</code>, and the scan continues.
+  - <code>1 3</code> → <code>5</code>.
+  - <code>2.1 3</code> → <code>6</code>.</p>
+<p><strong>Coverage from the blank tape</strong> (<code>scripts/deepen_coverage.py</code>, <code>scripts/deepen_coverage_1e9.json</code>). To 1e9 steps: 150,891 round transitions, <strong>98.88 % predicted exactly</strong> with 0 mismatches.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>transitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INC0</td>
+<td>75,210</td>
+</tr>
+<tr>
+<td>CARRY</td>
+<td>72,309</td>
+</tr>
+<tr>
+<td>CARRY_WALK4</td>
+<td>1,363</td>
+</tr>
+<tr>
+<td>EAT0</td>
+<td>129</td>
+</tr>
+<tr>
+<td>BIRTH</td>
+<td>125</td>
+</tr>
+<tr>
+<td>EAT1</td>
+<td>68</td>
+</tr>
+</tbody>
+</table>
+<p>The 1,687 transitions not covered:
+- 1,319 are the left-end overflow. At record level that is OP/OQ, but it has no round-level rule yet.
+- About 280 are the B-sweep crossing a lone <code>1</code> token (<code>10</code>). It turns <code>10</code> into <code>00</code>, which leaves a <strong>stale marker</strong>. That is where <code>0^2</code> inside W comes from: the A-sweep then reflects there, and digits right of it freeze until an eat.
+- About 70 are EAT variants: EAT1 with a bit-1 next digit, h = 0 after a walk, a 4-digit LSB, an LSB at the left end.
+- 4 are NM with b = 1, and 10 are the first rounds from the blank tape.</p>
+<p><strong>Token alphabet looks finite.</strong>
+- Interior tokens: {1,2,3,4,5,6,7,2.1,2.3,2.5}. LSB prefixes: {0,1,2,3,4}.
+- 74 round-start bigrams, listed in <code>scripts/deepen_token_bigrams_1e10.json</code>.
+- No new bigram appeared between 1e9 and 1e10 steps (671,489 round starts).</p>
+<p><strong>The bigram language is NOT an invariant</strong> (<code>scripts/deepen_closure_fuzz.py</code>). Random paths through the bigram graph produce new bigrams and some halts:
+- weighted sampling: 1/400 halt, 18 new bigrams;
+- uniform sampling: 11/300 halts, 64 new bigrams.</p>
+<p>The halting samples put digits next to each other with no filler, for example <code>1 3 4</code>, <code>3 2.1 3 L4</code>. So the invariant has to work at digit level: digits separated by fillers, plus a short list of allowed transients. The observe pass's "realistic shapes" fuzz, 0 halts in 1,500, fits this.</p>
+<p><strong>Cryptid check.</strong> Not cryptid. Every round is a local rewrite over a finite token alphabet. Arithmetic (the counter value when the marker arrives, i.e. the irregular gaps) only chooses which local case fires.</p>
+<p><strong>Still open (next pass):</strong>
+1. A round-level overflow rule, matching OP/OQ.
+2. The stale-marker regime: how it is created, A reflecting at the stale <code>00</code>, how it is absorbed.
+3. The EAT case table for bit-1 next digits, 4-digit LSBs, h = 0, and the left end.
+4. A digit-level shape invariant, closure-fuzzed with the transitions above.
+5. A concrete non-halting argument. The candidate: (1) the only halt patterns are A reading <code>0 1 0</code> (dense <code>1</code> token) and B reading a 1 that has 1 on its left and 0 on its right, and (2) the invariant excludes both.
+- Still running when this pass ended: the same coverage check to 1e10 steps (<code>python3 -B scripts/deepen_coverage.py 1e10 scripts/deepen_coverage_1e10.json</code>, detached, under the 6 GB ulimit). If <code>scripts/deepen_coverage_1e10.json</code> exists, read it. If it doesn't, the run died: check reports/watchdog.log.</p>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Result: round 1's overflow and EAT1 gaps are closed, a 4-gram invariant candidate passes closure fuzzing with 0 halts, and the stale-1 regime is now located. <strong>Confidence stays med.</strong> One regime, the stale-1 cascade, still has no rules, and there is no proof of the invariant. Not cryptid.</p>
+<p><strong>New rules.</strong> Predictor v2 is <code>scripts/deepen2_predict.py</code>; round 1's rules are unchanged. Validation: <code>scripts/deepen2_rules.py</code>, results in <code>scripts/deepen2_validation.json</code>. All 380/380 targeted instances pass, and the predictor agrees on all 380. Notation: Y = ∏(2^hj (1 3)) is a run of bit-1 5-digits, and Y' = ∏(2^hj 5) is the same run after a carry (hj ≥ 1).</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from → to (next round start)</th>
+<th>passed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Boundary (makes the transducer complete at the left)</td>
+<td>a carry that leaves index 0 prepends a <code>3</code> token; a leading <code>3</code> borrows from 0^inf (<code>3</code>→<code>4</code>)</td>
+<td>in all rows below</td>
+</tr>
+<tr>
+<td>LEFTCYCLE (round-level OP/OQ)</td>
+<td><code>RS(L Y 2^h0 ,1,1,g+1,m)</code> → <code>RS(L' Y' 2^h0,1,0,g,m+1)</code>, L→L' ∈ {<code>1 3</code>→<code>3 5</code>, <code>3 1 3</code>→<code>3 4 5</code>, <code>3 4 1 3</code>→<code>3 2.3 5</code>, <code>3 2.3 1 3</code>→<code>5 2 5</code>}</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>EAT1_c (general EAT1)</td>
+<td><code>RS(S D 2^h,1,1,0,m)</code> → <code>NM(inc(S D) 2^h,0,0,m+2)</code>. inc is the carry transducer entering at D, and may run through Y and into the left end.</td>
+<td>80/80</td>
+</tr>
+<tr>
+<td>MERGE5 (walker meets a bit-0 digit)</td>
+<td><code>RS(X 2^h 5, 0,1,g+1,m)</code> → <code>RS(X 2^h, 3,0,g+1,m+1)</code>: the LSB becomes a 7-digit (P = <code>3</code>)</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>MERGE13 (walker meets a bit-1 digit)</td>
+<td><code>RS(X 2^h 1 3, 0,1,g+1,m)</code> → <code>RS(X 2^h 1, 1,0,g+1,m+1)</code>: a 5-digit LSB with a <strong>stale <code>1</code></strong> on its left</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>LSB7</td>
+<td><code>RS(X 5 Y 2^h, 3,1,g+1,m)</code> → <code>RS(X (1 3) Y' 2^h 2, 0,0,g,m+1)</code>: the 7-digit becomes filler plus a 4-digit walker, and the carry goes into the counter</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>LSB7_INC0</td>
+<td><code>RS(X,3,0,g+1,m)</code> → <code>RS(X,3,1,g,m+1)</code></td>
+<td>40/40</td>
+</tr>
+</tbody>
+</table>
+<p>Random words from the 4-gram language below (600 samples): every transition the predictor claims is exact, 386/386 (INC0 153, CARRY 53, CARRY_WALK4 60, CARRY_ovf 41, EAT0 12, EAT1 11, EAT1_c 34, BIRTH 22), and none of the 600 halts. The other 214 samples fall outside the rule set: stale-1 cascades, eats with a 4-digit or 7-digit LSB or h = 0, and counter-empty words.</p>
+<p><strong>Coverage on the blank tape.</strong> Scripts: <code>scripts/deepen2_dump.py</code> (writes every round start as TSV), <code>scripts/deepen2_coverage.py</code>. Outputs: <code>scripts/deepen2_coverage_1e10*.txt</code>.
+- <strong>To 1e10:</strong> 671,488 transitions, 99.898 % predicted exactly, <strong>0 mismatches</strong> (round 1: 99.43 %). By rule: INC0 335,298; CARRY 328,605; CARRY_ovf 3,004; CARRY_WALK4 3,154; BIRTH 252; EAT0 240; EAT1 142; EAT1_c 109.
+- <strong>From step 320,000:</strong> 99.904 %. All 644 uncovered transitions are stale-1 cascades. Everything else that is uncovered (about 40) belongs to the counter-empty restarts at steps &lt; 2e5 and around 3.15e5. An <code>init</code> lemma would handle those by direct simulation.</p>
+<p><strong>What the counter really does.</strong> This changes round 1's picture.
+- The 4-digit LSB is a <strong>walker</strong>. It soaks up increments and moves one filler left every 2 rounds.
+- When it reaches the next digit D, it merges into it:
+  - D = <code>5</code> (bit 0, MERGE5, 197 times to 1e10): a 7-digit LSB forms. LSB7 then turns D into filler, sends one carry into the counter, and the walker continues.
+  - D = <code>1 3</code> (bit 1, MERGE13, 249 times): a stale <code>1</code> token is left behind.
+- The next carry that reaches a stale <code>1</code> starts a <strong>cascade</strong>. Micro-level: the left sweep erases <code>10</code> → <code>00</code> (B1→0LD, D0→0LB), and the round becomes a multi-bounce excursion. The cascade turns a run of digits into fillers and usually spawns a new <code>2.3</code> walker.
+- Cascades are the counter <strong>resets</strong>. The counter keeps falling back to just a left end plus the LSB, for example <code>7 2^30 1</code> at step 1.8e9 and <code>3 2^11 1</code> at 7.1e6.
+- Cascade shapes to 1e10 (<code>scripts/deepen2_stale_classify.py</code>, <code>scripts/deepen2_stale_1e10.txt</code>):</p>
+<table>
+<thead>
+<tr>
+<th>shape</th>
+<th>count</th>
+<th>example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stale <code>1</code> right before the LSB (<code>.. D 2^h 1 1\|b1</code>)</td>
+<td>246</td>
+<td><code>5 2 5 2 1 1\|b1</code> → <code>1 3 2 2.3 2 2 1\|b0</code></td>
+</tr>
+<tr>
+<td>stale <code>1</code> before an interior bit-1 digit (<code>1 1 3</code>)</td>
+<td>241</td>
+<td><code>1 1 3 2^k 1\|b1</code> → <code>3 2 2 5 2^k 1\|b0</code></td>
+</tr>
+<tr>
+<td>a <code>2 3</code> (bit-1 6-digit) borrow near the left end</td>
+<td>159</td>
+<td><code>3 2 2 3 ..\|b1</code> → <code>3 4 3 2 2 4 ..\|b0</code></td>
+</tr>
+</tbody>
+</table>
+<p>The cascade results are not a simple +1. One example is <code>3 5 2 1 3 2 1 3 2 5 2^3 1 1</code> → <code>3 1 3 2 5 2 1 3 2 2.3 2^4 1</code>. <strong>These are not yet ruled.</strong></p>
+<p><strong>Invariant candidate: the 4-gram language L4.</strong> Scripts: <code>scripts/deepen2_closure_fuzz.py</code>, <code>scripts/deepen2_kiter.sh</code>. The 4-grams are in <code>scripts/deepen2_kgrams4.json</code>.
+- <strong>How words are abstracted:</strong> a round-start word becomes <code>^ tokens P&lt;lsb&gt; |b&lt;bit&gt; &lt;g0|g+|NM&gt;</code>. Filler runs 2^1, 2^2 and 2^≥3 are written f1, f2 and F. L4 is the set of words whose 4-grams all lie in K.
+- <strong>Fixed-point fuzz:</strong> K was seeded from the 1e9 run and iterated with uniform sampling, 300 samples × 20 rounds per iteration. New 4-grams per iteration: 88, 17, 3, 0, 7, 0. That is 645 → 760 4-grams, with <strong>0 halts in 1,800 samples (about 36,000 rounds)</strong>.
+- <strong>Union run:</strong> K was then merged with the 4-grams of the 1e10 run (768) and fuzzed with weighted sampling, 250 samples × 30 rounds per iteration. New 4-grams per iteration: 15, 21, 2, 0, 0, 0. That is a <strong>fixed point at 806 4-grams</strong>, with <strong>0 halts in 1,500 samples (about 45,000 rounds)</strong>. Over both runs: 0 halts in 3,300 samples. The final K is <code>scripts/deepen2_kgrams4.json</code>.
+- <strong>Where the escapes land:</strong> every new 4-gram is in the tiny-counter corner (left end and LSB within 1–2 tokens), which the resets do revisit.
+- <strong>Compared with round 1:</strong> the bigram language was not closed and fuzzing it halted. The 4-gram language has not halted in any sample.</p>
+<p><strong>Non-halting argument, current status.</strong>
+1. Halting needs B to read a 1 with 1 on its left and 0 on its right, which shows up as <code>A&gt; 0 1 0</code> or <code>11 D&gt; 0</code>.
+2. All observed and fuzzed round starts lie in L4. No configuration started from an L4 word has halted within its fuzzed rounds (≈20–30 per sample).
+3. What is missing:
+   - a proof that L4 (or a regular refinement of it) is closed under the round map;
+   - rules for the stale-1 cascade and for the rare eat variants that the closure includes. The random-language sample shows eats with a 4-digit or 7-digit LSB, eats with h = 0, and counter-empty words.</p>
+<p><strong>Proof lead.</strong> The invariant is a locally testable token language with repeated-filler compression. That is close to what busycoq's CTL deciders certify: <code>CTL.v</code>, with certificates <code>RWL_mod</code> (repeated word list) and <code>NG</code> (n-gram CPS), concluding <code>~halts</code> from the blank tape. The machine is a holdout, so the default parameters failed. Two parameter choices to try first:
+- RWL_mod with block length 3 (<code>100</code>/<code>110</code>) and threshold ≥ 3;
+- NG with n ≈ 12–16.</p>
+<p>Search the parameters natively first. The rocq-notes lesson stands: do not search inside Coq. Only then check the winning certificate in Coq. If a CTL certificate exists, no rule table for the cascade is needed.</p>
+<p><strong>Still open:</strong>
+1. Rules for the stale-1 cascade in its 3 shapes, validated.
+2. The eat variants reachable in the closure: P = 0 / 3 LSB at g = 0, and h = 0.
+3. Closure of L4 checked exhaustively up to a length bound (rocq-notes: use length ≥ 12), not only by random sampling.
+4. A native CTL (RWL_mod / NG) parameter search.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Make the next stage a closure stage (exhaustive L4 closure check plus a CTL certificate attempt), hand-derive the stale-1 cascade rules first, or park?
+Answer: <strong>closure_ctl</strong> (Closure stage: exhaustive L4 closure to length &gt;= 12, plus a CTL certificate attempt (RWL_mod with block length 3, or NG with n about 12-16)). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-closure_ctl">Funded stage (2026-10-10, closure_ctl)</h2>
+<p>Result: <strong>the invariant candidate L4 is refuted, and no k-gram language of this kind (k ≤ 10) can replace it.</strong> L4 contains words that halt. No CTL certificate was found either: every native sweep run so far returned false. <strong>Confidence stays med.</strong> Not cryptid: every halting word combines transients that the real run never shows together. The open question is whether that exclusion can be written as a regular language.</p>
+<p><strong>Tooling.</strong> Both tools were checked before use.
+- <code>scripts/closure/rsim</code> (C, <code>rsim.c</code>): a batch round simulator, from one round start to the next (or HALT/CAP).
+  - Check (<code>selftest_rsim.py</code>): it reproduces <strong>15,759/15,759</strong> consecutive blank-tape round starts to 3e7 exactly (tokens, b, g, m and step counts).
+  - The smallest halting word below was re-checked with <code>tools/sim/tmsim</code>: it halts at step 197.
+- <code>scripts/ctl_extract/ctlx</code>: busycoq's <code>CTLDecider62.decide_nonhalt</code> (CTL.v), extracted to OCaml.
+  - Build steps are in <code>README.txt</code>. One manual fix is needed: the extracted <code>'a Parray.t</code> type is wrong and must be patched.
+  - Check: two known busycoq certificates come out <strong>true</strong>: <code>NG 0 1e6 1e6 9 48 0 0 false</code> on <code>1RB1LF_1LC0RD_0LD0LC_1LA1RE_1RA1LB_---1LE</code> (busycoq lemma nonhalt321, 1.8 s) and <code>CPS_LRU 100000001 400000 400000 12 3200 2 6 0 0</code> on CTLv2 nonhalt1 (73 s).
+  - A native parameter search is therefore cheap now. Only a Coq <code>solve_cert</code> re-check plus check_kill would count.</p>
+<p><strong>Exhaustive L4 closure</strong> (K = the 806 4-grams in <code>scripts/deepen2_kgrams4.json</code>). Scripts: <code>scripts/closure/closure_check.py</code>, <code>classify_L4.py</code>, <code>halt_shapes.py</code>; numbers in <code>scripts/closure/summary.json</code>.
+- Concretization rules:
+  - <code>g0</code> = (g = 0, m ≥ 1); <code>g+</code> = (g ≥ 1, m ≥ 1); <code>NM</code> = (no marker, n ≥ 3).
+  - F runs are all 3, all 4, all 5 or all 7, plus 2 random mixes in 3..9.
+  - g/m: <code>g+</code> takes (1,1), (2,1) and (4,3); <code>g0</code> takes m = 1 and 3; <code>NM</code> takes n = 3, 4 and 6.
+- <strong>Every word with ≤ 14 symbols:</strong> 67,601 words, 1,000,548 concretizations.
+  - 752,208 successors lie in L4.
+  - <strong>248,016 escape</strong>: they have 4-grams outside K.
+  - <strong>324 halt</strong>.
+- <strong>Split by the round-2 predictor:</strong>
+  - 759,169 concretizations are covered by a validated rule, and <strong>every prediction is exact (0 mismatches)</strong>. That is an exhaustive check of the round-2 rules.
+  - Yet 110,054 of these (14.5 %) still leave L4. <strong>L4 is not closed even under the validated rules.</strong>
+  - The other 241,379 have no rule: 103,093 stay in L4, 137,962 escape, 324 halt.
+  - <strong>All 324 halts are unruled <code>CARRY_stop</code></strong>: a carry meets a stale <code>1</code> (the cascade). They come from 86 words.
+- <strong>≤ 10 symbols:</strong> 3,546 words, 43,340 concretizations: 9,463 escapes (366 new 4-grams) and 9 halts.
+  - Smallest halting word: <code>^ 1 3 f1 3 F 1 P1 |b1 g+</code>, i.e. <code>0^inf 1 3 2 3 2^3 1 1 &lt;E (110)^2 00 110 0^inf</code> in tokens. It halts after 197 steps (card Fig 5).
+- <strong>Random long words</strong> (20–40 symbols): 4,000 words, 12,034 concretizations: 4,113 escapes and 14 halts.
+- Why the deepen-2 fuzz missed this: halts are about 0.03 % of concretizations and need specific filler lengths (mostly F = 3).</p>
+<p><strong>Halting shapes</strong> (<code>halts_L4_L14.json</code>). In 285 of the 324, a stale <code>1</code> sits right before a bit-1 LSB, in a context the blank run never shows:</p>
+<table>
+<thead>
+<tr>
+<th>context</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a 6-digit <code>2 3</code> left of a 3-filler run</td>
+<td>228</td>
+</tr>
+<tr>
+<td><code>1 3 f1</code></td>
+<td>30</td>
+</tr>
+<tr>
+<td><code>2 5</code> with h = 4 or 6</td>
+<td>9</td>
+</tr>
+<tr>
+<td><code>3 3</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>The other 39 have two walkers, <code>4 4</code>, and LSB <code>2</code>. In the blank run, the context left of a stale-1-before-LSB is only <code>1 3</code>, <code>2 5</code>, a left-end <code>3</code>, or <code>2.3 5</code>.</p>
+<p><strong>k-gram closure iteration</strong> (<code>kclosure.py</code>). It seeds K with the k-grams of the blank run to 1e9 (150,891 round starts), then iterates K ← K ∪ k-grams(successors of all words ≤ LMAX). That is the least closed k-gram language over the run, up to the length bound. If it contains a halting word, no k-gram invariant at that k exists for this abstraction.</p>
+<table>
+<thead>
+<tr>
+<th>k</th>
+<th>LMAX</th>
+<th>K at start</th>
+<th>first halt</th>
+<th>K at halt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4</td>
+<td>12</td>
+<td>645</td>
+<td>iteration 1 (39 halts)</td>
+<td>1,027</td>
+</tr>
+<tr>
+<td>5</td>
+<td>14</td>
+<td>1,158</td>
+<td>iteration 1 (24)</td>
+<td>1,549</td>
+</tr>
+<tr>
+<td>6</td>
+<td>14</td>
+<td>1,838</td>
+<td>iteration 1 (9)</td>
+<td>2,481</td>
+</tr>
+<tr>
+<td>8</td>
+<td>16</td>
+<td>3,466</td>
+<td>iteration 3 (9)</td>
+<td>8,251</td>
+</tr>
+<tr>
+<td>10</td>
+<td>18</td>
+<td>5,148</td>
+<td>iteration 5 (17)</td>
+<td>21,009</td>
+</tr>
+</tbody>
+</table>
+<p>So no window size up to 10 tokens works, and the languages keep growing.</p>
+<p><strong>What the real run has that the windows lose</strong> (<code>special.py</code>). Call a token a <em>special unit</em> when it is a transient:
+- the walker (<code>4</code>/<code>2.3</code>, or LSB <code>0</code>);
+- a stale <code>1</code>;
+- a 6-/7-digit piece (<code>6</code>, <code>7</code>, <code>2.1</code>, <code>2.5</code>, or a <code>3</code> not after <code>1</code>);
+- an odd LSB prefix (<code>2</code>/<code>3</code>/<code>4</code>).</p>
+<p>Results:
+- The blank run after 3.2e5, to 1e9 (150k round starts), shows only <strong>16 signatures, with at most 2 special units</strong>. The 2-unit cases are left-end ones (<code>X3 W</code> 768, <code>W W</code> 328, <code>X3 P0</code> 6, <code>W P0</code> 4).
+- <strong>Every one of the 324 halting concretizations has a signature never seen in the run</strong> (2–4 units, e.g. <code>X7 6b1 S</code> 228, <code>X7 W W P2</code> 39, <code>X7 S</code> 30, <code>W S</code> 18, <code>S S</code> 3).
+- So the invariant needs a global "at most one transient (plus the left-end exceptions)" constraint. That is regular, but no bounded window can see it.</p>
+<p><strong>CTL sweep</strong> (<code>scripts/ctl_extract/sweep.py</code>, results <code>sweep_{A,B,C}.jsonl</code>; one run at a time per sweep, nice 10, ulimit -v 6 GB). 118 runs, <strong>0 true</strong>: 117 false, plus 1 run aborted at the memory cap (exit 134, 5.3 GB). The parameter sets were:
+- plain NG (no history), n = 10–20: 11 runs, each false within 0.3 s;
+- RWL_mod with block length 3, mnc 3, mod 1/2/3, len1 4–16, len2 0/2: 28 runs, up to 166 s and 5.3 GB;
+- NG with cell-write history (len1 12–48, n 4–14): 24 runs;
+- NG with state history (asth, n 2–12, len1 12–24, len2 0/2): 36 runs;
+- CPS_LRU with block length 3–15 and simT 1001: 19 runs.</p>
+<p>Not run: <code>params_C.txt</code> (RWL_mod at block lengths 1/2/4/5/6/9/12, and NG with LRU history). The quick falses (0.1–3 s) mean the abstraction reaches a halt almost at once. That fits the finding above that bounded windows contain halting words.</p>
+<p><strong>Still open:</strong>
+1. A structural invariant: a small DFA over special units (≤ 1 transient away from the left end, the left-end cycle, the cascade's own transients), checked with <code>kclosure.py</code>-style exhaustive closure (≤ 14 symbols plus random long words) using <code>rsim</code>.
+2. Rules for the stale-1 cascade, now pinned down to the contexts the run actually shows (the 3 shapes of deepen 2).
+3. CTL: only as a background lottery. Every bounded-window token language up to k = 10 already fails, and CTL's abstractions are bounded windows too.</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: Fund one stage for a hand-written structural invariant (at most one transient, plus the cascade rules, checked exhaustively), run only a bigger background CTL sweep, or park?
+Answer: <strong>struct_invariant</strong> (One stage: a hand-written structural invariant (at most one transient) plus the cascade rules, checked exhaustively). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-struct_invariant">Funded stage (2026-10-10, struct_invariant)</h2>
+<p>Result: <strong>the structural invariant closes, with 0 halts, once eats are restricted to normal words.</strong> The hand-written grammar H ("at most one transient cluster, from a list of 37, anywhere in the counter") is closed under the round map in every check: 1,214,968 + 259,323 sampled successors and an exhaustive small-size pass. Every blank-run round start from step 3.2e5 to 1e10 lies inside it. Every halting word from the closure stage lies outside it. <strong>What is still missing is a quantitative flush lemma:</strong> transients must resolve before the marker comes back. That holds on the blank run with slack (at worst 0.34 of the epoch, 0.10 after 1e9), but it is not proved, and the flush time can be exponential in the number of digits to the right of the transient. <strong>Confidence stays med.</strong> Not cryptid. Per the stop rule this is not an escape, so no park, but proof.md needs the flush lemma first. #28 is stuck at the same point.</p>
+<p>Scripts are in <code>scripts/struct/</code> (README.txt) and the numbers in <code>scripts/struct/summary.json</code>. Every round is simulated by <code>scripts/closure/rsim</code>, which is exact on 15,759/15,759 blank-run rounds.</p>
+<p><strong>Shape abstraction</strong> (<code>shapeclosure.py</code>).
+- A filler run becomes <code>f</code> and a normal digit (<code>5</code> or <code>1 3</code>) becomes <code>d</code>.
+- Any run <code>(d f)^+</code> becomes <code>D*</code>.
+- Every other token is kept as is: the transients, i.e. walker <code>4</code>/<code>2.3</code>, stale <code>1</code>, <code>3</code>, <code>6</code>, <code>7</code>, <code>2.1</code>, <code>2.5</code>.
+- The LSB becomes <code>P&lt;tok&gt;</code>.
+- NORMAL = <code>LE (D*)? P1</code>, with LE ∈ {ε, <code>3</code>, <code>3 4</code>, <code>3 2.3</code>}. NORMAL_EAT = <code>LE D* P1</code>, i.e. at least one digit.</p>
+<p><strong>Two negative results first.</strong> Both are needed to see why the flush rule matters.
+- Signature-partitioned 4-grams (<code>sigclosure.py</code>): k-grams kept separately for each multiset of transient units. With the old small marker values this <strong>halts at iteration 4</strong> (21 halts, in class <code>W P2</code> with NM b1).
+- Shape closure without a flush rule, even with a long unary (<code>--um large</code>): it drifts into eats on transient words (a P0 walker LSB at g = 0, giving P2 words) and <strong>halts at iteration 5</strong> (358 halts).
+- So a closed invariant must forbid eats on transient words. That is a statement about the marker, not about the counter word alone.</p>
+<p><strong>The blank run's eat facts</strong> (3.2e5 to 1e10, <code>rs1e10.tsv</code> regenerated by <code>deepen2_dump.py</code>):
+- <strong>All 771 eat and no-marker events see a normal word</strong>: g0 with <code>LE D* P1</code>, NM with <code>LE D* P0 b0</code>. EAT0 always returns a normal word. EAT1 starts a transient epoch: walker → merge → stale 1 → cascade.
+- <strong>Flush slack</strong> (<code>flush_slack.py</code>): over 470 epochs (245 EAT1, 225 EAT0), τ is the number of rounds the word stays transient after an eat.
+  - EAT1: the largest τ/epoch is 0.34 (at step 8.1e5), and 0.104 after 1e9; the median is 0.036.
+  - EAT0: τ = 0 every time.
+- A transient cluster in the run never has more than 3 normal digits to its right. Round starts with 0, 1, 2 and 3 such digits: 12,302, 6,988, 2,976 and 512.</p>
+<p><strong>Exhaustive epoch check from normal words</strong> (<code>epoch_check.py</code>). Every normal word with r ≤ 5 digits and gaps 1-3 is checked, 37,324 words in all.
+- INC/CARRY keeps them normal: 74,648/74,648.
+- EAT0 keeps them normal: 37,320/37,324. The 4 exceptions are digit-free counters, which is why NORMAL_EAT needs a digit.
+- Eat epochs with M = 400: <strong>74,644/74,648 return to a normal word, with 0 halts.</strong> The largest τ is 169 rounds, and 359 transient shapes are visited.
+- A second set, r ≤ 3 with gaps {1,2,4,7}: 4,676/4,680 return, 0 halts, largest τ 105.</p>
+<p><strong>Shape closure in flush mode</strong> (g+ words concretized with g ≥ 7; a g = 0 successor that is not NORMAL_EAT counts as a violation).</p>
+<table>
+<thead>
+<tr>
+<th>run</th>
+<th>concretization</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>seed: 24 normal shapes</td>
+<td>D* with r ≤ 2, f ∈ {1,2,3,5}, ≤ 300 per shape</td>
+<td>fixed point <strong>S444</strong> after 40 iterations; a fresh recheck sends 110,388/110,388 successors into S</td>
+</tr>
+<tr>
+<td>S444</td>
+<td>r ≤ 3, ≤ 600 per shape</td>
+<td>297,429/297,429 in S</td>
+</tr>
+<tr>
+<td>S444</td>
+<td>r ≤ 6, f up to 9</td>
+<td>+118 shapes, fixed point <strong>S562</strong></td>
+</tr>
+<tr>
+<td>S562, exhaustive (no cap)</td>
+<td>r ≤ 2, f ∈ 1..4, D* gaps 1..3</td>
+<td>1,983,816 successors: 1,977,768 in S562, 6,048 in a 5-shape chain (all inside H)</td>
+</tr>
+<tr>
+<td>all runs</td>
+<td></td>
+<td><strong>0 halts, 0 flush violations</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>All 670,604 blank-run round starts from 3.2e5 to 1e10 lie in S444.</li>
+<li>All 130 stored halting examples of the closure stage (35 shapes) lie outside S.</li>
+</ul>
+<p><strong>The hand-written invariant H</strong> (<code>hand_grammar.py</code>). Every S562 shape has <strong>at most one transient cluster</strong>: 526 have one, 36 have none. A cluster is a maximal run of transient tokens, with their fillers, between normal digits. There are only 37 cluster words, and only 62 contexts. That gives the grammar</p>
+<p>H = LE · pre · X · post, with
+  - LE ∈ {ε, <code>3</code>, <code>3 4</code>, <code>3 2.3</code>}
+  - pre ∈ {ε, <code>D*</code>, <code>d</code>, <code>D* d</code>}
+  - post ∈ {ε when X ends in an LSB, <code>D* P1</code>, <code>P1</code>}
+  - X ∈ {<code>1</code>, <code>4 f</code>, <code>2.3 f</code>, <code>f 4 f</code>, <code>f 2.3 f</code>, <code>7 f</code>, <code>6 f</code>, <code>f 6 f</code>, <code>3 f</code>, <code>f 3 f</code>, <code>3 3 f</code>, <code>2.5 f</code>, <code>2.1 3 f</code>, <code>2.3 2.3 f</code>, <code>2.3 4 f</code>, <code>2.3 f 2.3 f</code>, <code>2.3 f 4 f</code>, <code>3 2.3 f</code>, <code>3 4 f</code>, <code>3 f 2.3 f</code>, <code>3 f 4 f</code>, <code>f 4 2.3 f</code>, <code>f 4 4 f</code>, <code>f 4 f 2.3 f</code>, <code>f 4 f 4 f</code>, <code>P0</code>, <code>f P0</code>, <code>2.3 P0</code>, <code>2.3 f P0</code>, <code>3 P0</code>, <code>3 f P0</code>, <code>f 4 P0</code>, <code>f 4 f P0</code>, <code>P2</code>, <code>f P2</code>, <code>P2.1</code>, <code>P3</code>} or none.</p>
+<p>That is 1,024 shapes. Every shape is taken with g+ and b = 0/1; P0 shapes also with NM b0; NORMAL_EAT shapes also with g0. In all, 2,180 keys.
+- Closure with ≤ 100 concretizations per shape: 259,323 successors in H. Two keys were added, both <code>P-</code> (the empty counter, g+ b0/b1). Fixed point at 2,182 keys.
+- <strong>Verification with ≤ 600 per shape</strong>, fillers {1,2,3,4,7}, D<em> gaps {1,2,4} and a fresh seed: </em><em>1,214,968/1,214,968 successors in H, 0 halts, 0 flush violations.</em>*
+- So "at most one transient" really is the invariant, as decision.json suggested, once eats are restricted to normal words and the cluster comes from the list of 37.
+- All 130 stored halting examples of the closure stage are outside H:
+  - 70 have two or more clusters;
+  - 58 have a single cluster whose word is not on the list (<code>3 f 1</code>, <code>3 3 f 1</code>, <code>4 f P2</code>, …);
+  - 2 are eats (g = 0) on a transient word (<code>3 2.1</code>).</p>
+<p><strong>Flush time</strong> (<code>tau_check.py</code> on S444, 8,824 concretizations, G = 700 rounds).
+- 8,501 return to normal, with 0 halts.
+- 323 do not return within 690 rounds. All of them have a transient with 3 or more normal digits to its right. Carries reach such a transient only every 2^(r+1) rounds, so τ grows exponentially in those digits.
+- H as written (post = <code>D* P1</code>) therefore cannot carry a linear flush bound. The refinement suggested by the run is post ∈ {<code>P1</code>, <code>(d f){1,3} P1</code>}: the run never has more than 3 digits right of a cluster.</p>
+<p><strong>Non-halting argument, current form.</strong>
+- (1) H is closed under every g+ round, and under eats from NORMAL_EAT words. Checked above, bounded.
+- (2) No word of H halts within a round.
+- (3) <strong>Flush lemma (open):</strong> at every EAT1 the new marker distance (≈ the unary length U) is at least the flush time τ of the EAT1 output.
+- (4) Init: direct simulation to step 3.2e5, where the word is normal.
+- (3) needs:
+  - (a) the bounded-post refinement of H, closed;
+  - (b) τ ≤ c·L for those words (L = counter cells);
+  - (c) U ≥ c·L at every EAT1. U only grows (+2 or more per eat), and on the run U/L rises from 2.1 (6.5e5) to ~17 (1e9). A proof needs a bound on how fast L grows: L grows only at left-end overflows, and eats move counter cells into the unary.</p>
+<p><strong>Still open:</strong>
+1. The flush lemma: bounded-post H closed, then τ ≤ c·L, then U ≥ c·L.
+2. Explicit token-level cascade rules. The shape-level transitions are implicit in S562/H, but proof.md needs them as rewrite rules.
+3. An init lemma to 3.2e5.
+4. The CTL lottery stays parked. Bounded windows cannot express the flush condition.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: Fund one stage for the flush lemma (cap the digits right of the transient, bound the flush time by the counter length, show the unary outgrows it), or park?
+Answer: <strong>flush_lemma</strong> (One stage: the flush lemma (bounded-post refinement of H, flush time &lt;= c<em>L, unary &gt;= c</em>L)). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-flush_lemma">Funded stage (2026-10-10, flush_lemma)</h2>
+<p>Result: <strong>the stop rule fires.</strong> The bounded-post refinement of H escapes, and the flush time from real eat outputs is not linear in the counter length. The reason is now clear: the transient cluster is a <strong>slow carry</strong>. It moves left through bit-1 digits, turning each into a bit-0 digit right of it, so the number k of normal digits right of the cluster is set by the run of 1-bits it meets. Carries reach the cluster only every 2^(k+1) rounds, so the flush takes about 2^(j/2) rounds for a 1-run of length j. This is the same shape as #28's flush (F = 2^(1+D_F) &lt;= 2 val &lt;= N), so the right bound is in the counter value, not in L. <strong>Parked per the stop rule; confidence stays med.</strong> Not cryptid. Every check below has 0 halts. Scripts are in <code>scripts/flush/</code> (README.txt), numbers in <code>scripts/flush/summary.json</code>.</p>
+<p><strong>Tooling.</strong>
+- <code>shapeR.py</code>: H's shape abstraction with the post digits spelled out, so k is part of the shape (D* is kept only left of the cluster). On the run it reproduces the previous stage's counts exactly: 12,302 / 6,988 / 2,976 / 512 round starts with k = 0 / 1 / 2 / 3.
+- <code>flush_epoch.py</code>: the flush time τ of an EAT1 output, from any NORMAL_EAT word with b = 1. The marker is re-placed at g = 6 every round, which makes this fast. The trick is safe: 60/60 epochs are identical (τ, kmax, end word) to runs with the true unary M = 3000.
+- One escape transition was re-checked with <code>tools/sim/tmsim</code> (<code>tmcheck.py</code>): same successor, 228 steps.</p>
+<p><strong>(a) Bounded-post H does not close.</strong>
+- H_3 (H with post in {P1, (d f)^k P1, k ≤ 3}; 3,820 keys) escapes at iteration 1: 867 of 1,054,812 successors have k = 4.
+  - First escape: <code>3 4 5 2 1 3 2.3 2 2 (1 3 2) (1 3 2 2) (1 3 2^5) 1 |b1</code> → <code>3 4 5 2 1 5 2^3 5 2 5 2^2 5 2^5 1 |b0</code>. The 2.3 walker meets the bit-1 digit <code>1 3</code> on its left, leaves a stale 1 and turns the digit into <code>5</code>. The cluster has moved left past that digit, so k goes 3 → 4.
+- After 30 iterations: 1,273,992 successors, 219,915 with k &gt; 3, k up to 6 and still growing.
+- From the 24 normal shapes plus the run's 508 refined keys: 49 iterations, 783,642 successors, k up to 8. The fixed point there (1,252 keys) is only an artefact of the concretization size.
+- All closure runs: <strong>0 halts, 0 flush violations</strong>.</p>
+<p><strong>(b) No linear flush bound from eat outputs.</strong>
+- Random NORMAL_EAT words: 3,000 words (≤ 10 digits, gaps 1-3) and 2,000 words (≤ 6 digits, gaps 1-12). All return to a normal word, with 0 halts. τ/L is at most 4.71, and it rises with kmax: 2.27, 2.51, 3.45, 4.09, 4.71 for kmax 0..4.
+- The family <code>LE (1 3 2)^(j+1) 5 2 1 |b1</code>, j = 0..14 (60 words), is a run of j+1 bit-1 digits above one bit-0 digit, so v = 2^(j+3) − 3:
+  - τ/L rises from 1.2 to 27.3, while L grows only linearly in j;
+  - kmax ≈ j/2;
+  - for LE <code>3</code> and even j, <strong>τ = 2^(j/2+5) − 3 exactly</strong> (29, 61, 125, …, 4093), which is about 11.3·sqrt(v+3).
+- The same family with gaps 2^3 (j = 0..11) is slower to blow up: τ/L goes from 1.0 to 2.45, with kmax up to 4.
+- So H (which contains every NORMAL_EAT word) admits eats whose flush is exponential in the 1-run length, and no τ ≤ c·L holds on it.</p>
+<p><strong>Run facts (3.2e5 to 1e10, <code>budget_run.py</code>, <code>run_eat1.py</code>).</strong>
+- <strong>Value budget:</strong> v ≤ m − 5 at all 647,826 normal round starts, where v is the digit value (5 = 0, <code>1 3</code> = 1, then b) and m is the unary right of the marker. At all 245 EAT1s, m − v ≥ 158.
+- At EAT1, the 1-run above the LSB is j1 ≤ 8:</p>
+<table>
+<thead>
+<tr>
+<th>j1</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EAT1s</td>
+<td>10</td>
+<td>119</td>
+<td>69</td>
+<td>25</td>
+<td>14</td>
+<td>4</td>
+<td>3</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>The j1 = 8 eat is at step 4.48e9, with v 511, m 4,253, τ 180 and kmax 3.
+- Over all EAT1s: max τ/N = 0.351 (N = m + 1, at step 8.1e5), max τ/L = 2.58, min m/L = 3.4, and kmax ≤ 3 throughout.</p>
+<p><strong>What a proof needs now (the #28 route).</strong>
+1. A flush bound in the counter value: τ ≤ f(v) plus a linear term for the bit-0 digits and fillers the walker crosses. The ones family suggests f(v) ~ sqrt(v), with exact powers of two, like #28's L2.
+2. The budget lemma v ≤ m, proved inductively: INC/CARRY add 1 to both, EAT0 halves v and adds 2 to m, and a flush must end with v ≤ m.
+3. For the linear term: m ≥ c·L at every EAT1, which is still the unproved growth comparison.</p>
+<p><strong>Still open.</strong> All of the flush lemma (now in value form), the cascade rules as rewrite rules, the init lemma to 3.2e5, and proof.md.</p>
+<h2 id="decision-2026-10-10-open">Decision (2026-10-10, open)</h2>
+<p>Question: Keep #7 parked until #28's flush lemma is proved and then port it (value-form bound), fund a value-form flush stage here now, or park for good?
+Options: <strong>after_28</strong> (recommended; no compute now, one porting stage after #28 closes), value_route (one stage now, likely several), park (for good). The flush_lemma answer is filed in <code>decisions/2026-10-10-flush_lemma.json</code>.</p>
+<h2 id="delta-route-via-kill-30-2026-10-10-supersedes-the-stuck-analysis-above">Delta route via kill #30 (2026-10-10): supersedes the STUCK analysis above</h2>
+<p><strong>#7's earlier STUCK analysis (Deepen passes 1-2, closure_ctl, struct_invariant, flush_lemma, and the open decision.json) is superseded by this route.</strong> It stays above for the record and is not used.
+- The Wave 4 ranker found that #7's table is kill #30's table <code>1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC</code>, mirrored and renamed. Under σ: A,B,C,D,E,F -&gt; E,A,B,F,C,D (with L&lt;-&gt;R), #7 = #30, started in #30's state E. The halting transition #7 F0 is #30's D0. σ is unique among 720 x 2 maps. The third start of the same table is Wave 4's W4-1 (#30's B, no mirror), worked by another agent.
+- proof.md is now a <strong>delta proof against #30</strong>:
+  - Δ1: the conjugacy.
+  - Δ2: the initial segment. In #30's frame from <code>0^inf E&gt; 0^inf</code> the left records are e1 = L(0,0001)@15, e2 = L(1,000010010001)@81, e3 = L(3,0001000010001)@183, e4 = L(5,…)@573 and <strong>e5 = L(16, 0001)@1059</strong>. The restart gives K(1,17,t1) at step 1114.
+  - Δ3: #30's invariant (I1)-(I4) at e5: special residue t1, κ = 0, N = 17 ≥ N_lo(0) = −8. e1-e4 cannot be the base.
+  - Δ4: the rest of #30's argument is start-independent except the base and the finite part.
+  - Δ5: #7's own finite part. On the informal route, e5..e591 (587 epochs) lie below N<em> = 14,796. On the .v route, <code>orbit 687 17 t1 = (17724, Y_692)</code>, and <code>Inv 10</code> holds there (Mw 66 ≤ 2,219, M2 1,032 ≤ 5,601, x 16 ≤ 2,291).
+  - Δ6: the Rocq plan. It is #30's .v plus init7, fin7, inv7 and the #24 <code>flip_halts</code>/<code>perm_halts</code> bridge.
+- The old dead end, in #30's terms: the "slow carry" whose flush time 2^(j/2) the flush_lemma stage could not bound linearly is #30's nested digestion (D6). Lemma D bounds it by about sqrt(N) against a budget N, a value-form bound, as the flush_lemma decision guessed.
+- #7's orbit never merges with #30's or W4-1's below N = 20,000, so #30's finite part cannot be reused (X6).
+- Checks: <code>check_proof.py</code> imports #30's <code>check_proof.py</code> and runs its table-level sections and its section D unchanged (only the start differs, by an asserted source substitution). It adds X0-X6 and V0-V2 (direct simulation of both tables, the base, the .v's Inv). <code>scripts/delta30/orbit_E.c</code> is #30's <code>fs_orbit.c</code> with start E. Its 1e11-step log is <code>data/orbit_E_1e11_LE.txt</code>.
+- Result: <code>check_proof.py</code> </em><em>ALL PASS on seeds 1 and 2</em><em>: 100 claim groups each, about 100 s per seed, logs and JSON in <code>data/check_proof_seed{1,2}.*</code>. Section D from e5 runs to N = 400,004 (11,077 epochs), the ranker's figure. The C log reaches 1e11 steps (517 records, N up to 12,674) with no halt. Status: </em><em>CHECKPOINT_B</em>*. Next: the Rocq delta (proof.md Δ6). Do it together with W4-1, and post the three starts as one family.</p>
+<h2 id="kill">Kill</h2>
+<ul>
+<li>2026-10-11: <strong>KILLED_NONHALT.</strong> Kill file <code>1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA.v</code> (1,790 lines, 2,028 sentences, sha256 <code>dfb0fb2c8b2ab8a0d302bd3b271f7d81964d9e6e3baa710eef79e0036f700f28</code>) proves top-level <code>Lemma nonhalt: ~halts tm c0.</code>. It is #30's kill file with the proof.md Δ6 delta: #30's table kept as <code>tm30</code> (notations on it), <code>solve_initE</code> + <code>init7 : E;; tape0 --&gt;* K 17 t1</code> (1,114 steps), <code>B692</code>/<code>Y692</code>/<code>fin7</code> (687 model epochs by <code>vm_compute</code> to N = 17,724), <code>inv7 : Inv 10 17724 Y692</code>, <code>nonhalt_from_c</code>, <code>nonhalt_E</code>, <code>phi</code> = σ, <code>perm7 : Perm (flip tm) tm30 phi</code>, and <code>nonhalt</code> by <code>flip_halts</code> + <code>perm_halts</code>. Header cites "the kill for 1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC" and "verify/FractalBEC.v, tm10".</li>
+<li><code>tools/check_kill.sh</code>: PASS 3 times on the same sha256, each with <code>ulimit -s unlimited</code> and <code>ulimit -v 8000000</code>, one check at a time.</li>
+<li>Formalizer (round 1): compile 15.1 s (native on), coqchk -norec pass 66.1 s, 0 assumptions (rocq/log.md, rocq/check_kill.out).</li>
+<li>Independent audit, <code>--json</code>: 17/17 PASS, compile 16.1 s, coqchk -norec pass 71.7 s (no timeout), 0 assumptions. It also confirmed line 405 of <code>data/holdouts/2026-10-07_778.txt</code> (<code>holdouts.py contains</code>, one exact-line match), read the whole file, checked the mirror/rename correspondence of both tables (12/12 + the undefined entry) and that <code>flip_halts</code>/<code>perm_halts</code> are the framework's own (Flip.v, Permute.v).</li>
+<li>Fresh human-readable run for the submission, 00:06:36-00:08:07 PDT (checked_at 2026-10-11T07:08:07Z): 17/17 PASS, compile 17.3 s (native on), coqchk -norec pass 71.5 s, 0 assumptions (closed), 91 s wall (<code>submission/check_kill.txt</code>). Only warning: the second <code>TM_from_str</code> literal (<code>tm30</code>). The watchdog showed about 12 GB available just before, and nothing was killed.</li>
+<li><code>holdouts.py lookup</code>: in every snapshot from 2024-06-14 to 2026-10-07 (line 405 of the 778 list), and line 381 of <code>data/holdouts/BB6_holdouts_740.txt</code>. <code>holdouts.py solved</code>: absent from busycoq <code>verify/</code> (no byte-exact, renamed or mirrored proof).</li>
+<li>Table neighbours noted in the public header: mirrored #30 is FractalBEC tm10 except C1; #7 is also BECv1_6x2_solved.v tm10 except E1 (0LA vs 1LE, same start, no renaming), but BECv1's counter (HL2) fails here.</li>
+<li>Submission package: <code>submission/</code>.</li>
+<li>The .v, unchanged (same sha256).</li>
+<li>proof.md: the public delta write-up, rewritten from the working proof.md (sha256 <code>213154ce…</code>, untouched). Header (lists, parent, template FractalBEC tm10 via the parent, Flip.v/Permute.v, the BECv1 tm10 neighbour, status, section map) + Summary + §1-§5 = working Δ1-Δ5 with the math unchanged (#7/#30/W4-1 written as "this machine"/"the parent"/"the third start", #30 §n as "parent §n") + §6 the formal proof (Δ6 rewritten as a description of the .v; the draft/timing items dropped; the comment-stripped diff against #30's .v confirms only <code>tm</code>, the 3 notations, <code>init</code>, <code>B694</code>/<code>Y694</code>/<code>fin694</code>/<code>inv694</code>, <code>nonhalt_from</code>, <code>nonhalt</code> were removed) + §7 numerical checks (Δ7 without script names, paths or the RQ draft check). The "Earlier analysis (superseded)" section is dropped. <code>tools/writeup_lint.py</code>: 0 errors, 0 warnings.</li>
+<li>parent-proof.md: #30's public write-up (<code>submission/proof.md</code> of #30, verbatim), cited as "parent §n" (same §0-§7 numbering as #30's working proof.md; §8.3 is the .v's invariant). Lint 0/0.</li>
+<li>check_kill.txt (the 00:08:07 run, verbatim; contains absolute local paths like the other packages' copies), README.md (lint 0 errors; 1 warning, the holdout snapshot dates).</li>
+<li>discord.md: a draft of 1,617 characters plus <code>&lt;LINK&gt;</code>. <strong>Not posted.</strong> Its before-pasting list: post #30 first or together; W4-1 (third start) not mentioned, post the three together if it is killed soon; search #bb6 first; PR #15 queue; numbers; check_kill.txt paths.</li>
+<li>Still open: decision.json (the parked after_28/value_route/park question) is moot now and unanswered; it still shows on the decisions dashboard until it is moved or withdrawn.</li>
+</ul>
+</main></body></html>

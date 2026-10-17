@@ -1,0 +1,591 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>ranking.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/wave6/ranking.md · <a href="/busy-beaver/reports/wave6/ranking.md.html">raw</a></div>
+<h1 id="wave-6-ranking-2026-10-14">Wave 6 ranking (2026-10-14)</h1>
+<p>These are the 8 picks to attack now. They come from merging the four Wave 6 scout tables in <code>reports/wave6/</code>: templates, families, dynamics and claims.</p>
+<p>Scout signals are evidence only. Only a <code>tools/check_kill.sh</code> PASS counts as a kill.</p>
+<p><strong>The short version.</strong> There is no exact sibling of any of our 31 kills, and only one machine (96) lies within 2 transitions of one. So the picks lean on the two routes that worked in Wave 5:
+- the same table as an upstream <strong>hand</strong> proof, started from another state (W5-7's route);
+- the budget-plus-round-counter architecture (W5-3, W5-4 and W5-5).</p>
+<p><strong>After the critic (see the Critic section at the end):</strong>
+- W6-5 is now the Chaotic Bell Class 4 cluster (333, with 479, 683, 145 and 276). These 5 lines are the whole remaining class, and they run one mechanism. No scout linked them.
+- The old W6-5 (154 / 51 / 74) becomes the first reserve.
+- W6-3's risk goes up to High, with a 45-minute go/no-go.
+- W6-1 should be claimed before Astra's autonomous session picks it up.</p>
+<h2 id="what-wave-5-taught">What Wave 5 taught</h2>
+<p>Wave 5 killed 6 of its 8 picks (8 list lines).</p>
+<table>
+<thead>
+<tr>
+<th>outcome</th>
+<th>picks</th>
+<th>route</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>killed</td>
+<td>W5-1</td>
+<td>the same table as an upstream proof, via an equivalence</td>
+</tr>
+<tr>
+<td>killed</td>
+<td>W5-7 (HALT)</td>
+<td>the same table as an upstream hand proof (<code>SOBCv6.v</code> TM3), from another start</td>
+</tr>
+<tr>
+<td>killed</td>
+<td>W5-3, W5-4, W5-5 (HALT)</td>
+<td>W4-2's architecture: a conserved budget plus a round counter</td>
+</tr>
+<tr>
+<td>killed</td>
+<td>W5-8 (+ 418, 636)</td>
+<td>a new proof for a clean one-table family</td>
+</tr>
+<tr>
+<td>parked</td>
+<td>W5-2</td>
+<td>1 transition from a hand proof; the invariant needed the transition the run never used</td>
+</tr>
+<tr>
+<td>parked</td>
+<td>W5-6</td>
+<td>the same table as a <strong>decider</strong> certificate from another start; no transfer (W4-7 went the same way)</td>
+</tr>
+</tbody>
+</table>
+<p>So in this ranking:
+- hand proofs of the same table from another start count as strong;
+- decider certificates from another start count as lotteries;
+- "the differing transition never fires" is not enough.</p>
+<h2 id="universe-and-checks">Universe and checks</h2>
+<p><strong>Universe:</strong> 664 lines of the 740 list have no <code>machines/</code> directory and no Astra machine claim. The scouts excluded about 470 of them:
+- mined classes (Shift-overflow counter, Skelet 1-like Class 1, Cubic Mess, SO bouncer counter, Bell-like, Quadratic Mess): about 410;
+- dyuan01's list: 21;
+- siblings and trajectory twins of our parked machines: about 30;
+- Astra's class: 6;
+- BBi ties: 3;
+- #16's siblings 199/510 and 693's twins 528/310/548;
+- line 8 (open PR #13) and line 556 (<code>Eqv_WordPairs</code> TM83 ties it to our #19);
+- our 4 halting-hunt claims.</p>
+<p>About 194 remain, and roughly 90 of those are in tarpit classes.</p>
+<p><strong>Re-checked here for every pick and family member:</strong>
+- each string is byte-exact at its 740 line;
+- none has a <code>machines/</code> directory or a <code>coord/claims.tsv</code> line;
+- no table (any start, renaming and mirror) equals one of ours or Astra's;
+- no eqv-1590 group contains one of ours;
+- none is on dyuan01's list;
+- no two picks share an eqv group or a table (re-checked by the critic after the W6-5 swap).</p>
+<p><strong>Upstream, at <code>origin/BB6</code> = <code>cdaf693</code> (240,417 machine strings):</strong>
+- the only non-Eqv hits are the ones named in the table below: <code>SOBCv10.v</code> and <code>TCv1.v</code> for 10, <code>ChaoticBell1Halt.v</code> for 299/412/602, and (critic, W6-5) <code>RWLAccHaltv6.v</code> for 683's table from B, a HALT that does not transfer;
+- the open PRs are still #3 and #4 (framework only) and #13 (line 8).</p>
+<p><strong>Astra's coord files</strong> mention none of these machines. Astra's reuse inventory (<code>astra/autonomous-20261014/reuse/</code>) lists every holdout, but that is a survey, not a claim. The critic found one exception: Astra's reuse report (<code>stage1-final.md</code>, 13:21) names line 10 as an open start-to-invariant lead (see W6-1).</p>
+<h2 id="picks">Picks</h2>
+<table>
+<thead>
+<tr>
+<th>label</th>
+<th>machine</th>
+<th>740 line</th>
+<th>class</th>
+<th>why</th>
+<th>nearest template</th>
+<th>risk</th>
+<th>family (same proof idea)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>W6-1</strong></td>
+<td><code>1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF</code></td>
+<td>10</td>
+<td>Shift-overflow bouncer counter (mined; exception)</td>
+<td><strong>Same table as <code>SOBCv10.v</code>, a nonhalting hand proof</strong>, which starts in 10's D (mirrored). I simulated both starts to 1e8 and 1e9. They have the same right wall (<code>... 1 0^2 1 0 1 0^inf</code>, which is SOBCv10's <code>common_left_wall</code> mirrored) and the same 14-block digit core next to the head. Only the far-left fossil and the counts differ (see first steps). SOBCv10 ends in <code>sobc1_canonical_nonhalt</code>, an invariant over general parameters. Only its opening (24,396 steps to the first call, then two exception rounds) is specific to its start. <code>TCv1.v</code> also certifies the table from 10's B (a decider). Unclaimed; on mxdys's UBRRBA list (fair game).</td>
+<td><code>SOBCv10.v</code> (4,234 lines, 152 KB); W5-7's same-table route; W5-1's <code>flip_halts</code> + <code>perm_halts</code> transfer</td>
+<td>Medium. No exact merge with the proved start's orbit to 1e9 (I ran the merge test), so the opening must be re-derived, not replayed. The far-left fossil must fit <code>sobc1_round_invariant</code>. The compile is heavy. Mined class: if it works, post it quickly. <strong>Critic:</strong> targeting.md §2.4 lists <code>SOBCv10.v</code> among the cost blow-up files. ccz181078 proved the D start on 08-30 and SOBCv11/v12 on 09-24, but never line 10. Either 10's fossil fails the invariant or 10 was never tried, and the Python gate settles which. Astra's reuse report (<code>astra/autonomous-20261014/reuse/stage1-final.md</code>, 13:21) lists 10 as an open start-to-invariant lead. That is not a claim, but Astra's session runs until 15:59. Write the claims line and tell Astra before any work starts.</td>
+<td>none on the list</td>
+</tr>
+<tr>
+<td><strong>W6-2</strong></td>
+<td><code>1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC---</code></td>
+<td>96</td>
+<td>Unknown</td>
+<td><strong>The only universe machine within 2 transitions of a kill</strong>: W5-5's table (KILLED_HALT) started in W5-5's D, mirrored, with A0 and E1 changed in 96's naming. It uses W5-5's 3-cell words (100/010/001). 4-5 record skeletons cover every record at 1e9 and 1e10. Hub rule <code>C1(a, b+3, c+1) -&gt; C1(a+3, b, c+2)</code>: a+b is a conserved budget and c counts rounds. Resets swap the fields: <code>C1(a, 2n, c+4n-1) -&gt; C1(c+4n+1, a+2n-1, 1)</code> and <code>B1(a+14, 1, c+2) -&gt; B1(c+2, a+15, 1)</code>. These rules explain 94% of C-hub transitions, and no halt branch was found. Unclaimed.</td>
+<td>W5-5's exact cycle model and checked runner (HALT); W5-3/W5-4 budget invariant (NONHALT)</td>
+<td>Medium-high. The resets split by residue mod 3 and parity; Wave 5 rejected 96 for these Collatz flags. Both changed transitions fire constantly (3.9e6 and 8.1e7 times per 1e9 steps), so W5-5's lemmas do not carry over as they are.</td>
+<td>none on the list (eqv group of 4, all off the list)</td>
+</tr>
+<tr>
+<td><strong>W6-3</strong></td>
+<td><code>1RB1LC_1LA1RF_0RD1RD_0RA0LE_1LA0LE_0RC---</code></td>
+<td>291</td>
+<td>Unknown</td>
+<td>Dynamics #1 and #3. 291's records are <code>0^inf 110^a 0011 110^b 1^8 011^c 110^2 1111011^2 010 A&gt;</code> with a +8, b −8, c +2 per visit. The same 6 skeletons hold at 1e8, 1e9 and 1e10. In 152, <code>B0(a, -4a+897, 4a+39) -&gt; B0(a+1, -4a+893, 4a+43)</code> keeps b+c = 936 while a counts rounds, and the transfer per visit grows from 6 to 16 between 1e9 and 1e10. A conserved budget plus a round counter is the architecture of W5-3/W5-4/W5-5. qsim takes 291 to 10^33.7 in 8 s with 200 non-Collatz rules. Alistaire's accelerator reached 10^73975 (291) and 10^160394 (152) steps, a sign of very regular dynamics; that is a simulation note, not a claim. Unclaimed.</td>
+<td>W5-3's budget and round-length invariant (W4-2 architecture)</td>
+<td><strong>High (critic; was Medium).</strong> The reset law (what happens when the budget runs out) is not fitted yet: rulefit covers 13% of 291's C hub and 50% of 152's B hub. The 8-second screen understates the Collatz signal. The halting hunt's deep qsim runs (<code>reports/halting-hunt/scout-deep.tsv</code>) label both "Collatz lottery, tetration-scale tape": in 180 s, 291 reached 10^2820 with 934 rules (285 Collatz-type) and 152 reached 10^1440 with 2,048 rules (888 Collatz-type). H-4 (362/433) had the same profile and parked as CRYPTID_CANDIDATE. Reaching 10^73975 steps also means the epochs grow geometrically, so the reset multiplies. Two <code>.v</code> files are needed, because upstream's Eqv lemmas rest on BBinf, which we never import.</td>
+<td>152 <code>1RB1LF_0LC0RE_1LA1RD_0LB1LB_1RC1RD_0LD---</code> (eqv-linked: 291's group holds 152's table from C, and 152's group holds 291's table from B and E; checked)</td>
+</tr>
+<tr>
+<td><strong>W6-4</strong> (bold, HALT)</td>
+<td><code>1RB0LE_1RC1RB_1LD0RE_1LA1LC_1RB0LF_0LC---</code></td>
+<td>412</td>
+<td>Chaotic Bell Class 1</td>
+<td><code>ChaoticBell1Halt.v</code> (ccz181078, upstream 10-11) proves TM13 and TM7 <strong>halting</strong> from A. It uses a certified run-length executor (<code>CBSim.check_spec</code>, 100,000 ticks) and a <code>halt_window</code> lemma that does not depend on the start. 412, 299 and 602 are TM13's exact table from its D, B and C. The eqv members of 338, 577 and 730 are TM7's exact table from B, D and C. Width curves pair up (299~338, 412~577, 602~730; 602 and 730 have identical tapes at 1e9). This is W5-7's pattern for 6 lines. It is a kill only if a start halts.</td>
+<td><code>ChaoticBell1Halt.v</code> (CBSim); our checked-runner HALT kills C2-552, W5-5, W5-7</td>
+<td>High. ccz181078 very likely ran his executor on the whole class and kept only TM7/TM13, so these starts probably do not halt within his budget. None reaches a record configuration of TM13's A-orbit within 1e9 steps. qsim cannot stand in: I ran it on TM13 and TM7 from A (blocks 1/3/6, 15 s each) and it reached only 1.6e6 steps. Nonhalting CB1 is a tarpit, so stop at the go/no-go. This races ccz181078; posting is Dennis's call.</td>
+<td>299 <code>1RB0LE_1RC1RA_1LD0RE_1LA1LD_1LD0RF_0RA---</code>, 602 <code>1RB1RD_1LC0RE_1LD1LC_1RA0LE_1LC0RF_0RD---</code> (same table); 338 <code>1RB0LC_1RC1RA_1LD0RE_1LA1LD_0RA1RF_0LC---</code>, 577 <code>1RB0LE_1RC1RB_1LD0RA_1LA1LC_0LC1LF_0RA---</code>, 730 <code>1RB1RD_1LC0RE_1LD1LC_1RA0LB_0RD0RF_0RD---</code> (TM7-like tables, each run on its own table)</td>
+</tr>
+<tr>
+<td><strong>W6-5</strong> (critic)</td>
+<td><code>1RB0LB_0LC0RE_1LA1LD_0LB1LD_1RA0RF_1RA---</code></td>
+<td>333</td>
+<td>Chaotic Bell Class 4</td>
+<td><strong>The whole remaining CB4 class (5 lines) runs one mechanism, and no scout linked the lines.</strong> 333, 479 and 683 have three different tables, yet they print the same dominant record skeleton, fossil counts included, only shifted in time. At about 5e8 steps, 479 sits one visit behind 333's record <code>(a, b, c) = (51, 524, 107)</code>, and 683 sits nine visits ahead of it (a +1, b −2, c +2 per visit). The families scout's twin test compares widths at equal steps, so it missed them. 145 is 479's table from B. 276 is the mirror image of 145, with the same fossil counts <code>(100001100101)^511 (100101)^605</code>, and it is eqv-linked to 333: 276's group holds 333's table from C, E and F (checked). Every member has a budget plus a round counter, the W5-3/4/5 architecture: <code>a−1 / b+1</code> conserved plus <code>c+2</code> per visit (145: <code>b+1 / c−1</code>, <code>a+2</code>), with exact trends. Rulefit's rules are linear 4-phase cycles, e.g. <code>C0(a, −a+183, 2a+3) -&gt; … -&gt; C0(a+1, −a+182, 2a+5)</code> on 276, with no division. For 333, 8 skeletons in one 8-cycle cover all 2,000 sampled records at 1e9, 3e9 and 1e10 (my runs). The budget sloshes back and forth: a goes 1347 → 77 between 1e9 and 3e9, then rises again by 1e10. Unclaimed. GitHub code search finds only yongyi781/fiery's holdout list.</td>
+<td>No template within 5 transitions; architecture of W5-3/W5-4 (budget and round-length invariant). 683's table halts from its B (<code>RWLAccHaltv6.v</code>), and so do 12 members of 683's eqv group, so this table has a reachable halting mechanism (it does not transfer).</td>
+<td>High. Tarpit class: no Chaotic Bell class has ever had a hand proof. The qsim screen finds only 12-19 rules, all Collatz-type, and stalls, but the dynamics scout's longer run finds 76-277 rules with none Collatz-type. Each budget swing leaves a new fossil layer with odd-looking counts; at 1e10: <code>(100101100001)^847 (100001)^6586 (100101)^5803</code>. If the layer law is erratic, as CB3's epoch ratios were, park. ADucharme ran 683 to sigma 10^97, so the class accelerates but grows explosively, like W6-3.</td>
+<td>479 <code>1RB0LB_0LC0RE_1LA1LD_0LB1RF_1RA1RD_---1LC</code>, 683 <code>1RB0LB_0LC0RE_1LA1LD_0LB1LF_1RA1RD_0LB---</code>, 145 <code>1RB1RE_1LC0RC_0RA0LD_1LB1LE_0RC1LF_---1RA</code>, 276 <code>1RB1LA_0LB1LC_1RD0LD_0LA0RE_1RC1RF_0LD---</code></td>
+</tr>
+<tr>
+<td><strong>W6-6</strong></td>
+<td><code>1RB0LD_0RC---_0RD0RF_1LE0LA_1LF1LE_1RA0RD</code></td>
+<td>221</td>
+<td>Unknown</td>
+<td>One table with 3 listed starts. In the top 40 of the claims and families scouts in both waves (Wave 5's alternate bold family). Near the head, 221 has two large fields, <code>10101001^1408 1100 D&gt; 1001 11100011^1377</code>, after a periodic wake such as <code>(10011010^2 10100110^2 10101001^2 10^4 01101010^2)^107</code>. Rule <code>D0(a, -4a+72) -&gt; D0(a+2, -4a+64)</code>: 4a+b is conserved, so this is a budget again. Unclaimed.</td>
+<td>None within 5 transitions</td>
+<td>High. 72 record skeletons at 1e9 (top 5 cover 0.075); rulefit explains 6-8%. This is the W4-4/6/8 pattern: a new proof in an Unknown class.</td>
+<td>416 <code>1RB0RE_1RC0LE_0RD---_0RE0RA_1LF0LB_1LA1LF</code>, 455 <code>1RB0RD_1RC1RB_1LD0LA_1LE0RA_0LF---_0LA0LC</code></td>
+</tr>
+<tr>
+<td><strong>W6-7</strong></td>
+<td><code>1RB1RF_0RC0LE_1RD0RF_1LB---_1LB1LE_1RA0LC</code></td>
+<td>198</td>
+<td>Unknown</td>
+<td>One table with 3 listed starts. Dynamics rank 14. Exact trends: a −3 and b +1 per visit, with the field 1011^a at the left edge. Rulefit validates <code>A0(3n+3, -n+19) -&gt; A1(3n+1, -n+19) -&gt; A0(3n, -n+20)</code> and two more phase rules. 18 skeletons at 1e9 (top 5 cover 0.41). Unclaimed.</td>
+<td>None within 5 transitions</td>
+<td>High. Behind the active field lies a long frozen history of 1011/1110/1101/0111 blocks with irregular counts (9, 31, 20, 30, 45, ...). If the machine re-reads it, the epoch values may be pseudo-random. qsim flags Collatz-type rules on 198 and 582.</td>
+<td>248 <code>1RB1RA_0LC0RA_1LF0LD_1LE0RC_1LB1LD_1RB---</code>, 582 <code>1RB0RE_1LC---_0RA0LD_1LC1LD_1RF0LA_1RC1RE</code></td>
+</tr>
+<tr>
+<td><strong>W6-8</strong></td>
+<td><code>1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF</code></td>
+<td>9</td>
+<td>Unknown</td>
+<td>The cleanest Unknown by records: 2 skeletons cover every record at 1e8 and at 1e9. The tape is a row of unary blocks <code>1^k</code> separated by <code>0</code>, <code>0^2</code> or <code>0^3</code>, growing roughly geometrically (<code>... 1^2735 0^2 1^5468 0^3 1^2942</code>). The sheet note by nerdyjoe reads "Code. Binary counting + bouncing" (2025-12-28). It was Wave 5's first reserve.</td>
+<td>Our #8 (sync bouncer counter, killed) is the nearest experience; no template within 5 transitions</td>
+<td>High. About 17 fields vary and rulefit explains 1%. <strong>Claim status:</strong> nerdyjoe's note is an analysis note. The sheet's precedent ("Incomplete analysis by nerdyjoe; solution ... by mxdys") says such a note does not reserve a machine. Wave 5 asked Dennis and got no answer; drop the pick if he says it is nerdyjoe's.</td>
+<td>none on the list</td>
+</tr>
+</tbody>
+</table>
+<p>If every pick worked, they would cover <strong>22 list lines</strong>: 10, 96, 291, 152, the 6 CB1 lines, the 5 CB4 lines, and 3 + 3 + 1 for W6-6 to W6-8.</p>
+<h2 id="first-step-per-pick-with-stop-rules">First step per pick, with stop rules</h2>
+<p><strong>W6-1 (line 10).</strong> No coqc until the Python mapping works.
+- The two runs at 1e9 differ only on the far left:
+  <code>from A:  0^inf 1^6 0 1^7 0 1^5 0 1^7 0 (1110)^35 [core] (1110)^6505 1 0 1 E&gt; (1 000)^m ... 1 0^2 1 0 1 0^inf
+  from D:  0^inf 1^2 0 1^9 0 1^5 0 1^7 0 1^7 0 (1110)^12 [core] (1110)^8879 1^2 B&gt; ...    ... 1 0^2 1 0 1 0^inf
+  core  =  1^5 0 1^11 0 1^7 0 1^7 0 1^5 0 1^9 0 1^5 0 1^9 0 1^5 0 1^9 0 1^7 0 1^5 0 1^9 0 1^5</code>
+  At 1e8 the cores are also identical, and both far-left <code>(1110)^k</code> runs shrink by 2 between 1e8 and 1e9.
+- Step 1: find 10's first configuration of the form <code>post_ca_state (round_post_unary i j) (round_primary_width i j) cs</code>, and test <code>sobc1_round_invariant</code> on it in Python.
+- Step 2: time one compile of the unmodified <code>SOBCv10.v</code> in our single coqc lane.
+- Then write the new opening for SOBCv10's tm, starting from the state that plays 10's A, and move it to 10's string with <code>flip_halts</code> + <code>perm_halts</code> (the W5-1 recipe).
+- Stop rule: if the invariant pins the high digits and 10's fossil cannot satisfy it, write up the gap and park.</p>
+<p><strong>W6-2 (96).</strong>
+- Port W5-5's exact cycle model, fit every reset branch, and check that the table is closed.
+- Run the model far, as W5-5 did (611,578 cycles). A halt gives a checked-runner HALT kill.
+- If every residue branch continues, a closed residue table proves nonhalting without predicting the residues.
+- Stop rule (cryptid protocol): if the branches depend on residues that look pseudo-random <strong>and</strong> a halting branch exists, formalize the rules, flag and stop.</p>
+<p><strong>W6-3 (291 + 152).</strong>
+- Fit the reset law on 152 first (its B-hub rule is already exact), then carry it to 291.
+- State the budget/round invariant and check it in a W4-2-style <code>check_proof.py</code> before any Rocq.
+- Same cryptid stop rule as W6-2.
+- <strong>Go/no-go at 45 minutes (critic):</strong> if 152's reset law divides a field and branches on its residue (a ×m/k map), apply the cryptid protocol at once: formalize the rules, flag, stop. H-4 (362/433) went exactly this way.</p>
+<p><strong>W6-4 (CB1 cluster).</strong> No nonhalting attempt.
+- Build an untrusted fast port of CBSim (extract it, or rewrite it from <code>ChaoticBell1Halt.v</code>).
+- Check the port first: it must reproduce TM13's and TM7's halts from A.
+- Then run all 6 starts with at least 100× ccz181078's 100,000-tick budget.
+- Hard stop after 1 h.
+- If a start halts, its <code>.v</code> is the CBSim module with that table, re-derived shift rules (<code>shift_rule; steps</code>) and the renamed <code>halt_window</code>.</p>
+<p><strong>W6-5 (CB4 cluster; critic).</strong> Python only, with 333 as the lead. Three tables share its records.
+- Run 333's C-engine trace to 1e11 and log every budget swing (a or b reaching its floor) with the new fossil layer it leaves.
+- Fit the epoch law: (a, b, c) at each swing, plus the new layer's counts.
+- Check that 479 and 683 hit the same swings, shifted in time, and 276/145 the mirrored ones.
+- If the law closes without division, state the budget/round invariant and check it in a <code>check_proof.py</code>, then pick the proof lead (the table with the fewest distinct transitions in use).
+- Stop rules:
+  - the layer counts follow no law (CB3-style erratic ratios): park;
+  - the epoch law is ×m/k with a residue split: cryptid protocol.
+- 683's table halts from B, so the halting configuration is known. Check whether the epoch law can ever reach it. That decides between a HALT route and a NONHALT route.</p>
+<p><strong>W6-6 to W6-8.</strong>
+- Python observation and rule fitting only (the W5-4 approach): fit the epoch law at the dominant record skeleton.
+- Stop rules:
+  - a parity-dependent ×3/2-type epoch law with a halting residue: cryptid protocol;
+  - for 198: if the frozen history is re-read and its block counts follow no law, park.
+- For 9: decode which separator plays which bit before fitting anything.</p>
+<h2 id="launch-order-and-resources">Launch order and resources</h2>
+<ol>
+<li><strong>W6-1, W6-2, W6-3.</strong> Python first, in parallel. W6-1 takes our coqc lane for the SOBCv10 timing compile.</li>
+<li><strong>W6-4.</strong> The CBSim port go/no-go, capped at 1 h. coqc only after a confirmed halt.</li>
+<li><strong>W6-5 to W6-8.</strong> Python only, until a rule table closes. W6-5 goes first of these: it covers 5 lines, and it is the only one of the four with exact budget rules.</li>
+</ol>
+<p><strong>coqc:</strong> Astra asked us (10-14, 13:03) to keep at most one concurrent coqc lane while its 593 local-rule lane runs, so we have one. W6-1's 152 KB compile is the heaviest job. Each stage keeps at most 2 heavy processes, with <code>nice -n 10</code> and <code>ulimit -v 6000000</code> (8000000 for coqc).</p>
+<h2 id="notable-rejections">Notable rejections</h2>
+<table>
+<thead>
+<tr>
+<th>machine (740 line)</th>
+<th>signal</th>
+<th>reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>257 / 535 / 669, 5, 646, 401, 318 / 483 (also 3, 109, 452, the CB3 FAR cluster)</td>
+<td>Same-table <strong>decider</strong> certificates from other starts (CTLv2, RWL_mod_v5, FARv1/NG_v1, CTLv1)</td>
+<td><strong>Astra is already running this lane</strong>: <code>astra/autonomous-20261014/reuse/certificate-jobs.json</code>, 41 jobs. So far it reports 646 NG false, 318/483 RWL_mod false and 669 timeout. Our scout also found 318's first CTLv1 call false, and 257/5 out of memory at 8 GB with <code>vm_compute</code>. Decider transfers failed twice (W4-7, W5-6). Leave the lane to Astra. <strong>Critic correction:</strong> Astra's lane is finished, not running. <code>stage1-final.md</code> (13:21) reports no kill. Only 7 lines got attempts (5, 257, 318, 483, 535, 646, 669). Astra's screen dropped 401, and 3, 109 and 452 were never in its job list. Astra advises against repeating exact-table sibling searches. The rejection stands: decider transfers are now 0 for 3 (W4-7, W5-6, Astra's sweep).</td>
+</tr>
+<tr>
+<td>147 / 493 (<strong>second reserve</strong>)</td>
+<td>Families score #2 (0.48); near-exact twins (width curves 0.07% apart, the same <code>(...)^34</code> history block mirrored)</td>
+<td>Records do not compress (200 skeletons at 1e8). Its edge is like Bouncer + Chaotic Edge, which is Astra's specialty, but the sheet class is Unknown, so it is free. This is the natural target to offer Astra, who asked for complementary work.</td>
+</tr>
+<tr>
+<td>23, 69, 178, 206, 245, 330, 376, 382, 403, 415, 668, 696</td>
+<td>Chaotic Bell Class 3: 12 lines that share an 11-transition core and differ in one transition firing about 20 times per 1e9 steps; records are clean (4-5 skeletons cover 100% at 1e9); budget rules such as <code>A0(a, -a+718) -&gt; A0(a-1, -a+719)</code></td>
+<td>Tarpit class (no mechanism or hand proof by anyone; Class 3's kills were all FAR certificates in 2025). The epoch ratios are erratic (0.27-1.3 for 69's table, 0.084-107 for 607). It would be the biggest payoff on the list, but only if its epochs turn out regular.</td>
+</tr>
+<tr>
+<td>170 / 278 / 374 / 434</td>
+<td>One table, 4 starts; families score 0.47; 278 is clean at 1e9</td>
+<td>They sit in the Chaotic Bell Class 1 1-transition component. 278's records stop repeating by 1e10 (×2 history blocks with irregular offsets), and the sheet credits others with a partial analysis of 278.</td>
+</tr>
+<tr>
+<td>705</td>
+<td><code>Sk1Machines.v</code> TM17 (hand proof) via an eqv member, from C</td>
+<td>Mined class (Skelet 1-like Class 1, mxdys's numbered list). 705's own table differs from TM17's in B0, which fires constantly. The eqv link is <code>Eqv_v3</code>, which rests on BBinf.</td>
+</tr>
+<tr>
+<td>414</td>
+<td><code>CSv2.v</code> TM2 halts from C</td>
+<td>Cubic Mess is mined, and Alistaire ran 414 to 1e20 steps without a halt.</td>
+</tr>
+<tr>
+<td>44, 260, 306, 361, 404, 413, 420, 494, 587, 673</td>
+<td>1 transition from <code>TCv3</code> TM2; F0 fires only during the startup</td>
+<td>Mined (Skelet 1-like Class 1). TCv3 TM2 fires F0 after its init point, so its invariant reads F0.</td>
+</tr>
+<tr>
+<td>223, 323, 495</td>
+<td>1 transition from SOC proofs; the transition fires only during the startup</td>
+<td>Mined (SOC). Same pattern as W5-2 (409), which parked as a cryptid candidate.</td>
+</tr>
+<tr>
+<td>458 / 635, 716, 211, 218 / 159</td>
+<td>Clean records (5 skeletons, 100%) and closed-looking rules</td>
+<td>Collatz-type epoch laws: a ×7/5 transfer with mod-5 resets and a halt branch <code>E(2, b+1)</code> (458/635); ×3/2 maps (716, 218/159); ×4/3 (211). Cryptid protocol. <strong>Critic:</strong> 458/635 go to the reserve as a HALT probe. Both rule tables are now closed (coverage 0.59 and 0.92), and 635's has an explicit halt branch <code>E(2, b+1) -&gt; halt</code>. The halting hunt rejected 635 only because its map was incomplete (<code>reports/halting-hunt/ranking.md</code>).</td>
+</tr>
+<tr>
+<td>595, 122 / 554, 234 / 618, 126, 139, 26, 720</td>
+<td>Structural counter + chaotic edge (a target class); all on mxdys's UBRRBA list; 4 of the 6 upstream proofs in the class were HALT</td>
+<td>Records do not compress (162-200 skeletons) and rulefit finds nothing. 720 and 26 are 1 transition, and 122/554 are 2, from our cryptid candidate 358. A halting-hunt reserve, not a proof pick.</td>
+</tr>
+<tr>
+<td>389 / 544 / 572, 141 / 551, 157 / 354, 56 / 592, 344 / 426 / 600 / 706, 53 / 307 / 398 / 663, 277 / 579, 59 / 475, 406 / 509</td>
+<td>One-table families on the list (claims and families top 60)</td>
+<td>No compressible records (200 skeletons), or chaotic tapes of 130-2,700 tokens. 56/592 are Fractal in Bouncer, with a Collatz-like m/k rescale on 592.</td>
+</tr>
+<tr>
+<td>110, 553, 319, 32, 262, 351, 616</td>
+<td>The same table <strong>halts</strong> from another start (RWLAcc certificates)</td>
+<td>683 moved to W6-5 (critic): it is a record twin of 333. Halting does not transfer from another start. RWLAcc has been swept, and Racheline calls 110 "possibly tetrational".</td>
+</tr>
+<tr>
+<td>530</td>
+<td>1 transition from <code>CounterClass2v1-v4</code></td>
+<td>The changed transition fires 1.7 million times per 1e8 steps. It belongs to the W4-5 family (469/599/530, STUCK).</td>
+</tr>
+<tr>
+<td>139, 340</td>
+<td>2 transitions from <code>LongAccv1</code> LongAcc62 / <code>SOC_3_3_v1</code> V3</td>
+<td>Every changed transition fires millions of times per 1e8 steps. 340 is Spaghetti (tarpit).</td>
+</tr>
+<tr>
+<td>21, 392</td>
+<td>SO structural counter (a target class)</td>
+<td>21: no compressible records. 392: trajectory twin of 332, which has the table of our parked 633.</td>
+</tr>
+<tr>
+<td>717, 161, 115, 97 / 508 / 675, 396, 360, 499, 581, 542</td>
+<td>Top raw dynamics scores (0.5-0.8)</td>
+<td>Bell-like and Quadratic Mess: the halting side is mined (<code>Bell60.v</code>, <code>QuadraticMess30.v</code>), and the nonhalting side is a tarpit (15 of the 18 sheet CRYPTIDs). 542 is Racheline's.</td>
+</tr>
+<tr>
+<td>154 / 51 / 74 (<strong>first reserve</strong>; was W6-5)</td>
+<td>One table, 3 starts; the cleanest tapes (10-12 tokens at 1e9)</td>
+<td>Demoted by the critic. Every qsim rule is Collatz-type: in the deep runs, 154 has 112 of 112, 51 has 180 of 214 and 74 has 125 of 125, and all stall or barely accelerate. Rulefit finds a halving rule <code>B3(2n) -&gt; B4(n)</code>, and records spread over 24 skeletons at 1e9 (top 5 cover 0.225). Its own cryptid stop rule would most likely fire within the hour. W6-5's CB4 cluster covers more lines and has cleaner records.</td>
+</tr>
+<tr>
+<td>225 / 624 (critic)</td>
+<td>Chaotic Ack-like Bell; a closed budget rule <code>C0(a, −a+3063) -&gt; C0(a+2, −a+3061)</code>; architecture "bell / BEC-like"; same word sets as W4-2, W5-1, W5-3 and W5-4</td>
+<td>I checked at 3e8: only the head is BEC-like (<code>&lt;C 1^5 (01)^a 1^b</code>, a +2 and b −2 per visit). Behind the bell lies a ~400-token nested, Ackermann-like history (<code>(1^6 (01)^2 (1101)^2 … (1^10 (011101)^2)^2)</code> repeated), which the bell will re-read. Tarpit class; the BEC template does not reach the tail.</td>
+</tr>
+<tr>
+<td>461 / 142 / 446 (critic)</td>
+<td>Monotone list; dynamics #19, #20 and #32; 3-cell words; 461's rule table is closed</td>
+<td>Taken class (targeting.md §2.2, <code>Loop4Mono_v2..v6</code>), and Loop4 is on §2.4's cost blow-up list (26 KB per machine). The tapes carry 150-165 literal frozen blocks. The ranking did not mention these three before.</td>
+</tr>
+<tr>
+<td>518 / 308 / 428, 1 (critic)</td>
+<td>Chaotic Bell Class 2; 518 is dynamics #16, with 2 skeletons covering 100% at 1e9; line 1 is #15</td>
+<td>428 has a ×5/2 rule, <code>C0(2n) -&gt; C1(2n+1, n) -&gt; C0(5n+5)</code>, and is on the Level 1 tab. 308's epoch ratios are erratic (0.35-12.4). Line 1: the deep qsim run reached 10^14832 steps with 875 of 875 rules Collatz-type ("Collatz lottery, tetration-scale tape"). Upstream CB2 proofs cost 23-280 KB per machine.</td>
+</tr>
+<tr>
+<td>350 / 16 / 517, 681 / 309 / 539, 607, 39 / 526 (critic)</td>
+<td>More Chaotic Bell Class 3 groups (dynamics #17, #23, #24 and #42). 350's group shares word sets with W4-3 and W5-8c. 681's rule table is closed.</td>
+<td>The same tarpit verdict as the 12-line CB3 row. Epoch ratios are erratic: 16 (0.11-22.5), 517 (0.053-5.73), 607 (0.084-107), 39 (0.029-21.8). 526 has a halt boundary.</td>
+</tr>
+<tr>
+<td>543 (critic)</td>
+<td>Budget plus counter (<code>a−2 / b+2</code> conserved, <code>c+1</code>); qsim finds 265 rules, none Collatz-type; dynamics #18</td>
+<td>107 skeletons at 1e9 (top 5 cover 0.37), and the skeleton degrades by 1e9. Alistaire ran it to 10^15.6 steps. Wave 5's critic rejected it for the same reason. Fourth reserve.</td>
+</tr>
+<tr>
+<td>289, 623, 236, 264 / 471 / 506 (critic)</td>
+<td>Dynamics #8, #25, #35 and #28</td>
+<td>289: 26 skeletons, and the qsim screen found 480 Collatz-type rules. 623: 193 skeletons. 236: no rules at all (Alistaire ran it to 2.3e20). 264/471: Ack-like, with 9 varying fields; 506 is Skelet 1-like Class 1 (mined).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="reserves-critic">Reserves (critic)</h2>
+<ol>
+<li><strong>154 / 51 / 74</strong> (the old W6-5). Use the plan and stop rules the old pick had.</li>
+<li><strong>147 / 493.</strong> Still the natural target to offer Astra.</li>
+<li><strong>458 / 635: a HALT probe, about 1 h.</strong>
+   - Both rule tables are closed now. 635's has a halt branch, <code>E(2, b+1) -&gt; halt</code>.
+   - Steps: build a W5-5-style exact cycle model from the closed tables, check it against direct simulation to 1e10, then iterate it far.
+   - A halt goes to a checked-runner HALT kill (W5-5's route). No halt means a cryptid flag, since the ×7/5 map is Collatz-type.
+   - Pair it with W6-2: once W6-2 has a cycle-model driver, this probe costs little.</li>
+<li><strong>543.</strong> Budget plus counter with no Collatz-type rules, but its records degrade.</li>
+</ol>
+<h2 id="critic">Critic</h2>
+<p><strong>What I re-checked independently</strong> (scripts under <code>scratchpad/w6critic/</code>):
+- <strong>Exclusions, for all 8 picks, every family member and the new CB4 lines:</strong>
+  - no <code>machines/</code> directory and no <code>coord/claims.tsv</code> line;
+  - no Astra mention in <code>coord/</code> or <code>astra/</code>, apart from the reuse report's note on line 10;
+  - no table or eqv-1590 member equal to one of ours, Astra's or a Claude claim, at any start, up to renaming and mirror;
+  - none on dyuan01's list.
+- <strong>Exact siblings of kills, across the whole 664-line universe:</strong> no table and no eqv-1590 member equals one of our 18 killed tables (31 kills). This agrees with the families scout and with Astra's independent inventory.
+- <strong>Upstream:</strong> <code>git ls-remote</code> shows BB6 still at <code>cdaf693</code>.
+  - The only non-Eqv hits for picks are the intended ones: <code>SOBCv10.v</code> (D, mirrored) and <code>TCv1.v</code> (B) for 10; <code>ChaoticBell1Halt.v</code> for 299, 412 and 602 and for eqv members of 338, 577 and 730; <code>RWLAccHaltv6.v</code> for 683's table from B.
+  - The new Eqv files since <code>0940bb9</code> (<code>Eqv_WordPairs.v</code>, <code>Eqv_RegularPairs.v</code>) do not touch any pick.
+- <strong>Open PRs</strong> (<code>gh pr list</code>): still only #3, #4 and #13.
+- <strong>Outside claims:</strong>
+  - GitHub code search for the CB4 strings finds only yongyi781/fiery's holdout list.
+  - The sheet notes are simulation notes, not claims: Alistaire on 291, 152, 74 and 51; ADucharme ran 683 to sigma 10^97; nerdyjoe on 9.
+  - 602 sits on the sheet's discarded tab with mxdys's note "In a class of ~30 similar holdouts". So the maintainers know CB1 as a class, and W6-4's race is real.
+- <strong>The 291 / 152 eqv link:</strong> confirmed (291's group holds 152's table from C; 152's group holds 291's table from B and E).</p>
+<p><strong>Claimed or hot.</strong> No pick is claimed externally. Two internal flags:
+- <strong>W6-1 (line 10):</strong> Astra's autonomous session (until 15:59) ends its reuse report by naming 10 as an open start-to-invariant lead. Claim 10 first and tell Astra.
+- <strong>W6-4:</strong> the CB1 race (above). The halting hunt held this cluster for a priority call, so posting stays Dennis's call.</p>
+<p><strong>Under-used signals:</strong>
+1. <strong>Records equal up to a time shift.</strong> The families scout's twin test compares widths at equal steps, so it misses machines that print the same records at different speeds. Matching the 1e8 dominant skeletons across the dynamics table finds exactly one such group in the non-excluded universe besides 412 / 577: CB4's 333 / 479 / 683. It became W6-5.
+2. <strong>The halting hunt's deep qsim labels</strong> (<code>scout-deep.tsv</code>). The ranking quoted the 8-second screen for 291 ("200 non-Collatz rules"). The 180-second deep runs label both 291 and 152 "Collatz lottery, tetration-scale tape", which is H-4's profile. W6-3's risk is now High, with a go/no-go.
+3. <strong>Closed rule tables with a halt branch</strong> (rulefit <code>rf_closed</code> plus a halt rule). This is the HALT route that killed W5-5. 458 / 635 qualify, and their closed tables are new since the halting hunt rejected 635. Added as reserve 3.
+4. <strong>The "transfer" column</strong> (budget plus round counter). The ranking used it for 96, 291/152 and 221. It also flags all 5 CB4 lines, 543, 1, and several CB3 groups, which are now handled above.
+5. <strong>Astra's actual lane state.</strong> The decider-transfer lane is finished: 7 lines tried, no kill. It is not "running".</p>
+<p><strong>What changed:</strong> W6-5 is replaced (CB4 cluster in, 154/51/74 to reserve 1). W6-3's risk goes to High, with a go/no-go. W6-1 gets the cost and claim notes. The rejections gain 7 rows for machines the ranking had not mentioned. Reserves are listed. W6-1 to W6-4 and W6-6 to W6-8 are unchanged.</p>
+<h2 id="scratch">Scratch</h2>
+<p><code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/w6rank/</code>:
+- <code>merge.py</code>: per-line merge of the four scout TSVs;
+- <code>verify6.py</code>: list lines, directories, claims, canon against ours and Astra's, eqv groups, dyuan01/UBRRBA lists, and upstream strings at <code>origin/BB6</code>.</p>
+<p>Line 10's merge test used <code>scratchpad/critic5/merge/merge</code> (A against D, 3e7 and 1e9 steps: no merge). The tape comparison used <code>tools/sim.py</code> (C engine), from A and from D, at 1e8 and 1e9.</p>
+<p>Critic scratch: <code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/w6critic/</code> (<code>verify.py</code>: per-line exclusions and upstream variant hits; <code>kills_sib.py</code>: kill-sibling check over the universe; <code>eqvlink.py</code>: eqv links; <code>cb4_*.txt</code>: CB4 record tracks; <code>track_*.txt</code>: 225/624 at 3e8; <code>ranking.before-critic.md</code>: the ranking before this pass).</p>
+</main></body></html>

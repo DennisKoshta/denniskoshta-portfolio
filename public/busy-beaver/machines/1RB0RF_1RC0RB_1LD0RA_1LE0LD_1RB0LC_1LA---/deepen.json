@@ -1,0 +1,251 @@
+{
+ "tm": "1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---",
+ "pass": "funded stage induction_stage (2026-10-12)",
+ "confidence": "med",
+ "recommend": "park (decision.json): the remaining path is the chain lemma + the synchronization identity + boundaries, then proof.md and a multi-stage formalization with no template; alternative: one ~2 h sync stage with a hard stop",
+ "mechanism": "An exact defect-level model: 8 local rules on edges with equal cells (defects), driven by a head phase in Z/4; the 0^inf ends are 00-defect chains. Each trip turns at the rightmost bit-0 defect and returns with an alternating delta (z1 at delta 2 wiggles +2, o1 at delta 0 turns left). The left end and the left records come from the same rules; fossils are inert mod 4 by construction. On top sits a multi-level counter (observed, not derived): x3 blocks per epoch. Induction stage: away from the chain ends and one annihilation per epoch (X runs out), the machine is exactly a compressed TM on the defects (8 states, symbols mod 4); a 4-defect U block is a closed finite transducer (53 of 512 entries used) carrying one ternary digit, most significant on the left; the record macro additionally needs X/Y lengths in step with the counter (observed linear recurrences).",
+ "closed_gaps": [
+  "Phase rule at the defect level: 8 local rules (4 per direction) plus 1 halting rule, exact on any tape; 1,000/1,000 + 20,000/20,000 random tapes (2-35% defect density, 0^inf ends, 4,386 reaching a halt) agree event-by-event with direct simulation",
+  "Model = machine on the blank run: 88,860/88,860 events to 1e9 and 388,516/388,516 events to 2e10 (turn cells + step indices) identical to work/turns2.c",
+  "Trip-level phase rule (L)+(R)+(L'): 93,231/93,232 trip segments to 2e10 (the miss is the start-up chain entry at step 1,070)",
+  "Left end needs no extra rules: it is the 0-chain under the same 8 rules; every left record is (L') and moves lo by 3",
+  "Fossils inert mod 4 is derived from the rule form; model check 10/10 identical (0 mod 4), 0/10 (2 mod 4), 200,000 events each from step 6e8",
+  "Epoch laws extended by the model to 1e14 (no halt): F 224496, 673560, 2020752, 6062328 (3F+72 on all 7 transitions); X 20408, 61232, 183704, 551120, 1653368 (3X+8 on all 8)",
+  "Level-3 counter as a record macro on mod-4 label words: 6 classes, one U digit per epoch; 23/23 records 11..33 to 6.2e13 (17 beyond the 6 defining ones)",
+  "Random instances: 120/120 (seed 20261012) + 320/320 (seed 7) perturbed record-to-record runs (+4j on random long fossil gaps) give the predicted next word; negative control +4j+2: 0/18",
+  "Trip counts per record interval: N(n+6)=9N(n)+c_r, 11/11 confirmations, 0 mismatches to 1.2e14; powers of 3 in classes r1/r4",
+  "Siblings: 512 (start B) 23/23 records = W(n); 588 (start F, mirrored) 23/23 records = W(n-1), model to 1.2e14",
+  "Candidate invariant (I2a)+(I2b) on every event to 1e13 (24,832,839 events), with a mod-4 reason for (I2a)",
+  "Compressed defect TM: with gaps forgotten the 8 rules are a TM on the defects (8 head states, symbols = position mod 4), exact unless a defect moves onto/next to another; 19,709/19,709 (gaps>=2, seed 20261012) + 19,990/19,990 (gaps>=4, seed 7) random blocks agree with dmodel (collisions flagged and excluded)",
+  "Collision census to 1e13 (24,832,839 events): the only interior collisions are 8 rightward d=0 annihilations, one per epoch where X runs out; no interior leftward-turn or wiggle collision (no halt pattern); other collisions only at the chain ends (32 left records, right chain)",
+  "U-digit transducer: exhaustive 512-entry table (4^4 residues x 2 entry sides), no loops, <= 13 events per traversal; blank run records 15-24: 387,538/387,538 U-block episodes match it, using 53 of 512 entries (the transducer closes)",
+  "Each U block cycles through 3 states x 2 phase frames (A 0z0 1z1 1z0 0o0 -> B 0z0 0o0 2z1 0o1 -> C 0z0 3z0 3z0 0o0, then bit-flipped); only its 2nd defect moves (+1, 0, -1, back by a +2 wiggle): one ternary digit per U, most significant on the left (754, 2,266, 6,802 changes per interval, c' = 3c+4)",
+  "Synchronization observed: X runs out at trip t of N in the interval after records of class r2/r5, t' = 3t+15 / 3t+25 and N' = 3N+12 / 3N+22, 6/6 transitions to 1e13"
+ ],
+ "remaining_gaps": [
+  "The macro is not uniform in u: inserting one extra U (valid word P U^(u+1) T_r) into records 11/17 breaks it 3/3, so the induction must run on the epoch index with exact X/Y lengths in step with the counter",
+  "Chain lemma: the ternary counter on U^k for every k from the 53-entry sub-table (two-way composition: carries go left, return passes wiggle and can turn the head back)",
+  "Synchronization identity: derive t, N in closed form from the transducer + right boundary (T classes, wall, Y, right chain) and show X is used up exactly at trip t, every epoch",
+  "(I2a)/(I2b) for all u (observed: no interior collision except the epoch annihilation) need the chain lemma; boundaries P + left chain and T + right chain not written as lemmas",
+  "No template; proof.md not started; formalization multi-stage"
+ ],
+ "evidence": [
+  "scripts/rules_stage/check_model_random.py -> results/random_1000_seed20261011.txt, results/random_20000_seed7.txt",
+  "scripts/rules_stage/run_model.py vs work/turns2.c -> results/model_vs_c_1e9.txt, results/model_vs_c_2e10.txt",
+  "scripts/rules_stage/check_trip_rule.py 2e10 -> results/trip_rule_2e10.txt",
+  "scripts/rules_stage/check_mod4.py 6e8 200000 10 11 -> results/mod4_6e8.txt",
+  "scripts/rules_stage/epochs.py 1e14 400 -> results/epochs_1e14.txt",
+  "scripts/induction_stage/check_blocktm.py -> results/blocktm_random.txt",
+  "scripts/induction_stage/collisions.py 1e13 -> results/collisions_1e13.txt",
+  "scripts/induction_stage/blocktm.py + uepisodes.py 15 24 -> results/blocktm_table_summary.txt, results/uepisodes_15_24.txt",
+  "scripts/induction_stage/useq.py 15 21, ublocks.py 15 22 -> results/useq_15_21.txt, results/ublocks_15_22.txt",
+  "scripts/induction_stage/diag_insert.py -> results/insert_u_diag.txt",
+  "scripts/induction_stage/xsync.py 1e13 -> results/xsync_1e13.txt"
+ ],
+ "scripts": [
+  "scripts/rules_stage/dmodel.py",
+  "scripts/rules_stage/check_model_random.py",
+  "scripts/rules_stage/run_model.py",
+  "scripts/rules_stage/bits.py",
+  "scripts/rules_stage/check_trip_rule.py",
+  "scripts/rules_stage/check_mod4.py",
+  "scripts/rules_stage/epochs.py",
+  "scripts/macro_stage/record_words.py",
+  "scripts/macro_stage/check_record_random.py",
+  "scripts/macro_stage/depths.py",
+  "scripts/macro_stage/depthseq.py",
+  "scripts/macro_stage/check_trip_counts.py",
+  "scripts/macro_stage/check_invariant.py",
+  "scripts/macro_stage/wiggle_margin.py",
+  "scripts/macro_stage/siblings.py",
+  "scripts/macro_stage/dump_records.py",
+  "scripts/macro_stage/dump_abs.py",
+  "scripts/macro_stage/lwords.py",
+  "scripts/induction_stage/blocktm.py",
+  "scripts/induction_stage/check_blocktm.py",
+  "scripts/induction_stage/collisions.py",
+  "scripts/induction_stage/uepisodes.py",
+  "scripts/induction_stage/useq.py",
+  "scripts/induction_stage/ublocks.py",
+  "scripts/induction_stage/check_insert_u.py",
+  "scripts/induction_stage/diag_insert.py",
+  "scripts/induction_stage/xsync.py",
+  "scripts/induction_stage/trace.py",
+  "scripts/induction_stage/ltrace.py",
+  "scripts/induction_stage/ftrace.py"
+ ],
+ "updated": "2026-10-12",
+ "rounds": [
+  {
+   "date": "2026-10-11",
+   "option": "rules_stage",
+   "pass": "funded stage: exact defect-level model (phase rule, left end, mod-4 meta-rule) with the kill criterion 'reproduce every trip to 1e9'",
+   "confidence": "med",
+   "kill_criterion": "PASSED: every event identical to the C simulator to 2e10 (criterion: 1e9)",
+   "model": {
+    "defect": "edge e between cells e, e+1 with equal cells; both 0^inf ends are chains of 00 defects",
+    "phase": "phi in Z/4; leftward D1@phi D0@phi-1 E1@phi-2 C0@phi-3; rightward B0@phi C1@phi+1 A0@phi+2 B1@phi+3",
+    "rules": "d=(e-phi) mod 4. Leftward: d0 pass phi+1; d3 pass phi-1; d1/d2 turn at cell e, D^={e-1,e}. Rightward: d0 turn at cell e+1, D^={e,e+1}; d1 wiggle D^={e,e+2} (net defect +2, phi+1, +2 steps); d2 pass phi-1; d3 pass phi+1. Turns keep phi.",
+    "halt": "only rightward d=1 with e+1 in D (C> 111)",
+    "trip_rule": "(L) turn at the rightmost bit-0 defect (bit 1 = d in {0,3} in the right-to-left scan); (R) return with delta 0/2 alternating per defect: z1 at delta 2 wiggles, o1 at delta 0 turns left; (L') no bit 0: enter the left chain, pass lo-1 (d=0), turn at lo-2, lo -= 3 (left record)",
+    "mod4": "decisions use only positions mod 4 and defect order, so fossils are inert mod 4 (derived)"
+   },
+   "closed_gaps": [
+    "Phase rule at the defect level: 8 local rules (4 per direction) plus 1 halting rule, exact on any tape; 1,000/1,000 + 20,000/20,000 random tapes (2-35% defect density, 0^inf ends, 4,386 reaching a halt) agree event-by-event with direct simulation",
+    "Model = machine on the blank run: 88,860/88,860 events to 1e9 and 388,516/388,516 events to 2e10 (turn cells + step indices) identical to work/turns2.c",
+    "Trip-level phase rule (L)+(R)+(L'): 93,231/93,232 trip segments to 2e10 (the miss is the start-up chain entry at step 1,070)",
+    "Left end needs no extra rules: it is the 0-chain under the same 8 rules; every left record is (L') and moves lo by 3",
+    "Fossils inert mod 4 is derived from the rule form; model check 10/10 identical (0 mod 4), 0/10 (2 mod 4), 200,000 events each from step 6e8",
+    "Epoch laws extended by the model to 1e14 (no halt): F 224496, 673560, 2020752, 6062328 (3F+72 on all 7 transitions); X 20408, 61232, 183704, 551120, 1653368 (3X+8 on all 8)"
+   ],
+   "remaining_gaps": [
+    "Level-3 macro not derived: the bits form a multi-level counter (2-3 position cycles of fossil-boundary defects, left digit counter with adjacent z0/z1 pairs every 6 cells, epoch map 3F+72 / 3X+8)",
+    "Multi-turn trips: the continuation after a mid-tape left turn (41,384 of 93,232 segments) follows the 8 rules but has no closed trip formula yet",
+    "Non-halting argument: halting = a wiggle at a defect with an adjacent right neighbour; the left digits are adjacent pairs, so an invariant must keep their left member out of wiggles; none proposed yet",
+    "Siblings 512/588: model applies with a new start state; not run"
+   ],
+   "evidence": [
+    "scripts/rules_stage/check_model_random.py -> results/random_1000_seed20261011.txt, results/random_20000_seed7.txt",
+    "scripts/rules_stage/run_model.py vs work/turns2.c -> results/model_vs_c_1e9.txt, results/model_vs_c_2e10.txt",
+    "scripts/rules_stage/check_trip_rule.py 2e10 -> results/trip_rule_2e10.txt",
+    "scripts/rules_stage/check_mod4.py 6e8 200000 10 11 -> results/mod4_6e8.txt",
+    "scripts/rules_stage/epochs.py 1e14 400 -> results/epochs_1e14.txt"
+   ],
+   "scripts": [
+    "scripts/rules_stage/dmodel.py",
+    "scripts/rules_stage/check_model_random.py",
+    "scripts/rules_stage/run_model.py",
+    "scripts/rules_stage/bits.py",
+    "scripts/rules_stage/check_trip_rule.py",
+    "scripts/rules_stage/check_mod4.py",
+    "scripts/rules_stage/epochs.py"
+   ],
+   "recommend": "macro_stage: one ~2 h stage to derive the level-3 counter as an exact macro on labels (epoch map + candidate no-adjacent-wiggle invariant), with a kill criterion; else park (decision.json)"
+  },
+  {
+   "date": "2026-10-12",
+   "option": "macro_stage",
+   "pass": "funded stage: record macro on mod-4 label words + candidate non-halting invariant, kill criterion 'reproduce every left record and epoch-boundary configuration to 1e13, with a candidate invariant'",
+   "confidence": "med",
+   "kill_criterion": "PASSED as stated: all 23 records 11..33 (to 6.2e13) fit the 6-class macro; invariant (I2a)+(I2b) holds on every pair crossing to 1e13. Not proved for all u.",
+   "macro": {
+    "word": "at the first right-edge turn after left record n: per defect (gap to left neighbour mod 4, z/o, bit XOR n mod 2), plus R=(hi-last) mod 4",
+    "form": "W(n) = P . U^u(n) . T_r . R_r, r=(n-11) mod 6, u(n)=2*floor((n-11)/6)+du_r",
+    "P": "3z0 1z1 1z0 1z1 1z0 1z1 1z0 1z1 1z0 0o0 2z1 1z0 1z1 1z0 0o0",
+    "U": "0z0 1z1 1z0 0o0",
+    "classes": {
+     "r0": [
+      "0z0 0o0 3o1",
+      3,
+      0
+     ],
+     "r1": [
+      "",
+      3,
+      1
+     ],
+     "r2": [
+      "0z0 0o0 2z1 0o1 3o0",
+      1,
+      0
+     ],
+     "r3": [
+      "0z0 1z1",
+      0,
+      1
+     ],
+     "r4": [
+      "0z0 0o0 2z1 0o1",
+      3,
+      1
+     ],
+     "r5": [
+      "0z0 1z1 1z0 1z1 0o1",
+      1,
+      1
+     ]
+    },
+    "trip_counts": "N(n+6)=9N(n)+c_r, c=(58,8,10,78,0,38); r4: 3^(u+6); r1: 3^(u+5)-1 (ternary counter, one U per digit)"
+   },
+   "invariant": {
+    "I2a": "rightward head at a left-region adjacent pair always has d=3 (pairs 6 apart keep d mod 4): 10,972/10,972 to 1e13",
+    "I2b": "rightward head at a transient fossil-boundary pair always has d=0 and annihilates it: 8/8 to 1e13",
+    "halt": "needs rightward d=1 at a pair; never seen to 1.2e14"
+   },
+   "closed_gaps": [
+    "Level-3 counter as a record macro on mod-4 label words: 6 classes, one U digit per epoch; 23/23 records 11..33 to 6.2e13 (17 beyond the 6 defining ones)",
+    "Random instances: 120/120 (seed 20261012) + 320/320 (seed 7) perturbed record-to-record runs (+4j on random long fossil gaps) give the predicted next word; negative control +4j+2: 0/18",
+    "Trip counts per record interval: N(n+6)=9N(n)+c_r, 11/11 confirmations, 0 mismatches to 1.2e14; powers of 3 in classes r1/r4",
+    "Siblings: 512 (start B) 23/23 records = W(n); 588 (start F, mirrored) 23/23 records = W(n-1), model to 1.2e14",
+    "Candidate invariant (I2a)+(I2b) on every event to 1e13 (24,832,839 events), with a mod-4 reason for (I2a)"
+   ],
+   "remaining_gaps": [
+    "Induction over u: prove P U^u T_r -> P U^u' T_r+1 for all u (finite U-digit transducer + ternary counter induction); checked only for u<=7",
+    "Active blocks X/Y are not inert: their lengths must be carried by the lemma (3X+8, 3F+72 from the trip counts)",
+    "(I2a) entry phase into the left digit run and (I2b) d=0 at boundary pairs are observed, not derived",
+    "No template; formalization multi-stage"
+   ],
+   "evidence": [
+    "scripts/macro_stage/record_words.py 1.2e14 -> results/record_words_1.2e14.txt",
+    "scripts/macro_stage/check_record_random.py -> results/record_random_11_26_x20_seed7.txt, results/record_random_negctl_off2.txt",
+    "scripts/macro_stage/depths.py 1.2e14 + check_trip_counts.py -> results/trip_counts_1.2e14.txt, results/trip_counts_check.txt",
+    "scripts/macro_stage/check_invariant.py 1e13 -> results/invariant_1e13.txt",
+    "scripts/macro_stage/siblings.py -> results/sibling_512_startB_1.2e14.txt, results/sibling_588_startF_1.2e14.txt"
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "option": "induction_stage",
+   "pass": "funded stage: finite U-digit transducer + induction over u of the record macro, stop rule 'park if the transducer does not close or the induction needs unbounded state'",
+   "confidence": "med",
+   "kill_criterion": "Transducer CLOSES (512-entry table, 53 entries used, 387,538/387,538 episodes). Induction NOT done: the macro is not uniform in u (U insertion breaks it 3/3); it needs exact X/Y lengths in step with the counter (observed recurrences t'=3t+15/25, N'=3N+12/22, 6/6), not derived.",
+   "transducer": {
+    "tm": "compressed defect TM: head state (dir, phi in Z/4), symbol = defect position mod 4; rules = dmodel's 8 rules; exact unless COLLIDE",
+    "table": "4-defect block, 512 entries (residues relative to the entry phase x entry side), no loops, <= 13 events; 386 exit right, 126 exit left",
+    "used": "53 of 512 entries in the blank run (records 15-24)",
+    "digit": "U cycles A 0z0 1z1 1z0 0o0 -> B 0z0 0o0 2z1 0o1 -> C 0z0 3z0 3z0 0o0 (x2 phase frames); 2nd defect offsets +1, 0, -1; block j changes c_j per interval, c_{j+1} = 3c_j + 4 (754, 2266, 6802)"
+   },
+   "sync": {
+    "x_runs_out": "trip t of N after records of class r2/r5: 25/265, 90/807, 295/2443, 900/7341, 2725/22045, 8190/66147, 24595/198463",
+    "recurrences": "t' = 3t+15 (into r2) / 3t+25 (into r5); N' = 3N+12 / 3N+22; 6/6"
+   },
+   "closed_gaps": [
+    "Compressed defect TM: with gaps forgotten the 8 rules are a TM on the defects (8 head states, symbols = position mod 4), exact unless a defect moves onto/next to another; 19,709/19,709 (gaps>=2, seed 20261012) + 19,990/19,990 (gaps>=4, seed 7) random blocks agree with dmodel (collisions flagged and excluded)",
+    "Collision census to 1e13 (24,832,839 events): the only interior collisions are 8 rightward d=0 annihilations, one per epoch where X runs out; no interior leftward-turn or wiggle collision (no halt pattern); other collisions only at the chain ends (32 left records, right chain)",
+    "U-digit transducer: exhaustive 512-entry table (4^4 residues x 2 entry sides), no loops, <= 13 events per traversal; blank run records 15-24: 387,538/387,538 U-block episodes match it, using 53 of 512 entries (the transducer closes)",
+    "Each U block cycles through 3 states x 2 phase frames (A 0z0 1z1 1z0 0o0 -> B 0z0 0o0 2z1 0o1 -> C 0z0 3z0 3z0 0o0, then bit-flipped); only its 2nd defect moves (+1, 0, -1, back by a +2 wiggle): one ternary digit per U, most significant on the left (754, 2,266, 6,802 changes per interval, c' = 3c+4)",
+    "Synchronization observed: X runs out at trip t of N in the interval after records of class r2/r5, t' = 3t+15 / 3t+25 and N' = 3N+12 / 3N+22, 6/6 transitions to 1e13"
+   ],
+   "remaining_gaps": [
+    "The macro is not uniform in u: inserting one extra U (valid word P U^(u+1) T_r) into records 11/17 breaks it 3/3, so the induction must run on the epoch index with exact X/Y lengths in step with the counter",
+    "Chain lemma: the ternary counter on U^k for every k from the 53-entry sub-table (two-way composition: carries go left, return passes wiggle and can turn the head back)",
+    "Synchronization identity: derive t, N in closed form from the transducer + right boundary (T classes, wall, Y, right chain) and show X is used up exactly at trip t, every epoch",
+    "(I2a)/(I2b) for all u (observed: no interior collision except the epoch annihilation) need the chain lemma; boundaries P + left chain and T + right chain not written as lemmas",
+    "No template; proof.md not started; formalization multi-stage"
+   ],
+   "evidence": [
+    "scripts/induction_stage/check_blocktm.py -> results/blocktm_random.txt",
+    "scripts/induction_stage/collisions.py 1e13 -> results/collisions_1e13.txt",
+    "scripts/induction_stage/blocktm.py + uepisodes.py 15 24 -> results/blocktm_table_summary.txt, results/uepisodes_15_24.txt",
+    "scripts/induction_stage/useq.py 15 21, ublocks.py 15 22 -> results/useq_15_21.txt, results/ublocks_15_22.txt",
+    "scripts/induction_stage/diag_insert.py -> results/insert_u_diag.txt",
+    "scripts/induction_stage/xsync.py 1e13 -> results/xsync_1e13.txt"
+   ],
+   "scripts": [
+    "scripts/induction_stage/blocktm.py",
+    "scripts/induction_stage/check_blocktm.py",
+    "scripts/induction_stage/collisions.py",
+    "scripts/induction_stage/uepisodes.py",
+    "scripts/induction_stage/useq.py",
+    "scripts/induction_stage/ublocks.py",
+    "scripts/induction_stage/check_insert_u.py",
+    "scripts/induction_stage/diag_insert.py",
+    "scripts/induction_stage/xsync.py",
+    "scripts/induction_stage/trace.py",
+    "scripts/induction_stage/ltrace.py",
+    "scripts/induction_stage/ftrace.py"
+   ],
+   "recommend": "park (decision.json): the remaining path is the chain lemma + the synchronization identity + boundaries, then proof.md and a multi-stage formalization with no template; alternative: one ~2 h sync stage with a hard stop"
+  }
+ ]
+}

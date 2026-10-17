@@ -1,0 +1,39 @@
+{
+ "tm": "1RB1LE_0RC1RC_0RD0RB_1RE0RF_1LA0LE_---1RB",
+ "stage": "deepen2",
+ "date": "2026-10-10",
+ "confidence": "med",
+ "recommend": "stuck",
+ "mechanism": "Same call stack as round 1: frames X/Y(a,b,c) eat the run-length word to their right (3 zeros or 1 one per half-round), gap leftover mod 3 picks eat (Gap1) or call, b=0 returns 0^(a+1) 1100 1^(2c+-1). Round 2 shows the call is decided by the room g after the called block, not only by its parity: g>=6 gives the standard callee X(3,k,1)/X(3,k-1,4); g=4 then 1100 gives X(3,k,2) (birth swallows 0^4 1100); g=2 then 1100 HALTS; a call on '11' (leftover 2 at a 1100 column) transits into the next block and leaves a phase-shifted callee '0 010 X(0|2,k,1)'; when such a callee returns, separator+010+4 zeros turn into a fixed 1^6 block in front of the caller (ResumeTY), creating column shapes (1^6 0^u 1100, 1^n 0^2 1^m) outside the round-1 column grammar. Halting patterns sit next to reachable ones at small parameters (640 of 1584 small 'E> 0^2 1^n 0^2 1^m 0^g 1100' configs halt, in every residue class) but none at medium sizes (0/144).",
+ "closed_gaps": [
+  "Gap leftover 1: Gap1Y  L Y(a,b+1,c) E> 0 1100 R --> L X(a+2,b,c+3) E> R  (62/62); Gap1X  L X(a,b,c) E> 0 1100 R --> L Y(a,b,c+2) E> R  (62/62)",
+  "Gap leftover 0: E> 1100 1^m is the existing YX1 then XY1 (eat the 11), leaving E> 0^2 1^m, the call case",
+  "Call, odd ones block: CallYodd  L Y(a,b+1,c) E> 0^2 1^(2k+1) 0^6 R --> L X(a+2,b,c) 0 X(3,k,1) E> R  (81/81); CallXodd  L X(a,b,c+1) E> 0^2 1^(2k+1) 0^6 R --> L Y(a,b,c) 0 X(3,k,1) E> R  (75/75)",
+  "Call, even ones block: CallYeven  L Y(a,b+1,c) E> 0^2 1^(2k+2) 0^9 R --> L X(a+2,b,c) 0 X(3,k-1,4) E> R  (75/75, k>=2); CallXeven  L X(a,b,c+1) E> 0^2 1^(2k+2) 0^9 R --> L Y(a,b,c) 0 X(3,k-1,4) E> R  (76/76)",
+  "b runs out while eating ones: RetOnes  L0 Y(a,0,c+1) E> 1^(m+1) R0 --> L0 <E 0^(a+1) 1100 1^(2c+1) 0^2 1^m R0  (62/62; L0 ends in 0, R0 starts with 0); the leftover 0^2 1^m is again a call site",
+  "Resume after Return: 'F 0 <E w' and 'F E> 0 w' are the same machine configuration (E on the separator cell). A caller left as X/Y plus separator by a Call therefore just eats the returned 0^(a'+1) plus its separator: a column with gap a'+2",
+  "Branch selector identified: gap leftover mod 3 (eat vs call) and ones-block parity (which call variant). This is where TM20 (all residues 0) and this machine differ",
+  "Room-4 call (round-1 gap 2, transit callees, partly): Call4Y  L Y(a,b+1,c) E> 0^2 1^(2k+1) 0^4 1100 R --> L X(a+2,b,c) 0 X(3,k,2) E> R (83/83); Call4X  L X(a,b,c+1) E> 0^2 1^(2k+1) 0^4 1100 R --> L Y(a,b,c) 0 X(3,k,2) E> R (67/67)",
+  "Leftover 2 at a 1100 column (round-1 gap 3): call on '11' transits into the next block with callee prefix 010. Call2Xodd  L X(a,b,c) E> 0^2 1^2 0^2 1^(2k+1) 0^6 R --> L Y(a,b,c) 0 010 X(2,k,1) E> R (76/76); Call2Yodd  L Y(a,b+1,c) E> 0^2 1^2 0^2 1^(2k+1) 0^6 R --> L X(a+2,b,c+1) 0 010 X(2,k,1) E> R (82/82); Call2Xeven  L X(a,b,c) E> 0^2 1^2 0^2 1^(2k+2) 0^3 R --> L Y(a,b,c) 0 010 X(0,k,1) E> R (72/72); Call2Yeven  L Y(a,b+1,c) E> 0^2 1^2 0^2 1^(2k+2) 0^3 R --> L X(a+2,b,c+1) 0 010 X(0,k,1) E> R (78/78)",
+  "Resume after a transit callee (round-1 gap 1, replay entry, partly): ResumeTY  L Y(a,b+1,c) 0 01 E> 0^(u+4) 1100 R --> L X(a+2,b,c+1) E> 1^6 0^u 1100 R (71/71, u>=1). The 'bare block' left neighbours of round 1 are these 0 010 prefixes",
+  "Forbidden patterns, validated as halting: HaltRoom2Y  L Y(a,b+1,c) E> 0^2 1^(2k+1) 0^2 1100 R --> HALT (69/69); HaltRoom2X  L X(a,b,c+1) E> 0^2 1^(2k+1) 0^2 1100 R --> HALT (71/71); HaltOne  L Y(a,b+1,c) E> 0^2 1 0^2 R --> HALT (62/62; a call on a single 1: D erases it, F reads 0)",
+  "Concrete halting condition: the machine halts exactly when a right sweep has C on 0, D on 1, F on 0. To 1e9 there are 23,450 D-reads-1 events and F reads 1 in all of them; the 23 local shapes (ones run F reads, next gap, next run) are the same at 1e8 and 1e9 (scripts/deepen2_fmargin.py)"
+ ],
+ "remaining_gaps": [
+  "Situation census is NOT closed (contradicts round 1's 'nearly closed', which came from exponents >=3 being collapsed to N): to 1e9, 45,716 of 46,375 E:R moments parse as a standard frame (40 front classes) and 659 are transit forms (86 local shapes); 2 parsed and 7 transit classes appear for the first time in epoch 7 (step >= 4.58e8), e.g. a call with exactly 2 zeros of room: Y(14,10,18) E> 0^2 1^129 0^2 1^570 0^179 1100 ... at step 458654411",
+  "Transit families still unstated: callee births with room g = 3 and 5 (transit into the next block, callee a=2 or a=0, merges like 1^9 0^3 1^7 -> X(5,8,1)), the X-caller version of ResumeTY, returns of X(0,k,1) callees, and resumes with u<=0 (u=4: 1^8 0^2 merges the 1100; u=3: 1^4 0^2 1 0^2)",
+  "Epoch-start sweep and the root: the root frame at each epoch end is itself a transit-shaped frame ('1^a 001 (10)^b 1' with no separator) and the min head position moves right each epoch (-16, 56, 142, 242, 394), so a TM20-style fixed root LO/LE does not apply. Not stated",
+  "Invariant: the column grammar must now include 1^6 blocks, 0^2 gaps between ones blocks and 010 prefixes, plus inequalities that keep every call away from the forbidden patterns (room 2 before 1100 after an odd block, a single 1, and the 640 small-parameter halting configurations). No candidate grammar yet",
+  "No concrete non-halting argument. Small-parameter halting configurations exist in every residue class (n mod 2, m mod 2, g mod 3), so the argument has to show that small blocks only arise at the low recursion levels in specific shapes. That is a structural question, not obviously arithmetic, but it is unproven"
+ ],
+ "evidence": [
+  "scripts/deepen2_validate.py -> deepen2_validate.txt: 10 new rules (7 transitions + 3 halting patterns), 731/731 instances (random L/R contexts; values 0-4, 5-60, 200-1200; every residue mod 2 and mod 3). Round-1 rules unchanged",
+  "scripts/deepen2_census.py 1e9 -> deepen2_census_1e9.txt: front situation classes of every E:R moment (frame parse + run lengths of the next 4 runs); 126 classes to 1e9 vs 117 to 1e8",
+  "scripts/deepen2_fmargin.py 1e9 -> deepen2_fmargin_1e9.txt: every D-reads-1 event (23,450) is followed by F reading 1; ones-run lengths F reads are 1, 3, 4, 5, 6, 7 or >=9",
+  "scripts/deepen2_danger.py -> deepen2_danger_small.txt: caller X/Y(20,16,5) E> 0^2 1^n 0^2 1^m 0^g 1100 1^5 0^inf with n 2-12, m 1-8, g 2-9 or 30: 640 of 1584 halt before the caller returns, 276 return, 668 still running at 2e6 steps. deepen2_danger_medium.txt: n 31-34, m 60-62, g 20-25: 0 of 144 halt in 2e7 steps",
+  "Perturbation of the real epoch-7 call config (Y(14,10,18) E> 0^2 1^129 0^2 1^570 0^179 1100 1^2529 ...): changing 1^129 or 1^570 by -6..+6 or 0^179 by -6..+6 gives no halt within 5e8 steps (36 runs)",
+  "Callee birth by hand trace: 's 1 0 D> 1^(2k+1) 0^6' becomes X(3,k,1) in two sweeps (first sweep leaves '1 001 (10)^(k-1) 101 E>'); the callee's 1^3 is the caller's last '1', the cell after it and the first cell of the block"
+ ],
+ "cryptid": "not flagged: medium and large configurations near the real ones never halted in the scans, and the halting patterns need small blocks, which only arise in the low recursion levels. But branch choices follow residues of exponents that grow x2.5-3 per epoch, and halting configurations exist next to reachable shapes at small sizes. If a proof attempt cannot show that the small shapes recur in fixed forms, revisit the cryptid question",
+ "next": "Hand rule-closure is not converging (2 rounds; the transit families multiply). What would unstick it: (1) an abstract simulator over run-length words driven by the validated rules, checked against the real run at every E:R moment, to generate the full transition list automatically; (2) a closed-language or decider-style search with larger parameters; (3) Dennis's call on whether this machine is worth that effort"
+}

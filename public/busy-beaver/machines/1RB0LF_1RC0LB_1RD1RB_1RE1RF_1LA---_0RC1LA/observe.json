@@ -1,0 +1,594 @@
+{
+ "tm": "1RB0LF_1RC0LB_1RD1RB_1RE1RF_1LA---_0RC1LA",
+ "rank": 469,
+ "class_sheet": "Counter Class 2",
+ "class_guess": "two-zone block/pair shuffler (chaotic two-stack list machine), not a counter",
+ "confidence": "med",
+ "summary": "Blocks left of the head, pairs right of it; exact macro rules; halting needs an even zero run; parity holds, proof open.",
+ "mechanism": [
+  "Two zones split at the head: left = 1-blocks split by single 0s, right = (10)-pairs split by zero runs (plus a rare lone 1). A/F sweeps left turn a block into pairs; B/C passes right turn pairs into blocks. E-event K(L; a; r; R) = `L 1^a E> 0^r R`.",
+  "Exact rules (12,000/12,000 random, all 34.5M E-events from blank to 1e9): even a -> Ee eats the last two closed blocks y, b: `K(L; y+3; b+1; (10)^(a/2) 0^(r-2) R)`. Odd a -> Eo closes a block 2, then a C-pass turns pairs into blocks until a run 0^n, n >= 3 (`a = x+2, r = n-2`) or a lone 1 (`a = y+3, r = x+1`). The block list is shuffled chaotically.",
+  "Halting needs a C-pass to meet exactly 0^2. Closed blocks stay even and zero runs odd (1.7M E-events to 5e7), and every rule keeps this, but only under side conditions (no lone pair before a run; a = 2 only at the edge) that are not yet shown inductive."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site_1e4.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge Default view, first 10,000 steps",
+   "title": "First 10,000 steps (site view)",
+   "why": "The site's own picture. The head zigzags inside the tape; the right edge advances in small steps.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step, steps 0..10,000 squeezed into 500 rows (site canvas, bilinear: about 20 steps per row)",
+   "window": "cells -200..199, 1 px = 1 cell (cell 0 = start cell, at column 200)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:1",
+   "png": "img/cycle_36312.png",
+   "html": null,
+   "steps": 640,
+   "caption": "Every step from an E-event at step 36,312",
+   "title": "Sweeps at the block/pair interface",
+   "why": "Left of the zigzag: solid 1-blocks. Right: fine (10) stripes and black zero runs. Compare both sides of each turn.",
+   "primary": true,
+   "start": "mid-run: step 36312 (E-event 0^inf 1^2 0 1^2 0 1^2 0 1^6 0 1^6 E> 0^3 (10)^3 0 (10)^3 0^15 ...)",
+   "rows": "every step, steps 36,312..36,952 (641 rows)",
+   "window": "cells -12..93, 1 px = 1 cell (absolute cells; the head starts at cell 10)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "state:E",
+   "png": "img/state_E_700.png",
+   "html": null,
+   "steps": 19041,
+   "caption": "One row per entry into E, first 700",
+   "title": "One row per E bounce (macro step)",
+   "why": "Each row is one E-event of the model. Follow the red head: rows drifting left, then jumps right.",
+   "primary": true,
+   "start": "blank",
+   "rows": "entries into state E: the first 700 (steps 0..19,041); each is one E-event of the macro model",
+   "window": "cells -12..74, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_2e9.png",
+   "html": null,
+   "steps": 2000000000,
+   "caption": "Left/right records to 2e9",
+   "title": "Records view to 2e9",
+   "why": "At records the tape is all 1-blocks; black dots are the single-0 separators. Compare neighbouring rows.",
+   "primary": false,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new leftmost or rightmost cell (555 rows, steps 0..2,000,000,000)",
+   "window": "cells -53..501, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:500000",
+   "png": "img/every5e5_1e9.png",
+   "html": null,
+   "steps": 1000000000,
+   "caption": "Every 500,000th step to 1e9",
+   "title": "Long run to 1e9 (sampled)",
+   "why": "Speckle = tape caught mid-conversion between block and pair form. The span grows slowly.",
+   "primary": false,
+   "start": "blank",
+   "rows": "every 500,000 steps, steps 0..1,000,000,000 (2,001 rows)",
+   "window": "cells -47..414, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:4",
+   "png": "img/splice_halt_W1.png",
+   "html": null,
+   "steps": 2595,
+   "caption": "Two reachable block stacks joined at one shared block: the machine halts",
+   "title": "Spliced block stack halts at step 2,595",
+   "why": "Both halves occur on the real run; the bottom row is the halt. Compare the left zigzag with Fig 2.",
+   "primary": false,
+   "start": "constructed: 0^inf 1^2 0 1^2 0 1^34 0 1^10 E> 0^15 (10)^5 0 (10)^3 0 (10)^3 0 (10)^7 0 (10)^5 0 (10)^13 0^13 (10)^8 1 (10)^5 0^inf",
+   "rows": "every 4th step, steps 0..2,595 (650 rows; the machine halts at step 2,595)",
+   "window": "cells -56..131, 1 px = 1 cell (head starts at cell 0)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "right-edge E-events (r = inf, R empty): 0^inf 1^b1 0 1^b2 0 ... 0 1^bp 0 1^a E> 0^inf",
+  "vars": [
+   "p (closed blocks)",
+   "a (head block)",
+   "span (cells)",
+   "closed blocks = 0 mod 4"
+  ],
+  "rows": [
+   {
+    "step": 4,
+    "values": [
+     0,
+     4,
+     5,
+     0
+    ]
+   },
+   {
+    "step": 195,
+    "values": [
+     3,
+     4,
+     21,
+     1
+    ]
+   },
+   {
+    "step": 912,
+    "values": [
+     4,
+     10,
+     34,
+     1
+    ]
+   },
+   {
+    "step": 2182,
+    "values": [
+     5,
+     8,
+     51,
+     1
+    ]
+   },
+   {
+    "step": 5934,
+    "values": [
+     7,
+     4,
+     65,
+     1
+    ]
+   },
+   {
+    "step": 15754,
+    "values": [
+     8,
+     2,
+     82,
+     1
+    ]
+   },
+   {
+    "step": 28563,
+    "values": [
+     8,
+     16,
+     94,
+     0
+    ]
+   },
+   {
+    "step": 41765,
+    "values": [
+     9,
+     16,
+     111,
+     1
+    ]
+   },
+   {
+    "step": 64855,
+    "values": [
+     9,
+     14,
+     123,
+     0
+    ]
+   },
+   {
+    "step": 190061,
+    "values": [
+     14,
+     8,
+     144,
+     2
+    ]
+   },
+   {
+    "step": 279077,
+    "values": [
+     15,
+     2,
+     157,
+     0
+    ]
+   },
+   {
+    "step": 437383,
+    "values": [
+     16,
+     2,
+     174,
+     1
+    ]
+   },
+   {
+    "step": 581748,
+    "values": [
+     15,
+     10,
+     185,
+     0
+    ]
+   },
+   {
+    "step": 1034022,
+    "values": [
+     17,
+     6,
+     203,
+     0
+    ]
+   },
+   {
+    "step": 1481322,
+    "values": [
+     17,
+     6,
+     215,
+     0
+    ]
+   },
+   {
+    "step": 2339126,
+    "values": [
+     19,
+     6,
+     229,
+     0
+    ]
+   },
+   {
+    "step": 2748634,
+    "values": [
+     22,
+     4,
+     248,
+     0
+    ]
+   },
+   {
+    "step": 3370370,
+    "values": [
+     22,
+     4,
+     260,
+     0
+    ]
+   },
+   {
+    "step": 7378184,
+    "values": [
+     27,
+     4,
+     281,
+     1
+    ]
+   },
+   {
+    "step": 10589382,
+    "values": [
+     28,
+     2,
+     294,
+     1
+    ]
+   },
+   {
+    "step": 17823345,
+    "values": [
+     28,
+     10,
+     310,
+     1
+    ]
+   },
+   {
+    "step": 19332473,
+    "values": [
+     28,
+     10,
+     322,
+     1
+    ]
+   },
+   {
+    "step": 23873217,
+    "values": [
+     30,
+     6,
+     340,
+     1
+    ]
+   },
+   {
+    "step": 29338813,
+    "values": [
+     33,
+     6,
+     355,
+     2
+    ]
+   },
+   {
+    "step": 58601289,
+    "values": [
+     34,
+     2,
+     372,
+     1
+    ]
+   },
+   {
+    "step": 123457390,
+    "values": [
+     33,
+     10,
+     383,
+     0
+    ]
+   },
+   {
+    "step": 172853682,
+    "values": [
+     36,
+     10,
+     402,
+     1
+    ]
+   },
+   {
+    "step": 184161220,
+    "values": [
+     36,
+     8,
+     414,
+     0
+    ]
+   },
+   {
+    "step": 246727084,
+    "values": [
+     37,
+     8,
+     427,
+     1
+    ]
+   },
+   {
+    "step": 676875382,
+    "values": [
+     39,
+     4,
+     445,
+     1
+    ]
+   },
+   {
+    "step": 890627926,
+    "values": [
+     40,
+     2,
+     458,
+     1
+    ]
+   },
+   {
+    "step": 1341079131,
+    "values": [
+     41,
+     38,
+     475,
+     0
+    ]
+   },
+   {
+    "step": 1347364851,
+    "values": [
+     41,
+     38,
+     487,
+     0
+    ]
+   },
+   {
+    "step": 1356744367,
+    "values": [
+     41,
+     38,
+     503,
+     0
+    ]
+   },
+   {
+    "step": 1363195717,
+    "values": [
+     42,
+     38,
+     516,
+     1
+    ]
+   },
+   {
+    "step": 1539011869,
+    "values": [
+     43,
+     34,
+     533,
+     0
+    ]
+   },
+   {
+    "step": 1605475733,
+    "values": [
+     45,
+     32,
+     547,
+     1
+    ]
+   },
+   {
+    "step": 2290941963,
+    "values": [
+     47,
+     30,
+     565,
+     0
+    ]
+   },
+   {
+    "step": 2738645111,
+    "values": [
+     51,
+     30,
+     581,
+     2
+    ]
+   },
+   {
+    "step": 3561025639,
+    "values": [
+     52,
+     24,
+     598,
+     0
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "Ee (even head block, a = 2k)",
+   "from": "L 1^y 0 1^b 0 1^(2k) E> 0^r R",
+   "to": "L 1^(y+3) E> 0^(b+1) (10)^k 0^(r-2) R",
+   "steps": "a + b + 7",
+   "cases": "k >= 1, r >= 3. r = 1: tail (10)^(k-1) 1 R (creates a lone 1). r = inf: tail (10)^k 0^inf. Missing y, b count as 0 (left edge: a' = 3, r' = 1, tape grows left by 1).",
+   "validated": {
+    "instances": 6398,
+    "passed": 6398
+   },
+   "source": "manual"
+  },
+  {
+   "name": "Eo (odd head block, a = 2k+1)",
+   "from": "L 1^(2k+1) E> 0^r R",
+   "to": "L 1^2 0 C> (10)^k 0^(r-2) R  (then the C-pass)",
+   "steps": "a + 4 + C-pass",
+   "cases": "r = 1: L 1^2 0 C> (10)^(k-1) 1 R. r = inf: L 1^2 0 C> (10)^k 0^inf.",
+   "validated": {
+    "instances": 5289,
+    "passed": 5289
+   },
+   "source": "manual"
+  },
+  {
+   "name": "C1-C2 (C-pass over pairs)",
+   "from": "1^x C> (10)^j Q  |  1^x C> 0 (10)^j Q",
+   "to": "1^(x+2j) C> Q  |  1^(x+2) 0 1^(2j-2) C> Q",
+   "steps": "2j | 2j + 1",
+   "cases": "C2 closes the block x+2 at a single 0; needs j >= 1 after it (always so).",
+   "validated": {
+    "instances": 5289,
+    "passed": 5289
+   },
+   "source": "manual"
+  },
+  {
+   "name": "C3 (C-pass meets 0^n, n >= 3 or inf)",
+   "from": "L 1^x C> 0^n Q",
+   "to": "K(L; x+2; n-2; Q)  =  L 1^(x+2) E> 0^(n-2) Q",
+   "steps": "2",
+   "cases": "n = 3 gives r = 1; n = inf is the right edge (right record, +4 cells).",
+   "validated": {
+    "instances": 4364,
+    "passed": 4364
+   },
+   "source": "manual"
+  },
+  {
+   "name": "C4 (C-pass meets a lone 1)",
+   "from": "L 1^y 0 1^x C> 1 (10)^j Q",
+   "to": "L 1^(y+3) E> 0^(x+1) (10)^(j-1) Q",
+   "steps": "x + 5",
+   "cases": "A zero run at the front of (10)^(j-1) Q merges into r. A missing y counts as 0.",
+   "validated": {
+    "instances": 925,
+    "passed": 925
+   },
+   "source": "manual"
+  },
+  {
+   "name": "H (halting pattern)",
+   "from": "1^x C> 0 0 1",
+   "to": "halt: C, D write 1, E reads 1",
+   "steps": "3",
+   "cases": "The only way E reads 1. It needs an even zero run of length 2 after a pair, which INV excludes.",
+   "validated": {
+    "instances": 313,
+    "passed": 313
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "CounterClass2v1.v",
+  "module": null,
+  "machine": "1RB1RD_1LC---_1LE0LD_0RE1LC_1RA1RF_1RE0LF",
+  "diff": "1 transition: our A0 = 1RB, template (in our names) A0 = 1LC; v2-v4 have 0LB there (v4 also E0 = 1LD)",
+  "applies": "no",
+  "note": "All four proved neighbours differ exactly at A0, the turn that starts rule Ee. v1 is a deterministic counter on a fixed skeleton (SkelE n, Bnext on (n, j, b), ClosedCall, GoodB). Here the block list is a shuffled stack, so only the top-level shape (progress_nonhalt_cond + an invariant) carries over."
+ },
+ "strategy": "Find an inductive invariant over the validated macro model: closed blocks even, runs odd, plus local context conditions. Search it mechanically (regular/bigram closure over abstract tokens, or a TM-level CTL certificate). Then write rules Ee/Eo/C1-C4 as es/ind lemmas and close with progress_nonhalt_cond; one proof would cover 469 and 599 (start D).",
+ "risks": [
+  "The context conditions may not be local: simple versions fail random closure (~2% of steps), and 'r = 1 implies next group >= 3 pairs' fails on the real run at step 2,403,364.",
+  "Chaotic list dynamics: if no small invariant closes, a CTL certificate may be large; 85 small RWL_mod/NG settings returned false.",
+  "No template help: the proved neighbours differ exactly in the slot that drives rule Ee."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Sweeps at the block/pair interface: solid 1-blocks left of the zigzag, (10) stripes and black runs right of it. Does that match the two-zone picture, with the head as the boundary?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "One row per E bounce: do you see runs of rows where the head steps left (rule Ee eats blocks) followed by a jump right (the C-pass, ending at a zero run)?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Should we fund one ~2 h stage to search for an inductive context invariant over the macro model (it would cover 469 and 599), or park both?",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 100000000000,
+  "cells": 779,
+  "nonzeros": 349,
+  "growth": "span 462 at 1e9, 779 at 1e11 (about t^0.23); +4 cells per right record"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Observe done at med confidence: exact macro model (34.5M/34.5M E-events from blank to 1e9, 12,000 random), halting reduced to one parity pattern; inductive invariant open."
+}

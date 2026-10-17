@@ -1,0 +1,549 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>ranking.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/wave5/ranking.md · <a href="/busy-beaver/reports/wave5/ranking.md.html">raw</a></div>
+<h1 id="wave-5-ranking-2026-10-13">Wave 5 ranking (2026-10-13)</h1>
+<p>These are the 8 picks to attack now. They come from merging the four Wave 5 scout tables in <code>reports/wave5/</code> (templates, families, dynamics, claims).</p>
+<p>Scout signals are evidence only. Only a <code>tools/check_kill.sh</code> PASS counts as a kill.</p>
+<p>A completeness critic re-checked this ranking on 10-13. It kept all 8 picks, corrected the facts for W5-3 to W5-8, and set a launch order (see <strong>Critic</strong> near the end).</p>
+<p><strong>Universe:</strong> the 740-list machines with no <code>machines/</code> directory, 688 of them. After the exclusions (mined and taken classes, BBi ties, #16's siblings 199/510, open PR #13's line 8, line 556 ≡ our #19), about 255 remain.</p>
+<p><strong>Checks on every pick and family member (re-run here):</strong>
+- each string is byte-exact at its 740 line;
+- none has a <code>machines/</code> directory;
+- none is canon-equal to one of ours;
+- no two picks share an eqv-1590 group, and no group contains one of ours;
+- upstream HEAD <code>9cf9e88</code> mentions them only in <code>Eqv_*</code> files;
+- the open busycoq PRs are #3, #4 and #13 (none of these machines) plus our #15 and #16.</p>
+<h2 id="the-lesson-from-wave-4">The lesson from Wave 4</h2>
+<p>Wave 4 had 8 picks. The ones with a live template were all killed: W4-1 (#30's table), W4-2 (1 transition from BECv5) and W4-3 (3 starts, SBCv6 TM21 shape).</p>
+<p>The new proofs in Unknown classes all parked: W4-4, W4-6 and W4-8. So did W4-5 (a counter with no invariant) and W4-7 (hlin decider, wide digits).</p>
+<p>So Wave 5 leans on templates on purpose. The strongest common signal is <strong>W4-2's own architecture</strong>: Bell eats counter, records <code>(10)^a (01)^b 1^c</code>, a binary-ruler transfer between the two fields, and a size invariant. 349, 134, 525 and 29 all show it, so four picks reuse it. This concentrates risk in one class, but the merged scores are not close: those four average 0.43-0.91, and the best non-BEC family 0.27.</p>
+<h2 id="picks">Picks</h2>
+<table>
+<thead>
+<tr>
+<th>label</th>
+<th>machine</th>
+<th>740 line</th>
+<th>class</th>
+<th>why</th>
+<th>nearest template</th>
+<th>risk</th>
+<th>family (same proof)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>W5-1</strong></td>
+<td><code>1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB---</code></td>
+<td>349</td>
+<td>Bell eats counter</td>
+<td>W4-2's table with F1 = 1RC (W4-2 has 1LF), mirrored, started in W4-2's F. Upstream <code>Eqv_v3</code> TM518 proves it halting-equivalent to W4-2's exact table from F. W4-2's invariant I holds from F (proof.md §7.3, 999,999/999,999 states). Spans equal at 1e7/1e8/1e9. All four scouts rank it first. Unclaimed.</td>
+<td>Our kill W4-2 (<code>1RB1LF_..._1LA1LF.v</code>, 1,217 lines)</td>
+<td>Low to medium. <strong>The planned Eqv route is out</strong> (see Corrections). The direct route re-derives the rules that use F1, as W4-2 did from BECv5. F1 fires 751 times in 1e8 steps.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><strong>W5-2</strong></td>
+<td><code>1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---</code></td>
+<td>409</td>
+<td>Shift-overflow counter (mined; exception)</td>
+<td>1 transition (A1) from <code>SOC_2_5_v1.v</code> TM10, a hand proof (ccz181078, 2025-07-30). A1 fires once, at step 10, then never again to 1e9 in either machine. The scout compiled TM10's module with 409's string and a new init (<code>cfgL 3 6 1</code> at step 34). Every lemma passed except <code>ROv3_0</code>/<code>ROv3_1</code>, the RC3 right-overflow rules, which use A1.</td>
+<td><code>SOC_2_5_v1.v</code> TM10; probe in <code>scratchpad/w5t/p409/Probe409.v</code></td>
+<td>Medium-low on the maths: 409's RC3 overflow ends in an RC'-like <code>[0;0;0;1;1]</code> tail, so <code>closed</code> needs a new case, or P must exclude it. <strong>Race:</strong> the SOC batches (09-16, 09-30, 10-07) are weekly. Finish within a day.</td>
+<td>none (follow-ons with other tables: 70, 223, 323, 495, 648)</td>
+</tr>
+<tr>
+<td><strong>W5-3</strong></td>
+<td><code>1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</code></td>
+<td>134</td>
+<td>Bell eats counter</td>
+<td>Records <code>(01)^a (10)^b 1^c A&gt;</code>: W4-2's words. a+b is conserved per round. c rises by 2 per round while the transfer doubles (5, 16, 32, ..., 512), then resets: a binary ruler. Rulefit validates <code>A1(a+64c+128, b+2, c+15) -&gt; A1(a, b+64c+130, c+17)</code> and <code>A0(a+62n+4, b+1, 5n+6) -&gt; A0(a, b+62n+5, 5n+8)</code>. Wave-4 reserve; dynamics rank 4. Unclaimed.</td>
+<td>W4-2's architecture (budget / round-length invariant); new proof</td>
+<td>Medium-high (critic). No template within 3 transitions. Rulefit's 2-3 validated rules explain only 16-22% of the A-hub transitions (critic's reruns, 60-90 s budgets; W4-2 itself scores 26%), and 6 more record shapes (<code>10^a 01011^2 1^b</code>, <code>10^a 110^2 1^b</code>, ...) have no rule yet.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><strong>W5-4</strong></td>
+<td><code>1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB</code></td>
+<td>525</td>
+<td>Bell eats counter</td>
+<td>Exactly W4-2's mirrored record shape: <code>(10)^a (01)^b 1^c B&gt;</code> on 260 of 400 records at 3e8, stable to 1e9. Smallest tape of the family (2,058 cells at 1e9). Unclaimed.</td>
+<td>W4-2's architecture; new proof</td>
+<td>Medium-high (critic). No rule table yet: the critic's rulefit rerun (90 s budget, time cap hit) validates 0 rules, and all 25 fitted rules failed validation, so fit the rules by hand first. The transfers follow a short cycle (c runs through 22, 25, 28, 30), so it may be a two-level counter rather than a pure binary ruler.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><strong>W5-5</strong></td>
+<td><code>1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---</code></td>
+<td>29</td>
+<td>Bell eats counter</td>
+<td>Base-4 W4-2: records <code>&lt;A (100)^a 1 (010)^b (001)^c</code>. b+c ≈ 680-686 is conserved, and the transfers grow ×4 per level (2, 8, 32, 128, ~512). Scout rules: <code>A0(a+2, 24a+b+8, c) -&gt; A0(a+3, b, 24a+c+8)</code> and <code>A0(4n, b+126n+2, c) -&gt; A0(4n+1, b, c+126n+2)</code>. Dynamics rank 1. Wave 4 rejected it for the residue-indexed rule, but W4-2 itself has 3n/4n/5n-indexed rules.</td>
+<td>W4-2's architecture with 3-cell words; new proof</td>
+<td>Medium-high (critic). <strong>The scout's rules are not "closed"</strong>: the critic's rulefit rerun validates the 24a rule only for a ≤ 1 and does not validate the 4n rule. At the D hub it finds 4 rules (2 of them thin) covering 42% of transitions, with 134 probed cases unexplained. The Results row says "Chaotic", and an unattributed Level-0 note says "chaotic bell eats counter". Its eqv group has 13 members, all off the list. Launch last.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><strong>W5-6</strong></td>
+<td><code>1RB0LC_1LC0RE_1LA1LD_1LA1LB_0RF1RA_---0RE</code></td>
+<td>88</td>
+<td>Bell eats counter</td>
+<td>88 and 280 are exact trajectory twins: identical tape at 1e9, <code>10^3 0^3 010001^2 011^450 &lt;A 110^561 1^366</code>. <code>IndBECv1.v</code> certifies 88's table started in 88's B (<code>config_BEC 1000 3 B F [0] [0] [0;1]</code>). I ran that start: at 3e8 and 1e9 it has the same tape grammar, <code>junk (011)^a head (110)^b 1^c</code>, and only the far-left junk differs. 280's table is certified from another start too (<code>Eat1Digit</code> nonhalt6). Never attempted.</td>
+<td><code>IndBECv1.v</code> hlin certificate; W4-7's native <code>hlinx</code> driver</td>
+<td>Medium-high (critic). 7 mapped hlinx configs came back false (T 1000/3000, bsz 3/6). Rulefit has a /6 rescale, so take the Collatz-like caution. <strong>W4-7 is the direct precedent</strong>: its table is also hlin-certified from another start (<code>IndBECv1.v</code> nonhalt3), and 384 hlin + 178 CTL runs from its own start all failed. The critic's merge test finds no shared configuration between 88 and its certified start, or 280 and its certified start, in 3e7 steps each. Cap the hlinx grid at 1 h, then hand proof or park.</td>
+<td>280 <code>1RB0LC_1LC0RE_1LA1LD_1LA1LF_0RB1RA_1LC---</code> (different table, same orbit: one proof, two inits)</td>
+</tr>
+<tr>
+<td><strong>W5-7</strong> (bold, HALT)</td>
+<td><code>1RB0RD_1LC1RE_1LA0LD_0RE0RF_1LC1RA_0LE---</code></td>
+<td>700</td>
+<td>Shift-overflow bouncer counter (mined; exception)</td>
+<td>Same table as <code>SOBCv6.v</code> TM3, a <strong>HALT</strong> proof (ccz181078, Jul 2025), started in TM3's B. Its eqv members are the TM2/TM4 tables from B, and TM2/TM3/TM4 all halt. I checked the tape at 1e8: 700's whole left side (209 cells) parses into TM3's counter digits (<code>w0</code>/<code>w1</code>, 3-cell words), with the same <code>11</code> far-left boundary as TM3. The right side is the same <code>(001)^n</code> bouncer. TM3 halts at its first counter overflow. It is on mxdys's UBRRBA_TODO (fair game), and no SOBC batch has taken it. mira-quine's PR #8 (closed 10-10, now upstream <code>Eqv_RegularPairs.v</code> TM101) proves 700 equivalent to another table: an equivalence, not a verdict.</td>
+<td><code>SOBCv6.v</code> TM3 (<code>step_rec</code>, <code>LIncs</code>, <code>LOv</code>, then a finite tail)</td>
+<td>Medium-high. The halt after overflow depends on the low digits that the overflow leaves. 700's ~70-digit counter may not end in TM3's halting tail. First step (cheap): run TM3's digit model from 700's record to the first overflow. Stop if it does not halt.</td>
+<td>none on the list</td>
+</tr>
+<tr>
+<td><strong>W5-8</strong> (bold, family of 3)</td>
+<td><code>1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code></td>
+<td>214</td>
+<td>Bouncer + Chaotic Edge</td>
+<td>One table with 3 listed starts; widths within 0.3% at 1e9; clean tapes (19-21 tokens), bulk <code>(01)^16651</code>. 214 and 418 carry the same right-edge blocks <code>1^34</code>/<code>1^216</code>/<code>1^396</code>. Rulefit has several halt branches, so look at HALT first, but for at most ~20 min: all 3 are on mxdys's UBRRBA_TODO (a list for accelerated halting runs) and still listed on 10-07, and the dynamics scout's halting lens found no linear reservoir. Unclaimed.</td>
+<td>None within 4 transitions; our #8 bouncer work is the nearest experience</td>
+<td>High. 5 of our B+CE machines are stuck on the edge lemma. My 1e9 snapshot shows the right edge carrying nested fields, <code>(10)^198 (01)^108 (011)^2 (10)^15 ...</code>, that change from record to record.</td>
+<td>418 <code>1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</code>, 636 <code>1RB0RD_0RC0LB_0RD1RD_1LE1RA_1RC1LF_---1LA</code></td>
+</tr>
+</tbody>
+</table>
+<p>If all 8 work, they cover 11 list entries.</p>
+<h2 id="first-step-per-pick">First step per pick</h2>
+<ul>
+<li><strong>W5-1:</strong> start from W4-2's <code>.v</code>. Write 349's table as W4-2's table with F1 = 1RC, connected by busycoq's <code>flip_halts</code> + <code>perm_halts</code> (the #24 recipe). Re-prove only the macro rules whose sweeps use F1, then add the start from F (W4-2's §8 gives 73 steps to <code>(std,2,2)</code> for F1 = 1LF; recompute it for 1RC).</li>
+<li><strong>W5-2:</strong> take <code>Probe409.v</code>. Derive the two RC3-overflow rules on 409's table, then fix the <code>cfgR3</code> case of <code>closed</code>. One coqc, ~1 h.</li>
+<li><strong>W5-3 / W5-4 / W5-5:</strong> read W4-2's proof.md and <code>how_proved.md</code> first. Then:</li>
+<li>fit and validate the transfer rules (525 needs fitting from scratch);</li>
+<li>state the size invariant;</li>
+<li>run a check_proof.py in W4-2's style before any Rocq;</li>
+<li>critic's stop rule for W5-5: if after the first hour validated rules still leave most hub transitions unexplained, and the rules depend on residues that look pseudo-random, apply the cryptid protocol and park.</li>
+<li><strong>W5-6:</strong> first redo the 280 hlinx run that was killed by mistake. Then widen the grid over the boundary words, T (to 1e5) and bsz (cheap, no coqc), for at most 1 h in all; W4-7's 384 false runs are the warning. If nothing fits, write a hand proof from the certified start's dynamics, or park.</li>
+<li><strong>W5-7:</strong> extract 700's digit list at a record, run TM3's <code>step_rec</code>/<code>LIncs</code>/<code>LOv</code> model to the first overflow, and check the finite tail. If it halts, the <code>.v</code> is TM3's module with 700's table and a new <code>init</code>.</li>
+<li><strong>W5-8:</strong> test the rulefit halt branches on real configurations (at most ~20 min), then fit a closed rule table for the edge. Stop rule: if the edge fields have no closed law within the stage, park.</li>
+</ul>
+<h2 id="corrections-to-the-scouts">Corrections to the scouts</h2>
+<ol>
+<li><strong>349's Eqv route cannot be used.</strong> Our W4-2 status.json and proof.md §8 plan <code>TM518.eqv + flip_halts_c0 + perm_nonhalt</code>.
+   - <code>Eqv_v3.v</code> begins with <code>From BusyCoq Require Import BBinf Individual62</code>, and its <code>solve_eqv</code> runs through <code>TMinf</code>/<code>Permute_inf</code> over BBinf.
+   - BBinf carries the unsound <code>Admitted</code> <code>all_qs_spec</code> (zero-context's PR #3). Our rule (targeting.md, landscape.md §4.4) is never to import it, and <code>Print Assumptions</code> would most likely show it, which fails check_kill.
+   - So W5-1 is a direct proof, like W4-2's own step from BECv5. The Eqv lemma still tells us the change in F1 does not affect halting.</li>
+<li><strong>88/280:</strong> the certified start has the same three-field tape as 88 (direct simulation, 3e8 and 1e9). This is why 88 counts as a pick and not a decider lottery.</li>
+<li><strong>700:</strong> neither the templates scout nor the claims scout checked whether 700's tape fits TM3's counter. It does: every 3-cell word is <code>100</code> or <code>111</code>, with the same leftover boundary as TM3.</li>
+<li><strong>Eqv groups:</strong> <code>2026-10-07_eqv_1590.txt</code> separates groups by blank lines (778 groups). Read that way, 29's group has 13 members, 280's and 700's 3, and 349's 2 (349 plus TM518's <code>tm</code>).</li>
+</ol>
+<h2 id="notable-rejections">Notable rejections</h2>
+<table>
+<thead>
+<tr>
+<th>machine (740 line)</th>
+<th>signal</th>
+<th>reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>299, 412, 602 (+ 338, 577, 730 through eqv members)</td>
+<td>Same table as <code>ChaoticBell1Halt.v</code> TM13/TM7 (certified HALT, 10-11) from other starts</td>
+<td>Chaotic Bell Class 1 went hot on 10-11. This is a direct race with ccz181078, who can port his own executor. Same verdict as the Wave 4 critic: a priority call for Dennis, not an automatic start.</td>
+</tr>
+<tr>
+<td>70, 223</td>
+<td>1 transition from <code>SOC_2_5_v1</code> TM43/TM62</td>
+<td>Mined SOC. The compile probes leave 6 open goals in the overflow rules, more rework than 409. 70 is also the sheet anomaly (its row is struck NONHALT, but it is still listed). Follow-ons if W5-2 works.</td>
+</tr>
+<tr>
+<td>323, 495, 648</td>
+<td>1 transition from <code>SOC_2_3_v2/v3</code> (F0 fires only early)</td>
+<td>Mined SOC, not probed (the parser could not reproduce TM39's init). Follow-ons after W5-2.</td>
+</tr>
+<tr>
+<td>about 70 more SOC / Skelet 1-like Class 1 lines</td>
+<td>1-2 transitions from TCv3, Sk1like_TC and SOC_* proofs</td>
+<td>Mined classes. mxdys works through them in batches. One verified exception (409) is enough for now.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Same table as <code>SOBCv10.v</code> (hand proof) from D</td>
+<td>Mined SOBC. The template is 4,234 lines and tied to specific parameters.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Cleanest Unknown: 2 skeletons cover every record to 1e9; binary counter plus bouncer, #8-like</td>
+<td>The sheet credits nerdyjoe with "Code. Binary counting + bouncing" (2025-12-28). <strong>Ask Dennis</strong> whether that counts as a claim. If not, it is the first reserve.</td>
+</tr>
+<tr>
+<td>147 / 493</td>
+<td>Near-exact twins (width curves 0.07% apart)</td>
+<td>Unknown, 57 tokens, no template; an edge like B+CE. Alistaire simulated 493 to 3.35e20. Reserve after W5-8.</td>
+</tr>
+<tr>
+<td>6 / 348</td>
+<td>B+CE pair, clean</td>
+<td>Same class and the same edge-lemma risk as W5-8, with a smaller payoff. Reserve.</td>
+</tr>
+<tr>
+<td>310 / 528 (+ 548)</td>
+<td>BEC with W4-2's words plus <code>(10101)</code>/<code>(11010)</code> fields</td>
+<td>The 4-field grammar of 693, where mxdys stalled (Level 1). Next BEC slot after the W4-2 family.</td>
+</tr>
+<tr>
+<td>87 / 342 / 689, 312 / 337</td>
+<td>BEC trios and pairs; 87's shape is like #30's hub</td>
+<td>On dyuan01's longitudinal-24 list (treated as claimed).</td>
+</tr>
+<tr>
+<td>170 / 278 / 374 / 434 + 257 / 535 / 669</td>
+<td>7 machines on two tables 1 transition apart</td>
+<td>Chaotic Bell Class 1 neighbourhood (hot); tapes messy beyond 170/374; 278 has others' "partial analysis".</td>
+</tr>
+<tr>
+<td>51 / 74 / 154</td>
+<td>Clean trio</td>
+<td>No template within 5. Alistaire deep-simulated 51 and 74, so someone has an accelerator.</td>
+</tr>
+<tr>
+<td>239</td>
+<td>Labelled BEC, closed rules</td>
+<td>Growth t^0.65, a fossil bouncer: W4-8's seam problem.</td>
+</tr>
+<tr>
+<td>192, 692</td>
+<td>Explicit parity halt boundary (halting lens)</td>
+<td>Tarpit classes (Chaotic Bell 3 and 2). A proof needs a parity invariant on fossils, which is the W4-8 problem again. 692's reservoirs have the safe parity so far.</td>
+</tr>
+<tr>
+<td>458 / 635, 96</td>
+<td>Closed rules</td>
+<td>Collatz-flagged parity rules: cryptid risk.</td>
+</tr>
+<tr>
+<td>218 / 159 / 230 / 401, 716, 211</td>
+<td>Regular epochs</td>
+<td>×3/2 and ×4/3 epoch maps: cryptid protocol.</td>
+</tr>
+<tr>
+<td>197 / 583 / 678, 388</td>
+<td>1 transition from FractalBEC / BECv1</td>
+<td>Exact trajectory twins of our CRYPTIDs 611/596/486 and of STUCK 633.</td>
+</tr>
+<tr>
+<td>441 / 686, 470 / 575, 188, 61 / 704, 530</td>
+<td>Same table or eqv tie as our parked machines</td>
+<td>These ride on our own stuck work (347, 191/202, W4-4, W4-8, W4-5).</td>
+</tr>
+<tr>
+<td>45 / 52</td>
+<td>3 transitions from #4</td>
+<td>Chaotic Fractal Type 1 is taken; 52 is on dyuan01's list; 45 diverges from #4 at step 15.</td>
+</tr>
+<tr>
+<td>199 / 510</td>
+<td>Same table as <code>FractalType4</code> TM5</td>
+<td>Siblings of our #16 (same fatal gap).</td>
+</tr>
+<tr>
+<td>556</td>
+<td></td>
+<td><code>Eqv_WordPairs</code> TM83 makes it equivalent to our #19.</td>
+</tr>
+<tr>
+<td>8</td>
+<td></td>
+<td>In mira-quine's open PR #13.</td>
+</tr>
+<tr>
+<td>221 / 416 / 455 (critic)</td>
+<td>One table, 3 listed starts; top 40 on claims and families; 34-58 tokens</td>
+<td>Unknown class, no template within 5 (nearest ours d6). The wake is nested 8-cell words, e.g. 455's <code>(10010101^2 01100101^2 01011001^2 01010110^2 01^4)^219</code>. A new proof in an Unknown class, the W4-4/6/8 pattern. Alternate bold family if W5-8 parks early.</td>
+</tr>
+<tr>
+<td>141 / 551 (critic)</td>
+<td>One table, 2 starts; top 40 on claims and families</td>
+<td>Unknown, 130-145 tokens, no template within 6.</td>
+</tr>
+<tr>
+<td>56 / 592 (critic)</td>
+<td>Fractal in Bouncer pair, look-alikes (claims 0.458/0.415, the highest unlisted)</td>
+<td>Fractal tapes of 370-400 tokens; 592's rulefit rescales a parameter by m/k (Collatz-like). No template within 4.</td>
+</tr>
+<tr>
+<td>318 / 483 (critic)</td>
+<td><code>CTLv1.v</code> certifies the table from 3 other starts</td>
+<td>Chaotic tapes (900-1,100 tokens). The critic's merge test finds no shared configuration with any certified start in 3e7 steps, so only a decider parameter sweep from start A is left, which upstream has very likely run.</td>
+</tr>
+<tr>
+<td>406 / 509, 198 / 248 / 582 (critic)</td>
+<td>Families on two scouts</td>
+<td>Bell-like t^0.29 with 400-token tapes; 680-token tapes. No template.</td>
+</tr>
+<tr>
+<td>707, 43, 162, 83, 653, 144, 246, 332, 384, 450, 463, 478, 519, 564, 599, 612, 638, 651, 657 (critic)</td>
+<td>Same table (any start) as one of our STUCK or CRYPTID machines</td>
+<td>Ride on our parked work (707 on W4-7, which has the same hlin situation as W5-6).</td>
+</tr>
+<tr>
+<td>289, 291, 152, 98, 623, 543 (critic)</td>
+<td>Dynamics top 50, Unknown</td>
+<td>Collatz-flagged rules (289, 291, 152, 98), or no stable skeleton (623: 193 skeletons at 1e9; 543 degrades by 1e9).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="critic-2026-10-13">Critic (2026-10-13)</h2>
+<p><strong>Verdict.</strong> The 8 picks stand. None is claimed, proved upstream, or tied to work we already did, beyond what the table says. Six statements in the ranking were wrong or overstated; they are corrected in the table above and listed below. The launch order changes.</p>
+<h3 id="what-was-re-checked-today">What was re-checked today</h3>
+<ul>
+<li><strong>Sheet.</strong> 9 of the 12 tabs (every tab with claims, notes or credits) were re-exported on 10-13. Each is byte-identical to the 10-09 snapshot, so there is no new note or claim on any pick.</li>
+<li><strong>GitHub code search</strong> (all 11 pick strings, plus 707 and 318). Each appears only in copies of the holdout list: bbchallenge's 815 list, <code>yongyi781/fiery</code>, and the data files of <code>JacobRSchwartz-AI/bb6-holdouts</code> (last push 08-24).</li>
+<li><strong>busycoq.</strong> The BB6 head is still <code>9cf9e88</code>. The open PRs are still #3, #4, #13, #15 and #16.</li>
+<li><strong>mira-quine's 7 PRs closed on 10-10.</strong> Only #8 touches a pick: it proves 700 equivalent to another table, and that pair is now upstream as <code>Eqv_RegularPairs.v</code> TM101. It is an equivalence, not a verdict.</li>
+<li><strong>Upstream proofs.</strong> Every pick's table, from every start and up to renaming and mirror, was matched against all 240,411 machine strings in <code>verify/</code> at <code>9cf9e88</code>. The only hits are the known ones: <code>Eqv_*</code> files, <code>IndBECv1.v</code> for 88 and 280, and <code>SOBCv6.v</code> for 700.</li>
+<li><strong>Our own machines.</strong> No universe machine shares a table (any start) with any of our 22 kills, except 349 through its Eqv member. No pick is within 2 transitions of any of our 54 machines, except 349 and W4-2.</li>
+</ul>
+<h3 id="corrections">Corrections</h3>
+<ol>
+<li><strong>W5-6 (88/280): the W4-7 argument was backwards.</strong> The ranking said W4-7's obstacle does not apply because hlin already handles this table. But W4-7's table is also hlin-certified from another start (<code>IndBECv1.v</code> nonhalt3), and 384 hlin runs and 178 CTL runs from W4-7's own start all failed. That is exactly W5-6's situation.
+   - New check (merge test, C, 3e7 steps per run): 88 never reaches a configuration that its certified start reaches, and neither does 280. So there is no free transfer from the certificate.
+   - Risk raised to medium-high, and the hlinx grid is capped at 1 h.</li>
+<li><strong>W5-5 (29): the "closed" rules do not hold up.</strong>
+   - The critic's rulefit rerun (60-90 s budget) validates the 24a rule only for a ≤ 1, and does not validate the 4n rule.
+   - At the D hub it finds 4 rules (2 of them thin) covering 42% of the transitions, and 134 probed cases with no rule.
+   - The Results row says "Chaotic". Risk raised to medium-high; launch it last.</li>
+<li><strong>W5-3 (134): "closed" is not "complete".</strong> Rulefit labels its rules "closed", but its 2-3 validated rules explain only 16-22% of the transitions at the A hub (9% at the B hub), depending on the budget. 6 more record shapes have no rule yet.</li>
+<li><strong>Calibration for 2 and 3.</strong> On our kill W4-2, the same rulefit run explains only 26% of its hub transitions. So low coverage is normal for this architecture and is not a reason to drop 134 or 29. It is a reason not to call their rule tables closed.</li>
+<li><strong>W5-4 (525): no validated rules at all.</strong> Within a 90 s budget (the time cap was hit), rulefit fits 25 candidate rules and all fail validation. This matches the ranking's "fit first", but it puts 525 behind 134.</li>
+<li><strong>W5-8 (214 family): HALT-first is a long shot.</strong> All 3 are on mxdys's UBRRBA_TODO, a list he posted for accelerated halting runs (q64 offered 500 cores). They were still listed on 10-07, and our halting lens found no linear reservoir. Cap the HALT check at about 20 minutes.</li>
+</ol>
+<h3 id="signals-that-were-under-used">Signals that were under-used</h3>
+<ul>
+<li><strong>Same-table decider certificates from other starts.</strong> 16 non-excluded universe machines have a nonhalting certificate for their table from another start: 5, 43, 83, 88, 162, 257, 280, 318, 401, 483, 535, 646, 653, 669, 707 and 715. The ranking used this signal only for 88 and 280. (17 more have a HALT certificate from another start, which does not transfer.)</li>
+<li>The critic ran the merge test on all 28 (machine, certified start) pairs. No pair shares a configuration within 3e7 steps.</li>
+<li>So the cheap transfer route is closed. What remains is a parameter sweep of the decider from start A, which upstream has very likely run already. Not a pick.</li>
+<li><strong>Rulefit coverage.</strong> The ranking quoted rule tables but not how much of the run they explain. The numbers are now in the table.</li>
+<li><strong>Halting lens.</strong> The jump lens ran on the 133 best-ranked clean machines; 110 more were not run, for time. Of the picks' HALT hopes, 700 was not covered, because it is excluded as mined. The 214 family was covered, and nothing was found.</li>
+</ul>
+<h3 id="fall-throughs">Fall-throughs</h3>
+<p>These machines were in the top 40 of two or more scouts but were missing from the ranking: 455, 221, 416, 141, 551, 56, 592, 318, 406, 509 and 248. None is better than a current pick. Each now has a row in the rejections table, along with the 19 machines that share a table with our parked work.</p>
+<p>There is no exact sibling of a kill anywhere in the universe.</p>
+<h3 id="launch-order">Launch order</h3>
+<ol>
+<li><strong>W5-1, W5-2.</strong> They take the coqc slots and are closest to a kill.</li>
+<li><strong>W5-7.</strong> The Python go/no-go takes about 30 min. Stop if the counter does not halt.</li>
+<li><strong>W5-3, then W5-4.</strong> Python first: rules, then the invariant.</li>
+<li><strong>W5-6.</strong> Native hlinx, capped at 1 h, then a hand proof or park.</li>
+<li><strong>W5-8, W5-5.</strong> The riskiest picks go last.</li>
+</ol>
+<p><strong>First reserve: line 9.</strong> It needs Dennis's call on nerdyjoe's note. The sheet has a precedent: another row reads "Incomplete analysis by nerdyjoe; solution ... by mxdys", which suggests an analysis note does not reserve a machine. 9 is not clearly better than 29, though: rulefit explains 1% of its transitions.</p>
+<p><strong>Critic's scratch</strong> is in <code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/critic5/</code>:
+- <code>merge/merge.c</code>: the trajectory-merge test;
+- <code>upchk.py</code>: matching against upstream strings;
+- <code>killsib.py</code>: same-table checks against our machines;
+- <code>near.py</code>: picks within 2 transitions of ours;
+- <code>two.py</code>: machines high on two or more scouts;
+- <code>rf_*.txt</code>: the rulefit reruns.</p>
+<h2 id="resource-plan">Resource plan</h2>
+<ul>
+<li><strong>coqc:</strong> at most 2 run system-wide. W5-2 (one compile of a nearly finished file) and W5-1 come first. W5-3/4/5/8 start with Python observation and rules, and W5-7 with a Python digit model. W5-6 uses the native <code>hlinx</code> binary (no coqc).</li>
+<li><strong>Heavy processes:</strong> each stage keeps at most 2, with <code>nice -n 10</code> and <code>ulimit -v 6000000</code> (8000000 for coqc). Check <code>/proc/loadavg</code> and MemAvailable first.</li>
+<li><strong>Timing:</strong> W5-2 and W5-7 sit in mined classes, so if they work, post them quickly. W5-1 completes the W4-2 story; post it with W4-2's message, whose third paragraph already announces row 1038.</li>
+<li><strong>Scratch for this ranking:</strong> <code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/w5rank/</code>:</li>
+<li><code>merge.py</code>: per-machine merge of the four scout TSVs;</li>
+<li><code>verify2.py</code>: list lines, directories, canon, eqv groups, same-table siblings;</li>
+<li><code>st.py</code>: which start of a table a certificate uses.</li>
+</ul>
+</main></body></html>

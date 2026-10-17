@@ -1,0 +1,57 @@
+{
+ "tm": "1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE",
+ "bucket_reason": "Medium confidence after the wall-model stage: the model and cycle map are exact on every record to 1e11, but the non-halting invariant is open, so proof.md waits.",
+ "question": "W4-6 and its twin (line 612) now have an exact parity-only cycle map: fund one ~2 h carry stage to derive the level recursion and the invariant, try a wall-level closed-language search instead, or park?",
+ "options": [
+  {
+   "id": "carry_stage",
+   "label": "Fund one ~2 h carry stage",
+   "consequence": "Derive what one visit to level m (walls 2m, 2m+1) does to the parity word, which gives the move rates (2^m-1)/2^(2m-1), the 4-position wall windows and the invariant: gaps >= 0, zero gaps and the right end met only in phase C. Test it on random parity words with the cycle map. Output: the invariant and go/no-go on proof.md."
+  },
+  {
+   "id": "wall_ctl",
+   "label": "Wall-level closed-language search",
+   "consequence": "Write a native search for a regular language over the cycle map's wall alphabet (gap parity, zero flag, open/shifted status, head phase) that is closed under the pass/sweep steps. A hit is the invariant without understanding the recursion; Coq would then need the 22 rules as lemmas plus a checker. It may not close (bit-level CTL failed on 25 sets)."
+  },
+  {
+   "id": "park",
+   "label": "Park both lines",
+   "consequence": "No compute. Both lines go to STUCK with the exact model, cycle map and 1e11 checks kept for a later multi-level-counter method."
+  }
+ ],
+ "recommended": "carry_stage",
+ "rationale": [
+  "The map reads gaps only by parity (+100 on every gap: no change in 96,000 cycles).",
+  "Move rates fit one formula for walls 2..21: a uniform recursion, not a cryptid.",
+  "After start-up, zero gaps and the right end are met only in phase C: a clear target."
+ ],
+ "evidence": [
+  {
+   "kind": "figure",
+   "text": "Fig 2: walls per cycle; each level wiggles half as often as the one before.",
+   "href": "img/gapmap_1024.png"
+  },
+  {
+   "kind": "fact",
+   "text": "Rule-only model = TM at every E record to 1e11: 223,095/223,095 (line 99) and 223,102/223,102 (line 612), step counts included.",
+   "href": "data/model_validate_1e11.out"
+  },
+  {
+   "kind": "fact",
+   "text": "Cycle map: 0 mismatches on 446,138 one-cycle checks; zero gaps met in phase C 85,695 times, never in A/F/D after k = 3,519.",
+   "href": "data/cyclemap_freerun_1e11.out"
+  },
+  {
+   "kind": "fact",
+   "text": "Per 65,536 cycles wall 2m moves (2^m-1)*2^(17-2m) times, wall 2m+1 half that (walls 2..21).",
+   "href": "notes.md"
+  }
+ ],
+ "effort_if_yes": "~2 h agent time, light compute (the cycle map runs 1e11 steps' worth of cycles in ~1 min).",
+ "updated": "2026-10-11",
+ "answer": {
+  "option": "carry_stage",
+  "note": "Dennis: apply recommendations (2026-10-12)",
+  "date": "2026-10-12"
+ }
+}

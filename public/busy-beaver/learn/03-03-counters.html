@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Counters on the tape</title>
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* page-local pieces: the three-counter figure, small-cell #11 tapes, digit chips, jump buttons, the #11 ledger, the recap */
+  .trio { margin: 6px 0 4px; }
+  .trio .tm-run { margin: 10px 0; }
+  .trio-note { font-size: 14.5px; color: var(--ink2); margin: 4px 0 0; }
+  .trio .tm-label, .pair .tm-label { font-size: 14px; color: var(--ink2); }
+  .pair .tm-run { margin: 10px 0; }
+
+  /* .fit: a #11 tape drawn with cells small enough that the whole tape, start to head, fits the box.
+     --n = cells in the window, --sub = page width the box does not get (padding, borders, a scrollbar). */
+  .fit { --g: 4px; --sub: 84px; }
+  .fit.in-predict { --sub: 150px; }
+  .fit .tm-tapewrap { --cw: clamp(5px, calc((min(100vw, 960px) - var(--sub)) / var(--n) - var(--g)), 26px) !important; }
+  .fit .tm-tape { gap: var(--g); }
+  @media (max-width: 600px) {
+    .fit { --g: 1px; }
+    .fit .tm-stage { padding-left: 6px; padding-right: 6px; }
+    .fit .tm-cell { font-size: 0; border-radius: 2px; }
+    .fit .tm-pos { display: none; }
+    .fit .tm-tape { padding-bottom: 4px; }
+    .fit .tm-marks { height: 42px; }
+    .fit .tm-br span { font-size: 10.5px; }
+    .fit .tm-br:nth-child(even) span { top: 22px; }      /* neighbouring labels on two lines, so they never overlap */
+  }
+
+  /* one chip per part of a #11 tape: start, digits, end block, head */
+  .kline { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0 2px; align-items: stretch; }
+  .kline .seg { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1px;
+    border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px; background: var(--surface); }
+  .kline .seg code { background: none; padding: 0; font-size: 13.5px; white-space: nowrap; }
+  .kline .seg span { font-size: 11.5px; color: var(--ink2); white-space: nowrap; }
+  .kline .seg.dig { border-color: var(--accent); }
+  .kline .seg.dig span { color: var(--accent); font-weight: 600; }
+  .kline .seg.head { border-style: dashed; }
+
+  .jumps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 2px 0 10px; font-size: 13px; }
+  .jumps .jl { color: var(--muted); margin-right: 2px; }
+  .tm-run .jumps button { border-radius: 999px; padding: 3px 10px; font-size: 13px; }
+  .tm-run .jumps button b { font: 600 12.5px ui-monospace, Consolas, monospace; margin-right: 4px; }
+  .tm-run .jumps button.on { border-color: var(--accent); background: var(--accent-weak); }
+
+  .steps-list { margin: 8px 0 12px; }
+  .steps-list li { margin: 6px 0; }
+  .steps-list .st { font: 600 13.5px ui-monospace, Consolas, monospace; color: var(--ink2); }
+
+  .ledger { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow-x: auto; padding: 10px 12px; margin: 12px 0 6px;
+    overscroll-behavior-x: contain; }
+  .lg-title { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .lg-label { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+  .lg-grid { display: grid; grid-template-columns: auto auto auto minmax(0, 1fr); gap: 7px 14px; align-items: center; }
+  .lg-h { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .lg-step { font: 12.5px ui-monospace, Consolas, monospace; color: var(--muted); text-align: right; }
+  .lg-read { font: 700 15px ui-monospace, Consolas, monospace; }
+  .lg-digits { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: flex-start; }
+  .lg-dig { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .lg-cells { display: flex; gap: 1px; padding: 2px; border: 1px solid var(--axis); border-radius: 4px; background: var(--sunk); }
+  .lg-c { width: 9px; height: 15px; border-radius: 2px; border-bottom: 3px solid transparent; }
+  .lg-c.s1 { background: var(--c1); }
+  .lg-c.s0 { background: var(--c0); box-shadow: inset 0 0 0 1px var(--axis); }
+  .lg-c.gap { border-bottom-color: var(--bad); }
+  .lg-c.fuel { border-bottom-color: var(--caution); }
+  .lg-cap { font: 600 11.5px/1.2 system-ui, sans-serif; color: var(--ink2); white-space: nowrap; }
+  .lg-tag { font-size: 13px; white-space: nowrap; }
+  .lg-tag.overflow { color: var(--good); font-weight: 600; }
+  .lg-tag.drop { color: var(--bad); font-weight: 600; }
+  .lg-tag.carry { color: var(--muted); }
+  .lg-legend { font-size: 12.5px; color: var(--muted); margin-top: 8px; line-height: 1.9; }
+  .lg-legend i { display: inline-block; width: 16px; height: 0; border-bottom: 3px solid; vertical-align: 3px; margin: 0 4px 0 10px; }
+  .lg-legend i:first-child { margin-left: 0; }
+  @media (max-width: 600px) {
+    .lg-grid { grid-template-columns: 4.4em 3.6em minmax(0, 1fr); gap: 2px 10px; }
+    .lg-grid .lg-h:nth-child(4) { display: none; }
+    .lg-digits { grid-column: 1 / -1; margin: 0 0 10px; }
+    .lg-c { width: 7px; }
+  }
+  .lg-legend .lg-c { display: inline-block; vertical-align: -3px; margin: 0 4px 0 10px; border-bottom: 0; height: 13px; }
+
+  .moves { margin: 8px 0; }
+  .moves li { margin: 8px 0; }
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); background: var(--surface); border-radius: 10px; padding: 12px 16px; margin: 30px 0 14px; }
+  .kills .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 2px; }
+  .kills ul { margin: 6px 0; }
+  .kills code { font-size: .82em; }
+  .recap { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 16px; margin: 14px 0; }
+  .recap .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .recap ol { margin: 6px 0 2px; }
+
+  /* a drill whose run must not show its row count or last row before the reveal */
+  .nospoil .tm-predict:not([data-revealed]) .tm-plinked .tm-label,
+  .nospoil .tm-predict:not([data-revealed]) .tm-plinked .tm-status > :nth-child(-n+2),
+  .nospoil .tm-predict:not([data-revealed]) .tm-plinked .tm-controls button:nth-of-type(5) { visibility: hidden; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 3 · Counters on the tape</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/02-02-compression.html" title="Compression and shift rules">← Module 2</a><a class="ui-btn" href="/busy-beaver/learn/04-04-bells.html" title="Bells eating counters">Module 4 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 3 of 8 · about 15 minutes</div>
+<h1>Counters: digits as cells, words, and blocks with fuel</h1>
+<div class="answer"><b>The answer</b>
+  <p>A counter is a binary number written on the tape that the machine keeps adding 1 to. Adding 1 works as on paper: the head walks over the low 1-digits, turns the first 0-digit into a 1, and turns the 1-digits it walked over into 0s. Machines differ in how they write a digit: as one cell, as a two-cell word, or (in #11) as two runs, where the number of <code>01</code>s is fuel that every carry burns.</p>
+</div>
+
+<!-- ============================================================== overview -->
+<div class="trio">
+  <div data-tm-tape data-opts='{"tm":"1RB1LA_0LA0RB","step":37,"window":[-5,2],"mark":{"digits":"counter reading"},"label":"Digit = one cell. The Example.v counter at step 37 reads 1011 = 11, lowest digit on the right, next to the head."}'></div>
+  <div data-phone-window="[9,19]" data-tm-tape data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","step":829,"window":[3,21],"mark":{"digits":"count"},"blocks":true,"compress":{"words":["10","00","11"]},"label":"Digit = two cells (11 is 1, 00 is 0). W5-3 at step 829: 11 11 00 11, lowest digit first, next to the head. That is 1011 = 11."}'></div>
+  <div class="k11tape" data-step="283" data-window="[-12,20]" data-label="Digit = a run of 10s, then a run of 01s; a 00 between them makes it a 0. The number of 01s is the digit's fuel. #11 at step 283 reads 01. The chips under the tape spell it out."></div>
+  <p class="trio-note">In all three, the lowest digit is the digit nearest the head: every count starts there.</p>
+</div>
+
+<!-- ============================================================== 1 -->
+<section class="beat" id="cells"><h2><span class="num">1</span>Digits as cells: the Example.v counter</h2>
+<p><code>1RB1LA_0LA0RB</code> is the counter from busycoq's tutorial file Example.v. Whenever B stands on cell 1 reading a blank, the cells to its left spell a binary number, and brackets appear under them. From a blank tape, every step:</p>
+<div data-tm-run data-opts='{"tm":"1RB1LA_0LA0RB","rows":"each","count":14,"window":[-4,2],"mark":{"digits":"counter reading"},"table":true,"speed":2,"title":"From a blank tape, every step (steps 0 to 13)"}'></div>
+<p>It reads 1 at step 1, 10 at step 5, 11 at step 7 and 100 at step 13. Steps 7 to 13 add 1 to 11: B0 turns the head left as A, A walks over the 1s and leaves them alone (A1 = 1LA), writes a 1 on the first 0 (A0 = 1RB), and B walks back right turning each 1 into 0 (B1 = 0RB).</p>
+<p>That is the whole carry. Over k low 1s it takes 2k + 2 steps: 6 here.</p>
+
+<div data-tm-run data-opts='{"tm":"1RB1LA_0LA0RB","rows":{"decoded":"counter reading"},"count":15,"window":[-5,2],"grow":false,"speed":2,"title":"Only the readings (steps 1 to 51)"}'></div>
+<p>Keep just the reading moments and the history is binary counting: 1, 10, 11, 100, … up to 1111 at step 51. Tap a row to see its tape.</p>
+
+<div data-tm-run data-opts='{"tm":"1RB1LA_0LA0RB","rows":{"record":"L"},"count":10,"window":[-11,2],"grow":false,"speed":2,"title":"Each new cell on the left (steps 3 to 4,082)"}'></div>
+<p>The tape grows only when every digit is 1 and the carry runs off the end. That happens at steps 3, 10, 25, 56, 119, … (the n-th new cell at step 2<sup>n+2</sup> − n − 4), so each new cell takes about twice as long as the last. After 100,000 steps the tape spans just 16 cells.</p>
+<p class="links"><a href="/busy-beaver/unavailable.html">the carry as a Coq lemma, step by step</a><a href="/busy-beaver/tools/explorer/index.html#preset=examplev-counter">this counter in the explorer</a></p>
+
+<div class="nospoil" data-tm-predict data-opts='{"id":"m3-ex-next","prompt":"<b>Drill 1.</b> The Example.v counter reads <b>1111</b> (15) at step 51. What does it read the next time B stands just right of the digits, and at which step?","input":{"kind":"pair","labels":["reads (in decimal)","at step"]},"answer":[16,61],"run":{"tm":"1RB1LA_0LA0RB","from":51,"rows":"each","count":11,"window":[-6,2],"mark":{"digits":"counter reading"},"speed":2},"revealTo":{"row":10},"actual":["decoded.value","step"],"explain":"A walks over the four 1s, writes a 1 on the blank cell −4, and B walks back turning the four 1s into 0s: 2·4 + 2 = 10 steps. So at step 61 it reads 10000, which is 16.","checkId":"C-M3-1, C-M3-4"}'></div>
+</section>
+
+<!-- ============================================================== 2 -->
+<section class="beat" id="words"><h2><span class="num">2</span>Digits as words: W5-3's counter</h2>
+<p>W5-3 (<code>1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</code>, one of our kills) keeps its counter right of the head. A digit is two cells: <code>11</code> is 1 and <code>00</code> is 0. The lowest digit is again the one next to the head, so the number reads backwards: <code>11 11 00 11</code> is 1011 in binary, 11.</p>
+<div data-phone-window="[9,19]" data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":509,"rows":{"decoded":"count"},"count":8,"window":[3,21],"grow":false,"view":"both","compress":{"words":["10","00","11"]},"speed":2,"title":"W5-3: one row per count (steps 509 to 829)"}'></div>
+<p>The rows read 4, 5, 6, … 11. Between two rows the head makes a trip into the word on the left (module 4) and adds 1 on its way back.</p>
+
+<div id="w53carry"></div>
+<p>Rows 606 to 636 are the trip into the word on the left (module 4); the jump buttons skip it. Each step below names the rule the widget shows as <b>rule used</b> on that row:</p>
+<ul class="steps-list">
+  <li><span class="st">637–644</span> A1 (= 1RA): A walks right over cells 10 to 17 without changing them: the two 1s just left of the counter, then the counter's six 1s.</li>
+  <li><span class="st">645–646</span> A0 writes a 1 on cell 18, then B0 writes a 1 on cell 19 and turns the head back left: a new digit <code>11</code> on the blank cells just past the counter.</li>
+  <li><span class="st">647</span> C1 steps back over cell 18 and leaves its 1.</li>
+  <li><span class="st">648–655</span> D1 (= 0LD): D walks back left and turns cells 17 … 10 into 0s. That clears the counter, and also the two 1s left of it.</li>
+  <li><span class="st">656–661</span> the head writes those two 1s back (now on cells 9 and 10) and stops as B on cell 11, where the counter reads 8.</li>
+</ul>
+<p>So <code>11 11 11</code> (7) became <code>00 00 00 11</code> (8). It is the Example.v carry, mirrored and two cells at a time. W5-3's Coq file calls this counter busycoq's <code>BinInc [1;1] N</code>, where <code>[1;1]</code> is the word for digit 1.</p>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC&amp;steps=1e5&amp;style=explore">W5-3 in the explorer</a></p>
+
+<div class="nospoil" data-phone-window="[9,19]" data-tm-predict data-opts='{"id":"m3-w53-12","prompt":"<b>Drill 2.</b> At step 829 W5-3&#39;s counter reads 11, written <code>11 11 00 11</code> (lowest digit first). Tap the cells to write 12 the same way.","input":{"kind":"cells","length":8},"answer":"00001111","run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","from":829,"rows":{"decoded":"count"},"count":2,"window":[3,21],"speed":1},"revealTo":{"row":1},"actual":"decoded.cells","explain":"Adding 1 to 1011 walks over the two low 1-digits and flips the 0 above them: <code>11 11 00</code> becomes <code>00 00 11</code>. The top digit stays <code>11</code>. 12 is 1100 in binary.","checkId":"C-M3-2, C-M3-5"}'></div>
+</section>
+
+<!-- ============================================================== 3 -->
+<section class="beat" id="fuel"><h2><span class="num">3</span>Digits as blocks with fuel: #11</h2>
+<p>#11 (<code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code>, accepted upstream) writes each digit as two runs: <code>10 10 …</code>, then <code>01 01 …</code>. If the runs touch, the digit is 1. If a <code>00</code> sits between them, the digit is 0. The number of <code>01</code>s is the digit's <b>fuel</b>.</p>
+<p>Two more parts frame the digits. The <b>start</b> is a fixed <code>10 01</code> at the far left. The <b>end block</b> is <code>(10)^a 000 (10)^b</code>, between the low digit and the head: a run of 10s, three blanks, another run of 10s. (<code>(10)^4</code> means <code>10</code> four times.)</p>
+<div class="pair">
+  <div class="k11tape" data-step="283" data-window="[-12,24]" data-label="Before one carry, step 283: reads 01."></div>
+  <div class="k11tape" data-step="383" data-window="[-12,24]" data-label="After it, step 383: reads 10."></div>
+</div>
+<p>Compare the chips. Both digits the carry touched have one <code>01</code> less (fuel 3 → 2 and 2 → 1). The digit that flipped to 1 lost its <code>00</code> and gained a <code>10</code>.</p>
+<p>The end block grew too, from <code>(10)^4 000 10</code> to <code>(10)^5 000 (10)^3</code>, and the head now stands 4 cells further right. That happens on every carry, so #11's tape keeps widening.</p>
+
+<div id="k11carry"></div>
+<p>The jump buttons stop at each part of the carry:</p>
+<ul class="steps-list">
+  <li><span class="st">284–298</span> a short dip left into the end block's <code>000</code>, and back to the right edge.</li>
+  <li><span class="st">299–328</span> one long walk left, 30 cells. The head rewrites the cells it crosses, so for a while the digits look scrambled (watch the history): the end block's <code>10</code>s turn into <code>01</code>s, for example. It stops on the <code>00</code> of the 0-digit, at cell −8.</li>
+  <li><span class="st">328–330</span> the flip (rules D0, A0, B1): that <code>00</code> becomes <code>10</code>, so the digit now reads 1.</li>
+  <li><span class="st">331–383</span> back to the right in a zig-zag: two cells back after every four or eight forward, until step 372, then a straight run to the new edge. On the way the head unscrambles each digit. The flipped digit gets its <code>01</code>s back, the low digit comes back as a 0 (<code>10 00 01</code>), and the end block's <code>01</code>s turn back into <code>10</code>s.</li>
+</ul>
+
+<div class="nospoil fit in-predict" style="--n:40" data-tm-predict data-opts='{"id":"m3-k11-drop","prompt":"<b>Drill 3.</b> At step 383 #11 reads <b>10</b>. Its low digit is <code>10 00 01</code>: a 0 with fuel 1. After the next carry, how many digits does the counter have?","input":{"kind":"choice","options":[{"label":"1 digit","value":1},{"label":"2 digits","value":2},{"label":"3 digits","value":3}]},"answer":1,"run":{"tm":"1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---","from":383,"rows":{"decoded":"K"},"count":2,"window":[-12,27],"speed":1},"revealTo":{"row":1},"actual":"decoded.digits.length","explain":"The carry flips the low digit to 1 and spends its last <code>01</code>. What is left is <code>10 10</code>, with nothing to mark where the digit ends, so it merges into the 10s of the end block (a <b>drop</b>). At step 483 the counter reads 1, not 11: the drop lost the 1 it had just written.","checkId":"C-M3-3, C-M3-6"}'></div>
+
+<div id="ledger"></div>
+<p>Each row is one counter reading. Three kinds of move take one row to the next:</p>
+<ul class="moves">
+  <li><b>Carry</b>: the add-1 you just watched. Every digit it touches burns one <code>01</code>.</li>
+  <li><b>Overflow</b> (steps 752, 1,393, 2,146): every digit is 1, so a different move runs. It swaps the two halves of every digit (<code>10</code>s become <code>01</code>s and <code>01</code>s become <code>10</code>s), and the end block's <code>10</code>s become the fuel of a new low digit. The counter reads 0…01, one digit longer. This is where fuel comes from: at step 483 the end block holds <code>(10)^8</code>, and at step 752 the new low digit has fuel 8.</li>
+  <li><b>Drop</b> (steps 908, 2,854): the carry flips a 0-digit that has fuel 1, which spends its last <code>01</code>. A digit with no <code>01</code>s is just <code>10</code>s, so it merges into the <code>10</code>s on its right, and the counter loses the 1 it just wrote. At step 752 it reads 01; adding 1 should give 10, but at step 908 it reads 0. In the same way 011 (step 2,546) plus 1 reads 00 (step 2,854), not 100.</li>
+</ul>
+<p>So #11 is not a plain binary counter: its digits come and go. Its rules fail only if a carry reaches a 0-digit with no fuel at all, and its proof is an invariant showing that never happens (module 5).</p>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---&amp;steps=1e5&amp;rows=rec:R">#11 in the explorer (right-record rows)</a></p>
+</section>
+
+<!-- ============================================================== 4 -->
+<section class="beat" id="name"><h2><span class="num">4</span>Where "Skelet 1-like" comes from</h2>
+<p>The holdout list files #11, #3 and W4-3 under the class "Skelet 1-like Class 2". The name comes from Skelet #1, the BB(5) machine <code>1RB1RD_1LC0RC_1RA1LD_0RE0LB_---1RC</code>, which busycoq proves never halts in Skelet1.v, following <a href="https://www.sligocki.com/2023/03/13/skelet-1-infinite.html">sligocki's 2023 post</a>.</p>
+<p>What they share: the post shows that Skelet #1 spends almost all its time counting up a base-4 counter whose digits (C0 to C3 in Skelet1.v) are short blocks of cells, with filler between them. Its digits are blocks of cells, not single cells, and so are the digits of #11 (two runs), #3 (pairs of blocks) and W4-3 (a chain of digit blocks).</p>
+<p>W4-3's counter counts in base 3 and lives in its defects (module 2 shows them). Its proof is a 2,583-line Coq file, so this guide stops at the name.</p>
+<p class="links"><a href="/busy-beaver/learn/02-02-compression.html">W4-3's defects in module 2</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---&amp;steps=1e7&amp;bg=kb:2:0">W4-3 with the background removed, in the explorer</a></p>
+</section>
+
+<aside class="kills"><span class="tag">From our kills</span>
+  <ul>
+    <li><b>#11</b> <code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code>: the fuel counter of section 3. Proved in Coq and accepted upstream (busycoq PR #16, merged 2026-10-13).</li>
+    <li><b>#3</b> <code>1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---</code>: a binary counter that counts <i>down</i>. Its digits are pairs of blocks, and each decrement lengthens one block and shortens the other in every pair it touches (busycoq PR #15, merged 2026-10-13).</li>
+    <li><b>W5-3</b>: the word counter of section 2. Module 4 shows the bell that eats it.</li>
+    <li><b>W4-3</b>: a base-3 counter kept in its defects (section 4; busycoq PR #17, open).</li>
+  </ul>
+  <p class="links"><a href="/busy-beaver/machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/index.html">#11 machine page</a><a href="/busy-beaver/machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/index.html">#3 machine page</a><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/index.html">W5-3 machine page</a><a href="/busy-beaver/machines/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---/index.html">W4-3 machine page</a></p>
+</aside>
+
+<div class="recap"><span class="tag">Recap</span>
+  <ol>
+    <li>A counter is a binary number on the tape. Adding 1: walk over the low 1-digits, flip the first 0-digit to 1, turn the walked-over digits to 0. The lowest digit sits next to the head.</li>
+    <li>A digit can be one cell (Example.v), a two-cell word <code>11</code>/<code>00</code> (W5-3), or a run of 10s plus a run of 01s (#11). In #11 every carry burns one <code>01</code> of each digit it touches, an overflow turns 10s into fresh fuel, and a digit flipped with its last <code>01</code> drops out.</li>
+    <li>Proofs track the digits (and in #11 their fuel), not the cells. The tape can still grow: Example.v gains a cell only when it overflows (16 cells after 100,000 steps), but #11's end block grows on every carry (647 cells after 100,000 steps).</li>
+  </ol>
+</div>
+
+<nav class="pager"><a href="/busy-beaver/learn/02-02-compression.html">← Module 2: Compression</a><a href="/busy-beaver/learn/index.html">guide home</a><a href="/busy-beaver/learn/04-04-bells.html">Module 4: Bells eating counters →</a></nav>
+
+<footer class="checked">
+  <b>checked:</b> every tape on this page is simulated in the page by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). When it loads, the page re-derives the ledger rows and tags, the count readings, the rule used at each of W5-3's steps 637–661, the head path of #11's carry 283 → 383, and every #11 chip (rebuilt into cells and compared with the tape), and logs an error if any differs.
+  Simulated with <code>tools/sim.py</code> by <code>python3 -B learn/checks/verify_plan.py</code>: C-M3-1 (Example.v readings 1 … 10000 at steps 1 … 61; new left cells at 2<sup>n+2</sup> − n − 4) · C-M3-2 (11 and 12 as words; the tape right of the head at step 905) · C-M3-3 (#11's readings at steps 142 … 1064).
+  And by <code>python3 -B learn/checks/verify_m3.py</code> (results in <code>learn/checks/results_m3.json</code>): C-M3-4 (Example.v readings consecutive to step 5,000, each carry 2k + 2 steps, the rules of steps 8–13, every new left cell an all-1 counter, 16 cells at step 100,000) · C-M3-5 (W5-3's count rows from step 451 to 905 and their digits; the rule used at steps 637–661 and the cells it leaves: A1 on cells 10–17, A0 and B0 on 18–19, C1, D1 on 17 … 10, B on cell 11 at 661) · C-M3-6 (#11's 17 readings to step 3,626 with every digit's fuel and the end block's a, b; the carry 283 → 383: its head path leg by leg, the flip of cells −8 and −7 at steps 328–330, the end block's cells at 328 and 375; the ledger tags; the overflows at 752, 1,393 and 2,146 follow rule O, so the new low digit's fuel is the old a; the drops 752 → 908, 2546 → 2854 and 383 → 483; the head 4 cells further right after every carry to step 3,626, e.g. cells 19, 23, 27 at steps 283, 383, 483) · C-M3-7 (tape spans at 10<sup>4</sup>, 10<sup>5</sup>, 10<sup>6</sup> steps: Example.v 13, 16, 19; W5-3 83, 153, 329; #11 185, 647, 2,125).
+  Cited, not simulated: #11's digit form, start and end block, the carry and overflow rules (M, O), drop and failure mode (its <code>submission/proof.md</code> §1, §2 and §2.4); W4-3's base-3 counter, chain of digit blocks and .v length (its <code>submission/proof.md</code>); #3's pairs of blocks (its <code>how_proved.md</code>); classes (STATUS.md 2026-10-10 lines for #11 and #3; W4-3's <code>submission/proof.md</code>) and pull requests (each <code>status.json</code>); <code>BinInc [1;1]</code> (W5-3's .v line 39, <code>Definition C n := BinInc [1;1] n</code>); Skelet #1's string and its blocks C0–C3 (<code>vendor/busycoq/verify/Skelet1.v</code>); its base-4 counter of blocks with filler (sligocki's post, read 2026-10-13).
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, mountTape, decoders, Run, viewOf } from './tm.js';
+
+const EX = '1RB1LA_0LA0RB';
+const W53 = '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC';
+const K11 = '1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---';
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const fail = (msg) => { console.error('m3 page check: ' + msg); (window.__tmErrors ||= []).push(msg); };
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+// ---------------------------------------------------------------- decoders for this page (registered before autoMount)
+// Example.v counter: B on cell 1 reading 0; one bracket per digit cell, the lowest digit marked.
+decoders['counter reading'] = (v) => {
+  const d = decoders.excounter(v);
+  if (!d || !d.bits) return null;
+  const n = d.bits.length;
+  const marks = [...d.bits].map((b, i) => ({ from: 1 - n + i, to: 2 - n + i, label: i === n - 1 ? `${b} low` : b }));
+  return { bits: d.bits, value: d.value, label: `${d.bits} = ${d.value}`, text: `${d.bits} in binary = ${d.value} (lowest digit on the right, next to the head)`, marks };
+};
+// W5-3 count configuration: ... 0 1 1 B> 0 C(N), C(N) = digits 11 / 00, lowest first (learn/checks/verify_m3.py count_decode).
+decoders.count = (v) => {
+  if (v.state !== 'B' || v.read(v.pos) !== 0) return null;
+  const h = v.pos;
+  if (v.read(h - 3) !== 0 || v.read(h - 2) !== 1 || v.read(h - 1) !== 1) return null;
+  let b = v.hi;
+  while (b > h && v.read(b) === 0) b--;
+  const R = b - h;
+  if (R <= 0 || R % 2 || R > 104 || v.read(b) !== 1 || v.read(b - 1) !== 1) return null;
+  const digs = [];
+  for (let i = 0; i < R / 2; i++) { const c0 = v.read(h + 1 + 2 * i), c1 = v.read(h + 2 + 2 * i); if (c0 !== c1) return null; digs.push(c0); }
+  let N = 0;
+  for (let i = digs.length - 1; i >= 0; i--) N = 2 * N + digs[i];
+  const words = digs.map((x) => (x ? '11' : '00'));
+  const marks = digs.map((x, i) => ({ from: h + 1 + 2 * i, to: h + 3 + 2 * i, label: i === 0 ? `${x} low` : String(x) }));
+  return { N, cells: words.join(''), label: `N = ${N}`, text: `${words.join(' ')}, lowest digit first: ${N.toString(2)} in binary = ${N}`, marks };
+};
+// #11 counter configuration (tm.js k11) with brackets 'bit · fuel v', plus the fixed start and the end block.
+function kView(v, d) {
+  if (!d || !d.digits.length) return null;
+  const first = d.digits[0].from, last = d.digits[d.digits.length - 1].to;
+  const marks = [{ from: first - 4, to: first, label: 'start', cls: 'zone' },
+    ...d.digits.map((g) => ({ from: g.from, to: g.to, label: `${g.bit} · fuel ${g.v}` })),
+    { from: last, to: v.pos, label: 'end block', cls: 'zone' }];
+  return { digits: d.digits, bits: d.bits, a: d.a, b: d.b, label: `reads ${d.bits}`, marks,
+    text: `reads ${d.bits}: ${d.digits.map((g) => `${g.bit} with fuel ${g.v}`).join(', ')} (high digit first)` };
+}
+decoders.K = (v) => kView(v, decoders.k11(v));                                        // rows of a run: right records in B
+decoders['K-static'] = (v) => kView(v, decoders.k11(Object.assign({}, v, { record: 'R' })));   // one static tape known to be a K configuration
+
+// ---------------------------------------------------------------- #11 static tapes: small cells, start to head, and one chip per part
+const pw = (w, n) => (n === 1 ? w : `(${w})^${n}`);
+function kParts(d) {
+  const parts = [{ code: '10 01', cap: 'start' }];
+  for (const g of d.digits) {
+    const t = [];
+    if (g.u) t.push(pw('10', g.u));
+    if (!g.bit) t.push('00');
+    if (g.v) t.push(pw('01', g.v));
+    parts.push({ code: t.join(' '), cap: `${g.bit} · fuel ${g.v}`, cls: 'dig' });
+  }
+  const e = [];
+  if (d.a) e.push(pw('10', d.a));
+  e.push('000');
+  if (d.b) e.push(pw('10', d.b));
+  parts.push({ code: e.join(' '), cap: 'end block' }, { code: 'B>', cap: 'head', cls: 'head' });
+  return parts;
+}
+const expand = (code) => code.split(' ').map((t) => { const m = /^\((\d+)\)\^(\d+)$/.exec(t); return m ? m[1].repeat(+m[2]) : t === 'B>' ? '' : t; }).join('');
+const chips = {};
+for (const host of document.querySelectorAll('.k11tape')) {
+  const step = +host.dataset.step, win = JSON.parse(host.dataset.window);
+  host.classList.add('fit');
+  host.style.setProperty('--n', win[1] - win[0] + 1);
+  const t = mountTape(host, { tm: K11, step, window: win, mark: { digits: 'K-static' }, label: host.dataset.label });
+  try {
+    const v = viewOf(t.config), d = decoders['K-static'](v);
+    if (!d) throw new Error(`no counter reading at step ${step}`);
+    const parts = kParts(d), line = el('div', 'kline');
+    for (const p of parts) { const s = el('div', 'seg' + (p.cls ? ' ' + p.cls : '')); s.append(el('code', null, p.code), el('span', null, p.cap)); line.append(s); }
+    t.el.insertBefore(line, t.el.querySelector('.tm-status'));
+    // the chips, spelled out, must be the tape from its first 1 up to the head
+    let a = v.lo; while (v.read(a) === 0) a++;
+    const tape = [...v.cells(a, v.pos - 1)].join('');
+    if (expand(parts.map((p) => p.code).join(' ')) !== tape) fail(`#11 chips at ${step} do not match the tape`);
+    if (win[1] < v.pos) fail(`#11 tape at ${step}: the head (cell ${v.pos}) is outside the window`);
+    chips[step] = parts.map((p) => [p.code, p.cap]);
+  } catch (e) { fail('#11 tape: ' + e.message); }
+}
+if (!same(chips[283] && chips[283].map((x) => x[0]), ['10 01', '00 (01)^3', '10 (01)^2', '(10)^4 000 10', 'B>'])) fail('#11 chips at 283 ' + JSON.stringify(chips[283]));
+if (!same(chips[383] && chips[383].map((x) => x[0]), ['10 01', '10 (01)^2', '10 00 01', '(10)^5 000 (10)^3', 'B>'])) fail('#11 chips at 383 ' + JSON.stringify(chips[383]));
+
+// ---------------------------------------------------------------- step-through runs with jump buttons
+function withJumps(ctrl, stops) {
+  const bar = el('div', 'jumps');
+  bar.append(el('span', 'jl', 'jump to'));
+  const btns = stops.map(([step, txt]) => {
+    const b = el('button');
+    b.type = 'button';
+    b.title = `go to step ${step}`;
+    b.append(el('b', null, String(step)), txt);
+    b.addEventListener('click', () => { ctrl.pause(); ctrl.jump(step); });
+    bar.append(b);
+    return [step, b];
+  });
+  ctrl.el.querySelector('.tm-controls').after(bar);
+  ctrl.on('row', (r) => { for (const [s, b] of btns) b.classList.toggle('on', s === r.step); });
+}
+const w53 = mountRun(document.getElementById('w53carry'), { tm: W53, from: 605, rows: 'each', count: 57, window: [-1, 20], mark: { digits: 'count' },
+  table: true, speed: 6, title: 'One count, every step: 7 becomes 8 (steps 605 to 661)' });
+withJumps(w53, [[605, 'reads 7'], [636, 'trip done'], [644, 'A crossed the 1s'], [646, 'wrote 11'], [655, 'D cleared'], [661, 'reads 8']]);
+
+const carryHost = document.getElementById('k11carry');
+carryHost.classList.add('fit');
+carryHost.style.setProperty('--n', 36);
+const carry = mountRun(carryHost, { tm: K11, from: 283, rows: 'each', count: 101, window: [-12, 23], mark: { digits: 'K' }, speed: 10,
+  title: 'The same carry, every step (steps 283 to 383)' });
+withJumps(carry, [[283, 'reads 01'], [290, 'dip'], [298, 'walk left'], [328, 'far left'], [330, 'flipped'], [372, 'straight run'], [383, 'reads 10']]);
+
+// ---------------------------------------------------------------- the #11 ledger: one row per counter configuration, real cells
+function ledger(target, { tm, from, to }) {
+  const run = new Run(tm);
+  const pred = (v) => decoders.k11(v) != null;
+  const rows = [];
+  while (run.t < to && run.until(pred, { max: to - run.t }) !== null) {
+    if (run.t < from) continue;
+    const d = decoders.k11(run.view());
+    rows.push({ step: run.t, bits: d.bits, a: d.a, b: d.b, digits: d.digits.map((g) => ({ u: g.u, bit: g.bit, v: g.v, cells: [...run.cells(g.from, g.to - 1)] })) });
+  }
+  const box = el('div', 'ledger');
+  box.append(el('div', 'lg-title', `#11, one row per counter reading (steps ${rows[0].step.toLocaleString('en-US')} to ${rows[rows.length - 1].step.toLocaleString('en-US')})`),
+    el('div', 'lg-label', 'Each box is one digit, drawn from the real tape cells, high digit on the left. Under each box: its bit and its fuel.'));
+  const grid = el('div', 'lg-grid');
+  grid.append(el('span', 'lg-h', 'step'), el('span', 'lg-h', 'reads'), el('span', 'lg-h', 'move'), el('span', 'lg-h', 'digits (high … low)'));
+  const tags = {};
+  rows.forEach((r, i) => {
+    const dm = i ? r.digits.length - rows[i - 1].digits.length : null;
+    const tag = dm === null ? '' : dm === 1 ? 'overflow' : dm === -1 ? 'drop' : 'carry';
+    if (tag) tags[r.step] = tag;
+    const ds = el('span', 'lg-digits');
+    for (const g of r.digits) {
+      const dig = el('span', 'lg-dig'), cells = el('span', 'lg-cells');
+      g.cells.forEach((c, j) => {
+        const part = j < 2 * g.u ? '' : g.bit === 0 && j < 2 * g.u + 2 ? ' gap' : ' fuel';
+        cells.append(el('span', `lg-c s${c}${part}`));
+      });
+      cells.title = `${g.bit === 1 ? '(10)^' + g.u + ' (01)^' + g.v : '(10)^' + g.u + ' 00 (01)^' + g.v}`;
+      dig.append(cells, el('span', 'lg-cap', `${g.bit} · fuel ${g.v}`));
+      ds.append(dig);
+    }
+    const words = { overflow: 'overflow, +1 digit', drop: 'drop, −1 digit', carry: 'carry', '': 'start' };
+    grid.append(el('span', 'lg-step', r.step.toLocaleString('en-US')), el('span', 'lg-read', r.bits), el('span', `lg-tag ${tag || 'carry'}`, words[tag]), ds);
+  });
+  box.append(grid);
+  const lg = el('div', 'lg-legend');
+  const sw = (color, txt) => { const i = el('i'); i.style.borderColor = color; lg.append(i, txt); };
+  sw('var(--caution)', 'fuel: the 01s');
+  sw('var(--bad)', 'the 00 that makes a digit 0');
+  lg.append(el('span', 'lg-c s1'), '1', el('span', 'lg-c s0'), '0');
+  box.append(lg);
+  target.append(box);
+  return { rows, tags };
+}
+
+// ---------------------------------------------------------------- page self-checks (the same facts as learn/checks/verify_m3.py)
+try {
+  const L = ledger(document.getElementById('ledger'), { tm: K11, from: 483, to: 2854 });
+  const want = { 752: 'overflow', 908: 'drop', 1064: 'carry', 1393: 'overflow', 1601: 'carry', 1765: 'carry', 2146: 'overflow', 2382: 'carry', 2546: 'carry', 2854: 'drop' };
+  if (!same(L.rows.map((r) => r.step), [483, 752, 908, 1064, 1393, 1601, 1765, 2146, 2382, 2546, 2854])) fail('ledger steps ' + JSON.stringify(L.rows.map((r) => r.step)));
+  if (!same(L.tags, want)) fail('ledger tags ' + JSON.stringify(L.tags));
+  const at = (t) => L.rows.find((r) => r.step === t);
+  const dg = (t) => at(t).digits.map((g) => [g.u, g.bit, g.v]);
+  if (!same(dg(2546), [[0, 0, 1], [3, 1, 6], [9, 1, 8]]) || !same(dg(2854), [[4, 0, 5], [9, 0, 7]])) fail('drop 2546 -> 2854 differs');
+  if (at(752).bits !== '01' || at(908).bits !== '0' || at(2546).bits !== '011' || at(2854).bits !== '00') fail('readings around the drops differ');
+  // overflow = rule O: digit i's fuel = old u_i, the new low digit's fuel = old a, the end block becomes (b + 3, 1)
+  for (const [t0, t1] of [[483, 752], [1064, 1393], [1765, 2146]]) {
+    const o = at(t0), n = at(t1), ds = o.digits;
+    const want1 = [[0, 0, ds[0].u], ...ds.slice(1).map((g, i) => [ds[i].v - 1, 0, g.u]), [ds[ds.length - 1].v, 1, o.a]];
+    if (!same(dg(t1), want1) || n.a !== o.b + 3 || n.b !== 1) fail(`overflow ${t0} -> ${t1} is not rule O`);
+  }
+  if (at(483).a !== 8 || !same(dg(752)[1], [2, 1, 8])) fail('fuel 8 at 752 is not the end block (10)^8 of 483');
+} catch (e) { fail('ledger: ' + e.message); }
+{
+  // count rows 451..905 (C-M3-5), K digits at 283 and 383 (C-M3-6), readings 1..51 (C-M3-4)
+  const hits = (tm, dec, a, b) => { const r = new Run(tm); r.stepTo(a - 1); const out = []; while (r.t < b) { r.step(); const d = decoders[dec](r.view()); if (d) out.push([r.t, d]); } return out; };
+  const cnt = hits(W53, 'count', 451, 905).map(([t, d]) => [t, d.N]);
+  if (!same(cnt, [[451, 7], [509, 4], [533, 5], [569, 6], [605, 7], [661, 8], [709, 9], [769, 10], [829, 11], [905, 12]])) fail('W5-3 count rows ' + JSON.stringify(cnt));
+  const k = hits(K11, 'K', 283, 383).map(([t, d]) => [t, d.digits.map((g) => [g.u, g.bit, g.v, g.from, g.to]), d.a, d.b]);
+  if (!same(k, [[283, [[0, 0, 3, -8, 0], [1, 1, 2, 0, 6]], 4, 1], [383, [[1, 1, 2, -8, -2], [1, 0, 1, -2, 4]], 5, 3]])) fail('#11 K at 283 / 383 ' + JSON.stringify(k));
+  const ex = hits(EX, 'counter reading', 1, 61).map(([t, d]) => [t, d.bits]);
+  if (!same(ex.map((x) => x[0]), [1, 5, 7, 13, 15, 19, 21, 29, 31, 35, 37, 43, 45, 49, 51, 61]) || ex[10][1] !== '1011' || ex[15][1] !== '10000') fail('Example.v readings ' + JSON.stringify(ex));
+  // W5-3, steps 637..661: the rule each row shows as 'rule used' (state and symbol read at the step before) and its cell
+  const r = new Run(W53); r.stepTo(636); const used = {};
+  while (r.t < 661) { const v = r.view(); const s = v.state + v.read(v.pos), p = v.pos; r.step(); used[r.t] = s + '@' + p; }
+  const wantUsed = {};
+  for (let t = 637; t <= 644; t++) wantUsed[t] = 'A1@' + (t - 627);
+  Object.assign(wantUsed, { 645: 'A0@18', 646: 'B0@19', 647: 'C1@18' });
+  for (let t = 648; t <= 655; t++) wantUsed[t] = 'D1@' + (665 - t);
+  for (let t = 637; t <= 655; t++) if (used[t] !== wantUsed[t]) fail(`W5-3 step ${t}: rule used ${used[t]}, page says ${wantUsed[t]}`);
+  const v661 = r.view();
+  if (v661.state !== 'B' || v661.pos !== 11 || [...v661.cells(8, 10)].join('') !== '011') fail('W5-3 at 661 is not B on cell 11 after 0 1 1');
+  // #11, steps 283..383: the head path leg by leg (verify_m3.py want_legs)
+  const q = new Run(K11); q.stepTo(283); const path = [[283, q.view().pos]];
+  while (q.t < 383) { q.step(); const v = q.view(); path.push([q.t, v.pos, [...v.cells(-8, -7)].join('')]); }
+  const legs = []; let st = path[0], dir = 0;
+  for (let i = 1; i < path.length; i++) {
+    const d = path[i][1] > path[i - 1][1] ? 1 : -1;
+    if (!dir) dir = d;
+    if (d !== dir) { legs.push([st[0], path[i - 1][0], st[1], path[i - 1][1]]); st = path[i - 1]; dir = d; }
+  }
+  legs.push([st[0], path[path.length - 1][0], st[1], path[path.length - 1][1]]);
+  const wantLegs = [[283, 284, 19, 20], [284, 290, 20, 14], [290, 298, 14, 22], [298, 328, 22, -8], [328, 336, -8, 0], [336, 338, 0, -2], [338, 346, -2, 6],
+    [346, 348, 6, 4], [348, 352, 4, 8], [352, 354, 8, 6], [354, 358, 6, 10], [358, 360, 10, 8], [360, 364, 8, 12], [364, 366, 12, 10], [366, 370, 10, 14],
+    [370, 372, 14, 12], [372, 383, 12, 23]];
+  if (!same(legs, wantLegs)) fail('#11 carry head path ' + JSON.stringify(legs));
+  if (path[327 - 283][2] !== '00' || path[330 - 283][2] !== '10') fail('#11 flip of cells -8, -7 at 328..330');
+}
+
+// on a phone, a few tapes use a narrower window (data-phone-window) so their digits stay in view
+if (window.matchMedia && window.matchMedia('(max-width: 480px)').matches) {
+  for (const e of document.querySelectorAll('[data-phone-window]')) {
+    try {
+      const o = JSON.parse(e.dataset.opts), w = JSON.parse(e.dataset.phoneWindow);
+      if (o.run && typeof o.run === 'object') o.run.window = w; else o.window = w;
+      e.dataset.opts = JSON.stringify(o);
+    } catch (err) { fail('phone window: ' + err.message); }
+  }
+}
+
+window.__learnReady = autoMount();
+</script>
+</body>
+</html>

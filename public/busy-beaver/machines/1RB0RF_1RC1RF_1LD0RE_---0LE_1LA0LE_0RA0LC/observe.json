@@ -1,0 +1,577 @@
+{
+ "tm": "1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC",
+ "rank": 30,
+ "class_sheet": "Bell eats counter",
+ "class_guess": "Bell eats counter, partial eat with residue (sibling of #10)",
+ "confidence": "med",
+ "summary": "Marker bounce feeds a 3-cell binary counter; the bell eats only its low digit, so residue seeds the next epoch",
+ "mechanism": [
+  "Hub K(a,b,X) = (110)^a 0 (011)^b C> X: each bounce moves the 0-marker one block and adds 1 to counter X.",
+  "Clean counter D(k,s,v): digits ?01 split by 001000, 4-stage tail; when b runs out only the low digit is eaten (E1/E2).",
+  "The rest seeds the next epoch as residue; forcing an eat during its digestion can halt, so we need eat time > digestion time."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, 10,000 steps",
+   "why": "The site's view. Find the diagonal stripes inside the bell and the busy right edge.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step: steps 0..9,999 squeezed into 500 px rows as on bbchallenge.org (each px row blends steps 20y+9 and 20y+10, so 1 px row = 20 steps)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move (pale = blended by the squeeze)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "state:C:R",
+   "png": "img/stateCR_right_3e5.png",
+   "html": null,
+   "steps": 300000,
+   "caption": "One row per C-right entry: epochs as diagonals, counter at right",
+   "title": "Epochs: marker diagonals and the counter",
+   "why": "Each down-right diagonal is one epoch (the 0-marker crossing the blocks); the counter is the right-edge strip.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per entry into state C moving right, steps 0..300,000 (1,485 rows); not evenly spaced in time",
+   "window": "cells -425..0, 1 px = 1 cell, counted from the right edge (each row's rightmost visited cell is pinned to the last column)",
+   "legend": "white = 1, black = 0 or never visited, red = head (just moved right)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom",
+   "png": "img/epoch48_counter.png",
+   "html": null,
+   "steps": 43094,
+   "caption": "Counter word at every hub of the N=48 epoch, with safety strip",
+   "title": "One residue epoch: counter word per bounce",
+   "why": "Rows are bounces. Compare the left strip's colour with the grey wedge: where does red appear?",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per hub K(a,b,X) (C moving right after (011)^b) from the left record at step 28,266 (k=47) to the next one at step 43,094: 61 rows, steps not evenly spaced",
+   "window": "cells 0..63, 1 px = 1/4 cell (4x4 px per cell), counted from the epoch's first counter cell (absolute, so the word stays put as b shrinks), plus a 6 px strip on the left",
+   "legend": "white = 1, black = 0, grey = cells already absorbed into the (011) block region; left strip: red = forcing the eat at this hub (b:=1) halts, green = safe",
+   "style": "custom"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e8.png",
+   "html": null,
+   "steps": 100000000,
+   "caption": "Left/right records to 1e8: right edge 3,283, left only 146",
+   "title": "Left and right records to 100M steps",
+   "why": "One row per new edge cell. The left edge moves 2 cells per epoch; the right edge carries the counter.",
+   "start": "blank",
+   "rows": "the start, then one per new leftmost or rightmost cell (3,430 rows, steps 0..100,000,000); not evenly spaced in time",
+   "window": "cells -146..3,283, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head on a new right/left cell",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "blaze",
+   "png": "img/blaze_1e7.png",
+   "html": null,
+   "steps": 10000000,
+   "caption": "Blaze 1e7: one smooth bell",
+   "title": "Blaze, 10 million steps",
+   "why": "The bell's outline over 1e7 steps; no chaotic edge.",
+   "start": "blank",
+   "rows": "time blocks of 16,384 steps, averaged (611 blocks, steps 0..10,000,000), stretched to 500 px: 1 px ~ 20,000 steps",
+   "window": "cells -80..1,468, 1 px = ~1.9 cells (Blaze's 1,549 columns stretched to 800 px)",
+   "legend": "white = 0, orange = 1, in-between shades = both mixed inside the pixel's block (averaged); no head",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "custom",
+   "png": "img/fs_digest_share.png",
+   "html": null,
+   "steps": 100000000000,
+   "caption": "Share of each epoch's bounce budget used by residue digestion",
+   "title": "Digestion share per epoch to 1e11 steps",
+   "why": "Dots sit far below the yellow budget line and under the blue curve, and they sink as N grows.",
+   "primary": false,
+   "start": "blank",
+   "rows": "no rows: one dot per epoch of the blank-tape orbit to step 100,000,000,000 (517 epochs with N >= 10 and a digestion phase)",
+   "window": "x = log10 N from 1 to 4.2 (N = b at the epoch's first hub), y = beta/N from 0 (bottom) to 1 (top), 420 x 220 px",
+   "legend": "white = one epoch (beta = b used until the hub word is back in grammar G), yellow = budget beta = N (the eat), blue = 8/sqrt(N) (exhaustive clean-residue maximum), grey ticks = N = 10, 100, 1000, 10000",
+   "style": "custom"
+  },
+  {
+   "mode": "custom",
+   "png": "img/nest_beta_sqrtN.png",
+   "html": null,
+   "steps": 0,
+   "caption": "Digestion cost per epoch of the rules-only model, scaled by sqrt N",
+   "title": "Digestion cost / sqrt(N), model orbit",
+   "why": "Green dots are TM-checked epochs, white ones the model beyond. Compare their height with the blue line.",
+   "primary": false,
+   "start": "blank",
+   "rows": "no rows: one dot per epoch of the rules-only model orbit (epochs 3..80585; epochs 3..519 equal the TM log to 1e11 steps)",
+   "window": "x = log10 N from 1 to 6.2 (N = b at the epoch start), y = beta/sqrt(N) from 0 (bottom) to 10 (top), 420 x 220 px",
+   "legend": "green = epoch checked against the TM log, white = later model epoch, yellow = budget beta = N (y = sqrt N), blue = 7.95 (clean-residue maximum with 2^(k+3) <= N), grey ticks = N = 10 .. 10^6",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf <A 101 001^k T 0^inf",
+  "vars": [
+   "k (left record; next epoch has b = k+1)",
+   "len T (residue cells)",
+   "T (residue word)"
+  ],
+  "rows": [
+   {
+    "step": 28,
+    "values": [
+     1,
+     4,
+     "0001"
+    ]
+   },
+   {
+    "step": 124,
+    "values": [
+     2,
+     13,
+     "0001000010001"
+    ]
+   },
+   {
+    "step": 304,
+    "values": [
+     7,
+     9,
+     "000010001"
+    ]
+   },
+   {
+    "step": 888,
+    "values": [
+     15,
+     4,
+     "0001"
+    ]
+   },
+   {
+    "step": 2458,
+    "values": [
+     17,
+     18,
+     "000110010001010001"
+    ]
+   },
+   {
+    "step": 4898,
+    "values": [
+     31,
+     4,
+     "0001"
+    ]
+   },
+   {
+    "step": 10190,
+    "values": [
+     33,
+     23,
+     "00011001000101001000101"
+    ]
+   },
+   {
+    "step": 17496,
+    "values": [
+     44,
+     23,
+     "00011001000101000010001"
+    ]
+   },
+   {
+    "step": 28266,
+    "values": [
+     47,
+     39,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 123064,
+    "values": [
+     93,
+     27,
+     "000110010000010010001..."
+    ]
+   },
+   {
+    "step": 361032,
+    "values": [
+     141,
+     32,
+     "000110010000010010001..."
+    ]
+   },
+   {
+    "step": 860624,
+    "values": [
+     191,
+     65,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 1681596,
+    "values": [
+     254,
+     32,
+     "000110010001010010001..."
+    ]
+   },
+   {
+    "step": 3011456,
+    "values": [
+     315,
+     45,
+     "000110010001010010001..."
+    ]
+   },
+   {
+    "step": 5070530,
+    "values": [
+     381,
+     66,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 7976352,
+    "values": [
+     449,
+     65,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 11910016,
+    "values": [
+     523,
+     47,
+     "000110010010010001010..."
+    ]
+   },
+   {
+    "step": 17123688,
+    "values": [
+     604,
+     50,
+     "000110010001010010000..."
+    ]
+   },
+   {
+    "step": 23784450,
+    "values": [
+     665,
+     96,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 32098260,
+    "values": [
+     748,
+     84,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 42062398,
+    "values": [
+     812,
+     89,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 54178782,
+    "values": [
+     897,
+     74,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 68368956,
+    "values": [
+     959,
+     101,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 84929740,
+    "values": [
+     1039,
+     83,
+     "000110010010010010000..."
+    ]
+   },
+   {
+    "step": 104187542,
+    "values": [
+     1138,
+     50,
+     "000110010001010010001..."
+    ]
+   },
+   {
+    "step": 126702144,
+    "values": [
+     1213,
+     101,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 152598718,
+    "values": [
+     1314,
+     45,
+     "000110010001010010001..."
+    ]
+   },
+   {
+    "step": 182046336,
+    "values": [
+     1377,
+     129,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 215153620,
+    "values": [
+     1484,
+     45,
+     "000110010000010010000..."
+    ]
+   },
+   {
+    "step": 252476678,
+    "values": [
+     1547,
+     111,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 293968094,
+    "values": [
+     1662,
+     32,
+     "000110010001010010001..."
+    ]
+   },
+   {
+    "step": 340352894,
+    "values": [
+     1717,
+     143,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 391125562,
+    "values": [
+     1828,
+     59,
+     "000110010000010010000..."
+    ]
+   },
+   {
+    "step": 447163912,
+    "values": [
+     1889,
+     125,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 508490566,
+    "values": [
+     1983,
+     101,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 575132558,
+    "values": [
+     2085,
+     68,
+     "000110010000010010000..."
+    ]
+   },
+   {
+    "step": 648268766,
+    "values": [
+     2165,
+     119,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 728156308,
+    "values": [
+     2261,
+     128,
+     "000110010010010010010..."
+    ]
+   },
+   {
+    "step": 814752418,
+    "values": [
+     2375,
+     50,
+     "000110010001010010000..."
+    ]
+   },
+   {
+    "step": 908922682,
+    "values": [
+     2466,
+     74,
+     "000110010010010001010..."
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "R restart",
+   "from": "0^inf <A 101 001^k 000 Y 0^inf",
+   "to": "0^inf 110 0 011^(k+1) C> Y 0^inf",
+   "steps": "3k+7",
+   "cases": "any Y not starting with 011; k <= 3000",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B bounce",
+   "from": "0^inf 110^a 0 011^(b+1) C> X 0^inf",
+   "to": "0^inf 110^(a+1) 0 011^(b+d) C> inc(X) 0^inf",
+   "steps": "8b+c(X)",
+   "cases": "b >= 1; X = any of 9,730 orbit hub words; inc(X), d in {0,1} and c(X) do not depend on a, b",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "W clean counter",
+   "from": "0^inf 110^a 0 011^(b+1) C> D(n) 0^inf",
+   "to": "0^inf 110^(a+1) 0 011^(b+[n=3]) C> D(n+1) 0^inf",
+   "steps": null,
+   "cases": "D(n) = (v0 01 001000)...(v_(k-1) 01) tail_s, n = 2^(k+2)-4+s*2^k+v, tails '',0001,000010001,000110001; D(1..3)=1,010001,110001; n <= 1e5",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "E2 odd eat",
+   "from": "0^inf 110^a 0 011 C> 101 E(j,s,u) 0^inf",
+   "to": "0^inf <A 101 001^a 000 11 E(j,s,u+1) 0^inf",
+   "steps": null,
+   "cases": "E(0,s,0)=tail_s, E(j,s,u)=001000 D(j,s,u); u+1=2^j overflows to s+1; j <= 9",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "E1 even eat",
+   "from": "0^inf 110^a 0 011 C> 001^i 000 Y 0^inf",
+   "to": "0^inf 110^(a+2) 0 011^i C> Y 0^inf",
+   "steps": null,
+   "cases": "i >= 1 (i <= 40 tested), Y random / orbit / clean words not starting with 011",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "E0 empty",
+   "from": "0^inf 110^a 0 011 C> 0^inf",
+   "to": "0^inf <A 101 001^(a+1) 0001 0^inf",
+   "steps": null,
+   "cases": "a <= 3000",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "digestion (open)",
+   "from": "0^inf 110 0 011^N C> 11 E(j,s,u) 0^inf",
+   "to": "clean counter after O(len) bounces",
+   "steps": null,
+   "cases": "not exact yet: inc on words with extra 001 groups; forced eats halt at 1-2 bounce counts inside this window",
+   "validated": {
+    "instances": 0,
+    "passed": 0
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "verify/FractalBEC.v:269",
+  "module": null,
+  "machine": "1RB0RF_1RC1RF_1LD1RB_---0LE_1LA0LE_0RA0LC",
+  "diff": "C1: template (tm10 mirrored) 1RB, ours 0RE; #10 has 1RA",
+  "applies": "partly",
+  "note": "RInc (marker bounce) = our B. LInc (2-cell counter) and Ov/P0 (whole counter eaten, fractal doubling k -> 2k+3) do not hold: our counter has 3-cell digits + 4-stage tail and the eat is partial (E1/E2), leaving residue. Same hub as #10 (STUCK on Lemma X)."
+ },
+ "strategy": "Deepen: exact rules for digestion and for counters with extra 001 groups, then an abstract epoch map (N, residue) -> (N', residue') checked against the TM, then prove 'digestion < N' as an inductive size invariant; proof shaped like FractalBEC/BECv7.",
+ "risks": [
+  "Digestion may not close into a short rule list (as #10's Lemma X).",
+  "Safety is not regular (random eat times halt), so no CTL shortcut.",
+  "Non-clean counters (75/138 eats) may hide further cases."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 2: is each down-right diagonal one epoch, with the counter living in the busy strip at the right edge?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fig 3: do the red (unsafe) rows sit only inside the early part where the grey wedge is still growing, far from the epoch's last rows?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fund a deepen stage (digestion rules + epoch map + size invariant) before any proof.md, or park like #10?",
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 1000000000,
+  "cells": 7720,
+  "nonzeros": 4642,
+  "growth": "left edge +2 cells/epoch; 137 epochs to 1e9; k = 2,497 at step 983,786,092; right edge ~t^0.36"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Rules R/B/W/E0/E1/E2 exact and validated; residue digestion and the size invariant (eat after digestion) are open, so confidence med."
+}

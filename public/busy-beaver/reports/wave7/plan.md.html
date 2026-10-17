@@ -1,0 +1,651 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>plan.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/wave7/plan.md · <a href="/busy-beaver/reports/wave7/plan.md.html">raw</a></div>
+<h1 id="wave-7-plan">Wave 7 plan</h1>
+<p><em>2026-10-14, Wave 7 planner, then the adversarial critic pass (section "Critic" at the end). Built from the three lens tables in <code>reports/wave7/</code> (lens-clusters.tsv, lens-triage.tsv, lens-unknown.tsv), <code>reports/strategy/directions.md</code> and the attempts ledger. Paths are relative to [local working file]</em></p>
+<h2 id="after-the-critic-in-short">After the critic, in short</h2>
+<ul>
+<li><strong>go = true, but smaller.</strong> Three picks keep honest odds of 0.2 or more: <strong>W7-1</strong> (0.25), <strong>W7-2</strong> (0.25) and <strong>W7-4</strong> (0.20).</li>
+<li><strong>W7-3 is dropped</strong> to the Skelet reserves. Its premise ("same family as TM17") is false, and its records are not clean.</li>
+<li><strong>W7-5 stays as W7-4's follow-on</strong> (0.12). <strong>W7-6 stays as a hedge</strong>, stage 1 only (0.10).</li>
+<li><strong>Two claims in the original plan were wrong.</strong></li>
+<li>"qsim shows no Collatz rules" is false for W7-1 and W7-4: every rule qsim proves on them is parity-flagged.</li>
+<li>The far-end blocks of W7-1 are not frozen. They are slowly being used up.</li>
+</ul>
+<p>Neither claim kills a pick. Both are corrected below, and each one adds a specific stage-1 check.
+- <strong>The class owner is mxdys.</strong> <code>Sk1Machines.v</code> was committed by ccz181078, which is mxdys's GitHub handle (see reports/discord-drafts.md). So the #bb6 question at the end is now recommended, not optional. Stage 1 does not wait on it.
+- Expected yield is about <strong>2.3 lines</strong>. About half the time the wave ends with no kill, because the three main picks are in one class.</p>
+<h2 id="why-this-wave-is-different-from-wave-6">Why this wave is different from Wave 6</h2>
+<p>Wave 6 picked single machines in Unknown and chaotic classes. It killed none of its 8 picks, and most of them turned out to be cryptid-like within a day.</p>
+<p>Wave 7 changes three things.</p>
+<ul>
+<li><strong>Every pick is a table, not a machine.</strong> Each pick has 2 to 4 listed starts that share one mechanism. For most picks, the starts share the whole growing end of the tape. So one proof plus a short delta per extra start covers every line, as we did for #3 and its deltas #24/#25. After the critic, the five picks cover 15 list lines.</li>
+<li><strong>They are counters with mostly clean signals.</strong> Four picks are Skelet 1-like Class 1 tables <em>outside</em> K42. On the 75 and 175 tables, 4 skeletons cover the last 300 records at 1e9.</li>
+<li><em>Critic correction.</em> That record window is only about 1% of the run, so it says nothing about how events behave.</li>
+<li><em>Critic correction.</em> qsim does flag rules on these tables. On W7-1 and W7-4, every rule it proves is parity-flagged: a field is used up two at a time. Our kills #3, #11 and W5-5 show no rules at all at the same block sizes. The flag means the parity of each field when it runs out picks the next event. That is exactly what stage 1 checks, so it is a check, not a cryptid verdict.</li>
+<li>The neighbouring class, Skelet 1-like Class 2, is our best class: 12 of 14 killed. W7-1's interior events look like #3's (critic check below).</li>
+<li><strong>Nobody on our side has looked at them.</strong> Waves 4 to 6 skipped the whole class as "mined". The last upstream proof file for the class is <code>Sk1Machines.v</code> (09-30, 5 machines from mxdys's numbered list). None of the picks has a table-level ledger row from before today, a claim or a machine folder.</li>
+</ul>
+<p>The risk is shared, because the main picks are one class. K42, in this same class, turned out to be a cryptid family today. So the wave has a <strong>class kill switch</strong>: if two of W7-1, W7-2 and W7-4 end stage 1 on the cryptid stop, the third and W7-5 stop after their own stage 1, and we write a short class note instead of proofs.</p>
+<p><strong>Class policy (FYI).</strong>
+- <code>targeting.md</code> (10-09) listed Skelet 1-like Class 1 as "mined by others, avoid".
+- Today's <code>directions.md</code> excludes only K42 (our claim), and the K42 study was approved. This plan treats the rest of the class as open.
+- The critic adds one fact: the miner is mxdys himself (ccz181078, who also merges our PRs). His file proved TM17 (nonhalting) and four halters, TM91, TM94, TM104 and TM105, from a numbered TM1..TM105 list that very likely contains every one of our Skelet picks.
+- Send the #bb6 question at the end before any pick reaches stage 2.</p>
+<h2 id="picks">Picks</h2>
+<p>All five are free:
+- no claims.tsv line, and no machines/ folder;
+- not Astra's class, and not in Astra's current claims (147/493/169/109/141/551/389/544/572);
+- not dyuan01's list, not in an open PR, no sheet "Done By".</p>
+<p>Astra's block-solver screen lists them only as excluded (mined or taken class). The only table-level ledger rows are the planner's and critic's probes from today.</p>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Lines (rep first)</th>
+<th>Class</th>
+<th>Method</th>
+<th>Odds (critic)</th>
+<th>Stop rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>W7-1</strong></td>
+<td><strong>75</strong>, 179, 265, 597</td>
+<td>Skelet 1-like Class 1</td>
+<td>A countdown over (10^x 01^y) pairs with re-pairing, our #3 route. Prove line 75, then a #24-style delta for each other start.</td>
+<td><strong>0.25</strong> (planner 0.30; all 4 if one)</td>
+<td>Stage 1 (2 h, Python): stop if the far-end death or the right-end pair birth depends on residues of growing numbers. Then 1 agent-day of formal work per table, and 3 h per delta.</td>
+</tr>
+<tr>
+<td><strong>W7-2</strong></td>
+<td><strong>175</strong>, 489</td>
+<td>Skelet 1-like Class 1</td>
+<td>A doubling digit counter with 4-cell phase words. Use an <code>Sk1CounterMixed</code>-style proof (Variables, not Hypotheses), parametric in the high digits.</td>
+<td><strong>0.25</strong></td>
+<td>Stage 1 (2 h): stop if a transfer map halves a field or the parity-flagged rule's endpoint has no finite case table.</td>
+</tr>
+<tr>
+<td><strong>W7-4</strong></td>
+<td><strong>82</strong>, 464 (722 last)</td>
+<td>Skelet 1-like Class 1</td>
+<td>A list of budget fields on 3-cell words with phase-marked separators, fed by a right-end counter, our #30/#7 route. 464 is a delta with the far-end junk word as a parameter.</td>
+<td><strong>0.20</strong> (planner 0.20, on a false premise; see Critic)</td>
+<td>As W7-1. Try 722 only after 82 closes.</td>
+</tr>
+<tr>
+<td><strong>W7-5</strong></td>
+<td><strong>274</strong>, 514</td>
+<td>Skelet 1-like Class 1</td>
+<td>The same 3-cell vocabulary as W7-4, so it reuses that digit fitter. Expect one idea with two instantiations.</td>
+<td><strong>0.12</strong> (planner 0.15)</td>
+<td>Follow-on: stage 1 only after W7-4's stage 1 says go. No Coq before W7-4's proof.md exists.</td>
+</tr>
+<tr>
+<td><strong>W7-6</strong></td>
+<td><strong>33</strong>, 472, 690, 569</td>
+<td>Translated Counter</td>
+<td>Settle the "counting phase" halt question with an exact model. If the halt is reachable, make a HALT kill by checked runner (C2-552/W5-5 route).</td>
+<td><strong>0.10</strong> (planner 0.15)</td>
+<td>Stage 1 only (2 h). Nonhalting proof work only by a new decision, because the class is M-Abozaid's.</td>
+</tr>
+</tbody>
+</table>
+<p>Dropped by the critic: <strong>W7-3</strong> (18/297), now a Skelet reserve (see Critic).</p>
+<h3 id="representative-strings">Representative strings</h3>
+<ul>
+<li>W7-1, line 75: <code>1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---</code></li>
+<li>W7-2, line 175: <code>1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD</code></li>
+<li>W7-4, line 82: <code>1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA---</code></li>
+<li>W7-5, line 274: <code>1RB0RD_0LC0RA_1LA1LC_1RE0LF_0RA1RF_1LB---</code></li>
+<li>W7-6, line 33: <code>1RB0LA_1RC---_0LD1RD_0RA0RE_0RF1RC_1LF0LA</code></li>
+</ul>
+<p>The Skelet tables are more than 3 transitions from each other and from a K42 member (<code>plan-data/dist.py</code>). So they are separate mechanisms, not K42 relatives.</p>
+<h3 id="why-each-pick">Why each pick</h3>
+<p><strong>W7-1 (4 lines).</strong> All four starts have the same growing end, and they differ in the oldest far-end blocks.</p>
+<ul>
+<li>The tape is a list of (10^x 01^y) pairs separated by <code>00</code>, plus a run of 1s at the growing end. Between events, every field only decreases. The rates roughly double toward the head (see the critic check).</li>
+<li><em>Critic check.</em> Two interior zero events are visible in the qsim trace, at about 1.3e9 and 1.7e9 steps (<code>plan-data/critic/trace-75-pairs.txt</code>). Both are the same uniform re-pairing: the dead field goes, and every pair to its right regroups one field over. That is #3's "re-pairing" move.</li>
+<li><em>Critic correction.</em> The far-end blocks are not frozen. They are the slowest budgets: <code>01^31</code> at 2e7 steps is <code>01^23</code> at 2.7e9. They differ by start, so each start meets its own far-end deaths, far beyond 1e12 steps.</li>
+<li>The #24-style deltas are therefore cheap only if the core proof already handles a far-end death for any pair list.</li>
+</ul>
+<p><strong>W7-2 (2 lines).</strong> Both starts have the same growing end.</p>
+<ul>
+<li>Today's 90-second qsim run (block 8) went to 10^2596 steps with 63 proved rules and no halt (<code>plan-data/q175.jsonl</code>).</li>
+<li><em>Critic check</em> (<code>plan-data/critic/trace-175-rules.txt</code>). Each step of the small far-end digit list doubles the big block: 863 → 1768 → 3545 → …, and 31808217 → 63616480 = 2·31808217 + 46. When the list runs out, the big block becomes the next digit list. This happened several times without a halt. No halving appears anywhere.</li>
+<li>The 3 parity-flagged rules use up a left field two at a time. If that field always comes from a doubling, its parity is fixed. Stage 1 confirms this.</li>
+<li><em>Critic correction.</em> "Differ only in high-order digits" understates 489. At 1e9, its far-end digit list (<code>0001^59 001 0010^364 0^5 0001^295 0^6 0001^3015</code>) is longer than 175's (<code>100^3 0100^98 1 0010^14</code>). So the proof must be parametric over the whole far-end list, as planned.</li>
+<li>The growth is tower-like, which means a nested induction, but of fixed depth.</li>
+</ul>
+<p><strong>W7-4 (2-3 lines).</strong>
+- <em>Critic check.</em> 82 and 464 are a near-merge. At exactly 1e9 steps they share <code>001^58 1 10^2 001^998 01^2 0^3 100^148 10^3 001^3664 100^2365 1^3</code> and differ only at the two ends (<code>plan-data/critic/endtapes-1e9.txt</code>).
+- <em>Critic check</em> (<code>plan-data/critic/trace-82-fields.txt</code>). The far-left field ran down 53 → 1 and died at about 3.6e10 steps with no halt. The right-end field grows by a steady +8,810 per cycle (60581, 69390, 78200, 87009, 95819).
+- <em>Critic correction.</em> qsim flags every rule on 82 (230 of 230 at block 3). Our #30 shows 1 of 45 and W5-5 none. The separators between fields come in at least four phase variants (<code>101 010 101 010 100</code>, <code>011 101 010</code>, <code>111 010 101 010</code>, <code>110 101 010 101 001</code>). The case table is bigger than "a binary counter on 3-cell words".</p>
+<p><strong>W7-5 (2 lines).</strong>
+- <em>Critic check.</em> The two starts are a mirrored near-merge at 1e9. They share <code>001^1811 100^11345</code> and <code>100^11345 … 001^1811</code>, with spans of 73,697 and 73,705.
+- They are not a literal merge, so expect two instantiations of one idea. It uses W7-4's vocabulary, so it only makes sense after W7-4's stage 1.</p>
+<p><strong>W7-6 (4 lines, the hedge).</strong>
+- This is the one non-Skelet pick: a translated counter of about 100 cells that moves right and leaves <code>1^N</code> behind (<code>1^3952883</code> on 33 at 1e9). qsim does not accelerate it at any block size.
+- It is a taken-class exception: Translated Counter is <code>SOTCv2.v</code>, by M-Abozaid (09-30). The planner's reasons for the exception:
+  - no proof file or claim names any of the 4;
+  - the nearest upstream SOTC/BTC proof is at least 5 transitions away;
+  - the lines have not changed since Dec 2025.
+- <em>Critic note.</em> The ledger already parked 33 once for exactly this reason (halting-hunt, 10-13; retry "an exact model with a margin to watch"). Stage 1 is that exact model. Nonhalting proof work in M-Abozaid's class needs a separate call. The sheet note on 33, "Has to halt in the counting phase", is why stage 1 settles halting first.</p>
+<h2 id="how-every-skelet-pick-runs">How every Skelet pick runs</h2>
+<ol>
+<li><strong>Stage 1, go/no-go (2 h, Python, no Coq).</strong>
+   - Fit the field system with rulefit, then build an exact accelerated simulator. Reuse the K42 one in <code>reports/k42/</code> (5^k batches, translated-cycle detector).
+   - Validate it against tools/sim to at least 1e10 steps, then run it far.
+   - Classify every structural event. <strong>Both parity cases</strong> of every field death count as separate events, because the qsim flags say the parity picks the branch. The events are:<ul>
+<li>an interior field reaching 0 (W7-1: the re-pairing, seen twice so far);</li>
+<li>a carry or transfer (W7-2: confirm every map is x → 2x + c);</li>
+<li>a pair or field being born at the growing end;</li>
+<li>a <strong>far-end death</strong>. Build these by hand where the natural run is too short: W7-1's far end dies only beyond about 1e12 steps.</li>
+<li><strong>Go</strong> if every event rule is affine in the fields, with at most a finite case table after a finite transient, and the halting transition is provably unreachable.</li>
+<li><strong>HALT route</strong> if the simulator reaches the halt: a checked-runner kill, as for C2-552 and W5-5.</li>
+<li><strong>Stop</strong> with the cryptid protocol if events branch on residues of growing numbers, or if the far end behaves like K42's glued escapes. Write the rules, flag the table, and stop.</li>
+</ul>
+</li>
+<li><strong>Stage 2 (2 h).</strong> Write proof.md for the representative start, starting from the nearest kill (#3 for W7-1, <code>Sk1CounterMixed</code> for W7-2, #30/#7 for W7-4). Use Variables, not Hypotheses, because check_kill bans the keyword (<code>Sk1CounterMixed</code> itself uses <code>Hypothesis wall</code>/<code>one</code>).</li>
+<li><strong>Stage 3 (formal work, at most 1 agent-day per table).</strong> Stop if the core lemma fails coqc twice on the same structural issue.</li>
+<li><strong>Deltas (3 h each).</strong> Same table, other start: keep the parent rules and prove a new base segment, as in #24. Stop a delta that needs new rules.</li>
+</ol>
+<p><strong>Class kill switch.</strong> If two of W7-1, W7-2 and W7-4 stop at stage 1 on the cryptid stop, the third and W7-5 stop after stage 1, and we write one class note.</p>
+<h2 id="expected-kills">Expected kills</h2>
+<table>
+<thead>
+<tr>
+<th>Pick</th>
+<th>Odds (critic)</th>
+<th>Lines if it works</th>
+<th>Expected lines</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>W7-1</td>
+<td>0.25</td>
+<td>3-4</td>
+<td>about 0.85</td>
+</tr>
+<tr>
+<td>W7-2</td>
+<td>0.25</td>
+<td>2</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>W7-4</td>
+<td>0.20</td>
+<td>2 (+722)</td>
+<td>about 0.4</td>
+</tr>
+<tr>
+<td>W7-5</td>
+<td>0.12</td>
+<td>1-2</td>
+<td>about 0.2</td>
+</tr>
+<tr>
+<td>W7-6</td>
+<td>0.10</td>
+<td>2-4</td>
+<td>about 0.3</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td></td>
+<td><strong>about 2.3 lines</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The three main picks share one class and fail together more often than not. So the likely outcomes are either no kill (about 50%) or one or two tables' worth, 2 to 6 lines. We will know which by about hour 3, from stage 1 of W7-1, W7-2 and W7-4.</p>
+<p><strong>go = true.</strong> Three picks have a concrete route with honest odds of 0.2 or more (W7-1, W7-2, W7-4). W7-4 is on the line.</p>
+<h2 id="coordination-and-resources">Coordination and resources</h2>
+<ul>
+<li><strong>Claim before creating a folder.</strong> Append <code>&lt;tm&gt;\tclaude\tmachine\t2026-10-14\tWave 7 &lt;label&gt;</code> to coord/claims.tsv before creating machines/<tm>/.</li>
+<li><strong>Use the ledger.</strong> Query <code>tools/attempts.py</code> before each stage and add a row after it.</li>
+<li><strong>Limits.</strong> At most 2 heavy processes per agent, at most 2 coqc system-wide, and check load first. Every stage 1 is Python only, so coqc lanes stay free for the CB3 lane and Wave 6 until stage 3.</li>
+<li><strong>Not touched:</strong> Astra's claims and class, the K42 and CB3 core claims, dyuan01's list, PRs #3/#4/#13, and the BBi ties.</li>
+<li><strong>Follow-ons for the CB3 lane, not Wave 7.</strong> If CB3 stage 2 (pack token) closes T1-T3, its next targets are lens-triage rows 1, 2 and 4: the CB1 F1-exit core (12 lines), the CB1 F0-exit core (4 lines), and 681/309/539. Each starts with the CB3 exit study.</li>
+<li><strong>Offer to Astra</strong> (a mailbox note when the wave starts):</li>
+<li>725, a same-table CPS_LRU_v3 replay from another start (Astra's lane);</li>
+<li>344/426/600/706 and 406/509, which rank 2nd and 5th on Astra's block-solver screen;</li>
+<li>157/354, 59/475 and 277/579, which are on that screen too.</li>
+</ul>
+<h2 id="rejected-with-reasons">Rejected, with reasons</h2>
+<table>
+<thead>
+<tr>
+<th>Lines</th>
+<th>Lens score</th>
+<th>Why not in Wave 7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18/297 (was W7-3)</td>
+<td>n/a</td>
+<td><strong>Dropped by the critic.</strong> The method rested on "the same family as <code>Sk1Machines.v</code> TM17 (W = 1111011111)". But TM17's W is the 9-cell <code>101111111</code>, and its proof ends in a glider (translated cycle) that is reached after a finite run. 18 shows no sign of either. At 1e9, 275 skeletons cover 300 records, with at least 6 distinct words (<code>1100110110</code>, <code>1111001111</code>, <code>0011111111</code>, <code>1111111100</code>, <code>001111</code>, <code>0110110011</code>). qsim proves 0 rules even at block 10 (25 s, 2e11 steps). It is now a Skelet reserve.</td>
+</tr>
+<tr>
+<td>170/278/374/434, 229/504/521/524, 740, 257/535/669 (CB1 F1-exit core)</td>
+<td>0.55</td>
+<td>Cryptid signature: the CB1 x3/2 Hydra map, with halting siblings in <code>ChaoticBell1Halt.v</code>. Its route needs a closure explorer, and the CB3 one has not closed yet (stage 1 hit its 40-word stop). Astra's exhaustive one-edge repair of the 6 sibling DFAs failed on 257/535/669. Follow-on for the CB3 lane.</td>
+</tr>
+<tr>
+<td>303/545/662, 730 (CB1 F0-exit core)</td>
+<td>0.50</td>
+<td>Same as above; the sibling recipes are false or time out. CB3-lane follow-on.</td>
+</tr>
+<tr>
+<td>338/577</td>
+<td>0.10</td>
+<td>CB1, same as above. The halting side was searched in direction 3 (no halt).</td>
+</tr>
+<tr>
+<td>56/592</td>
+<td>0.45</td>
+<td>Cryptid flags: the halving rule B1(2n+2, 2n) → B2(2n+6, n) and a parity halt branch. The sibling CPS recipe is false in 0.01 s, so the abstraction is too coarse.</td>
+</tr>
+<tr>
+<td>681/309/539</td>
+<td>0.35-0.40</td>
+<td>The layer law k' = 5k − 14 is exact, but the units per layer depend on start and history, and there are 6-16 Collatz-type qsim rules. Today's cryptid check was inconclusive, and the NG/RWL sibling recipes were false. CB3-lane follow-on.</td>
+</tr>
+<tr>
+<td>26/720, 122/554</td>
+<td>0.25</td>
+<td>1-2 transitions from the 358 cryptid family (parked 10-10).</td>
+</tr>
+<tr>
+<td>267; 623; 139; 292/595</td>
+<td>0.08-0.25</td>
+<td>Single tables whose only route is a larger decider seeded from a sibling. The x1 and x10 recipes are false. That is direction 5 or Astra's solver, not a wave pick.</td>
+</tr>
+<tr>
+<td>28/130/222/261</td>
+<td>0.12-0.15</td>
+<td>Skelet 1-like Class 1, but in the K42 situation: the holdout is the one exit that keeps the counter alive, and every proven variant runs in another regime.</td>
+</tr>
+<tr>
+<td>62/114, 89/204, 476/666; 203/453; 81/451/734; 293/724</td>
+<td>0.10-0.18</td>
+<td>Skelet reserves. Take them after a W7 Skelet pick closes, reusing its digit framework.</td>
+</tr>
+<tr>
+<td>165/711</td>
+<td>0.06</td>
+<td>The same table halts from another start (<code>RWLAccHaltv7.v</code>), so it sits on a halting boundary. 165 was negative in the generator probe.</td>
+</tr>
+<tr>
+<td>16/350/517, 39/526</td>
+<td>0.05-0.12</td>
+<td>CB3 tarpit verdict (erratic epochs). They follow the CB3 core.</td>
+</tr>
+<tr>
+<td>142/446/461, 314/456</td>
+<td>0.08-0.10</td>
+<td>Monotone list is a taken class (<code>Loop4Mono_v2..v6</code>), with 150-165 frozen literal blocks. The RWL_mod recipe is false.</td>
+</tr>
+<tr>
+<td>458/635, 51/74/154, 716/37, 192, 268</td>
+<td>0.03-0.08</td>
+<td>HALT-only probes on cryptid-flagged maps (x7/5 or x3/2 with residue splits, halving rules). Excluded by the cryptid rule.</td>
+</tr>
+<tr>
+<td>159/218/230, 164/176, 196/676/687, 264/471/506, 225/624</td>
+<td>0.03-0.06</td>
+<td>Ack-like or CB1 Hydra shapes, or Ackermann-like nested histories. No route.</td>
+</tr>
+<tr>
+<td>157/354, 344/426/600/706, 406/509, 59/475, 277/579, 151/367</td>
+<td>0.03-0.20</td>
+<td>On Astra's block-solver screen. Offer them to Astra, not ours.</td>
+</tr>
+<tr>
+<td>370</td>
+<td>0.12</td>
+<td>Trajectory twin of W6-1's line 10. It waits for W6-1 to close.</td>
+</tr>
+<tr>
+<td>725</td>
+<td>0.06</td>
+<td>A decider certificate carried to another start (Astra's lane; 0 for 3 so far). Offered to Astra.</td>
+</tr>
+<tr>
+<td>543, 331, 319, 110, 126, 236, 527/467, 663/53/307/398</td>
+<td>0.015-0.07</td>
+<td>One-off singles or lists of pseudo-random-looking values. directions.md says no more one-off waves.</td>
+</tr>
+<tr>
+<td>705, 530</td>
+<td>0.04-0.05</td>
+<td>The changed transition fires millions of times, and 530 is in W4-5's STUCK obstruction class.</td>
+</tr>
+<tr>
+<td>247/619, 315/325/522</td>
+<td>n/a</td>
+<td>K42 family (parked cryptid, Dennis A).</td>
+</tr>
+<tr>
+<td>388/392</td>
+<td>n/a</td>
+<td>Trajectory twin of our STUCK 633.</td>
+</tr>
+<tr>
+<td>257/535/669, 318/483</td>
+<td>n/a</td>
+<td>Astra's table-level negatives.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="message-for-bb6-recommended-before-any-stage-2-your-call-stage-1-does-not-wait">Message for #bb6 (recommended before any stage 2; your call, stage 1 does not wait)</h2>
+<blockquote>
+<p>is anyone working through the Skelet 1-like Class 1 holdouts outside the big 40-machine core (the TM1..TM105 list behind Sk1Machines.v)? I'm looking at a few multi-start tables there and would like to avoid duplicating someone's work</p>
+</blockquote>
+<h2 id="evidence-from-the-planning-pass">Evidence from the planning pass</h2>
+<ul>
+<li><code>plan-data/q175.jsonl</code>: qsim on 175 (block 8, recursive, 90 s). It reached 10^2596 steps with 63 rules, 3 of them parity-flagged diff rules, and no halt.</li>
+<li><code>plan-data/q75.jsonl</code>: qsim on 75 (block 8, 90 s). It found 0 rules by 7.9e11 steps. At block 2 it proves many rules; see the critic evidence.</li>
+<li><code>plan-data/dist.py</code>: transition distances between the candidate tables and the K42 core. No pair is within 3 transitions.</li>
+</ul>
+<h2 id="critic-2026-10-14">Critic (2026-10-14)</h2>
+<p><strong>Verdict: go, with three main picks instead of four.</strong>
+- W7-1 and W7-2 hold up.
+- W7-4 holds on new evidence, after its stated evidence turned out to be wrong.
+- W7-3 falls.
+- W7-5 and W7-6 stay as a follow-on and a hedge, below 0.2.</p>
+<p>The wave is less likely to pay than the planner said: about 2.3 expected lines, not 3.</p>
+<h3 id="what-was-checked">What was checked</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>How</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ledger, by line and by table (renaming, mirror, start)</td>
+<td><code>tools/attempts.py query</code> on all 17 lines</td>
+<td>Only list-level sweeps (decider probes, equivalence scans, triage, halting-sim) plus the planner's 3 rows. 33/472/690/569 have halting-sim negatives (10-13) and one parked triage row for 33 (M-Abozaid class; retry "an exact model with a margin"). No table was ever worked on.</td>
+</tr>
+<tr>
+<td>Claims (Claude and Astra)</td>
+<td>coord/claims.tsv, latest line per tm/class</td>
+<td>None of the 17 strings and no class claim covers them. Astra's live claims are 147/493/169/109/141/551/389/544/572.</td>
+</tr>
+<tr>
+<td>Astra's files and mailbox</td>
+<td>grep of all 17 strings in astra/ and coord/</td>
+<td>Only inventory and screen files, where all are listed as excluded (mined or taken class). Astra's 18:45 and 19:21 messages cover 147/493/169 only.</td>
+</tr>
+<tr>
+<td>Sheet, Discord, PRs, dyuan01</td>
+<td>census_machines.tsv (owner, pr, tags), scout-dynamics sheet columns, data/discord</td>
+<td>No owner, no PR, no dyuan24/ubrrba/mira tag, no sheet "Done By". Only sheet note: 33 "Has to halt in the counting phase".</td>
+</tr>
+<tr>
+<td>Class owner</td>
+<td>upstream <code>Sk1Machines.v</code> at cdaf693, reports/discord-drafts.md</td>
+<td>The author is ccz181078 = mxdys. The file covers TM17 (nonhalting) and TM91/94/104/105 (halting) of a numbered TM1..TM105 Class 1 list. This is a real scoop risk for all four Skelet picks, so the #bb6 message moves to "recommended".</td>
+</tr>
+<tr>
+<td>W7-1 signal on 75</td>
+<td>compress track to 1e9 (<code>critic/compress-75-1e9.txt</code>); qsim block 2, 30 s and 20 s (<code>critic/qsim-flags.txt</code>, <code>critic/trace-75-pairs.txt</code>)</td>
+<td>Pair list confirmed, with fields used up at rates that roughly double toward the head. <strong>qsim: 951 of 951 rules parity-flagged</strong> (Wave 6's grid had 288 at block 2 and 1,946 at block 6). #3 and #11 show 0 rules. Two interior zero events are uniform re-pairings. The far-end fields shrink (<code>01^31</code> → <code>01^23</code>, 2e7 → 2.7e9).</td>
+</tr>
+<tr>
+<td>W7-2 signal on 175</td>
+<td>compress to 1e9; qsim block 8 recursive, 15 s, tape at every rule application</td>
+<td>4 skeletons: <code>(0100)^a +2/visit</code>, <code>(0001)^b −1/visit</code>. Transfers are doublings (+c). The far-end digit list ran out and was refilled several times with no halt. No halving seen.</td>
+</tr>
+<tr>
+<td>W7-3 signal on 18</td>
+<td>compress to 1e9; qsim block 10, 25 s; TM17 in <code>Sk1Machines.v</code></td>
+<td>275 skeletons in 300 records, at least 6 words, 0 qsim rules. TM17's W is <code>101111111</code> (9 cells), not <code>1111011111</code>. <strong>Dropped.</strong></td>
+</tr>
+<tr>
+<td>W7-4 signal on 82</td>
+<td>compress to 1e9; qsim block 3, 30 s and 25 s (<code>critic/trace-82-fields.txt</code>); end tapes at 1e9</td>
+<td><strong>230 of 230 qsim rules parity-flagged</strong>, not "no Collatz rules". The 82/464 near-merge is confirmed. A far-left death passed with no halt (about 3.6e10). The right end grows a steady +8,810 per cycle. Separators come in at least 4 phase variants.</td>
+</tr>
+<tr>
+<td>W7-5 signal</td>
+<td>end tapes at 1e9</td>
+<td>A mirrored near-merge (shared 1811/11345). As described.</td>
+</tr>
+<tr>
+<td>W7-6 signal</td>
+<td>end tapes at 1e9</td>
+<td>33: <code>1^3952883</code> plus a messy ~100-cell counter. 472: <code>1^5408013</code> plus a ~60-cell counter. As described. qsim 0 rules (Wave 6 grid).</td>
+</tr>
+<tr>
+<td>Wave 6 cryptid signatures</td>
+<td>scout-dynamics rf columns, my traces</td>
+<td>No rational exchange rates or rescaling maps in the live orbits I traced. One weak flag each: 265 has a rulefit halt boundary <code>C0(2n,5,3) → halt</code> on a start-up skeleton. That is a nearby halting configuration, not the orbit. 179 has a /449 fit at 2% coverage, which is spurious. Both are noted for stage 1.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="odds-re-derived">Odds, re-derived</h3>
+<ul>
+<li><strong>W7-1: 0.30 → 0.25.</strong></li>
+<li>For: the vocabulary and the re-pairing event match #3/#11 (Class 2: 12/14 killed).</li>
+<li>Against:<ul>
+<li>the far-end deaths are start-specific and not yet seen;</li>
+<li>pair birth at the growing end comes from an <code>11</code>-run whose rule is not yet fitted;</li>
+<li>qsim keeps proving new rules (951 in 30 s), so the proof must be parametric in list length;</li>
+<li>the same word set as W4-6 (STUCK);</li>
+<li>K42 in the same class.</li>
+</ul>
+</li>
+<li><strong>W7-2: 0.25, unchanged.</strong> The cleanest signal in the wave: exact doubling maps, deep qsim acceleration and a far-end refill that has been seen. The costs are a tower-depth induction and 489's longer far-end list.</li>
+<li><strong>W7-4: 0.20, unchanged, on different grounds.</strong> The planner's "no Collatz rules" is false. The far-end death that has been seen, the linear right end and the near-merge earn the 0.20 back. The four separator phases make the case table larger. This is the weakest of the three main picks.</li>
+<li><strong>W7-3: 0.20 → 0.10, dropped.</strong> Its premise is false and its records are not clean.</li>
+<li><strong>W7-5: 0.15 → 0.12.</strong> Correlated with W7-4.</li>
+<li><strong>W7-6: 0.15 → 0.10.</strong> It is in a taken class with an active owner, qsim gives no handle on it, and a halt-in-counting-phase verdict would need an exact model of a messy ~100-cell counter.</li>
+</ul>
+<h3 id="changes-made-to-the-plan">Changes made to the plan</h3>
+<ul>
+<li>W7-3 moved to the reserves.</li>
+<li>The class kill switch now watches W7-1, W7-2 and W7-4.</li>
+<li>W7-5 waits for W7-4's stage 1.</li>
+<li>W7-6 is stage 1 only.</li>
+<li>Stage 1 now requires both parity cases of each field death, and hand-built far-end deaths for W7-1.</li>
+<li>The #bb6 message is recommended before stage 2.</li>
+</ul>
+<p>Critic evidence: <code>plan-data/critic/</code> (qsim-flags.txt, trace-75-pairs.txt, trace-175-rules.txt, trace-82-fields.txt, compress-*.txt, endtapes-1e9.txt). The ledger rows for the critic probes are in coord/attempts.tsv (appended 2026-10-14).</p>
+</main></body></html>

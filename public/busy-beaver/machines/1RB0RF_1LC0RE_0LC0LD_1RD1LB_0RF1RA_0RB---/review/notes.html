@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>#2 notes.md</title><link rel="stylesheet" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/review.css"><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><div class="wrap"><nav class="sec"><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review.html">← #2 review</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/proof.html">proof.md</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/v.html">the .v</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/diff.html">diff vs TM7</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/tm7.html">TM7 (SOMDCv6.v)</a><a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/index.html#mechanism">machine page</a></nav><p class="muted" style="margin-top:12px">Rendered from <a href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/notes.md.html"><code>notes.md</code></a> (raw file). The running log for #2: observation, rules, Checkpoint A, kill record.</p><div class="toc"><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#observation">Observation</a><a class="l3" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#the-pictures-img">The pictures (<code>img/</code>)</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#candidate-rules">Candidate rules</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#checkpoint-a-dennis-2026-10-10">Checkpoint A (Dennis), 2026-10-10</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#informal-proof">Informal proof</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#formalization-log">Formalization log</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#outcome">Outcome</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#card-data-pass-2026-10-10">Card data pass (2026-10-10)</a><a class="l2" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#kill">Kill</a></div><div class="mdbody"><h1 id="1rb0rf-1lc0re-0lc0ld-1rd1lb-0rf1ra-0rb">1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB--- <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#1rb0rf-1lc0re-0lc0ld-1rd1lb-0rf1ra-0rb">#</a></h1>
+<p>Status: KILLED_NONHALT (2026-10-10; see ## Kill at the bottom) Class guess (agent / Dennis): Bell eats counter = SOMDCv6 TM7 + a &quot;+1 pass at each 110 entered&quot; / – Spreadsheet notes / Discord thread: Results row 1035: class &quot;Bell eats counter&quot;; Status, Notes, Sources, Done By all blank; no links, comments or strikethrough. Not on either Discord list in data/discord/. Its twin <code>1RB0RA_…</code> (A1=0RA, row 1048) is also open. Viewer: <a href="https://bbchallenge.org/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---">https://bbchallenge.org/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</a></p>
+<h2 id="observation">Observation <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#observation">#</a></h2>
+<ul>
+<li>
+The two machines differ in one transition: A reading 1 is <code>0RF</code> here and <code>0RC</code> in TM7. The other 11 are equal.
+</li>
+<li>
+Configuration at each left record (+2 steps): <code>S(r) = 0^inf 11 D&gt; r 0^inf</code>, where r is a word over the digits L=110, 0=000 and 1=100. No other digit appears up to 1e9 steps.
+</li>
+<li>
+r = L^n T: a long run of L digits, then a short counter T.
+<ul>
+<li>
+n = 0, 1, 3, 6, 8, 14, 19, … reaches 1619 by 1e9.
+</li>
+<li>
+There are 209 boundary configs, counting S(1) at step 5, so 208 complete sweeps.
+</li>
+<li>
+T (from the first non-L digit) has 1 to 25 digits. It has 1 digit at steps 5 and 16, and 25 at step 550,345,821: <code>T = 1LLLLLLLLLLLL11L0L0000101</code>. 17 boundary configs have |T| ≥ 17.
+</li>
+<li>
+T can contain L-runs of up to 12 digits, but it has only 1–11 digits that are 0 or 1.
+</li></ul>
+</li>
+<li>
+1e9 steps: span 4,902 cells, 4,592 nonzeros, no halt. The span grows ~t^0.34 (2,220 cells at 1e8).
+</li>
+<li>
+Tools:
+<ul>
+<li>
+qsim: block size 3, 1 Diff rule, no acceleration.
+</li>
+<li>
+compress: at right records it shows the bell as <code>0^inf 1^a (011)^b …</code>.
+</li>
+<li>
+rulefit: coverage 3%. Its test suite fails 3 Antihydra tests, so its output was not used.
+</li>
+<li>
+The rules below come from manual fitting.
+</li></ul>
+</li></ul>
+<h3 id="the-pictures-img">The pictures (<code>img/</code>) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#the-pictures-img">#</a></h3>
+<p>Both pairs start from the same constructed configuration: <code>S(L^4 1L1) = 0^inf 11 D&gt; 110 110 110 110 100 110 100 0^inf</code>. Neither machine passes through it from blank. Each pair shows every step, both panels top-aligned at the same scale. To regenerate: <code>python3 -B scripts/compare_tm7.py</code>.</p>
+<ul>
+<li>
+<strong><code>eat_pair.png</code>: one eating pass each, from the start until the eater reads the 1-digit at cell 12.</strong>
+<ul>
+<li>
+Both eaters eat the same 4 L&#x27;s (k = 4).
+</li>
+<li>
+TM7 makes an 11-step wiggle at each L: back 1 cell, forward 2, back 3, forward 4.
+</li>
+<li>
+Ours starts the same wiggle. At A1 (its 4th step), instead of turning back, it runs one +1 pass (blue box) and comes back.
+</li>
+<li>
+Cut ours&#x27; 4 passes (38 + 14 + 20 + 2 = 74 extra steps) and what is left is TM7&#x27;s run: the same state and head cell at every step, 118 − 74 = 44.
+</li></ul>
+</li>
+<li>
+<strong><code>sweep_pair.png</code>: one full sweep each.</strong>
+<ul>
+<li>
+After the first stop, a drain pass reaches the L at cell 15 and fires A1 in both machines. TM7 turns back. Ours runs +1 pass 5. In both, the eater then restarts.
+</li>
+<li>
+With the passes cut, the head paths agree up to TM7 step 70. There TM7 reads a 1 at cell 18 that ours&#x27; +1s had made 0.
+</li>
+<li>
+So ours eats 2 more digits (k = 6 vs 4) and drains 6 passes vs 4.
+</li>
+<li>
+Ours ends at <code>S(L^9 111)</code> after 421 steps, TM7 at <code>S(L^7 101)</code> after 237. Both end with the wall 1 cell further left.
+</li>
+<li>
+The drain zigzags contain no A1, so they use the same transitions in both machines. Only the blue boxes are extra.
+</li></ul>
+</li>
+<li>
+<code>sweep_ours.html</code> and <code>sweep_tm7.html</code>: zoomable viewers of the same two sweeps. Hovering shows the step, state and cell.
+</li>
+<li>
+A real example (not drawn): ours visits <code>S(L^8 0L11)</code> at step 809.
+<ul>
+<li>
+Both machines eat <code>L^8 0 L</code> the same way (9 A1s).
+</li>
+<li>
+Then TM7 meets the 1-digit at cell 30: it stops at step 102 with k = 10.
+</li>
+<li>
+Ours&#x27; +1s had turned the next digits into 0s. It eats 3 more and stops at cell 39 at step 381, with k = 13.
+</li>
+<li>
+The sweeps take 1,121 vs 641 steps.
+</li></ul>
+</li>
+<li>
+Removed: the old <code>eater_ours.png</code> / <code>eater_tm7.png</code>. They showed the same 420-step window from that config, which is a different phase for each machine. Ours was still eating (eating ends at step 381). TM7 had finished eating at step 102 and was mostly draining. So the pair could not isolate the difference.
+</li></ul>
+<h2 id="candidate-rules">Candidate rules <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#candidate-rules">#</a></h2>
+<p>The digit form is the same as TM7&#x27;s in <code>SOMDCv6.v</code>.</p>
+<p>Sweep: <code>S(r) --&gt;+ S(eat(r))</code>, with the wall one cell further left.</p>
+<p><code>eat</code> is TM7&#x27;s <code>RIncs hx 0</code>, plus the two clauses marked NEW. Together they say: every L entered fires exactly one +1, whether the eater enters it or a drain pass does.</p>
+<pre class="md">eater, k:   0 -&gt; L, k+1        L -&gt; L, k+1, +1 to the rest (NEW)        1 -&gt; L, enter count mode with k
+count, k&gt;=1: L -&gt; L, back to eater with k, +1 to the rest (NEW)
+             1 -&gt; L, k-1       0 -&gt; 0, (k-1)/2 if k odd       0 -&gt; 1, (k-2)/2 if k even
+right end:  k=0 -&gt; 1;  k odd -&gt; 0, (k-1)/2;  k even -&gt; 1, (k-2)/2   (repeat)
++1 = little-endian binary over the 0/1 digits; L digits are skipped; overflow appends 1</pre>
+<ul>
+<li>
+Count mode is not &quot;add k to the counter&quot;. Each 1-digit absorbs one pass and becomes L. 0-digits and the right end take the leftover count by halving (bijective binary).
+<ul>
+<li>
+Example: TM7 from <code>S(L^8 0L11)</code>. The eater stops at the first <code>1</code> of the tail <code>11</code> with k = 10, and that 1 becomes L. The second 1 absorbs one pass (k = 9). The right end writes 9 as <code>0101</code>, giving <code>L^12 0101</code>. Adding 10 to the tail would have given <code>1011</code>.
+</li></ul>
+</li>
+<li>
+A sweep can have several eat-then-drain rounds. A drain pass that reaches an L restarts the eater: this happens in 115 of the 208 sweeps to 1e9.
+</li>
+<li>
+Without the count-mode L clause, the map fits only 95/208 sweeps.
+</li></ul>
+<p>Where the +1 comes from: A1 fires exactly when an L is entered, once per L digit of r in every sweep.</p>
+<ul>
+<li>
+TM7&#x27;s <code>A1 = 0RC</code> turns straight back.
+</li>
+<li>
+Ours&#x27; <code>A1 = 0RF</code> runs one ordinary h-pass over everything to its right, then comes back. It ends exactly where TM7 is one step after its A1: state C, one cell right of the A1 cell. The only change is that the digits to the right are +1. The pass itself:
+<ul>
+<li>
+<code>B&gt; 100 -&gt; 000 B&gt;</code> (carry);
+</li>
+<li>
+<code>B&gt; 000 -&gt; &lt;C 100</code>;
+</li>
+<li>
+<code>B&gt; 110 -&gt; 011 B&gt;</code>, then on the way back <code>011 &lt;C -&gt; &lt;C 110</code>.
+</li></ul>
+</li>
+<li>
+Eater enters L: <code>1 D&gt; 110 X -&gt; 1 111 D&gt; inc(X)</code> in 6j+13 steps (j = digits before the first 000 in X). TM7: <code>-&gt; 1 111 D&gt; X</code> in 11 steps.
+</li>
+<li>
+Drain pass enters L: <code>B&gt; 1 110 X -&gt; 1 111 D&gt; inc(X)</code> in 6j+12 steps. TM7: <code>-&gt; 1 111 D&gt; X</code> in 10 steps. The eater restarts there.
+</li></ul>
+<p>Tests (all by simulation; run <code>python3 -B check_rules.py</code>):</p>
+<div class="tscroll"><table class="md"><thead><tr><th>check</th><th>result</th></tr></thead><tbody><tr><td>Sweep, from blank, every left record to 1e9</td><td>208/208 (TM7&#x27;s map alone: 1/208)</td></tr><tr><td>Sweep, random r, first half / second half</td><td>120/120 and 174/174</td></tr><tr><td>L entry, ours vs TM7 (<code>--lentry</code>): eater and drain contexts, every X up to 6 digits plus 300 random X up to 60 digits</td><td>1393/1393 in each of the 4 cases</td></tr><tr><td>Eater enters L, random X (in <code>low_level</code>)</td><td>150/150</td></tr><tr><td>Each low-level chain (a = 0..1500)</td><td>45/45</td></tr><tr><td>Abstract map from <code>S(L1)</code></td><td>9,432 sweeps (~2e14 steps), ending at n = 109,794, without leaving the domain of <code>eat</code>; the smallest pass count seen in count mode is k = 1</td></tr></tbody></table></div>
+<p>Not a cryptid: the rules are counter arithmetic (+1, halving a pass count), with no branching on the parity of huge numbers.</p>
+<h2 id="checkpoint-a-dennis-2026-10-10">Checkpoint A (Dennis), 2026-10-10 <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#checkpoint-a-dennis-2026-10-10">#</a></h2>
+<ul>
+<li>
+Q1 (eat_pair): yes, in the EAT phase the rule change is one +1 pass per L entered.
+</li>
+<li>
+Q2 (sweep_pair): yes, in the DRAIN phase a pass entering an L fires +1 too. Build by extending SOMDCv6 TM7 rather than from scratch.
+</li>
+<li>
+Q3: &quot;bells refill and drain against a creeping right edge&quot; is right-ish; keep sheet class &quot;Bell eats counter&quot;.
+</li>
+<li>
+His observation while reading: after the first eat, ours has an extra 1 to the right of the head versus TM7; it is absorbed in the next eat phase (5th +1 pass), and the drain leaves extra &quot;icicles&quot; on the right. Consistent with +1 passes changing the counter; the informal proof must cover it.
+</li>
+<li>
+Course change caused by Checkpoint A (pilot metric): yes for presentation and description. His objection to the first picture pair led to the skeptic pass, which corrected &quot;TM7 eats silently&quot; (false) and added the drain-pass-enters-L case (115/208 sweeps). The mechanism verdict was unchanged.
+</li></ul>
+<h2 id="informal-proof">Informal proof <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#informal-proof">#</a></h2>
+<p>Not started (waits for Checkpoint A). Plan:</p>
+<ol>
+<li>
+Copy TM7.
+</li>
+<li>
+Add <code>Inductive Inc</code>, proved as <code>sideRLs tm [h] (toRC r) (toRC r&#x27;)</code>.
+</li>
+<li>
+Put <code>Inc</code> into <code>RIncs_hx_ld</code> (eater enters L) and <code>RIncs_h1_ld</code> (drain pass enters L).
+</li>
+<li>
+Redo <code>RIncs_nxt</code> and the domain lemma; this is the main risk.
+</li>
+<li>
+Prove <code>nonhalt</code> exactly as TM7 does.
+</li></ol>
+<h2 id="formalization-log">Formalization log <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#formalization-log">#</a></h2>
+<h2 id="outcome">Outcome <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#outcome">#</a></h2>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10) <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#card-data-pass-2026-10-10">#</a></h2>
+<ul>
+<li>
+Figures on the card: Fig 1 = <code>img/eat_pair.png</code>, Fig 2 = <code>img/sweep_pair.png</code>, Fig 3 = <code>img/default_site_1e4.png</code>, Fig 4 = <code>img/records_1e9.png</code>, Fig 5 = <code>img/blaze_1e7.png</code>. Figs 1-3 are the primary figures, shown beside the checkpoint.
+</li>
+<li>
+The card&#x27;s mechanism is cut to 3 bullets. The full list before the cut:
+<ul>
+<li>
+Tape = wall 11, then 3-cell digits L=110, 0=000, 1=100: a long L-run, then a short counter.
+</li>
+<li>
+Sweep: the eater (D) turns digits into a white bell until it reads a 1-digit; then k drain passes (k = digits eaten) rebuild L&#x27;s; the wall ends 1 cell left.
+</li>
+<li>
+A drain pass that reaches an L restarts the eater there (115 of 208 sweeps), so a sweep can have several eat-then-drain rounds.
+</li>
+<li>
+Only change vs TM7: A1 fires once per L entered (by the eater or a drain pass). TM7 turns straight back; ours first runs one +1 pass over the digits to its right (6j+2 extra steps), then is exactly where TM7 is one step after its A1 (same state, same cell).
+</li>
+<li>
+Drain arithmetic as TM7: a 1-digit absorbs one pass and becomes L; 0-digits and the right end take the rest by halving. The +1s change the digits ahead, so ours usually eats further.
+</li></ul>
+</li>
+<li>
+Questions on the card are Dennis&#x27;s answered ones (answers in the Checkpoint A section above), marked <code>[answered: yes]</code>; only the PNG names were replaced by Fig numbers.
+</li></ul>
+<h2 id="kill">Kill <a class="hl" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/review/notes.html#kill">#</a></h2>
+<ul>
+<li>
+2026-10-10: <strong>KILLED_NONHALT.</strong> Kill file <code>1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---.v</code> (597 lines, sha256 <code>3b29083b31f348bb3172c47b7e51a389b324165d9c38a073a56d9f9a760a651d</code>) proves top-level <code>Lemma nonhalt: ~halts tm c0.</code>.
+</li>
+<li>
+<code>tools/check_kill.sh</code>: PASS 3 times on the same sha256.
+<ul>
+<li>
+Formalizer, 11:45:36Z.
+</li>
+<li>
+Independent audit, <code>--json</code>: 17/17 checks pass. The audit also confirmed the string is line 301 of <code>data/holdouts/2026-10-07_778.txt</code> and read the file end to end; no suspicious constructs.
+</li>
+<li>
+Fresh human-readable run for the submission, 11:48:20Z: compile 3.96 s (native on), 0 assumptions (closed), coqchk pass 1.09 s.
+</li></ul>
+</li>
+<li>
+The proof is SOMDCv6 TM7 plus four changes:
+<ul>
+<li>
+<code>Inc</code> (one h pass = +1, L skipped);
+</li>
+<li>
+an <code>Inc</code> premise in the two L clauses of <code>RIncs</code>;
+</li>
+<li>
+zero-pass end clauses Z1/Z0;
+</li>
+<li>
+the domain lemma <code>key</code>, with j pending +1s and <code>Inv</code>. Details: proof.md, rocq/log.md, atlas/rocq-notes.md.
+</li></ul>
+</li>
+<li>
+Submission package: <code>submission/</code>.
+<ul>
+<li>
+The .v, unchanged.
+</li>
+<li>
+proof.md, a copy whose status lines are updated to &quot;fully formalized&quot;; the working proof.md is untouched.
+</li>
+<li>
+check_kill.txt, README.md.
+</li>
+<li>
+discord.md, a draft of 1,371 characters plus <code>&lt;LINK&gt;</code>. <strong>Not posted.</strong>
+</li></ul>
+</li>
+<li>
+No Checkpoint B notes from Dennis were on file when this was packaged. If he adds any, fold them into proof.md and the submission copy before posting.
+</li>
+<li>
+Twin <code>1RB0RA_…</code> (A1 = 0RA, row 1048) is still open. Per observe.json it uses extra digits 010/011/111, so this proof does not carry over.
+</li></ul></div></div></body></html>

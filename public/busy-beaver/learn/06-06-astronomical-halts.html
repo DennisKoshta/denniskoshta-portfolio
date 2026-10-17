@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Astronomical halts</title>
+<meta name="description" content="Module 6 of the BB(6) learning guide: how we proved that three holdouts halt after about 10^18 steps, 10^44 steps and a tower of exponents, with rules proved for every size and a Coq-checked replay in giant jumps.">
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  .hide-run:not(.go) .tm-plinked { height: 0; overflow: hidden; visibility: hidden; }
+  .figcap { font-size: 12.5px; color: var(--muted); margin: 4px 0 0; line-height: 1.5; max-width: 80ch; }
+  .self-error { color: var(--bad); font-weight: 600; font-size: 14px; }
+
+  /* charts */
+  .ch { position: relative; margin: 12px 0 4px; }
+  .ch svg { display: block; max-width: 100%; overflow: visible; }
+  .ch-grid { stroke: var(--line); stroke-width: 1; }
+  .ch-axis { stroke: var(--axis); stroke-width: 1; }
+  .ch-tick { fill: var(--muted); font: 11px system-ui, sans-serif; }
+  .ch-lab { fill: var(--ink2); font: 12.5px system-ui, sans-serif; }
+  .ch-stem { stroke: var(--line); stroke-width: 2; stroke-linecap: round; }
+  .ch-dot { stroke: var(--surface); stroke-width: 2; fill: var(--accent); }
+  .ch-dot.sim { fill: var(--ink2); }
+  .ch-dot.speed { fill: var(--muted); }
+  .ch-off { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ch-hit { fill: transparent; cursor: default; outline: none; }
+  .ch-item:focus-visible .ch-stem { stroke: var(--accent); }
+  .ch-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .ch-limit { stroke: var(--bad); stroke-width: 1.5; }
+  .ch-cross { stroke: var(--axis); stroke-width: 1; }
+  .ch-dash { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
+  .ch-hollow { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+  .ch-tip { position: absolute; z-index: 2; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+    padding: 4px 8px; font-size: 12.5px; line-height: 1.4; box-shadow: 0 2px 8px rgba(0, 0, 0, .12); white-space: nowrap; color: var(--ink2); }
+  .ch-tip b { color: var(--ink); }
+  .ch-legend { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 2px 0 0; }
+  .ch-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; }
+  details.data { font-size: 13px; color: var(--muted); margin: 6px 0 14px; }
+  details.data summary { cursor: pointer; }
+  details.data table { margin-top: 6px; }
+
+  /* the proposer */
+  .prop { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px 12px; margin: 14px 0 20px; min-width: 0; }
+  .prop-cap { font-size: 13.5px; color: var(--ink2); margin-bottom: 4px; }
+  .prop-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0 6px; font-size: 14px; }
+  .prop-bar .k { color: var(--muted); }
+  .prop-bar button { font: inherit; font-size: 14px; min-width: 42px; min-height: 34px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 7px; cursor: pointer; }
+  .prop-bar button:hover { border-color: var(--accent); }
+  .prop-bar button.on { background: var(--accent-weak); border-color: var(--accent); font-weight: 650; }
+  .prop-v { border-radius: 8px; padding: 8px 12px; font-size: 14.5px; margin: 6px 0; }
+  .prop-v.yes { background: var(--good-weak); border: 1px solid var(--good); }
+  .prop-v.no { background: var(--bad-weak); border: 1px solid var(--bad); }
+  .prop-sim { font-size: 13.5px; color: var(--ink2); margin-top: 6px; }
+  .prop-sim.no { color: var(--bad); font-weight: 600; }
+  .mt { overflow-x: auto; max-width: 100%; padding: 2px 0; --mtw: 15px; overscroll-behavior-x: contain; }
+  .mt-in { width: max-content; }
+  .mt-row, .mt-marks { display: grid; column-gap: 1px; }
+  .mt-c { height: 22px; display: flex; align-items: center; justify-content: center; font: 600 10.5px/1 ui-monospace, Consolas, monospace;
+    box-shadow: inset 0 0 0 1px var(--line); border-radius: 2px; }
+  .mt-c.c0 { background: var(--c0); color: var(--c0fg); }
+  .mt-c.c1 { background: var(--c1); color: var(--c1fg); box-shadow: none; }
+  .mt-c.here { box-shadow: inset 0 0 0 2px var(--sE); position: relative; }
+  .mt-c.here::before { content: attr(data-state); position: absolute; top: -17px; left: 50%; transform: translateX(-50%); background: var(--sE); color: var(--badge-fg);
+    font: 700 10.5px/14px system-ui, sans-serif; padding: 0 4px; border-radius: 7px; }
+  .mt-in { padding-top: 18px; }
+  .mt-marks { height: 30px; }
+  .moves { list-style: none; padding: 0 !important; margin: 8px 0 4px; display: flex; flex-wrap: wrap; gap: 6px; max-width: none !important; }
+  .moves li { margin: 0 !important; }
+  .moves button { font: inherit; font-size: 13px; text-align: left; border: 1px solid var(--line); background: var(--surface); color: var(--ink2); border-radius: 8px; padding: 4px 9px; cursor: pointer; min-height: 34px; }
+  .moves button:hover { border-color: var(--accent); }
+  .moves button b { color: var(--ink); font-weight: 650; }
+  .moves button .n { color: var(--muted); margin-right: 4px; }
+  .mt-br { position: relative; height: 6px; border: 2px solid var(--accent); border-top: 0; border-radius: 0 0 4px 4px; margin: 2px 1px 0; }
+  .mt-br span { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); font: 600 11px/1.3 system-ui, sans-serif; color: var(--accent); white-space: nowrap; }
+  .mt-br.bad { border-color: var(--bad); }
+  .mt-br.bad span { color: var(--bad); }
+  .mt-br.z { border-color: var(--axis); }
+  .mt-br.z span { color: var(--ink2); font-weight: 500; }
+
+  /* the whole replay */
+  .replay { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: center; margin: 14px 0 8px; }
+  .rp-box { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 8px 10px; font-size: 13.5px; text-align: center; }
+  .rp-box b { display: block; font-size: 14px; }
+  .rp-box.halt { border-color: var(--bad); background: var(--bad-weak); }
+  .rp-arrow { font-size: 12.5px; color: var(--ink2); text-align: center; max-width: 170px; }
+  .rp-arrow::after { content: "→"; display: block; font-size: 20px; color: var(--muted); line-height: 1; }
+  @media (max-width: 700px) {
+    .replay { grid-template-columns: 1fr; }
+    .rp-arrow { max-width: none; }
+    .rp-arrow::after { content: "↓"; }
+  }
+  .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 10px 0 6px; }
+  @media (max-width: 600px) { .tiles { grid-template-columns: 1fr; } }
+  .tile { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 8px 12px; }
+  .tile .v { font: 650 22px/1.2 system-ui, sans-serif; }
+  .tile .l { font-size: 13.5px; color: var(--ink2); }
+
+  /* the C2-552 fuel panel */
+  .fuel { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px; margin: -8px 0 20px; }
+  .fuel-head { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; }
+  .fuel-cards { display: flex; gap: 8px; overflow-x: auto; align-items: stretch; padding-bottom: 2px; }
+  .fuel-card { flex: none; width: 78px; border: 1px solid var(--line); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 12px; background: var(--surface); }
+  .fuel-card.single { border-color: var(--caution); }
+  .fuel-card.low { border-color: var(--bad); background: var(--bad-weak); }
+  .fuel-card.tail { background: var(--sunk); }
+  .fuel-bit { width: 28px; height: 28px; margin: 0 auto 6px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font: 700 14px ui-monospace, Consolas, monospace; }
+  .fuel-bit.c1 { background: var(--c1); color: var(--c1fg); }
+  .fuel-bit.c0 { background: var(--c0); color: var(--c0fg); border: 1px solid var(--axis); }
+  .fuel-bit.t { width: auto; font: 600 11.5px system-ui, sans-serif; color: var(--muted); }
+  .fuel-barw { height: 62px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 1px solid var(--axis); }
+  .fuel-bar { width: 18px; background: var(--accent); border-radius: 4px 4px 0 0; transition: height .2s; }
+  .fuel-n { font-weight: 650; margin-top: 4px; color: var(--ink); }
+  .fuel-w { color: var(--muted); font-size: 11.5px; line-height: 1.3; }
+  .fuel-note { font-size: 13.5px; color: var(--ink2); margin: 0 0 8px; padding: 6px 10px; border-radius: 8px; background: var(--sunk); min-height: 2.9em; }
+  .fuel-note.on { background: var(--accent-weak); }
+  .fuel-hint { font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+  @media (max-width: 600px) { .fuel-card { width: 66px; } .fuel-cards { gap: 6px; } }
+  .fuel-key { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+  .fuel-key span { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin: 0 4px 0 10px; border: 2px solid; }
+  .fuel-key span:first-child { margin-left: 0; }
+
+  /* W5-5's digit strip */
+  .ds { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px; margin: 12px 0 20px; }
+  .ds-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+  .ds-step { width: 92px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .ds-val { font-size: 14px; color: var(--ink); }
+  .ds .mt { --mtw: 24px; }
+  .ds .mt-c { height: 26px; font-size: 13px; }
+  .ds-arrow { font-size: 13px; color: var(--ink2); margin: 0 0 6px 106px; }
+  @media (max-width: 600px) { .ds-step { width: auto; } .ds-arrow { margin-left: 0; } }
+
+  footer.checked details > summary { cursor: pointer; }
+  footer.checked ul.chk { margin: 6px 0 0; padding-left: 18px; max-width: 80ch; }
+  footer.checked ul.chk li { margin: 5px 0; }
+
+  /* boxes shared with the other modules */
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); border-radius: 12px; background: var(--good-weak); padding: 12px 14px 6px; margin: 34px 0 10px; }
+  .kills > .tag { font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); }
+  .kills > h2 { font-size: 19px; margin: 2px 0 6px; }
+  .kills ul { padding-left: 20px; }
+  .kills li { margin: 8px 0; }
+  .recap { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 16px; margin: 30px 0 0; }
+  .recap h2 { font-size: 15px; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .recap ol { margin: 4px 0; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 6 · Astronomical halts</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/05-05-invariants.html" title="Invariants, not long runs">← Module 5</a><a class="ui-btn" href="/busy-beaver/learn/07-07-cryptids.html" title="Cryptids">Module 7 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 6 of 8 · about 15 minutes</div>
+<h1>Halting at astronomical times</h1>
+<div class="answer"><b>The answer</b>
+<p>Three of our holdouts halt, but far too late for anyone to simulate. W5-5 halts after about 1.82·10<sup>18</sup> steps, C2-552 after about 1.77·10<sup>44</sup> steps, and W5-7 after a tower of exponents.</p>
+<p>So we prove each kind of move the machine makes once, as a lemma that holds for every size. Then Coq replays the whole run as a chain of moves, many of them giant jumps, and checks every move with those lemmas. A script adds up the exact step count; the Coq theorem only says "it halts".</p>
+</div>
+
+<!-- ============================================================ 1 -->
+<section class="beat"><h2><span class="num">1</span>Simulation runs out of time</h2>
+<p>Start with a machine whose halt is within reach. Guess first, then reveal: the page runs it.</p>
+<div class="hide-run" data-tm-predict data-opts='{"id":"m6-bb5-steps","prompt":"The BB(5) champion <code>1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA</code> runs longer than any other 5-state machine that halts. Started on a blank tape, roughly how many steps does it take?","input":{"kind":"choice","options":[{"label":"about 100,000","value":"1e5"},{"label":"tens of millions","value":"1e7"},{"label":"billions","value":"1e9"}]},"answer":"1e7","run":{"tm":"1RB1LC_1RC1RB_1RD0LE_1LA1LD_1RZ0LA","from":47176850,"rows":"each","count":21,"window":{"follow":10},"speed":8,"title":"BB(5) champion: its last 20 steps"},"revealTo":{"halted":true},"explain":"It halts at step <b>47,176,870</b> with 4,098 ones on the tape. Your browser simulated all 47 million steps when the page loaded; the box shows the last 20, ending on the halting transition E0 (written <code>1RZ</code>).","checkId":"C-M6-1"}'></div>
+
+<p>Our C simulator does about 254 million steps per second, so BB(5) takes it a fifth of a second. Three of our holdouts were still running at 10<sup>9</sup> steps, and all three turned out to halt.</p>
+
+<div data-tm-predict data-opts='{"id":"m6-w55-years","prompt":"W5-5 halts after 1,816,824,067,232,869,945 steps. At 254 million steps per second, how long would our simulator need to get there?","input":{"kind":"choice","options":[{"label":"an hour","value":"hour"},{"label":"a month","value":"month"},{"label":"two centuries","value":"centuries"},{"label":"longer than the age of the universe","value":"universe"}]},"answer":"centuries","explain":"1.82·10<sup>18</sup> steps ÷ 2.54·10<sup>8</sup> per second ≈ 7.2·10<sup>9</sup> seconds ≈ <b>227 years</b>. C2-552 (1.77·10<sup>44</sup> steps) would take about 2.2·10<sup>28</sup> years, which <i>is</i> far longer than the age of the universe (about 1.4·10<sup>10</sup> years).","checkId":"C-M6-2"}'></div>
+
+<p>On a scale of powers of ten, the gap looks like this. Each step along the axis is ten times more steps.</p>
+<div id="ruler"></div>
+<div class="ch-legend"><span><i style="background:var(--accent)"></i>one of ours halts here</span><span><i style="background:var(--ink2)"></i>simulated</span><span><i style="background:var(--muted)"></i>what our simulator does in that time</span></div>
+<details class="data"><summary>the numbers as a table</summary>
+<table class="plain"><tr><th>what</th><th>steps</th></tr>
+<tr><td>BB(5) champion halts</td><td>47,176,870</td></tr>
+<tr><td>C2-552, W5-5 and W5-7 still running</td><td>10<sup>9</sup></td></tr>
+<tr><td>one day of our simulator</td><td>2.2·10<sup>13</sup></td></tr>
+<tr><td>one year of our simulator</td><td>8.0·10<sup>15</sup></td></tr>
+<tr><td>W5-5 halts</td><td>1,816,824,067,232,869,945 ≈ 1.82·10<sup>18</sup></td></tr>
+<tr><td>C2-552 halts</td><td>176,522,930,997,643,289,094,015,905,898,381,767,890,130,463 ≈ 1.77·10<sup>44</sup></td></tr>
+<tr><td>W5-7 halts</td><td>a power tower of height about 195, never computed</td></tr>
+</table></details>
+</section>
+
+<!-- ============================================================ 2 -->
+<section class="beat"><h2><span class="num">2</span>Find the rhythm: W5-5's rounds and eats</h2>
+<p>To prove anything about a run that long, we first need its rhythm. Here is W5-5 at step 8,600, at the start of one <b>round</b>. Press play.</p>
+<div data-tm-run data-opts='{"tm":"1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---","start":"0^inf 001 001 000 0 E> 101 (001)^13 0001 (001)^2 0^inf","startLabel":"the tape W5-5 reaches at step 8,600 (the step numbers below count from there)","rows":"each","count":183,"mark":{"digits":"K-form"},"speed":10,"title":"W5-5: one round, every step"}'></div>
+<p>The brackets under the first row name the parts. Left of the head is a <b>counter</b> of 3-cell digits, with its lowest digit next to the head; each bracket shows a digit's value. Then comes one <b>boundary</b> cell, a 0, and the head, in state E, on the <b>101 cap</b>.</p>
+<p>Right of the cap is a <b>bell</b>: b blocks <code>001</code>, one <b>defect</b> <code>0001</code>, and c more blocks <code>001</code>. Here b = 13 and c = 2.</p>
+<p>In the round, the head dips left into the counter and adds 1: the low digit <code>000</code> becomes <code>101</code>. Then it walks right to the defect and back, and moves the defect one block to the left. After 182 steps the tape has the same shape again: the counter is one higher, b went from 13 to 12, and c from 2 to 3.</p>
+
+<h3>How the digits count</h3>
+<p>Here is the counter at five round starts in a row of the real run (steps 1,956 to 2,182, simulated in your browser). The bracket of a digit that just changed is blue.</p>
+<div id="digitStrip"></div>
+<p>Adding 1 to <code>001</code> gives <code>000</code>, so <code>001</code> is worth −1. Adding 1 to <code>100</code> (worth 2) gives <code>001</code> and a carry of 1 into the next digit: 2 + 1 = 3 = 4 − 1. So the digits are base 4 with values −1, 0, 1, 2 (<b>balanced base 4</b>). These four are the <b>clean</b> digits; a digit whose middle cell is 1 is <b>dirty</b>.</p>
+<p>The strip also shows what a round costs: <b>12b + 22 steps, plus 14 for each <code>100</code> the carry passes, plus 4 if it stops on a <code>000</code></b>. The round you played above is 12·13 + 26 = 182 steps.</p>
+
+<p>The proof does not run rounds one by one. It proves the round once, for a bell of any size. The box below runs the same round for b = 1 … 13 and checks each one live (its 12n + 26 is the cost for a carry that stops on <code>000</code>). The lemma in the .v covers every b, every c and every counter of clean digits.</p>
+<div data-tm-rule data-opts='{"tm":"1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---","name":"one round","lhs":"0^inf 001 001 000 0 E> 101 (001)^n 0001 (001)^2 0^inf","rhs":"0^inf 001 001 101 0 E> 101 (001)^(n-1) 0001 (001)^3 0^inf","vars":{"n":{"from":1,"to":13}},"steps":"12n+26","pick":3}'></div>
+
+<p>Now one row per round, from the blank tape. Watch b count down and c count up while the counter climbs.</p>
+<div data-tm-run data-opts='{"tm":"1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---","rows":{"decoded":"K-form"},"count":60,"speed":4,"title":"W5-5 from the blank tape: one row per round"}'></div>
+<p>When b reaches 0 the next round is an <b>eat</b>: the bell bites a few cells off the low end of the counter, and the defect restarts near the far end (b becomes about the old c). An eat plus its rounds is a <b>cycle</b>. You can see it at step 1,402 (b = 0, c = 7), which is followed by b = 6.</p>
+<p>Cycles get longer: c grows by about 2 per cycle, and a whole cycle costs about 6c² steps. The halt comes in cycle 611,577, where c = 1,218,828. The machine halts only 7,435 rounds into that cycle (out of about 1.2 million), after 108,456,557,258 steps.</p>
+</section>
+
+<!-- ============================================================ 3 -->
+<section class="beat"><h2><span class="num">3</span>Coq replays the run in giant jumps</h2>
+<p>Coq's proof walks this same run, but as a <b>checker</b> that makes one move at a time. Each move is one of three kinds:</p>
+<ul>
+  <li><b>eat</b>: simulated cell by cell (long stretches of bell are crossed with proved shift rules);</li>
+  <li><b>jump n rounds</b>: one lemma does n rounds at once: the counter goes up by n, b down by n, c up by n;</li>
+  <li><b>1 round, simulated</b>: when the next carry would reach a dirty digit (like <code>011</code>), which the jump lemma does not cover.</li>
+</ul>
+<div id="checkerRun"></div>
+<p class="figcap" id="checkerCap"></p>
+<p>The checker's moves over these rows (tap one to see where it starts):</p>
+<ol class="moves" id="moves"></ol>
+<p>In these early rows, most rows are never visited: the checker lands on a round start, jumps over the rest of the cycle, simulates the eat, and jumps again. Later cycles need more moves (the averages are under the replay below).</p>
+
+<p>Who picks n? A small program, the <b>proposer</b>, suggests each jump size. Decide first:</p>
+<div data-tm-predict data-opts='{"id":"m6-who-trusted","prompt":"A program proposes how many rounds to jump, and Coq checks each jump against the lemma. For the proof to be correct, which part has to be correct?","input":{"kind":"choice","options":[{"label":"the proposer","value":"proposer"},{"label":"Coq&#39;s check","value":"check"},{"label":"both","value":"both"}]},"answer":"check","explain":"Only Coq&#39;s check. A bad proposal fails the check, and the checker simulates one round instead: the proof gets a move longer, never wrong. Try being the proposer below.","checkId":"J-M6-3, and propose is marked untrusted in both write-ups (C-M6-6)"}'></div>
+
+<p>Be the proposer. Here is a real moment of the run: the counter <code>001 010 001</code> has a dirty digit <code>010</code> just above its low digit. Pick a jump size.</p>
+<div id="proposer"></div>
+
+<p>That is the whole proof for W5-5, start to finish:</p>
+<div class="replay">
+  <div class="rp-box"><b>blank tape</b>step 0</div>
+  <div class="rp-arrow">288 steps, each one checked</div>
+  <div class="rp-box"><b>first round start</b>b = 0, c = 2, empty counter</div>
+  <div class="rp-arrow">4,942,483 checked moves, in 751 chunks</div>
+  <div class="rp-box halt"><b>F reads 1: halt</b>round 7,435 of cycle 611,577</div>
+</div>
+<div class="tiles">
+  <div class="tile"><div class="v">611,578</div><div class="l">eats, simulated: one per cycle</div></div>
+  <div class="tile"><div class="v">2,234,211</div><div class="l">jumps, one lemma each: about 3.7 per cycle</div></div>
+  <div class="tile"><div class="v">2,096,694</div><div class="l">single rounds, simulated: about 3.4 per cycle</div></div>
+</div>
+<p>On average a move covers about 3.7·10<sup>11</sup> steps. Coq checks the moves in 751 chunks of about 400,000 macro steps each (a macro step is one machine step, or one proved jump across a run of repeated blocks). It never runs the 1.82·10<sup>18</sup> machine steps themselves.</p>
+</section>
+
+<!-- ============================================================ 4 -->
+<section class="beat"><h2><span class="num">4</span>The last round, and who counts the steps</h2>
+<p>This is the round where W5-5 ends: round 7,435 of cycle 611,577. The six low digits are all <code>100</code> (worth 2), so the carry runs through all six and reaches <code>110</code>. Two eats made a <code>111</code> there by regrouping cells, and the carry of round 3,339 turned it into <code>110</code>.</p>
+<div id="lastRound"></div>
+<p>At step 32 C reads the 0 of <code>110</code>, at step 33 D reads its middle 1, at step 34 E reads its first 1, and at step 35 F reads the last cell of <code>101</code> above it, a 1. F reading 1 has no rule (<code>---</code>, lit in the table), so the machine halts there. The head never reaches the bell in this round, which is why cutting the bell changes nothing.</p>
+
+<p><b>busycoq counts one step fewer than our simulator.</b> busycoq stops at this configuration, where F reads 1 and finds no rule: "halts in 35 steps" here, and 1,816,824,067,232,869,944 for the whole run. Our simulator runs <code>---</code> as one more step (write 1, move right, stop) and says 36 here and 1,816,824,067,232,869,945 for the run. This page quotes our simulator's count.</p>
+<p><b>Step counts are computed, not proved.</b> A script adds up the cost of every move of the same run: 288 for the opening, the steps of every eat, and for every round the cost formula of beat 2 (a round whose carry reaches a dirty digit has its own formula). Each formula was checked against direct simulation. The Coq theorem is only <code>halts tm c0</code>, so the total sits outside the proof.</p>
+</section>
+
+<!-- ============================================================ 5 -->
+<section class="beat"><h2><span class="num">5</span>Two more of ours: a fuel race, and no clock at all</h2>
+<h3>C2-552: digits that burn fuel</h3>
+<p>C2-552 also counts. Look at it each time the head, in state A, reaches new ground on the right. The run from one such moment to the next is one <b>increment</b>. (The head also reaches new ground in other states, one step before or after; only the moments in A count.)</p>
+<p>Read the tape left of the head as <b>walls</b>, runs of 2 or more equal cells, with <b>gaps</b> between them. Walls of 2, 5, 8, … ones (<code>11</code>, <code>11111</code>, …) are <b>boundaries</b>: they separate the digits. Each digit starts with its bit (the wall after its boundary: <code>00</code> = 0, <code>1111</code> = 1) and ends with its <b>fuel</b>, the gap at its right end. The gap after the last boundary is the <b>tail</b>.</p>
+<div id="c552run"></div>
+<div id="c552fuel"></div>
+<p>Step through and watch the fuel numbers. Every carry that touches a digit burns some of its fuel. A digit with spare walls survives running low: it hands its last wall to its right neighbour and takes the gap next to that wall as its new fuel. A digit with no spare wall (orange outline) can only burn down, and one with bit 0 and no fuel halts the machine at the next carry.</p>
+<p>New digits come from the tail. At a <b>reset</b>, which takes two increments, the tail becomes a new lowest digit with fuel 2<i>a</i><sub>n</sub> − 1. Here <i>a</i><sub>n</sub> + 1 is the number of increments since the previous reset. The panel shows resets at rows 0–1, 3–4 and 8–9.</p>
+<p>The new digit lives roughly as long as the next reset comes within twice the time: <i>a</i><sub>n+1</sub> / <i>a</i><sub>n</sub> &lt; 2. The ratio swings, and the swings grow:</p>
+<div id="ratio"></div>
+<details class="data"><summary>the ratios as a table</summary><div id="ratioTable"></div></details>
+<p>After reset 82 the next reset would need about twice as long, and it never comes. The second-lowest digit has no spare wall, and neither does its left neighbour, so it burns its last fuel. The next carry into it halts the machine, during increment 11,631,266,794,472,450,654,093, about 1.77·10<sup>44</sup> steps in.</p>
+<p>The proof is the same recipe as W5-5's: each kind of carry is a lemma for all sizes, long runs of increments are applied in closed form, and Coq replays the run from step 342 in 107,781 checked moves (22 chunks).</p>
+
+<h3>W5-7: no step count at all</h3>
+<p>W5-7 keeps a binary counter on the left and a <b>register</b> on the right. Each <b>bounce</b> of the head adds 1 to the counter and one block <code>011</code> to the register. A <b>fill</b> is the run of bounces that makes every digit 1. Then comes an <b>overflow</b>: the head walks out to the far (left) end of the counter and back, and the register becomes new low digits. Here is the first fill, 5 bounces from step 847, and its overflow:</p>
+<div id="w57fill"></div>
+<p>The counter is made of words <code>001</code> (W0) and <code>111</code> (W1). Read from the head, W1 W0 is a digit 0, W1 W1 a digit 1, and a lone W0 is a separator (the brackets). The row label says how many bounces are left until the counter is full.</p>
+<p>An overflow after c bounces turns the register into (c − 1)/2 new low digits, all 0, so the next fill takes at least 2<sup>(c−1)/2</sup> − 1 bounces. The fills take 5, then 51, then 1,308,622,847 bounces, then at least 2<sup>654,311,423</sup> − 1. Each count is roughly 2 to the power of the one before.</p>
+<p>So this proof never counts. The 38,573-step opening simulates the first 2 cycles directly. Coq then checks 192 more abstractly, with lower bounds instead of sizes ("a block of at least 256 pairs"). That makes 194 cycles, and the halt comes in the 195th overflow: a tower of exponents about 195 high.</p>
+<p>In that overflow the far end of the counter is <b>doomed</b>: once the head walks out to it, the machine halts, whatever is to its right. The head gets there one token at a time:</p>
+<div id="w57walk"></div>
+<p>A W1 W1 pair takes 12 steps (the rule walk1) and a W0 takes 19 (walk0). Each turns its token into cells right of the head (<code>010101</code> or <code>011</code>) and reads nothing outside its own cells. At the far end the head meets this fixed run:</p>
+<div id="w57far"></div>
+<p>At step 1,368 F reads 1: no rule, so the machine halts. That is busycoq's count, as in the write-up; our simulator would call the halting move step 1,369. The head never goes more than one cell right of where it starts, so whatever follows <code>010 1</code> (the walked-over tokens and the register) is never read.</p>
+</section>
+
+<!-- ============================================================ kills -->
+<section class="kills" id="ours">
+<div class="tag">From our kills</div>
+<h2>Three halting proofs</h2>
+<ul>
+  <li><a href="/busy-beaver/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/index.html"><b>C2-552</b> <code>1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB</code></a>, our first halting kill, submitted in PR #18. Fuel race; halts during increment 11,631,266,794,472,450,654,093 (about 1.77·10<sup>44</sup> steps); 107,781 checked moves from step 342.</li>
+  <li><a href="/busy-beaver/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/index.html"><b>W5-5</b> <code>1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---</code></a>, class "Bell eats counter"; the proof passes check_kill, not yet submitted upstream. A 288-step opening, then 4,942,483 checked moves; halts at step 1,816,824,067,232,869,945.</li>
+  <li><a href="/busy-beaver/machines/1RB0RD_1LC1RE_1LA0LD_0RE0RF_1LC1RA_0LE---/index.html"><b>W5-7</b> <code>1RB0RD_1LC1RE_1LA0LD_0RE0RF_1LC1RA_0LE---</code></a>, class "Shift-overflow bouncer counter"; the proof passes check_kill, not yet submitted upstream. A 38,573-step opening, 192 abstract cycles and a doomed far end; the time is never computed.</li>
+</ul>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---&amp;steps=1e5&amp;style=explore">W5-5 in the explorer</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB&amp;steps=1e5&amp;style=explore">C2-552 in the explorer</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB0RD_1LC1RE_1LA0LD_0RE0RF_1LC1RA_0LE---&amp;steps=1e5&amp;style=explore">W5-7 in the explorer</a></p>
+</section>
+
+<section class="recap">
+<h2>Recap</h2>
+<ol>
+  <li>Some holdouts halt too late to simulate: 1.82·10<sup>18</sup> steps would take our simulator 227 years.</li>
+  <li>We prove each kind of move once, for every size; Coq then replays the run in giant checked jumps, and an untrusted proposer only picks the jump sizes.</li>
+  <li>The step count is added up by a script, not proved (busycoq counts one fewer); W5-7's is never computed at all.</li>
+</ol>
+</section>
+
+<nav class="pager"><a href="/busy-beaver/learn/05-05-invariants.html">← 5 · Invariants</a><a href="/busy-beaver/dashboard/index.html">Dashboard</a> · <a href="/busy-beaver/learn/index.html">all modules</a><a href="/busy-beaver/learn/07-07-cryptids.html">7 · Cryptids →</a></nav>
+
+<footer class="checked">
+  <details>
+    <summary><b>checked</b> · every number on this page was re-checked: 15 simulation and file checks + 12 page checks, all pass</summary>
+    <ul class="chk">
+      <li><b>Live:</b> every tape here is simulated in your browser by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). Each drill compares its answer with the live run; the checker labels, the digit strip's costs, the proposer and the two halting runs re-check themselves and show a red error if anything differs.</li>
+      <li><b>Simulated</b> with <code>tools/sim.py</code> by <code>python3 -B learn/checks/m06_astronomical_halts.py</code> (results in <code>learn/checks/m06_results.json</code>):
+        <ul>
+          <li>C-M6-1 BB(5) champion: 47,176,870 steps, 4,098 ones. C-M5-3: no halt by 10<sup>9</sup> for all three.</li>
+          <li>C-M6-2 the arithmetic at 254M steps/s (<code>tools/README-sim.md</code>): 226.7 years, 2.2·10<sup>28</sup> years, a day and a year of steps, 3.7·10<sup>11</sup> steps per move, 3.65 jumps and 3.43 single rounds per cycle. The age of the universe is the standard figure, not checked.</li>
+          <li>C-M6-3 W5-5's first round start (step 288, b = 0, c = 2), the round 8,600 → 8,782, the round rule for n = 1 … 13.</li>
+          <li>C-M6-11 the round cost 12b + 22 + 14t + 4[stop on 000] on all 940 clean rounds to step 300,000; the strip's five round starts (steps 1,956, 2,026, 2,088, 2,134, 2,182) and costs 70, 62, 46, 48.</li>
+          <li>C-M6-4, C-M6-10 the extracted checker of the .v (<code>rocq/gen/driver</code>): its first 40 moves land on the simulated round starts; the whole run is 4,942,483 moves = 611,578 eats + 2,234,211 jumps + 2,096,694 single rounds.</li>
+          <li>C-M6-5, C-M6-12 the halting round: with the real bell (b = 1,211,396) and the cut one, the same steps; C, D, E, F read cells −20, −21, −22, −23 at steps 32–35 (the 0, 1, 1 of <code>110</code> and the last 1 of <code>101</code>); F reads 1 at step 35 (busycoq) and our simulator halts at 36; the head never right of its start.</li>
+          <li>C-M6-7, C-M6-13 C2-552 at step 342; right records from step 342 to 10<sup>5</sup>: every one not in A is one step from one in A, and each increment has 2 or 3 (to step 2,000: 20 in A, 23 in other states).</li>
+          <li>C-M6-9 the 82 resets of C2-552's <code>work/resets_long.jsonl</code> match its write-up's table; a<sub>n</sub> + 1 = increments between resets n − 1 and n; ratios a<sub>2</sub>/a<sub>1</sub> = a<sub>3</sub>/a<sub>2</sub> = 2 exactly, below 2 from reset 4 to 82.</li>
+          <li>C-M6-8, C-M6-14 W5-7: the far end reaches F reading 1 at step 1,368 for four right parts (head on cells −66 … 1; our simulator halts at 1,369); the first fill: P-configurations at steps 847, 947, 1,177, 1,321, 1,563, 1,751 with registers 1 … 6 and 5 … 0 bounces to go, then 2,136 with register 1 and 51 to go; walk1 = 12 and walk0 = 19 steps; the bounds 5 → 3 ≤ 51 and 51 → 2<sup>25</sup> − 1 ≤ 1,308,622,847.</li>
+          <li>C-M6-6 the replay facts quoted from the three write-ups (<code>submission/proof.md</code>), STATUS.md and <code>tools/README-sim.md</code>; W5-5's step-count breakdown adds up to its total.</li>
+        </ul></li>
+      <li><b>Page JavaScript</b> (<code>learn/m06.js</code>) by <code>node learn/checks/m06_astronomical_halts.mjs</code> (results in <code>learn/checks/m06_js_results.json</code>): J-M6-1 the round-start decoder = sim.py; J-M6-2 the move kinds = the extracted checker; J-M6-3 the proposer (n = 1, 2, 3 land on the real round starts, 4, 17, 18 are refused); J-M6-4, J-M6-5 the two halts; J-M6-6 C2-552's wall reading = <code>work/resets_long.jsonl</code> at resets 1–17, by direct simulation to step 824,902,774; J-M6-7 the chart data; J-M6-8 digit values; J-M6-9 the digit strip; J-M6-10 the fuel panel's reset notes (rows 0–1, 3–4, 8–9, … of the 130 increments are resets 1–8, at the increments and with the a<sub>n</sub> of the file); J-M6-11 W5-7's bounce rows and walk-in; J-M6-12 the halting rows end on the first configuration with no rule.</li>
+      <li><b>Cited, not simulated:</b> cycle lengths and counts, the cost formulas for eats and dirty rounds, the step-count breakdown and the 751 / 22 chunks (the write-ups); W5-7's fill sizes beyond step 38,573, its 192 cycles and the tower height (its write-up, §6–§8); the fuel-race explanation and the ≈ 2 for reset 83 (C2-552's write-up, §6); PR #18 and kill status (STATUS.md).</li>
+    </ul>
+  </details>
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, parseTM, viewOf } from './tm.js';
+import { W55, C552, W57, registerDecoders, w55Move, mountProposer, PROPOSER, mountFuel, drawRuler, drawRatio, RATIOS,
+  mountDigitStrip, w57Bounces, readsNoRule } from './m06.js';
+
+registerDecoders();
+const fail = (where, msg) => {
+  (window.__tmErrors = window.__tmErrors || []).push(msg);
+  const e = document.createElement('div'); e.className = 'self-error'; e.textContent = 'Page error: ' + msg;
+  where.append(e);
+  console.error(msg);
+};
+
+// the BB(5) run in drill 1 stays hidden until Reveal is pressed
+for (const h of document.querySelectorAll('.hide-run')) {
+  h.addEventListener('click', (e) => { if (e.target.closest('.tm-pactions button.primary')) h.classList.add('go'); });
+}
+
+// beat 1: the ruler (log10 of the step counts in C-M6-1, C-M6-2, C-M5-3)
+drawRuler(document.getElementById('ruler'), [
+  { label: 'BB(5) champion halts: 47,176,870', log10: Math.log10(47176870), kind: 'sim', note: 'simulated in this page (drill above)' },
+  { label: '10⁹: C2-552, W5-5, W5-7 still running', log10: 9, kind: 'sim', note: 'simulated with tools/sim.py' },
+  { label: 'one day of our simulator', log10: Math.log10(254e6 * 86400), kind: 'speed', note: '2.2·10¹³ steps at 254 million per second' },
+  { label: 'one year of our simulator', log10: Math.log10(254e6 * 365.25 * 86400), kind: 'speed', note: '8.0·10¹⁵ steps' },
+  { label: 'W5-5 halts: 1.82·10¹⁸', log10: Math.log10(1.816824067232869945e18), kind: 'halt', note: '1,816,824,067,232,869,945 steps: 227 years of our simulator' },
+  { label: 'C2-552 halts: 1.77·10⁴⁴', log10: Math.log10(1.76522930997643289e44), kind: 'halt', note: 'about 2.2·10²⁸ years of our simulator' },
+  { label: 'W5-7 halts: off the scale', log10: null, kind: 'halt', note: 'a tower of exponents about 195 high' },
+]);
+
+// beat 2: the digit strip (J-M6-9, C-M6-11)
+mountDigitStrip(document.getElementById('digitStrip'), { from: 1956, n: 5 });
+
+// beat 3: the same run, labelled with the checker's move at each round start (verified: J-M6-2)
+const WANT = ['eat', 'jump 1', 'eat', 'jump 2', 'eat', 'jump 4', 'eat', 'round', 'round', 'jump 4', 'eat', 'jump 7'];   // J-M6-2
+let skip = 0;
+const kinds = [];
+const checker = mountRun(document.getElementById('checkerRun'), {
+  tm: W55, rows: { decoded: 'K-form' }, count: 40, speed: 4, title: 'The same run, as Coq’s checker walks it',
+  label: (row) => {
+    const k = row.decoded;
+    if (!k) return '';
+    if (skip > 0) { skip--; return '· jumped over'; }
+    const mv = w55Move(k);
+    if (mv.kind === 'eat') { kinds.push({ i: row.i, kind: 'eat', n: 1 }); return 'eat: simulate'; }
+    if (mv.kind === 'batch') { skip = mv.n - 1; kinds.push({ i: row.i, kind: 'jump ' + mv.n, n: mv.n }); return `jump ${mv.n}`; }
+    kinds.push({ i: row.i, kind: 'round', n: 1, dirty: mv.dirty });
+    return '1 round: simulate';
+  },
+});
+const cap = document.getElementById('checkerCap');
+checker.on('row', (row) => {
+  const k = row.decoded;
+  cap.textContent = k ? `step ${row.step.toLocaleString('en-US')}: ${k.text} · the checker: ${row.label}` : '';
+});
+checker.ready.then(() => {
+  const got = kinds.map((m) => m.kind);
+  if (JSON.stringify(got.slice(0, WANT.length)) !== JSON.stringify(WANT)) fail(document.getElementById('checkerRun'), `checker moves ${JSON.stringify(got.slice(0, 12))} differ from the checked ones`);
+  const rows = checker.rows(), list = document.getElementById('moves');
+  kinds.forEach((m, j) => {
+    const to = rows[m.i + m.n];
+    if (!to) return;
+    const what = m.kind === 'eat' ? ['eat', 'simulated'] : m.kind === 'round' ? ['1 round', `simulated (dirty ${m.dirty})`] : [`jump ${m.n} round${m.n > 1 ? 's' : ''}`, 'one lemma'];
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = `<span class="n">${j + 1}.</span><b>${what[0]}</b> · ${what[1]} · step ${rows[m.i].step.toLocaleString('en-US')} → ${to.step.toLocaleString('en-US')}`;
+    b.addEventListener('click', () => { checker.pause(); checker.goto(m.i); checker.el.scrollIntoView({ block: 'nearest' }); });
+    const li = document.createElement('li');
+    li.append(b);
+    list.append(li);
+  });
+});
+
+// the proposer (J-M6-3)
+mountProposer(document.getElementById('proposer'), PROPOSER);
+
+// Halting runs end on busycoq's halting configuration: the head on the cell it reads, in a state with no rule for it.
+// The row says so and the '---' cell of the table lights up (J-M6-12; C-M6-12, C-M6-8).
+const noRuleLabel = (tm) => (row) => (readsNoRule(tm, row) ? `${row.state} reads ${viewOf(row.cfg).read(row.pos)}: no rule, halt` : row.decoded ? row.decoded.label : '');
+function endsOnNoRule(ctrl, step) {
+  ctrl.on('row', (row) => {
+    const td = ctrl.el.querySelector('.tm-table td.tm-halt');
+    if (td) td.classList.toggle('on', readsNoRule(ctrl.tm, row));
+  });
+  ctrl.ready.then(() => {
+    const rows = ctrl.rows(), last = rows[rows.length - 1];
+    if (last.step !== step || !readsNoRule(ctrl.tm, last) || rows.slice(0, -1).some((r) => readsNoRule(ctrl.tm, r))) fail(ctrl.el, `this run should first meet a missing rule at step ${step} (got step ${last.step})`);
+  });
+}
+
+// beat 4: W5-5's halting round (C-M6-5, C-M6-12)
+const tmW55 = parseTM(W55), tmW57 = parseTM(W57);
+endsOnNoRule(mountRun(document.getElementById('lastRound'), {
+  tm: W55, start: '0^inf 101 110 100 100 100 100 100 100 0 E> 101 (001)^3 0001 (001)^2 0^inf',
+  startLabel: 'the round start from the W5-5 write-up (§9), with the bell cut to 3 blocks before the defect (the real one has 1,211,396)',
+  rows: 'each', count: 36, window: [-27, 0], mark: { digits: 'K-digits' }, table: true, speed: 4, label: noRuleLabel(tmW55),
+  title: 'W5-5: the halting round, every step',
+}), 35);
+
+// beat 5: C2-552 increments and the fuel cards
+const c552 = mountRun(document.getElementById('c552run'), {
+  tm: C552, from: 342, rows: { decoded: 'increment' }, count: 130, speed: 3, title: 'C2-552 from step 342, one row per increment',
+});
+mountFuel(document.getElementById('c552fuel'), c552);
+const key = document.createElement('div');
+key.className = 'fuel-key';
+key.innerHTML = '<span style="border-color:var(--line)"></span>digit with spare walls<span style="border-color:var(--caution)"></span>no spare wall<span style="border-color:var(--bad);background:var(--bad-weak)"></span>no spare wall, fuel ≤ 1 · bar height grows with the square root of the fuel';
+document.getElementById('c552fuel').querySelector('.fuel').append(key);
+
+drawRatio(document.getElementById('ratio'), RATIOS, { checkedUpTo: 17 });
+{
+  const t = document.createElement('table');
+  t.className = 'plain';
+  t.innerHTML = '<tr><th>reset n</th><th>a<sub>n</sub> / a<sub>n−1</sub></th></tr>' + RATIOS.map(([n, r]) => `<tr><td>${n}</td><td>${r.toFixed(4)}</td></tr>`).join('');
+  document.getElementById('ratioTable').append(t);
+}
+
+// beat 5: W5-7's first fill, one row per bounce (J-M6-11, C-M6-14)
+const fill = mountRun(document.getElementById('w57fill'), {
+  tm: W57, from: 847, rows: w57Bounces(), count: 7, mark: { digits: 'w57-P' }, speed: 1, labels: 'always',
+  title: 'W5-7 from step 847: one row each time a bounce brings the head back to the counter',
+});
+fill.ready.then(() => {
+  const got = fill.rows().map((r) => [r.step, r.decoded && r.decoded.register, r.decoded && r.decoded.count]);
+  const want = [[847, 1, 5], [947, 2, 4], [1177, 3, 3], [1321, 4, 2], [1563, 5, 1], [1751, 6, 0], [2136, 1, 51]];
+  if (JSON.stringify(got) !== JSON.stringify(want)) fail(fill.el, `bounce rows ${JSON.stringify(got)} differ from the checked ones`);
+});
+
+// the walk-in: walk1 (12 steps), then walk0 (19 steps)
+const WALK = { 0: 'next: W1 W1, then W0', 12: 'walk1: W1 W1 crossed in 12 steps', 31: 'walk0: W0 crossed in 19 more: the far end' };
+const walk = mountRun(document.getElementById('w57walk'), {
+  tm: W57, start: '0^inf (111111)^3 (001111111)^5 001 111111 <D 010 1 0^inf',
+  startLabel: 'the far end of the counter with two more tokens, W0 and W1 W1, next to the head (the register is cut: it is never read)',
+  rows: 'each', count: 32, window: [-27, 6], mark: { digits: 'w57-P' }, speed: 4, label: (row) => WALK[row.step] || '',
+  title: 'W5-7: the head walks out through two tokens',
+});
+walk.ready.then(() => {
+  const at = walk.rows().filter((r) => r.decoded).map((r) => [r.step, r.decoded.x]);
+  const want = [[0, '110' + '110110110110110' + '111111'], [12, '0' + '110110110110110' + '111111'], [31, '110110110110110' + '111111']];
+  if (JSON.stringify(at) !== JSON.stringify(want)) fail(walk.el, `walk-in rows ${JSON.stringify(at)} differ from the checked ones`);
+});
+
+// the doomed far end (C-M6-8)
+endsOnNoRule(mountRun(document.getElementById('w57far'), {
+  tm: W57, start: '0^inf (111111)^3 (001111111)^5 <D 010 1 0^inf',
+  startLabel: 'the far end of W5-7’s counter as the proof meets it: 111 111 three times, then 001 111 111 five times, D on the last cell, then 010 1 (anything may follow; blank here)',
+  rows: 'each', count: 1369, table: true, speed: 100, mark: { digits: 'w57-P' },
+  label: (row) => (row.step === 0 ? 'start: the far end' : readsNoRule(tmW57, row) ? noRuleLabel(tmW57)(row) : ''),
+  title: 'W5-7: the doomed far end, every step',
+}), 1368);
+
+window.__learnReady = autoMount();
+</script>
+</body>
+</html>

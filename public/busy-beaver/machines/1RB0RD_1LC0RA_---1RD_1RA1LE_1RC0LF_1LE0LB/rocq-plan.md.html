@@ -1,0 +1,513 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>rocq-plan.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/rocq-plan.md · <a href="/busy-beaver/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/rocq-plan.md.html">raw</a></div>
+<h1 id="c2-552-halting-proof-rocq-plan">C2-552 halting proof: Rocq plan</h1>
+<p>Target: <code>Lemma halt: halts tm c0.</code> in
+<code>machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB.v</code>,
+passing <code>tools/check_kill.sh --halt</code>. Written 2026-10-12, after a design pass with small prototypes.</p>
+<h2 id="verdict">Verdict</h2>
+<p>Feasible, with a known architecture and no new framework. The proof is a <strong>checked certificate runner</strong> in the
+style of <code>verify/Sk1Machines.v</code> (TM91/TM94), run in the <strong>mirrored machine</strong> <code>tmf := Eval compute in (flip tm)</code>.
+In the mirror the counter sits to the right of the head, which is the orientation busycoq's call-stream
+framework (<code>segRLs</code>/<code>sideRLs</code> in <code>Individual.v</code>, <code>sideRLs_halt</code> in <code>LongitudinalHalt.v</code>) is written for.</p>
+<ul>
+<li>A Coq-executable <code>next : cfg -&gt; cfg + unit</code> works on a unit-list configuration with <code>N</code> fields.</li>
+<li>Each <code>next</code> either applies a binary-counter <strong>batch</strong> of d increments (Sk1 <code>batch</code> pattern) or runs <strong>one
+  structural increment</strong> (TM91 <code>call</code>/<code>outcome</code> pattern), and returns <code>inr tt</code> when the call halts.</li>
+<li>Soundness: <code>next_spec</code> (each step is <code>-[tmf]-&gt;*</code>, or the config halts) and <code>check_spec</code> via
+  <code>Eqb.N_iter_until_spec</code>, copied from <code>Sk1Auto.check_spec</code>.</li>
+<li>The run itself is one <code>native_check_eq</code> of <code>check FUEL = true</code>, with FUEL about 1.2e5 iterations.</li>
+</ul>
+<p>The riskiest unknowns were checked and hold:
+1. Every unit boundary is crossed by a uniform call protocol.
+2. <code>solve_seg</code>/<code>es</code> prove the parametric window lemmas in the flipped machine.
+3. The root, batch, halting and flip glue compose.
+4. native_compute runs 150k checker-sized iterations in seconds.</p>
+<h2 id="1-orientation-and-the-call-protocol-the-key-fact">1. Orientation and the call protocol (the key fact)</h2>
+<p>The <strong>cut</strong> of a unit is the left edge (in tm coordinates) of its boundary block <code>1^(3g+2)</code>. This covers plain <code>11</code>
+and glued <code>1^5</code>, <code>1^8</code>, … alike. The tail's boundary has a cut too.</p>
+<p>Every increment is one call from the root (the tail and the head) into the units to its left, so the calls nest the
+way a binary counter carries:
+- <strong>In:</strong> the head crosses a cut leftward exactly once, in state <strong>B</strong>, onto a cell holding 0.
+- <strong>Out:</strong> it crosses back rightward exactly once, in state <strong>D</strong>, onto a cell holding 0 (the boundary's first cell,
+  zeroed on the way in).</p>
+<p>Evidence:
+- Empirical (<code>rocq/tools/cuts.py</code>, log <code>rocq/tools/cuts_3e7.txt</code>): from the blank tape to 3·10⁷ steps, about 4.5k
+  increments and 33,739 cut observations. Every crossed cut follows exactly <code>[(L,B,0),(R,D,0)]</code>, with 0 deviations.
+  This covers plain and glued boundaries <code>b2 … b41</code> and the resets, glue, unglue, absorb and edge events of that window.
+- Inside a unit the same holds at the left edge of every passive wall or stack <code>1^(3j+1)</code>: in <strong>F</strong> onto 0, out
+  <strong>D</strong> onto 0 (<code>rocq/tools/walls_cross.py</code>). So passive chains can be cut there as well, giving per-block induction.
+- Proved in Coq (below): with <code>hin := (B,[])</code>, <code>hout := (D,[])</code> and <code>h := [(hin,hout)]</code>, the touch lemmas are
+  plain <code>segRL</code>/<code>segRLs</code> facts. Since the protocol is a single call type, every forwarded stream is <code>h^^p</code>.
+  TM91 needed two call types, <code>h</code> and <code>h'</code>; this machine needs only one.</p>
+<p>Words are lists in <strong>root-first</strong> order (nearest the head first, i.e. tm right-to-left). A <code>segRR</code> output is
+far-first, which is busycoq's convention for <code>l &lt;* w</code>.</p>
+<h2 id="2-prototype-results-compiled-coq-8201-all-2-s-all-closed-under-the-global-context-except-the-flip-transfer">2. Prototype results (compiled, Coq 8.20.1, all &lt; 2 s, all <code>Closed under the global context</code> except the flip transfer)</h2>
+<p>Files are in <code>rocq/proto/</code>. Compile them with the standard flags from a temp dir.</p>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>content</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>root_k1_batch.v</code></td>
+<td><code>root t X := 0inf &lt;{{A}} ([0;1]^^t ++ [0;1;1]) *&gt; X</code>; <code>root_in</code>, <code>root_out</code>, <code>root_step</code> (one call via <code>sideRL tmf hin hout</code>), <code>root_steps</code> (d calls, induction: <code>root t X --&gt;* root (d+t) X'</code>); k=1 digit words <code>w1 a c</code> (lead 1111, x=2a+1, y=2c+1) and <code>w0 a c</code> (lead 00, x=2a, y=2c); <code>stop1 : segRL tmf hin hout (w0 (S a) (S c)) (w1 a c)</code>; <code>pass1 : segRLs tmf h h (w1 a c) (w0 (S (S a)) c)</code> (via <code>segRLs_lrcons</code> of <code>pass1_RR</code>/<code>pass1_LL</code>); <code>halt0 : halts tmf (l {{B}}&gt; w0 a 0 *&gt; r)</code>; <code>pair1</code>, <code>pairs1 n : segRLs tmf (h^^(n*2)) (h^^n) (w0 (S a) (n+c)) (w0 (S (n+a)) c)</code> (the Sk1 <code>total_spec</code> pattern)</td>
+<td>all Qed</td>
+</tr>
+<tr>
+<td><code>blocks.v</code></td>
+<td>passive block <code>blk m j := [0] ++ [1;0]^^m ++ stack j</code> (odd gap 2m+1, stack <code>1^(3j+1)</code>); <code>blockRR : segRR tmf (F,[]) (F,[]) (blk m j) ([0;1] ++ [0;1;1]^^j ++ [0;1]^^m)</code>, <code>blockLL : segLL tmf (D,[]) (D,[]) (mid (S m) j) ([0] ++ [1;0]^^m ++ stack j ++ [0;1])</code>, parametric in m and j</td>
+<td>Qed by <code>solve_seg</code></td>
+</tr>
+<tr>
+<td><code>halt_flip.v</code></td>
+<td><code>root_halt : sideRLs_halt tmf [(hin,hout)] X -&gt; halts tmf (root t X)</code> (LongitudinalHalt); a toy halting root; <code>flipc0 : halts tmf c0 -&gt; halts tm c0</code> by <code>apply flip_halts_iff; exact H</code> (<code>tmf</code> ≡ <code>flip tm</code>, <code>flip_conf c0</code> ≡ <code>c0</code> by conversion)</td>
+<td>Qed. Adds only <code>functional_extensionality_dep</code>, which is in the baseline</td>
+</tr>
+<tr>
+<td><code>perf.v</code></td>
+<td>synthetic checker-shaped loop: 150k <code>N_iter_until</code> iterations over 25 records with 70–75-bit <code>N</code> fields, a 1300-element list rebuilt every 2nd iteration</td>
+<td><code>native_check_eq</code>: 11–16 s wall for the whole file, 450 MB RSS. <code>vm_check_eq</code>: 59 s. Negative control (<code>fuel</code> too small) fails as it should</td>
+</tr>
+</tbody>
+</table>
+<p>Tactic notes are logged in <code>atlas/rocq-notes.md</code> under "C2-552 … Rocq design".</p>
+<h2 id="3-a-tape-representation-and-the-rule-lemmas">3. (a) Tape representation and the rule lemmas</h2>
+<h3 id="checker-data-all-numbers-n-pair-counts-so-parity-is-structural">Checker data (all numbers <code>N</code>, pair counts so parity is structural)</h3>
+<ul>
+<li><code>wall := Z (00) | O j (1^(3j+1), j ≥ 1)</code>; a boundary is <code>g : N</code> (<code>1^(3g+2)</code>).</li>
+<li><code>unit := { g; x; lead : option bool (None = leadless); m1; mids : list (wall*N); y }</code>.</li>
+<li><code>mids</code> holds the interior passives P₁…P_{k−1} with their gaps, in tm order.</li>
+<li>A batch touches only x, lead, m1 and y, so it is O(1) per unit.</li>
+<li>Glue drops the last passive; unglue prepends at the lead.</li>
+<li>k=1 has no m1/mids. Empty = <code>[y]</code>.</li>
+<li><code>cfg := { e : N (edge 1^e); u0; us : list unit (LSB first); tail : TailT t | TailG t (glued 1^5) | NoTail }</code>.</li>
+<li>Sizes on the real run (fast.py rerun, this session): up to 25 units, k up to 1,339, about 2.9k wall tokens in the
+  whole configuration, numbers up to 73 bits.</li>
+</ul>
+<h3 id="words-prop-side-only-never-computed-on-the-big-data">Words (Prop side only; never computed on the big data)</h3>
+<ul>
+<li>Gaps by phase class, as root-first pair counts:</li>
+<li>between two 1-walls (odd): <code>[0] ++ [1;0]^^c</code>;</li>
+<li>between a 1-wall and a 00 lead on the far side: <code>[0;1]^^c</code>;</li>
+<li>after a 00 lead (x, or m1 of a 00-lead unit): <code>[1;0]^^a</code>.</li>
+<li>Walls:</li>
+<li><code>00</code>: <code>[0;0]</code>;</li>
+<li>stack: <code>[1] ++ [1;1;1]^^j</code>;</li>
+<li>boundary: <code>[1;1] ++ [1;1;1]^^g</code>.</li>
+<li>Unit word, root-first: <code>y-block, chain blocks (gap ++ far wall), lead block (m1 ++ M), x-block (x ++ boundary)</code>.
+  The <code>blk</code> lemmas above are exactly the chain-block case.</li>
+<li><code>side us u0 e := unit words ++ U0 word ++ 1^e *&gt; 0inf</code>; <code>denote cfg := root t (side …)</code> or the reset variants.</li>
+</ul>
+<h3 id="mapping-of-every-rules3py-case-to-lemmas">Mapping of every rules3.py case to lemmas</h3>
+<p><code>pairs</code> = Sk1-style n-touch induction. Every lemma is parametric (<code>lpow</code> on nat; <code>N.to_nat</code> at the interface).</p>
+<table>
+<thead>
+<tr>
+<th>rules3 case</th>
+<th>lemma(s), flipped machine</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tail <code>t += 2</code> per increment</td>
+<td><code>root_in</code>, <code>root_out</code>, <code>root_step</code>, <code>root_steps</code></td>
+<td><strong>proved</strong></td>
+</tr>
+<tr>
+<td>M stop, k=1 (lead 00, any boundary: leave the boundary in <code>r</code>)</td>
+<td><code>stop1</code></td>
+<td><strong>proved</strong></td>
+</tr>
+<tr>
+<td>M pass, k=1 (lead 1111, boundary 11), including y 1→0 (the fuel-out shape <code>[x,00,0]</code>)</td>
+<td><code>pass1</code> (c arbitrary, c=0 allowed)</td>
+<td><strong>proved</strong></td>
+</tr>
+<tr>
+<td>call into <code>[x,00,0]</code> halts (F reads 1 after 00)</td>
+<td><code>halt0</code> + <code>sideRLs_halt</code> + <code>segRLs_sideRLs_halt_concat</code> + <code>root_halt</code></td>
+<td><strong>proved</strong></td>
+</tr>
+<tr>
+<td>M touches k ≥ 2</td>
+<td><code>yblockRR/LL</code> (y-gap + last passive, entered in B) ∘ <code>chainRR/LL</code> (induction over <code>mids</code> from <code>blockRR/LL</code>) ∘ <code>leadRR/LL</code> (pass: m1, 1111, x, 11, out in B) or <code>lead_stop</code> (00 turnaround, F→D); composition lemmas <code>RR∘RL∘LL = RL</code> and <code>RR∘(call)∘LL = segRLs_lrcons</code></td>
+<td>blocks proved, rest to do</td>
+</tr>
+<tr>
+<td>leadless unit (all walls +2)</td>
+<td><code>yblock</code> ∘ <code>chain</code> ∘ <code>xblockRR/LL</code> (first wall passive)</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>empty unit</td>
+<td><code>emptyRR/LL</code> on <code>[y, 11]</code></td>
+<td>to do</td>
+</tr>
+<tr>
+<td>glue (last gap 1→−1) for digit, leadless, U0, and right after an unglue</td>
+<td><code>yglueRR/LL</code>: the y-block with c=0. The last stack shifts 2 cells toward the root and ends 1 cell past the cut (captured: <code>01111 → 11101</code>). Then a re-cut equality that merges it into the root-side boundary</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>unglue g=1 and g≥2 (boundary <code>1^(3g+2)</code>, lead 1111, a pass): <code>[x,1111,…] → [2,00,x+1,1111,…]</code> / <code>[2,00,0,1^(3g−2),x,1111,…]</code></td>
+<td><code>unglue1RR/LL</code>, <code>ungluegRR/LL</code> (stack shift over <code>[1;1;1]^^g</code>; g up to 6·10¹⁴, so symbolic)</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>U0-1111 (U0 digit, lead moves like a passive, edge e≡1)</td>
+<td>U0 side lemma + <code>edge1</code></td>
+<td>to do</td>
+</tr>
+<tr>
+<td>U0-stop</td>
+<td>the stop lemmas (the turn never reaches the edge)</td>
+<td>reuse</td>
+</tr>
+<tr>
+<td>edge e≡0 (overflow: e += 3, U0's first gap −2) with U0 empty / leadless</td>
+<td><code>edge0_empty</code>, <code>edge0_leadless</code> (<code>sideRL</code>); <code>edge0s</code> by induction for m overflows (<code>sideRLs (h^^m)</code>)</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>edge e≡1 fossilization (old edge becomes U0's first stack, new <code>111</code> two cells out)</td>
+<td><code>edge1</code> (<code>sideRL</code>, uses <code>0inf</code> cells)</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>absorb (empty U0's gap −1, so e += r−1)</td>
+<td><code>absorb</code> (<code>sideRL</code>) + re-cut</td>
+<td>to do</td>
+</tr>
+<tr>
+<td>reset first half (tail boundary <code>1^5</code>) <code>… 1^5 [t] → … 11 [2,00,t+2]</code>, call continues</td>
+<td><code>root_reset1 : sideRL tmf hin hout X X' -&gt; rootG t X --&gt;+ rootN (digit 2 00 (t+2)) X'</code></td>
+<td>to do</td>
+</tr>
+<tr>
+<td>reset second half (no tail) <code>… [2,00,t+2] → … [1,1111,t] 11 [1]</code></td>
+<td><code>root_reset2</code> (no side call: the last unit stops the carry)</td>
+<td>to do</td>
+</tr>
+</tbody>
+</table>
+<p>About 30 lemma families in all.
+- Words for each family come from the capture tools in <code>rocq/tools/</code> (<code>block.py L R</code>, <code>seg.py</code>, <code>rootcap.py</code>).
+- They also come from <code>solve_seg</code> itself: when the stated output is wrong, the error message prints the computed word.
+  That is how <code>blockRR</code>'s middle word was found.</p>
+<h2 id="4-b-running-about-54k-structural-events-and-the-batches-inside-coq">4. (b) Running about 54k structural events and the batches inside Coq</h2>
+<p>The task brief estimated about 60k structural events. Rerunning fast.py this session gives the exact counts:
+- <strong>53,973</strong> structural single increments to the fuel-out at increment 11,631,266,794,472,450,654,090.
+- Events among them:
+  - glue 28,314, unglue 28,234;
+  - overflow-edge0 48,714, leadless-U0 48,654;
+  - reset1 81, reset2 82;
+  - absorb, edge1, U0-stop, U0-1111 and empty: 60 each.</p>
+<h3 id="batch-d-increments-no-structural-event">Batch (d increments, no structural event)</h3>
+<ul>
+<li><strong>Per-unit lemma <code>unit_batch</code>:</strong> <code>segRLs tmf (h^^n) (h^^p) (uword u) (uword u')</code>, where</li>
+<li><code>p = (n + bit)/2</code>;</li>
+<li>u' is the closed form: x += 3p − (n−p), bit' = (bit+n) mod 2, m1 += n, y −= n (k=1) or 2n (k≥2).</li>
+<li>It is proved by induction on n from the single-touch lemmas with <code>segRLs_trans</code> (as <code>pairs1</code>), then moved to N
+    with <code>N2Nat</code> plus <code>lia</code> (as Sk1 <code>totalN_rule</code>).</li>
+<li>Guards are exactly the lemma side conditions: stop needs a ≥ 1 and c ≥ 1; fuel stays ≥ 1; glued-boundary units
+    take at most one stop; leadless and empty units forward n.</li>
+<li><strong>Unit list <code>batch n us : option (N * list unit)</code>:</strong> recursion from the LSB (Sk1 <code>batch</code> / TM91 <code>batch_correct</code>);
+  <code>batch_spec</code> follows by <code>segRLs_concat</code>.</li>
+<li><strong>U0 and edge:</strong> <code>edge0s</code> gives <code>sideRLs tmf (h^^m) …</code>. Then <code>segRLs_sideRLs_concat</code> and <code>root_steps</code> finish the batch.</li>
+<li><strong>Proposal d:</strong> fast.py's <code>event_touch</code>/<code>first_inc</code> translated to Coq (levels, binary-counter value C, shifts).</li>
+<li>It is untrusted: a wrong d is rejected by the batch guards and the step falls back to the single increment.</li>
+<li>It must reproduce fast.py's d, though. A d that is systematically too small never terminates.</li>
+</ul>
+<h3 id="structural-increment-call1">Structural increment <code>call1</code></h3>
+<ul>
+<li>This is one call (TM91 <code>call</code>/<code>outcome</code>/<code>resume_correct</code>).</li>
+<li>Walk the units from the LSB; each unit's case is stop, pass, glue, unglue, leadless, empty, U0/edge or halt.</li>
+<li><strong>Outcome</strong> <code>Returned cfg' | Halted | Failed</code>:</li>
+<li>Returned: the call composes with <code>segRLs_S</code>/<code>segRLs_lrcons</code>/<code>segRLs_sideRLs_concat</code>;</li>
+<li>Halted: <code>sideRLs_halt</code> (LongitudinalHalt);</li>
+<li>Failed: the checker returns false and nothing is claimed.</li>
+<li>During a call the cuts are fixed, so a glue (or an absorb) leaves an overhang of 1-cells at a segment's root end.
+  <code>canon</code> then re-cuts: it merges the overhang into the root-side boundary (or the edge). Its soundness is a pure list
+  equality (<code>lpow_add</code>, <code>lpow_shift'</code>, <code>Str_app_assoc</code>), proved once per pattern.</li>
+</ul>
+<h3 id="checker-and-soundness">Checker and soundness</h3>
+<ul>
+<li><code>next c := match propose c with Some d =&gt; batch … | None =&gt; call1 c end</code>.</li>
+<li><code>next_spec</code>: either <code>denote c -[tmf]-&gt;* denote c'</code> or <code>halts tmf (denote c)</code>.</li>
+<li><code>check fuel := N_iter_until next (inl cfg342) fuel</code> is <code>inr</code>; <code>check_spec</code> is Sk1Auto's proof.</li>
+</ul>
+<h3 id="computation">Computation</h3>
+<ul>
+<li>About 54k single steps plus at most 54k batches, so roughly 1.1·10⁵ iterations of <code>next</code>. FUEL is 1.2·10⁵,
+  confirmed by the Python mirror.</li>
+<li>Work per iteration: O(25 units) of N arithmetic on 73-bit numbers, plus O(k ≤ 1339) list work per glue.</li>
+<li><code>perf.v</code> measures this order of work at <strong>11 s native / 59 s VM</strong>. Allow 3–10× for the real step function:</li>
+<li>native: well under 5 min;</li>
+<li>VM fallback: under 15 min.</li>
+<li>Both are inside check_kill's 1800 s compile timeout.</li>
+</ul>
+<h2 id="5-c-opening-and-endgame">5. (c) Opening and endgame</h2>
+<ul>
+<li><strong>Opening:</strong> <code>init : c0 -[tmf]-&gt;* denote cfg342</code> by direct execution (<code>unfold; esx</code>/<code>solve_init</code>, 342 steps; c0 is
+  flip-symmetric). cfg342 = edge <code>111</code>, U0 = leadless <code>[1, 1^10, 1]</code>, U1 = <code>[2,00,3]</code> with a glued boundary <code>1^5</code>,
+  NoTail. So the checker's first step is reset2 with a glued boundary, which <code>root_reset2</code> must allow: the stop never
+  touches the boundary.</li>
+<li><strong>Endgame:</strong> there is no separate phase. The run passes unit 21 with fuel 1, which gives <code>[x,00,0]</code> (<code>pass1</code>, c=0).
+  The LSB then stops (<code>stop1</code>) and is passed with fuel 1 (<code>pass1</code>, c=0). The call is forwarded into unit 21, whose
+  word starts with <code>00</code> at the cut. There <code>halt0</code> fires: B writes 1 and moves, and C reads 0, which is the halt.
+  <code>call1</code> returns Halted, and <code>root_halt</code> lifts this to the whole configuration.</li>
+<li><strong>Final theorem:</strong>
+  <code>Theorem halt: halts tm c0.
+  Proof. apply flipc0. apply (check_spec FUEL). native_check_eq. Qed.</code>
+  <code>check_spec</code> includes <code>init</code> and <code>halts_evstep</code>.</li>
+<li>Option: a funext-free transfer as in #5's notes. Prove <code>Perm (flip tmf) tm id</code> pointwise and use
+    <code>flip_halts</code> + <code>perm_halts</code>. Not needed, because funext is in the baseline.</li>
+<li><strong>Not needed:</strong> the exact step count (<code>halts</code> is ∃n). The steps_exact workflow can serve as an independent
+  cross-check only.</li>
+</ul>
+<h2 id="6-d-compile-time-and-memory-risks">6. (d) Compile-time and memory risks</h2>
+<ul>
+<li>Window lemmas: <code>solve_seg</code> lemmas take about 0.1–1 s each, so about 30 families plus compositions come to a
+  minute or two.</li>
+<li>The native cast: one native compilation plus run of the checker, under 1 GB RSS in <code>perf.v</code>. The 8 GB <code>ulimit -v</code>
+  leaves a wide margin. Keep <code>Eval compute</code> out of the checker definitions; only <code>tm</code>/<code>tmf</code> use it.</li>
+<li><strong>coqchk will hit its 600 s cap.</strong> It re-checks the <code>native_cast_no_check</code> by lazy kernel conversion over about
+  10⁵ iterations of N arithmetic. That is a warning under policy A, and the RESULT line will say so. Window lemmas
+  and the rest re-check quickly.</li>
+<li><code>es</code> normal forms: <code>root_out</code> failed under plain <code>es</code>, which ran past the target because of a <code>lpow</code> rotation
+  mismatch. It was fixed with an explicit <code>shift_rule_L</code> sweep plus <code>lpow_shift'</code>. Expect this on about 20% of the
+  lemmas.</li>
+</ul>
+<h2 id="7-work-order-each-stage-non-blocking-about-24-h">7. Work order (each stage non-blocking, about 2–4 h)</h2>
+<ol>
+<li><strong>proof.md</strong> (CLAUDE.md: before the .v). Include the protocol, the rule table above, and the batch closed forms.
+   In parallel, <strong><code>work/coqmirror.py</code></strong>: a Python mirror of the Coq checker with the same records, guards, cases,
+   proposal and canon.
+   - Run it from cfg342 to Halted.
+   - Assert equality with fast.py at all 82 resets (<code>work/resets_long.jsonl</code>) and at <code>work/fuelout_config.json</code>.
+   - Output FUEL and per-case counts.
+   This settles coverage before any Coq lemma is written: any Failed in the mirror is a missing lemma family.</li>
+<li><strong>Lemma catalogue:</strong> capture the words of every family from small instances (<code>rocq/tools/block.py</code>). Then prove
+   them in this order:
+   - root and resets;
+   - k=1 (done);
+   - chain;
+   - k≥2 stop/pass;
+   - leadless and empty;
+   - glue;
+   - unglue g=1, g≥2;
+   - U0/edge (edge0, edge1, absorb, U0-1111).
+   Each file is compiled separately (<code>-native-compiler no</code> is enough).</li>
+<li><strong>Batch, call1, canon, checker, soundness.</strong> Smoke-test on a prefix with a <code>check_reach</code> variant that proves
+   <code>c0 -[tmf]-&gt;* denote cfg_target</code>, for example the reset-40 snapshot. Native-run timing comes from that test.</li>
+<li><strong>Full run, the kill file and <code>check_kill --halt</code>.</strong> Then status.json and STATUS.md.</li>
+</ol>
+<h2 id="8-risks-most-serious-first">8. Risks, most serious first</h2>
+<ol>
+<li><strong>Lemma inventory and words for the structural families.</strong> These are unglue g≥2 with stacks, glue right after an
+   unglue, the U0/edge cases and the resets. A shape no lemma covers makes the checker return Failed.
+   Mitigation: the mirror decides coverage first, and the capture tools and <code>solve_seg</code> errors give the words.</li>
+<li><strong>Re-cut (canon) equalities</strong> after glue, absorb, unglue and the resets: tedious <code>lpow</code>/<code>N.to_nat</code> list algebra.
+   Write one normalization tactic early.</li>
+<li><strong>The proposal must match fast.py.</strong> Fallback keeps the proof sound, but iteration counts can explode.</li>
+<li><strong><code>es</code>/<code>solve_seg</code> normal-form mismatches</strong> (seen once). Budget for manual <code>shift_rule</code> proofs.</li>
+<li><strong>coqchk timeout</strong> (advisory, expected).</li>
+<li><strong>Rule trust is not a risk to soundness.</strong> The proof never assumes rules3. If a rule is wrong far out (more than
+   10 units, never TM-checked), its lemma or the checker fails and the halt prediction is refuted, not certified.</li>
+</ol>
+</main></body></html>

@@ -1,0 +1,721 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---/proof.md · <a href="/busy-beaver/machines/1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---/proof.md.html">raw</a></div>
+<h1 id="1rb0lc_1la0re_0rd1lf_1lc1lb_0ld0rb_0la-never-halts-informal-proof-stuck-on-one-lemma-cryptid-like">1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---: never halts? (informal proof, STUCK on one lemma, cryptid-like)</h1>
+<ul>
+<li>Machine: <code>1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---</code>, viewer https://bbchallenge.org/1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---</li>
+<li>Sheet: Results tab, no status, notes or sources; struck in Direct Simulation col D (simulated to 1e15). Not in either Discord list; no thread. Trio twins #21 <code>1RB0LC_1LA0RE_0RD0LA_1RE1RA_0LD1RF_0RB---</code> and #22 <code>1RB1RC_0LA1RF_1RD0LE_1LC0RB_0RA0LC_0RD---</code> (see <code>notes.md</code>).</li>
+<li>Written for: the string itself (no mirror, no renaming).</li>
+<li><strong>Status: STUCK, and not a non-halting proof.</strong> The rule table is complete. Every rule is checked by simulation, and the right sweep is derived. The right-part invariant is proved, and so is the clause P_k that replaces the old O1 (§3.1). One lemma is <strong>open and fatal</strong>: the absorption safety predicate <code>Safe</code> (§3.3, formerly O2) has no known inductive strengthening. Safety at absorptions comes down to the left counter avoiding a sparse set of values at sparse times. On the real trajectory the narrowest miss was <strong>2 sweeps</strong> from a configuration that halts (§3.4). This meets the cryptid protocol (§5.3) and is flagged for Dennis.</li>
+<li>Rule derivations still owed (major): the left turnaround L and the absorption rules ABS1/ABS0/ABSO1 are checked, not derived (§2.3, §2.4).</li>
+<li>AI assistance: written by Claude (Anthropic) under Dennis's direction. Checkpoint B pending, non-blocking. The review of 2026-10-10 is in §9.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>     0    1
+A   1RB  0LC
+B   1LA  0RE
+C   0RD  1LF
+D   1LC  1LB
+E   0LD  0RB
+F   0LA  ---        halting transition: F reads 1
+</code></pre></div>
+
+<h2 id="0-where-each-piece-stands">0. Where each piece stands</h2>
+<table>
+<thead>
+<tr>
+<th>piece</th>
+<th>status</th>
+<th>evidence (<code>check_proof.py</code>, §7)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token window lemmas W1–W6</td>
+<td>exact finite runs (= proof)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>right sweep R1–R5 (shift rules + turns)</td>
+<td>derived from W1–W6 by induction (§2.2)</td>
+<td>A, B</td>
+</tr>
+<tr>
+<td>left turnaround L (<code>inc_L</code>)</td>
+<td>stated for any right context starting with cells <code>1,0</code> (§2.3); <strong>checked only</strong>: exhaustive on words of ≤ 9 tokens, 3 contexts. Window-lemma derivation owed (<strong>major</strong>)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>departure rules GEN, ABS1, ABS0, ABSO1, strip</td>
+<td>stated exactly, including edge cases. GEN = right sweep + L. The ABS rules are <strong>checked only</strong> (<strong>major</strong>)</td>
+<td>D, F</td>
+</tr>
+<tr>
+<td>INV-R (right part)</td>
+<td><strong>proved</strong>, given P_k (§3.1)</td>
+<td>E, F</td>
+</tr>
+<tr>
+<td>P_k (replaces O1)</td>
+<td><strong>proved</strong> (§3.1, case analysis); exhaustive one-step check</td>
+<td>E, F</td>
+</tr>
+<tr>
+<td>INV-W (word shape, spacing ≥ 3)</td>
+<td>proved for GEN, ABS1, ABSO1 and strip; for ABS0 it is part of <code>Safe</code></td>
+<td>D, F</td>
+</tr>
+<tr>
+<td><code>Safe</code> (formerly O2)</td>
+<td>a predicate on one configuration, decidable. <strong>Not inductive as stated; the strengthening is open (fatal)</strong></td>
+<td>F, §3.4</td>
+</tr>
+<tr>
+<td>initial segment</td>
+<td>exact (2,033 steps)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>progress, halting unreachable</td>
+<td>conditional on <code>Safe</code> being inductive, and on the L/ABS derivations (§5)</td>
+<td>A–D</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-notation-and-family">1. Notation and family</h2>
+<p><strong>Tokens.</strong> Cell strings <code>0 = 00</code>, <code>1 = 10</code>, <code>O = 100</code>, <code>I = 110</code>. Every token ends in a 0 cell. A token word has a unique parse: a 1 followed by an odd run of 0s starts <code>1</code>, an even run starts <code>O</code>, and <code>11</code> starts <code>I</code>. <code>O</code> and <code>I</code> are called <strong>markers</strong>; as bits, <code>0, O</code> are 0 and <code>1, I</code> are 1.</p>
+<p>The background block is <code>B = 10110 = 1 I</code>. Its partner is <code>C = 11010 = I 1</code>. A right-counter digit is <code>I</code> (bit 1) or <code>O</code> (bit 0). The right end is <code>T = 11 0^inf</code>.</p>
+<p><strong>Family (a "departure").</strong></p>
+<div class="highlight"><pre><span></span><code>Dep(w; g; d_1..d_k; G_1..G_k) := 0^inf  w  E&gt;  (1 I)^g  d_1 (1 I)^G_1  d_2 (1 I)^G_2 ... d_k (1 I)^G_k  T
+</code></pre></div>
+
+<ul>
+<li><code>w</code> is a token word (the <strong>left word</strong>), written left to right; <code>w = u t</code> with <code>t</code> its last token. <code>w</code> may be empty (§2, strip).</li>
+<li><code>D = d_1..d_k</code> is a little-endian binary counter (<code>d_1</code> least significant); <code>G_i</code> is the gap after <code>d_i</code>.</li>
+<li>On cells: <code>0^inf w E&gt; (10110)^g d_1 (10110)^G_1 ... d_k (10110)^G_k 11 0^inf</code>.</li>
+<li><strong>Derived quantities:</strong> <code>H_0 = g − d_1</code> and <code>H_i = G_i − d_(i+1)</code> for <code>1 ≤ i ≤ k</code> (with <code>d_(k+1) := 0</code>). At an absorption, <code>h_1 := H_1</code>.</li>
+<li><strong>Sweeps to the next absorption:</strong> <code>τ := 2g − 1 − d_1</code> (g after strip). One GEN sweep lowers τ by 1, each strip raises it by 2, and an absorption is exactly a departure with τ = 0 (g = 1, d_1 = 1).</li>
+</ul>
+<p><strong>Strip (re-reading, no steps).</strong> If <code>w = x I 1</code>, the tail <code>I 1</code> is a <code>C</code> block. The returning F turns it into <code>B</code> (W5), so <code>Dep(x I 1; g; ..)</code> behaves exactly like <code>Dep(x; g+1; ..)</code> in the next sweep. All rules below are stated for <strong>stripped</strong> words (<code>w</code> not ending in <code>I 1</code>). A strip can leave the empty word (<code>O 1</code> →GEN <code>I 1</code> → <code>''</code>; ABS1 on <code>O 1 1</code> gives <code>I 1</code> → <code>''</code>). It does so only while raising g to ≥ 2, so the next sweep is a GEN.</p>
+<h2 id="2-rules">2. Rules</h2>
+<p>In busycoq comment-block style. <code>E&gt;</code> = head in state E on the next cell; <code>&lt;F</code> = head in state F on the previous cell (busycoq <code>{{E}}&gt;</code>, <code>&lt;{{F}}</code>).</p>
+<div class="highlight"><pre><span></span><code>1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---
+
+start from Dep(10O011; 2; 1 1; 1 0)                         (step 2,033, §4)
+
+inc   (right counter +1, d_1..d_(j-1) = 1, d_j = 0 first zero):
+        d_1..d_(j-1) := 0, d_j := 1; if j &gt;= 2: g := g-1, G_(j-1) := G_(j-1)+1
+      all ones: every digit := 0, g := g-1, append two digits 0 with gaps 0
+inc_L (left word "+2"; w = u t, u = v 1^k with k maximal):
+        v = ''   -&gt; 1 0^k t                     (left edge grows by one token)
+        v = x 0  -&gt; x 1 0^k t
+        v = x O  -&gt; x I 0^k t
+        v = x I  -&gt; inc_L(x) O 0^(k-1) t 1   (k &gt;= 1);   inc_L(x) O 1   (k = 0)
+        inc_L('') = 1 0                         (also covers w = '' after a strip)
+
+GEN   (g &gt;= 2, or d_1 = 0):   Dep(w; g; D; G) --&gt; Dep(inc_L(w); inc(g, D, G))
+ABS1  (g = 1, d_1 = 1, w = u 1, w not ending in O 1; u may be empty):
+        Dep(w; 1; D; G) --&gt; Dep(drop_last(inc_L(inc_L(w))); inc(G_1 + 2, d_2..d_k, G_2..G_k))
+        (u empty: w = 1 -&gt; 1 1 -&gt; 1 0 1 -&gt; w' = 1 0)
+ABS0  (g = 1, d_1 = 1, w = u 0):
+        u = v 0 1^k (k &gt;= 1)     -&gt;  w' = v 1 0^(k-1) O 1 1
+        u = 1^k (k &gt;= 1)         -&gt;  w' = 1 0^(k-1) O 1 1         (left edge: the 0 is blank tape)
+        u = v 0 1^k 0 (k &gt;= 0)   -&gt;  w' = v O 0^(k+1) 1 1
+        u = 1^k 0 (k &gt;= 0)       -&gt;  w' = O 0^(k+1) 1 1           (left edge)
+        Dep(w; 1; D; G) --&gt; Dep(w'; inc(G_1 + 1, d_2..d_k, G_2..G_k))
+        undefined ("ABS0?") when the token in front of the 1-run is a marker
+ABSO1 (g = 1, d_1 = 1, w = x O 1):
+        (0, D', G') := inc(1, D, G);  Dep(w; 1; D; G) --&gt; Dep(inc_L(x); 1; 1 d'_2..d'_k'; G')
+</code></pre></div>
+
+<p><code>inc</code> and <code>inc_L</code> are total on their domains. ABS0 is the only partial rule. Code: <code>scripts/deepen/model3.py</code>, <code>linc.py</code> (Python), <code>scripts/review/absmodel.c</code> (C).</p>
+<h3 id="21-token-window-lemmas">2.1 Token window lemmas</h3>
+<p>A <strong>window lemma</strong> <code>w → w'</code> runs the stated number of steps without reading a cell outside <code>w</code> (the last step may move the head onto a neighbour), so it holds in every context. Each is checked by an exact finite run (check A); for these finite runs that check is the proof.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>lemma</th>
+<th>cells</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>W1</td>
+<td><code>E&gt; 1 → 1 E&gt;</code></td>
+<td><code>E&gt;10 → 10E&gt;</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>W2</td>
+<td><code>1 E&gt; I → I 1 E&gt;</code></td>
+<td><code>10E&gt;110 → 11010E&gt;</code></td>
+<td>13</td>
+</tr>
+<tr>
+<td>W3</td>
+<td><code>E&gt; O → &lt;F I</code></td>
+<td><code>E&gt;100 → &lt;F110</code></td>
+<td>7</td>
+</tr>
+<tr>
+<td>W4</td>
+<td><code>1 E&gt; T → &lt;F O T</code></td>
+<td><code>10E&gt;11 0^7 → &lt;F100 11 0^6</code></td>
+<td>19</td>
+</tr>
+<tr>
+<td>W5</td>
+<td><code>I 1 &lt;F → &lt;F 1 I</code></td>
+<td><code>11010&lt;F → &lt;F10110</code></td>
+<td>9</td>
+</tr>
+<tr>
+<td>W6</td>
+<td><code>I &lt;F → &lt;F O</code></td>
+<td><code>110&lt;F → &lt;F100</code></td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-right-sweep-derived">2.2 Right sweep (derived)</h3>
+<ul>
+<li><strong>Pass.</strong> From <code>x_1 = 1</code>: W1 on <code>x_1</code>, then for each next token W2 (if <code>I</code>) or W1 (if <code>1</code>). The carried <code>1</code> always sits just left of E. The pass rotates the token segment by one: <code>E&gt; x_1 x_2 .. x_m → x_2 .. x_m x_1 E&gt;</code>. On blocks: <strong>R1</strong> <code>E&gt; B^n → C^n E&gt;</code>, 17n steps (n uses of W1+W2).</li>
+<li><strong>Turn.</strong> At the first digit <code>O</code>: W3. At <code>T</code>: W4.</li>
+<li><strong>Return.</strong> F re-pairs from the right: W5 on each <code>I 1</code>, W6 on each unpaired <code>I</code> (a carried digit). On blocks: <strong>R2</strong> <code>C^n &lt;F → &lt;F B^n</code>, 9n steps.</li>
+<li>Composed (check B, exact output and step count on random parameters):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>statement</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R3 set</td>
+<td><code>E&gt; B^a O → &lt;F B^a I</code></td>
+<td>26a + 7</td>
+</tr>
+<tr>
+<td>R4 carry</td>
+<td><code>E&gt; B^a [I B^(b_i)]_(i=1..j) O → &lt;F B^(a−1) [O B^(b_i)]_(i&lt;j) O B^(b_j+1) I</code>  (a ≥ 1, j ≥ 1)</td>
+<td>26(a+Σb) + 16j + 7</td>
+</tr>
+<tr>
+<td>R5 overflow</td>
+<td><code>E&gt; B^a [I B^(b_i)]_(i=1..j) T → &lt;F B^(a−1) [O B^(b_i)]_(i=1..j) O O T</code> (a ≥ 1)</td>
+<td>26(a+Σb) + 16j + 13</td>
+</tr>
+</tbody>
+</table>
+<p>R3–R5 are exactly <code>inc</code> on <code>(g, D, G)</code>. F ends on the last cell of <code>w</code> (a 0), or on blank tape if <code>w</code> is empty.</p>
+<h3 id="23-left-turnaround-l-checked-not-derived">2.3 Left turnaround L (checked, not derived)</h3>
+<p><strong>L.</strong> Let <code>w</code> be a stripped word in the domain: the empty word, or first token not <code>0</code>, last token <code>0</code> or <code>1</code>, and markers pairwise ≥ 3 tokens apart. Let <code>ρ</code> be any right context whose <strong>first two cells are <code>1, 0</code></strong>, i.e. one that starts with a <code>1</code> token or an <code>O</code> token. Then:</p>
+<div class="highlight"><pre><span></span><code>0^inf w &lt;F ρ   --&gt;   0^inf inc_L(w) E&gt; ρ
+</code></pre></div>
+
+<ul>
+<li>The head reads no cell right of <code>w</code>, except on an <code>I</code>-crossing with <code>t = 0</code> (tail <code>I 1^k 0</code>). There it reads exactly the two cells <code>1, 0</code> of ρ and restores them.</li>
+<li>In GEN, ρ = <code>(1 I)^g ...</code> (g ≥ 1). Inside ABS, ρ starts with <code>O</code>, the cleared d_1 (§2.4). Both satisfy the precondition.</li>
+<li>The precondition is sharp. With an <code>I</code> (cells <code>110</code>) right of <code>w</code>, every one of the 1,735 t = 0 <code>I</code>-crossing words of length ≤ 9 comes out differently from <code>inc_L</code>.</li>
+<li>Check C: all 13,184 domain words of length ≤ 9, the empty word included, give exactly <code>inc_L(w)</code> with three contexts ρ (<code>1 I</code>, <code>O 1 I</code>, <code>1 O</code>). Outside the domain (adjacent markers, <code>I 1 I</code>) the machine differs on 17,066 of 101,504 words.</li>
+<li>A random review run (8,000 words of up to 60 tokens with up to 11 markers, at spacing 3 and at spacing 4) was also all exact.</li>
+</ul>
+<p>Mechanism (from traces):
+- <strong>start.</strong> F0 <code>0LA</code> puts A on the bit cell of <code>t</code>. A short gadget restores <code>t</code>. It leaves A on the bit cell of the token left of <code>t</code>, with that token's 0 cell holding a temporary 1. The gadget takes 7 steps for <code>t = 1</code> (F0 A1 C0 D0 C0 D1 B0) and 9 for <code>t = 0</code> (F0 A0 B0 A1 C0 D0 C0 D1 B0).
+- <strong>carry.</strong> On a <code>1</code> token, A runs a 6-step loop (A1 C0 D0 C0 D1 B0) and moves one token left; the passed token becomes <code>11</code>.
+- <strong>stop.</strong> At <code>0</code>: A0 <code>1RB</code>, and the token becomes <code>1</code>. At <code>O</code>: it becomes <code>I</code>. At the left edge: a new <code>1</code> token.
+- <strong>return.</strong> E and B run right (E1 <code>0RB</code>, B1 <code>0RE</code>), clearing each <code>11</code> to <code>00</code>. E stops on the first cell after <code>w</code>.
+- <strong>I-crossing.</strong> At <code>I</code>, C1 <code>1LF</code> creates F on the last cell of the token left of the <code>I</code> (a 0), and the turnaround restarts on <code>x</code>. Then the return writes <code>O 0^(k−1) t 1</code>.</p>
+<p>Steps: <code>8k + 13</code> for marker-free words, where k is the number of trailing <code>1</code>s of <code>u</code> (check C). Words with markers: no formula is derived yet.</p>
+<p><strong>Owed (major).</strong> The start/carry/stop/return/crossing pieces as window lemmas, with an induction on the carry length and a recursion on the <code>I</code>-crossing. Until then, L is a checked statement, not a lemma.</p>
+<h3 id="24-departure-rules">2.4 Departure rules</h3>
+<ul>
+<li><strong>GEN</strong> = right sweep (R3/R4/R5 with <code>a = g ≥ 1</code>; <code>g ≥ 2</code> or d_1 = 0 leaves <code>(1 I)</code> next to <code>w</code>) + L. Derived from R3–R5 and L, so it is only as good as L.</li>
+<li><strong>ABS1, ABS0, ABSO1</strong> (g = 1, d_1 = 1): R4/R5 with <code>a = 1</code> returns F with <code>O</code> (the cleared d_1) directly right of <code>w</code>. Then come L (context <code>O</code>), W3 (<code>E&gt; O → &lt;F I</code>), a second L, and an absorption tail in which E departs into <code>I</code>. Only the first part is derived. The whole rule is <strong>checked</strong>:</li>
+<li>random instances to the next departure (check D: GEN 1,362, ABS1 724, ABS0 610, ABSO1 542; at spacing exactly 3: GEN 1,285, ABS1 636, ABS0 292; edge cases ABS1 on <code>w = 1</code> and GEN on <code>''</code>, 300 each; all exact);</li>
+<li>lockstep on the trajectory (check F: 50,280 sweeps to 1e8; <code>deepen.json</code>: 1,096,578 sweeps to 1e10, 0 mismatches).</li>
+<li><strong>Owed (major).</strong> Each ABS rule as a chain of proved multisteps: R4/R5 (a = 1), then L (context <code>O</code>), then W3, then L, then the tail lemmas, which still have to be extracted. When all rules are exact proved multisteps, §5's separate "F reads 0" argument is no longer needed.</li>
+</ul>
+<h2 id="3-invariant-and-coverage">3. Invariant and coverage</h2>
+<p><code>INV(w, g, D, G)</code> := INV-R ∧ P_k ∧ INV-W ∧ Safe ∧ <strong>X</strong>, where X is the missing clause that would make <code>Safe</code> inductive (§3.4). Without X this is not an invariant.</p>
+<h3 id="31-inv-r-and-p_k-right-part-proved">3.1 INV-R and P_k (right part), proved</h3>
+<p>INV-R:
+- k ≥ 1 and g ≥ 1;
+- <code>G_k = 0</code>;
+- <code>H_i ≥ 0</code> for 1 ≤ i ≤ k;
+- <code>H_1 ≥ H_2 ≥ … ≥ H_k</code>;
+- <code>H_i ≥ 1</code> for 1 ≤ i ≤ k−3.</p>
+<p>P_k (replaces O1): <code>k ≥ 2</code>, or (<code>k = 1</code>, <code>D = [1]</code>, and (<code>g ≥ 2</code> or the last token of <code>w</code> is <code>1</code>)).</p>
+<ul>
+<li><strong>H1</strong> (one <code>inc</code>, carry stopping at digit j):</li>
+<li><code>H_0</code> drops by 1 iff j = 1 (d_1 set). Otherwise g−1 and d_1: 1→0 cancel.</li>
+<li>For 1 ≤ i ≤ j−2, digits i and i+1 both shift, so <code>G_i</code> is unchanged; <code>d_(i+1)</code> goes 1→0, so <code>H_i</code> gains 1.</li>
+<li><code>H_(j−1)</code>: <code>G_(j−1)+1</code> and <code>d_j</code>: 0→1 cancel.</li>
+<li>Above j nothing changes.</li>
+<li>Overflow clears every digit, so <code>H_i</code> gains 1 for i ≤ k−1. The new digits have <code>H_k = H_(k+1) = H_(k+2) = 0</code>.</li>
+</ul>
+<p>So <code>inc</code> never lowers any <code>H_i</code> (i ≥ 1). Equivalently, <code>H_i</code> counts the clears of digit i+1.
+- <strong>H2.</strong> For i ≥ 1, <code>H_i − H_(i+1)</code> never decreases: every clear of digit i+2 is also a clear of digit i+1. At overflow the new tail is <code>…, H_(k−1)+1 ≥ 1 &gt; 0 = H_k = H_(k+1) = H_(k+2)</code>. So the chain <code>H_1 ≥ … ≥ H_k</code> is kept.
+- <strong>H3.</strong> The last gap never changes while it is last, and overflow appends gaps 0 and 0, so <code>G_k = 0</code>. <code>g</code> drops only on a carry through <code>d_1</code>, which needs g ≥ 2 in GEN, so GEN keeps g ≥ 1. Strip only raises g.
+- <strong>Absorption (ABS1 c = 2, ABS0 c = 1).</strong> The new right part is <code>inc(G_1 + c, d_2.., G_2..)</code>, so indices shift by one: new <code>H_i</code> = old <code>H_(i+1)</code>, then H1 applies. The <code>H</code> clauses are kept. For g:
+  - k ≥ 2: new <code>g = G_1 + c − d_2 = h_1 + c ≥ 1</code> (if d_2 = 1 the inc carries and g = G_1 + c − 1; if d_2 = 0 it sets d_1 and g = G_1 + c).
+  - k = 1: by P_k, D = [1] and (g ≥ 2, which is not an absorption, or t = 1). With t = 1 the rule is ABS1 or ABSO1. ABS1 gives <code>inc(G_1 + 2 = 2, [], [])</code> = (g = 1, D = 00, G = 00), so k = 2. ABSO1 never lowers k.
+  - So ABS0 never runs with k = 1. That case would really give g = 0, a configuration outside the family; the review checked that the model and the machine agree there, 259 of 259.
+- <strong>P_k is kept</strong> (one step):
+  - k only drops at an absorption, by one.
+  - An absorption at k = 2 with d_2 = 0 gives k = 1, D = [1] and g = G_1 + c (G_2 = 0). ABS1 has c = 2, so g ≥ 2. ABS0 outputs a word ending in <code>1 1</code>. Either way P_k holds.
+  - An absorption at k = 2 with d_2 = 1 overflows to k = 3.
+  - From k = 1, D = [1]: a GEN overflows to k = 3. An absorption has t = 1 (above), so it is ABS1 (k → 2) or ABSO1 (k → 3).
+  - Strip only raises g.
+  - At the start k = 2.
+  - Check E: exhaustive one-step check on all words of ≤ 7 tokens and right parts with k ≤ 4, G_i ≤ 4, g ≤ 4 satisfying INV-R: 2,358,665 transitions at spacing ≥ 4 and 3,047,785 at spacing ≥ 3, 0 failures. ABS0? cases are left to <code>Safe</code>.
+- <strong>H4</strong> (interval). From an absorption with <code>(h_1, d_2, c)</code>, the next absorption comes after exactly <code>Δ = 2(h_1 + c) − 1 + d_2 + 2s</code> sweeps, where s is the number of strips in the interval. This follows from τ (§1): after the absorption <code>τ = 2(h_1 + c) − 2 + d_2</code>, and each strip adds 2. The earlier statement without <code>2s</code> was wrong whenever a strip occurs; strips are common (check F: 438 of 438 intervals match the corrected formula).
+- <strong>H5.</strong> <code>H_i ≥ 1</code> for i ≤ k−3 is kept:
+  - inc only raises H;
+  - overflow raises every old <code>H_i</code> (i ≤ k−1) by 1 while k grows by 2;
+  - absorption shifts indices down by 1 while k drops by 1.
+- <strong>T</strong> (transient tails). After ABS1 the next two sweeps are GEN:
+  - d_2 = 0: the new state is <code>(G_1+2, d_1 = 1)</code> → GEN gives <code>(G_1+1, d_1 = 0)</code> → GEN.
+  - d_2 = 1: <code>G_1 ≥ 1</code> by <code>H_1 ≥ 0</code>. The new state is <code>(G_1+1, 0)</code> → GEN gives <code>(G_1+1 ≥ 2, 1)</code> → GEN.</p>
+<p>This removes the transient tails <code>x I 0</code>, <code>x O 1</code> and <code>x I 1</code> that ABS1 can leave before any absorption sees them: <code>… O 1 1 → … I 1</code> (strip); <code>… I 0 1 → x' O 1 → x' I 1</code> (strip); <code>… I 1 1 → x' I 0 → x'' O 1 → x'' I 1</code> (strip).
+- <em>Removed:</em> the old claims "h_1 ≥ 2 implies next h_1 ≥ 1" and the next-h_1 formula. Both are false when an overflow comes before the next absorption. Counterexample, checked on the machine: <code>Dep(1010; 1; 10; 2,0)</code>, ABS0, then the next absorption is <code>Dep(101I01; 1; 110; 1,0,0)</code>, with h_1 = 0 and k = 3. P_k makes them unnecessary.</p>
+<h3 id="32-inv-w-word-shape">3.2 INV-W (word shape)</h3>
+<p>INV-W: <code>w</code> is empty (only right after a strip, with g ≥ 2), or:
+- the first token is not <code>0</code>;
+- the last token is <code>0</code> or <code>1</code>;
+- markers are pairwise ≥ <strong>3</strong> tokens apart. This was 4 before the review. The rules are exact at spacing 3 (check D: L exhaustively, the departure rules on random words with markers exactly 3 apart). The trajectory keeps ≥ 4, so the weaker clause loses nothing and removes the spacing-3 unsafe values from <code>Safe</code>.</p>
+<p>This is L's domain (§2.3).
+- <strong>GEN.</strong> <code>inc_L</code> never moves a marker: O→I, I→O and the <code>I</code>-crossing all rewrite in place. The left-edge case shifts all indices uniformly. The <code>I</code>-crossing keeps the marker at its index and ends the word in <code>1</code>. The left edge always gets a <code>1</code> (<code>inc_L('') = 1 0</code>). A trailing <code>I 1</code> is stripped; by the spacing, the token before it is not a marker. Kept.
+- <strong>ABS1.</strong> It applies when the last token is 1 and the tail is not <code>O 1</code> (that is ABSO1, and <code>I 1</code> was stripped). Two <code>inc_L</code> keep the markers in place. Dropping the last token leaves the <code>x I 0</code>/<code>x O 1</code>/<code>x I 1</code> transients of T, which are not absorption inputs, or a word ending in 0/1. <code>w = 1</code> gives <code>1 0</code>. Kept, with T.
+- <strong>ABSO1.</strong> <code>inc_L(x)</code> is a GEN-type step on x. Kept.
+- <strong>ABS0</strong> creates a marker <code>O</code>. In the case <code>v 0 1^k</code> it sits at position 3 from the right. In the case <code>v 0 1^k 0</code> it replaces the <code>0</code> in front of the 1-run. ABS0 keeps INV-W only if that <code>0</code> exists (not a marker) and no other marker is within 2 tokens of the new one. This is part of <code>Safe</code>.</p>
+<h3 id="33-safe-formerly-o2-a-predicate-on-one-configuration">3.3 <code>Safe</code> (formerly O2): a predicate on one configuration</h3>
+<p>Between absorptions only GEN acts, and it touches <code>w</code> only through <code>inc_L</code> (and strip, which adds 2 to τ). So the next absorption is determined by <code>(w, τ)</code> alone:</p>
+<div class="highlight"><pre><span></span><code>Safe(w, τ):  repeat { strip w (τ += 2 per strip); if τ = 0 stop; w := inc_L(w); τ := τ − 1 }
+             at the stop: last token 1, or (last token 0 and abs0(w) is defined and leaves markers &gt;= 3 apart)
+</code></pre></div>
+
+<p><code>Safe(w, 2g − 1 − d_1)</code> is a decidable property of a single configuration. With INV-R, P_k and INV-W it guarantees that the next absorption has a rule and that its image again satisfies INV-R, P_k and INV-W. On the trajectory it holds at every interval (check F: 440 of 440 to 1e8; with spacing ≥ 4 also 440 of 440).</p>
+<p><strong>It is not inductive.</strong> After an absorption the next interval has length <code>Δ' = 2(h_1 + c) − 1 + d_2 + 2s</code>, and <code>Safe</code> for it depends on the low bits of the new word at a time set by the right counter. INV-R, P_k, INV-W and <code>Safe</code> together do not exclude a failure. The review gives configurations satisfying all of them that halt, for example <code>Dep(1O100; 1; 11; 2,0)</code> (halts at step 940) and <code>Dep(1001001O1100; 1; 10; 2,0)</code> (step 1,436). Of 323 random starts failing only the O2 clause, 85 halted within 2e6 steps.</p>
+<p>What is proved about markers:
+- <strong>Case-(i) markers</strong> (tail <code>O 1 1</code>) cycle <code>O11 → I01 → I11 → x' O11</code> with t = 1 until the next absorption, which is therefore ABS1. Then T removes them within two sweeps.
+- <strong>Crossing period.</strong> A marker at position p from the right (t = position 1) has a (p−2)-bit counter below it. A full cycle O → I → crossing takes <code>2^(p−1) − 1</code> sweeps once t = 1, and any <code>I</code>-crossing sets t = 1. So a marker with <code>2^(p−1) − 1 &lt; Δ</code> cannot be present at an absorption with t = 0. In practice only <strong>leading</strong> markers (index 0) reach a t = 0 absorption.
+- <strong>Unsafe values.</strong> For a word <code>M s t</code> with a leading marker M and an m-bit segment s (u = M s), ABS0 is unsafe exactly when:
+  - s = <code>1^m</code> or <code>1^(m−1) 0</code>: abs0 is undefined;
+  - s = <code>0 1^(m−2) 0</code> or <code>b 0 1^(m−3) 0</code>: the new O lands 1 or 2 tokens from M.</p>
+<p>As fractions of 2^m these are ≈ 1, 1/2 and 1/4, 3/4 (spacing 4 would add 1/8, 3/8, 5/8, 7/8).</p>
+<h3 id="34-why-safe-is-open-and-what-the-data-say">3.4 Why <code>Safe</code> is open, and what the data say</h3>
+<p><strong>Mechanism of the dangerous events</strong> (model, <code>scripts/review/absmodel.c</code>):
+- A leading O is born when ABS0 meets <code>u = 1^(m−1) 0</code> (u = 2^m − 2). The left edge then acts as a 0 and the word becomes <code>O 0^m 1 1</code>.
+- Its segment then counts the sweeps. The first t = 0 absorption after the birth (when the birth is followed by one ABS1 with even Δ) sees a segment of <code>Δ_1/2 + Δ_2 ≈ 1.5 Δ</code>, compared with the maximum <code>2^m − 1 = u_c + 1</code>. So the margin is about <code>u_c − 1.5 Δ</code>.
+- At marker-free ABS0 events the ratio <code>u/Δ_next</code> stays in a narrow band: <strong>[1.6060, 2.0006]</strong> for every Δ ≥ 2^9, and [1.6067, 2.0000] for Δ ≥ 2^15 (1e10 sweeps). Case-(ii) events (u even) reach ratios above 1.95 1,205 times to 1e9 sweeps.
+- Leading-O births to 1e10 sweeps, as (sweep, u_c/Δ_next): (340, 1.667), (400,022, 1.620), (1,332,801, 1.775), (6,315,092, 1.630), (19,421,581, 1.859), (73,470,546, 1.912), (1,118,233,557, <strong>1.960</strong>), (5,112,107,104, 1.833). The birth at ratio 1.960 is close to the 3/4-point edge (2.0), but no t = 0 absorption saw that marker.</p>
+<p><strong>Margins.</strong> The only ABS0 events with a marker present to 1e10 sweeps (five) follow births above. Each has a leading O, and the margins are in sweeps to the nearest unsafe word, forward/back, spacing ≥ 3:</p>
+<table>
+<thead>
+<tr>
+<th>sweep</th>
+<th>step</th>
+<th>word</th>
+<th>h_1</th>
+<th>Δ</th>
+<th>fwd / back</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>377</td>
+<td>86,265</td>
+<td><code>O111000</code></td>
+<td>8</td>
+<td>19</td>
+<td><strong>2</strong> / 6</td>
+</tr>
+<tr>
+<td>6,320,117</td>
+<td></td>
+<td><code>O1110101110010</code></td>
+<td>1,255</td>
+<td>2,513</td>
+<td>325 / 699</td>
+</tr>
+<tr>
+<td>19,430,394</td>
+<td></td>
+<td><code>O11001110100100</code></td>
+<td>2,202</td>
+<td>4,407</td>
+<td>1,580 / 468</td>
+</tr>
+<tr>
+<td>73,487,688</td>
+<td></td>
+<td><code>O110010001110010</code></td>
+<td>4,284</td>
+<td>8,572</td>
+<td>3,525 / 571</td>
+</tr>
+<tr>
+<td>5,112,250,101</td>
+<td></td>
+<td><code>O110100010111100000</code></td>
+<td>35,748</td>
+<td>71,499</td>
+<td>23,822 / 8,946</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The 2-sweep miss is a real near-halt.</strong> At step 86,265 the machine stood at <code>Dep(O111000; 1; 111100; 9,4,2,0,0,0)</code>. The same configuration with the word two sweeps further on, <code>O111100</code> = <code>O 1^(m−1) 0 0</code>, halts 18,861 steps later (<code>scripts/review/unsafe_probe.c</code>). The words <code>O111000</code>, <code>O111010</code> and <code>O111110</code> run for 2e8 steps. In random right contexts, <code>M 1^(m−1) 0 0</code> halted 40 of 40 times. The spacing-violating patterns ran 3e6 steps without halting, but they leave the model.</p>
+<p><strong>Why a margin argument does not close it.</strong> A band proof would remove the <code>≈ 1.5 Δ</code> coincidence, since 1.6066 &gt; 1.5. But:
+- the 3/4 point corresponds to <code>u_c ≈ 2.0 Δ</code>, which is the top edge of the band;
+- later t = 0 absorptions in the same leading-marker episode see segments ≈ <code>(2 − 2^(−j)) Δ</code> (one more halving per intervening ABS1; heuristic, not checked event by event), and 1.75, 1.875, … lie inside the band.</p>
+<p>So safety needs <code>u_c</code> to avoid a set of O(1)-wide targets at the roughly one birth per doubling of Δ. No structural reason for this is known. The trajectory survives because births are rare and each hits a target with probability about c/Δ.</p>
+<h2 id="4-initial-segment">4. Initial segment</h2>
+<p><code>c0 = 0^inf A&gt; 0^inf  --&gt;(2,033 steps)  Dep(10O011; 2; 1 1; 1 0)</code>, i.e. <code>0^inf 1000100001010 E&gt; 10110 110 10110 110 11 0^inf</code>. This is direct simulation; check G replays it with an independent simulator and compares the tape cell by cell. It is the first departure at step ≥ 2,000. Earlier departures have D empty or <code>G = 0,0,0</code> (step 2,343 still has <code>G_1 = 0</code>, which INV-R allows).</p>
+<p>INV at the start:
+- INV-R: k = 2, g = 2, G_2 = 0, H_1 = 1 − 1 = 0, H_2 = 0. The H5 clause is empty.
+- P_k: k = 2.
+- INV-W: <code>1 0 O 0 1 1</code>, one marker, last token 1.
+- Safe: the first interval is safe (check F).</p>
+<h2 id="5-conclusion">5. Conclusion</h2>
+<h3 id="51-what-would-finish-the-proof">5.1 What would finish the proof</h3>
+<ol>
+<li>A clause X such that INV-R ∧ P_k ∧ INV-W ∧ Safe ∧ X is preserved by every rule. This is the fatal gap. The search should start from §3.4: a quantitative relation between the left counter u and the next intervals Δ, Δ', … at each leading-marker birth, strong enough to keep every t = 0 absorption of the episode off the unsafe values.</li>
+<li>L and the ABS rules as proved multisteps (major; §2.3, §2.4).</li>
+</ol>
+<p>With 1 and 2, <code>progress_nonhalt_cond</code> (P := INV) gives non-halting. Every departure rule takes ≥ 13 steps (L alone takes ≥ 13), and by §3 every departure in INV has an applicable rule whose image is in INV.</p>
+<h3 id="52-halting-transition">5.2 Halting transition</h3>
+<p>F1 is the only <code>---</code>. F is created only by C1 (<code>1LF</code>): in the turns W3/W4, in L's <code>I</code>-crossing, and in the ABS tails. In W3–W6 and R2, F only moves onto the last cell of a token, which is 0. This argument covers the window lemmas and R1–R5 only. <strong>It does not cover L or the ABS tails.</strong> For those it must come from their derivation as exact multisteps (owed), which will make it unnecessary. The 2-sweep near-halt in §3.4 shows that F does read 1 just outside the <code>Safe</code> domain.</p>
+<h3 id="53-cryptid-assessment-protocol-triggered-flagged-for-dennis">5.3 Cryptid assessment (protocol triggered; flagged for Dennis)</h3>
+<p>The old "not a cryptid" claim is withdrawn. The rules themselves are counter increments and fixed rewrites. The <strong>halting question</strong>, however, is whether a deterministic coupled system avoids a sparse target set:
+- the left counter (+1 per sweep, halved at ABS1, rewritten by ABS0);
+- the right counter, whose absorption times Δ ≈ 2h_1 grow like √(sweeps).</p>
+<p>Safety is decided by the low bits of u at absorption times. The smallest margin observed is 2 sweeps, at h_1 = 8. Later margins (4 events up to h_1 = 35,748) are 7–13 % of Δ, but no structural lower bound is known.</p>
+<p>Heuristic: about one leading-O birth per doubling of Δ, each failing with probability O(1/Δ), so the expected number of failures beyond the simulated range is O(Σ 2^−m), which is tiny. The machine is therefore "probviously" non-halting, but the argument is probabilistic. Per CLAUDE.md the rules are written out (§2, executable in <code>scripts/review/absmodel.c</code> and <code>scripts/deepen/model3.py</code>) and the machine is <strong>flagged; stop or continue is Dennis's call</strong>. A Rocq rule reduction in the AntiHydra style (the formal half of the protocol) has not been written.</p>
+<h2 id="6-busycoq-lemma-plan">6. busycoq lemma plan</h2>
+<ul>
+<li><strong>Nearest templates.</strong></li>
+<li><code>vendor/busycoq/verify/BECv7.v</code>: <code>Inductive RD</code>, <code>bin_inc</code> (little-endian increment, l.419), and <code>sideRLs</code> for passes over digit lists. Reuse them for <code>D</code> and the R-sweep.</li>
+<li><code>1RB1RE_1LC1LE_1LD1LC_1RB0LD_1RF0RB_---0RA.v</code>: <code>progress_nonhalt_cond</code> with a list invariant.</li>
+<li>Our kill #11 (<code>machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/</code>): a binary counter with merges and a three-phase INV.</li>
+<li>For the cryptid route: <code>verify/AntiHydra.v</code> (rule reduction only).</li>
+<li><strong>Plan.</strong>
+  1. <code>Inductive tok := T0 | T1 | TO | TI</code> with <code>cells : tok -&gt; list Sym</code>; the left word as <code>list tok</code> (reversed for <code>&lt;*</code>); the right part as <code>list (bool * nat)</code> (digit, gap).
+  2. W1–W6 by <code>execute</code>; R1/R2 by <code>ind</code>; R3–R5 by induction on the digit list (as BECv7's <code>bin_inc</code>).
+  3. L: an inductive relation <code>incL w w'</code> mirroring the five cases (big-endian, with recursion at <code>TI</code>), and the turnaround lemma by induction on the carry length plus the recursion. The right context is a parameter whose first two cells are <code>1, 0</code>.
+  4. ABS1/ABS0/ABSO1 as <code>follow</code> chains: R4/R5 with a = 1, L, W3, L, then the absorption tail lemmas (to be extracted).
+  5. <code>Definition INV</code> from §3 (with X), <code>init</code> by <code>execute</code> (2,033 steps), and <code>nonhalt</code> by <code>multistep_nonhalt</code> + <code>progress_nonhalt_cond</code>.</li>
+<li>Blocked on X for step 5. Steps 1–4 are worth doing only if Dennis decides to continue (§5.3).</li>
+</ul>
+<h2 id="7-evidence-python3-b-check_proofpy-full-mode-quick-is-smaller-full-mode-summary-pass-3636">7. Evidence (<code>python3 -B check_proof.py</code>, full mode; <code>--quick</code> is smaller). Full mode: SUMMARY PASS 36/36</h2>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>what</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>W1–W6 exact window runs</td>
+<td>6/6</td>
+</tr>
+<tr>
+<td>B</td>
+<td>R1 (n ≤ 30), R2 (n ≤ 30); R3/R4/R5 exact output and step formula, 2,000 random (a ≤ 25, j ≤ 6, gaps ≤ 12)</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>C</td>
+<td>L vs <code>inc_L</code> on all 13,183 domain words of length ≤ 9, plus the empty word, with right contexts <code>1 I</code>, <code>O 1 I</code>, <code>1 O</code>; right-read bound (2 cells, only on an <code>I</code>-crossing with t = 0); precondition sharpness (1,735/1,735 differ with <code>I</code> to the right); step law 8k+13</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>D</td>
+<td>GEN/ABS1/ABS0 2,696 random departures (words 4–24 tokens, 2–12 digits, g ≤ 60); ABSO1 542 targeted; spacing exactly 3: 2,213; edge cases <code>w = 1</code> (ABS1) and <code>w = ''</code> (GEN), 300 each</td>
+<td>all exact</td>
+</tr>
+<tr>
+<td>E</td>
+<td>H1–H3 on 19,747 random <code>inc</code>s; H4 (no strip) on 10,000 absorptions; P_k exhaustive (2,358,665 and 3,047,785 transitions)</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>F</td>
+<td>C dumper to 1e8: lockstep 50,280 sweeps (GEN 49,841, ABS1 327, ABS0 112); INV-R, H5, INV-W, P_k at every departure; <code>Safe</code> at all 440 intervals (spacing 3 and 4); H4 with strips at 438 intervals; abs0 defined at 112 ABS0; T at 327 ABS1</td>
+<td>all pass</td>
+</tr>
+<tr>
+<td>G</td>
+<td>init: c0 →(2,033) Dep(10O011; 2; 11; 1,0), cell-exact</td>
+<td>pass</td>
+</tr>
+</tbody>
+</table>
+<p>Longer horizons:
+- <strong>1e10 steps lockstep</strong> (deepen pass, <code>deepen.json</code>): 1,096,578 sweeps, 0 mismatches. The review's independent lockstep run to 1e10 (1,096,579 sweeps, full-tape comparison) found every INV-R/H5/INV-W clause and abs0-definedness intact.
+- <strong>Trajectory numbers</strong> (corrected): h_1 = 111 at the absorption at step 100,870,169 and <strong>h_1 = 161 at step 300,628,504</strong> (the old "≈ 80 at 3e8" was wrong). The review counted h_1 = 241 near 1e9 and 522 near 1e10. Rule counts to 1e10 (review): GEN 1,094,494 / ABS1 1,561 / ABS0 524.
+- <strong>Abstract model</strong> (<code>scripts/review/absmodel.c</code>, pure model, no machine steps): 1e10 sweeps = 199,990 absorptions (ABS0 49,833, ABS1 150,157, ABSO1 0), with no ABS0?, k = 1 or spacing &lt; 4. There are 5 ABS0 events with a marker, all leading O, as the review's independent run also found. Margins are in §3.4. Run: <code>gcc -O2 -w -o absmodel absmodel.c &amp;&amp; ./absmodel 1e10 0 4</code> (about 9 min).
+- Scripts: <code>scripts/review/</code> (<code>absmodel.c</code>, <code>pk_check.py</code>, <code>unsafe_probe.c</code>, and pre-review copies of <code>proof.md</code> and <code>check_proof.py</code>).</p>
+<h2 id="8-checkpoint-b-notes-dennis">8. Checkpoint B notes (Dennis)</h2>
+<p><em>(none yet)</em></p>
+<h2 id="9-review-log">9. Review log</h2>
+<p><strong>2026-10-10, skeptic review → revision (this file).</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>gap (severity)</th>
+<th>resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>O2 unproved, stated about the trajectory, and halting configurations satisfy INV (<strong>fatal</strong>)</td>
+<td>Restated as the configuration predicate <code>Safe(w, 2g−1−d_1)</code> (§3.3). <strong>Not closed.</strong> Not inductive: §3.4 gives the leading-marker mechanism, the u/Δ band [1.6066, 2.0006], the unsafe values, and a real 2-sweep near-halt at step 86,265 (verified: <code>O111100</code> halts 18,861 steps later). Cryptid protocol triggered (§5.3).</td>
+</tr>
+<tr>
+<td>2</td>
+<td>O1 unproved, and the §0 row "INV-R proved" overstated (major)</td>
+<td>O1 replaced by P_k, proved by case analysis plus an exhaustive one-step check (2,358,665 / 3,047,785 transitions, 0 failures). INV-R's g ≥ 1 now follows from P_k (§3.1). <strong>Closed.</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>"h_1 ≥ 2 ⇒ next h_1 ≥ 1" false under overflow (minor)</td>
+<td>Removed, with the counterexample (§3.1). <strong>Closed.</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>L only checked; precondition misstated (major)</td>
+<td>Precondition restated: right context starting with cells <code>1,0</code>. Now checked with contexts <code>1 I</code>, <code>O 1 I</code>, <code>1 O</code> and on the empty word, and shown sharp for <code>I</code>. <strong>Derivation still owed (open, major).</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td>ABS rules only checked; §5 halting argument incomplete (major)</td>
+<td>Chain plan written (§2.4). §5.2 now says the F-reads-0 argument covers only W1–W6/R1–R5. <strong>Open, major.</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>edge cases |w| = 1 and w = '' missing (minor)</td>
+<td>Added to the rule table, INV-W and L's domain; checked by direct simulation (300 + 300). <strong>Closed.</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>ABS0 v = '' case misread (minor)</td>
+<td>Left-edge cases written out explicitly. <strong>Closed.</strong></td>
+</tr>
+<tr>
+<td>8</td>
+<td>spacing ≥ 4 maybe stricter than needed (minor)</td>
+<td>Spacing ≥ 3 adopted: the rules are exact at spacing 3 (L exhaustive; 2,213 random departures with markers exactly 3 apart). <strong>Closed.</strong> It helps only a little: the 3/4 unsafe point stays (§3.4).</td>
+</tr>
+<tr>
+<td>9</td>
+<td>wrong trajectory number (minor)</td>
+<td>h_1 = 161 at step 300,628,504, reproduced from the departure dump. Also fixed H4, which lacked <code>+2s</code> for strips. <strong>Closed.</strong></td>
+</tr>
+<tr>
+<td>10</td>
+<td>"not a cryptid" asserted (minor)</td>
+<td>Withdrawn. Cryptid assessment written (§5.3) and the machine flagged. <strong>Closed as flagged.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Validation after the revision: <code>check_proof.py</code> full mode SUMMARY PASS 36/36 (was 25/25; 11 checks added).</p>
+</main></body></html>

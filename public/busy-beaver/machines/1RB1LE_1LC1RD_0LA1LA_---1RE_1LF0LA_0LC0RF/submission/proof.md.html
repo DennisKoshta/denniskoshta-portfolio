@@ -1,0 +1,693 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF/submission/proof.md · <a href="/busy-beaver/machines/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF/submission/proof.md.html">raw</a></div>
+<h1 id="1rb1le_1lc1rd_0la1la_-1re_1lf0la_0lc0rf-never-halts"><code>1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</code> never halts</h1>
+<p>This machine is a known machine in disguise. Swap left and right, rename its states, and its table becomes the table of <code>1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code>, called the parent below. Only the start differs: this machine runs the parent's table from the parent's state C instead of A.</p>
+<p>The parent is a bouncer that never halts. Its head runs back and forth between a fixed gadget at one end of the tape and the far end of the written part. Between them lie five long blocks of 1s, and their lengths follow exact macro rules, two of which alternate forever.</p>
+<p>From the blank tape this machine falls into the parent's pattern after 4,098,826 steps. Then the parent's own opening moves apply in the same order, and they reach the start of the parent's endless cycle at step 153,013,640. From there the parent's proof applies unchanged.</p>
+<h2 id="machine-and-status">Machine and status</h2>
+<ul>
+<li><strong>Machine:</strong> <code>1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</code>, viewer https://bbchallenge.org/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</li>
+<li><strong>Holdout:</strong> line 418 of the current 740-machine BB(6) holdout list, spreadsheet class "Bouncer + Chaotic Edge". busycoq has no proof of it, as written, renamed or mirrored.</li>
+<li><strong>Parent:</strong> <code>1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code>, line 214 of the same list, proved non-halting in Coq. Its write-up ships alongside as <code>parent-proof.md</code>. Below, <strong>P§n</strong> means section n of that write-up.</li>
+<li><strong>Adjusted invariant:</strong> none. Only the opening changes.</li>
+<li><strong>Status: fully formalized.</strong> The accompanying .v (407 lines) proves <code>Lemma nonhalt: ~halts tm c0.</code> in Coq 8.20.1 against unmodified busycoq BB6 (commit <code>0940bb9</code>). It imports <code>Individual62</code>, <code>ES_v3</code> and the Coq standard library.</li>
+<li><code>Print Assumptions nonhalt</code>: <em>Closed under the global context</em>.</li>
+<li>It compiles in 6.6 s with <code>-native-compiler yes</code>, and coqchk re-checks it, the computed parts included, in 44.4 s.</li>
+</ul>
+<h3 id="template">Template</h3>
+<p>The parent's .v is adapted from busycoq's <code>verify/TranslatedBellv5.v</code>, <code>Module TM1</code>:</p>
+<ul>
+<li>its macro rules are proved by ES_v3's <code>es'</code>;</li>
+<li>they are repeated by induction and chained with <code>follow</code>;</li>
+<li>it ends with <code>progress_nonhalt_simple</code>, as in <code>verify/Bouncer_v2.v</code>, <code>Module TM1</code>.</li>
+</ul>
+<p>This file is the parent's .v with three changes:</p>
+<ul>
+<li><strong>Two tables.</strong> <code>tm</code> is this machine and <code>tmP</code> is the parent's table. The parent's macro rules, <code>S_iter</code> and the double cycle <code>DC</code> are kept word for word, stated for <code>tmP</code>.</li>
+<li><strong>A new opening.</strong> The parent's table is run from <code>C;; tape0</code> instead of <code>c0</code>. The direct run and the 20 macro steps get new arguments.</li>
+<li><strong>A conjugacy.</strong> As in <code>verify/Skelet15.v</code>, a permutation lemma <code>perm : Perm (flip tm) tmP phi</code> links the two tables. busycoq's <code>flip_halts</code> (<code>Flip.v</code>) and <code>perm_halts</code> (<code>Permute.v</code>) then turn a halt of <code>tm</code> into a halt of <code>tmP</code> from C.</li>
+</ul>
+<p>Skelet15 goes through <code>flip_halts_c0</code>; this file uses only the one-way lemma <code>flip_halts</code>. No new induction is needed.</p>
+<h3 id="where-each-section-lives-in-the-v">Where each section lives in the .v</h3>
+<p>The .v has four banner comments. <em>Macro rules (write-up 3.3, 3.4)</em> and <em>The double cycle (write-up 4)</em> cite the parent's write-up, P§3.3, P§3.4 and P§4. <em>Opening (write-up 2)</em> and <em>The relation (write-up 1)</em> cite this one.</p>
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>in the .v</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§1.1, §1.2 mirror, renaming, Lemma M</td>
+<td><code>phi</code>, <code>perm</code>; busycoq's <code>flip_halts</code> and <code>perm_halts</code> inside <code>nonhalt</code></td>
+</tr>
+<tr>
+<td>§1.3 the family K</td>
+<td>the parent's <code>G</code> and <code>Kr</code>, on half-length parameters (P§8.1)</td>
+</tr>
+<tr>
+<td>§1.4 the parent's rules</td>
+<td><code>S_step</code>, <code>TE</code>, <code>TO</code>, <code>T6</code>, <code>T8</code>, <code>S_iter</code>, <code>DC</code>, all on <code>tmP</code></td>
+</tr>
+<tr>
+<td>§2.1 the direct part</td>
+<td><code>cc_steps</code>, <code>cc_steps'</code>, <code>rl</code>, <code>LR</code>, <code>Kr_list</code>, <code>Kr_cc</code>, <code>W1</code> … <code>W5</code>, <code>init1</code> … <code>init6</code>, <code>init</code></td>
+</tr>
+<tr>
+<td>§2.2 the macro steps</td>
+<td><code>opening</code></td>
+</tr>
+<tr>
+<td>§3, §4 the double cycle and the argument</td>
+<td><code>nonhaltP</code> (on <code>tmP</code>), then <code>nonhalt</code></td>
+</tr>
+<tr>
+<td>the table, σ and the rules, in busycoq's rule-table style</td>
+<td>closing comment</td>
+</tr>
+</tbody>
+</table>
+<p>Section 6 describes the .v in more detail.</p>
+<h2 id="summary">Summary</h2>
+<p>The proof has four steps.</p>
+<ol>
+<li><strong>Relation (§1).</strong> Up to a mirror and a renaming of states, this machine's run from the blank tape is the parent's table run from <code>0^inf C&gt; 0^inf</code>, step for step.</li>
+<li><strong>Opening (§2).</strong> That run reaches the parent's family K after 4,098,826 steps. The parent's 20 opening macro steps then take it to Even(12857, 212) at step 153,013,640.</li>
+<li><strong>Domain (§3).</strong> Even(12857, 212) is inside the domain of the parent's double cycle, which keeps it there.</li>
+<li><strong>Conclusion (§4).</strong> So the parent's double cycle repeats forever, and the machine never halts.</li>
+</ol>
+<p>Section 5 is a remark on the table's third start. Section 7 lists the numerical checks.</p>
+<h2 id="notation">Notation</h2>
+<p>These are the parent's conventions (P§2).</p>
+<ul>
+<li><code>l S&gt; r</code> is state S reading the first cell of <code>r</code>, and <code>l &lt;S r</code> is state S reading the last cell of <code>l</code>.</li>
+<li>Words are written left to right, <code>w^k</code> is k copies of w, and <code>0^inf</code> is the blank tail.</li>
+<li><code>X --&gt; Y</code> between configurations is an exact run of the machine.</li>
+<li>A <em>left record</em> is a step at which the head visits a cell left of every cell visited before. A <em>right record</em> is the same on the right.</li>
+<li>K(n,a,b,c,d) and Even(n, x) are the parent's families (P§2). The rules S, TE, TO, T6 and T8 are the parent's macro rules (P§1, P§3).</li>
+</ul>
+<h2 id="1-the-relation">1. The relation</h2>
+<h3 id="11-mirror-and-renaming">1.1 Mirror and renaming</h3>
+<p>Write σ for the map from the parent's states to this machine's states:</p>
+<div class="highlight"><pre><span></span><code>sigma (parent state -&gt; this state):   A -&gt; B,  B -&gt; C,  C -&gt; A,  D -&gt; D,  E -&gt; E,  F -&gt; F
+mirror:                               every move L becomes R and every R becomes L
+</code></pre></div>
+
+<p>Row σ(q) of this table is the parent's row q, with every direction reversed and every target state t replaced by σ(t). The written symbols are unchanged.</p>
+<table>
+<thead>
+<tr>
+<th>this state</th>
+<th>0</th>
+<th>1</th>
+<th>= σ(parent state)</th>
+<th>parent 0</th>
+<th>parent 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1RB</td>
+<td>1LE</td>
+<td>σ(C)</td>
+<td>1LA</td>
+<td>1RE</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1LC</td>
+<td>1RD</td>
+<td>σ(A)</td>
+<td>1RB</td>
+<td>1LD</td>
+</tr>
+<tr>
+<td>C</td>
+<td>0LA</td>
+<td>1LA</td>
+<td>σ(B)</td>
+<td>0RC</td>
+<td>1RC</td>
+</tr>
+<tr>
+<td>D</td>
+<td>---</td>
+<td>1RE</td>
+<td>σ(D)</td>
+<td>---</td>
+<td>1LE</td>
+</tr>
+<tr>
+<td>E</td>
+<td>1LF</td>
+<td>0LA</td>
+<td>σ(E)</td>
+<td>1RF</td>
+<td>0RC</td>
+</tr>
+<tr>
+<td>F</td>
+<td>0LC</td>
+<td>0RF</td>
+<td>σ(F)</td>
+<td>0RB</td>
+<td>0LF</td>
+</tr>
+</tbody>
+</table>
+<p>For example, the parent's A1 = 1LD becomes 1Rσ(D) = 1RD, which is this machine's B1. Among all 720 renamings, with and without the mirror, this is the only map from the parent's table to this one.</p>
+<h3 id="12-lemma-m">1.2 Lemma M</h3>
+<p>For a configuration c of the parent's table, let Φc be its mirror image with the head state renamed by σ:</p>
+<ul>
+<li>the cell at position p moves to position -p;</li>
+<li>the head moves with its cell, so a head at position h goes to -h;</li>
+<li>its state q becomes σ(q).</li>
+</ul>
+<p><strong>Lemma M.</strong> c → c′ in one step of the parent's table exactly when Φc → Φc′ in one step of this machine. And c is halted exactly when Φc is.</p>
+<p><em>Proof.</em> In c the head reads a symbol s in state q. Say the parent's cell (q, s) is "write w, move d, go to t".</p>
+<p>In Φc the head reads the same s in state σ(q). This machine's cell (σ(q), s) is "write w, move the other way, go to σ(t)". So it writes w on the same cell, moves to the mirror of where the parent's head moves, and enters σ(t). That is Φc′.</p>
+<p>D0 is the only undefined cell of both tables, and σ fixes D. So the halting configurations correspond too. ∎</p>
+<p>By induction on the number of steps, an exact run of the parent's table of N steps maps to an exact run of this machine of N steps, and back.</p>
+<h3 id="13-the-start-records-and-the-family-k">1.3 The start, records and the family K</h3>
+<p><strong>Start.</strong> This machine starts from <code>0^inf A&gt; 0^inf</code>. Since σ(C) = A and the blank tape is its own mirror image, that is Φ of <code>0^inf C&gt; 0^inf</code>. So this machine's run is Φ of the parent's table run from state C, step for step.</p>
+<p><strong>Records.</strong> Φ turns left records into right records. A round trip of this machine starts at its right end.</p>
+<p><strong>The family K, mirrored.</strong> In the parent's family K(n,a,b,c,d) (P§2) the head is in state F on the 0 just left of the 43-cell gadget G. The mirror images are</p>
+<div class="highlight"><pre><span></span><code>Phi K(n,a,b,c,d) = 0^inf 1^3 0 1^2 0^2 1^2 0 1^d 0^6 1^4 0 1^2 0 1^c 0^6 1^b 0 1^2 0 1^a 0 1^n 0^2 1^2 0 1^5 0 1^2 0^2 1^5 0 1^2 0 1^6 0 1^2 0 1^4 0 1^2 0^2 F&gt; 0^inf
+</code></pre></div>
+
+<p>The 43 cells before <code>F&gt;</code> are G read backwards. Since σ(F) = F, the head is again in state F, now on the blank cell just right of the reversed gadget.</p>
+<h3 id="14-the-parents-rules-carry-over">1.4 The parent's rules carry over</h3>
+<p>Each rule of the parent is an exact run of the parent's table: the shift rules R1 and R2b, the macro rules S, TE, TO, T6 and T8 (P§1, P§3). By Lemma M the mirror of each is an exact run of this machine, with the same domain and the same step count.</p>
+<p>In particular the double cycle (P§4) holds here in the form</p>
+<div class="highlight"><pre><span></span><code>Phi Even(n, x)  --&gt;  Phi Even(n + 12x + 808, x + 32)        (n odd, x = 4 mod 8, x &gt;= 52)
+</code></pre></div>
+
+<p>From here on, configurations are written in the parent's coordinates, as members K(...) of the parent's table run from C. On this machine they are read through Φ.</p>
+<h2 id="2-the-opening-run">2. The opening run</h2>
+<h3 id="21-the-direct-part">2.1 The direct part</h3>
+<p>From <code>0^inf C&gt; 0^inf</code>, the parent's table reaches</p>
+<div class="highlight"><pre><span></span><code>K(1953, 34, 68, 45, 18)
+</code></pre></div>
+
+<p>after exactly 4,098,826 steps. It is the first left record of that run whose configuration is in the family K.</p>
+<p>Equivalently, this machine reaches Φ K(1953,34,68,45,18) at a right record after 4,098,826 steps from the blank tape, and no earlier right record has that shape. For comparison, the parent's own opening from A reaches K(1959,34,68,45,18) after 4,097,897 steps (P§5).</p>
+<h3 id="22-the-macro-steps">2.2 The macro steps</h3>
+<p>From there, the same 20 macro steps as in P§5 apply, in the same order. Each row applies its rule as many times as shown. The step numbers are the sums of the rules' step formulas.</p>
+<p>The last column gives the parent's step at the same row, for comparison.</p>
+<table>
+<thead>
+<tr>
+<th>after</th>
+<th>rule</th>
+<th>step</th>
+<th>configuration</th>
+<th>parent's step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>opening</td>
+<td>(direct run)</td>
+<td>4,098,826</td>
+<td>K(1953,34,68,45,18)</td>
+<td>4,097,897</td>
+</tr>
+<tr>
+<td>1</td>
+<td>S^4</td>
+<td>4,882,570</td>
+<td>K(2145,2,84,45,34)</td>
+<td>4,883,657</td>
+</tr>
+<tr>
+<td>2</td>
+<td>TO</td>
+<td>7,706,738</td>
+<td>K(2733,38,96,35,18)</td>
+<td>7,713,999</td>
+</tr>
+<tr>
+<td>3</td>
+<td>S^4</td>
+<td>8,759,730</td>
+<td>K(2925,6,112,35,34)</td>
+<td>8,769,007</td>
+</tr>
+<tr>
+<td>4</td>
+<td>T6</td>
+<td>12,409,798</td>
+<td>K(3517,56,96,35,18)</td>
+<td>12,425,249</td>
+</tr>
+<tr>
+<td>5</td>
+<td>S^6</td>
+<td>14,417,014</td>
+<td>K(3805,8,120,35,42)</td>
+<td>14,435,489</td>
+</tr>
+<tr>
+<td>6</td>
+<td>T8</td>
+<td>18,605,120</td>
+<td>K(4345,46,86,89,18)</td>
+<td>18,629,265</td>
+</tr>
+<tr>
+<td>7</td>
+<td>S^5</td>
+<td>20,626,610</td>
+<td>K(4585,6,106,89,38)</td>
+<td>20,653,275</td>
+</tr>
+<tr>
+<td>8</td>
+<td>T6</td>
+<td>26,035,596</td>
+<td>K(5177,104,100,35,18)</td>
+<td>26,068,435</td>
+</tr>
+<tr>
+<td>9</td>
+<td>S^12</td>
+<td>31,916,508</td>
+<td>K(5753,8,148,35,66)</td>
+<td>31,955,395</td>
+</tr>
+<tr>
+<td>10</td>
+<td>T8</td>
+<td>37,990,554</td>
+<td>K(6293,74,86,113,18)</td>
+<td>38,035,111</td>
+</tr>
+<tr>
+<td>11</td>
+<td>S^9</td>
+<td>43,208,772</td>
+<td>K(6725,2,122,113,54)</td>
+<td>43,257,865</td>
+</tr>
+<tr>
+<td>12</td>
+<td>TO</td>
+<td>50,868,554</td>
+<td>K(7313,144,116,35,18)</td>
+<td>50,923,821</td>
+</tr>
+<tr>
+<td>13</td>
+<td>S^17</td>
+<td>62,494,718</td>
+<td>K(8129,8,184,35,86)</td>
+<td>62,558,553</td>
+</tr>
+<tr>
+<td>14</td>
+<td>T8</td>
+<td>70,863,532</td>
+<td>K(8669,110,86,133,18)</td>
+<td>70,933,037</td>
+</tr>
+<tr>
+<td>15</td>
+<td>S^13</td>
+<td>81,154,982</td>
+<td>K(9293,6,138,133,70)</td>
+<td>81,231,039</td>
+</tr>
+<tr>
+<td>16</td>
+<td>T6</td>
+<td>91,512,408</td>
+<td>K(9885,180,132,35,18)</td>
+<td>91,594,639</td>
+</tr>
+<tr>
+<td>17</td>
+<td>S^22</td>
+<td>111,620,320</td>
+<td>K(10941,4,220,35,106)</td>
+<td>111,713,639</td>
+</tr>
+<tr>
+<td>18</td>
+<td>TE</td>
+<td>122,940,170</td>
+<td>K(11497,134,82,157,18)</td>
+<td>123,039,285</td>
+</tr>
+<tr>
+<td>19</td>
+<td>S^16</td>
+<td>139,555,690</td>
+<td>K(12265,6,146,157,82)</td>
+<td>139,662,869</td>
+</tr>
+<tr>
+<td>20</td>
+<td>T6</td>
+<td>153,013,640</td>
+<td>K(12857,212,144,35,18)</td>
+<td>153,126,993</td>
+</tr>
+</tbody>
+</table>
+<p>Each row's configuration was also confirmed by direct simulation of this machine at exactly that step, and by one unbroken run from the blank tape to step 153,013,640.</p>
+<h3 id="23-every-application-is-in-its-rules-domain">2.3 Every application is in its rule's domain</h3>
+<p>In every row, a, b, c and d are exactly the parent's values in P§5, and n is 6 smaller.</p>
+<p>This is forced by the rules. In each of S, TE, TO, T6 and T8 the new a, b, c, d do not depend on n, and the new n is n plus a constant (P§1). So two runs that start with the same a, b, c, d keep them equal, and keep the same difference in n, as long as they apply the same rules.</p>
+<p>The domains ask nothing of n except that it is odd. Here n starts at 1953 and changes by even constants, so it stays odd. The conditions on a, b, c, d are exactly the parent's, which P§5 checks row by row.</p>
+<p>Only the step counts differ from the parent's, because every step formula has a term in n (for example 84n in S).</p>
+<h2 id="3-the-double-cycles-domain-holds-at-the-end-of-the-opening">3. The double cycle's domain holds at the end of the opening</h2>
+<p>The last row is</p>
+<div class="highlight"><pre><span></span><code>K(12857, 212, 144, 35, 18) = Even(12857, 212)
+</code></pre></div>
+
+<p>since (212 + 76)/2 = 144. Here n = 12857 is odd, x = 212 = 4 (mod 8) and x ≥ 52.</p>
+<p>These conditions are the whole domain of the double cycle, and the double cycle preserves them (P§4, closure). So no further invariant is needed.</p>
+<p>The orbit from here is the parent's orbit from Even(12863, 212), with n smaller by 6 at every Even member. The reason is that the double cycle adds 12x + 808 to n, which does not depend on n.</p>
+<h2 id="4-the-argument">4. The argument</h2>
+<p><strong>Theorem.</strong> <code>1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</code> does not halt from the blank tape.</p>
+<ol>
+<li>
+<p><strong>Relation.</strong> By Lemma M, this machine's run is Φ of the parent's table run from <code>0^inf C&gt; 0^inf</code> (section 1.3).</p>
+</li>
+<li>
+<p><strong>Direct part.</strong> That run reaches K(1953,34,68,45,18) after 4,098,826 steps without halting (section 2.1).</p>
+</li>
+<li>
+<p><strong>Macro steps.</strong> The parent's rules S, TO, T6, T8 and TE take it to Even(12857, 212) at step 153,013,640. Each application is inside its rule's domain (section 2).</p>
+</li>
+<li>
+<p><strong>Double cycle.</strong> From there the parent's double cycle applies forever (section 3, P§4). Each round takes at least one step (P§6).</p>
+</li>
+<li>
+<p><strong>Conclusion.</strong> So the parent's table run from C is infinite. By Lemma M this machine's run is too, step for step. ∎</p>
+</li>
+</ol>
+<p><strong>The halting cell.</strong> Here only B1 = 1RD enters D. So this machine halts exactly when B reads a 1 that has a 0 on its right.</p>
+<p>B1 is σ of the parent's A1 = 1LD, and Lemma M maps halts to halts. Every step of the run above lies inside the direct part or inside one of the parent's exact rules, and none of those halts (P§7.1).</p>
+<p><strong>Not a cryptid.</strong> As for the parent (P§7.2), the top-level map (n, x) ↦ (n + 12x + 808, x + 32) is affine and all its parities are fixed.</p>
+<h2 id="5-remark-the-third-start-of-the-table">5. Remark: the third start of the table</h2>
+<p>Line 636 of the 740 list, <code>1RB0RD_0RC0LB_0RD1RD_1LE1RA_1RC1LF_---1LA</code>, is the same table started in the parent's state E, without the mirror. Its run reaches Even(13299, 220) at step 163,638,058, so the double cycle would finish it too after its own opening.</p>
+<p>This write-up and the .v prove only line 418.</p>
+<h2 id="6-the-formalization">6. The formalization</h2>
+<p>The .v proves <code>Lemma nonhalt: ~halts tm c0.</code> along the lines of section 4. It is the parent's .v with the following changes, and nothing else.</p>
+<h3 id="61-two-tables">6.1 Two tables</h3>
+<p><code>tm</code> is this machine and <code>tmP</code> is the parent's table. The parent's development is kept word for word, with its table renamed <code>tmP</code>. That part holds:</p>
+<ul>
+<li>the gadget <code>G</code> and the family <code>Kr</code>;</li>
+<li>the macro rules <code>S_step</code>, <code>TE</code>, <code>TO</code>, <code>T6</code> and <code>T8</code>, one <code>es'</code> each;</li>
+<li><code>S_iter</code> (S repeated by induction), <code>Ev</code> and the double cycle <code>DC</code>.</li>
+</ul>
+<p>Its lemmas use the parent's half-length parameters (P§8.1):</p>
+<div class="highlight"><pre><span></span><code>Kr n a b c d  =  K(2n+1, 2a, 2b, 2c+1, 2d)          Ev N X  =  Even(2N+1, 8X+52)
+</code></pre></div>
+
+<h3 id="62-the-opening">6.2 The opening</h3>
+<p><code>init : C;; tape0 --&gt;* Kr 976 17 34 22 9</code> is the direct run of section 2.1, since Kr 976 17 34 22 9 = K(1953,34,68,45,18). It runs on busycoq's list configurations (<code>cconfig_step</code>), with the parent's nested step counter <code>cc_steps'</code> (P§8.4).</p>
+<p>The run is cut at five left records of <code>tmP</code>, where the tape is short in run-length form (16 to 19 pairs). The first piece starts by writing <code>C;; tape0</code> as an empty list configuration in state C.</p>
+<table>
+<thead>
+<tr>
+<th>piece</th>
+<th>from</th>
+<th>to</th>
+<th>steps</th>
+<th>ends at step</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init1</code></td>
+<td><code>C;; tape0</code></td>
+<td><code>LR W1</code></td>
+<td>696,153</td>
+<td>696,153</td>
+</tr>
+<tr>
+<td><code>init2</code></td>
+<td><code>LR W1</code></td>
+<td><code>LR W2</code></td>
+<td>701,948</td>
+<td>1,398,101</td>
+</tr>
+<tr>
+<td><code>init3</code></td>
+<td><code>LR W2</code></td>
+<td><code>LR W3</code></td>
+<td>696,114</td>
+<td>2,094,215</td>
+</tr>
+<tr>
+<td><code>init4</code></td>
+<td><code>LR W3</code></td>
+<td><code>LR W4</code></td>
+<td>700,790</td>
+<td>2,795,005</td>
+</tr>
+<tr>
+<td><code>init5</code></td>
+<td><code>LR W4</code></td>
+<td><code>LR W5</code></td>
+<td>700,644</td>
+<td>3,495,649</td>
+</tr>
+<tr>
+<td><code>init6</code></td>
+<td><code>LR W5</code></td>
+<td><code>Kr 976 17 34 22 9</code></td>
+<td>603,177</td>
+<td>4,098,826</td>
+</tr>
+</tbody>
+</table>
+<p>Then <code>opening</code> follows the 20 rows of section 2.2. Its lemma arguments are the parent's, with only the first parameter N smaller by 3 (n smaller by 6). It ends at Even(12857, 212):</p>
+<div class="highlight"><pre><span></span><code>opening : Kr 976 17 34 22 9 --&gt;* Ev 6428 20
+</code></pre></div>
+
+<h3 id="63-non-halting-for-the-parents-table-from-c">6.3 Non-halting for the parent's table from C</h3>
+<p><code>nonhaltP : ~halts tmP (C;; tape0)</code> applies <code>multistep_nonhalt</code> with <code>init</code> and <code>opening</code>. Then it applies <code>progress_nonhalt_simple</code> from (6428, 20) with <code>DC</code> for each step, exactly as the parent does (P§8.5).</p>
+<h3 id="64-the-relation">6.4 The relation</h3>
+<p><code>phi</code> is σ⁻¹, from this machine's states to the parent's:</p>
+<div class="highlight"><pre><span></span><code>phi:   A -&gt; C,   B -&gt; A,   C -&gt; B,   D -&gt; D,   E -&gt; E,   F -&gt; F
+</code></pre></div>
+
+<p><code>flip tm</code> is this table with every move reversed (busycoq's <code>Flip.v</code>). The lemma <code>perm : Perm (flip tm) tmP phi</code> maps each defined transition as follows:</p>
+<div class="highlight"><pre><span></span><code>(flip tm)(q, s) = (w, d, t)  -&gt;  tmP(phi q, s) = (w, d, phi t).
+</code></pre></div>
+
+<p>Undefined entries correspond too. The lemma holds by case analysis on the 12 cells.</p>
+<p><code>nonhalt</code> then chains two busycoq lemmas:</p>
+<div class="highlight"><pre><span></span><code>halts tm c0   -&gt;   halts (flip tm) (A;; tape0)   -&gt;   halts tmP (C;; tape0)
+</code></pre></div>
+
+<p>The first arrow is <code>flip_halts</code>, since the blank tape is its own mirror image. The second is <code>perm_halts</code>, since phi A = C. Then <code>nonhaltP</code> gives the contradiction.</p>
+<h2 id="7-numerical-checks">7. Numerical checks</h2>
+<p>They are evidence only; the result rests on the .v file alone.</p>
+<ul>
+<li><strong>Relation.</strong> σ with the mirror is the only map among the 720 renamings, with and without the mirror, and it matches all 12 cells. This machine and the parent's table from C run in lockstep, step for step, for 2 × 10⁶ steps, and their tapes are mirror images after 153,013,640 steps.</li>
+<li><strong>The family K.</strong> The Φ K word of section 1.3 is the parent's K word reversed, for random parameter values.</li>
+<li><strong>Opening.</strong> Both runs reach their K configuration after 4,098,826 steps, with no earlier K-shaped record. Every row of section 2.2 was confirmed by direct simulation of this machine, and by one unbroken run to step 153,013,640. Two independent simulators agree on both end points.</li>
+<li><strong>Domains.</strong> Every application in section 2.2 is inside its rule's domain, and every row has the parent's a, b, c, d with n smaller by 6.</li>
+<li><strong>Double cycle.</strong> Whole double cycles of this machine from Φ Even(n, x), for every x = 4 (mod 8) from 52 to 252, give the exact configuration and step count of P§4.</li>
+<li><strong>Orbit.</strong> From step 153,013,640 to 10¹⁰ steps, every Even member and every Odd member (the configuration after TE, P§4) was found by direct simulation of this machine. Each has the a, b, c, d of a run start in the parent's own run, with n smaller by 6.</li>
+<li><strong>Halting.</strong> No halt in the first 153,013,640 steps.</li>
+<li><strong>Remark.</strong> Direct simulation of the run of section 5 reaches Even(13299, 220) at step 163,638,058.</li>
+</ul>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic); corrections from an independent audit by GPT-6 Astra (OpenAI).</p>
+</main></body></html>

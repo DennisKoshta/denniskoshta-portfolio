@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TM 1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</title>
+<style>
+:root { --bg:#111827; --panel:#1e293b; --fg:#e5e7eb; --muted:#94a3b8; --accent:#3b82f6; --border:#475569; --link:#60a5fa; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) { --bg:#f8fafc; --panel:#e2e8f0; --fg:#0f172a; --muted:#475569; --accent:#2563eb; --border:#94a3b8; --link:#1d4ed8; } }
+:root[data-theme="dark"] { --bg:#111827; --panel:#1e293b; --fg:#e5e7eb; --muted:#94a3b8; --accent:#3b82f6; --border:#475569; --link:#60a5fa; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 14px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+h1 { font-size: 16px; margin: 0 0 4px; word-break: break-all; }
+a { color: var(--link); }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0; }
+.seg { display: inline-flex; border: 1px solid var(--fg); border-radius: 6px; overflow: hidden; }
+.seg button { background: transparent; color: var(--fg); border: 0; border-right: 1px solid var(--border); padding: 4px 10px; font: inherit; cursor: pointer; }
+.seg button:last-child { border-right: 0; }
+.seg button.on { background: var(--accent); color: #fff; }
+button.tb { background: var(--accent); color: #fff; border: 0; border-radius: 4px; padding: 3px 8px; font: inherit; cursor: pointer; }
+button.tb.off { background: var(--panel); color: var(--fg); }
+select, input[type=number] { font: inherit; background: var(--panel); color: var(--fg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 4px; }
+label { white-space: nowrap; }
+#wrap { max-width: 100%; overflow: hidden; }
+canvas { display: block; image-rendering: pixelated; touch-action: none; max-width: 100%; cursor: crosshair; }
+#status { color: var(--muted); font-style: italic; min-height: 1.4em; }
+#hover { min-height: 2.9em; white-space: pre-wrap; }
+.muted { color: var(--muted); }
+details { margin-top: 10px; color: var(--muted); max-width: 900px; }
+.hide { display: none !important; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<h1>1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---</h1>
+<div class="muted"><a id="link" href="/busy-beaver/machines/1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---/img/sweep_tm7.html" target="_blank" rel="noopener">bbchallenge.org</a> · <span id="params"></span></div>
+<div class="bar"><span>Visualization:</span><span class="seg" id="modes"></span>
+  <select id="stateSel" title="state to filter on"></select></div>
+<div class="bar" id="opts">
+  <label id="o-site"><input type="checkbox" id="site"> site view (400×500)</label>
+  <label id="o-head"><input type="checkbox" id="head" checked> <span id="headLbl">show head movement (green for L, red for R)</span></label>
+  <label id="o-frame">frame <select id="frame"><option value="abs">absolute</option><option value="head">head</option><option value="left">left edge</option><option value="right">right edge</option></select></label>
+  <label id="o-style">colours <select id="rstyle"><option value="default">default</option><option value="explore">explore</option><option value="blaze">blaze</option></select></label>
+  <span id="o-blaze"><button class="tb" id="bq">quality</button> <button class="tb" id="bt">light</button> <button class="tb" id="bs">stretch</button></span>
+  <span id="o-nav"><button class="tb off" id="fit" title="fit (f)">fit</button> <button class="tb off" id="one" title="square pixels (1)">1:1</button> <button class="tb off" id="reset" title="initial view (0)">reset</button></span>
+  <label><input type="checkbox" id="large"> large</label>
+</div>
+<div id="status"></div>
+<div id="wrap"><canvas id="cv" width="800" height="500"></canvas></div>
+<div id="hover"></div>
+<details><summary>How to read this</summary>
+<p>Time runs downward; positive cells are to the right. <b>Default</b> and <b>Explore</b> reproduce bbchallenge.org (atlas/viz-spec.md): Default greys (black = 0 or never visited; for 3+ symbols, 1 is darker than the top symbol), head red after a move right and green after a move left; Explore draws nonzero cells on slate and colours the head by its state (A red, B orange, C blue, D green, E magenta, F cyan, G yellow). <b>Blaze</b> rows are power-of-two blocks of time (quality = averaged, speed = first time of the block); the width fits every cell visited. <b>Records</b> has one row per new leftmost/rightmost cell; <b>State</b> one row each time the machine enters the chosen state. The frame option keeps cell 0, the head, or a span edge in a fixed column.</p>
+<p>Deep links: append <code>#view=explore</code> (default, explore, blaze, records, state), <code>&amp;state=B</code>, <code>&amp;frame=head</code>, <code>&amp;style=explore</code>, <code>&amp;site=0</code>, <code>&amp;large=1</code>. Mouse wheel pans, Ctrl+wheel zooms, Alt+wheel zooms time only, drag pans. Keys: f fit, 1 square pixels, 0 reset, + / − zoom. The site view of Default is a static 400×500 squeeze exactly like the site's canvas; untick it to zoom into the full trace (row 0 is the start configuration there, and heads on fresh cells are always drawn).</p>
+</details>
+<script type="application/json" id="bbd-data">{"tm":"1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---","n_states":6,"n_symbols":2,"params":{"steps":237,"width":400,"ox":0.5,"tape":"0","from_config":"0^inf 1^2 D> 1^2 0 1^2 0 1^2 0 1^2 0 1 0^2 1^2 0 1 0^2 0^inf"},"link":"https://bbchallenge.org/1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---&s=237&w=400&ox=0.5","views":{"all":{"n":238,"m":2,"label":"every step, 0..237","info":{"kind":"all","steps":237,"rows":238,"reason":"max_steps","last_step":237,"halted":false,"lo":-3,"hi":26,"engine":"py"},"meta":"eJztmIlqwkAURUcz7mvr3u3/f7KmhmbgKuf1QqBIqQWZkuM7M97MEq3S9d+5rutt2x4ube/yuvxbp7a95bl9T1SfhPeA94X3A176j+oLp/4rM/7KjF859a+cxq+8MvlSfTb1mm82+Q5MflF94dS/5tvl8yun/pXT+JUPTb5Un0295jsy+Y5NflF94dS/5tvl8yun/pXT+JVPTL5Un0295js1+c5MflF94dS/5tvl8yun/pXT+JXPTb5Un0295rsI/IUvTX5Ur/l1Gb+7f+q/x/zTfO6Rv/pXxr8O8i38yeQf1RdO/ev9ofHr/I7qfxq/chq/8ucg3zI+qs+mXvPdmPu3Ba75Ub3m12X87v6pn/JX/2/MP83nHvlnec+uvV7aY/o+Uwvft9dLexLWvA7ibdqXm/z3hu8M3xq+AU7zRznNn8i/Nv6V8S+Nf2H8c+OfGf/U+CfGPzb+kfEPjX8AnJ4/lSfh1L/Ofxo/nX+Rn/Kj8y/y0/1TP91/Ov8iP80/9dP8pf0n8tP6UT+tP9p/Huv3/6xf+v4c+Svj7wOn7//R/KT+dX4+9p//t/+on54/BsLp+UX99Pyjz1fH9nppX9P189WpvV7aN2HN60W8TfuertfXyfCj4QfD94bvDN8avgFO+79y2v8j/9r4V8a/NP6F8c+Nf2b8U+OfGP/Y+EfGPzT+gfFn46+Mv2/8PeNPxt+0t5x+v1eehFP/uj/Q+On8ivyUH51fkZ/un/rp/tP5Fflp/qmf5i+dX5Gf1o/6af3R+RX5af2rn/YPOr8iP+1f6qf9j86vx/752D//yv6p/jPw4m88n5f2s+VN+5Guf788G14D/wKB5psW","steps":"eJxNy7etUFEQBNAJCQkICAgQQgghhPAe/sV77/3F29/DlvJK2VJeCZRA8E/AJmdHo0n+v78bnrHFNm7nDu7kLu7mHu7lPu7nAR7kIR7mER7lMR7nCZ7kKZ7mGZ7lOZ7nBV7kBseWxVySmcsyc0VmrsrMNZm5LjM3ZOamzNySmdsyc0dm7srMPZm5LzMPZObhloPFZh7pWWzmsZ7FZp7oWWzmqZ7FZp7pWWzmuZ7FZl7oWWzmpZ7FZl7pWWzmtZ7FZt7oWWzmrZ7FZt7pWWzmvZ7FZj7oWWxmbrmbg5PFhc2V+WjPwcniwubKfLLn4GRxYXNlPttzcLK4sLkyX+w5OFlc2FyZr/YcnCwubK7MN3sOThYXNlfmuz0HJ4sLmyvzw56Dk8WFzZX5ac/ByeLC5sr8sufgZHFhc2V+23NwsriwuTJ/7Dk4WVzYXJlNew5OFpfN8Q9DF9tu","cells":"eJzV1MFuwzAMA1Dy/396pzSpTCqikx4GFDvwQYotGSNJnD98/uoYYYwXYsiYJtZN/C0ZxVnvy40exJAxTayb+FsyitMJ4oUYMqaJdRN/S0ZxOkG8EEPGNLFu4m/JKE4nSBNTNwliyhhBjDCWn4Q+YBevl8f5C2K8EEPGNLFu4m/JKM56X7qVmDJGEFPGCGKEsfwk9AG7eL38sWiXe5iU/E4QSz3018wzESO4ri8RPdCzIJDpegaCLXEnAN2pb0ROB99lkdDLsu2R0Au2hF5ou8VCJ4iFThALnSAWOql7uJd1d2Zx91I/MhN3gjqAscjp1OUksm6uPpxQ6AVbQi/YEnrB2wLxBj7U2m3hf0dsIhvEJta517IdFOusZTHqV1LLMlQbO1Cuc4DmIaxfC1D8nx1jcyBZPEc3PlkcoVy2LE5xfZqyeAPZIh4gW8QDZIvs2m4iG8QmskFsIhus053iuhdZFqFctyybo5r+gXI1A1Rv4cD26Wq6Nm70D0+pD3k="},"records":{"n":8,"m":2,"label":"records, 8 rows","info":{"kind":"records","records":"LR","state":null,"every":null,"max_steps":237,"rows":8,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJxdzAsKgDAMA1BlegN1Hz/3v+SsCXQQOwhvNJA0/d9rZpub4YLMnt3vwwJX6Q+/D6t0TJZd2sJ+kV16hv0qu/QK+0126Q0Tgq+x77B7Tx/4ATyUSeg=","steps":"eJxjYEACB0IdIIwwCO0Ao1MgdAKUboDxcx0Ar5QG2w==","cells":"eJxjZGRkZEAgBjgJAwzICKc4bgkGDDG4DD4pvHIMDFhkIA4HSQEAPAgAhQ=="},"state:A":{"n":29,"m":2,"label":"entering A, 29 rows","info":{"kind":"state","records":null,"state":"A","every":null,"max_steps":237,"rows":29,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJzNz9EGwDAMheGUEkooGWPs/d9yndguerH4r8pyczifkIiIFHkm8hpjbG/uUx9TwRW8gdvi/Q7ui/d16iOP5L/MDbyDO3gF//v9Zeojz+S/zBW8gRt4B/cPvwFFs+29","steps":"eJwtyrsNgDAMhGGXjJEBWIDOoqEJQkJQ8VCABjJFRmEURskoCPy7+XTnE/mu0B8pscLaTA3Zk1tyZ2pPP5BHnNjN5oNp4b/Sb6bb+WNGPcwb3ckOM+rFDiWaIeoLeVIasw==","cells":"eJx10EsOACEIA9D2/pee6KDyaRPjgkdAS5Dp4N62TFumLdN1/5PkEF2mXknbfXkO6c+IA6B0e3koJFDLfiyg1qePYGKWik0STjkoZSPE7vMfQKyfKHIt2KPtWNIV+ALWGBkv/ADaHAHZ"},"state:B":{"n":62,"m":2,"label":"entering B, 62 rows","info":{"kind":"state","records":null,"state":"B","every":null,"max_steps":237,"rows":62,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJzd03EHwzAQh+G0hBDCCKXs+3/LbTl6xNnrR/bPthJXeVwuybVbSuk5nnTFxxh9vFs8Rtwm36958iy8CK/gNuxpi/mqvq//af2byO+L+e5U39dfre9+TPMWT9gfeRNehRfhGdz3T/mxv+S0/3i/5B382+8v/t90vl+9f/V9u5/TvMU79I+8Ca/Ci/AsfBdu8Z37+Sk/9p+c9h/7T073F/tP3sH/uX8v7+KUOw==","steps":"eJwty8ltAkEQBdAOpY/OgKPbF8vICAkDxuzjBczmHDqUCaVDmRAIAeF+dXmq+vVDuM/18Z/wkKo9PlXzs/3F3re/2gf2YbWM3N+qaSyfyJmn8nf3mfuH+1xvIWdeylfytZx5I9/Km2rDwvjpnx3TV7Vl+NZnYfzRZ7vzv/fPwvjrnx3TQZ/hqM/CeNJnx3TWZ7joszD+pRsNnT2z","cells":"eJyF0lkOgCAQA9Dp/S9tAsgsbdUYP/pYRgYAiHzjftdjYtgYNoYbDbMION6DuRITR6mHYrjRMItwHWNwnqOJ9Z+vN7iYcyyhlqIpGQv536ZJdOxSkeSiko1G9iQttYEtlsIXqsVDxk7z3k8JxpSJTRpOSRRyUEusMzUSX/J2QvzqNWqEQ1qV2sFo6qGmfBabKL0ge8fhhNUVXjcY7/U3eKdqPH2R4rB1VAqjuAtSKsqqFj5EqgQs"},"state:C":{"n":54,"m":2,"label":"entering C, 54 rows","info":{"kind":"state","records":null,"state":"C","every":null,"max_steps":237,"rows":54,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJzdz20LwiAUhuGzzXIzJIfuLej//8tskoMhrBvqUwly5FyeB61FpJLXqtf9iDGGXKfcW49R8r13Lge+5Z9gXoE3kN/CvAY/Q/4F5g14B24/zN/e18O8A7+C+y/zx10/1VvhA3gA9+AO3IIbcP3j71Pgy66f6r3wGXwCH8EH8ADuwR24BTfgGlyBV+D//r/UK/0JvK+CkQ==","steps":"eJw1zLkNAjEQBVCXQEBAuBUgSIHAggRtAgKJK4BF4pA4ethSKGVLcSkI/NbJ05/x/BB+rxP/hC577HPAIUccc5Ktp/JMbp2bl/JCXmYjm5X9mhtzhq3/DDt71nv7g/nR/JQtKpmJ8Zz9XNwxMVzdM7Ji0+5v+pkY7/pbH3qfetiweOlhYnzHL7hAMoc=","cells":"eJzV0lEKgEAIBNCZ+1862EVzHPuoIAikDx/t6ipBgIxAfO+lySrP09TE43TI2/SS8x6Dfkh29DadF1taATXwgSxwiV+alMOmdppAg7Poq0MrMNFl9cKuZigCD2Thv8Ywx/JjQz21ol2ZONUTrz4WOzQRS3GBe14T5jAN66QV2xoU9B0JHKrKPqeSNx4VGgOQ"},"state:D":{"n":57,"m":2,"label":"entering D, 57 rows","info":{"kind":"state","records":null,"state":"D","every":null,"max_steps":237,"rows":57,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJzd09sKwjAQRdGpo9Fo8FKEgqD//5NtnUCCFxw35EkMhFOyGHryEBWR2ZaUnGyf7TvnYKm2O3msb96BL8DV8dqvdb76EnwFHqBf63z1NfgGPEK/1vnqW/AdeIJ+5HS/Pfz/AH4EP4H30I/c6/c+P5S8OPOeJ/AIHsB/vZ+C90/nOa9Of88TeAQP4Aou4P9+v9FyLJ7zJq/vcwKfP/gdH0Rukw==","steps":"eJw1zL0NggAQxfE3iAUxxgH86tAr1EQqjIVCIxZqIrDDjcIojMIoRO/vNb/cu5eTvjOxH0pwijOc4wKXuMI1bjDFLe7QQkft2VEHdtQRT+QZ5mGPOoeGjrrQQ7/Su3EvuKOX5HdytCrsUI+wQn+GA9qLPupNH/u/nzCp+YMDWsMfVMsfdOxaGwECAjEI","cells":"eJx9k1EOwyAMQ+P7X3qbBg0xz61QP/xMYiJQfT9pr+o/ywqygqzg7vLDHWQFObVUcFehO8gKcmqp4P6VB3eQFeTUUtEtqC2Q1xB3HveyrCBj7Scmue94564j4L92Edn5jRwns8kQKTGpmUBI/ErNBE7stdzB8JY7Ab2e4J46wT6vwzGMAX1SDT1SwytsQ1rrMEgSHGNAckMYIJITYqrjmb9sfaM8pEU/gbcDmw=="},"state:E":{"n":32,"m":2,"label":"entering E, 32 rows","info":{"kind":"state","records":null,"state":"E","every":null,"max_steps":237,"rows":32,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJzN0WEHwCAQBuCbEhFxlrLp///LtcXNMjvvp1hfXnq81J0looWec7TWVsl8pR3cAHfAPfAwuR+B8+R+kvs7izK/LLkp/9c8AI/AGbgB/vf3J+Bl2EvP/eU09HpWZT6aO+AeeAAegfOHn21NBuc=","steps":"eJwty7sNgDAMRVGPkpoJKE1FgaBAUEEQvwKYIqMwikfJKEj4pjm6cp7I/9QpsHRTRdd0Q7d0R/euDvToGspEY5r5H7kv7rvRu7uiYTjYY0Y92V3s0DDc7DCjPvoBwtgdPw==","cells":"eJx90UsOwCAQAlC4/6WbqnV+0KTpgmdGJxBk+nD/NqaNaWO603uSHKJj6itpT1+eQ3Sc16xxjEfFLoFCDmpZSwDq+rQgJmap2CThlA+lLHRC/AmgttkC8eaJooyCvY+OpRKB0YrGU8yLD3x1Agw="},"state:F":{"n":3,"m":2,"label":"entering F, 3 rows","info":{"kind":"state","records":null,"state":"F","every":null,"max_steps":237,"rows":3,"reason":"max_steps","last_step":237,"halted":false,"engine":"py"},"meta":"eJxjZWBgYGSAADEg/vf//38YLQmkWbHIi0NpKTR5SSR9IFoGSAMAIBQYzw==","steps":"eJxjYACBMAcwxZACoRNSHAAStAI/","cells":"eJxjZIQBBmTEwIAhhCyBXQYIAAkpADQ="}},"blaze":{"steps":237,"quality_light":{"width":30,"height":237,"steps":237,"nonzeros":17,"halted":false,"xs":1,"x0":3,"ys":1,"binning":true,"theme":"light","engine":"py","rgb":"eJzt00FuxSAMBNDe/x49J11UohY2xoCnf6wEdZFQ8yCDf2utfX/9/fXX2cPv0DPmgMpLkFbWqx4ry9fcrsPJoDT+4Te43IJQxqWBlvXyx8rDfJYsKxH9jJMRXbfcglnGpYGWZ84D5aEgS5ZLEP2MkxFdt3unVDIuDbTcK19ZVibKci2in3Eyoutmhy8h49JAy/ohUTa/IiWNQrLOJEVu6vqY5SHeQjLiBofTVpTNK8iS9VdUkfvaV5ZrE2WppcugNIZ/IWQdO79cMedmdXiuPMPv0ygkL+/xTB7myWUZby0ZcYPm4WvJ/Rkhz8bD5WGXV06UB4pcHqLIknXIzPKsMS5l8xNoZSf2G9kEaWUHvJF9kE2OxMspI25wECrKfiyXsnN4ctksyJL14avIsjJdNqkSstTS5Q6mp1FI1veYIutXZnm20aXszBPKyx3PZCd2QnnZKmfyEqSSg+CuHAcZ5N14eWTEDer6cnI8lgM5eHhCObL1sewfnlmeVabI5uFLyMOSXFkevpbcnxGypF55Nl65m6/8yjjZHLTyLIpLuc1DJpSXjXEmm/O0slNwI/vfwiZH8j+QfZBNDjbhrhwESeQtMC7vgp+V21G8DDLiBof6ivJuLFvy1uGp5GAsZ3KkgFP2Y7mUnUpy2YwlS9ZLqsgylnS5ry0nm3iWrPGsNArJzj3eyPqVWZ5tdCk784TycsczOVLAI8fz35KXIJUcBHflOMgg74JB+QD8oHwM+vIN6MiX4Fz+AR06Qds=","status":"Steps: 237 \u2022 Nonzeros: 17 \u2022 Not Halted"},"quality_dark":{"width":30,"height":237,"steps":237,"nonzeros":17,"halted":false,"xs":1,"x0":3,"ys":1,"binning":true,"theme":"dark","engine":"py","rgb":"eJzt0uGO7SAIBOB9/5d2k01uQ0Ap4nDPkGN/VYsfdNoxxo+4xr/l6mb8XXZnepXKryCtbE99rSyXQFkWwOWiNCReJL+2IJTr0qiW7fGvldU+SpaVcLkoDRV4hbxqwSzXpVEtr5wvlFUBSpZH4HJRGhIvklWLFnLHnBV4ZVkJlOVZuFyUhsSLZDV8C7ljzgqskKdvAUmjkSw1oDzM52OWVbyN5OkSJQ/0X/ffZPsIKNu36CI/Z68szwJlqcHlojTUowpZDt9F7pjzmP3hWHmFH8pOJoSy8lGy2ieXZby9ZFWAleXwveTnvkKesldWXa4MlBVFLj9LrGxDZpbtPkSevgKtPG10Lq++I6fsgCeyD7LJkXg55WAsOTkyPKfsx3IoO8OTy9MClGyH7yLLSrg8pVrIUoPLDwhPo5GsfJQ8/UNo5VWjQ9nZJ5RfO+bkyAflkX0wLb+CVHIQ3JXjIIO8Gy+PnIglLu8OzyPHY0nIweEJ5UjrtOwPzyyvKiHydPgWsjqCleXwveTnvkKW1JXH4rqyDPzKVy6SLcssr6I4lJ2QCWW7D5Gn+7SyU3Ai++/CJr+mlJN9kE2OgAk5CJLIW2Bc3gU/K+fiZZDTsUTk3PAM8m4sW/LW8FRyMJacHCnglP1YDmWnklyexoKS7ZEusowFLj9n28lTHCVbHJVGI1n5KNkumeVVo0PZ2SeUXzvm5EgBj/yaUk7e+rIfl4PgrhwHGeRdMCgnwA/KadCXT0BHPgQd+Rc7Mfz9","status":"Steps: 237 \u2022 Nonzeros: 17 \u2022 Not Halted"},"speed_light":{"width":30,"height":237,"steps":237,"nonzeros":17,"halted":false,"xs":1,"x0":3,"ys":1,"binning":false,"theme":"light","engine":"py","rgb":"eJzt00FuxSAMBNDe/x49J11UohY2xoCnf6wEdZFQ8yCDf2utfX/9/fXX2cPv0DPmgMpLkFbWqx4ry9fcrsPJoDT+4Te43IJQxqWBlvXyx8rDfJYsKxH9jJMRXbfcglnGpYGWZ84D5aEgS5ZLEP2MkxFdt3unVDIuDbTcK19ZVibKci2in3Eyoutmhy8h49JAy/ohUTa/IiWNQrLOJEVu6vqY5SHeQjLiBofTVpTNK8iS9VdUkfvaV5ZrE2WppcugNIZ/IWQdO79cMedmdXiuPMPv0ygkL+/xTB7myWUZby0ZcYPm4WvJ/Rkhz8bD5WGXV06UB4pcHqLIknXIzPKsMS5l8xNoZSf2G9kEaWUHvJF9kE2OxMspI25wECrKfiyXsnN4ctksyJL14avIsjJdNqkSstTS5Q6mp1FI1veYIutXZnm20aXszBPKyx3PZCd2QnnZKmfyEqSSg+CuHAcZ5N14eWTEDer6cnI8lgM5eHhCObL1sewfnlmeVabI5uFLyMOSXFkevpbcnxGypF55Nl65m6/8yjjZHLTyLIpLuc1DJpSXjXEmm/O0slNwI/vfwiZH8j+QfZBNDjbhrhwESeQtMC7vgp+V21G8DDLiBof6ivJuLFvy1uGp5GAsZ3KkgFP2Y7mUnUpy2YwlS9ZLqsgylnS5ry0nm3iWrPGsNArJzj3eyPqVWZ5tdCk784TycsczOVLAI8fz35KXIJUcBHflOMgg74JB+QD8oHwM+vIN6MiX4Fz+AR06Qds=","status":"Steps: 237 \u2022 Nonzeros: 17 \u2022 Not Halted"},"speed_dark":{"width":30,"height":237,"steps":237,"nonzeros":17,"halted":false,"xs":1,"x0":3,"ys":1,"binning":false,"theme":"dark","engine":"py","rgb":"eJzt0uGO7SAIBOB9/5d2k01uQ0Ap4nDPkGN/VYsfdNoxxo+4xr/l6mb8XXZnepXKryCtbE99rSyXQFkWwOWiNCReJL+2IJTr0qiW7fGvldU+SpaVcLkoDRV4hbxqwSzXpVEtr5wvlFUBSpZH4HJRGhIvklWLFnLHnBV4ZVkJlOVZuFyUhsSLZDV8C7ljzgqskKdvAUmjkSw1oDzM52OWVbyN5OkSJQ/0X/ffZPsIKNu36CI/Z68szwJlqcHlojTUowpZDt9F7pjzmP3hWHmFH8pOJoSy8lGy2ieXZby9ZFWAleXwveTnvkKesldWXa4MlBVFLj9LrGxDZpbtPkSevgKtPG10Lq++I6fsgCeyD7LJkXg55WAsOTkyPKfsx3IoO8OTy9MClGyH7yLLSrg8pVrIUoPLDwhPo5GsfJQ8/UNo5VWjQ9nZJ5RfO+bkyAflkX0wLb+CVHIQ3JXjIIO8Gy+PnIglLu8OzyPHY0nIweEJ5UjrtOwPzyyvKiHydPgWsjqCleXwveTnvkKW1JXH4rqyDPzKVy6SLcssr6I4lJ2QCWW7D5Gn+7SyU3Ai++/CJr+mlJN9kE2OgAk5CJLIW2Bc3gU/K+fiZZDTsUTk3PAM8m4sW/LW8FRyMJacHCnglP1YDmWnklyexoKS7ZEusowFLj9n28lTHCVbHJVGI1n5KNkumeVVo0PZ2SeUXzvm5EgBj/yaUk7e+rIfl4PgrhwHGeRdMCgnwA/KadCXT0BHPgQd+Rc7Mfz9","status":"Steps: 237 \u2022 Nonzeros: 17 \u2022 Not Halted"}},"initial":{"view":"default","frame":"abs","style":"default","site":true},"generated":"2026-10-10 02:18:11","tool":"tools/diagram.py","extra":{"transitions":{"A:R":29,"B:L":35,"B:R":27,"C:L":49,"C:R":5,"D:L":35,"D:R":22,"E:R":32,"F:R":3}}}</script>
+<script id="bbd-core">
+var BBD = (function () {
+  'use strict';
+  var SLATE = [0x1e, 0x29, 0x3b];
+  var STATE_COLORS = [[255,0,0],[255,128,0],[0,0,255],[0,255,0],[255,0,255],[0,255,255],[255,255,0]];
+  var BLAZE = { light: [[255,255,255],[255,165,0],[255,255,0],[255,0,255],[0,255,255]],
+                dark: [[255,255,255],[0,0,0],[128,128,128],[64,64,64],[192,192,192]] };
+  var FRESH = 1, NOHEAD = 2, HALTED = 4;
+  function b64(s) {
+    if (typeof atob === 'function') { var bin = atob(s), u = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; }
+    return new Uint8Array(Buffer.from(s, 'base64'));
+  }
+  async function inflate(u8) {
+    var stream = new Blob([u8]).stream().pipeThrough(new DecompressionStream('deflate'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  async function decodeRows(v) {
+    var meta = new Int32Array((await inflate(b64(v.meta))).buffer);
+    var steps = new Float64Array((await inflate(b64(v.steps))).buffer);
+    var cells = await inflate(b64(v.cells));
+    var n = v.n, off = new Float64Array(n + 1);
+    for (var i = 0; i < n; i++) off[i + 1] = off[i] + meta[8 * i + 7];
+    return { n: n, m: v.m, meta: meta, steps: steps, cells: cells, off: off, info: v.info, label: v.label };
+  }
+  async function decodeRGB(b) { return await inflate(b64(b.rgb)); }
+  function grey(k, m) { return Math.floor((255 / (m - 1)) * k); }
+  function blazeColor(k, theme) { var p = BLAZE[theme || 'light']; return k === 0 ? p[0] : p[1 + (k - 1) % (p.length - 1)]; }
+  // Same layout as diagram.py palette(..., transparent=True)
+  function palette(style, m, theme) {
+    var P = [], k;
+    for (k = 0; k < m; k++) {
+      if (style === 'blaze') P.push(blazeColor(k, theme).concat([255]));
+      else if (style === 'explore' && k === 0) P.push([0, 0, 0, 0]);
+      else { var g = grey(k, m); P.push([g, g, g, 255]); }
+    }
+    P.push(style === 'blaze' ? blazeColor(0, theme).concat([255]) : [0, 0, 0, 0]);
+    P.push([255, 0, 0, 255], [0, 255, 0, 255]);
+    for (k = 0; k < STATE_COLORS.length; k++) P.push(STATE_COLORS[k].concat([255]));
+    return P;
+  }
+  function nat(x) { return x < 0 ? -2 * x - 1 : 2 * x; }
+  function row(R, i) {
+    var b = 8 * i, M = R.meta;
+    return { i: i, step: R.steps[i], state: M[b], dir: M[b + 1], flags: M[b + 2], pos: M[b + 3], lo: M[b + 4],
+             hi: M[b + 5], clo: M[b + 6], len: M[b + 7], off: R.off[i] };
+  }
+  function defined(r) {
+    var lo = r.lo, hi = r.hi;
+    if (r.flags & FRESH) { if (r.pos === lo) lo++; else if (r.pos === hi) hi--; }
+    return [lo, hi];
+  }
+  function anchor(r, frame) { return frame === 'head' ? r.pos : frame === 'left' ? r.lo : frame === 'right' ? r.hi : 0; }
+  // Columns covering every row's stored cells (span ∩ stored window; = the span unless the view is clipped).
+  function fitCols(R, frame, n) {
+    var a = Infinity, b = -Infinity; n = n === undefined ? R.n : Math.min(n, R.n);
+    for (var i = 0; i < n; i++) {
+      var r = row(R, i), q = anchor(r, frame), lo = Math.max(r.lo, r.clo), hi = Math.min(r.hi, r.clo + r.len - 1);
+      if (lo > hi) continue;
+      a = Math.min(a, lo - q); b = Math.max(b, hi - q);
+    }
+    if (a === Infinity) { a = 0; b = 0; }
+    return [a, b];
+  }
+  function cellAt(R, r, p) {
+    var d = defined(r);
+    if (p < d[0] || p > d[1] || p - r.clo < 0 || p - r.clo >= r.len) return null;
+    return R.cells[r.off + p - r.clo];
+  }
+  function stored(r, p) { return p >= r.clo && p < r.clo + r.len; }
+  function headIndex(r, style, m, siteExact) {
+    if (r.flags & NOHEAD) return -1;
+    var idx = -1;
+    if (style === 'default') idx = r.dir > 0 ? m + 1 : r.dir < 0 ? m + 2 : -1;
+    else if (style === 'explore') idx = (r.state >= 0 && r.state < STATE_COLORS.length) ? m + 3 + r.state : -1;
+    if (idx >= 0 && siteExact && (r.flags & FRESH)) {
+      var d = defined(r);
+      if (!(nat(r.pos) <= Math.max(nat(d[0]), nat(d[1])) + 1)) idx = -1;
+    }
+    return idx;
+  }
+  // Paint rows r0..r1-1, columns c0..c0+W-1 (relative to the frame anchor) into RGBA `out` (W*(r1-r0)*4).
+  // opts: {head, siteExact, skipRow0, theme}. Mirrors diagram.py render_rows(..., transparent=True).
+  function paint(R, style, frame, c0, W, r0, r1, opts, out) {
+    var m = R.m, P = palette(style, m, opts.theme), unv = P[m], i, x;
+    for (var y = r0; y < r1; y++) {
+      var o = (y - r0) * W * 4;
+      for (x = 0; x < W; x++) { out[o + 4 * x] = unv[0]; out[o + 4 * x + 1] = unv[1]; out[o + 4 * x + 2] = unv[2]; out[o + 4 * x + 3] = unv[3]; }
+      if (y >= R.n || (opts.skipRow0 && y === 0)) continue;
+      var r = row(R, y), q = anchor(r, frame), d = defined(r);
+      var a = Math.max(d[0], r.clo, c0 + q), b = Math.min(d[1], r.clo + r.len - 1, c0 + W - 1 + q);
+      for (var p = a; p <= b; p++) {
+        var c = P[R.cells[r.off + p - r.clo]], j = o + 4 * (p - q - c0);
+        out[j] = c[0]; out[j + 1] = c[1]; out[j + 2] = c[2]; out[j + 3] = c[3];
+      }
+      if (opts.head) {
+        var hx = r.pos - q - c0;
+        if (hx >= 0 && hx < W) {
+          var h = headIndex(r, style, m, opts.siteExact);
+          if (h >= 0) { var hc = P[h], k = o + 4 * hx; out[k] = hc[0]; out[k + 1] = hc[1]; out[k + 2] = hc[2]; out[k + 3] = hc[3]; }
+        }
+      }
+    }
+    return out;
+  }
+  // Nearest-neighbour samples of paint(): output pixel (i, j) = paint pixel (xs[i], ys[j]); xs are columns
+  // relative to c0, ys are row indices; -1 = outside (left untouched, i.e. transparent in a fresh buffer).
+  // Used for zoomed-out views, so the cost is O(canvas pixels) however large the trace is.
+  function paintSampled(R, style, frame, c0, xs, ys, opts, out) {
+    var m = R.m, P = palette(style, m, opts.theme), unv = P[m], nx = xs.length;
+    for (var j = 0; j < ys.length; j++) {
+      var y = ys[j], o = j * nx * 4, i, c, k;
+      if (y < 0) continue;
+      if (y >= R.n || (opts.skipRow0 && y === 0)) {
+        for (i = 0; i < nx; i++) if (xs[i] >= 0) { k = o + 4 * i; out[k] = unv[0]; out[k + 1] = unv[1]; out[k + 2] = unv[2]; out[k + 3] = unv[3]; }
+        continue;
+      }
+      var r = row(R, y), q = anchor(r, frame), d = defined(r);
+      var a = Math.max(d[0], r.clo), b = Math.min(d[1], r.clo + r.len - 1);
+      var h = opts.head ? headIndex(r, style, m, opts.siteExact) : -1;
+      for (i = 0; i < nx; i++) {
+        if (xs[i] < 0) continue;
+        var p = xs[i] + c0 + q;
+        c = (h >= 0 && p === r.pos) ? P[h] : (p >= a && p <= b) ? P[R.cells[r.off + p - r.clo]] : unv;
+        k = o + 4 * i; out[k] = c[0]; out[k + 1] = c[1]; out[k + 2] = c[2]; out[k + 3] = c[3];
+      }
+    }
+    return out;
+  }
+  // The site's Default canvas, computed exactly like diagram.py site_default_canvas(): the W x H trace (site
+  // quirks on, transparent where unvisited) drawn into a black cw x ch canvas with the 2x2 bilinear filter
+  // (draw_image_bilinear). Only the <= 2*ch trace rows the filter reads are painted, so 99,999 steps cost
+  // the same as 1,000. P = {width, steps, ox} (already clamped like the site).
+  function jsRound(x) { var f = Math.floor(x); return x - f >= 0.5 ? f + 1 : f; }
+  function siteTaps(n, size, i) {             // source taps of destination pixel i: [i0, i1, weight of i1]
+    var f = (i + 0.5) * (n / size) - 0.5, f0 = Math.floor(f);
+    return [Math.min(n - 1, Math.max(0, f0)), Math.min(n - 1, Math.max(0, f0 + 1)), f - f0];
+  }
+  function siteCanvas(R, P, head, cw, ch) {
+    var W = P.width, H = P.steps, c0 = -Math.floor(W * P.ox), sx = W / cw, sy = H / ch;
+    var out = new Uint8ClampedArray(cw * ch * 4), cache = new Map(), x, y;
+    for (var i = 3; i < out.length; i += 4) out[i] = 255;
+    function src(r) {
+      var s = cache.get(r);
+      if (!s) { s = new Uint8ClampedArray(W * 4); paint(R, 'default', 'abs', c0, W, r, r + 1, { head: head, siteExact: true, skipRow0: true }, s); cache.set(r, s); }
+      return s;
+    }
+    var xt = [];
+    for (x = 0; x < cw; x++) {
+      var fx = (x + 0.5) * sx - 0.5, x0 = Math.floor(fx);
+      xt.push([4 * Math.min(W - 1, Math.max(0, x0)), 4 * Math.min(W - 1, Math.max(0, x0 + 1)), fx - x0]);
+    }
+    for (y = 0; y < ch; y++) {
+      var fy = (y + 0.5) * sy - 0.5, y0 = Math.floor(fy), wy = fy - y0;
+      var A = src(Math.min(H - 1, Math.max(0, y0))), B = src(Math.min(H - 1, Math.max(0, y0 + 1))), base = 4 * y * cw;
+      for (x = 0; x < cw; x++) {
+        var t = xt[x], wx = t[2], r = 0, g = 0, bl = 0, al = 0;
+        var taps = [[A, t[0], (1 - wx) * (1 - wy)], [A, t[1], wx * (1 - wy)], [B, t[0], (1 - wx) * wy], [B, t[1], wx * wy]];
+        for (var k = 0; k < 4; k++) {
+          var S = taps[k][0], j = taps[k][1], w = taps[k][2];
+          if (w === 0) continue;
+          var av = S[j + 3] / 255;
+          r += S[j] * av * w; g += S[j + 1] * av * w; bl += S[j + 2] * av * w; al += av * w;
+        }
+        if (al <= 0) continue;
+        // diagram.py _blend(d, i, r/a, g/a, b/a, a*255) over the opaque black canvas
+        var sa = ((al * 255) / 255) * 1, o = base + 4 * x, da = out[o + 3] / 255, oa = sa + da * (1 - sa);
+        out[o] = jsRound(((r / al) * sa + out[o] * da * (1 - sa)) / oa);
+        out[o + 1] = jsRound(((g / al) * sa + out[o + 1] * da * (1 - sa)) / oa);
+        out[o + 2] = jsRound(((bl / al) * sa + out[o + 2] * da * (1 - sa)) / oa);
+        out[o + 3] = jsRound(oa * 255);
+      }
+    }
+    return out;
+  }
+  function siteHeadVisible(r) {
+    if (!(r.flags & FRESH)) return true;
+    var d = defined(r);
+    return nat(r.pos) <= Math.max(nat(d[0]), nat(d[1])) + 1;
+  }
+  function stateName(s) { return s < 0 ? 'Z (halted)' : String.fromCharCode(65 + s); }
+  return { SLATE: SLATE, STATE_COLORS: STATE_COLORS, FRESH: FRESH, NOHEAD: NOHEAD, HALTED: HALTED, b64: b64,
+           inflate: inflate, decodeRows: decodeRows, decodeRGB: decodeRGB, palette: palette, grey: grey, row: row,
+           defined: defined, anchor: anchor, fitCols: fitCols, cellAt: cellAt, headIndex: headIndex, paint: paint,
+           paintSampled: paintSampled, siteTaps: siteTaps, siteCanvas: siteCanvas, siteHeadVisible: siteHeadVisible,
+           stored: stored, stateName: stateName, nat: nat };
+})();
+if (typeof module !== 'undefined') module.exports = BBD;
+</script>
+<script id="bbd-ui">
+(function () {
+  'use strict';
+  var D = JSON.parse(document.getElementById('bbd-data').textContent);
+  var $ = function (id) { return document.getElementById(id); };
+  var cv = $('cv'), ctx = cv.getContext('2d');
+  var TILE = 1024, MAX_TILES = 48, LOD_PX = 4 << 20, LOD_TILES = 16;
+  var fmt = function (n) { return Number(n).toLocaleString('en-US'); };
+  var S = { view: D.initial.view, frame: D.initial.frame || 'abs', rstyle: D.initial.style || 'default',
+            site: D.initial.site !== false, head: true, bq: 'quality', theme: 'light', stretch: true, large: false,
+            state: null };
+  function readHash() {
+    (location.hash || '').replace(/^#/, '').split('&').forEach(function (kv) {
+      var p = kv.split('='), k = decodeURIComponent(p[0] || ''), v = decodeURIComponent(p[1] || '');
+      if (k === 'view') S.view = v; else if (k === 'frame') S.frame = v; else if (k === 'style') S.rstyle = v;
+      else if (k === 'site') S.site = v !== '0'; else if (k === 'state') S.state = 'state:' + v;
+      else if (k === 'large') S.large = v !== '0';
+    });
+    if (S.view.indexOf('state:') === 0) { S.state = S.view; S.view = 'state'; }
+  }
+  readHash();
+  var cache = {}, cur = null, T = null, T0 = null, token = 0, lod = null, siteImgs = {};
+  var stateKeys = Object.keys(D.views).filter(function (k) { return k.indexOf('state:') === 0; });
+  if (S.state && !D.views[S.state]) S.state = null;
+  S.state = S.state || stateKeys[0] || null;
+  var TR = (D.extra && D.extra.transitions) || {};
+
+  $('link').href = D.link; $('link').textContent = D.link;
+  var P = D.params;
+  $('params').textContent = 'steps ' + fmt(P.steps) + ' · tape width ' + P.width + ' · x-translation ' + P.ox +
+    ' · initial tape ' + (P.from_config ? P.from_config : JSON.stringify(P.tape)) + ' · ' + D.n_states + ' states × ' + D.n_symbols + ' symbols';
+
+  var MODES = [];
+  if (D.views.all) MODES.push(['default', 'Default'], ['explore', 'Explore']);
+  if (D.blaze) MODES.push(['blaze', 'Blaze']);
+  if (D.views.records) MODES.push(['records', 'Records']);
+  if (stateKeys.length) MODES.push(['state', 'State']);
+  var modesEl = $('modes');
+  MODES.forEach(function (md) {
+    var b = document.createElement('button'); b.textContent = md[1]; b.dataset.v = md[0];
+    b.addEventListener('click', function () { S.view = md[0]; setup(); });
+    modesEl.appendChild(b);
+  });
+  var sel = $('stateSel');
+  stateKeys.forEach(function (k) {
+    var X = k.slice(6), o = document.createElement('option'), l = TR[X + ':L'] || 0, r = TR[X + ':R'] || 0;
+    o.value = k; o.textContent = X + ' (' + fmt(D.views[k].n) + ' rows' + (l + r ? '; entered ' + fmt(l) + '× moving L, ' + fmt(r) + '× moving R in the first 10⁵ steps' : '') + ')';
+    sel.appendChild(o); });
+  if (S.state) sel.value = S.state;
+  sel.addEventListener('change', function () { S.state = sel.value; S.view = 'state'; setup(); });
+  $('site').checked = S.site; $('frame').value = S.frame; $('rstyle').value = S.rstyle;
+  $('site').addEventListener('change', function (e) { S.site = e.target.checked; setup(); });
+  $('head').addEventListener('change', function (e) { S.head = e.target.checked; setup(true); });
+  $('frame').addEventListener('change', function (e) { S.frame = e.target.value; setup(); });
+  $('rstyle').addEventListener('change', function (e) { S.rstyle = e.target.value; setup(true); });
+  $('large').addEventListener('change', function (e) { S.large = e.target.checked; setup(); });
+  $('bq').addEventListener('click', function () { S.bq = S.bq === 'quality' ? 'speed' : 'quality'; setup(); });
+  $('bt').addEventListener('click', function () { S.theme = S.theme === 'light' ? 'dark' : 'light'; setup(); });
+  $('bs').addEventListener('click', function () { S.stretch = !S.stretch; setup(); });
+  $('fit').addEventListener('click', function () { fit(false); });
+  $('one').addEventListener('click', function () { fit(true); });
+  $('reset').addEventListener('click', function () { if (T0) { T = Object.assign({}, T0); draw(); } });
+
+  function rowsFor(key) { return cache[key] || (cache[key] = BBD.decodeRows(D.views[key])); }
+  function show(id, on) { $(id).classList.toggle('hide', !on); }
+
+  async function setup(keepView) {
+    var my = ++token;
+    Array.prototype.forEach.call(modesEl.children, function (b) { b.classList.toggle('on', b.dataset.v === S.view); });
+    var v = S.view, rowsView = v === 'records' || v === 'state';
+    show('stateSel', v === 'state'); show('o-site', v === 'default'); show('o-head', v !== 'blaze');
+    show('o-frame', v !== 'blaze' && !(v === 'default' && S.site)); show('o-style', rowsView); show('o-blaze', v === 'blaze');
+    show('o-nav', !(v === 'default' && S.site));
+    var hstyle = v === 'explore' ? 'explore' : rowsView ? S.rstyle : 'default';
+    $('headLbl').textContent = hstyle === 'explore' ? 'show head (colour = state: A red, B orange, C blue, D green, E magenta, F cyan, G yellow)'
+      : hstyle === 'blaze' ? 'show head (not drawn in blaze colours)' : 'show head movement (green for L, red for R)';
+    $('bq').textContent = S.bq; $('bt').textContent = S.theme; $('bs').textContent = S.stretch ? 'stretch' : 'no stretch';
+    $('bs').classList.toggle('off', !S.stretch);
+    var big = S.large;
+    var cw = big ? 1200 : 800, ch = big ? 750 : 500;
+    if (v === 'default' && S.site) { cw = 400; ch = 500; }
+    if (cv.width !== cw) cv.width = cw;
+    if (cv.height !== ch) cv.height = ch;
+    var prevT = keepView && cur && cur.view === v ? T : null;
+    if (v === 'blaze') {
+      var b = D.blaze[S.bq + '_' + S.theme];
+      var rgb = await BBD.decodeRGB(b);
+      if (my !== token) return;
+      var c = document.createElement('canvas'); c.width = b.width; c.height = b.height;
+      var img = new ImageData(b.width, b.height);
+      for (var i = 0, n = b.width * b.height; i < n; i++) { img.data[4*i] = rgb[3*i]; img.data[4*i+1] = rgb[3*i+1]; img.data[4*i+2] = rgb[3*i+2]; img.data[4*i+3] = 255; }
+      c.getContext('2d').putImageData(img, 0, 0);
+      cur = { view: v, kind: 'blaze', b: b, img: c, W: b.width, H: b.height, bg: S.theme === 'dark' ? '#000' : '#fff', smooth: false };
+      if (S.stretch || (b.width >= cw && b.height >= ch)) T0 = { sx: cw / b.width, sy: ch / b.height, tx: 0, ty: 0 };
+      else { var sc = Math.min(ch / b.height, cw / b.width); T0 = { sx: sc, sy: sc, tx: (cw - b.width * sc) / 2, ty: (ch - b.height * sc) / 2 }; }
+      $('status').textContent = b.status + ' · ' + b.width + '×' + b.height + ' px · 1 px = ' + b.xs + ' cell' + (b.xs > 1 ? 's' : '') + ' × ' + fmt(b.ys) + ' step' + (b.ys > 1 ? 's' : '') + (b.binning ? ' (averaged)' : ' (sampled)');
+    } else {
+      var key = (v === 'default' || v === 'explore') ? 'all' : v === 'records' ? 'records' : S.state;
+      var R = await rowsFor(key);
+      if (my !== token) return;
+      if (v === 'default' && S.site) {
+        // The site's canvas, computed exactly (BBD.siteCanvas = diagram.py site_default_canvas), not by this
+        // browser's own drawImage filter: it matches GPU Chrome (viz-spec section 7) and reads only the trace
+        // rows the filter samples, so it is instant even at 99,999 steps.
+        cur = { view: v, kind: 'site', R: R, W: P.width, H: P.steps, c0: -Math.floor(P.width * P.ox), bg: '#000' };
+        T0 = null;
+      } else {
+        var style = v === 'default' ? 'default' : v === 'explore' ? 'explore' : S.rstyle;
+        var frame = S.frame;
+        var nrows = v === 'default' || v === 'explore' ? Math.min(R.n, P.steps + 1) : R.n;
+        var fc = BBD.fitCols(R, frame, nrows);
+        cur = { view: v, kind: 'rows', R: R, style: style, frame: frame, c0: fc[0], W: fc[1] - fc[0] + 1, H: nrows, tiles: new Map(),
+                bg: style === 'explore' ? 'rgb(30,41,59)' : style === 'blaze' ? '#fff' : '#000' };
+        if (v === 'explore' && frame === 'abs') T0 = { sx: 10, sy: 10, tx: cw / 2 + 10 * fc[0], ty: 0 };
+        else T0 = { sx: cw / cur.W, sy: ch / cur.H, tx: 0, ty: 0 };
+        var info = R.info || {};
+        $('status').textContent = (R.label || key) + ' · steps ' + fmt(R.steps[0]) + '–' + fmt(R.steps[R.n - 1]) +
+          ' · cells ' + fc[0] + '…' + fc[1] + (frame !== 'abs' ? ' (relative to ' + frame + ')' : '') +
+          (info.reason ? ' · stopped: ' + info.reason : '') + (info.halted ? ' · HALTED' : '') + (info.clipped ? ' · rows clipped' : '');
+      }
+    }
+    if (cur.kind === 'site') {
+      var Rr = cur.R, last = BBD.row(Rr, Math.min(Rr.n, cur.H) - 1);
+      $('status').textContent = 'site view: the ' + cur.W + ' × ' + fmt(cur.H) + ' trace squeezed into 400×500 (bilinear, as in Chrome), cell 0 at column ' + (-cur.c0) + (last.flags & BBD.HALTED ? ' · HALTED at step ' + fmt(last.step) : '');
+    }
+    T = prevT || (T0 && Object.assign({}, T0));
+    draw();
+  }
+
+  function fit(square) {
+    if (!cur || cur.kind === 'site') return;
+    var cw = cv.width, ch = cv.height, sx = cw / cur.W, sy = ch / cur.H;
+    if (square) { var s = Math.min(Math.max(sx, sy), 64); s = s >= 1 ? Math.floor(s) : s; T = { sx: s, sy: s, tx: 0, ty: 0 };
+      if (cur.W * s < cw) T.tx = (cw - cur.W * s) / 2; }
+    else T = { sx: sx, sy: sy, tx: 0, ty: 0 };
+    draw();
+  }
+
+  function tile(tx, ty) {
+    var key = tx + ',' + ty, t = cur.tiles.get(key);
+    if (t) { cur.tiles.delete(key); cur.tiles.set(key, t); return t; }      // LRU order
+    var c0 = tx * TILE, r0 = ty * TILE, w = Math.min(TILE, cur.W - c0), h = Math.min(TILE, cur.H - r0);
+    t = document.createElement('canvas'); t.width = w; t.height = h;
+    var id = new ImageData(w, h);
+    BBD.paint(cur.R, cur.style, cur.frame, cur.c0 + c0, w, r0, r0 + h, { head: S.head, siteExact: false, theme: 'light' }, id.data);
+    t.getContext('2d').putImageData(id, 0, 0);
+    cur.tiles.set(key, t);
+    if (cur.tiles.size > MAX_TILES) cur.tiles.delete(cur.tiles.keys().next().value);
+    return t;
+  }
+
+  // Zoomed out: sample one cell per canvas pixel (nearest, at the pixel centre) instead of painting
+  // full-resolution tiles, so fitting a 10^5 x 10^5 trace costs the same as fitting a small one.
+  function drawSampled() {
+    var cw = cv.width, ch = cv.height, xs = new Int32Array(cw), ys = new Int32Array(ch), i, c;
+    for (i = 0; i < cw; i++) { c = Math.floor((i + 0.5 - T.tx) / T.sx); xs[i] = c >= 0 && c < cur.W ? c : -1; }
+    for (i = 0; i < ch; i++) { c = Math.floor((i + 0.5 - T.ty) / T.sy); ys[i] = c >= 0 && c < cur.H ? c : -1; }
+    var img = new ImageData(cw, ch);
+    BBD.paintSampled(cur.R, cur.style, cur.frame, cur.c0, xs, ys, { head: S.head, siteExact: false, theme: 'light' }, img.data);
+    if (!lod || lod.width !== cw || lod.height !== ch) { lod = document.createElement('canvas'); lod.width = cw; lod.height = ch; }
+    lod.getContext('2d').putImageData(img, 0, 0);
+    ctx.drawImage(lod, 0, 0);
+  }
+
+  function snap(v) { var r = Math.round(v); return Math.abs(v - r) < 1e-6 ? r : v; }
+  function draw() {
+    if (!cur) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = cur.bg; ctx.fillRect(0, 0, cv.width, cv.height);
+    if (cur.kind === 'site') {
+      var sk = S.head + ':' + cv.width + 'x' + cv.height, si = siteImgs[sk];
+      if (!si) si = siteImgs[sk] = new ImageData(BBD.siteCanvas(cur.R, P, S.head, cv.width, cv.height), cv.width, cv.height);
+      ctx.putImageData(si, 0, 0);
+      return;
+    }
+    if (cur.kind === 'blaze') {
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(cur.img, 0, 0, cur.W, cur.H, snap(T.tx), snap(T.ty), snap(cur.W * T.sx), snap(cur.H * T.sy));
+      return;
+    }
+    ctx.imageSmoothingEnabled = false;      // every canvas pixel shows exactly one cell (what the hover names)
+    var x0 = Math.max(0, Math.floor(-T.tx / T.sx)), x1 = Math.min(cur.W, Math.ceil((cv.width - T.tx) / T.sx));
+    var y0 = Math.max(0, Math.floor(-T.ty / T.sy)), y1 = Math.min(cur.H, Math.ceil((cv.height - T.ty) / T.sy));
+    if (x1 <= x0 || y1 <= y0) return;
+    var ntiles = (Math.ceil(x1 / TILE) - Math.floor(x0 / TILE)) * (Math.ceil(y1 / TILE) - Math.floor(y0 / TILE));
+    // Tiles only when zoomed in on both axes; any downscaling samples one cell per canvas pixel, exactly at the
+    // pixel centre (the same rule as the hover readout; the browser's own downscaling of tiles may pick the
+    // neighbouring row at exact sampling boundaries).
+    if (T.sx < 1 || T.sy < 1 || (x1 - x0) * (y1 - y0) > LOD_PX || ntiles > LOD_TILES) { drawSampled(); return; }
+    for (var ty = Math.floor(y0 / TILE); ty * TILE < y1; ty++)
+      for (var tx = Math.floor(x0 / TILE); tx * TILE < x1; tx++) {
+        var t = tile(tx, ty);
+        ctx.drawImage(t, snap(T.tx + tx * TILE * T.sx), snap(T.ty + ty * TILE * T.sy), snap(t.width * T.sx), snap(t.height * T.sy));
+      }
+  }
+
+  function canvasXY(e) {
+    // Pointer coordinates can be whole CSS pixels while the canvas sits at a fractional offset, so the last
+    // row/column would map just outside the canvas: clamp (the pointer is over the canvas when this runs).
+    var r = cv.getBoundingClientRect(), e6 = 1e-6;
+    return [Math.min(cv.width - e6, Math.max(0, (e.clientX - r.left) * cv.width / r.width)),
+            Math.min(cv.height - e6, Math.max(0, (e.clientY - r.top) * cv.height / r.height))];
+  }
+  function zoomAt(x, y, fx, fy) {
+    T.tx = x - (x - T.tx) * fx; T.ty = y - (y - T.ty) * fy; T.sx *= fx; T.sy *= fy;
+  }
+  cv.addEventListener('wheel', function (e) {
+    if (!cur || cur.kind === 'site') return;
+    e.preventDefault();
+    var p = canvasXY(e), f = Math.pow(1.1, -e.deltaY / 10);
+    if (e.ctrlKey || e.metaKey) zoomAt(p[0], p[1], f, f);
+    else if (e.altKey) zoomAt(p[0], p[1], 1, f);
+    else { T.tx -= e.deltaX; T.ty -= e.deltaY; }
+    draw(); hover(e);
+  }, { passive: false });
+  var drag = null;
+  cv.addEventListener('pointerdown', function (e) { if (!cur || cur.kind === 'site') return; drag = [e.clientX, e.clientY]; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointerup', function () { drag = null; });
+  cv.addEventListener('pointermove', function (e) {
+    if (drag) { var r = cv.getBoundingClientRect(), k = cv.width / r.width; T.tx += (e.clientX - drag[0]) * k; T.ty += (e.clientY - drag[1]) * k; drag = [e.clientX, e.clientY]; draw(); }
+    hover(e);
+  });
+  cv.addEventListener('pointerleave', function () { $('hover').textContent = ''; });
+  window.addEventListener('keydown', function (e) {
+    if (!cur || cur.kind === 'site' || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    if (e.key === 'f') fit(false); else if (e.key === '1') fit(true); else if (e.key === '0') { T = Object.assign({}, T0); draw(); }
+    else if (e.key === '+' || e.key === '=') { zoomAt(cv.width / 2, cv.height / 2, 1.25, 1.25); draw(); }
+    else if (e.key === '-') { zoomAt(cv.width / 2, cv.height / 2, 0.8, 0.8); draw(); }
+  });
+
+  function describeRow(R, i, rel, frame, site) {
+    var r = BBD.row(R, i), q = BBD.anchor(r, frame), cell = rel + q, v = BBD.cellAt(R, r, cell);
+    var mv = r.dir > 0 ? ' (moved R)' : r.dir < 0 ? ' (moved L)' : ' (start)';
+    var s = 'row ' + fmt(i) + ' · step ' + fmt(r.step) + ' · state ' + BBD.stateName(r.state) + ' · head at ' + r.pos + mv;
+    if (r.flags & BBD.HALTED) s += ' · HALT' + (r.flags & BBD.NOHEAD ? ' (--- : tape before the halting transition)' : '');
+    if (site && i === 0) s += ' · row 0 is never drawn on the site';
+    else if (site && !(r.flags & BBD.NOHEAD) && !BBD.siteHeadVisible(r)) s += ' · head marker not drawn (site quirk, viz-spec §3)';
+    var cs = v !== null ? String(v) : (cell >= r.lo && cell <= r.hi && !BBD.stored(r, cell)) ? 'not stored (outside the clipped window)'
+      : cell === r.pos ? '0 (never read)' : 'unvisited';
+    s += '\ncell ' + cell + ' = ' + cs + ' · span [' + r.lo + ', ' + r.hi + ']';
+    return s;
+  }
+  function tapText(t, what) {
+    var a = Math.round(100 * (1 - t[2]));
+    if (t[0] === t[1] || a === 100) return what + ' ' + fmt(t[0]);
+    if (a === 0) return what + ' ' + fmt(t[1]);
+    return what + 's ' + fmt(t[0]) + ' (' + a + '%) + ' + fmt(t[1]) + ' (' + (100 - a) + '%)';
+  }
+  function hover(e) {
+    if (!cur) return;
+    var p = canvasXY(e), out = '';
+    if (cur.kind === 'site') {
+      // Report exactly what this canvas pixel shows: the bilinear filter's source rows (and columns).
+      var px = Math.floor(p[0]), py = Math.floor(p[1]);
+      if (px >= 0 && px < cv.width && py >= 0 && py < cv.height) {
+        var ty = BBD.siteTaps(cur.H, cv.height, py), tx = BBD.siteTaps(cur.W, cv.width, px);
+        var rr = ty[2] > 0.5 ? ty[1] : ty[0], cc = tx[2] > 0.5 ? tx[1] : tx[0];
+        out = 'canvas (' + px + ', ' + py + ') = ' + tapText(ty, 'row') + ' × ' + tapText(tx, 'column') + ' of the trace\n' +
+          (rr < cur.R.n ? describeRow(cur.R, rr, cc + cur.c0, 'abs', true) : 'row ' + fmt(rr) + ': after the halt (black)');
+      }
+    } else if (cur.kind === 'blaze') {
+      // sample at the canvas pixel's centre, like the nearest-neighbour drawing does
+      var bx = Math.floor((Math.floor(p[0]) + 0.5 - T.tx) / T.sx), by = Math.floor((Math.floor(p[1]) + 0.5 - T.ty) / T.sy), b = cur.b;
+      if (bx >= 0 && bx < b.width && by >= 0 && by < b.height) {
+        var c1 = (bx - b.x0) * b.xs, t1 = by * b.ys;
+        out = 'pixel (' + bx + ', ' + by + ') · time ' + fmt(t1) + (b.ys > 1 ? '–' + fmt(Math.min(t1 + b.ys, b.steps) - 1) : '') +
+          ' · cell' + (b.xs > 1 ? 's ' + c1 + '…' + (c1 + b.xs - 1) : ' ' + c1);
+      }
+    } else {
+      var col = Math.floor((Math.floor(p[0]) + 0.5 - T.tx) / T.sx), r2 = Math.floor((Math.floor(p[1]) + 0.5 - T.ty) / T.sy);
+      if (r2 >= 0 && r2 < cur.H) out = describeRow(cur.R, r2, col + cur.c0, cur.frame);
+    }
+    $('hover').textContent = out;
+  }
+  window.addEventListener('hashchange', function () {
+    readHash();
+    if (S.state && !D.views[S.state]) S.state = stateKeys[0] || null;
+    if (S.state) sel.value = S.state;
+    $('site').checked = S.site; $('frame').value = S.frame; $('rstyle').value = S.rstyle; $('large').checked = S.large;
+    setup();
+  });
+  $('large').checked = S.large;
+  setup();
+})();
+</script>
+</body>
+</html>

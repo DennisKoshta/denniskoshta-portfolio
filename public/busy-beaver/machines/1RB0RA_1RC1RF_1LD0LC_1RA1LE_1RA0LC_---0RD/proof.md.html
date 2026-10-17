@@ -1,0 +1,458 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD/proof.md · <a href="/busy-beaver/machines/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD/proof.md.html">raw</a></div>
+<h1 id="1rb0ra_1rc1rf_1ld0lc_1ra1le_1ra0lc_-0rd-never-halts-conditional-three-flagged-lemmas">1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD: never halts (CONDITIONAL, three flagged lemmas)</h1>
+<ul>
+<li>Machine: <code>1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD</code>, viewer https://bbchallenge.org/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD</li>
+<li>Sheet: <code>results</code> row 106, Unknown, no notes. Not claimed on Discord. One transition from SBCv8.v TM31 (F1 <code>0RD</code> vs <code>0RE</code>).</li>
+<li><strong>Status: this is not a proof yet.</strong> Sections 2 to 6 reduce non-halting to three lemmas, F1, F2 and F3 (stated in sections 3 and 5, listed in section 8). They are validated by simulation, not derived. Every other rule is an exact per-visit rule, checked on random instances (no symbolic proof yet; Rocq is the correctness check).</li>
+<li>Checks: <code>python3 -B check_proof.py</code> (pure Python, about 6 min; <code>--quick</code> about 2.5 min; last run: ALL PASS, <code>data/proof/check_proof_long_seed1.txt</code>). <code>--long</code> also reruns the C trackers from the blank tape (1.3e10 steps, about 1 min) and compares them with the stored files. Logs: <code>data/proof/check_proof_*.txt</code>.</li>
+</ul>
+<p>Transitions: A0=1RB A1=0RA, B0=1RC B1=1RF, C0=1LD C1=0LC, D0=1RA D1=1LE, E0=1RA E1=0LC, F0=<code>---</code> F1=0RD.</p>
+<p><strong>Halting condition (check HALT).</strong> F0 is the only undefined transition, and only B1 (<code>1RF</code>) enters F. So the machine halts exactly when B reads a 1 whose right neighbour is 0 (<code>B&gt; 1 0</code>).</p>
+<h2 id="1-picture">1. Picture</h2>
+<p>Positions are absolute cells. Blocks are 4 cells; "block k" means cells 2+4k .. 5+4k. The tape has three zones:</p>
+<div class="highlight"><pre><span></span><code>   zone L (cells &lt;= 17)                         | zone M (cells 18..617)          | zone T (cells &gt;= 618)
+   wall, binary counter (6-cell digits),        | 150 blocks (4..153): the word w | cell 618 = 1, throttle s3 d0..d_{K-1},
+   junction, inner throttle (cells 2..17)       | ('.' = 0110 when blank)         | marker Q, big region (0011)^e, 0^inf
+</code></pre></div>
+
+<ul>
+<li><strong>L</strong> counts round trips in a binary counter. Every 3·2^m trips it overflows into a <strong>pause</strong>. The pause runs a second, inner throttle at cells 2..17, and its carry-outs are sent right.</li>
+<li><strong>M</strong> is a ternary word w. It is blank in the normal regime. In a pause it is filled by L's carries. Afterwards it is swept back to blank. The sweep either dissolves the word or leaves one <strong>glider</strong> that walks to the right end of M.</li>
+<li><strong>T</strong> is the throttle observed in the earlier stages. Normal trips increment it, and a carry out of its top digit appends one block to the big region (the right edge grows). The glider arrives at T as five <strong>B</strong> visits, which can delete one throttle digit (K → K−1).</li>
+</ul>
+<h2 id="2-visits-and-the-zone-decomposition">2. Visits and the zone decomposition</h2>
+<p>A <strong>visit</strong> at boundary b (between cells b−1 and b) starts when the head steps from b−1 to b in some state X (the in-state). It ends when the head next steps from b back to b−1, in some state Y (the out-state). We write it XY.</p>
+<p><strong>Composition principle (exact; busycoq <code>Longitudinal</code>, <code>segRLs</code>/<code>sideRLs</code>).</strong> Split the tape at b. Suppose the right part answers every visit it receives with an out-state that depends only on the in-state and its own content. Then the left part evolves as if every visit were answered by an oracle, and the right part evolves only through the visits it receives, in order. If every answer the right part actually gives equals the oracle's answer, then the whole machine never halts exactly when neither part halts.</p>
+<p><strong>Interfaces (checks IFACE-types, FULLPY).</strong> In the run from blank to 1.3e10 steps:
+- b18 sees only <strong>AC</strong> and <strong>DC</strong> (833,504 visits);
+- b618 sees only <strong>AE</strong> and <strong>BE</strong> (803,803 visits);
+- an independent Python run to 1.6e7 steps gives the same visit runs.</p>
+<p>So L talks to M with the letters A and D and always gets C back. M talks to T with A and B and always gets E back. L is therefore <strong>autonomous</strong>: its run is one fixed sequence, whatever M and T contain. M and T only <em>consume</em> visit words. The proof below follows the visit words: L → (word over {A, D}) → M → (word over {A, B}) → T.</p>
+<h2 id="3-zone-l-the-visit-word-it-emits-f1">3. Zone L: the visit word it emits (F1)</h2>
+<p><strong>Epoch structure (check IFACE-alternation, IFACE-epochs).</strong> L's visit word at b18 is</p>
+<p><code>A^{N_2} D^{c_3} A^{N_3} D^{c_4} A^{N_4} ...</code></p>
+<p>One D-run is the pause of one counter overflow (epoch m). Measured in the full run:</p>
+<table>
+<thead>
+<tr>
+<th>m</th>
+<th>first D at step</th>
+<th>c_m</th>
+<th>N_m (A-run after it)</th>
+<th>B visits sent to T in this epoch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>3,624,027</td>
+<td>58</td>
+<td>3,070</td>
+<td>0</td>
+</tr>
+<tr>
+<td>10</td>
+<td>7,565,813</td>
+<td>117</td>
+<td>6,138</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11</td>
+<td>15,599,333</td>
+<td>232</td>
+<td>12,284</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12</td>
+<td>32,223,677</td>
+<td>455</td>
+<td>24,572</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13</td>
+<td>67,697,785</td>
+<td>911</td>
+<td>49,146</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14</td>
+<td>147,482,793</td>
+<td>1,820</td>
+<td>98,296</td>
+<td><strong>5</strong> (glider)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>623,793,383</td>
+<td>3,642</td>
+<td>196,606</td>
+<td>0</td>
+</tr>
+<tr>
+<td>16</td>
+<td>2,849,331,959</td>
+<td>7,285</td>
+<td>393,210</td>
+<td>0</td>
+</tr>
+<tr>
+<td>17</td>
+<td>12,390,946,171</td>
+<td>14,568</td>
+<td>(≥ 18,013 at the 1.3e10 horizon)</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Epochs m = 3..8 are the start-up, and m = 5 also sends a 5-visit burst. For m = 9..16, N_m = 3·2^m − δ_m with δ_m ∈ {2, 4, 6, 8}. The proof uses only N_m ≥ 3,000.</p>
+<p>What L does inside a pause is described in notes.md (rules PI, PJ: the pause-mode counter feeds an inner ternary throttle at cells 2..17; its carry-outs are the D visits, including the a(s3', t0, t1) cleaning visits of the inner-zone table). Each D visit is a carry of the inner throttle into M.</p>
+<blockquote>
+<p><strong>F1 (zone L, the pause counter): flagged.</strong> For every m ≥ 15, zone L at the start of pause m (left zone (011011)^(m−2), the fixed inner zone, oracle C at b18) never halts. It emits exactly D^{c_m} A^{N_m} with N_m ≥ 3,000, and then it is at the start of pause m+1.</p>
+<p>Validated: m = 9..17 in the full run (this table); constructed pause starts m = 3..27 run to their ending (deepen stage); 550 mid-pause instances; PI 23,495/23,495 trips. <strong>Not derived:</strong> the pause-mode left counter (digits 011010/011011, wall 000001, three left records per pause) has no per-trip rule.</p>
+</blockquote>
+<p>The values c_m do not matter below: M's rules hold for every c. Only "one D-run, then at least 3,000 A's" is used.</p>
+<h2 id="4-zone-m-an-exact-ternary-word">4. Zone M: an exact ternary word</h2>
+<p><strong>State.</strong> w = w_4 .. w_153, one letter per block, LSB first: <code>.</code> = 0110 (0), <code>2</code> = 0010 (1), <code>1</code> = 1110 (2), and <code>0</code> = 0000, a transient junk block that only appears at the frontier. The frontier is the first block that is not <code>.</code>.</p>
+<p><strong>Rules (exact per visit; check ZM, 160 random instances; the earlier stages checked CL on 19,732/19,732 visits and PM on 23,495/23,495 trips).</strong> Every visit at b18 is answered C.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>visit at b18</th>
+<th>effect on w</th>
+<th>visits sent to T (b618)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MD</td>
+<td>D</td>
+<td>w += 2 at block 5 (ternary carries)</td>
+<td>one <strong>B</strong> for each unit carried out of block 153</td>
+</tr>
+<tr>
+<td>MA0</td>
+<td>A, w all <code>.</code></td>
+<td>none</td>
+<td>one <strong>A</strong> (a normal trip passes)</td>
+</tr>
+<tr>
+<td>MA1</td>
+<td>A, frontier <code>0</code></td>
+<td><code>0</code> → <code>.</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td>MA2</td>
+<td>A, frontier <code>2</code></td>
+<td><code>2</code> → <code>0</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td>MA3</td>
+<td>A, frontier <code>1</code></td>
+<td><code>1</code> → <code>.</code>, then +4 at the next block (ternary)</td>
+<td>one <strong>B</strong> per unit carried out of block 153</td>
+</tr>
+</tbody>
+</table>
+<p>Inside an MA3 visit the <code>1</code> block passes through four intermediate patterns before it becomes <code>.</code>. Each one sends an increment signal right, and the four increments make the +4.</p>
+<p><strong>Lemma CL (the ending, exact given MA).</strong> Let v be the value of w read from its frontier (<code>.</code> positions skipped). An A-run changes v by the map g:
+- v ≡ 1 (mod 3): v → (v−1)/3, in 2 visits;
+- v ≡ 2 (mod 3): v → (v+10)/3, in 1 visit;
+- factors of 3 are free (the frontier moves).</p>
+<p>For v &gt; 5, g(v) &lt; v. The values 0..5 go to 0, except 5, which is fixed (check GMAP: every v &lt; 3^10 ends at 0 or 5; 3^8 of them at 5). So every word ends either <strong>clean</strong> (v = 0) or as the <strong>glider</strong> <code>12</code> (v = 5). The glider moves one block per A visit (<code>12</code> → <code>.12</code>, since 2 + 4 = 5 + 1·3). At the top of M, its last two visits carry 1 and then 4 units out of block 153, so T receives exactly <strong>five B visits</strong>. After that, A visits pass (MA0).</p>
+<p><strong>Length bound.</strong> In an A-run the frontier advances at least one block every two visits: MA1 and MA3 advance it, and MA2 is always followed by MA1 on the same block. A glider advances one block per visit. So after at most 2·150 = 300 A visits the frontier has passed block 153, and M is blank and passes visits again. Since N_m ≥ 3,000, M is blank at the start of every D-run. In epoch m, T therefore receives a single B-burst B^{j_m} followed by A^{n_m} with n_m ≥ N_m − 300 ≥ 2,700.</p>
+<p><strong>Burst sizes.</strong> After D^{c_m} from blank, w is the ternary form of 2·c_m at block 5. While it fits in M (for m below about 236), j_m = 5 if g ends at the glider and 0 otherwise. The creep trigger at m = 14 and 22 follows from this, as the exact_rules stage showed at 18/18 pause ends. For larger m, MD carries out of block 153 (<strong>MO</strong>) and j_m also counts those carries. Their number roughly doubles with each m, so it is unbounded (check ZM includes 40 near-full words with top carries).</p>
+<h2 id="5-zone-t-the-throttle">5. Zone T: the throttle</h2>
+<p><strong>Canonical form</strong> T(θ; e): cell 618 = 1, then the groups θ = s3 d_0 .. d_{K−1} (P = 1001, Q = 1011, R = 1000), the marker Q, (0011)^e, then 0^inf. K ≥ −1; K = −1 means there is no s3 and the marker sits at 619. The rest point S0 has θ = PPP (K = 2) and e = 5,521 (check INIT).</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>visit at b618</th>
+<th>effect</th>
+<th>check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TA</td>
+<td>A, K ≥ 0</td>
+<td>s3: P→Q (no carry), Q→R (carry), R→P (carry). The carry is added to d (ternary, P=0, R=1, Q=2, LSB first). A carry out of the top digit gives e+1</td>
+<td>TA, 120 random throttles × 40 visits (K = −1..4)</td>
+</tr>
+<tr>
+<td>TA−1</td>
+<td>A, K = −1</td>
+<td>e+2 (every visit is a right record, +8 cells)</td>
+<td>TA</td>
+</tr>
+<tr>
+<td>TB</td>
+<td>B, right after an A-run</td>
+<td>frontier rule on θ: frontier Q → P with +4 on the later digits; frontier R → P over two visits (the next block is junk in between: P→0001, R→0000, Q→0011); all P → the visit passes into the big region</td>
+<td>TB, 240 random throttles × 5 visits; exact_rules stage 1,815/1,815</td>
+</tr>
+</tbody>
+</table>
+<p>Every visit is answered E. TB is the same frontier rule as M's MA. The throttle is to the middle what the word w is to L's carries.</p>
+<blockquote>
+<p><strong>F2 (the absorption tail): flagged.</strong> For every canonical T(θ; e) with K ≤ 2 and e ≥ 25, the word B^5 A^2600 never halts. Every visit is answered E, and it ends in a canonical T(θ'; e') with K' ∈ {K, K−1} and K' ≥ −1. K' = K−1 exactly when an R step is still half done after the fifth B visit.</p>
+<p>Validated: all 40 throttles with K = −1..2 in the zone (check TBURST5). <strong>Not derived:</strong> how the A visits finish a half-done R step and drop the marker.</p>
+<p><strong>Restricted to K ≤ 2, and why.</strong> At S0, K = 2, and no rule raises K, so K ≤ 2 is the whole reachable range. For K = 3 the lemma as stated is <strong>false</strong> in the zone for 3 of 81 throttles (RRRP, RRRQ, RRRR; INFO line of TBURST5). They end with a <em>dead slot</em>: a 0011/0000 block between the digits and the marker, which then toggles while the marker stays put. The earlier full-machine grid (363 states, K ≤ 4) checked the middle and the record gaps, not the throttle's form, so it did not see this. The dead slot did not halt in 4,000 further A visits, but it is outside the canonical family.</p>
+<p><strong>F3 (the MS overflow, MO): flagged, and false in its canonical form.</strong> Needed: for every burst B^j, j ≥ 1, followed by at least 2,600 A visits (e ≥ 30), T never halts, answers E, and returns to a family that is closed under the epoch step. The canonical family is <strong>not</strong> closed. In 6 of 40 random tests (K ≤ 2, j ≤ ~2,700; INFO line of TBURSTJ), T ends with a dead slot (as in F2 at K = 3; for example T(RRQ) with j = 3) or with leftover big-region blocks. Every one of those runs still answered E and did not halt (40/40, check TBURSTJ).</p>
+<p>Validated (safety only): 40 random throttles with K ≤ 2 and j up to about 2,700, and 190 constructed full-machine probes with at most 5 overflows per pause (deepen stage). <strong>Not derived, and the weakest point.</strong> A proof needs a wider invariant family, with dead slots and big-region remnants, that is closed under all later bursts. For j beyond the throttle's value, B visits pass into the big region, where they build a further counter with digits 0011 / 0111 / 0001. The throttle's carry-outs then dismantle it. That is a third nested counter level with no rule yet. j_m grows without bound from m ≈ 236 on (about 10^72 steps).</p>
+</blockquote>
+<p><strong>Why the burst shape matters (check TNEG).</strong> T is <em>not</em> safe for arbitrary visit words: T(RR; 30) fed <code>B A^7 B A^8 B</code> answers C on the last visit, which leaves the decomposition. So F2 and F3 must use the fact from section 4 that B visits come in one burst per epoch, followed by at least 2,700 A's.</p>
+<h2 id="6-coverage-and-the-non-halting-argument-conditional-on-f1-f2-f3">6. Coverage and the non-halting argument (conditional on F1, F2, F3)</h2>
+<p><strong>Invariant Inv(m)</strong>, at the b18 rest point just before the D-run of pause m:
+- L is at the start of pause m;
+- M is blank;
+- T is canonical with some K ≥ −1 and e ≥ 30.</p>
+<p><strong>Step Inv(m) → Inv(m+1)</strong>, for m ≥ 15:
+1. L emits D^{c_m} A^{N_m} (F1), and every visit is answered C.
+2. M: the D-run builds 2·c_m at block 5 (MD) and sends the MO carries as B's. The A-run then ends clean or with the glider (CL) within 300 visits (sending the B's of section 4), and passes the remaining A's. M is blank again.
+3. T receives B^{j_m} A^{n_m} with n_m ≥ 2,700. If j_m = 0, it applies TA only. If j_m = 5, F2 applies (and j_m = 5 is the only nonzero case for m &lt; 236). Otherwise F3 applies, in a form not yet found (section 5). With F2, T is canonical again, with K' ∈ {K, K−1}, K' ≥ −1 and e' ≥ e (TA only adds blocks; the burst checks also confirm e' ≥ e). The remaining A's are TA visits.
+4. L is at the start of pause m+1.</p>
+<p><strong>Every case is covered.</strong> L has one rule (F1). M's visits are D or A on a blank or ending word (MD, MA0..MA3), and their order is fixed by F1. T's input is a single burst followed by a long A-run, with K ≥ −1. K = −1 is a fixed point: there is no throttle digit left to lose, and TA−1 and F2 keep the marker. From m ≈ 236 on, Inv(m) has to be widened to whatever closed family F3 turns out to need (section 5); until then the argument covers m &lt; 236 only.</p>
+<p><strong>Progress.</strong> Each epoch has at least N_m ≥ 3,000 visits, each of them finite. The run is an infinite sequence of finite visits. If no visit halts, the machine never halts (<code>progress_nonhalt_cond</code>, with Inv as the invariant).</p>
+<p><strong>No visit halts.</strong> A halt needs <code>B&gt; 1 0</code>. Every exact rule above is a deterministic finite run that ends in the stated configuration, so it never executes F0. F1, F2 and F3 each include "never halts" in their statement.</p>
+<h2 id="7-initial-segment">7. Initial segment</h2>
+<p>From the blank tape, direct simulation reaches the rest point S0 at step 300,032,133: the head at cell 17 in state C, M blank, T = T(PPP; 5521) (check INIT, from <code>data/funded/cfg_3e8.txt</code>; <code>--long</code> regenerates that file from blank). S0 lies in the A-run of epoch 14, after the m = 14 glider was absorbed. From S0 the remaining A visits of that run pass M (MA0) and act on T by TA. Inv(15) holds at step 623,793,383, the first D of pause 15, and the full run to 1.3e10 also confirms it directly (IFACE). Epochs m &lt; 15, including the start-up, are covered by that direct simulation, not by the rules.</p>
+<p>The step count is far below what <code>Bouncer_v3.v</code>'s <code>multistep_c'_spec</code> + <code>native_check_eq</code> pattern handles (2.96e9 steps), so the start is routine for formalization.</p>
+<h2 id="8-the-flagged-lemmas-and-what-would-close-them">8. The flagged lemmas, and what would close them</h2>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>statement</th>
+<th>evidence</th>
+<th>to close</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>zone L: D^{c_m} A^{N_m}, N_m ≥ 3,000, pause m → pause m+1, no halt</td>
+<td>full run m = 9..17; constructed m = 3..27; PI 23,495/23,495</td>
+<td>per-trip rules for the pause-mode binary counter (SBCv8 TM31 <code>Incs</code>/<code>Ovs</code> style), then the inner throttle as a segRLs segment</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>zone T, K ≤ 2: B^5 A^2600 → canonical, K' ∈ {K, K−1}</td>
+<td>40/40 zone (K = 3: 78/81, dead slot in 3)</td>
+<td>the A-visit rule on a throttle with one half-done R step, as an exact rule</td>
+</tr>
+<tr>
+<td>F3</td>
+<td>zone T: B^j A^2600 → a closed family, for all j</td>
+<td>40/40 safe, but only 34/40 canonical (zone, j ≤ ~2,700) + 190 full-machine probes</td>
+<td>find the closed family (dead slots, big-region remnants) and decode the big-region B-counter (0011/0111/0001); needed only from m ≈ 236</td>
+</tr>
+</tbody>
+</table>
+<p>The proof uses nothing else that is unproved. MD, MA0..MA3, TA, TA−1 and TB are exact per-visit rules. CL and the 300-visit bound follow from MA by arithmetic.</p>
+<h2 id="9-formalization-notes">9. Formalization notes</h2>
+<ul>
+<li>Template: SBCv8.v TM31 (same <code>10</code> wall, d = <code>011011</code>, w = <code>0011</code>/<code>0110</code> vocabulary) for its Longitudinal machinery: <code>segRLs_addmul_v2</code> transfer lemmas, <code>Incs</code>/<code>Ovs</code> counter lemmas, and <code>DivModCases</code> for the mod-3 digits. TM31's own invariant does not match (no ternary throttle, no pauses).</li>
+<li>Each zone rule becomes a <code>segRLs</code> lemma over visit lists: M with h_D, h_A and the outputs h_A, h_B at 618; T with h_A, h_B and answer E.</li>
+<li>Zone M's word is a ternary counter, and its frontier rule is the same as T's. One parameterized segment lemma may serve both.</li>
+</ul>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</p>
+</main></body></html>

@@ -1,0 +1,57 @@
+{
+ "tm": "1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA",
+ "bucket_reason": "Mechanism confidence is still med after the funded macro_closure stage. The decided closure test failed, and the invariant that would close it is not written down yet.",
+ "question": "Fund one stage to write #16's hub-level invariant out explicitly (parity, staircase, linear underflow relations, corner-event rules) and test its closure with the macro simulator, before proof.md?",
+ "options": [
+  {
+   "id": "hub_invariant",
+   "label": "One stage: write the hub invariant out",
+   "consequence": "About 2 h and 1-2 light processes, no Coq. Read the exact relations off hubs reached from blank (e.g. arrival d = q or q-1 after a merge-back). State H as parity + staircase + linear underflow inequalities. Rule or exclude the small-value corner events and EatToWall. Test closure over one traversal on random H-hubs with the macro simulator (target: 0 leaks in 10^4 hubs), then confirm on the accelerated simulator. Exits: closed -> proof.md (hub-to-hub induction, macro rules as lemmas); still leaking -> park."
+  },
+  {
+   "id": "siblings",
+   "label": "Check #39 and R7 first",
+   "consequence": "About 1 h. Map #39 and R7 onto the same macro events (Push, Absorb, staircase). If one has a simpler wall structure, move the invariant work there. #16 waits."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "Status becomes parked at macro_closure. The macro simulator, the 4 new rules and the closure data stay in notes.md and scripts/. #39 and R7 lose their lead."
+  }
+ ],
+ "recommended": "hub_invariant",
+ "rationale": [
+  "From blank, validated rules cover 260,000 macro events (runs > 10^4300 cells) with no gap.",
+  "Closure fails only through linear facts (underflow between walls) and small-value corner events.",
+  "0 halts in every closure test, and no pseudo-random arithmetic, so it is not cryptid-like."
+ ],
+ "evidence": [
+  {
+   "kind": "fact",
+   "text": "The macro simulator matches the census from blank on 278/278 frames to 1.02e12. It then runs 260,000 events with no unruled situation.",
+   "href": "scripts/macro_sim.py"
+  },
+  {
+   "kind": "fact",
+   "text": "The decided predicate is not closed: 54/80 random instances leave it within 3e7 steps (D=1), 22/80 with a 3-cycle lookahead; 0 halts.",
+   "href": "scripts/good_closure2_151_D1.txt"
+  },
+  {
+   "kind": "fact",
+   "text": "Random hubs: 1,719/2,000 stay ruled for 40 right ends. Almost all failures are underflow at depth 2-3 (P-mode right end with walls).",
+   "href": "scripts/hub_random_4_S_D40.txt"
+  },
+  {
+   "kind": "fact",
+   "text": "From blank, after a merge-back the outer bouncer reaches the next wall with d = q or q-1 (567/570), and Absorb happens only at the last wall.",
+   "href": "scripts/push_relations_40k.txt"
+  }
+ ],
+ "effort_if_yes": "One stage: about 2 h of agent time and 1-2 light processes (macro simulator, accelerated simulator). No Coq.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "hub_invariant",
+  "note": "auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.",
+  "date": "2026-10-10"
+ }
+}

@@ -1,0 +1,57 @@
+{
+ "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA",
+ "bucket_reason": "Medium confidence after the struct_invariant stage: the at-most-one-transient invariant closes with 0 halts, but only if eats never see a transient, and that flush condition is quantitative and unproved.",
+ "question": "Fund one stage for the flush lemma (cap the digits right of the transient, bound the flush time by the counter length, show the unary outgrows it), or park?",
+ "options": [
+  {
+   "id": "flush_lemma",
+   "label": "One stage: the flush lemma (bounded-post refinement of H, flush time <= c*L, unary >= c*L)",
+   "consequence": "Re-close H with at most 3 normal digits right of the transient, which the run never exceeds; the rsim closure tools settle that in minutes. Then bound the flush time linearly and look for the growth argument for unary vs counter length. Stop rule: if the refined H escapes, or no linear flush bound holds, park. If it works, proof.md follows (rule table, H, flush lemma, init to 3.2e5)."
+  },
+  {
+   "id": "with_28",
+   "label": "Wait for #28's flush lemma first, then reuse its argument here",
+   "consequence": "#28 (one transition away) needs the same kind of lemma: debris flushed before the marker returns. If its stage succeeds, the argument shape may carry over, although the counters differ (3-cell blocks vs swept tokens). No compute now."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "The mechanism and the structural invariant are understood and checked. The remaining lemma compares two growth rates (unary vs counter length plus flush time) and could take several stages, plus a hand-written Coq closure proof."
+  }
+ ],
+ "recommended": "flush_lemma",
+ "rationale": [
+  "H is closed (1.2M successors, 0 halts) and holds the whole blank run; only the flush bound is open.",
+  "The run has slack: transients use <= 34% of an epoch and never have > 3 digits to their right.",
+  "That cap is a regular refinement, so the existing closure tools can check it in one stage."
+ ],
+ "evidence": [
+  {
+   "kind": "fact",
+   "text": "Hand-written H (1,024 shapes, 37 cluster words): 1,214,968/1,214,968 successors stay in H, 0 halts, 0 flush violations; the exhaustive small pass has 1,983,816 successors.",
+   "href": "scripts/struct/summary.json"
+  },
+  {
+   "kind": "fact",
+   "text": "Blank run 3.2e5..1e10: 670,604 round starts, all in the closed shape set; all 771 eats see a normal word; EAT1 flush uses at most 0.34 of the epoch (0.104 after 1e9).",
+   "href": "scripts/struct/summary.json"
+  },
+  {
+   "kind": "fact",
+   "text": "Without the flush rule the shape closure halts (358 halts at iteration 5): eats on transient words are the only way out.",
+   "href": "scripts/struct/shc_noflush_large.json"
+  },
+  {
+   "kind": "fact",
+   "text": "Flush time is exponential in the digits right of the transient (323 of 8,824 S444 words stay transient for 690 rounds), so H needs the bounded-post cap.",
+   "href": "scripts/struct/tau_check_S444.json"
+  }
+ ],
+ "effort_if_yes": "One stage (2 h of agent time) with light compute. A closed refinement plus a growth argument then needs proof.md and a hand-written Coq closure proof: several more stages.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "flush_lemma",
+  "note": "auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.",
+  "date": "2026-10-10"
+ }
+}

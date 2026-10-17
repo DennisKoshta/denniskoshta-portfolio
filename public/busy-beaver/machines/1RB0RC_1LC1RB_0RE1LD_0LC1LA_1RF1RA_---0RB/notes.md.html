@@ -1,0 +1,723 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB/notes.md · <a href="/busy-beaver/machines/1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB/notes.md.html">raw</a></div>
+<h1 id="w5-4-1rb0rc_1lc1rb_0re1ld_0lc1la_1rf1ra_-0rb-740-line-525">W5-4 · 1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB (740 line 525)</h1>
+<p>Status: CHECKPOINT_B, informal_proof stage, proof.md revised after skeptic round 1 (confidence: high)
+Class guess (agent): Bell eats counter, two-level (decrementing binary counter on a spacing-3 lattice, bitten from its low end). Sheet: Bell eats counter.
+Spreadsheet notes / Discord thread: results.csv row 1044 has only the class (no status, no notes, no "done by"); no hit in data/discord/*.txt.
+Viewer: https://bbchallenge.org/1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB</p>
+<p>Observe stage, 2026-10-13.</p>
+<h2 id="checks">Checks</h2>
+<ul>
+<li>Byte-exact entry of data/holdouts/BB6_holdouts_740.txt, line 525 (<code>holdouts.py contains</code>: exit 0). On all 26 snapshots since 2024-06-14.</li>
+<li>Not proved upstream: <code>holdouts.py solved</code> finds no byte-exact, notation-only or equivalent entry in verify/.</li>
+<li>No claim: sheet results.csv row 1044 = class "Bell eats counter" only; classifications.csv lists it under that column; no Discord hit.</li>
+<li>Siblings: none.</li>
+<li>canon (renaming + mirror) from every start: only start A is on the 778/740 lists; starts B..F halt within 44 steps.</li>
+<li>No 740 entry is within 2 transitions of any renamed/mirrored form of this table.</li>
+<li>Its equivalence group in data/holdouts/2026-10-07_eqv_1590.txt (line 1445) is a singleton.</li>
+</ul>
+<h2 id="the-configuration-family">The configuration family</h2>
+<div class="highlight"><pre><span></span><code>R(p, q, Z) = 0^inf (10)^p 1 C&gt; 0 0 (10)^q Z 0^inf      (p &gt;= 0)
+R(-1, q, Z) = 0^inf C&gt; 0 0 (10)^q Z 0^inf              (cycle start; q = n)
+</code></pre></div>
+
+<ul>
+<li>C reads the first 0 of a "wall" <code>00</code>. Left of it is the bell part already passed, right of it the bell <code>(10)^q</code>, then the zone Z.</li>
+<li>The bell takes every leading <code>10</code> pair (greedy parse); Z never starts with <code>10</code>.</li>
+<li>Zone grammar from blank: <code>Z = 1^f 0 (1^(3k+2) 0)* 1^(3m)</code>, f &gt;= 2, m &gt;= 1, or <code>Z = 1^w</code>. No <code>00</code> inside Z (checked on every event to 1e9).</li>
+<li><strong>Counter.</strong> Zeros sit on a lattice anchored at the right end: positions j = w-1-3i (i &gt;= 1), only j &gt;= 2 count. A zero is a set bit. The LSB is the leftmost lattice position. Value v, L bits.</li>
+<li>Blank start: R(-1,0,11) at step 4. Left records are exactly the cycle starts R(-1,n,Z) (821 of 822 left records to 1e9, tape for tape).</li>
+</ul>
+<h2 id="rules-scriptsrulespy-validated-by-scriptsvalidate_rulespy-against-toolssimpy">Rules (scripts/rules.py; validated by scripts/validate_rules.py against tools/sim.py)</h2>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from</th>
+<th>to</th>
+<th>when</th>
+<th>tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 round</td>
+<td>R(p,q,Z)</td>
+<td>R(p+2, q-2, dec Z)</td>
+<td>q &gt;= 3, v &gt; 0, w = 0 or 2 mod 3</td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>R2 round</td>
+<td>R(p,q,Z)</td>
+<td>R(p+2, q-3, 11·dec Z)</td>
+<td>q &gt;= 3, v &gt; 0, w = 1 mod 3</td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>O2 overflow</td>
+<td>R(p,q,1^w)</td>
+<td>R(p+2, q-2, allset(w+1))</td>
+<td>q &gt;= 3, w = 2 mod 3</td>
+<td>52/52</td>
+</tr>
+<tr>
+<td>O1 overflow</td>
+<td>R(p,q,1^w)</td>
+<td>R(p+2, q-2, allset(w+1))</td>
+<td>q &gt;= 3, w = 1 mod 3</td>
+<td>53/53</td>
+</tr>
+<tr>
+<td>O0 overflow</td>
+<td>R(p,q,1^w)</td>
+<td>R(p+2, q-3, 11·allset(w+1))</td>
+<td>q &gt;= 3, w = 0 mod 3</td>
+<td>45/45</td>
+</tr>
+<tr>
+<td>B2 bite</td>
+<td>R(p,2,Z)</td>
+<td>R(p+2, 1, Z[2:]) re-parsed</td>
+<td>Z starts 111</td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>B2' bite, k=1</td>
+<td>R(p,2,110 111 Y)</td>
+<td>R(p+2, 3, Y)</td>
+<td>Y starts 11</td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>H halt</td>
+<td>R(p,2,(110)^k 111)</td>
+<td>halts (within 60 steps)</td>
+<td>k &gt;= 1</td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>B1 bite</td>
+<td>R(p,1,Z)</td>
+<td>R(-1, p+3, Z[1:]) re-parsed</td>
+<td>Z starts 11</td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>B0 bite, f&gt;=5</td>
+<td>R(p,0,Z)</td>
+<td>R(-1, p+3, (dec Z)[3:]) re-parsed</td>
+<td>w = 0 mod 3, Z starts 111</td>
+<td>120/120</td>
+</tr>
+<tr>
+<td>B0 bite, f=2</td>
+<td>R(p,0,Z)</td>
+<td>R(-1, p+2, 11·Z[3:]) re-parsed</td>
+<td>w = 0 mod 3, Z starts 110</td>
+<td>30/30</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>dec Z: clear the leftmost zero j, set j-3, j-6, ... while &gt;= 2 (= v-1). allset(u): every lattice position &gt;= 2 set. O2 gives v = 2^L-1, O0 gives 2^L-2.</li>
+<li>"re-parsed": leading <code>10</code> pairs of the new zone move into the bell (q grows).</li>
+<li>Validation: seed 3, 150 instances per kind, random p in -1..25, q up to 30, zones up to ~40 cells (work/validate_rules.json); seeds 1 and 2 earlier (10-12 per kind) also all pass.</li>
+<li><strong>Not closed:</strong> B2'' = the f=2 bite at q=2 with k &gt;= 2 low bits set. A second wall forms inside the zone and the round machinery runs again on the low part (nested eating), leaving R(p+2, q', Z[cut:]) with q' = 5..15 (img/nested_bite_explore.png). 49 of 204,953 transitions to 1e9.</li>
+</ul>
+<h2 id="coverage-from-blank-scriptscoveragepy-on-workdirect_all_events_1e9txt">Coverage from blank (scripts/coverage.py on work/direct_all_events_1e9.txt)</h2>
+<ul>
+<li>204,953 transitions to 1e9: R1 202,502 · O0 881 · B1 808 · B2 312 · O2 294 · B2'(k=1) 71 · R2 18 · B0 9 · O1 6, all equal to the rule's prediction.</li>
+<li>Uncovered: 49 nested bites (B2'') and 3 tiny-zone events before step 30.</li>
+</ul>
+<h2 id="two-levels">Two levels</h2>
+<ul>
+<li><strong>Fast level (one cycle).</strong> From R(-1,n,Z): about n/2 rounds; each moves the wall 2 pairs right and decrements Z. Overflows refill Z (and widen it by 1 or 3 cells). When q &lt;= 2 the wall reaches Z and bites its low end (B0/B1/B2/B2'), then a new cycle starts with n' = n+1..3.</li>
+<li><strong>Slow level (calm phase).</strong> Cycles alternate between w = 3L+3 and w = 3L+2 (for example 27/29 at L = 8). Per two cycles n grows by 2 and the start value v drops by 1. The counter overflows early in each cycle, and the bite drops one bit (v -&gt; v&gt;&gt;1).</li>
+<li><strong>Level-up.</strong> When v reaches 0 near n = 2^(L+1), a second overflow per cycle widens Z for good: L -&gt; L+1, v jumps to about 2^L. Fig levels_fill shows the sawtooth, one tooth per level.</li>
+<li><strong>Transitions.</strong> Some level-ups pass through an irregular phase: nested bites eat Z deep, w drops to 5..17 and rebuilds.</li>
+<li>n = 258..810 (about 550 cycles), n = 2050..2110 (60 cycles).</li>
+<li>Deep eats (w = 8) recur at n near 2^13, 2^17, 2^19, 2^21, 2^23, with the same margin-1 zone 110110110111111 at cycles 8,477 and 2,096,322.</li>
+</ul>
+<h2 id="abstract-run-scriptsabsimpy">Abstract run (scripts/absim.py)</h2>
+<ul>
+<li>Accelerated runs of R1; every other step by the rules above; B2'' and tiny zones by direct TM simulation (scripts/macro.py) from a shrunken p.</li>
+<li>Matches the direct run at all 4,200 cycle starts to 1e11 steps (work/direct_events_1e11.txt; C event logger scripts/direct_events.c, whose cycle starts equal tools/sim.py's left records).</li>
+<li>Ran 3e7 cycles (n = 30,001,809, L = 23 bits, about 1.2·n^3 = 3e22 TM steps): no halt (work/absim_3e7.txt, work/absim_near_3e7.txt).</li>
+<li>Rule uses: B1 29,999,979 · O0 24,412,335 · B2 14,999,552 · O2 5,591,100 · B2' 481 · B2''/tiny (direct fallback) 469 · R2 242 · B0 18 · O1 9.</li>
+</ul>
+<h2 id="where-halting-could-come-from">Where halting could come from</h2>
+<ul>
+<li>Random search over q &lt;= 3 and zones up to 40 cells (6,000 instances): the only halts are H, R(p,2,(110)^k 111) (and the degenerate Z = 11).</li>
+<li>dec never produces an all-set zone. So H needs O2 at q = 4 (all-set zone at q = 2 next round), or a bite that leaves an all-set zone exactly at q = 2.</li>
+<li>Of the closed bite rules only B2 with f = 3 ends at q = 2, and its zone Z[4:] is all set only if its input was an all-set w = 1 zone at q = 2, which again only a bite can make. B2'' is the open case.</li>
+<li><strong>Parity separation (empirical).</strong> After cycle 24 every O2 overflow with q &lt;= 8 has odd q (q = 1, 3, 5, 7: 4, 11, 5 and 4 events to 3e7 cycles). After cycle 24 no even-q O2 overflow has q &lt;= 8 (3e7 cycles); in the first 1.1M cycles the smallest even q is 12 (cycle 74).</li>
+<li>Smallest even q per active octave of n: 16, 20, 130, 84, 246, 246, 368 (2^8 .. 2^19). Large q (all even) are the calm-phase overflows.</li>
+<li>Near misses:</li>
+<li>O2 at q = 3 and q = 5 (one or two rounds from q = 4, but on the wrong parity);</li>
+<li>q=2, f=2 zones one bit short of all set (k = 8 of 9 at cycle 595; 110110110111111 at three level-ups). These are harmless: the conversion stops at the clear top bit.</li>
+</ul>
+<h2 id="template-comparison-nearest-proved-neighbour-our-w4-2-kill">Template comparison (nearest proved neighbour: our W4-2 kill)</h2>
+<ul>
+<li>W4-2 = 1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF, built from BECv5 TM1/TM2.</li>
+<li>Its K(w,n,m) = w &lt;A 1 (10)^(1+n) 0 (10)^m is the mirror of our R(p,q,Z): a bell with one defect, plus a counter word.</li>
+<li>Rules there: R1 bounce (n -&gt; n-1, counter +1 by phi), overflow with a bite (R2/R3), halting R4, nested eating R5 (no closed form at Observe), invariant I on (type, N, m) with parity classes.</li>
+<li><strong>Same:</strong> a bell with a moving defect, a counter bumped once per pass, a bite of the counter's low end at overflow, rare nested eating, a halting configuration that needs a coincidence.</li>
+<li><strong>Different:</strong></li>
+<li>our counter counts down, not up;</li>
+<li>our bits sit 3 cells apart on a lattice anchored at the zone's far end, not as pairs next to the head;</li>
+<li>the defect moves 2 pairs per round, not 1;</li>
+<li>the bell grows about 1 pair per cycle, and the counter's capacity doubles per level (a slow two-level counter, v -1 per 2 cycles).</li>
+<li>W4-2's .v reuse: the shape of <code>progress_nonhalt_cond</code> with an invariant, BigStep per rule, RS/OV-style low-level lemmas. Its phi/Sweep lemmas do not carry over (different counter).</li>
+<li>Rulefit's 25 fitted rules failed (stage note) because they fit records, whose shape (10)^a 0 (10)^b 1^c B&gt; is a mid-cycle snapshot. The family above is aligned to the wall.</li>
+</ul>
+<h2 id="cryptid-check-ground-rule-6">Cryptid check (ground rule 6)</h2>
+<ul>
+<li>The rules are plain counter arithmetic: decrement, overflow refill, bites that drop 1..3 low cells. No Collatz-style branching, and no parity of a growing number decides a branch.</li>
+<li>What looks irregular: the transitional phases at level-ups (nested bites, deep eats), whose length is not self-similar (550 / 0 / 60 cycles at L = 7-8 / 9 / 10).</li>
+<li>The halting route is narrow (O2 at q = 4) and the data show a clean parity split, not a shrinking gap. Small-q O2 overflows are odd, even ones stay &gt;= 12.</li>
+<li>Verdict: <strong>not cryptid-like on current evidence</strong>, but the invariant behind the parity split is unknown and B2'' has no closed form. Risk: medium-high.</li>
+</ul>
+<h2 id="files">Files</h2>
+<ul>
+<li>scripts/rules.py (rules), scripts/validate_rules.py (tools/sim.py check), scripts/coverage.py, scripts/macro.py (direct macro step), scripts/absim.py (abstract run), scripts/plot_levels.py (Fig levels_fill), scripts/direct_events.c (C event logger).</li>
+<li>work/validate_rules.json, work/direct_all_events_1e9.txt, work/direct_events_1e11.txt, work/absim_3e7.txt, work/absim_near_3e7.txt, work/records_1e9.jsonl, work/compress_track_1e8.txt, work/qsim_2e5.jsonl.</li>
+</ul>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>(pending)</p>
+<h2 id="wave-5-stage-1-2026-10-12">Wave 5, stage 1 (2026-10-12)</h2>
+<p>Outcome: <strong>progress</strong> (confidence: med). B2'' is closed, the run's global structure is mapped, and an inequality invariant is the candidate. No proof yet.</p>
+<h3 id="1-the-nested-bite-b2-has-a-closed-form-a-stack-of-the-same-rules">1. The nested bite B2'' has a closed form: a stack of the same rules</h3>
+<ul>
+<li>Input: R(p, 2, (110)^k Y) with k &gt;= 2 and Y starting 111.</li>
+<li>The wall turns the k low set bits into k nested walls (blocks <code>1 00</code>). The innermost level starts at R(0, 1, Y[2:]).</li>
+<li>Each level runs the ordinary rules from R(0, q, Z) until its own bite brings it to a cycle start R(-1, q', Z'). That tape is the next level's R(0, q', Z') (a "pop").</li>
+<li>The k-th pop lands in the original level as R(p+2, q', Z'). A nested bite inside a level recurses the same way.</li>
+<li>Inner levels have even p; the outer level has odd p.</li>
+<li>H is exactly the case Y = 111: the innermost R(0, 1, "1") has no move.</li>
+<li>New small rule <strong>B0c</strong> (needed inside nested levels, after R2 at q = 3 with v = 1):</li>
+<li>R(p, 0, 1^w), w = 0 mod 3, w &gt;= 6 -&gt; R(-1, p+2, 11·allset(w-2));</li>
+<li>R(p, 0, 111) -&gt; R(-1, p+1, 1^6).</li>
+<li>180/180 against the TM (p = -1..13, w = 6..39).</li>
+<li>Validation (scripts/nested.py, scripts/absim2.py; no TM simulation anywhere in absim2):</li>
+<li>256 brute-force nested bites (k = 2..5, every Y of width &lt;= 21 with clear LSB, work/b2pp_bruteforce.txt): 252 exact, 4 halts, all with Y = 111.</li>
+<li>Larger brute force (k = 2..8, p = 3 and 4): only Y = 111 halts; outputs with w' = 1 or 2 mod 3 always have odd q'.</li>
+<li>Direct run to 1e9: 204,951 of 204,953 transitions exact. Only the 2 tiny-zone events before step 30 are uncovered.</li>
+<li>Closed-rule abstract run = direct run at all 4,197 cycle starts to 1e11 (work/cycle_starts_1e11.txt). Nesting depth reaches 8.</li>
+</ul>
+<h3 id="2-global-structure-calm-2-cycles-clean-and-messy-level-ups">2. Global structure: calm 2-cycles, clean and messy level-ups</h3>
+<ul>
+<li><strong>Calm phase at level L</strong> is an exact 2-cycle with a fixed C = n + 2v.</li>
+<li>Even L: w alternates 3L+3 / 3L+5, with C = 2^(L+2)+4 / 2^(L+2)+2.</li>
+<li>Odd L: w = 3L+3 always, C = 2^(L+2)+2 / 2^(L+2)+1.</li>
+<li>It contracts: an offset delta = C - 2^(L+2) goes to about delta/2 (+3) per cycle, so errors die out.</li>
+<li><strong>Entering an odd level</strong> is clean: cycle starts with E = 6, 9, 10, 13, 14, ...</li>
+<li><strong>Entering an even level L</strong> starts a transient from the fixed state
+  <code>T(L) = R(-1, 2^(L+1)+3, zone(3L+3, 2^L-2))      (E = 7)</code></li>
+<li>Nested bites eat the zone down to w = 5..12, it rebuilds, and the run falls back and climbs again until the calm 2-cycle of level L locks.</li>
+<li>The T(L) model equals the real run (L = 12 from cycle 7,979; L = 14 from cycle 32,243).</li>
+<li>So the machine runs forever <strong>iff every transient T(L), L even &gt;= 10, locks without halting.</strong></li>
+<li>Transient sweep (scripts/transient.py; work/transients_closed_rules.txt, L = 10..38; work/transients_fallback_L10-56.txt, L = 10..56): all lock, none halts.</li>
+<li>Lock lengths (cycles), L = 10, 12, ..., 56: 37, 523, 191, 87, 579, 815, 193, 2,977, 171, 245, 253, 2,483, 22,839, 19,581, 114,157, 55,385, 37,795, 400,211, 132,843, 30,913, 45,287, 1,799, 47,525, 124,485.</li>
+<li>Erratic, not uniform in L. A proof cannot just compute each transient; it needs an invariant that covers them.</li>
+</ul>
+<h3 id="3-invariant-search">3. Invariant search</h3>
+<ul>
+<li><strong>Parity part</strong> (holds on all data):</li>
+<li>At the outer level, configurations with q even and w = 2 mod 3 occur only in cycles that start with w = 2 mod 3 and n even, and right after O1 (checked on every configuration of the transients L = 10..32).</li>
+<li>Reason: a B1 bite gives n' = p+3+r with p odd, and r = 0 whenever the new w is 1 or 2 mod 3, so those starts have n' even (a B0 bite with f = 2 gives w' = 2 mod 3 with n' odd, which is harmless). Nested-bite outputs with w' = 2 mod 3 have odd q'.</li>
+<li>So H (an O2 overflow at q = 4) needs E = n - 2v = 4 at a w = 2 cycle start, or n - 2^(L+1) = 4 at a w = 1, v = 0 start.</li>
+<li><strong>No congruence obstruction.</strong> At w = 2 starts inside transients, E mod 16 is spread evenly over the even residues (2,570 starts, L = 10..32).</li>
+<li><strong>Bell-capacity window.</strong> Let
+  <code>cap(w) = number of counted bits, +1 when w = 1 mod 3     (an R2 round adds a bit)
+  d      = n - 2^(cap+1)</code></li>
+<li>Since v &lt;= 2^LL - 1, E &gt;= d + 2. So d &gt;= 3 at a w = 2 start rules out E = 4.</li>
+<li>J := d &gt;= 2, minus (d = 2 with an all-set zone, w = 0 or 2) and (d = 2, w = 1, v = 0).</li>
+<li>Exhaustive test (w &lt;= 21, every v, n from 2^(cap+1)+2 to 2^(cap+2)+100): no cycle from J halts. The only J states that leave J are (w = 0 mod 3, v = 0, n = 2^(cap+2)+3), one per width.</li>
+<li>With larger n (up to 2^(cap+6) for w &lt;= 15): their predecessors (n = 2^(cap+2)+2, v = 2) and (n = 2^(cap+2)+1, w = 2 mod 3, v = 1) appear, the backward orbit of the calm map.</li>
+<li>Backward closure of all halting starts (scripts/closure.py, w &lt;= 18, n &lt; 2^(cap+3)): 113 bad starts, 20 of them in J, all on one line at the top of the window. Either n = 2^(cap+2)+3-j with v = 2j (w = 0), or n = 2^(cap+2)+1-j with v = 1+2j (w = 2). In both cases C - 2^(cap+2) = 3+3j. One outlier: w = 11, n = 31, v = 3.</li>
+<li>The calm phases have C - 2^(cap+2) in {1, 2, 4}, never 0 mod 3.</li>
+<li>Real run: inside transients (after the entry cycle) d &gt;= L+3 (13 at L = 10, 39 at L = 38), and d &gt;= 44 at w = 2 starts. The tight states (d = 2..6) are only at the clean, parametric level-ups.</li>
+<li><strong>Candidate invariant for proof.md:</strong> J minus the top line {C - 2^(cap+2) = 3+3j, n near 2^(cap+2)}. It is an inequality invariant like W4-2's, so the chaotic transients need no exact tracking.</li>
+</ul>
+<h3 id="cryptid-check-update">Cryptid check (update)</h3>
+<ul>
+<li>The transients are chaotic: erratic lengths, zones eaten to 5..12 cells, nesting depth up to 24.</li>
+<li>But every halting start found sits on one thin line at the top of the bell-capacity window, and the run keeps a growing margin from it inside transients.</li>
+<li>Verdict: <strong>not cryptid on current evidence</strong>; risk medium.</li>
+</ul>
+<h3 id="open">Open</h3>
+<ol>
+<li>The bad line in closed form for every cap, and a check that J minus that line is closed for all n, including n &gt;&gt; 2^(cap+2) (tiny zones, where one cycle overflows many times). Then a proof sketch of closure from the cycle arithmetic: overflow chain q_(i+1) = q_i + 1 - 2^(L+i+1), bite parity.</li>
+<li>Nested levels: an inner invariant (a push never meets Y = 111) for the Coq B2'' lemma.</li>
+<li>Coq shape: a stack family (outer block (10)^p 1, inner blocks <code>1 00</code>), one BigStep per rule, <code>progress_nonhalt_cond</code> over the invariant.</li>
+</ol>
+<h3 id="files-new">Files (new)</h3>
+<ul>
+<li>scripts/nested.py (B2'' recursion + B0c), scripts/absim2.py (closed-rule abstract run; checked against work/cycle_starts_1e11.txt), scripts/transient.py (T(L) sweep), scripts/closure.py (backward closure of halting starts).</li>
+<li>work/b2pp_bruteforce.txt, work/cycle_starts_1e11.txt, work/transients_closed_rules.txt, work/transients_fallback_L10-56.txt.</li>
+</ul>
+<h2 id="wave-5-stage-2-2026-10-12">Wave 5, stage 2 (2026-10-12)</h2>
+<p>Outcome: <strong>progress</strong> (confidence: high on non-halting). A simple invariant is found and checked; two of its three lemmas have a paper argument. No proof.md yet.</p>
+<h3 id="1-the-invariant">1. The invariant</h3>
+<p>Work on outer cycle starts s = (n, w, v), i.e. R(-1, n, encode(w, v)).</p>
+<div class="highlight"><pre><span></span><code>cap(w) = counted lattice bits, +1 when w = 1 mod 3
+d(s)   = n - 2^(cap+1)
+M(s)   = n + 2v - 2^(cap+2)  (mod 3)     w = 0, 2 mod 3
+         n +  v - 2^(cap+2)  (mod 3)     w = 1 mod 3
+K      = { w &gt;= 3, d &gt;= 2 }
+I      = { s in K : M(s) != 0 },  minus the one state (6, 4, 0)
+T_c    = (2^(c+1)+2, 3c+5, 2^c-1)        (d = 2, w = 2 mod 3, zone all set)
+</code></pre></div>
+
+<ul>
+<li>The blank run enters I at step 327: R(-1, 6, 11111) = (6, 5, 0), with d = 4 and M = 2 (scripts/entry_check.py).</li>
+<li>It stays in I at every later cycle start checked: 304,194 of them (the direct run's cycle starts to 1e11, then 300,000 closed-rule cycles).</li>
+<li>T_c (the start of an O2 overflow at q = 4, then H) has M = 0. The exceptional state (6, 4, 0) has no predecessor in K.</li>
+<li>So the old "bad line" (C - 2^(cap+2) = 3+3j) and the w = 11, n = 31 outlier are just M = 0 states.</li>
+</ul>
+<h3 id="2-lemma-m-sign-law-proved-on-paper">2. Lemma M (sign law): proved on paper</h3>
+<p>Extend M to every configuration of the family:</p>
+<div class="highlight"><pre><span></span><code>Q(p, q, Z) = q - (p+1) - v - (-1)^cap   (mod 3)      (+v instead of -v when w = 1 mod 3)
+</code></pre></div>
+
+<p>At a cycle start (p = -1), Q = M because 2^(cap+2) = (-1)^cap mod 3.
+- Rounds, overflows and q = 2 bites keep Q: R1, R2, O0, O1, O2, B2, B2'.
+- Bites that end a cycle negate Q: B1 (all three cases), B0 (f = 2 and f &gt;= 5), B0c.
+- Each case is a two-line computation from the rule table, using 1/2 = -1 (mod 3).
+- The nested bite B2'' keeps Q. Proof by induction on depth:
+  - inner level i starts with X_i and ends with -X_i; the pop shifts p by 1, so X_(i+1) = -X_i - 1;
+  - after k levels, X_k + 2 = (-1)^(k-1) (X_1 + 2), and that gives Q_out = Q_in.
+- So M(F(s)) = +-M(s): M = 0 is preserved both ways.
+- Checks:
+  - TM level (scripts/signlaw.py): 7,977 of 7,977 random family configurations obey the law after one direct-simulation macro step (seeds 1, 2; 23 others halt).
+  - Rule level: every rule application in the cycles from K, w &lt;= 21: 7.3M, 0 failures (work/signlaw_seed2.txt).</p>
+<h3 id="3-lemma-k-inequality-checked-exhaustively-plain-cycles-proved-on-paper">3. Lemma K (inequality): checked exhaustively; plain cycles proved on paper</h3>
+<p>Statement: if s is in K, then the cycle from s halts only when s = T_c or s = (6,4,0). Otherwise F(s) is in K.</p>
+<p>Checks with scripts/invariant.py (closed rules, nested bite included, no TM simulation):</p>
+<table>
+<thead>
+<tr>
+<th>window</th>
+<th>states in K</th>
+<th>failures</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>w 3..31, n &lt; 2^(cap+3)</td>
+<td>6,810,622</td>
+<td>0 (10 expected halts)</td>
+</tr>
+<tr>
+<td>w 3..16, n &lt; 2^(cap+10)</td>
+<td>1,132,222</td>
+<td>0 (5 expected halts)</td>
+</tr>
+<tr>
+<td>w 3..12, n &lt; 2^(cap+14)</td>
+<td>2,424,478</td>
+<td>0 (4 expected halts)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>F itself was checked against direct TM simulation on 300 random states of I (n &lt;= 700): 300 agree (work/check_F_vs_tm_seed1.txt).</li>
+</ul>
+<p>Paper argument for plain cycles (no B2'/B2'' inside the cycle):
+- From K, E = n - 2v &gt;= d + 2 &gt;= 4, so level 0 always overflows. E = 4 at w = 2 mod 3 is exactly T_c.
+- The overflow chain gives q_m = E - e - 4 + m - (2^(c+m+1) - 2^(c+2)) at level m &gt;= 2, where e = 1 if the first overflow is O2.
+- A w = 1 mod 3 start reduces to this after its first round (R2 or O1); then E &gt;= 7.
+- Say the chain stops at level f. Then:
+  - f = 1: d' &gt;= d;
+  - f &gt;= 3: d' &gt;= 2^f - 2f + 2 &gt;= 4;
+  - f = 2, ending in B1: d' &gt;= 2 + 2e + r + 2v (r = reparse). Equality only at n = 2^(c+2)+3, v = 0, w = 0 mod 3, which maps to T_(c+1) and has M = 0;
+  - f = 2, ending in B2 or B0: d' &gt;= 4 or d' &gt;= 2, and the output is not all set.</p>
+<p>Open:
+- (a) <strong>Continuation cycles.</strong> A B2' or B2'' at level f lets the cycle go on. Data: the final cap is always &lt;= (cap at the first continuation) - 1, and min d' = 5 (cont1) or 105 (cont2) against 2 for plain cycles (work/continuation_w21_X4.txt). This needs a bound on the nested output (q', Z').
+- (b) <strong>No halt inside nested levels from K</strong> (no push meets Y = 111). It holds in every check above, but has no argument yet.</p>
+<h3 id="4-consequence">4. Consequence</h3>
+<ul>
+<li>With Lemmas M and K, I is closed and no cycle from I halts, so the machine never halts.</li>
+<li>The level-up transients T(L) are in I (d = 3, M = 2), so their lengths no longer matter.</li>
+</ul>
+<h3 id="cryptid-check-update_1">Cryptid check (update)</h3>
+<ul>
+<li><strong>Not cryptid.</strong> Halting is ruled out by a mod-3 quantity plus an inequality. The chaotic transients are inside I.</li>
+</ul>
+<h3 id="next">Next</h3>
+<ol>
+<li>Close (a) and (b) on paper: the nested output bound, and an inner-level version of the sign law or of the inequality.</li>
+<li>Write proof.md.</li>
+<li>Formalize: one lemma per rule (the nested bite by induction on depth), a cycle lemma for K, and progress_nonhalt_cond over I.</li>
+</ol>
+<h3 id="files-new_1">Files (new)</h3>
+<ul>
+<li>scripts/invariant.py (definitions + Lemma K/M window check), scripts/signlaw.py (sign law, TM and rule level), scripts/check_F_vs_tm.py, scripts/continuation.py.</li>
+<li>scripts/entry_check.py (blank run vs I).</li>
+<li>work/invariant_w3-31_X3.txt, work/invariant_w3-16_X10.txt, work/invariant_w3-12_X14.txt, work/signlaw_seed1.txt, work/signlaw_seed2.txt, work/check_F_vs_tm_seed1.txt, work/continuation_w21_X4.txt, work/entry_check_300k.txt.</li>
+</ul>
+<h2 id="funded-stage-2026-10-10-proof">Funded stage (2026-10-10, proof)</h2>
+<p>Run 2026-10-13 (Dennis: "go with recommendations"). Outcome: <strong>proof_ready</strong> (confidence: high). Both open sub-lemmas are closed on paper and checked; Lemma K now covers every cycle from K. proof.md is the next stage.</p>
+<h3 id="1-shift-law-and-the-g-form-of-the-nested-bite">1. Shift law and the G-form of the nested bite</h3>
+<ul>
+<li>The rules read q and Z only; p just moves along. So a level started at R(p0, q, Z) runs the same rule sequence as the cycle from R(-1, q, Z), and pops p0 + 1 later. Write
+  <code>G(t) = F(t) + (1, 0, 0)        (t = (n, w, v): the pop of a level started at R(0, n, Z))</code></li>
+<li><strong>Nested bite (B2', k = 1, and B2'', k &gt;= 2) is k - 1 G-steps:</strong>
+  <code>R(p, 2, (110)^k Y)  -&gt;  R(p+2, G^(k-1)(3, Y[3:]))        (Y starts 111, Y != 111;  Y = 111 is H)</code></li>
+<li>Level 1 (innermost) is a single B1: R(0, 1, Y[2:]) -&gt; pop (3, Y[3:]). Each later level is one G-step.</li>
+<li>Y[3:] = Z &gt;&gt; (k+1): width w - 3k - 3, value v &gt;&gt; (k+1).</li>
+<li>Check: 20,000/20,000 random nested bites (k = 1..7, Y up to 30 cells) equal scripts/nested.py, Y = 111 always H (work/contlemmas_gform_seed7.txt).</li>
+<li><strong>Composite form of a continuation cycle.</strong> Let the first continuation of the cycle from s be at R(p_c, 2, Z_c), with k low set bits and L_c bits. The rest of the outer level is one more G-step, shifted by p_c + 2:
+  <code>F(s) = (p_c + 2) + t_(k+2),      t_2 = (3, Z_c[3k+3:]),  t_(i+1) = G(t_i)
+  d(F s) = p_c + 2 + d(t_(k+2))</code></li>
+<li>Later continuations of the outer level sit inside the last G-step.</li>
+<li>Check: 533,148 continuation cycles from K (w &lt;= 27) and 151,880 (w &lt;= 15, n &lt; 2^(cap+10)), 0 mismatches (below).</li>
+</ul>
+<h3 id="2-gap-b-closed-no-halt-and-no-gap-inside-nested-levels">2. Gap (b) closed: no halt and no gap inside nested levels</h3>
+<ul>
+<li><strong>Phase lemma.</strong> Call a <em>phase start</em> a level start or the output of a continuation. Inside a phase:</li>
+<li>a w = 2 zone with q &gt;= 3 exists only from the phase start (w = 2) or right after an O1 at the phase start (w = 1, v = 0); R1 and O1 keep the parity of q;</li>
+<li>after the first overflow the zone has w = 0 mod 3 for the rest of the phase, so only O0 follows;</li>
+<li>H = R(p, 2, (110)^j 111) is produced only by O2 at q = 4 (dec never gives an all-set zone; R2 and O0 leave the LSB clear; B2 with a reparse would need an all-set w = 1 zone at q = 2, i.e. a phase start with q = 2, and every phase start has q &gt;= 3).</li>
+<li>So <strong>H needs a phase start with w = 2 mod 3, q = 2v + 4, or w = 1 mod 3, v = 0, q = 2^(L+1) + 4.</strong> That set is H<em>. Check: the cycle from t (w &gt;= 3, n &gt;= 3) halts iff t is in H</em>, on 610,121 states (w &lt;= 24) and 606,121 (w &lt;= 12, n &lt; 2^(cap+12)).</li>
+<li><strong>Parity of pops.</strong> A pop with w' = 1 or 2 mod 3 has n' = p + 3 (B1, no reparse) or p + 5 (B2 then B1), so n' = p + 1 mod 2. B0 with f = 2 never occurs inside a cycle: q = 0 only follows R2 or O0 at q = 3, and both leave the LSB clear. Inner levels have p even, so their pops have n' odd when w' = 1, 2.</li>
+<li><strong>Lemma J.</strong> J = { w &gt;= 3, n &gt;= 3, n odd when w = 1 or 2 mod 3 }. For t in J the level from t never halts, never meets a configuration without a rule, and pops into J.</li>
+<li>Proof: q stays odd in its w = 1, 2 part, so q = 2 occurs only with w = 0 mod 3, w &gt;= 6, zone not all set (B2, or a continuation with Y != 111 and |Y| &gt;= 6, so t_2 is in J). Pops have w' &gt;= 3, n' &gt;= 3 and the parity above. Continuations recurse (induction on the length of the computation).</li>
+<li>The innermost level is R(0, 1, Y[2:]) -&gt; (3, Y[3:]), in J.</li>
+<li>Consequence: every phase start except the outer cycle start is in J, so a cycle from s halts iff s is in H<em>. In K, H</em> = {T_c} u {(6,4,0)} (w = 2: n = 2v + 4 &gt;= 2^(c+1) + 2 forces v = 2^c - 1; w = 1: d &gt;= 2 forces L = 0, n = 6).</li>
+<li>Check: J1 holds on all 1,920,333 J states with w &lt;= 27, n &lt; 2^(cap+4), and 479,621 with w &lt;= 15, n &lt; 2^(cap+10).</li>
+</ul>
+<h3 id="3-gap-a-closed-lemma-k-for-continuation-cycles">3. Gap (a) closed: Lemma K for continuation cycles</h3>
+<ul>
+<li><strong>A1 (bell at the continuation).</strong> From K, level 0 always overflows (E &gt;= 4), so the first continuation is at a level m &gt;= 1 with L_c = c + m bits, and
+  <code>p_c &gt;= 2^(L_c) - 3</code></li>
+<li>m = 1: p_c = n - 3 (w = 2 start), n - 4 (w = 0), n - 5 (w = 1, v &gt;= 1, via the R2 equivalence (n, w, v) ~ (n-1, w+2, 2v-1)); d &gt;= 2 gives the bound. w = 1, v = 0: the O1 level has c - 1 bits, the next one c bits and p_c = n - 3.</li>
+<li>m &gt;= 2: p_c = n - 3 - j with j = m - e (the O0 overflows before; e = 1 if the first overflow is O2), and reaching level m needs q_m = E - e - 4 + m - 2^(c+m+1) + 2^(c+2) &gt;= 2. With n &gt;= E this gives
+    <code>p_c - 2^(c+m) + 3 &gt;= 2^(c+m) - 2^(c+2) + 6 - 2m + 2e &gt;= 0.</code></li>
+<li>Check: min slack 0 (it is tight at w = 1 mod 3, d = 2).</li>
+<li><strong>Lemma Z' (zone-dominated step).</strong> If t is in J and d(t) &lt;= 1, then d(G t) &gt;= 2 or cap(G t) &lt;= cap(t) + 1.</li>
+<li>With n &lt;= 2^(c+1) + 1 the top level of the step makes at most one overflow after its first (the next one would need E &gt;= 2^(c+2) + 2 &gt; n).</li>
+<li>Cases: w = 0, no overflow: bite, cap - 1; w = 0, one O0: bite at c + 1 bits, cap c (L = 0: B0c gives cap 1); w = 2 (n odd): B1 to w = 1 gives cap + 1, or O2 then a bite at odd q gives cap c; w = 1 (n odd): v &gt;= 1 reduces to the w = 0 case by the R2 equivalence (d - 1 &lt;= 1), v = 0 is O1 then the w = 2 case.</li>
+<li>A continuation inside the step: its inner run is again G-steps from (3, Z_c[3k+3:]) with L_c &lt;= c + 1. If the last inner state is K-like (d &gt;= 2), then d(G t) &gt;= p_c + 3 + 2 &gt;= 2. Otherwise every inner state is zone-dominated and, by induction, the inner cap grows by at most 1 per step: cap &lt;= (L_c - k - 1) + k &lt;= c.</li>
+<li><strong>K-likeness persists.</strong> If t is in J and d(t) &gt;= 2, then t is not T_c or (6,4,0) (both have even n and w = 2 / w = 1), so Lemma K gives d(G t) = d(F t) + 1 &gt;= 3.</li>
+<li><strong>Lemma K, continuation case.</strong> With F(s) = (p_c + 2) + t_(k+2):</li>
+<li>if some inner state is K-like, so is t_(k+2), and d(F s) &gt;= p_c + 4 &gt;= 4;</li>
+<li>otherwise t_2, ..., t_(k+2) are all zone-dominated, cap(t_2) = L_c - k - 1, and Z' gives cap(t_(k+2)) &lt;= L_c - 1. Then, with n(t_(k+2)) &gt;= 3 (Lemma J) and A1,
+    <code>d(F s) &gt;= (2^(L_c) - 3) + 2 + 3 - 2^(L_c) = 2.</code></li>
+<li>Lemma K, Lemma Z' and K-persistence are proved together by induction on the length of the cycle computation (inner G-steps are strictly shorter).</li>
+<li>Data: min d(F s) on continuation cycles is 5 (slack 3 over the bound).</li>
+<li><strong>(6,4,0) has no predecessor in K</strong> (needed for the closure of I): plain cycles give n' &gt;= n - 1 - f + 2 with f &lt;= log2(n) - c overflows, continuation cycles give n' &gt;= p_c + 5 &gt;= 2^(L_c) + 2; so n' = 6 forces n &lt;= 9 and c &lt;= 1 (w &lt;= 8), inside the exhaustive window (0 predecessors, work/invariant_w3-31_X3.txt).</li>
+</ul>
+<h3 id="4-checks-scriptscontlemmaspy-closed-rules-no-tm-simulation-unless-stated">4. Checks (scripts/contlemmas.py, closed rules, no TM simulation unless stated)</h3>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>window</th>
+<th>states</th>
+<th>result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G-form of the nested bite (gform)</td>
+<td>20,000 random bites, k = 1..7</td>
+<td>20,000</td>
+<td>all equal nested.py; the 3,639 with Y = 111 are H</td>
+</tr>
+<tr>
+<td>halting set = H* (hstar)</td>
+<td>w 3..24, 3 &lt;= n &lt; 2^(cap+4)</td>
+<td>610,121</td>
+<td>halts iff in H<em> (134 in H</em>)</td>
+</tr>
+<tr>
+<td></td>
+<td>w 3..12, n &lt; 2^(cap+12)</td>
+<td>606,121</td>
+<td>same (10 in H*)</td>
+</tr>
+<tr>
+<td>J1, Z', Kp (jwin)</td>
+<td>w 3..27, n &lt; 2^(cap+4)</td>
+<td>1,920,333 J states</td>
+<td>J1 all; Z' 239,786/239,786; Kp 1,680,547/1,680,547</td>
+</tr>
+<tr>
+<td></td>
+<td>w 3..15, n &lt; 2^(cap+10)</td>
+<td>479,621</td>
+<td>all hold (Z' 906, Kp 478,715)</td>
+</tr>
+<tr>
+<td>A1, CF, A2, d' &gt;= 2 (kwin)</td>
+<td>w 3..27, n &lt; 2^(cap+4)</td>
+<td>533,148 continuation cycles (2,138,773 states of K)</td>
+<td>all hold; A1 min slack 0; min d' = 5</td>
+</tr>
+<tr>
+<td></td>
+<td>w 3..15, n &lt; 2^(cap+10)</td>
+<td>151,880 continuation cycles (608,985)</td>
+<td>all hold; min d' = 5</td>
+</tr>
+<tr>
+<td>all of the above (random)</td>
+<td>w &lt;= 75, n log-uniform up to 2^(cap+6), seed 2</td>
+<td>200,000</td>
+<td>0 failures: 71,758 Z', 43,007 Kp, 85,235 K (Lemma K itself; 20,146 continuation cycles)</td>
+</tr>
+<tr>
+<td>TM level (tm, scripts/macro.py)</td>
+<td>random J (d &lt;= 1) and K states, w &lt;= 22</td>
+<td>500 (151 J with d &lt;= 1, 349 K; seeds 1, 2)</td>
+<td>the TM run from R(0, n, Z) pops at G(t) and the one from R(-1, n, Z) at F(t): 500/500 and 500/500 (the seed 1 header counts 400 = 2 per state)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Z' in numbers (w &lt;= 27): when G(t) stays zone-dominated, cap(G t) - cap(t) is +1 in 10,796 cases and &lt;= 0 in 159,188; 69,802 steps become K-like.</li>
+<li>Every check is on the closed-rule model; the model itself was checked against the TM before (rules 150 per kind, nested bite 252/252, F = TM on 300/300 states of I).</li>
+</ul>
+<h3 id="5-the-non-halting-argument-end-to-end">5. The non-halting argument, end to end</h3>
+<ol>
+<li>The blank run reaches R(-1, 6, 11111) = (6, 5, 0) at step 327, a state of I (d = 4, M = 2).</li>
+<li>Lemma K (now for every cycle) and Lemma M: for s in I the cycle from s does not halt (s is not in H*), F(s) is in K, M(F s) = -+M(s) != 0, and F(s) != (6,4,0). So F(s) is in I.</li>
+<li>Inside a cycle nothing halts: the outer phase start s is not in H*, and every other phase start is in J (Lemma J).</li>
+<li>So the machine never halts.</li>
+</ol>
+<h3 id="still-open">Still open</h3>
+<ul>
+<li>proof.md (next stage): write out the plain-cycle part of Lemma K in full (stage 2 sketch: f = 1, f = 2 with B1/B2/B0, f &gt;= 3), and Lemmas P, J, A1, Z' above, the shift law, and the TM-level justification of the nested-bite stack (stage 1 structure, validated 252/252 by brute force).</li>
+<li>Rocq: one lemma per rule; the nested bite and the shift law by induction on depth; the cycle lemma by strong induction on steps; progress_nonhalt_cond over I.</li>
+</ul>
+<h3 id="files-new_2">Files (new)</h3>
+<ul>
+<li>scripts/contlemmas.py (hstar, jwin, kwin, random, gform, tm).</li>
+<li>work/contlemmas_*.txt.</li>
+</ul>
+<h2 id="informal-proof-2026-10-13-informal_proof-stage">Informal proof (2026-10-13, informal_proof stage)</h2>
+<p>proof.md is written; checks in check_proof.py (self-contained). Outcome: <strong>informal_proof_written</strong> (confidence: high).</p>
+<h3 id="new-this-stage">New this stage</h3>
+<ul>
+<li><strong>Tape-level rules.</strong> Every macro rule is now a chain of 11 low-level rules, each an exact TM run that reads only its pattern:</li>
+<li>BR <code>B&gt; 1^k</code>, S <code>(01)^k &lt;C</code> (C1 D0), T <code>(111)^j &lt;C -&gt; &lt;C (011)^j</code> (C1 D1 A1 C1 D0), W (wall entry, 10 steps), PS (pair step, 12 steps);</li>
+<li>ZA (zone arrival) in three cases by f mod 3, f = the first 0 of the zone;</li>
+<li>PUSH k (14+3k), B1 (2p+15), B0, B0c, and the 9-step halting tail Ht.</li>
+<li><strong>One round lemma.</strong> R1, R2, O0, O1, O2 are all W, PS^(q-3), ZA. Split by f mod 3: f = 2 gives q-2 and <code>(110)^((f-2)/3) 111 r</code>; f = 1 gives q-2 and <code>1111 (011)^((f-4)/3) 1 r</code>; f = 0 gives q-3 and <code>11111 (011)^((f-3)/3) 1 r</code>. The w mod 3 table is its counter form.</li>
+<li><strong>Stack and shift law.</strong> An ending bite's sweep reads exactly the two cells <code>00</code> left of its left part. For an inner level they are the <code>00</code> of its <code>001</code> block, so a pop is the next level's <code>R(0, ..)</code> tape. TM check: the level starts occur in order (NEST).</li>
+<li><strong>Lemma K, plain cycles, in full.</strong> E_m = E_0 + m - e - (2^(c+m+2) - 2^(c+2)); p_b = n - 1 - q_b - (f - e); d' &gt;= X_f + 2e + 2v + ... with X_f = 2^(c+f) - 2^(c+2) - 2f + 6. The w = 1 cases reduce by EQ1 (v &gt;= 1) and EQ2 (v = 0); E1 with f = 1 needs a parity step (d odd).</li>
+<li><strong>Safety vs termination.</strong> Lemma J and the halting part of K hold at every configuration. Lemma K's bound is used only on completed cycles (induction on run length). Termination of levels is not claimed and not needed informally. It matters for the Rocq route (proof.md section 9): a stack invariant carrying the outer cycle's partial derivation, or a termination lemma.</li>
+<li><strong>Corrections found by check_proof.py:</strong> NB needs <code>2^(f-1) &lt;= n</code>, not <code>2^f</code> (w = 1, v = 0 counts O1). The predecessor check of (6,4,0) is now done up to n = 12. The B2 counter form for w = 1 with bit 0 clear is <code>enc(w-2, v/2)</code>; that case never occurs.</li>
+</ul>
+<h3 id="files-new_3">Files (new)</h3>
+<ul>
+<li>proof.md, check_proof.py; work/check_proof_quick_seed1.log, work/check_proof_seed1.log, work/check_proof_seed2.log.</li>
+</ul>
+<h2 id="skeptic-round-1-2026-10-13-informal_proof-stage">Skeptic round 1 (2026-10-13, informal_proof stage)</h2>
+<p>Verdict: sound; five minor gaps, all fixed in proof.md and check_proof.py (Review log has the details). No lemma changed. Status: <strong>CHECKPOINT_B</strong>.
+- <strong>Round at p = -1.</strong> <code>L C&gt; 00 (10)^q Z -&gt; L 0101 C&gt; 00 ...</code> for every L: this is R_L'(1, ..) only when L = L'0 (blank left side included), one cell short of R_L(1, ..) when L ends in 1. Rules are now stated for p &gt;= 0 with any L, and at p = -1 only with the blank left side; R_L(-1, ..) is only the name of a pop tape. New check MAC.round at p = -1.
+- <strong>NB.</strong> <code>2^(m-1) &lt;= n</code> derived from the overflow chain (m &gt;= 2: n &gt;= E_0 &gt;= 2^(c+m+1) - 2^(c+2) + 4 - m + e &gt;= 2^m; w = 1 via EQ1/EQ2); first half sharpened to n(F s) &gt;= n - m, so a predecessor of (6,4,0) needs n &lt;= 10 (checked to 12).
+- <strong>Route.</strong> proof.md section 6 is now one bounded statement U(N) (Lemmas J, K, Z', M for one level; Kp a case), by strong induction on the number of steps; non-halting is a second strong induction over cycles. Recommended Rocq route 3: <code>forall N, ~ halts_in</code>, lemma form "no halt within N, or a pop within N with (U1)-(U4)" (no abstract F, no pop uniqueness); TM.v has preceeds_halt / exceeds_halt / progress_nonhalt' (strong induction).
+- <strong>Notation.</strong> Bite level renamed m (f = first zero only); lattice bit b = b-th smallest cell; Z' composite form in the level's own frame (new check CF-J).
+- <strong>Omissions.</strong> B2 row: reparse, w &gt;= 6, w = 1 bit-0-set case; Z = 111 at q = 2 halts (k = 0 form of H), never occurs; w = 1, v &gt;= 1: E0 at m = 1 impossible (E_0~ &gt;= 7). New ABS bite-width check (&gt;= 6 at q = 0, 2; &gt;= 5 at a phase bite; &gt;= 4 for B1 after B2).
+- check_proof.py: default seed 1 81/81 PASS (107 s), quick seeds 1, 2 80/80; --full seed 1 partial: T..CH 74/74 and INV window w &lt;= 24 PASS; its second INV window (w &lt;= 14, n &lt; 2^(cap+11)), random states and Z stopped unfinished after 35 min (overflow_count/outer_trace do not batch R1 rounds).</p>
+<h2 id="kill">Kill</h2>
+<p>2026-10-13: <strong>KILLED_NONHALT, independently re-verified and packaged.</strong>
+- Audit (independent agent): check_kill --json PASS, exit 0 (2026-10-13T20:01:12Z; 17/17 sub-checks, compile 35.3 s native, coqchk -norec pass 4.6 s, busycoq 0940bb9 = pin); string byte-exact at 740 line 525 (778 line 558); .v read end to end (1039 lines, sha256 f61649bd...74fc), only Individual62 + stdlib, no Section/Module/Opaque/Hint/attributes, house-style header OK; Print Assumptions nonhalt closed.
+- Fresh check_kill for the package (2026-10-13T20:03:57Z): PASS, exit 0, compile 34.7 s native, coqchk pass 4.6 s, 0 assumptions. The .v is unchanged (same sha256 as rocq/W54.v and rocq/check_kill_round2.log).
+- Route of the .v (differs from proof.md §4-5 in organisation, not in substance): phase invariants Saf (Lemma P), KI (Lemmas K, A1), ZI (Lemma Z') kept by every round via <code>phase</code>; U(N) in CPS form with Post = U1-U4 plus U5 (a pop into w = 4, v = 0 has n' = 4 or n' &gt;= 8), which replaces NB and its finite n &lt;= 12 computation; no EQ1/EQ2; stack by STK/compose.
+- submission/: the .v (verbatim copy), proof.md (public write-up: plain opening, header with template and a .v map, sections 0-8 with the mathematics of the working proof.md minus check names and process notes, overflow "levels" renamed "stages", a new section 9 on the finished Rocq proof; writeup_lint 0 errors, 0 warnings), check_kill.txt (fresh run, local paths replaced by placeholders), README.md, discord.md (1,679 characters without the link; not posted; fill in <LINK>, search #bb6 first).
+- Checkpoints A and B had no notes from Dennis on file at packaging; none to fold in. No siblings.</p>
+</main></body></html>

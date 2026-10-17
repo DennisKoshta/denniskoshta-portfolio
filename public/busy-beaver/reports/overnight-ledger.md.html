@@ -1,0 +1,1370 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>overnight-ledger.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/overnight-ledger.md · <a href="/busy-beaver/reports/overnight-ledger.md.html">raw</a></div>
+<h1 id="overnight-ledger">Overnight ledger</h1>
+<table>
+<thead>
+<tr>
+<th>time</th>
+<th>action</th>
+<th>machines</th>
+<th>workflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>03:58</td>
+<td>formalize launched</td>
+<td>#2</td>
+<td>wf_f2f0b92f-d29</td>
+</tr>
+<tr>
+<td>03:59</td>
+<td>deepen launched</td>
+<td>#1 #6 #7 #8 #9 #10 #12 #14 #15 #16 #17 #18 #19 #20</td>
+<td>wf_11098928-1a3</td>
+</tr>
+<tr>
+<td>04:50</td>
+<td>formalize launched</td>
+<td>#4 #11 #3</td>
+<td>wf_12d28fda-719</td>
+</tr>
+<tr>
+<td>04:50</td>
+<td>skeptic of #3 invariant (single agent)</td>
+<td>#3</td>
+<td>background agent</td>
+</tr>
+<tr>
+<td>04:50</td>
+<td>#13 STUCK after informal proof (edge lemma unproved)</td>
+<td>#13</td>
+<td>wf_abd883b4-076</td>
+</tr>
+<tr>
+<td>04:52</td>
+<td>KILL #2 verified (check_kill PASS x3: formalizer, audit, orchestrator); submission bundle ready, not posted</td>
+<td>#2</td>
+<td>wf_f2f0b92f-d29</td>
+</tr>
+<tr>
+<td>05:05</td>
+<td>#2 proof.md revised (skeptic: sound, minor gaps fixed); cards v2 redesigned + re-rendered (status-aware, numbered figs, CHECK/DECISION tags)</td>
+<td>#2, all</td>
+<td>wf_9316456d-530</td>
+</tr>
+<tr>
+<td>05:05</td>
+<td>#13 has a priority_call for Dennis: keep investing in the edge lemma or park it</td>
+<td>#13</td>
+<td>-</td>
+</tr>
+<tr>
+<td>05:10</td>
+<td>#3 skeptic: INV not inductive as written (unreachable counterexamples); fix = clause (e) + new touch-count lemma. Banner added to proof.md for the formalizer; repair agent launched; status OPEN</td>
+<td>#3</td>
+<td>background agents</td>
+</tr>
+<tr>
+<td>05:4x</td>
+<td>#3 repaired (rev 3: INV+(e), lemma L6), CHECKPOINT_B; second skeptic on §3.8 launched</td>
+<td>#3</td>
+<td>background agents</td>
+</tr>
+<tr>
+<td>05:5x</td>
+<td>KILLS #4 and #11 verified (check_kill PASS: formalizer, audit, orchestrator re-run; coqchk pass, no axioms); bundles ready, not posted</td>
+<td>#4 #11</td>
+<td>wf_12d28fda-719</td>
+</tr>
+<tr>
+<td>06:0x</td>
+<td>#3 second skeptic: INV+(e) sound (7 minor items; m2/m3 noted at top of proof.md for the formalizer)</td>
+<td>#3</td>
+<td>background agent</td>
+</tr>
+<tr>
+<td>06:0x</td>
+<td>deepen round 1 done: none reached high; #1 and #10 have exact rule models (recommend proof); 12 need more observation</td>
+<td>14 machines</td>
+<td>wf_11098928-1a3</td>
+</tr>
+<tr>
+<td>06:1x</td>
+<td>batch 2 launched: proofs+formalize #1 #10; twins of #2/#11 (1RB0RA_..., 1RB0LC_...) adapt+formalize; deepen round 2 for 12</td>
+<td>many</td>
+<td>wf_85b7385a-683</td>
+</tr>
+<tr>
+<td>06:1x</td>
+<td>explorer v1 done: all 12 correctness bugs + most UX issues fixed, suite green; start-here links in tools/explorer/README.md</td>
+<td>-</td>
+<td>wf_61ecb4be-a19</td>
+</tr>
+<tr>
+<td>06:3x</td>
+<td>KILL #3 verified (round 2; check_kill PASS x3 incl. orchestrator; 0 assumptions, coqchk 24 s)</td>
+<td>#3</td>
+<td>wf_12d28fda-719</td>
+</tr>
+<tr>
+<td>08:xx</td>
+<td>KILL #12 verified (Counter Class 4; deepen2 -&gt; high -&gt; proof -&gt; formalize round 1; check_kill PASS x3)</td>
+<td>#12</td>
+<td>wf_85b7385a-683</td>
+</tr>
+<tr>
+<td>08:xx</td>
+<td>batch 2 done: #1 #10 STUCK (open invariant lemmas, documented); twins OPEN (parent proofs do not carry over as deltas); deepen2: #15 and #6 cryptid candidates, #17 #20 stuck, 7 still med/low</td>
+<td>many</td>
+<td>wf_85b7385a-683</td>
+</tr>
+<tr>
+<td>08:xx</td>
+<td>batch 3 launched (after stopping a mis-argued launch within a minute; no side effects): twins #12-twin, #24, #25 (adapt from kills #12/#3); wave 2 observe #29 #33 #37 R2 R4 R5 R8 R9 -&gt; high -&gt; proof -&gt; formalize. Excluded: #32 (= twin#11, tried), #23 (= twin#2, tried), R10/R11 (class mined 10-07). Discord drafts flagged STALE (#3/#11/#12 killed). Cards re-rendered.</td>
+<td>many</td>
+<td>wf_6a281a56-be6</td>
+</tr>
+<tr>
+<td>09:xx</td>
+<td>launched #2 review page + all-778 dashboard (Dennis request)</td>
+<td>#2, all</td>
+<td>wf_797b2d5b-1bf</td>
+</tr>
+<tr>
+<td>10:xx</td>
+<td>launched #2 vs TM7 comparison page (compare.html); to be linked from review.html when both finish</td>
+<td>#2</td>
+<td>wf_dffd6c5d-93e</td>
+</tr>
+<tr>
+<td>11:xx</td>
+<td>KILLS twin#12 (1RB1LA_...), #24, #25, #33 verified (check_kill PASS x3 each). Total 9. Wave 2 others: #29 #37 med, R2 R4 R5 R8 R9 low (need Dennis).</td>
+<td>4</td>
+<td>wf_6a281a56-be6</td>
+</tr>
+<tr>
+<td>11:2x</td>
+<td>launched tools/killreview.py (automated per-kill review pages, family index) after Dennis: bespoke review too slow</td>
+<td>all kills</td>
+<td>wf_ce123474-70a</td>
+</tr>
+<tr>
+<td>11:4x</td>
+<td>killreview.py done (9 kill pages + machines/kills.html, 5 families, &lt;1 s); dashboard links kill pages + header "kills"; family sweep + twins + decision queue launched</td>
+<td>all</td>
+<td>wf_ce123474-70a, wf_1a50e0b6-dbf</td>
+</tr>
+<tr>
+<td>12:0x</td>
+<td>kill .v headers: removing repo-local paths in all 9 (+ re-check_kill, refresh submission/pages); formalize script updated so new kills use upstream-friendly headers</td>
+<td>9 kills</td>
+<td>wf_1c238186-e9f</td>
+</tr>
+<tr>
+<td>12:3x</td>
+<td>#2 PR #14 opened on ccz181078/busycoq (1 file, mergeable, verified in clean fork clone); public write-up + filled Discord part 2 prepared</td>
+<td>#2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>12:5x</td>
+<td>#2 posted on Discord by Dennis; 21 disclosure lines reworded (no mention of Dennis) across submission folders</td>
+<td>all kills</td>
+<td>-</td>
+</tr>
+<tr>
+<td>12:4x</td>
+<td>family sweep: 3 KILLS verified (check_kill PASS x3 each): 1RB0LD_1RC0RE_... (same table as #33/#11), 1RB0RD_1RC1RF_... (same table as #3), 1RB---<em>0LC1RF</em>... (same table as #4). Total 12. Other 13 scout candidates scored &lt;0.3 (skipped). Decision queue built (20).</td>
+<td>3</td>
+<td>wf_1a50e0b6-dbf</td>
+</tr>
+<tr>
+<td>12:5x</td>
+<td>decision queue answered (Dennis: go with all recommendations): 20 answers filed in decision.json. PARKED: #13 #17 #19 #20 R4+#32 (STUCK), R9 (STUCK + niced sim to 1e12), R5 (STUCK + niced 24 h qsim watch); STOPPED: #1 (-&gt; CRYPTID_CANDIDATE), #6 + twin #27 (CRYPTID_CANDIDATE).</td>
+<td>20</td>
+<td>-</td>
+</tr>
+<tr>
+<td>12:5x</td>
+<td>funded stages launched: #7 closure/CTL, #8 oracle-free deepen3, #9 left zone, #10 Lemma X, #14 shift-on-wall rules, #16 parity, #18 margin lemma, #29 + R2 eat/left-word, #37 counter grammar K, R8 pause/creep; high -&gt; proof.md -&gt; 2 skeptic rounds -&gt; formalize</td>
+<td>11</td>
+<td>wf_b7a26ffc-0a4</td>
+</tr>
+<tr>
+<td>13:0x</td>
+<td>wave 3 launched (pool 3): observe #28 #30 R3 (Bell eats counter, 1 transition from #7 / #10 / FractalBEC), #35 #36 (Bouncer+Chaotic Edge near-twins), #26 (twin pair) -&gt; high -&gt; proof.md + 2 skeptic rounds -&gt; formalize -&gt; twins of kills</td>
+<td>6</td>
+<td>wf_40d09972-ac2</td>
+</tr>
+<tr>
+<td>13:0x</td>
+<td>background (niced, ulimit -v 6 GB): R5 qsim watch 24 h -&gt; machines/1RB1LA_.../work/qleft_24h.txt; R9 sim to 1e12 -&gt; machines/1RB1RF_1LC0RB_.../work/sim_1e12.jsonl</td>
+<td>R5 R9</td>
+<td>-</td>
+</tr>
+<tr>
+<td>13:2x</td>
+<td>family/twins workflow done: twin#2 (1RB0RA_1LC0RE_...) STUCK after skeptic (fatal: no inductive closing invariant J for theta(x) &lt;= N, proof.md 3.3.5; Lemma T conjecture); twin#11 = #32 STUCK (multi-level counter, parked with R4).</td>
+<td>twin#2 twin#11</td>
+<td>wf_1a50e0b6-dbf</td>
+</tr>
+<tr>
+<td>13:5x</td>
+<td>funded round 1 done (wf_b7a26ffc-0a4, still running #8's proof chain): #8 -&gt; high, proof chain; #10 -&gt; CRYPTID_CANDIDATE (pre-agreed exit: excursion entries do not close); #18 -&gt; park (margin bound failed, pre-agreed exit); #7 #9 #14 #16 #29 R2 #37 R8 -&gt; new decisions (med)</td>
+<td>11</td>
+<td>wf_b7a26ffc-0a4</td>
+</tr>
+<tr>
+<td>13:5x</td>
+<td>wave 3 done: #28 #30 R3 med (new decisions); #35 #36 = #13's edge (E') -&gt; parked with #13 (an E' proof now pays #13 #34 #35 #36); #26 = mirror twin of #5 -&gt; CRYPTID_CANDIDATE</td>
+<td>6</td>
+<td>wf_40d09972-ac2</td>
+</tr>
+<tr>
+<td>13:5x</td>
+<td>new decisions auto-applied (Dennis's standing instruction while at lunch; answers marked auto, overridable): FUND #14 #16 #9 #37 #7 #28 #29 R2 R8 R3 #30; PARK #35 #36 (with #13), #26 (with #5), twin#2</td>
+<td>15</td>
+<td>-</td>
+</tr>
+<tr>
+<td>13:5x</td>
+<td>funded round 2 launched (shared 'debris clears before the next eat' theme flagged across #28 #29 R2 R3 #30)</td>
+<td>11</td>
+<td>wf_cb97608d-6b7</td>
+</tr>
+<tr>
+<td>14:0x</td>
+<td>R9 background sim to 1e12: no halt (2,585 cells, 1,667 nonzeros); stays parked</td>
+<td>R9</td>
+<td>-</td>
+</tr>
+<tr>
+<td>14:4x</td>
+<td>funded round 2 done (wf_cb97608d-6b7): no machine reached high. #37 stuck (lemma B false; B' open), R2 stuck (inequality R1 open), #30 park (D6 nesting), 8 med with new decisions. #8 reached CHECKPOINT_B (skeptic: sound, 6 minor fixed) -&gt; formalize round 1 running in wf_b7a26ffc-0a4</td>
+<td>11 + #8</td>
+<td>wf_cb97608d-6b7</td>
+</tr>
+<tr>
+<td>14:5x</td>
+<td>round-3 recommendations auto-applied: FUND #14 law, #16 hub invariant, #9 generation induction, #37 follow orbit (C), #7 flush lemma, #28 chain case, #29 recovery, R8 proof_now, R3 joint crossing lemma (with R2), #30 nest; R2 waits on R3/#29</td>
+<td>11</td>
+<td>wf_017b2f75-15c</td>
+</tr>
+<tr>
+<td>15:5x</td>
+<td>holdout list 740 analysed (reports/holdouts-740-impact.md): 38 removed, 0 added. #2 removed = PR #14 MERGED 13:47 (9cf9e88). 6 solved upstream (d3c52f5: 3 Cubic nonhalt, 3 halts), 31 removed by equivalence (Eqv_WordPairs/RegularPairs), incl. parked #19 (rep 1LB---<em>1RC0RC</em>... stays). All 11 unsubmitted kills still on the list; framework unchanged.</td>
+<td>list</td>
+<td>-</td>
+</tr>
+<tr>
+<td>16:1x</td>
+<td>KILL #8 (1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB, Sync bouncer counter) verified by formalizer + audit (check_kill PASS); orchestrator re-run started. Total 13.</td>
+<td>#8</td>
+<td>wf_b7a26ffc-0a4</td>
+</tr>
+<tr>
+<td>16:1x</td>
+<td>public write-up cleanup: 9/11 pass two independent verifiers; #3 (J vs INV(a) overstatement) and #11 (simulation claim) need a fix round. tools/writeup_lint.py + killreview 7th check added.</td>
+<td>11</td>
+<td>wf_919a8aa5-36b</td>
+</tr>
+<tr>
+<td>16:2x</td>
+<td>launched with a placeholder args value by mistake; stopped within a minute (no file touched) and relaunched with the real verifier findings: #3/#11 write-up fixes, #11b (#11's table from B; sheet: done by hipparcos, not in busycoq) adapt+formalize, #3 card Q1/Q2 rewrite</td>
+<td>3 tracks</td>
+<td>wf_4fcd4819-9ca</td>
+</tr>
+<tr>
+<td>16:4x</td>
+<td>killreview: "Same machine as #N?" section on 6 derived kills (computed renaming, side-by-side space-time diagrams, run numbers; review pass); section 5 now always starts with the standard space-time diagram; test updated (23 OK); 12/13 pages 7/7 (#2 6/7: posted copy)</td>
+<td>kills</td>
+<td>wf_6645c5db-1ce</td>
+</tr>
+<tr>
+<td>16:5x</td>
+<td>#11b claim resolved with Dennis: sheet row 1276 (hipparcos) is #11b, not #33. hipparcos's Discord thread (2025-10-27) is a partial analysis, no proof; saved to data/discord/2025-10-27_hipparcos_1RB0RB.txt. #11b write-up to credit it and answer its open C C0 question. Cards: status.json label now wins over observe rank (#F2 -&gt; #3b, #4b); #3b Q1 = yes recorded.</td>
+<td>#11b #3b</td>
+<td>-</td>
+</tr>
+<tr>
+<td>17:1x</td>
+<td>KILL #11b (1RB0RB_1LC0RA_1LE0LD_1LC1LF_1RA0LD_1LC---, #11's table from B; hipparcos credited) verified x3 (formalizer, audit, orchestrator). Total 14. #11's table: 4/4 listed starts killed. #8 orchestrator re-run PASS (x3). #3 write-up fix verified; #11 write-up needs the three-siblings fix.</td>
+<td>#11b #8</td>
+<td>wf_4fcd4819-9ca</td>
+</tr>
+<tr>
+<td>17:1x</td>
+<td>follow-ups launched: #11 write-up fix, #11b 'Relation to hipparcos's analysis' (answers his C C0 question), #3b card Q2 + Q3 settled, #3 card second review</td>
+<td>4</td>
+<td>wf_c2a12c37-d56</td>
+</tr>
+<tr>
+<td>17:3x</td>
+<td>Dennis: submit #3's table only (4 files) as one PR, one Discord message for the 4; then wait again. PR prep launched (upstream names Skelet1LikeC2_1RB0LD/1RB0RD/1RB1RF/1RB0RE.v, fresh upstream clone build check, PR body + Discord draft in his voice; nothing pushed). #3 Checkpoint B note + card Q1/Q2 = yes recorded.</td>
+<td>#3 family</td>
+<td>wf_2d44eaf7-075</td>
+</tr>
+<tr>
+<td>18:xx</td>
+<td>#3 family PR ready (local, not pushed): 4 files staged on nonhalt-skelet1like-c2-1RB0LD-family in a fresh upstream clone (BB6 9cf9e88); after comment-only header edits (#25, #24: parent write-up named by machine string) both re-passed check_kill and clone coqc/Print Assumptions (closed)/coqchk; write-ups name upstream files; PR body + Dennis's Discord draft lint clean. Waiting for Dennis's go.</td>
+<td>#3 family</td>
+<td>wf_2d44eaf7-075</td>
+</tr>
+<tr>
+<td>18:xx</td>
+<td>#11 write-up fixed+verified (three sibling starts listed); #11b write-up gains 'Relation to hipparcos's analysis' (verified; one C C0 case left open by the invariant, never reached, said so); #3b card Q2 rewritten (+zoom fig), Q3 settled. #3 card second review: the apparent one-cell block shift is a drawing artifact (guide lines over blocks) -&gt; figure/wording polish + card zoom-view phone fix launched</td>
+<td>#11 #11b #3 #3b</td>
+<td>wf_c2a12c37-d56, wf_bc710816-b86</td>
+</tr>
+<tr>
+<td>18:xx</td>
+<td>PR #15 opened on ccz181078/busycoq (Dennis's go): 4 files verify/Skelet1LikeC2_{1RB0LD,1RB0RD,1RB1RF,1RB0RE}.v, mergeable, GitHub contents sha-identical to the check_kill-verified files; Discord text filled with the PR link (not posted). Next groups wait for the response.</td>
+<td>#3 family</td>
+<td>-</td>
+</tr>
+<tr>
+<td>18:xx</td>
+<td>#3 family posted on Discord by Dennis (PR #15).</td>
+<td>#3 family</td>
+<td>-</td>
+</tr>
+<tr>
+<td>19:xx</td>
+<td>card polish done + reviewed: #3 Fig 3 / #3b Fig 4 guide lines only across re-pair bands (no cell hidden; the 'one-cell jump' Dennis saw was this artifact), #3 Q1/Q2 + #3b Q2 wording; card zoom view fixed on phones; #11b §7 counts.</td>
+<td>#3 #3b #11b</td>
+<td>wf_bc710816-b86</td>
+</tr>
+<tr>
+<td>19:xx</td>
+<td>rule fix: headless-browser code in 6 tools, 5 machine scripts and 2 docs borrowed ~/projects/*/node_modules/playwright-core and ~/.cache/lsc-playwright-syslibs (another project's). Now: tools/explorer/node_modules/playwright-core + project-local libs tools/explorer/.syslibs (apt-get download libnspr4 libnss3 libasound2t64, dpkg-deb -x; gitignored). Card + decisions browser tests run (0 skipped).</td>
+<td>tools</td>
+<td>-</td>
+</tr>
+<tr>
+<td>19:xx</td>
+<td>funded round 3 done: KILL #30 (1RB0RF_1RC1RF_1LD0RE_---0LE_1LA0LE_0RA0LC, Bell eats counter, #10's neighbour) proof -&gt; skeptic (1 fatal, 2 major, fixed) -&gt; formalize round 2 PASS -&gt; audit -&gt; orchestrator PASS (x3; 0 assumptions, coqchk pass). Total 15. R3 and #9 parked by their stop rules; 7 new decisions (#14 #16 #37 #7 #28 #29 R8) for Dennis (he is back: no auto-apply).</td>
+<td>11</td>
+<td>wf_017b2f75-15c</td>
+</tr>
+<tr>
+<td>19:xx</td>
+<td>dashboard: Accepted upstream (1) / Submitted, awaiting verification (4, PR #15) / Kill claimed (10); counted against the 740 list (#2, #19 off-list with reasons; #19's equivalent labelled correctly after review); tools/pr_sync.py added and in the check-in plan.</td>
+<td>dashboard</td>
+<td>wf_7023ff23-4f6</td>
+</tr>
+<tr>
+<td>21:2x</td>
+<td>committed 20f38a0 (local, not pushed): 15 kills + tools/pages since 12a6d1a; bulk data and compiled helpers ignored; stray tmark* moved into #9's scripts/deepen3.</td>
+<td>all</td>
+<td>-</td>
+</tr>
+<tr>
+<td>21:3x</td>
+<td>R5 watch: overflow reached at ~4.39e15 steps (prefix consumed, loop 288-290M), no halt; qsim then hit the 6 GB cap at loop 304M in the post-overflow reorganisation.</td>
+<td>R5</td>
+<td>-</td>
+</tr>
+<tr>
+<td>21:3x</td>
+<td>launched (after stopping a version whose ranking needlessly waited on R5; no side effects): R5 follow-up (dump before the overflow, detached C-simulator run to 2e13) + Wave 4 (4 scouts over the 699 untouched on the 740 list -&gt; rank -&gt; completeness critic -&gt; attack top 8 with proof/skeptic/formalize/siblings)</td>
+<td>R5 + W4</td>
+<td>wf_fe36bff3-97e</td>
+</tr>
+<tr>
+<td>23:2x</td>
+<td>R5 post-overflow C run launched detached (start = qsim loop 288M dump, overflow at rel 3.15e11; verified cell-for-cell against 597 qsim dumps through rel 4.7e11; ETA ~22 h; log work/r5_post.log). Wave 4 ranking + critic done (reports/wave4/ranking.md): W4-1..W4-8, attack running. Found: #7 = #30's table started in #30's E (W4-1 = its B start): #7 delta-from-#30 launched.</td>
+<td>R5 W4 #7</td>
+<td>wf_fe36bff3-97e, wf_68792cfc-1f3</td>
+</tr>
+<tr>
+<td>00:xx</td>
+<td>KILL #7 (1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA) = #30's table mirrored+renamed, started in #30's E: delta proof (skeptic: sound, 2 minor) -&gt; formalize round 1 PASS -&gt; audit PASS; orchestrator re-run started. Old decision.json retired as superseded. Total 16.</td>
+<td>#7</td>
+<td>wf_68792cfc-1f3</td>
+</tr>
+<tr>
+<td>00:xx</td>
+<td>#7 orchestrator check_kill PASS (x3; 0 assumptions, coqchk pass); write-up lint clean; pages rebuilt: accepted 1, submitted 4, claimed 11.</td>
+<td>#7</td>
+<td>-</td>
+</tr>
+<tr>
+<td>00:4x</td>
+<td>Wave 4 done: KILL W4-1 (1RB1RF_1LC0RD_---0LD_1LE0LD_1RA0RF_0RE0LB = #30's table from B; proof -&gt; skeptic sound (5 minor) -&gt; formalize -&gt; audit -&gt; orchestrator PASS x3). Total 17; #30's table 3/3 listed starts killed (#30, #7, W4-1). W4-2..W4-8: med/low, 7 decisions for Dennis (rules/invariant stages recommended). R5 run healthy (rel 1.32e12, no halt; reading: overflow resets to a fresh epoch).</td>
+<td>W4</td>
+<td>wf_fe36bff3-97e</td>
+</tr>
+<tr>
+<td>00:5x</td>
+<td>committed 913a178 (local). Dennis: go with recommendations -&gt; 15 decisions answered: PARK #9 #37 R3; FUND #14 top_system, #16 corner_rules (+FractalType4 TM5 lead), #28 prove_l9 (+#30 digestion lead), #29 tight (hard stop), R8 f3_first, W4-2 hunt, W4-3 rules (kill criterion), W4-4 rules (family of 4), W4-5 inv_search (+599), W4-6 wall_model (+612), W4-7 decider2, W4-8 seams</td>
+<td>15</td>
+<td>wf_e560705b-93d</td>
+</tr>
+<tr>
+<td>11:xx</td>
+<td>funded round (12 stages, Dennis 'go with recommendations') done: KILL W4-2 (1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF; high -&gt; proof -&gt; skeptic sound (2 minor) -&gt; formalize round 2 -&gt; audit -&gt; orchestrator PASS x3). Total 18. Parked by stop rules: W4-4 (family of 4), W4-5 (+599), W4-8, #29; #28 = #10 mirrored from E (orbits merge) -&gt; CRYPTID_CANDIDATE with #10; R8 stuck (unbounded throttle tower). New decisions: #14 marker_stage, #16 corner_rules_2, W4-3 macro_stage, W4-6 carry_stage, W4-7 hand; parks recommended for #28 (with #10), R8, W4-8.</td>
+<td>12</td>
+<td>wf_e560705b-93d</td>
+</tr>
+<tr>
+<td>10-12</td>
+<td>committed fae4fec. R5 post-overflow run ended at 2e13 steps, no halt, 597/597 references matched. Dennis: apply recommendations -&gt; PARK #28 (with #10), R8, W4-8; FUND #14 marker_stage, #16 corner_rules_2, W4-3 macro_stage, W4-6 carry_stage, W4-7 hand.</td>
+<td>8</td>
+<td>wf_7372d7e7-cc6</td>
+</tr>
+<tr>
+<td>10-12</td>
+<td>funded round (5) done: no kills; all med with new decisions (see decisions page).</td>
+<td>5</td>
+<td>wf_7372d7e7-cc6</td>
+</tr>
+<tr>
+<td>10-12_09:53</td>
+<td>check-in: healthy (load 0.2, 22 GB free), all workflows done, no CHECKPOINT_B, PR #15 open (0 comments). Idle -&gt; launched #5 cryptid-protocol Rocq rule reduction (covers #26 if possible; not a kill). 5 decisions wait for Dennis.</td>
+<td>#5 #26</td>
+<td>background agent</td>
+</tr>
+<tr>
+<td>10-12 09:5x</td>
+<td>check-in: workflow wf_7372d7e7-cc6 had finished its 5 stages before the session ended (all needs_decision: W4-6 chain_law, #14 nested_stage, #16 seed_clause, W4-7 grammar, W4-3 induction_stage); no CHECKPOINT_B pending; idle -&gt; #5 cryptid rule reduction launched (single agent, low priority)</td>
+<td>#5</td>
+<td>agent</td>
+</tr>
+<tr>
+<td>10-12_10:03</td>
+<td>#5 rule reduction done: rocq/rule_reduction.v compiles (1.9 s, no Admitted/Axiom), local rules + 3-clause no-00 invariant + halting only through two tiny-block door shapes; nonhalt &lt;-&gt; erosion_open proved (open property stated, not proved); #26 via Perm/flip. Not a kill; both stay CRYPTID_CANDIDATE.</td>
+<td>#5 #26</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_10:1x</td>
+<td>#5 rule reduction (this session's agent): rocq/reduction.v compiles (2.8 s, closed assumptions; ~halts &lt;-&gt; EdgeNeverEats, raw-machine form, twin #26 via Perm/flip without funext; stronger A-invariant than rule_reduction.v). DUPLICATE WORK: a second orchestrator session ('Busy Beaver plan review' 85dee9 / 'bb6-hunt-7c', started ~1 h ago) ran the same check-in and wrote rule_reduction.v + rewrote the overnight report. Both files kept; reduction.v proposed as canonical. Dennis should keep only one orchestrator session.</td>
+<td>#5</td>
+<td>agent</td>
+</tr>
+<tr>
+<td>10-12_10:53</td>
+<td>check-in: healthy, idle, no CHECKPOINT_B, PR #15 open (0 comments); #5 reduction and the report already done; waiting on Dennis's 5 decisions.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_10:52</td>
+<td>check-in: healthy (load 0.3, 22 GB free); idle; no CHECKPOINT_B; #5 reduction already done; PR #15 open (0 comments); 5 decisions wait for Dennis. No action.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_11:45</td>
+<td>remote dashboard live at https://bb6.forbiddenweights.com (Access + cloudflared originRequest.access + serve.py JWT; bb6-serve service; security review done, root-path 404 fixed). Dennis: b -&gt; FUND #16 seed_clause, #14 nested_stage, W4-3 induction_stage (+512/588), W4-6 chain_law (+612), W4-7 grammar (+707).</td>
+<td>5</td>
+<td>wf_8fdaa464-6ed</td>
+</tr>
+<tr>
+<td>10-12_11:52</td>
+<td>check-in: healthy (load 0.1, 22 GB free), bb6-serve active; funded round wf_8fdaa464-6ed running (5 stages, none done); no CHECKPOINT_B; PR #15 open (0 comments).</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_11:5x</td>
+<td>session c54262: the other session is now the live orchestrator (Dennis's answers, funded round wf_8fdaa464-6ed, its own hourly check-in). To stop duplicate check-ins, cancelled this session's hourly cron 3171daa3. No other action.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_12:53</td>
+<td>check-in: healthy (load 2.2, 21.5 GB free); funded round: #16 and #14 reached proof_ready (proof.md written, skeptic rounds running), W4-3/W4-6/W4-7 stages done; readability rewrite 9/~11 agents done; no CHECKPOINT_B yet; PR #15 open (0 comments).</td>
+<td>-</td>
+<td>wf_8fdaa464-6ed, wf_cdec9e51-49a</td>
+</tr>
+<tr>
+<td>10-12_12:56</td>
+<td>#3 family write-ups rewritten for readability (0 errors, 0 density warnings; math-preservation verified: #3, #25, #24 pass; #3b's one flagged gloss fixed by hand: 'where the induction starts'); attachments and parent copies refreshed.</td>
+<td>#3 family</td>
+<td>wf_cdec9e51-49a</td>
+</tr>
+<tr>
+<td>10-12_13:53</td>
+<td>check-in: healthy (load 2.0, 20.7 GB free), bb6-serve active; funded round: W4-6 STUCK, W4-3/W4-7 med (new decisions), #16 and #14 in proof (skeptic1 found gaps; #16 skeptic2 and #14 revise1 running); no CHECKPOINT_B; PR #15 open (0 comments).</td>
+<td>-</td>
+<td>wf_8fdaa464-6ed</td>
+</tr>
+<tr>
+<td>10-12_14:30</td>
+<td>Class 2 close-out launched (Dennis): 14 Sk1-like Class 2 on 740, 8 killed; tracks: W4-3 table (341/512/588; decision answered sync_stage), R4+#32 table (561/372; reopened), line 552 (new, label C2-552); up to 3 stages each, then proof/skeptic/formalize/siblings.</td>
+<td>6</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_14:38</td>
+<td>how_proved.md for all 18 kills (checked; last two wording fixes applied by hand per the checker), shown on cards + kill pages + kills index; overview reports/how-proved.md (checked, fixed) linked from the dashboard.</td>
+<td>18</td>
+<td>wf_b000a390-6cd</td>
+</tr>
+<tr>
+<td>10-12_14:54</td>
+<td>check-in: healthy (load 3.8, 21 GB free, watchdog ok); running: funded round wf_8fdaa464-6ed (#14 revise2 in progress), Class 2 close-out wf_5b5d8095-a48 (W4-3/R4/C2-552 stage 1); no CHECKPOINT_B; PR #15 open (0 comments). No action.</td>
+<td>-</td>
+<td>wf_8fdaa464-6ed, wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_15:12</td>
+<td>funded round wf_8fdaa464-6ed done (15 agents): no kills. #16 STUCK (skeptic 2: window family + short-regime look-ahead, no known repair) -&gt; new decision park (recommended) / gaps_round; #14 OPEN high (invariant + 4 minors fixed; lemma VF + plant step v&gt;600 open) -&gt; new decision vf_round (recommended) / park; W4-6 STUCK -&gt; decision (park/merge_lang/watch); W4-7 -&gt; decision grammar2 / park; W4-3 continues in the Class 2 close-out wf_5b5d8095-a48. Decisions page + dashboard rebuilt.</td>
+<td>5</td>
+<td>wf_8fdaa464-6ed</td>
+</tr>
+<tr>
+<td>10-12_15:53</td>
+<td>check-in: healthy (load 7.4, 20 GB free, watchdog ok); Class 2 close-out wf_5b5d8095-a48 running (C2-552 stage 3, R4 stage 2, W4-3 stage 2; 5 agent results so far); no CHECKPOINT_B; PR #15: open, 0 comments/reviews, 4 machine(s). No action.</td>
+<td>-</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_16:53</td>
+<td>check-in: healthy (load 0.0, 22 GB free). Class 2 close-out wf_5b5d8095-a48: W4-3 proof_ready high (CHECKPOINT_B; covers 341/512/588; the workflow's own proof-&gt;skeptic-&gt;formalize chain is running, so no separate formalize launch); R4+#32 flagged cryptid (med) -&gt; decision.json for Dennis; C2-552 PREDICTED HALT (med; rule-based, not simulated, not a kill: ~2e44 steps via a single-marker fuel-out) -&gt; priority call for Dennis (certify the halt or not). PR #15 open (0 comments).</td>
+<td>W4-3 R4 #32 C2-552</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_17:24</td>
+<td>Dennis: certify and kill C2-552's predicted halt. Launched: independent re-implementation of the macro run (written from the TM table, not rules3/fast) + exact step count + Rocq design (parallel) -&gt; formalize up to 4 rounds (check_kill --halt, 'Lemma halt: halts tm c0') -&gt; audit -&gt; bundle (KILLED_HALT, submission, how_proved, card box for halting kills) -&gt; write-up check. Stops before Rocq if the independent run disagrees.</td>
+<td>C2-552</td>
+<td>wf_3cc3904c-205</td>
+</tr>
+<tr>
+<td>10-12_17:33</td>
+<td>Dennis: open a PR for #11's table + one Discord message for all 4 + write-up/visualization links. PR prep launched: readability rewrites of the 4 write-ups (math-preservation verify + fix), upstream names Skelet1LikeC2_&lt;2 segments&gt; (one-segment names taken by PR #15), header edits + re-check_kill, clone branch nonhalt-skelet1like-c2-1RB0LE-family + coqc/Print Assumptions/coqchk, space-time images, PR body + Discord text; independent verify. Push + PR by the orchestrator after verify.</td>
+<td>#11 #11b #33 #33b</td>
+<td>wf_0217c287-b40</td>
+</tr>
+<tr>
+<td>10-12_17:53</td>
+<td>check-in: healthy (load 7.2, 21 GB free, watchdog ok); running: close-out wf_5b5d8095-a48 (W4-3 revise1 after skeptic), C2-552 halt kill wf_3cc3904c-205 (certify phase, 2 of 3 done), #11 PR prep wf_0217c287-b40 (texts stage); no CHECKPOINT_B; PR #15 open (0 comments). No action.</td>
+<td>-</td>
+<td>wf_5b5d8095-a48, wf_3cc3904c-205, wf_0217c287-b40</td>
+</tr>
+<tr>
+<td>10-12_18:06</td>
+<td>dashboard was stale (last built 15:12; R4/#32 statuses changed 16:35): rebuilt; R4 now Waiting on you (decision), #32 Parked. Added systemd user timer bb6-pages (5 min) -&gt; tools/rebuild_pages.sh rebuilds dashboard + decisions when machine status files change.</td>
+<td>dashboard</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_18:10</td>
+<td>#11 PR prep done; verifier FAIL on texts only (build, images, write-up rewrites all pass): .v headers/write-ups use '#11'/'#33'/'kill' labels (GitHub reads #11 as busycoq PR #11), pr_body.md 7 density warnings + 2 claim fixes, first-person 'I read through' disclosure unconfirmed. Fix round launched (comment-only header edits -&gt; re-check_kill + clone build + sha updates; texts; re-verify).</td>
+<td>#11 table</td>
+<td>wf_38af56b9-648</td>
+</tr>
+<tr>
+<td>10-12_18:19</td>
+<td>W4-7 Checkpoint A answered by Dennis: Q1 yes (with note on the streaks; second bell = white streak = field 1/field 2 boundary, cell 959 at 1e8), Q2 yes, Q3 'sure' (superseded: decider2 already ran). Live call still decision.json grammar2 vs park.</td>
+<td>W4-7</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_18:36</td>
+<td>PR #16 opened on ccz181078/busycoq (Dennis's request): #11's table, 4 files verify/Skelet1LikeC2_{1RB0LE_1RC0RC,1RB0RB_1LC0RA,1RB0RE_1LC0RE,1RB0LD_1RC0RE}.v, commit 69c43b6 on DennisKoshta:nonhalt-skelet1like-c2-1RB0LE-family, mergeable, GitHub contents sha-identical to the check_kill-verified files. Fix round + 3 hand fixes to write-ups (own-file upstream names, 'near the top', banner count) after the re-verifier. Discord text filled (1,954 chars, not posted). status.json pr set for all 4.</td>
+<td>#11 table</td>
+<td>wf_0217c287-b40, wf_38af56b9-648</td>
+</tr>
+<tr>
+<td>10-12_18:36</td>
+<td>Dennis: fund W4-7 -&gt; decision answered grammar2; funded stage launched (pin the 111/1111 top forms, abstract simulator to every marker turn to 1e9; stop rule: park if new top forms keep appearing; then proof/skeptic/formalize; covers line 707).</td>
+<td>W4-7</td>
+<td>wf_4bd649c4-02c</td>
+</tr>
+<tr>
+<td>10-12_18:53</td>
+<td>check-in: healthy (load 0.2, 22 GB free, watchdog ok). Running: close-out wf_5b5d8095-a48 (W4-3 CHECKPOINT_B, its own formalize round 2; no separate launch), C2-552 halt kill wf_3cc3904c-205 (independent re-check agreed; Rocq round 1), W4-7 funded stage wf_4bd649c4-02c. PR #15 and #16 open (0 comments). No action.</td>
+<td>-</td>
+<td>wf_5b5d8095-a48, wf_3cc3904c-205, wf_4bd649c4-02c</td>
+</tr>
+<tr>
+<td>10-12_19:01</td>
+<td>W4-7 grammar2 stage done (wf_4bd649c4-02c): no new top forms (the 111/1111 'family' was a parsing artifact); the real gap was the B&gt; carry into ready digits, now a pinned table; abstract simulator reproduces all 227,414 marker turns to 1e9 exactly; validation 19,907/19,907 incs + 1,405/1,405 passes. Still med: needs an invariant excluding two unsupported cases (one can halt; never on the orbit). New decision: invariant stage (recommended) / park.</td>
+<td>W4-7</td>
+<td>wf_4bd649c4-02c</td>
+</tr>
+<tr>
+<td>10-12_19:53</td>
+<td>check-in: healthy (load 0.9, 21 GB free, watchdog ok). Running: W4-3 formalize round 2 (close-out wf_5b5d8095-a48; CHECKPOINT_B handled in-workflow), C2-552 Rocq round 2 (wf_3cc3904c-205). W4-7 decision (invariant/park) waits for Dennis. PR #15, #16 open (0 comments). No action.</td>
+<td>-</td>
+<td>wf_5b5d8095-a48, wf_3cc3904c-205</td>
+</tr>
+<tr>
+<td>10-12_20:53</td>
+<td>Session restart: the C2-552 halt-kill and Class 2 close-out workflows died with the previous session while their last agents ran (C2-552: rounds 1-2 -&gt; round 2 check_kill --halt PASS, audit verified, bundle done (status KILLED_HALT), write-up check interrupted; W4-3: formalize round 2 PASS, audit verified, bundle interrupted). Resumed both from their run ids (cached agents replay). Orchestrator third check_kill on both running (scratchpad/orch3).</td>
+<td>C2-552 W4-3</td>
+<td>wf_3cc3904c-205, wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_20:53</td>
+<td>Dennis: W4-7 invariant stage -&gt; decision answered 'invariant'; funded stage launched (closed property excluding the two unsupported cases; stop rule: park if no small invariant closes; then proof/skeptic/formalize; also 707's orbit check).</td>
+<td>W4-7</td>
+<td>wf_34c8d48b-b0e</td>
+</tr>
+<tr>
+<td>10-12_20:53</td>
+<td>check-in: KILL C2-552 (1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB) as HALTING: independent re-implementation agreed, Rocq 'halt: halts tm c0' check_kill --halt PASS (formalizer) + audit verified; status KILLED_HALT; exact step count 176,522,930,997,643,289,094,015,905,898,381,767,890,130,463 (computed from validated per-rule formulas; not proved in Coq). Orchestrator third check_kill --halt started. W4-3: formalize passed, bundle running in close-out. Healthy (load 0.4, 21 GB free).</td>
+<td>C2-552 W4-3</td>
+<td>wf_3cc3904c-205, wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_21:04</td>
+<td>C2-552 orchestrator check_kill --halt PASS (x3; sha 95335b49, compile 82 s, 1 baseline assumption). coqchk hit the 600 s cap this run (load from W4-3's checks); the formalizer's and the audit's runs on the same sha finished coqchk (508 s, 507 s), so the VM steps are independently re-checked. Halting kill confirmed; exact step count stays a computed (not Coq-proved) figure.</td>
+<td>C2-552</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_21:05</td>
+<td>KILL C2-552 (1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB, Skelet 1-like Class 2) HALTS: 'Lemma halt: halts tm c0' verified x3 (formalizer round 2, audit, orchestrator: check_kill --halt PASS, sha 95335b49, compile 80.5 s, assumptions = baseline funext; orchestrator coqchk timed out at 600 s (policy A warning), the bundle's run finished coqchk in 509.7 s). Independent re-implementation matched the halting increment 11,631,266,794,472,450,654,093 and all 82 resets. Exact step count 176,522,930,997,643,289,094,015,905,898,381,767,890,130,463 computed (validated per-rule formulas), not proved in Coq. Write-up checked (8 wording fixes). First halting kill.</td>
+<td>C2-552</td>
+<td>wf_3cc3904c-205</td>
+</tr>
+<tr>
+<td>10-12_21:15</td>
+<td>KILL W4-3 (1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---, Skelet 1-like Class 2, 740 line 341) verified x3 (formalizer round 2, audit, orchestrator: check_kill PASS, sha 7bda36dc, compile 71.8 s, 0 assumptions; coqchk timed out at 600 s, policy A warning). Status KILLED_NONHALT (bundle done in the resumed close-out). Next in that workflow: the same table's other starts, 512 and 588. Total 20.</td>
+<td>W4-3</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_21:38</td>
+<td>W4-7 invariant stage done (wf_34c8d48b-b0e): stop rule fired -&gt; PARKED (STUCK, med) with line 707. No digit-word invariant can work: changing one size by 1 reaches the unsupported case from 1-3 of 237 orbit states, and 3 of 69 perturbed hits halt within 400k steps, so a proof needs a quantitative invariant (ready digits stay in the last 3; counter value near n0); none found. Not a cryptid. 707: absim2 reproduces all 226,216 marker turns from step 117 to 1e9.</td>
+<td>W4-7</td>
+<td>wf_34c8d48b-b0e</td>
+</tr>
+<tr>
+<td>10-12_21:55</td>
+<td>session 85dee9 (terminal): a second instance of this conversation (Claude Desktop, 9be5f2) is now the live orchestrator (resumed close-out wf_5b5d8095-a48 at 20:53, logged the C2-552/W4-3 kills, ran W4-7 invariant wf_34c8d48b-b0e). To stop duplicate check-ins/launches, cancelled this instance's hourly cron 3171daa3 and messaged 9be5f2 (owns check-ins; 512/588 still owe audit + orchestrator check; watch that the re-run W4-3 proof chain does not rewrite its KILLED status). Healthy (load 1.6, 21 GB free).</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_21:56</td>
+<td>9be5f2 acknowledged sole-orchestrator role (its cron 3171daa3 live); it stopped its duplicate close-out run (task wd7vaid4f; no status.json overwritten). Original close-out wf_5b5d8095-a48 (sibling chain for 512/588) keeps running in terminal instance 85dee9, which relays its result to 9be5f2 for the orchestrator third checks.</td>
+<td>512 588</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_21:56</td>
+<td>Coordination: peer instance 85dee9 ('Busy Beaver plan review') says it cancelled its hourly check-in; this session (cron 3171daa3, :47) is the sole orchestrator. My 20:53 'resume' of wf_5b5d8095-a48 and wf_3cc3904c-205 had duplicated runs still alive in that process (same journal). Stopped my duplicate close-out (task wd7vaid4f). Damage check: no status.json overwritten; extra notes sections (W4-3 'stage 2' + 'invariant stage', R4/#32 'stage 2 re-run'), a status line + section 10.3 in W4-3's internal proof.md; the duplicate stage-2 agent killed 512 and 588 (Perm/Flip, check_kill PASS once each). The original run's sibling chain (#W4-3-sib2) continues in the peer process; audit + orchestrator third check of 512/588 still owed.</td>
+<td>W4-3 table</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_21:57</td>
+<td>check-in: healthy (load 1.1, 21 GB free, watchdog ok). Close-out wf_5b5d8095-a48 (original run, peer process) on #W4-3-sib2:round1; 512 and 588 KILLED_NONHALT on one check_kill each, audit + orchestrator check pending its result (peer forwards). No CHECKPOINT_B. PR #15, #16 open (0 comments). No action.</td>
+<td>-</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_22:27</td>
+<td>original close-out wf_5b5d8095-a48 done (21 agents): W4-3 formal+audit+bundle; 588 (W4-3c) formalize+audit on sha 48b42caf, bundle re-edited -&gt; f9b7173d with a fresh PASS (orchestrator check owed on f9b7173d); 512 (W4-3b) not formalized/audited by the chain (already killed by 9be5f2's duplicate run, sha ef701290; audit + orchestrator check owed). Relayed to 9be5f2 (sole orchestrator).</td>
+<td>512 588</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_22:28</td>
+<td>Original close-out wf_5b5d8095-a48 finished in the peer process (21 agents): 588 (W4-3c) formalized + audited on sha 48b42caf, then a one-line header comment edit at packaging -&gt; f9b7173d (bundle check_kill PASS); 512 (W4-3b) not re-formalized (already killed by the duplicate run's Perm/Flip file ef701290), so no audit yet. Launched: independent audit of 512 (wf_727066ba-ad9) + orchestrator check_kill on 588 (f9b7173d) and 512 (scratchpad/orch4).</td>
+<td>512 588</td>
+<td>wf_727066ba-ad9</td>
+</tr>
+<tr>
+<td>10-12_22:40</td>
+<td>512 (W4-3b) independent audit VERIFIED (wf_727066ba-ad9): check_kill PASS on ef701290 (compile 59.3 s, coqchk timeout), string byte-exact (line 512), conjugacy phi A-&gt;B..E-&gt;A, F fixed checked by hand against Permute.v's Perm, diff vs W4-3's file = header + tmP + base case + perm wrapper, 0 assumptions. House-style note for PR time: header line 35 names 'the parent's write-up (proof.md)' (should be parent-proof.md / 'the accompanying write-up'); fix comment-only + re-check at submission.</td>
+<td>512</td>
+<td>wf_727066ba-ad9</td>
+</tr>
+<tr>
+<td>10-12_22:40</td>
+<td>KILL 588 (W4-3c, 1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD) verified x3: formalize + audit (48b42caf), bundle check_kill on the final file f9b7173d after a one-line header comment edit, orchestrator check_kill PASS on f9b7173d (0 assumptions, coqchk timeout). Total 21.</td>
+<td>588</td>
+<td>wf_5b5d8095-a48</td>
+</tr>
+<tr>
+<td>10-12_22:50</td>
+<td>KILL 512 (W4-3b, 1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---) verified x3: duplicate-run formalizer check_kill, independent audit (wf_727066ba-ad9), orchestrator check_kill PASS on ef701290 (0 assumptions, coqchk timeout). W4-3's table: 3/3 listed starts killed. Total 22. Skelet 1-like Class 2 on the 740 list: 12/14 (left: R4 + #32, cryptid candidates). status.json reasons for 512/588 set to 'independently re-verified'.</td>
+<td>512</td>
+<td>wf_727066ba-ad9</td>
+</tr>
+<tr>
+<td>10-12_22:53</td>
+<td>check-in: healthy (load 0.1, 22 GB free); all workflows finished, no CHECKPOINT_B, nothing running (#5 rule reduction already done 10-12). Wrote reports/overnight-2026-10-10.md (22 kills; 4 decisions; next submissions) and updated STATUS.md.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_23:02</td>
+<td>Committed 65ce973 (local, not pushed; .gitignore: *.pkl, 6 new ELF helpers). Dennis: go with recommendations -&gt; #14 vf_round (FUND), #16 park, W4-6 park (+612), R4 + #32 stop_cryptid (stay CRYPTID_CANDIDATE). Park/stop decisions archived under decisions/2026-10-12-<option>.json with a 'parked' note in status.json.</td>
+<td>#14 #16 W4-6 R4 #32</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-12_23:05</td>
+<td>Funded: #14 vf_round (lemma VF + plant step for v &gt; 600; stop rule: park if VF needs a new engine; then skeptic round 3 + formalize). Formalize script's audit now checks the 740 list.</td>
+<td>#14</td>
+<td>wf_f391b4df-8ba</td>
+</tr>
+<tr>
+<td>10-12_23:05</td>
+<td>Dennis: new batch at the best candidates -&gt; Wave 5 launched: 4 scouts over the untouched 740-list machines (templates incl. our 22 kills; families incl. an exact sibling sweep of all kills; dynamics + a halting lens (C2-552 precedent); claims incl. open busycoq PRs) -&gt; rank + completeness critic (reports/wave5/ranking.md) -&gt; attack the top 8, 4 at a time (observe -&gt; up to 2 stages -&gt; proof + 2 skeptic rounds -&gt; formalize -&gt; siblings; decisions for med/stuck/halts).</td>
+<td>Wave 5</td>
+<td>wf_de202db8-b4c</td>
+</tr>
+<tr>
+<td>10-13_05:12</td>
+<td>#14 funded vf_round done (wf_f391b4df-8ba): lemma VF closed by a one-step Lemma L' (1,304/1,304 representatives) + hand lemmas E and P; skeptic round 3 sound (5 minor, fixed) -&gt; CHECKPOINT_B -&gt; formalize PASS (4,422-line .v, compile 313 s, coqchk PASS 300 s) -&gt; audit verified (sha a4144ade). Orchestrator third check_kill running (scratchpad/orch5).</td>
+<td>#14</td>
+<td>wf_f391b4df-8ba</td>
+</tr>
+<tr>
+<td>10-13_05:23</td>
+<td>KILL #14 (1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB, 740 line 301) verified x3 (formalizer, audit, orchestrator check_kill PASS on a4144ade). Total 23.</td>
+<td>#14</td>
+<td>wf_f391b4df-8ba</td>
+</tr>
+<tr>
+<td>10-13_06:41</td>
+<td>Wave 5 done (wf_de202db8-b4c, 53 agents): KILLS pending orchestrator check: W5-1 (349), W5-3 (134), W5-7 (700, HALT), W5-8 (214) + siblings W5-8b, W5-8c (formalize + audit each). W5-2 (409) CRYPTID_CANDIDATE at observe (leaves the TM10 cycle only when every 1-bit of x is at an odd position). Decisions: W5-4 proof (rec), W5-5 certify the predicted halt at ~1.82e18 steps (rec), W5-6 stage3 (rec; covers 280). Orchestrator check_kill on the 6 running in two queues (scratchpad/orch6).</td>
+<td>Wave 5</td>
+<td>wf_de202db8-b4c</td>
+</tr>
+<tr>
+<td>10-13_06:44</td>
+<td>KILLS verified x3 (formalize + audit in wf_de202db8-b4c, orchestrator check_kill PASS on the audited shas): W5-1 1RB1LD_1LC1RA_0LD0LC_0RE1RB_1RD0RF_0RB--- (349; 32cbc5c1), W5-3 1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC (134; 75932a97), W5-7 1RB0RD_1LC1RE_1LA0LD_0RE0RF_1LC1RA_0LE--- (700; HALT; 30ba9693), W5-8 1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF (214; beef54a5), W5-8b 1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF (7bd5af92), W5-8c 1RB0RD_0RC0LB_0RD1RD_1LE1RA_1RC1LF_---1LA (8c597d87). coqchk passed on all six. Total 29.</td>
+<td>Wave 5</td>
+<td>wf_de202db8-b4c</td>
+</tr>
+<tr>
+<td>10-13_06:45</td>
+<td>check-in: healthy (load 0.9, 22 GB free). PR #15 and #16 MERGED by ccz181078 (12:25/12:26 UTC): accepted 9. All workflows finished; no CHECKPOINT_B; 3 decisions open (W5-4, W5-5, W5-6). Report + STATUS.md updated.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_06:52</td>
+<td>check-in: healthy, idle (no workflows, no CHECKPOINT_B); report already current; waiting on Dennis (3 Wave 5 decisions, next submission). No action.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_07:53</td>
+<td>check-in: healthy, idle (no workflows, no CHECKPOINT_B); waiting on Dennis (3 Wave 5 decisions, next submission). No action.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_08:53</td>
+<td>check-in: healthy, idle (no workflows, no CHECKPOINT_B); waiting on Dennis (3 Wave 5 decisions, next submission). No action.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_08:57</td>
+<td>Dennis: go with recommendations -&gt; W5-4 proof, W5-5 certify, W5-6 stage3 (answers filed). Launched: funded stages W5-4 + W5-6 (wf_d3589503-763); W5-5 halt certification + kill (wf_753e4201-8a1: independent re-implementation, exact steps, Rocq design -&gt; formalize --halt -&gt; audit -&gt; bundle -&gt; write-up check; stops before Rocq if the independent run disagrees).</td>
+<td>W5-4 W5-5 W5-6</td>
+<td>wf_d3589503-763, wf_753e4201-8a1</td>
+</tr>
+<tr>
+<td>10-13_08:57</td>
+<td>Dennis: prep the PR for W4-3's table + C2-552 (prep only, nothing pushed): upstream names, public-text header fixes (512 line 35, C2-552 Individual.v credit) + re-check_kill, new clone branch skelet1like-c2-w43-table-and-halt from origin/BB6, coqc/Print Assumptions/coqchk, images, PR body + one Discord message, independent verify with up to 2 fix rounds.</td>
+<td>W4-3 512 588 C2-552</td>
+<td>wf_f133c95e-f33</td>
+</tr>
+<tr>
+<td>10-13_08:59</td>
+<td>Dennis: two PRs (one per table). Stopped the single-PR prep wf_f133c95e-f33 in its first stage (no .v edited yet; shas unchanged) and relaunched as two-PR prep: PR A = W4-3's table (branch nonhalt-skelet1like-c2-1RB0RF-family), PR B = C2-552 halting (branch halt-skelet1like-c2-1RB0RD_1LC0RA); prep only, nothing pushed.</td>
+<td>W4-3 table, C2-552</td>
+<td>wf_73ce8ccc-8c5</td>
+</tr>
+<tr>
+<td>10-13_11:09</td>
+<td>Two-PR prep done (wf_73ce8ccc-8c5): verify PASS after 1 fix round. PR A: 3 files verify/Skelet1LikeC2_{1RB0RF_1RC0RB,1RB0RA_1LC0RE,1RB1RZ_1LC0LA}.v on branch nonhalt-skelet1like-c2-1RB0RF-family (coqc 63-71 s, closed, coqchk not finished in 600 s); PR B: verify/Skelet1LikeC2Halt_1RB0RD_1LC0RA.v on branch halt-skelet1like-c2-1RB0RD_1LC0RA (worktree busycoq-halt; coqc 69.8 s, funext only, coqchk pass 534 s). Comment-only .v edits re-passed check_kill (new shas 64d69ff2, 6a1d6ad9, 5784ac23, a55e10b2). One more wording fix by hand (512 write-up 'block 5 (the third from the head)'). Waiting for Dennis's go to push + open.</td>
+<td>W4-3 table, C2-552</td>
+<td>wf_73ce8ccc-8c5</td>
+</tr>
+<tr>
+<td>10-13_11:47</td>
+<td>W5-5 halt kill workflow done (wf_753e4201-8a1): independent re-implementation agrees (cycle 611,577, round 7,435; exact total 1,816,824,067,232,869,945 steps), formalize round 1 PASS (2,975-line .v, 751 vm chunks, compile ~610 s, coqchk timeout), audit verified on sha 851ca695; packaging changed one comment (line 699 '200,000'-&gt;'400,000'); reverting it reproduces 851ca695 exactly. Orchestrator check_kill --halt on the shipped 866a5226 running (scratchpad/orch7).</td>
+<td>W5-5</td>
+<td>wf_753e4201-8a1</td>
+</tr>
+<tr>
+<td>10-13_12:08</td>
+<td>KILL W5-5 (1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---, 740 line 29, Bell eats counter) HALTS: verified x3 (formalizer + audit on 851ca695, bundle check + orchestrator check_kill --halt PASS on the shipped 866a5226 = 851ca695 with one comment changed; compile 610 s, 0 assumptions, coqchk timeout). 1,816,824,067,232,869,945 steps (computed, independently matched; not proved in Coq). Third halting kill. Total 30.</td>
+<td>W5-5</td>
+<td>wf_753e4201-8a1</td>
+</tr>
+<tr>
+<td>10-13_12:13</td>
+<td>Dennis: go -&gt; PR #17 (W4-3's table, 3 files, commit 0b4510f) and PR #18 (C2-552 halting, commit 08db459) opened on ccz181078/busycoq from DennisKoshta; both MERGEABLE; GitHub contents sha-identical to the check_kill-PASS files (64d69ff2, a3afc5e3, 530d9788; 198b3022). Discord texts filled (1,963 / 1,573 chars, not posted). status.json pr set.</td>
+<td>W4-3 table, C2-552</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_13:17</td>
+<td>Funded W5-4 + W5-6 done (wf_d3589503-763): W5-4 proof_ready (shift law G = F + 1, Lemmas J/K/Z'/A1) -&gt; proof.md -&gt; skeptic sound (5 minor, fixed) -&gt; CHECKPOINT_B -&gt; formalize + audit PASS (sha f61649bd); orchestrator check running (scratchpad/orch8). W5-6 parked by its cap (no closed-form invariant; covers 280).</td>
+<td>W5-4 W5-6</td>
+<td>wf_d3589503-763</td>
+</tr>
+<tr>
+<td>10-13_13:18</td>
+<td>KILL W5-4 (1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB, 740 line 525, Bell eats counter) verified x3 (formalizer, audit, orchestrator check_kill PASS on f61649bd). Total 31.</td>
+<td>W5-4</td>
+<td>wf_d3589503-763</td>
+</tr>
+<tr>
+<td>10-13_13:19</td>
+<td>check-in: healthy (load 0.5, 22 GB free); all workflows done, no CHECKPOINT_B, no open decisions; PR #17/#18 open (0 comments). Report + STATUS.md updated (31 kills).</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_13:52</td>
+<td>check-in: healthy, idle (no workflows, no CHECKPOINT_B, no decisions); PR #17/#18 status checked; report current. No action.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_14:10</td>
+<td>Dennis: simplify the site (old URLs need not survive). Site restructure launched: spec (reports/site-redesign.md) -&gt; tools/site.py + one page per machine (card + kill merged) -&gt; Home/Machines/Decisions and Submissions/Reports in parallel -&gt; integration (rebuild_pages.sh, delete old pages, docs, tests, link check) -&gt; headless review at 1280/390 px with up to 2 fix rounds. CLI commands (card.py, killreview.py, dashboard.py, decisions.py) keep working.</td>
+<td>site</td>
+<td>wf_6d584590-160</td>
+</tr>
+<tr>
+<td>10-13_14:20</td>
+<td>Dennis: a learning guide that builds intuition (checkpoint A/B questions don't). Launched: plan (learn/PLAN.md) -&gt; learn/tm.js step-through widget (validated against tools/sim.py) -&gt; ~9 visual modules grounded in our kills (real-simulation step-throughs, verified predict-then-reveal drills), each with an independent accuracy + newcomer-clarity check and a fix round -&gt; index + glossary + link check. Served at /learn/.</td>
+<td>learn</td>
+<td>wf_431d67dd-ade</td>
+</tr>
+<tr>
+<td>10-13_15:18</td>
+<td>Two-agent setup (Dennis): AGENTS.md (Astra/Codex entry point), coord/ (README protocol, mailbox to-astra/ + to-claude/ with READ files, claims.tsv: all 64 dirs + Bell eats counter, halting hunt and submissions to claude, board.md, audits/queue.tsv with 22 unmerged kills, patches/, astra-log.md), CLAUDE.md section. First message sent: coord/mailbox/to-astra/20261013-151810-claude-hello-and-proposal.md (split + task 1 = cross-model audit).</td>
+<td>coord</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_15:19</td>
+<td>Bell eats counter sweep launched (class claimed by claude in coord/claims.tsv): rank the ~21 untouched BEC holdouts against our 8 BEC kills -&gt; critic (reports/bec-sweep/) -&gt; attack top 8 B-1..B-8 (observe -&gt; 2 stages -&gt; proof + 2 skeptic -&gt; formalize -&gt; siblings; each pick claimed in claims.tsv). Backlog PR prep waits for Astra's cross-model audit verdicts (coord/audits/).</td>
+<td>BEC sweep</td>
+<td>wf_9c86de6d-ba5</td>
+</tr>
+<tr>
+<td>10-13_16:07</td>
+<td>Astra replied (option A: Bouncer + Chaotic Edge after the audit; audit ETA 1-2 h for the PR #17/#18 four, 4-6 h for all 22; preflight: 22 hashes + strings OK). Sent handover (443=#13, 533=#35, 615=#36: shared open edge lemma (E'), parked by Dennis; renewed proof work needs his go) + the 12-machine list (118 excluded) + hash-stability promise. claims.tsv updated. BEC sweep: critic found B-1..B-3 (528/310/548) are time-rescaled copies of 693's chaotic bell dynamics and B-5/B-6/B-8 are relatives of parked machines; stopped the attack, marked 528/310/548 SKIPPED (Dennis's call), resumed with B-4 (239) only.</td>
+<td>coord, BEC</td>
+<td>wf_9c86de6d-ba5</td>
+</tr>
+<tr>
+<td>10-13_16:11</td>
+<td>Dennis: PR #17 and #18 Discord messages were posted (status.json posted set for the 4 machines; pages rebuilt).</td>
+<td>W4-3 table, C2-552</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_16:16</td>
+<td>Site restructure done (wf_6d584590-160): Home / Machines / Submissions / Decisions / Reports / one page per machine (machines/<tm>/), shared nav (tools/sitekit.py; tools/site.py = full build), old card/kill/index pages deleted, 0 broken links (44,393 links, 71 pages), tests green except the known W4-3c coqchk data failure; review PASS with minors. Fixed by hand: phone overflow of the check_kill list (scrollWidth 390 at 390 px). Left: Decisions page 20 px inner offset, alias on hover only, 2 delta non-killed pages show 'not rendered yet' figure boxes.</td>
+<td>site</td>
+<td>wf_6d584590-160</td>
+</tr>
+<tr>
+<td>10-13_16:20</td>
+<td>BEC sweep done (wf_9c86de6d-ba5): B-4 (239) parked at observe, residue-driven (counter pass P0/P1 and overflow O exact, but each overflow leaves the counter residue in a junk word J that decides the next cycle). Class has no fresh pick left: B-1..B-3 (528/310/548) = 693's dynamics (gated, SKIPPED), B-5/B-6/B-8 (470/651/441) relatives of parked #29/R3, R2, 347 (need Dennis + a new idea). Waiting for Dennis's call; next default: halting hunt.</td>
+<td>BEC</td>
+<td>wf_9c86de6d-ba5</td>
+</tr>
+<tr>
+<td>10-13_16:27</td>
+<td>Dennis: do both -&gt; launched (1) 693 bursts look (1 h cap; structured -&gt; decision for one proof of 693/528/310/548, or cryptid flag) and (2) halting hunt: scouts deep/margins/parked/hints (reports/halting-hunt/) -&gt; rank + critic -&gt; H-1..H-4 exact models (2 at a time) -&gt; on a halt: independent re-implementation + exact steps + Rocq design -&gt; formalize --halt (one-coqc lane while Astra audits) -&gt; audit -&gt; bundle.</td>
+<td>halting hunt, 693</td>
+<td>wf_dd9e98e0-9a8</td>
+</tr>
+<tr>
+<td>10-13_16:42</td>
+<td>Dennis upset about budget (learning guide workflow ~3 h). Stopped: learning guide integrate step (the 9 modules + index are done and linked; glossary not written) and the full halting hunt (5 agents in its scout phase, nothing finished) to relaunch slim. Memory: state cost before launching workflows over ~5 agents.</td>
+<td>budget</td>
+<td>wf_431d67dd-ade, wf_dd9e98e0-9a8</td>
+</tr>
+<tr>
+<td>10-13_16:49</td>
+<td>Dennis: resume the hunt as it was -&gt; resumed wf_dd9e98e0-9a8 unchanged (693 look + 4 scouts -&gt; rank/critic -&gt; 4 models -&gt; certification on halts). Astra audit so far: 12 verdicts, 4 PASS (C2-552, #7, #8, #14), 8 CONCERN, 0 FAIL; every formal check passed; concerns are public-text accuracy, e.g. W4-3 write-up/PR #17 body: 'tape changes only at defects' (sweeps complement cells), 'every long gap 9x longer' (lengths affine in u), '18 symbolic block cases' (17 + one concrete; also in the .v header comment), defect collisions not excluded.</td>
+<td>audit, hunt</td>
+<td>wf_dd9e98e0-9a8</td>
+</tr>
+<tr>
+<td>10-13_17:55</td>
+<td>Dennis: fix PR #17 per Astra's CONCERNs -&gt; one agent (wf_6258e396-e3a): corrected write-ups + copies, corrected PR body, optional Discord correction draft, comment-only .v header fixes (parent '18 symbolic' -&gt; 17 + 1 concrete; sibling sha citations) + re-check_kill, staged in the clone. Astra notified of the coming hash change. Push + gh pr edit by the orchestrator after review.</td>
+<td>PR #17</td>
+<td>wf_6258e396-e3a</td>
+</tr>
+<tr>
+<td>10-13_18:25</td>
+<td>Learn link: nav item 'Learn' (tools/sitekit.py NAV + page_href) on every site page; learn pages link back to /dashboard/; tests updated (site/card/dashboard OK).</td>
+<td>site</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_18:25</td>
+<td>Dennis: UI/UX overhaul -&gt; preview first (1 agent, wf_977f97f2-ab8): redesigned Home + 3 machine pages in dashboard/preview/, screenshots in reports/ui-preview/; rollout only after Dennis approves.</td>
+<td>site</td>
+<td>wf_977f97f2-ab8</td>
+</tr>
+<tr>
+<td>10-13_18:45</td>
+<td>PR #17 corrected per Astra's CONCERNs: comment-only .v edits (code identical, fresh check_kill PASS each; new shas 13db03a7, 909abd2a, 6182b097), commit 7721923 pushed to the PR branch (GitHub contents match), PR body updated (gh pr edit), write-ups + attachments corrected, Discord correction draft at machines/<W4-3>/submission/family/discord_correction.txt. Astra notified of new hashes.</td>
+<td>PR #17</td>
+<td>wf_6258e396-e3a</td>
+</tr>
+<tr>
+<td>10-13_19:06</td>
+<td>Dennis: roll out the new UI -&gt; one agent (wf_902a3f9e-ca5): preview design into sitekit/dashboard/machinepage/submissions/reports/decisions, tests + link check, one headless self-check; preview folder removed after.</td>
+<td>site</td>
+<td>wf_902a3f9e-ca5</td>
+</tr>
+<tr>
+<td>10-13_19:41</td>
+<td>UI rollout done (wf_902a3f9e-ca5): new design live on all generated pages (sitekit tokens/nav/footer, Home, Machines table with search + chips, machine page with header + tabs, Submissions/Decisions/Reports restyled); 0 broken links (44,931 links, 83 pages); tests: 10/12 suites pass, 2 data failures (W4-3c coqchk; two old card.html in Astra's dirs -&gt; asked Astra to remove). Learn makeover launched (wf after rollout, 1 agent).</td>
+<td>site</td>
+<td>wf_902a3f9e-ca5</td>
+</tr>
+<tr>
+<td>10-13_19:55</td>
+<td>Learn makeover done (wf_ddfad1b1-b42, 1 agent, 14 min): learn/ uses the site tokens, nav (Learn current) and footer via tools/learn_shell.py (marker blocks; re-run after sitekit changes, --check shows drift); widget tests 409/409; no module text or tm.js changes.</td>
+<td>learn</td>
+<td>wf_ddfad1b1-b42</td>
+</tr>
+<tr>
+<td>- 2026-10-13 23:15: halting hunt wf_dd9e98e0-9a8 done (no halts); 693 decision written; Astra audit read (22 PASS formal, 13 text concerns); board + STATUS updated.</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>10-13_23:2x</td>
+<td>check-in: healthy (load 3.2, 21 GB free, watchdog up); all plan workflows finished, no CHECKPOINT_B, #5 reduction already done (10-12). Nothing launched. Updated reports/overnight-2026-10-10.md (hunt, audit, 693 decision).</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-13_23:53</td>
+<td>check-in: healthy (load 2.1, 22 GB free, watchdog up); R5 capped exact run ended at its cap, no halt; nothing running, no CHECKPOINT_B, no new mail. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_00:53</td>
+<td>check-in: healthy (load 2.7, 22 GB free, watchdog up); nothing running, no CHECKPOINT_B, no new mail. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_01:53</td>
+<td>check-in: healthy (load 2.1, 22 GB free, watchdog up); nothing running, no CHECKPOINT_B, no new mail. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_02:53</td>
+<td>check-in: healthy (load 2.0, 22 GB free, watchdog up); nothing running, no CHECKPOINT_B, no new mail. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_03:53</td>
+<td>check-in: healthy (load 2.1, 22 GB free, watchdog up); nothing running, no CHECKPOINT_B, no new mail. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_09:10</td>
+<td>PR #17 + #18 merged (06:20 UTC, ccz181078, 0 comments); status.json of the 4 machines set merged; report + STATUS updated.</td>
+<td>W4-3 table, C2-552</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_09:30</td>
+<td>Dennis: fund 693 + apply Astra's patches -&gt; decision.json answer=fund; launched wf_d3220007-c05: (1) 693 proof stage (round map, catch-up law all j, burst induction, proof.md + check_proof.py) -&gt; 2 skeptics (gaps / independent re-derivation) -&gt; up to 2 fix rounds -&gt; nested formalize if sound; (2) Astra's 17 patches applied (W4-3 reconciled, .v untouched since merged; W5-5 header -&gt; fresh check_kill --halt) -&gt; independent verify -&gt; fix.</td>
+<td>693, audit patches</td>
+<td>wf_d3220007-c05</td>
+</tr>
+<tr>
+<td>10-14_09:39</td>
+<td>Astra's 17 audit patches applied (record: reports/astra-patches-2026-10-14.md): 11 applied clean (each = Astra's draft sha), 3 W4-3 public patches reconciled by 3-way merge (all math already in; disclosure + W4-3b map sentence), 3 W4 header suggestions skipped (.v merged upstream; disclosure/map wording = open upstream follow-up). Disclosure -&gt; house dual line (Claude; corrections from an independent audit by GPT-6 Astra). Same corrections propagated to W5-4/W5-3/W5-7 README/discord drafts. W5-5 header (comment-only) -&gt; fresh check_kill --halt PASS 16:37:56Z, sha 866a5226 -&gt; 5b83f5b1 (status.json, receipt, queue.tsv updated). Lint 0 errors everywhere (preexisting density warnings only). Pages rebuilt; Astra mailed.</td>
+<td>audit patches, W5-5</td>
+<td>wf_d3220007-c05</td>
+</tr>
+<tr>
+<td>10-14_10:0x</td>
+<td>Dennis: 'How we proved it' text unreadable + pointless one-line 'Read the rest'. Fixed machinepage.hero_html (whole paragraphs; fold only when &gt;= 400 chars hidden; same for status fold); new how_proved.md contract in tools/README-card.md (3-5 short plain paragraphs: what you'd see / key idea / why it settles it / what the computer checked); test_card 26/26. Launched wf_b3d227c1-8b4: 4 family writers rewrite how_proved.md for all 31 kills (11 had none) + 1 editor (fresh-reader test, accuracy vs proof.md + audit files, 2 screenshots).</td>
+<td>site</td>
+<td>wf_b3d227c1-8b4</td>
+</tr>
+<tr>
+<td>10-14_10:12</td>
+<td>Astra-patch fix round (verifier findings): W5-5 write-up .v map +1 / '2,976 lines' (header disclosure wrap added a line; .v unchanged, no new gate; status.json kill.lines 2976), W5-4 README Template overflow sentence, W4-3 family READMEs (u -&gt; 9u affine, 17 runs, verbatim = simulator + invariant library), #4b proof.md 'contracting map' -&gt; spectral radius below 1. Lint 0 errors on all (W5-3 discord checklist keeps 1 preexisting error outside the paste block). Open: W5-8b/c .v comments state the reversed map (fresh gates needed, Dennis's call); one disclosure rule per bundle (Dennis's call). Astra mailed new hashes (20261014-101245).</td>
+<td>audit patches</td>
+<td>wf_d3220007-c05</td>
+</tr>
+<tr>
+<td>10-14_10:2x</td>
+<td>Dennis: 693 fund_closure -&gt; answer filed; launched wf_81051726-a0d: stage 2 (first: busycoq verified RepWL/CTL-style deciders with a parameter sweep, also on 528/310/548; else symbolic shape explorer -&gt; closed language -&gt; case list in proof.md + check_proof.py) -&gt; 2 skeptics -&gt; 1 fix round -&gt; nested formalize if sound. Astra's 5 decisions not answered yet.</td>
+<td>693</td>
+<td>wf_81051726-a0d</td>
+</tr>
+<tr>
+<td>10-14_10:4x</td>
+<td>Astra patches done (wf_d3220007-c05 track 2): 11 applied, 3 W4-3 reconciled (substance already in), 3 W4 header suggestions skipped (.v merged upstream); W5-5 header -&gt; sha 5b83f5b1, fresh check_kill --halt PASS; dual disclosure line where Astra corrected; independent verify ok after 1 fix round; I fixed the W4-3 family .v line counts (2,584/2,622) in local copies; orchestrator re-check of W5-5 running. Open for Dennis: upstream comment-only follow-up for W4-3b/c header map wording + disclosure; PR #17 body credits only Claude.</td>
+<td>audit patches</td>
+<td>wf_d3220007-c05</td>
+</tr>
+<tr>
+<td>10-14_10:42</td>
+<td>orchestrator re-check: W5-5 new .v (sha 5b83f5b1) check_kill --halt PASS, exit 0 (compile 607 s, 0 assumptions, coqchk timeout = policy A warning).</td>
+<td>W5-5</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_10:5x</td>
+<td>how_proved rewrite done (wf_b3d227c1-8b4): all 31 kills rewritten (4 writers + editor; accuracy: every number traced to proof sources, relation claims checked against tables, 9 accuracy fixes incl. #3, #4, #8, #11, W5-7, W4-3b). Page: text up to 2,000 chars never folds (SHOW_ALL), paragraph gap CSS; full site rebuild; screenshots reports/how-proved/.</td>
+<td>site</td>
+<td>wf_b3d227c1-8b4</td>
+</tr>
+<tr>
+<td>10-14_11:1x</td>
+<td>693 stage 2 parked (wf_81051726-a0d, 1 agent, 85 min): busycoq CTL62 deciders (10 parameter kinds, ~190 runs) 0 true; own symbolic explorer sound on tests and follows the orbit but never closes (2.6M shapes, skeletons growing): free counter length lets eating outrun overflow (needs counter length ~ log2 of bell = arithmetic) + an explorer digit-bookkeeping defect. New decision: park (rec) or fund_clock.</td>
+<td>693</td>
+<td>wf_81051726-a0d</td>
+</tr>
+<tr>
+<td>10-14_11:45</td>
+<td>check-in: WSL restarted 08:59 and watchdog was NOT running (earlier pgrep -f checks matched their own shell = false 'up'); restarted (pid 64358). Load 0.1, 22 GB free; nothing running, no CHECKPOINT_B; read 3 Astra messages (5 decisions done by Dennis via Astra: 3 studies run, no kill; new cards: 593 60-min stage, defer 6/348 + 282). Report updated. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_11:53</td>
+<td>check-in: healthy (watchdog pid 64358 up, load 0.0, 22 GB free); nothing running, no CHECKPOINT_B, no new mail. Nothing launched.</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_12:0x</td>
+<td>Dennis: fund 693 stage 3 + find more candidates -&gt; answer fund_clock filed; launched wf_2858ada7-f87: (A) 693 stage 3 (faithful digit bookkeeping + counter clock, closure rerun) -&gt; 2 skeptics -&gt; fix + re-review -&gt; formalize if sound; (B) Wave 6: 4 scouts (templates incl. 31 kills + upstream cdaf693, families/sibling sweep, dynamics, claims incl. Astra's) -&gt; rank + critic -&gt; attack top 8 (observe -&gt; &lt;=2 stages -&gt; proof + 2 skeptic rounds -&gt; formalize -&gt; siblings), picks claimed in claims.tsv. Same plan row as Wave 5.</td>
+<td>693, wave 6</td>
+<td>wf_2858ada7-f87</td>
+</tr>
+<tr>
+<td>10-14_12:1x</td>
+<td>Dennis: big-picture directions (cut swathes / start a cryptid) -&gt; launched wf_599420b5-e11: 5 lenses (census by class, verified-decider inventory + bounded CTL62 big-parameter probe, class-family parametric proofs, equivalence merging, cryptids/edge) -&gt; synthesis (reports/strategy/directions.md) -&gt; adversarial critic. 7 agents, research only. Wave 6 + 693 stage 3 keep running.</td>
+<td>strategy</td>
+<td>wf_599420b5-e11</td>
+</tr>
+<tr>
+<td>10-14_14:1x</td>
+<td>Dennis: park 693 -&gt; decision moved to decisions/2026-10-14-park.json, status STUCK (parked with 528/310/548).</td>
+<td>693</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_14:2x</td>
+<td>Dennis: coqchk optional + let it run uncapped. killreview: coqchk shown as 'coqchk finished (optional)' (✓ pass / amber ! timeout), not counted: checks are now n/6 (30 kills 6/6; #2 5/6 by design, posted write-up predates writeup_lint); tests updated (killreview 28, site 12, submissions, dashboard OK); site rebuilt. Started reports/coqchk-uncapped/run.sh (setsid, nice 19, ionice idle, ulimit -v 10 GB; one at a time; waits for &lt;2 coqc, load&lt;20, &gt;10 GB free): check_kill --coqchk-timeout 604800 on #2, W4-3, W4-3b, W4-3c, W5-5; a full PASS appends to machines/<tm>/check_kill.txt.</td>
+<td>coqchk</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_15:0x</td>
+<td>Strategy report done (wf_599420b5-e11, 7 agents): reports/strategy/directions.md. Ranked: 0 bank the 18 pending kills; 1 twin ports of upstream proofs (64/124 first); 2 K42 Sk1C1 core (40 lines, residue of hlin/TC/hand proofs; atlas first); 3 halting-certificate pipeline (short; others sweeping); 4 CB3 two-array core (12 lines, write-1 exits); 5 regular-language search background. Stop: decider sweeps, one-off waves after W6. Wave 6 so far: W6-3/5/6 CRYPTID_CANDIDATE, W6-4 STUCK (no halt), W6-2 STUCK; W6-1 stage 1, W6-7/8 observing.</td>
+<td>strategy</td>
+<td>wf_599420b5-e11</td>
+</tr>
+<tr>
+<td>10-14_15:4x</td>
+<td>Dennis: submissions yes but wait for his signal; lift 'mined' exclusion (K42 Sk1C1 + halting side of Bell-like/QM/Cubic); he asked #bb6 about K42. Decisions: W6-2 (line 96) park -&gt; archived, STUCK; lines 6 and 282 (Astra's) defer -&gt; relayed to Astra by mailbox.</td>
+<td>strategy, W6-2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_15:5x</td>
+<td>Dennis: go on directions 1-4 -&gt; launched wf_90f568e8-a70: (1) ports: 64+124 (Sk1like_TC_v1 TM1/TM3), 305, 500 (#37, SBCv9 TM2 halt), cert replays 728/385/697 via Astra's NFA package, 145/276 (RWLAccHaltv6 halt twins) -&gt; prep -&gt; nested formalize (pool 2); (2) K42 atlas (digit-level sim, F-entry recurrence) -&gt; stage 2 -&gt; reports/k42/decision.md; (3) halting search over 31 closed-rule Collatz lines + CB1 cluster (minus Astra's table, W6-4) -&gt; independent confirm + checked-runner .v + audit (max 3); (4) CB3 write-1 exit study -&gt; reports/cb3/decision.md. Class claims for K42 and CB3 core. Strategy scripts copied to reports/strategy/scripts/.</td>
+<td>strategy 1-4</td>
+<td>wf_90f568e8-a70</td>
+</tr>
+<tr>
+<td>10-14_16:3x</td>
+<td>Dennis: Home 'Needs you' showed calls the Decisions page lacked. Cause: Wave 6 observe agents (and W5-2) recorded priority_call in status.json without a decision.json. Fix: filed 6 decision cards (W6-3/4/5/6/7, W5-2; rec park); sitekit.waiting_calls + Decisions 'Also waiting on you' section (W6-8's Checkpoint A) + nav badge = cards + waiting calls; CLAUDE.md: every call is a decision.json; tests decisions/dashboard/site OK; site rebuilt.</td>
+<td>site</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_16:5x</td>
+<td>Dennis: park W6-3/W6-4/W6-5/W6-6/W6-7/W5-2 (decisions archived, priority_call -&gt; priority_call_answered, status kept CRYPTID_CANDIDATE/STUCK); W6-1 'plan' -&gt; launched wf_fa547893-753 (2 h formal-planning stage: Rocq for exit O/C/T2/nested launch, tail-aware round lemma stated + priced, new decision card; then independent compile + review). Note: Wave 6 workflow (wf_2858ada7-f87) is still running W6-8 stage 2; W6-1's chain in that workflow already ended at its decision.</td>
+<td>W6</td>
+<td>wf_fa547893-753</td>
+</tr>
+<tr>
+<td>10-14_17:0x</td>
+<td>Wave 6 workflow (wf_2858ada7-f87) finished: 0 kills. W6-1 informal proof complete -&gt; plan stage running; W6-2 parked; W6-3/5/6/7 cryptid candidates (parked); W6-4 parked; W6-8 decision open (park or 3rd stage for a timing automaton). 693 stage 3 parked earlier (Dennis: park).</td>
+<td>wave 6</td>
+<td>wf_2858ada7-f87</td>
+</tr>
+<tr>
+<td>10-14_17:1x</td>
+<td>Dennis: park W6-8 -&gt; decision archived, STUCK.</td>
+<td>W6-8</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_17:3x</td>
+<td>W6-1 plan stage done (wf_fa547893-753): exit proved in Rocq (W61Exit.v, no Admitted, funext only); independent check: draft tail_round FALSE as stated (2 Coq counterexamples; fix k&lt;=3,</td>
+<td>last</td>
+<td>&gt;=3), precondition not inductive, estimate 14 stages (12-18) not 10. Decision card corrected: options spike (rec) / formalize / park.</td>
+</tr>
+<tr>
+<td>10-14_18:xx</td>
+<td>Strategy directions 1-4 done (wf_90f568e8-a70, 12 agents): (1) all 8 twin ports refuted (64/124/305 split after exit 6; 500, 728, 385, 697, 145/276 refuted) - SKIPPED/STUCK; (2) K42 = cryptid family (40 lines run to 1e169-1e194 Incs, no halt, no cycle; rules written; reports/k42/decision.md rec A park); (3) halting search: no halter (qsim to 1e31-1e34670 steps on 19 Bell/QM lines; stop); (4) CB3: exit 1 is bounded, not a cryptid, no certificate yet; reports/cb3/decision.md rec A (token-level closure explorer, 1-1.5 agent-days, package via Astra). 0 kills.</td>
+<td>strategy 1-4</td>
+<td>wf_90f568e8-a70</td>
+</tr>
+<tr>
+<td>10-14_18:0x</td>
+<td>check-in: healthy (watchdog pid 64358, load 2.4, 20 GB free); all plan workflows finished; no CHECKPOINT_B. coqchk uncapped: #2 1.3 s, W4-3 1743 s, W4-3b 1571 s, W4-3c 1564 s all PASS (receipts appended; pages 6/6 coqchk ✓); W5-5 running. Read 14 Astra messages (autonomous session: no new kills; NFA certificate package gate-passing; 257/535/669 lane done; directions.md corrected for that and the counter/regular overstatement). Nothing launched (open: K42/CB3/W6-1 calls for Dennis).</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_18:2x</td>
+<td>Dennis: K42 A (parked as cryptid family; claims line) and CB3 A (closure explorer; package via Astra). Asked whether negative results are recorded: answer = partly, scattered, no single index. Launched wf_f361b4b0-d23: (A) CB3 explorer, up to 3 stages -&gt; package/check_kill/audit on closure; (B) shared attempts ledger coord/attempts.tsv + tools/attempts.py (add/query with canon table matching/lint/summary) + CLAUDE.md/AGENTS.md/coord README rule, backfilled from Claude-side and Astra-side records, then a 25-sample coverage check.</td>
+<td>CB3, ledger</td>
+<td>wf_f361b4b0-d23</td>
+</tr>
+<tr>
+<td>10-14_18:3x</td>
+<td>Mailed Astra: attempts ledger + rule (before/after every attempt), backfill of its side read-only with corrections by appended rows; K42 parked; CB3 explorer may send certificates for packaging; ack of its directions.md corrections.</td>
+<td>coord</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_18:4x</td>
+<td>Dennis: plan the next wave -&gt; launched wf_5a083869-f1b Wave 7 at table/cluster level: lenses (untouched multi-start clusters; sibling-residue triage + engine fit; remaining Unknown/small classes) -&gt; planner + critic (checks the attempts ledger, honest odds, cryptid signatures) -&gt; GO only if &gt;= 3 picks with odds &gt;= 0.2 -&gt; attack &lt;= 6 picks, 3 at a time (observe all starts -&gt; &lt;=2 stages -&gt; start-parametric proof + 2 skeptic rounds -&gt; formalize). reports/wave7/plan.md.</td>
+<td>wave 7</td>
+<td>wf_5a083869-f1b</td>
+</tr>
+<tr>
+<td>10-14_19:3x</td>
+<td>Ledger + CB3 workflow (wf_f361b4b0-d23) done. Ledger: tools/attempts.py + coord/attempts.tsv; backfill 223 Claude + 69 Astra rows; coverage check 18/25 found, 7 missing added; applied Astra's 'success' outcome patch, appended its 4 pending success rows; query accepts '---' strings; summary metric fixed; tests 26/26; 360 rows lint OK. CB3 explorer: stage 1 progress, stage 2 STOP (left-side run-length leak; S0LC calibration never closed); reports/cb3/decision.md 'Next': B hand to Astra (rec) / C park / A3 stage 3.</td>
+<td>ledger, CB3</td>
+<td>wf_f361b4b0-d23</td>
+</tr>
+<tr>
+<td>10-14_22:5x</td>
+<td>Wrote HANDOFF.md (state, running Wave 7, decisions waiting, Astra coordination, ledger, paths, lessons). Old session still owns wf_5a083869-f1b and cron 3171daa3.</td>
+<td>handoff</td>
+<td>-</td>
+</tr>
+<tr>
+<td>10-14_23:0x</td>
+<td>Running: Wave 7 agents W7-2:skeptic1 and W7-5 formalize round 1. Found: W7-4 (82/464/722, observe confidence HIGH) silently dropped by Wave 7 because its status field held a sentence (includes() check failed). Launched wf_ffeae37e-2fe: W7-4 proof -&gt; 2 skeptic rounds -&gt; formalize (status parsed by first word). W7-6 (33...) -&gt; CRYPTID_CANDIDATE, card 'park' rec.</td>
+<td>W7-4, W7-6</td>
+<td>wf_ffeae37e-2fe</td>
+</tr>
+<tr>
+<td>10-14_23:1x</td>
+<td>Dennis: stop for handover -&gt; stopped Wave 7 (wf_5a083869-f1b), W7-4 continuation (wf_ffeae37e-2fe), cron 3171daa3. No orphan coqc. Found W7-5 line 274 kill file PASS in formalize round 1 (coqchk pass); orchestrator check_kill PASS (sha 1dec277e); audit + bundle pending. Ledger in-progress rows 413-415. HANDOFF.md section 3a: relaunch steps.</td>
+<td>handoff</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>

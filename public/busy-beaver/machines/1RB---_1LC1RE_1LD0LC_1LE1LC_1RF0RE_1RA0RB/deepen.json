@@ -1,0 +1,364 @@
+{
+ "tm": "1RB---_1LC1RE_1LD0LC_1LE1LC_1RF0RE_1RA0RB",
+ "pass": "funded stage vf_round (2026-10-12); earlier round fields kept above",
+ "confidence": "high",
+ "recommend": "skeptic round 3 on proof.md (no decision needed), then the Rocq formalization",
+ "mechanism": "Everything right of the periodic left nursery is one structure: 1-runs of length 1, 2 or 3 separated by gaps of length 0 or 3 mod 4 (L_gap). Read by gap residue, the units are 0/1 counter digits (0000/1000), pass blocks P = 11000, walls W0 = 0 11000.. and W1 = 1 11000.., and shifted digits S1 = 0 1000. One B arrival is an exact carry rewrite: 0->1 stop, 1->0 go on, P passes, S1->P stop, SP (W0)->W (W1) stop, W -> three carries to its right, then P plus a shift that attaches to the next run. The conveyor walls, the binary counter and wall absorption are all this one rule. The blank run stays in L_gap to 2e10. L_gap is not closed in general: it is left only when a W1 wall whose wire is down to one block finishes a round while the digits above it wrap to exactly 0 under a wall-type unit, which leaves a shift directly on a wall (0111000). That is a counter-value coincidence.",
+ "closed_gaps": [
+  "Right barrier = binary counter, digits 1000/0000 on a period-4 lattice, one increment per B arrival; rule K: (10111)^m B> (1000)^j 0 --> <C (11000)^m (0000)^j 1 in 5m+8j+1 steps (192/192, random m,j>=0); a wire block 11000 inside the zone passes carries through",
+  "Complete rule coverage from the blank tape to 20,000,003,117 steps: 6 sweep macros (SR, SR6, SL', SL, KB, KC; variable n) + 13 fixed junction rewrites (J1-J5 at walls and zone, J6-J10 at the left edge, J11-J13 in the first 75 steps); macro sim matches the C core exactly at 1e8, 1e9 and 2e10; each junction holds with random outside context (520/520)",
+  "Wall rotor law made exact: the event order at each wall is fixed by its state (b b c c c); W1 pass forwards exactly 3 arrivals, W0 forwards 0; a binary digit is the same kind of rotor with 2 in, 1 out",
+  "Interior wires never shrink: leftward crossings alternate +0/+1 block (right wall's W0 bounce, then its Lw3 pass), and the left wall eats 1 block per 3 crossings, so the length at successive W1 passes goes +0, +1, ... (derived lemma; consistent with 160/160 random-wire closure runs)",
+  "Left edge: exactly periodic nursery; all 2,251 left records from step 203,465 to 2e10 follow the 8-record cycle XC XD XE YC YD YE ZD ZE with fixed prefixes; the 282 X records share the identical prefix and the left edge moves exactly -8 per X record",
+  "Regime transitions (level-ups) to 2e10: frozen levels 12,18,27,41,61,92,138,206,309,463,695 (level 695 at ~1.54e10); a level freezes when the growing last wire reaches about 1.5x the previous level; all built from the same 19 rules, no new regime",
+  "Wall absorption at the right end = junction J5 (Lw1 with a 0-block wire) plus the standard rules; the last wire shrinks by 1 block per round of its wall until absorption",
+  "Not a cryptid: random wall states and wire lengths (1..400) never halted when the zone was aligned, so the 3/2 rounding orbit does not matter",
+  "Zone language pinned down (in cells): at every left record from 2e5 to 2e10 (2,251 records), every 1-run after the first 3 (left edge) has length 1, 2 or 3, every gap between runs is at least 3 and is 0 or 3 mod 4, and every 3-run follows a gap that is 3 mod 4 (scripts/deepen2/realcheck.py; 0 violations). This one language covers the walls, wires, counter digits, P blocks and the single-0 shifts that round 1 could not place",
+  "Single-0 shifts explained: a shift is the cell of a W0 wall whose wire has run out (S1 = 0 1000 or SP = 0 11000). It travels up through 0 digits, turns into P at the next 1 digit and into a wall at the next P. Offsets 1 and 2 halt because they are two shifts in one gap (gap 1 or 2 mod 4), which L_gap excludes",
+  "Exact carry semantics validated: the recursive unit rewrite (scripts/deepen2/unitinc.py) gives the same cell string as the machine in 79,527 of 79,527 random arrivals on L_gap words (checkinc.py). The only differences are runs that had already left L_gap, plus 1 where a shift landed on a W inside one arrival",
+  "Wall absorption is the W rule: the last wall's final round (wire = 1 block) leaves P plus a shift that attaches to the first run above. On a 1 digit it becomes S1, which later becomes P. On a zone P it becomes a zone wall (SP) that climbs through P blocks and dissolves at the next 1 digit",
+  "Natural family closed in tests: conveyor walls (wires 1..12) plus a random digit/P zone stay in L_gap for 400 arrivals in 1500/1500 cases. With one planted S1 or SP the count is 1498/1500, and both exits come from an interior 1-block wire directly followed by a wall, which the conveyor lemma rules out outside the periodic nursery (explore6.py)"
+ ],
+ "remaining_gaps": [
+  "skeptic round 3 on the revised proof.md section 6",
+  "Rocq formalization (proof.md section 10): Lemma L' + vm_compute of the 1,304 representatives; Lemmas E and P as 8 closed-form steps (lia/nia)"
+ ],
+ "evidence": [
+  "scripts/junctions.py 2e10 -> scripts/results/junctions_2e10.json: 13 junction types, crosscheck vs C core True at 20,000,003,117 steps",
+  "scripts/validate_deepen.py: rule K 192/192; junction catalog 520/520; X prefix exact on 282 X records, left edge -8 each; 2,251 records in the 8-record cycle order",
+  "scripts/closure_test.py: 100/100 (wires 1..20, 5e7 steps) and 60/60 (wires 1..400, 1e8 steps) random walls with the real nursery stay inside the 13-junction catalog, no halt",
+  "scripts/closure_records.py: zone offset 3/7: 0 halts in 150 runs (5e7 steps); offset 0/4: 0 halts in 48 runs; offset 1/5: 31 of 48 halt; offset 2/6: 48 of 48 halt (scripts/results/closure_summary.json)",
+  "scripts/barrier.py: a wall moving toward the counter loses 1 wire block per round and is absorbed; the counter then stays purely binary",
+  "scripts/results/x_records_2e10.txt: 283 X records to 2e10, level sequence 12..695",
+  "scripts/deepen2/realcheck.py 2e10 3 -> results/realcheck_2e10.txt: 2,251 left records, 0 L_gap violations",
+  "scripts/deepen2/checkinc.py 5 2000 40: unit carry model = machine on 79,527/79,527 arrivals",
+  "scripts/deepen2/explore4.py 1 3000 60: random L_gap words 2984 stay, 16 leave (all via a shift on a W), 0 halts",
+  "scripts/deepen2/explore6.py: natural family 1500/1500 and 1498/1500 (results/ex6_ns*.txt)",
+  "scripts/deepen2/coinc.py: 400 forced wrap coincidences: 154 leave L_gap, 0 halt in 3000 arrivals",
+  "scripts/deepen2/zonewalls2.py 2e9: max 1 zone wall at a time; 11/1022 left records have a zone wall; 0 wall pairs separated only by digits",
+  "scripts/deepen2/results/summary.json collects all round-2 numbers",
+  "scripts/deepen2/zonewalls2.py 2e10 -> results/zonewalls_2e10.json: 2,251 left records, max 1 zone wall, the same 11 zone-wall records as to 2e9 (none after 2e9), 0 wall pairs separated only by digits"
+ ],
+ "scripts": [
+  "scripts/junctions.py",
+  "scripts/validate_deepen.py",
+  "scripts/closure_test.py",
+  "scripts/closure_records.py",
+  "scripts/barrier.py",
+  "scripts/lrecords.py",
+  "scripts/walls.py",
+  "scripts/cycletrack.py",
+  "scripts/deepen2/arr.py",
+  "scripts/deepen2/lang.py",
+  "scripts/deepen2/units.py",
+  "scripts/deepen2/unitinc.py",
+  "scripts/deepen2/checkinc.py",
+  "scripts/deepen2/explore4.py",
+  "scripts/deepen2/explore5.py",
+  "scripts/deepen2/explore6.py",
+  "scripts/deepen2/coinc.py",
+  "scripts/deepen2/realcheck.py",
+  "scripts/deepen2/zonewalls2.py"
+ ],
+ "round1_remaining_gaps": [
+  "Exact closed language of the right zone at left records. The strict form 0^(4k+3) (0000|1000|11000)* 1 covers only part of it: 56 of 2,307 blank-tape records and 110 of 150 aligned random runs leave it (through single-0 lattice shifts) without halting. It is still to be shown that every absorption keeps the zone lattice offset at 0 or 3 mod 4 after the last wall; offsets 1 or 2 halt (79 of 96 random starts)",
+  "The interior-wire lemma and the zone/absorption closure are argued and sampled, not proved; the invariant must also fix the nursery phase (a random nursery prefix P with random walls halted)",
+  "No proof.md yet; the Rocq route (rotor list invariant + binary counter + periodic nursery) needs the zone language first"
+ ],
+ "updated": "2026-10-12",
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "targeted_deepen",
+   "pass": "funded stage: rules for the shift-on-wall (0111000) states",
+   "confidence": "med",
+   "recommend": "one more targeted stage: coincidence chains vs the absorption intervals (decision.json)",
+   "model": {
+    "units": "every unit is h+'1000' (head word h, no '000' inside) or the 0 digit '0000'; L_gap = heads {'',0,1,01,11}; a shift s lands on the first unit above and prepends 0 to its head",
+    "carry": "first cell 0 -> flip to 1, stop; else h 1000 r -> h' 1000 s^e inc^f(r) by table: 1->1 f1; 11->1 f3 e1; 111->01 f2 e1; 101->01 f1 e1; 1111->111 f2 e1; 1101->111 f1 e1 (results/hrules_table.json)",
+    "depth": "shifts a unit emits before it is P: SP/W 1; 001/011/101/111 2; 0101/0111/1101/1111 3; 01101/01111 4 (non-local: E runs into the unit below)"
+   },
+   "closed_gaps": [
+    "Exact rules for the shift-on-wall states and every stacked state of depth <= 3: 12 head words, each one rule on 300/300 random rests (hrules_all.py; 64 of the 94 head words of length <= 6 have a local rule)",
+    "Extended carry model = machine: 79,839/79,839 arrivals with planted sW/Q and 78,765/78,765 with planted depth-2/3 towers, 0 mismatches, 0 halts; all 45 unmodelled arrivals have a depth-4 head (checkplus.py)",
+    "Depth <= 3 always returns to L_gap: 200/200 planted towers in natural words (tower.py); forced coincidences 635/635 excursions return, 0 halts in 3,000 x 3,000 arrivals, longest excursion 2,260 arrivals (ctrack.py); random L_gap words 3,000 x 3,000 arrivals, 0 halts (hexplore.py)",
+    "Creation lemma (structural): a wall directly above a pure digit block was put there by a shift that jumped the block when it was 0; after every absorption the bottom zone block is all 0",
+    "Conveyor-top lemma (structural, mod 3): the zone gets exactly 3 carries per round of the last conveyor wall, so a zone wall over the bottom block has N = 3n carries; a hit needs N = 2^k or 2^(k+1), impossible. The coincidence named in round 2 (last wall W:1 landing a shift on a zone wall) never happens; toplemma.py 2,160/2,160 (n = 1..120, k = 0..8, last wall W or SP)",
+    "Zone-internal coincidence characterised exactly: needs two zone walls; X is hit iff 3m+1 = 2^k1 where the last wall ran n = m*2^k0 rounds; zcoinc.py 6/6 predicted cases reach sW, 4/4 non-solutions stay in L_gap for 4,000 arrivals",
+    "Blank run: no wall is ever hit to 2e10. Processing any stacked unit needs a B-start junction outside the 13-type catalog (jstack.py 40/40), the blank run uses only the 13 types, and L_gap holds at all 2,251 left records; zone walls at 11 records, never 2 at once (zoneview.py)"
+   ],
+   "remaining_gaps": [
+    "No purely structural closed superset of L_gap: depth 4 (three hits on one wall) halts in 13/80 planted runs (tower.py), so the invariant must cap hits per wall at 2, and whether a wall can be hit 3 times depends on the absorption intervals n_j mod powers of 2 (and 3m+1 = 2^k). The n_j are set by the 3/2 conveyor. Open whether the conveyor structurally avoids the 3-hit patterns or this is Mahler-type 3/2 arithmetic",
+    "The nursery period and the interior-wire lemma are still argued and sampled, not proved",
+    "No proof.md yet"
+   ],
+   "evidence": [
+    "scripts/deepen3/results/summary.json collects every number of this stage",
+    "scripts/deepen3/results/hrules_table.json: rule per head word (300 random rests each)",
+    "scripts/deepen3/results/checkplus_stack2_s3.txt, checkplus_tower_s2.txt: extended model vs machine",
+    "scripts/deepen3/results/tower_s1.txt: depth <= 3 200/200 back, depth 4 13/80 halt",
+    "scripts/deepen3/results/ctrack_s2_3000x3000.txt, hexplore_s2_3000x3000.txt: forced coincidences and random L_gap words",
+    "scripts/deepen3/results/toplemma_n120_k8.txt: conveyor-top lemma 2,160/2,160",
+    "scripts/deepen3/results/zcoinc.txt: zone-internal coincidence iff 3m+1 = 2^k1 (6/6, 0/4)",
+    "scripts/deepen3/results/jstack_s1.txt: stacked units force non-catalog junctions (40/40)",
+    "scripts/deepen3/results/zoneview_2e10_all.txt: unit structure at all 2,251 left records to 2e10"
+   ],
+   "scripts": [
+    "scripts/deepen3/probe.py",
+    "scripts/deepen3/fitunit.py",
+    "scripts/deepen3/hrules.py",
+    "scripts/deepen3/hrules_all.py",
+    "scripts/deepen3/htok.py",
+    "scripts/deepen3/incplus.py",
+    "scripts/deepen3/checkplus.py",
+    "scripts/deepen3/ctrack.py",
+    "scripts/deepen3/hexplore.py",
+    "scripts/deepen3/tower.py",
+    "scripts/deepen3/jstack.py",
+    "scripts/deepen3/toplemma.py",
+    "scripts/deepen3/zcoinc.py",
+    "scripts/deepen3/zoneview.py"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "chain_stage",
+   "pass": "funded stage: hit chains vs absorption intervals",
+   "confidence": "med",
+   "recommend": "law_stage (decision.json): derive the interval law from the conveyor top and prove the no-survivor zone lemma, then proof.md",
+   "model": {
+    "zone_automaton": "zone = units above the last wire; step(N) = N carries at the zone bottom, then the absorption shift (one 0 cell at the bottom, lands on the first unit with a 1); leading P join the next wire; exact by the deepen3 rule table",
+    "interval_law": "N_j = j + 50 + g(j); g by j mod 32 for residues 1..25: 0,-3,-2,-4,-6,3,1,-1,0,-3,-2,-4,-6,0,3,-1,0,-3,-2,-4,-6,3,-5,-6,-6; residues 26..31 and next 0: tuple by nu2(b+2), b = j div 32: 0:(8,-4,2,-4,2,-4,1) 1:(-4,7,0,-4,2,-4,1) 2,4:(-4,4,-4,-6,0,3,-1) 3:(-4,1,1,-5,-5,5,-1) 5:(-4,4,-1,1,0,-4,1) 6:(-4,4,-1,-5,-5,5,-1)",
+    "hit_chains": "wall created at depth p (2^p | N_j); next intervals a_i*2^p: depth>=4 only for a = 1111,1112,1113,1114,1121,1211,1311,2111,3111,4111 (three intervals of exactly 2^p among four)"
+   },
+   "closed_gaps": [
+    "Exact replay of the blank run's right end record to record with the unit model: 843/843 intervals to 2e10, 988/988 to 3.18e10 (match.py), giving every absorption (2,238 / 2,623)",
+    "The zone is a closed automaton driven only by the absorption intervals N_j: reproduces the zone at 843/843 (988/988) record groups (zcheck.py, nstruct.py); fast version = reference after 2,238/2,238 absorptions; = machine on 2,000/2,000 random zone words with zone walls (7,010 carry batches, fzmachine.py)",
+    "Round-3 conveyor-top lemma corrected: N = 3n is false (N mod 3 = 747/744/747, in-flight carries of the next wall); its conclusion holds via the interval law",
+    "Absorption-interval law observed exactly (0 violations in 2,623 absorptions, 80 blocks): a counter (ruler) structure, unaffected by 11 level-ups; the 3/2 conveyor does not enter the zone input. N = 2^k (k=6..11) only at j = 2^k - 50, between 2^k - 7 and 2^k + 4; longest equal run 2",
+    "Hit-chain patterns listed exactly (chains.py, 11 creation kinds x 256 multiplier patterns): depth >= 4 needs three intervals equal to exactly 2^p among the four after creation; natural-size intervals give 0 hits (81/81 per kind); perturbation census 558,940 + 71,424 trials, 0 hits",
+    "Blank run: 369 zone walls created to 2e10 (432 to 3.18e10), depths 1/2/4, never alive at the next absorption (0/2,238; 0/2,623), 0 hits. Not a cryptid: the hit question is decided by 2-adic counter laws, not Mahler-type 3/2 arithmetic"
+   ],
+   "remaining_gaps": [
+    "Absorption-interval law N_j = j + 50 + g(j) (period-32 table + 7-entry tuple typed by nu2(b+2)) is observed exactly on 2,623 absorptions / 80 blocks (nu2 <= 6) to 3.18e10, not derived from the conveyor top; nu2 = 5 and 6 each brought a new tuple, nu2 >= 7 unseen (first at ~1.2e11)",
+    "Zone lemma: under the law no zone wall survives the interval after its creation (observed 0/2,623; creation depth <= 4 while survival needs depth ~ log2 N - 2), not proved",
+    "The nursery period and the interior-wire lemma are still argued and sampled, not proved",
+    "No proof.md yet"
+   ],
+   "evidence": [
+    "scripts/deepen4/results/summary.json collects every number of this stage",
+    "scripts/deepen4/results/nstruct_2e10.json, nstruct_3e10.json: replay, zone automaton, interval law, zone walls",
+    "scripts/deepen4/results/chains.json: multiplier patterns per creation kind",
+    "scripts/deepen4/results/perturb_d128_l12.json, perturb_d16_l6.json: perturbation census",
+    "scripts/deepen4/results/fzmachine_s1_2000.txt: fast zone automaton vs machine, random instances"
+   ],
+   "scripts": [
+    "scripts/deepen4/zmodel.py",
+    "scripts/deepen4/match.py",
+    "scripts/deepen4/zauto.py",
+    "scripts/deepen4/zcheck.py",
+    "scripts/deepen4/fastzone.py",
+    "scripts/deepen4/fzcheck.py",
+    "scripts/deepen4/fzmachine.py",
+    "scripts/deepen4/perturb.py",
+    "scripts/deepen4/chains.py",
+    "scripts/deepen4/nstruct.py"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "law_stage",
+   "pass": "funded stage: derive the absorption-interval law and the no-survivor zone lemma",
+   "confidence": "med",
+   "recommend": "top_system: one stage on the closed conveyor-top + zone system driven by its constant per-interval input (decision.json)",
+   "closed_gaps": [
+    "Blank replay extended to 1.93e11: 1,812/1,812 record intervals reproduced exactly by the unit model, 4,820 absorptions, zone automaton = real zone at 1,812/1,812 record groups (scripts/deepen5/results/nstruct_final.json)",
+    "First nu2 = 7 block (b = 126) observed: new tuple (-4, 4, -1, -5, -5, -1, 0); N = 2^12 at j = 4046 = 2^12 - 50 as predicted; 0 zone walls alive at an absorption (0/4,820), 0 hits, creation depth <= 4",
+    "Ruler mechanism found: the zone digits above digit position 6 hold exactly b+1 (the 32-block index + 1) at residues 0..17 (68/68 blocks) and b+2 at 28..31; the low part has one form per residue for r = 1..18 and is all zero at r = 18, so that absorption shift lands in the block counter at its lowest 1. The irregular tuples are the carry chain of this increment, which is why they are typed by nu2(b+2) (zcount.py, lowform.py)",
+    "Conveyor-top fixed point: the next last wire is w + L/3, with w = 2L/3 the fixed point (5 walls in one interval absorbed at L = 724 +- 1, N ~ 3L); the input to the top-K part per record interval is constant per level and group type (729..6,888 carries, x3/2 per level) (toptrace.py)",
+    "Lemma B is independent of the ruler tuples within a 7-residue window: law + any observed or random tuple for nu2 >= 7 (to j = 3e5 / 1e5) and H = table on residues 1..25 + random +-8/16/32 on 26..0 of every block (300/300 runs to j = 2e4): 0 alive, 0 hits"
+   ],
+   "remaining_gaps": [
+    "The interval law as stated is false from nu2 = 7: the period-32 table fails at j = 4065..4072 (block 127, residues 1..8; g = -1, 2, -4, 2, -4, 2, -4, 1). The irregular window grew from 7 residues to 15. N must be derived from the closed top system (last frozen level + growing wire + zone, constant input), not taken as an external table",
+    "Lemma B needs the exact window: random 15-residue windows at every block give a zone wall alive at an absorption in 2/100 runs (21 residues: 1/100, creation depth up to 11; no table at all: 2/100, depth up to 12; i.i.d. +-8 noise: a hit in 1/20). The real run has 0/4,820",
+    "Not derived: the +1 per absorption trend, the period-32 table values, the window length per nu2",
+    "The nursery period and the interior-wire lemma are still argued and sampled, not proved; no proof.md"
+   ],
+   "evidence": [
+    "scripts/deepen5/results/summary.json",
+    "scripts/deepen5/results/nstruct_final.json (deepen4/nstruct.py on results/zoneview_final.txt)",
+    "scripts/deepen5/results/lawdrive_3e5.txt, lawrand_high_E8.txt, lawrand_all_E8.txt; hdrive.py / randdrive.py runs listed in summary.json"
+   ],
+   "scripts": [
+    "scripts/deepen5/toptrace.py",
+    "scripts/deepen5/seg.py",
+    "scripts/deepen5/seg2.py",
+    "scripts/deepen5/zform.py",
+    "scripts/deepen5/zcount.py",
+    "scripts/deepen5/lowform.py",
+    "scripts/deepen5/feedback.py",
+    "scripts/deepen5/lawdrive.py",
+    "scripts/deepen5/lawdrive_rand.py",
+    "scripts/deepen5/hdrive.py",
+    "scripts/deepen5/randdrive.py",
+    "scripts/deepen5/survtrace.py"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "top_system",
+   "pass": "funded stage: derive N from the closed conveyor-top + zone system, then the zone lemma by block induction",
+   "confidence": "med",
+   "recommend": "marker_stage: one stage on a marker-descent lemma uniform in the marker height, then proof.md (decision.json)",
+   "closed_gaps": [
+    "Top relation N_j = 3*A_j + D_j + p(j mod 8), p = (47,48,48,47,48,47,48,47), A_j = P units dropped from the zone during step j, D_j = drops before it: exact for 4,819/4,819 blank-run steps (j >= 1, through every level-up and the nu2 = 7 block); zone-independence checked on random zones over the real conveyor top with the exact unit model: 3,000/3,000 (2e10, K = 4, 9,000 intervals) and 1,200/1,200 (1.93e11, K = 6, 6,000 intervals) (deepen6/dropfit.py, relcheck.py)",
+    "Closed system (zone + D + j mod 8, no external law) reproduces N for 4,819/4,819 steps; run to j = 4.2e6 (131,250 blocks, nu2 up to 17): 690,078 zone walls created, 0 alive at an absorption, 0 hits, zone <= 27 units, D - j in [-5, -1] (deepen6/topsys.py)",
+    "Canonical block state C(b): at j = 32b + 17 the zone is S1 0 1 1 1 1 + bin(b+1) and D = j - 1, at 131,250/131,250 blocks (deepen6/canon.py)",
+    "Block map from C(b) for random b < 2^120 / 2^400 with nu2(b+2) = k: next canonical state after exactly 1 + floor((k+9)/32) blocks for k = 0..260 (1,342 runs), g sequence independent of b within a class, 0 alive, 0 hits (deepen6/symb.py)",
+    "Window per nu2 explained: the r = 18 absorption shift puts a P marker at height 6 + nu2(b+2), which sinks about one unit per step; window ends 26 / 28 / 32 / 30 / 32 / 40 / 48 for k = 0 / 1 / 2-4,6 / 5 / ... / 7-14 / 15-17, tuple(k+8) = tuple(k) shifted by 8"
+   ],
+   "remaining_gaps": [
+    "Top relation proved only in sketch (conservation: each dropped P = one more round of the last wall; the constant depends on two consecutive walls' birth data, period 8 by the nursery cycle)",
+    "Block map for all k: needs a marker-descent lemma uniform in the marker height (checked for k <= 260 with random high bits and exhaustively for b <= 131,249)",
+    "The nursery period and the interior-wire lemma are still argued and sampled, not proved; no proof.md"
+   ],
+   "evidence": [
+    "scripts/deepen6/results/summary.json",
+    "scripts/deepen6/results/run_4e6.json, symb_k40.json, symb_k260.json, relcheck_2e10.json, relcheck_final.json"
+   ],
+   "scripts": [
+    "scripts/deepen6/dropfit.py",
+    "scripts/deepen6/topsys.py",
+    "scripts/deepen6/relcheck.py",
+    "scripts/deepen6/window.py",
+    "scripts/deepen6/tuples.py",
+    "scripts/deepen6/show.py",
+    "scripts/deepen6/canon.py",
+    "scripts/deepen6/symb.py"
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "option": "marker_stage",
+   "pass": "funded stage: marker-descent lemma uniform in the marker height, then the block map for every ruler class",
+   "confidence": "med",
+   "recommend": "nested_stage: one stage on the nested-marker lemma (second marker of height nu2(k+9)+1) plus the o = 1 entry, then proof.md (decision.json)",
+   "closed_gaps": [
+    "Marker-descent lemma, symbolic in m, k, q: 8 phase forms F_phi (off = 8m+phi >= 32) and 13 entry forms (off 19..31), 21/21 one-step transitions exact (low part, one (2q+1)*2^(off-19) packet to the part above the marker, D - j, g), 0 walls alive, 0 hits; the step below the marker does not depend on the height; only growth side conditions (deepen7/symdesc.py, rundesc.py, results/symdesc.json)",
+    "Value form (marker transparent) Vtot = o*2^(k+5) + w_phi(off) - 3*2^(L-1): exact for 60,203/60,203 states with L >= 3 (300 random k in 30..400, o < 2^40) (vtot.py)",
+    "Endgame by locality: all residues k mod 2^16 (65,536 runs) reach C(b + 1 + floor((k+9)/32)), 0 alive, 0 hits; compressed vs real 150/150 (endgame.py, egread.py, egcheck.py)",
+    "Small classes k = 0..40, every odd o mod 2^8: 10,495/10,495 runs reach the next canonical state with the delay formula, landing digit <= k+6 < locality bound (smallk.py)",
+    "Block map proved (symbolic + finite checks + locality, o >= 3) for every b with nu2(b+2) < 32,759"
+   ],
+   "remaining_gaps": [
+    "Nested marker: when k+9 has a high power of 2 the end of the descent plants a second marker at height nu2(k+9)+1 (over a 1-run); needs its own uniform descent lemma (first uncovered class k = 32,759)",
+    "o = 1 (b + 2 = 2^k) entry step symbolically (numerically fine for k <= 259)",
+    "Symbolic engine and locality argument written against fastzone.py semantics, not machine-checked",
+    "Top relation (Lemma T written as a conservation statement, not derived), nursery period, interior-wire lemma; no proof.md"
+   ],
+   "evidence": [
+    "scripts/deepen7/results/summary.json",
+    "scripts/deepen7/results/symdesc.json, vtot_300.json, endgame_R12.json, egread_R16.json, egcheck.json, smallk.json"
+   ],
+   "scripts": [
+    "scripts/deepen7/symdesc.py",
+    "scripts/deepen7/rundesc.py",
+    "scripts/deepen7/vtot.py",
+    "scripts/deepen7/endgame.py",
+    "scripts/deepen7/egread.py",
+    "scripts/deepen7/egcheck.py",
+    "scripts/deepen7/smallk.py",
+    "scripts/deepen7/descent.py",
+    "scripts/deepen7/descent_rows.py",
+    "scripts/deepen7/trace.py",
+    "scripts/deepen7/trace2.py",
+    "scripts/deepen7/egtrace.py",
+    "scripts/deepen7/snap.py",
+    "scripts/deepen7/rle.py"
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "option": "nested_stage",
+   "pass": "funded stage: the nested-marker lemma one level down, the recursion, and the o = 1 entry",
+   "confidence": "high",
+   "recommend": "proof.md next (no decision needed): nursery period, interior-wire lemma, Lemma T, L_gap closure, the block induction (canonical states, symbolic entry/descent/plant, value form, locality endgame with the class recursion)",
+   "closed_gaps": [
+    "Nested marker = the marker descent one level down. Plant lemma, symbolic in v and Q (every v >= 9): from the level-1 endgame start (off' = 12, phase 4, marker height 3) 5 closed-system steps give S1 . LOW2 (v-3 digits, 2^(v-4) - 3) . P . (16Q + 6), D = j - 2, i.e. deepen7's F_1 of class K' = v - 10 with upper part U' = 32S; 0 walls alive, 0 hits; 5,000/5,000 random instances identical to the machine semantics at all 6 states (deepen8/symplant.py, nested.py plant)",
+    "Nested descent and endgame: deepen7's 8 symbolic phase steps apply unchanged (no lower bound on m, any upper part), growth holds until L2 <= log2(v) + 3 (nestgrowth.py); nested value form 60,572/60,572 states (v 12..300) and 30,993/30,993 (v 300..1500); same g sequence and end as the level-1 class-K' endgame 400/400 (v 14..400) and 40/40 (v 400..1500) (nested.py vform, ident)",
+    "Recursion closes: a third marker (when nu2(v-1) is large) is the same plant one level further down; the class shrinks K -> nu2(K+9) - 10, induction on the class. Every v = 10..600 run directly (2,364/2,364 canonical, 0 alive, 0 hits, landings <= v+1 so only S mod 4 matters); third-level runs v = 1025..16385 (18/18); real uncompressed run from C(b) at k = 32,759 (the first class deepen7 did not cover, o = 3 and o = 1: next canonical state after 1,025 blocks, 0 walls alive, 0 hits; landings above digit 8 only at k + 6 and v + 1 = 16)",
+    "o = 1 entry symbolic for every k >= 3: C(2^k - 2) -> E(20) with q = 0 in 3 steps (the marker stays S1 at off 19); 598/598 k vs the machine; 45,290/45,290 later states equal E(20..31) and the value form (deepen8/symentry1.py, entry1check.py, entry1forms.py); deepen7's hand-checked q >= 1 steps now symbolic in k and q too (every k >= 3; 2,000/2,000 random vs the machine; symentryq.py, entryqcheck.py)",
+    "Delay correction: 1 + floor((k+9)/32) + floor((v-1)/32) + ... (one term per nested level, v = nu2(k+9) >= 10); deepen6/7's formula is the case v < 33. Not needed for non-halting (any later canonical state suffices)"
+   ],
+   "remaining_gaps": [
+    "Lemma T (top relation): checked (4,819 blank steps, 4,200 random zones), conservation argument still a sketch",
+    "Nursery period and interior-wire lemma: argued and sampled",
+    "Value form below the growth range and the locality principle: argued, checked (60,203 + 91,565 states, residue and range runs); symbolic engines written against fastzone.py semantics",
+    "No proof.md, nothing in Rocq"
+   ],
+   "evidence": [
+    "scripts/deepen8/results/summary.json",
+    "scripts/deepen8/results/symplant_V0_9.json, plant_5000.json, vform_400.json, ident_400.json, nestgrowth.json, range_600_W2.json, deep_small.json, deep_large.json, realdeep_*.json, symentry1_V0_8.json, entry1check.json, entry1forms.json, symentryq_V0_8.json, entryqcheck.json",
+    "img/nested_marker_k2p40m9.png (closed zone system, k = 2^40 - 9: the marker and the nested marker)"
+   ],
+   "scripts": [
+    "scripts/deepen8/symplant.py",
+    "scripts/deepen8/nested.py",
+    "scripts/deepen8/nestgrowth.py",
+    "scripts/deepen8/deep.py",
+    "scripts/deepen8/realdeep.py",
+    "scripts/deepen8/symentry1.py",
+    "scripts/deepen8/entry1check.py",
+    "scripts/deepen8/entry1forms.py",
+    "scripts/deepen8/symentryq.py",
+    "scripts/deepen8/entryqcheck.py",
+    "scripts/deepen8/fig_nested.py",
+    "scripts/deepen8/mksummary.py"
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "option": "vf_round",
+   "pass": "funded stage: close lemma VF (value form down to marker height 3, both levels) and make the plant step a checked lemma",
+   "confidence": "high",
+   "recommend": "skeptic round 3 on proof.md section 6 (no decision needed), then the Rocq formalization",
+   "closed_gaps": [
+    "Lemma L' (one-step locality with one P unit allowed above the cut, at different digit positions in representative and member): items 1-5 of Lemma L plus P transparency; the P is never landed on (H1) and never dropped while X keeps a digit unit (checked r_end >= 1)",
+    "Lemma VF proved: the step VF(off) -> VF(off+1) for every needed (k, Omega, off) (L >= 5 before off_end) from 1,304/1,304 one-step representatives at cut R = 8, T0 = 2^12: 24 entry (off 20..31), 256 region A (L >= 9, off mod 2^8), 1,024 region B (5 <= L <= 8, (L, off mod 2^8)); hypotheses, exact next form, 0 alive, 0 hits, max landing digit 3, X keeps >= 6 digits; per-form identities (mu/2^a+1)/2^b = mu', (wa/2^a+1)/2^b = wa', L' - L = -(a+b). Level 2 uses the same steps (only Omega mod 2^8 enters). No growth condition is used",
+    "Lemma E (entry C(b) -> off 20, 3 steps) proved by hand on closed forms, q >= 1 and q = 0; 2,000/2,000 random (k <= 1,500, o <= 400 bits, 405 with o = 1); off-20 state = VF(k, o*2^(k+5), 20)",
+    "Lemma P (plant off' 12 -> 17, 5 steps) proved by hand on closed forms for every v >= 9, Q >= 1 (key event 13 -> 14: the marker-turned-SP fires, its 3 carries wrap [2^n-3]_n, its shift lands on bit 1 of 4Q+2 = digit v+1); identification with VF(v-10, S*2^v, 17) at level 2 by algebra; 3,000/3,000 random (v <= 2,998, S <= 600 bits)",
+    "Chains beyond the proof: real runs from C(b) 300/300 (68,308 states, level 1); from the plant start 300/300 (62,723 states, level 2); random members 2,969/2,969; negative controls (R = 3, a wrong w at phase 5) fail as they should"
+   ],
+   "remaining_gaps": [
+    "skeptic round 3 on the revised proof.md section 6",
+    "Rocq formalization (proof.md section 10): Lemma L' + vm_compute of the 1,304 representatives; Lemmas E and P as 8 closed-form steps (lia/nia)"
+   ],
+   "evidence": [
+    "scripts/proof4/results/vf_reps_R8.json (and vf_reps_R6.json)",
+    "scripts/proof4/results/vf_entry.json, vf_plant.json, vf_chain1.json, vf_chain2.json, vf_members.json",
+    "check_proof.py S11 (quick + full ALL PASS)"
+   ],
+   "scripts": [
+    "scripts/proof4/vf.py",
+    "scripts/proof4/fig_lprime.py"
+   ]
+  }
+ ],
+ "round2_remaining_gaps": [
+  "Coincidence condition (the one open point): L_gap is left only if a W with a 1-block wire finishes a round while the k digits between it and the next non-digit unit X wrap to exactly 0 (value 2^k-3 before its 3 carries, k>=2) and X is a wall (SP or W). To 2e9 there is never more than 1 zone wall, and no two wall units are separated by digits alone (zonewalls2.py). Still, 6 of 11 zone-wall records have only digits below the zone wall. Excluding the coincidence needs either a timing argument (a zone wall over k digits moves on after 2^(k+1) carries, but the next last wall arrives only after about 3x its wire length in carries) or a larger closed language that contains the shift-on-wall states",
+  "Leaving L_gap is not immediately fatal: 154 forced coincidences in coinc.py all ran 3000 arrivals without halting, but a looser language that allows 4-runs degrades and can halt (explore5.py: 1 halt, 38 bad exits in 3000). So the shift-on-wall states need their own rules before a closed superset of L_gap can be stated",
+  "The nursery (first 3 runs, exactly periodic) and the interior-wire lemma (wires outside the nursery stay at 2 blocks or more, so no W:1 sits next to another wall there) are still argued and sampled, not proved",
+  "No proof.md yet"
+ ],
+ "top_system_remaining_gaps": [
+  "Top relation proved only in sketch (conservation: each dropped P = one more round of the last wall; the constant depends on two consecutive walls' birth data, period 8 by the nursery cycle)",
+  "Block map for all k: needs a marker-descent lemma uniform in the marker height (checked for k <= 260 with random high bits and exhaustively for b <= 131,249)",
+  "The nursery period and the interior-wire lemma are still argued and sampled, not proved; no proof.md"
+ ],
+ "nested_stage_remaining_gaps": [
+  "Lemma T (top relation): checked (4,819 blank steps, 4,200 random zones), conservation argument still a sketch",
+  "Nursery period and interior-wire lemma: argued and sampled",
+  "Value form below the growth range and the locality principle: argued, checked (60,203 + 91,565 states, residue and range runs); symbolic engines written against fastzone.py semantics",
+  "No proof.md, nothing in Rocq"
+ ]
+}

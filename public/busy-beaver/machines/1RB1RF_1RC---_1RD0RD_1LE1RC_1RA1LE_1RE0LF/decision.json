@@ -1,0 +1,62 @@
+{
+ "tm": "1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF",
+ "bucket_reason": "Priority call with mechanism confidence low. The base-4 counter is validated, but the machine turned out to be multi-epoch, and the overflow/rebuild rule and the epoch recursion are open.",
+ "question": "Park #19, rather than fund a stage on its overflow/rebuild rule?",
+ "options": [
+  {
+   "id": "park",
+   "label": "Park (STUCK at deepen2)",
+   "consequence": "0 agent time. The digit rule, the topsim fast-forward and the capped-rebuild tools stay on file for a later return."
+  },
+  {
+   "id": "rebuild_round",
+   "label": "One stage on the rebuild rule",
+   "consequence": "About 2 h of agent time and 1-2 processes. Derive how the rebuild recodes each zone (size m, m mod 2 and m mod 4) from capped rebuilds, and test whether the parity dependence stays a fixed, finite case split. Even if it does, proof.md still needs the epoch recursion and a cross-epoch invariant, which is several stages of work."
+  }
+ ],
+ "recommended": "park",
+ "rationale": "Within an epoch, #19 is solved in practice. One uniform digit rule explains 119,956 of 120,091 trips to 1e11 steps, the closed-form fast-forward reproduces the real run, and all 72 top events to trip 13.5e6 behave. But round 2 found where the epoch ends, at about 1.27e15 steps. There, a recoding pass rewrites the whole tape. Its time is quadratic in zone size (about 1e16 steps at the real sizes). It splits zones into pieces whose sizes and number depend on the parity of m (S = 200, 202, 204 give a different structure from 201 and 203). A new counter then grows on top of the recoded tape. A proof would need three things: a rule for how every zone is recoded, an epoch-to-epoch recursion, and an invariant that survives parity-dependent recodings of zones millions of blocks long. That is new work several stages deep, and parity splits on such large numbers are the warning sign the cryptid protocol names. No cheap compute settles it, because the next epoch lies far beyond 1e16 steps. Parking keeps the budget for machines with validated mechanisms. Revisit if R5's overflow run, or another shift-overflow machine, yields a reusable epoch-recursion argument.",
+ "evidence": [
+  {
+   "kind": "validation",
+   "text": "Uniform digit rule (types A/B, 4 states each): 119,956 of 120,091 trip transitions to 1e11 steps match token by token. The other 135 are identified start-up, left-end and top-region events.",
+   "href": "scripts/data/counter_trace_1e11.json"
+  },
+  {
+   "kind": "sim",
+   "text": "The topsim closed-form fast-forward reproduces all 16 round-1 events and 3 full-size K=9 events. It finds 72 top events up to trip 13,539,937, and none halts.",
+   "href": "scripts/data/topsim_events_to_13539937.log"
+  },
+  {
+   "kind": "analysis",
+   "text": "Epoch overflow at trip 13,539,937 (about 1.27e15 steps): the carry crosses the top region, the sweep makes the first left record since 1.8e8, and the return pass recodes the whole tape.",
+   "href": "scripts/data/pre_overflow_13539937.json"
+  },
+  {
+   "kind": "risk",
+   "text": "Capped rebuilds (S = 64..600) take about 260*S^2 steps. Their zone pieces depend on the parity of m (S = 200/202/204 vs 201/203 differ in shape). This extrapolates to about 1e16 steps at the real sizes.",
+   "href": "scripts/data/rebuild_split.txt"
+  },
+  {
+   "kind": "sim",
+   "text": "After a capped rebuild (S = 512): 2e10 more steps, no halt, and a fresh base-4 counter grows from a new wall.",
+   "href": "scripts/data/rebuild_continue_S512.txt"
+  },
+  {
+   "kind": "sim",
+   "text": "No halt to 2e10 steps by direct simulation. The left edge stayed at -78 from step 1.8e8 until the overflow."
+  },
+  {
+   "kind": "figure",
+   "text": "Fig 2: the base-4 turn-back pattern, one row per round trip.",
+   "href": "img/sweeps_turnback_2e6.png"
+  }
+ ],
+ "effort_if_yes": "None: 0 agent hours and 0 processes. Status becomes STUCK (parked), with the deepen-2 findings as the re-entry point.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "park",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

@@ -1,0 +1,503 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA/notes.md · <a href="/busy-beaver/machines/1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA/notes.md.html">raw</a></div>
+<h1 id="1rb0lf_1rc1rb_0rd0rc_1le1lf_1ld-_0lb1la">1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA</h1>
+<p>Status: STUCK (parked 2026-10-11). Twin port P-500 of upstream <code>SBCv9.v</code> TM2 (HALT) refuted 2026-10-14: TM2's halting event is not one for #37 (see the last section). Earlier: follow done 2026-10-10, real orbit in sync to phase 1,857 with no halt.
+Class guess (agent / Dennis): Sync bouncer counter: a binary counter on the left, an eroding 1-block timer on the right, and a doubling reset / _
+Spreadsheet notes / Discord thread: Results row 919, "Sync bouncer counter", with no status, notes or done-by. The Discarded tab (row 50) says "Was mentioned but no work done". It is still in the 778 list (Oct 7, line 530). Not claimed. It is on mxdys's UBRRBA_TODO list (2026-08-24, <code>data/discord/2026-08-24_mxdys_ubrrba_86.txt</code> line 46: "easy to accelerate by UBRRBA"). That is a technique hint, not a claim; our kill #4 came from the same list. There are no sheet links. Not on dyuan01's longitudinal list. Pool #37 in reports/targeting.md.
+Viewer: https://bbchallenge.org/1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA</p>
+<p>Transitions: A0 1RB, A1 0LF | B0 1RC, B1 1RB | C0 0RD, C1 0RC | D0 1LE, D1 1LF | E0 1LD, E1 halt | F0 0LB, F1 1LA.
+The only halt is E reading 1. E is entered only by D0 -&gt; 1LE, and E/D walk left over zeros, filling them in.</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>Simulated to 1.2e10 steps with no halt (tools/sim.py C core, <code>work/sim_1.2e10.jsonl</code>): span -175..114,911 and 114,968 nonzeros. A custom C tracer (<code>scripts/visitdepth.c</code>, <code>scripts/phasestarts.c</code>) agrees on lo/hi. qsim (block size 2, 200,000 loops, 8.7e8 steps) proves 0 rules and finds no Collatz rules (<code>work/qsim.jsonl</code>). compress track to 1e8 gives 40 skeletons, because the counter keeps changing shape (<code>work/compress_track_1e8.txt</code>).</li>
+<li><strong>Visit</strong> = the run between two right records in state C. Every visit starts as <code>0^inf L 1^m 0^g C&gt; 0^inf</code>.
+  1. C0/D0/E0 fill the pad 0^g (plus 2 new cells) with 1s, walking left. g must be even, or else E reads the block's last 1 and halts (rule H).
+  2. F/A sweep left over the block and leave stripes <code>(01)^k</code> (rule S).
+  3. The sweep enters the counter L, carries, and turns.
+  4. B/C zigzag back right and turn the stripes solid again (rule Z, 10 steps per 2 cells).
+  5. C erases the run of 1s at the right end, then reads a fresh cell: a new record 2 cells further right.
+  The net effect: the block loses 2 cells at its right end, the pad gains 4, and the counter gets +1.</li>
+<li><strong>Counter.</strong> The carry depth of each visit follows the ruler sequence v2(k+c)+1 (<code>scripts/ruler_check.py</code>). That holds for 27,084 of 27,124 visits to 2.5e9 steps, with one offset c per phase. The 40 misses come early in a phase, where a digit migrates (a filler zero becomes part of a digit). Digit cells per phase come from <code>scripts/counter_check.py</code>, <code>work/phase10_visits.txt</code> and <code>work/allvisits_2.5e9.txt</code>.</li>
+<li>Phase 7 (n=838): {-34} {-37} {-40} {-44,-43} {-47} {-54} {-58,-57} {-61} {-64}.</li>
+<li>Phase 10 (n=6718): bit 0 = -41, bit 1 = -44, a 1^30 filler, bit 2 = -75, {-79,-78}, -82, -91, {-95,-94}, {-99,-98}, ...
+  So digits are 1 or 2 cells wide, and they are separated by <code>00</code> gaps or by long 1-runs that the carry passes through. The low layout differs from phase to phase. In phase 9, for example, the three low bits sit in an 8-cell zone <code>b2 00 b1b1 00 b0</code> next to the block.</li>
+<li><strong>Micro-mechanics of the carry.</strong> It is seen step by step in Fig 3 (<code>img/carry_closeup_step10090380.png</code>).</li>
+<li>F/A stripe 1s.</li>
+<li>F reading 0 with an A-written 0 on its right and a 0 on its left fills the <code>00</code> and keeps going left.</li>
+<li>A reading 0 turns back: the digit 0 becomes 1.</li>
+<li>On the way back, the zigzag restores the stripes, and C erases the solid 1-runs it meets. That is how the lower digits go from 1 to 0.</li>
+<li><strong>Phases.</strong> Block length at each phase start (in the record representation): 6, 14, 38, 94, 198, 418, 838, 1678, 3358, 6718, 13446, 26894, 53790, 107582 (steps 13 ... 9.6e9). The reset happens at m=2: <code>L0 0 1^2 0^g C&gt;</code> -&gt; <code>L0 1^(g+6) C&gt;</code>, with g = 4(visits-1). Early in the next phase, the block may absorb low filler cells: 4, 8, 4, 10, 0, 0, 0, 0, 4, 0, 0 cells in phases 2-12. A phase costs about 2.5 n^2 steps, roughly 4x the previous one.</li>
+<li><strong>Sync.</strong> All 12 resets to 2.5e9 happen on a visit with bit 0 = 0. Off-sync variants of the 12 real reset configurations (bit 0 = 1, or a block of 1 or 3) halt on the very next visit in 35 of 36 cases: the reset leaves an odd pad, and rule H fires (<code>scripts/offsync_probe.py</code>, <code>work/offsync_probe.log</code>). Visits per phase are odd in all but phase 5 (104 visits, after 10 absorbed cells), so the alignment is not a simple parity rule. It comes from how the counter layout meets the block.</li>
+<li><strong>Diagrams.</strong> <code>TM</code> is this machine. All PNGs are in <code>img/</code>, and <code>img/viewer.html</code> holds every view.</li>
+<li><code>records_9.4e6.png</code>: <code>python3 -B tools/diagram.py "$TM" --mode records --steps 9.4e6</code>. Blank start, 3,398 rows, cells -73..3324.</li>
+<li><code>counter_128visits_phase10.png</code>: <code>python3 -B scripts/render_counter.py work/allvisits_2.5e9.txt img/counter_128visits_phase10.png 3346 128 -104 -36 6 4</code>. One row per visit start, visits 3,346..3,473, cells -104..-36. Custom style: white = 1, black = 0, no head.</li>
+<li><code>carry_closeup_step10090380.png</code>: <code>tools/diagram.py "$TM" --mode every:1 --from-config @&lt;exact span config at step 10,090,380&gt; --steps 280 --width 69 --ox 0.93478 --scale 3</code>. The head (cell 0 of the run) is real cell -8, so the window is cells -72..-4.</li>
+<li><code>default_site.png</code>: <code>--as-site</code>.</li>
+<li><code>viewer.html</code>: <code>-o img/viewer.html --records-steps 2.4e6</code>.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All rules were checked by direct simulation on random instances. Scripts: <code>scripts/validate_rules.py</code> (seeds 7 and 11, logs in <code>work/validate_rules_seed*.log</code>) and <code>scripts/validate_visit.py</code> (<code>work/validate_visit_2.5e9.log</code>).</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from</th>
+<th>to</th>
+<th>steps</th>
+<th>cases</th>
+<th>check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V visit</td>
+<td><code>0^inf L 1^m 0^g C&gt; 0^inf</code></td>
+<td><code>0^inf inc(L) 1^(m+d) 0^(g+4) C&gt; 0^inf</code></td>
+<td>6m+2g+c(L)</td>
+<td>m&gt;=4, g even; (inc(L), d) depend on L only</td>
+<td>every visit to 2.5e9, real L, random m' (same parity) and g' (both residues mod 4): 54,248/54,248</td>
+</tr>
+<tr>
+<td>Inc</td>
+<td>carry depth of visit k</td>
+<td>v2(k+c)+1 digits</td>
+<td></td>
+<td>one c per phase</td>
+<td>27,084/27,124 (40 = digit migration)</td>
+</tr>
+<tr>
+<td>R0</td>
+<td><code>0^inf L0 0 1^n 0^g C&gt; 0^inf</code></td>
+<td><code>0^inf L0 1^(n-1) 0^(g+4) C&gt; 0^inf</code></td>
+<td>6n+2g-10</td>
+<td>n even &gt;=4, g even, any L0</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>R1s</td>
+<td><code>L0 1 0 00 1 1^n 0^g C&gt;</code></td>
+<td><code>L0 1 1 00 0 1^(n-2) 0^(g+4) C&gt;</code></td>
+<td>6n+2g+10</td>
+<td>phase-10 layout, any L0</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>R1d</td>
+<td><code>L0 1 0 00 00 00 1 1^n 0^g C&gt;</code></td>
+<td><code>L0 1 0 00 11 00 0 1^(n-2) 0^(g+4) C&gt;</code></td>
+<td>6n+2g+14</td>
+<td>phase-9 layout, any L0</td>
+<td>600/600</td>
+</tr>
+<tr>
+<td>R reset</td>
+<td><code>0^inf L0 0 1^2 0^g C&gt; 0^inf</code></td>
+<td><code>0^inf L0 1^(g+6) C&gt; 0^inf</code></td>
+<td></td>
+<td>g = 0 mod 4, any L0</td>
+<td>600 random + 36 on the 12 real resets</td>
+</tr>
+<tr>
+<td>P pad</td>
+<td><code>0^inf X 1^n 0^g C&gt; 0^inf</code></td>
+<td><code>0^inf X 1^(n-1) &lt;F 1^(g+3) 0^inf</code></td>
+<td>g+4</td>
+<td>g even</td>
+<td>400/400</td>
+</tr>
+<tr>
+<td>H</td>
+<td>same, g odd</td>
+<td>halt</td>
+<td></td>
+<td></td>
+<td>400 random + 5,425 on real L</td>
+</tr>
+<tr>
+<td>S stripe</td>
+<td><code>L 1^(2k+1) &lt;F R</code></td>
+<td><code>L &lt;A 1 (01)^k R</code></td>
+<td>2k+1</td>
+<td></td>
+<td>400/400</td>
+</tr>
+<tr>
+<td>Z zigzag</td>
+<td><code>1^a C&gt; (01)^k 1^b 0^inf</code></td>
+<td><code>1^(a+2k-1) C&gt; 1^(b+1) 0^inf</code></td>
+<td>10k-5</td>
+<td>k&gt;=1</td>
+<td>400/400</td>
+</tr>
+</tbody>
+</table>
+<p>What is NOT ruled yet:
+- the grammar K of counter words L, meaning which digit/filler layouts occur and how inc and the reset act on a general layout;
+- the absorption visits early in a phase;
+- why the reset visit always has bit 0 = 0.</p>
+<p>Template check: no solved machine is within 3 transitions. The nearest are CTLv1, RWL_mod and CPS_LRU decider machines at 4. SBCv7 TM4 (also the base of our kill #4) and SBCv11 match at class level only. Their counter lemmas (BC.Mul2 on fixed 4-cell digits d0/d1) do not fit 1- or 2-cell digits with phase-dependent fillers.</p>
+<p>Cryptid check (ground rule 6): not cryptid-like. The counter is a plain binary +1 (ruler sequence), and the timer arithmetic is linear (n -&gt; n-2, g -&gt; g+4, reset n' = g+6). No halting decision depends on pseudo-random arithmetic. The open question is structural: closure of the layout grammar and the sync.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<ul>
+<li>Confidence <strong>med</strong>, so proof work waits for Dennis (CLAUDE.md). Questions are in observe.json / card.html. The decision: spend a deepen stage on the counter grammar K plus its closure and the sync, or park this machine.</li>
+</ul>
+<h2 id="informal-proof">Informal proof</h2>
+<p>Not started (waits for Checkpoint A).</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>Not started.</p>
+<h2 id="outcome">Outcome</h2>
+<p>Open (CHECKPOINT_A after the follow stage, see that section; recommended: park).</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: #37's visit, reset and halt rules are exact. What is open is the counter-word grammar K (its closure under inc and reset) and the reason every reset lands on bit 0 = 0. Spend one deepen stage pinning K, or park #37?
+Answer: <strong>deepen</strong> (Fund one ~2 h deepen stage on the counter grammar K). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-deepen">Funded stage (2026-10-10, deepen)</h2>
+<p>Scope (decision <code>deepen</code>): dump L at every visit to 1.2e10, write K, check inc and the reset on random members, derive the bit-0 sync. Scripts: <code>scripts/deepen/</code> (C tracker <code>lowend.c</code>, Python <code>lib37.py</code>); logs: <code>work/deepen/</code>.</p>
+<p><strong>Data.</strong> <code>scripts/visitpairs 1.2e10 1</code> -&gt; <code>work/deepen/allvisits_1.2e10.txt</code>: all 57,448 visits, 14 resets, no halt (65 s). Ruler check on it: 57,378/57,431 visits (<code>work/deepen/ruler_1.2e10.txt</code>).</p>
+<p><strong>What changed in the picture.</strong> Bit 0 is not a cell of L. It is the parity of the block: m odd means the block's first cell is bit 0 = 1. The block's left end oscillates between two fixed cells b-1, b for the whole phase; only its right end erodes. Notation: z = final gap of L (zeros between L's last 1 and the block), r = L's bottom (last) 1-run.
+- <strong>K (closed).</strong> K = words whose 1-runs all have length &gt;= 2. All 57,448 real words are in K. Random closure (<code>validate_K.py 21 300 60</code>): 18,000/18,000 visits stay in K, every visit returns with pad g+4, no halt. Within a phase nothing ever halts: 1,000 fully random binary words x 60 visits (<code>randiter2.py 2 1000 60 30</code>) and 300 K-words x 100 visits (<code>randiter.py 1 300 100</code>), 0 halts. The layout of the high digits (drifting long runs, gaps that shrink and merge) needs no description for this: K is enough for the visit rule.
+- <strong>D (block change, exact).</strong> For L in K: d = -1 if m is even, d = -3 if m is odd, as long as z &gt;= 2; if z = 1 the bottom run merges into the block and d = r-1. Real: 57,433/57,433 transitions (7 merges, all early in a phase). Random: 18,000/18,000. Without K (single 1s allowed) d takes other values (<code>dtest.py 3 4000 40</code>: d in 2..12 on 503 of 1,890 odd visits with z &gt;= 2).
+- <strong>S (sync invariant).</strong> m mod 4 in {1,2} at every visit with g &gt; 0: real 57,433/57,433. By D it is preserved by every visit with z &gt;= 2. A merge keeps it only if r = 1,2 (mod 4) at an odd visit or r = 0,1 (mod 4) at an even one. So off-sync can only enter through a merge.
+- <strong>P (low-end lemma).</strong> If z &gt;= 3 at an even visit, then at the next even visit z &gt;= 4 when it was 3, and z = 3 when it was &gt;= 4 (bit 1 of the counter). So z never drops to 1 or 2 again and no merge happens for the rest of the phase. Real 28,698/28,698 even-visit pairs; random 8,688/8,688. Micro-cause: at the odd visit F meets z-1 zeros; z-1 = 3 extends r by one cell, z-1 &gt;= 4 builds a new 11 digit, z-1 = 2 passes the carry into r; every case leaves z &gt;= 3. Phase test (<code>phasetest.py 11 800 400 8</code>): starts with z &gt;= 3: 583/583 runs x 400 visits with no mod-4 violation; starts with z in {1,2}: 117 of 217 violate, always within the first 4 visits.
+- <strong>R (reset).</strong> z at the new phase start = z at the reset visit minus 1 (13/13 non-trivial resets). Phase arithmetic: n' = 4 x visits + 2 in all 13 phases, and visits = n/2 when no merge happens. Forced resets on real mid-phase words (<code>forcereset.py 1</code>): z_reset &gt;= 4 gives a synced next phase end in every sampled class (532/532 runs); z_reset = 3 is safe or fatal depending on r (R1/5: always m=2; R3 and 3: always m=3; R0, R2, 2, 4 mixed).
+- <strong>Sync, derived for the steady class.</strong> Class Sigma: n = 6 (mod 8), z = 3 at phase start, and the bottom run long enough that z alternates exactly 3/4. Then visits = n/2 = 3 (mod 4), the reset is at an offset = 2 (mod 4), so z_reset = 4, z' = 3, and n' = 4 visits + 2 = 6 (mod 8) again. The real run has been in Sigma since phase 11 (k = 6,697): n+2 = 1681 x 2^j (13,448 ... 107,584), z_start = 3 and z_reset = 4 in phases 11-14, bottom run 26..80, z_even exactly {3,4}. Earlier phases left Sigma twice (phase 7 ended with z_reset = 8 while the bottom run was a 2-run digit; phase 9 had z_reset = 3) and came back through benign merges (r = 2, and 2 then 5 in phase 4).
+- <strong>Random multi-phase tests</strong> (<code>steady.py</code>, <code>multiphase.py</code>): Sigma with bottom run &gt;= 3: 249/250 runs stay in sync over 5 phases (1,317 phase ends); the one failure starts with a 4-run that shrinks to an 11 digit. Sigma with a bottom 11 digit: 63/150 runs go off-sync (47 halt). Outside Sigma: 120 of 238 runs go off-sync (<code>multiphase_seed1.log</code>).</p>
+<p><strong>What is still open (one lemma).</strong> B: in the real orbit the bottom run never again becomes an 11 digit in a position that is erased at a bad time (a bottom 2-run is erased by a carry and makes z = 7/8, which shifts the 3/4 pattern by 2 visits and makes z_reset = 3). Its length moves only at carries of level &gt;= 2 (left end: -1 at a gap of 3 or &gt;= 4 above it, +1 at an A arrival, +big at merges with the run above; data 30, 28, 27, 31 at phase starts and up to 80 in phase 15). So B is a statement about the high digits of K, which this stage did not describe: K as "runs &gt;= 2" is closed but too coarse to prove B (random upper words do break it, 1/250). Nothing here is arithmetic beyond n mod 8, so it is not a cryptid, and the stop rule ("depends on block-length arithmetic in a non-regular way") did not fire. But the sync is not derived for every phase, so proof.md is not next yet.</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: #37's sync now rests on one open lemma B (its bottom counter run never again becomes an erasable 11 digit): fund a second deepen round on B, or park #37?
+Answer: <strong>deepen2</strong> (Fund a second ~2 h deepen round on lemma B). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-deepen2">Funded stage (2026-10-10, deepen2)</h2>
+<p>Scope (decision <code>deepen2</code>): settle lemma B (the bottom run never again becomes an erasable 11 digit) by tracking the bottom run and the gap above it, and write the grammar of the high digits that B needs. Scripts: <code>scripts/deepen2/</code>. Logs: <code>work/deepen2/</code>. Phase numbers are real phases (phase 11 starts at step 150,742,757). <code>jump_160.log</code> counts from phase 11 as index 0, so real phase = index + 11.</p>
+<p><strong>1. Inside a phase the counter is a binary counter on fixed cells</strong> (<code>bitcells.py</code> on the 1.2e10 dump, <code>work/deepen2/bitcells_1.2e10.log</code>). After a short settling, each carry level toggles a fixed group of 1 or 2 cells.
+- Phase 13 (n = 53,790): bit 1 = cell -47 (13,447 flips), bit 2 = -78 (6,722), bit 3 = -81 (3,361), then -104, -107, -126, -129, -134, {-138,-137}, {-142,-141}, ...
+- Only L changes at the odd-m visits. The counter value at every steady phase start is N0 = 3.
+- The only other changes are one-time migration fills: a carry fills a gap cell instead of carrying. In phase 14, for example, -79, -80, -105 and -106 are filled before bit 2 settles at -127.
+- So the bottom run is filler between bit 2 (its left end) and bit 1 (its right end).</p>
+<p><strong>2. Exact accelerators.</strong>
+- <strong>Visit level, <code>fastphase.c</code>.</strong> Each visit runs on the real TM with the block replaced by 1^(8 + m mod 4) (rule V). The true m is carried through d, and the reset uses rule R. It matches the real TM dump on 50,752/50,752 visits from k = 6,697 to 57,448, including 3 resets (<code>cmpdump_6697_57448.log</code>).
+- <strong>Phase level, <code>jumpsim.py</code>.</strong> It memoises a run of 2^lam - 1 units (each of carry level &lt;= lam) on the exact contents of every cell the run reads, so a replay is sound by construction. It learns the alignment from carry depths.
+- <strong>Agreement.</strong> jumpsim reproduces all 15 phase-start layouts that were simulated exactly (phases 12-26, <code>cmplayout_jump_vs_exact.log</code>). It follows the real orbit to phase 171 (n ~ 9.8e51) in about 2 minutes.</p>
+<p><strong>3. B is false as stated, and the orbit survives anyway</strong> (<code>jump_160.log</code>).
+- From phase 15 on, the bottom run erodes by exactly 1 cell per phase: 78, 77, ..., 3, 2. Its right end follows the block (z' = z-1 at each reset) and its left end (bit 2) stays put. The low layout <code>.3 r .3 14 .3 12 .3 3 .3</code> is frozen from phase 19.
+- It becomes an 11 digit at phase 91, and again at phase 119 (after the 14 and 12 runs are used up, merges give 24, then 77).
+- Both times the same 3-phase <strong>excursion</strong> follows:
+  - Phase A (r = 2) ends with z_reset = 8.
+  - Phase B starts with z = 7, the next run is the bottom run, and it ends with z_reset = 3.
+  - Phase C starts with z = 2. A fresh 11 digit merges once (d = +1, which keeps m mod 4 in {1,2}), and the phase ends with z_reset = 4.
+  - From phase D the run is back in the steady class, with bottom run = next run - 2.
+- To phase 171: 2 excursions, no off-sync, and z_start 3 / z_reset 4 in every other phase.
+- The merge adds one visit, so n+2 = 1681 x 2^j becomes 8 x (1681 x 2^83 + 1) after the first excursion and changes again after the second. Each excursion adds one bit to the final counter value, and that bit rises one level per phase through the layout.</p>
+<p><strong>4. When the excursion is safe</strong> (<code>excursion.py</code>, which starts from the real phase-119 configuration).
+- Next-run length 70..81: 12/12 benign, the same pattern for every residue mod 4 (<code>excursion_vary1_ph108.log</code>).
+- Random runs above, separated by 000 (bottom 11 digit, 6 random runs):
+  - lengths 2..40: 60/60 benign over 4 phases;
+  - lengths 3..12: 60/60 benign over 4 phases;
+  - lengths 2..8 over 16 phases: <strong>9/40 go off-sync</strong> (<code>excursion_rand_seed3_a2-8_16ph.log</code>).
+- Every failure has a run of 3 or 4 becoming the bottom run during or right after an excursion. Excursions then overlap (z 2 &gt; 8, or z 3 &gt; 7 &gt; 6), and off-sync means a halt on the next visit (rule H).
+- So the true replacement for B is B': no run of length &lt;= 4 becomes the bottom run around an excursion, unless it merges first.</p>
+<p><strong>5. Where B' stands.</strong>
+- At phase 171 the layout has 3,616 cells and 78 runs. The lowest 18 runs are separated by exactly 000, with irregular lengths: 46 93 177 112 69 176 84 247 276 21 17 41 65 34 375 <strong>3</strong> 46 ...
+- Further up, the gaps are 2, 4, 7, 11, 14, 15, 18 and 23. That region is where the rising bits of the final counter value write the layout.
+- A 3-run sits 16 runs above the bottom. It reaches the bottom roughly 2,000 phases from now, unless merges absorb it first. Merges do happen after excursions: 75+17 -&gt; 93 and 58+33 -&gt; 93 around phases 123-126.
+- So B' depends on a layout that the history of excursions writes (each excursion changes the final counter value, which changes the layout written above). I found no regular grammar for it in this stage. This meets the decision's stop rule, so the status is <strong>STUCK</strong>.
+- It is not a cryptid as far as tested: no dependence on run-length residues, and the counter arithmetic is powers of two plus sparse bits. But a halt far out (a short run reaching the bottom at an excursion) is not excluded.</p>
+<p><strong>Still open.</strong>
+- Whether the 3-run, or any run of length &lt;= 4, ever reaches the bottom at an excursion in the real orbit.
+- A C port of jumpsim with hashed memo keys (the Python version needs about 1 s per phase at phase 160 and grows with the level count) could follow the real orbit through the next excursions (about phases 205-2,200). That would settle it empirically: either a halting candidate with an explicit phase, or evidence for a maturation rule.
+- A proof would need a phase-of-phases induction over that layout grammar. No busycoq template is near.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: #37's sync now hinges on whether a short run ever reaches the bottom during an excursion: port the jump simulator to C and follow the real orbit through the next excursions, or park #37?
+Answer: <strong>follow</strong> (Port the jump simulator to C and follow the real orbit (~2 h)). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-follow">Funded stage (2026-10-10, follow)</h2>
+<p>Scope (decision <code>follow</code>): port the jump simulator to C, re-check it, follow the real orbit from phase 171 until the 3-run 16 runs up reaches the bottom (about 2,000 phases) or the cost explodes. Scripts: <code>scripts/follow/</code>. Logs: <code>work/follow/</code>. Phase numbers are real phases; the simulator files count from phase 11 as index 0, so real phase = index + 11.</p>
+<p><strong>1. The C port is exact against everything we have</strong> (<code>work/follow/cmp_c_vs_py_160.log</code>, <code>validate_*_seed7.log</code>, <code>check_cycles_seed1.log</code>).
+- <code>jumpsim.c</code> is a line-by-line port of <code>jumpsim.py</code>, with GMP integers and m mod 4 added to the memo key (strictly more conservative). On the real orbit from phase 11 it gives the same log as Python for all 160 phases, every field including <code>exact_steps</code>, and the same 160 layouts. It also matches the 13 exactly simulated layouts.
+- <code>jumpsim2.c</code> adds fast paths: an 8-cell macro table, the F/A sweep over a 1-run, three zigzag cycles (<code>1 C&gt;0 1 0 1</code>, <code>C&gt;1 0 1</code>, <code>0 C&gt;0 1</code>; each one is 10 steps and shifts by 2), and C or B crossing a 1-run. A brute-force check on random surroundings passes 3,000/3,000 for each of the four rules. On the same 160 phases its layouts and phase fields equal Python's.
+- Random instances use real layouts with the lowest 3-8 runs rewritten in three kinds: excursion-style, K-words with gaps 2-6, and words with single 1s. Each C binary was compared with two references:
+  - the Python jumpsim: 90/90 instances (248 phases, 37 of them ending off-sync), all agreeing;
+  - the exact visit-level <code>fastphase.c</code>: 90/90 instances (250 phases, 41 ending off-sync), all agreeing.
+- Speed: index 160 takes 0.23 s, against about 2 minutes in Python. At index 1,800 a phase takes 0.9 s; the counter word is then 146,000 cells and the cost grows like (word length) x (levels).</p>
+<p><strong>2. Real orbit followed to the start of phase 1,857</strong> (index 0..1,845; <code>real.log</code> + <code>real2.log</code>, runs per phase in <code>real_runs.txt</code> + <code>real2_runs.txt</code>, resumable checkpoint <code>ckpt_follow_end.txt</code>). n is about 2^1860 there. There was no off-sync and no halt.
+- Excursions (bottom run 2) happened at phases 91, 119, 215 and 487. Each was the same benign 3-phase pattern: z_reset 8; then z 7 &gt; 3; then z 2 with one merge. The run that became the bottom had 14, 77, 93 and 700 cells.
+- <strong>The 3-run from the decision never reached the bottom.</strong> A merge wave absorbed it at phases 231-233: <code>412 .2 4 .3 46</code> -&gt; <code>418 .4 45 .2 38</code> -&gt; <code>418 .3 86</code>.
+- Excursions are getting rarer. The bottom run after each merge cascade was 24, 93, 269 and 2,824, so the gaps between excursions were 28, 96, 272 and about 2,834 phases. The next real excursion is due at phase 3,321.</p>
+<p><strong>3. What happens between excursions</strong> (<code>frozen.py</code> -&gt; <code>frozen_real_1846.log</code>; Fig 5 = <code>img/follow_lowruns_real.png</code>).
+- <strong>Erosion.</strong> The bottom run loses exactly 1 cell per phase and the gap above it stays 3: 1,777 of 1,779 steady phase pairs. The 2 exceptions are phases 14-15, before the steady class.
+- <strong>Wave and frozen region.</strong> After each excursion a wave climbs from the bottom at about 0.5 runs per phase.
+  - Where it passes, a gap of 3 becomes 2 and the two runs merge in the next phase. The bottom run absorbs runs this way (698 -&gt; 975 -&gt; 1,017 -&gt; 1,127 -&gt; 1,547 -&gt; 2,533 -&gt; 2,824 at phases 490-499). Runs further up merge in pairs or triples (23 + 77 -&gt; 102, ...).
+  - The wave also writes some new short runs.
+  - Below the wave front nothing changes until the next excursion. In Fig 5 these frozen runs are the vertical stripes, and the waves are the diagonal bands.
+- <strong>Short runs.</strong> Runs of 1-4 cells do occur above the bottom. Since phase 223 the lowest one has sat at index 5 or higher; since phase 521 there has been a 2-run at index 11. So far every wave has absorbed the short runs it met.</p>
+<p><strong>4. Fast-forward and the next three excursions</strong> (<code>ffwd.py</code>, <code>work/follow/ffwd/</code>).
+- <strong>The method.</strong> The runs below the wave front are frozen and the bottom run only erodes. So a real layout with its bottom run cut to 4 cells should act, in its low region, like the real layout (r - 4) phases later.
+- <strong>Check against the past.</strong>
+  - Donors at phases 311 and 411, cut to 4 or 5 cells, reproduce the real excursion at phase 487 and its cascade exactly: the lowest 12 and 14 runs agree over 45 of 45 phases each (<code>d300_r4.txt</code>, <code>d400_r5.txt</code>).
+  - Donors whose wave front was still low diverge exactly where the cascade reaches runs that were not yet frozen. Donor phase 261 first differs at run index 13, at phase 496. Donors at phases 106 and 161 also diverge.
+- <strong>The next excursion, at phase 3,321.</strong>
+  - Donors at phases 811, 1,011 and 1,207 give identical lowest 30 runs over 70 phases.
+  - a1 = 555 becomes the bottom and the 3-phase pattern is benign.
+  - The cascade merges 553 + 988 -&gt; 1,542 (the new bottom), and 22 + 77 -&gt; 102 (the new a1).
+  - The 2-run at index 11 is absorbed at phase 3,336 (<code>2 .2 41</code> -&gt; <code>45</code>).
+- <strong>Chained predictions.</strong> These are only valid in the region below the simulated wave front, so they are weaker evidence.
+  - Phase 4,866: a1 = 102, benign. New bottom 300, a1 = 1,052.
+  - Phase 5,172: a1 = 1,052, benign. New bottom 2,497, a1 = 3,596.
+  - The next one after that is due at about phase 7,675.
+- <strong>The trend.</strong> Bottom and a1 after each cascade: (24, 77), (93, 93), (269, 700), (2,824, 555), then predicted (1,542, 102), (300, 1,052), (2,497, 3,596). In all 7 cascades both are merge products (at least 6 cells). Low-region runs keep growing.</p>
+<p><strong>What this settles, and what it does not.</strong>
+- Settled empirically:
+  - The real orbit stays in sync to phase 1,857 (n ~ 2^1860).
+  - The specific 3-run never reaches the bottom.
+  - The next excursion (phase 3,321) is predicted benign by an exact simulation of the frozen low region. That prediction was confirmed on the past excursion at phase 487.
+- Maturation rule candidate M:
+  - After every excursion, the cascade's first merges produce both the new bottom and the new a1.
+  - So a1 &gt;= 6 at the next excursion, which is then benign by the excursion rule (next run &gt;= 5: 12/12 + 120/120 in deepen2).
+  - Evidence: 4 real and 3 predicted cascades.
+- Open:
+  - <strong>Why the wave merges at index 1.</strong> It is driven by run-length parities (F or A arrives at a gap, so <code>00</code> is filled or a digit is set), so it is probably a finite-state rule on run residues. Not derived.
+  - <strong>A proof.</strong> It would need the visit rule, the fixed-cell phase rule, the wave rule on run words, and M as an invariant, each over unbounded nested structure. No busycoq template is close.
+- <strong>Not a cryptid as tested.</strong> The irregular run lengths come from history, but the safety comes from merging (runs grow), not from coincidences of residues.
+- <strong>Cost.</strong> It did not explode, but it grows (about 0.9 s per phase at phase 1,857). Confirming phase 3,321 on the real orbit would take about 1 h of one light C process from <code>ckpt_follow_end.txt</code>:</p>
+<p><code>scripts/follow/jumpsim2 @work/follow/ckpt_follow_end.txt 0 0 1500 &lt;lay&gt; &lt;runs&gt; 1846 20</code></p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: #37 stays in sync to phase 1,857, and its next excursion (phase 3,321) is predicted benign: park it, spend one round deriving the merge-wave rule, or first confirm phase 3,321 on the real orbit?
+Answer: <strong>park</strong> (Park #37 behind the other machines). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="twin-port-p-500-2026-10-14-strategy-direction-1-refuted">Twin port P-500 (2026-10-14, strategy direction 1): refuted</h2>
+<p>Label: P-500 (740 line 500, byte for byte). Scripts: <code>scripts/port/</code>. Logs: <code>work/port/</code>. One-pass check: <code>python3 -B scripts/port/check_twin.py work/follow/real_lay.txt</code> (about 6 min, <code>work/port/check_twin.log</code>).</p>
+<p><strong>Target.</strong> <code>SBCv9.v</code> Module TM2, <code>1RB0RF_0LC---_1LD1LC_0LE0LD_1RE1RF_0RC1RA</code>, a HALT proof (upstream commit 457869d, 2026-02-15; identical in vendor 0940bb9). It proves <code>halts tm c0</code> by <code>init</code> (c0 to <code>cfgL' 11 5 ([1;0]*&gt;0inf)</code>), then <code>msteps 15000</code> evaluated by native_compute, then 13,297 concrete steps with a and b generalized.</p>
+<p><strong>Relation (exact, at the table level).</strong> Mirror #37 and rename its states A, B, C, D, E, F to TM2's A, C, D, E, G, F (G is #37's E). The result is TM2 except at two places:</p>
+<table>
+<thead>
+<tr>
+<th>where</th>
+<th>TM2</th>
+<th>#37 (mirrored)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A reads 0</td>
+<td>A0 1RB, B0 0LC, C1 1LC: 3 steps; <strong>halts if B reads 1</strong></td>
+<td>A0 1LC: 1 step, same tape</td>
+</tr>
+<tr>
+<td>E walks over 0s</td>
+<td>E0 1RE (one state)</td>
+<td>E0 1RG, G0 1RE (alternating); <strong>G1 halts</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Same start state, blank tape: lockstep from step 0. The tapes are always equal (mirrored), so there is no reconvergence question; only the two guards differ.</li>
+<li>TM2 halts when A turns on a 0 and the next cell further out in the counter (to the left of that 0, in #37's orientation) holds 1. #37 halts when an E-run meets a 1 after an odd number of 0s.</li>
+<li>Checked concretely: 3e6 steps of #37 = 3,001,094 steps of TM2, positions mirrored, states renamed, tapes equal (check T2).</li>
+</ul>
+<p><strong>TM2's run in its own representation.</strong> <code>LC a b = 0inf 1^a (10)^b</code> (the timer) and a concrete counter word r. <code>scripts/port/tm2_msteps.py</code> transcribes <code>mstep</code>, <code>rest</code> and <code>RIncs</code> exactly.
+- The run stops after 12,417 macro steps (so <code>msteps 15000</code> returns that configuration), with 374 overflows (LOv). It ends in <code>cfgR' a b r</code> with a of 373 bits, b of 378 bits and r of 12,511 cells.
+- That is 16 macro steps after the 374th overflow, about 0.6% into the phase.
+- From there TM2 halts at exactly step 13,297 (B reads 1 at cell 12,508 of r), never reading LC a b. This reproduces upstream's <code>stepn' 13297</code> (check T5).</p>
+<p><strong>#37 follows that run exactly.</strong>
+- After overflow j, TM2's b is n - 1 for #37's phase j+1 (n + 3 at absorption phases). Its r is the reversed left word L of the follow-stage START line j - 9.
+- All 220 recorded counter words are equal, the last one at the start of phase 370 (check T4). <code>cmp_phases2.py</code> (<code>work/port/cmp_tm2_vs_500_layouts.log</code>) compares the 202 of them whose paired n is also recorded, b included. So upstream's formally checked macro run and our C follow simulator agree, through the excursions at phases 91, 119 and 215.
+- TM2's exit therefore falls early in #37's phase 375. The follow stage ran #37 through phase 375 to phase 1,857 with no halt.</p>
+<p><strong>Exit branch, re-derived on the upstream representation (a and b kept symbolic).</strong>
+- Start from TM2's final <code>cfgR' a b r</code>. Mirrored #37 makes the A0 turn where TM2's B would read the 1, then carries on.
+- After 72,652 steps it reads LC a b for the first time, in state D, with <code>0 1 1</code> to its right. That is <code>LC a b {{{(hL',L)}}} r''</code>, TM2's own <code>cfgL' a b r''</code>, and TM2's next macro rule there would be LIncs (<code>exit_window.py</code>; check T5).
+- So TM2's halting event is not an exit for #37. #37 goes back into the upstream invariant and continues the phase.</p>
+<p><strong>Left-side lemmas on #37</strong> (<code>lemma_transfer.py</code>, a in 0..23, b in 0..7; check T6).
+- LInc, LRst_101 and LRst_11 hold for #37 exactly when a is odd: for even a, the timer sweep's E-run is odd and #37 halts. LOv holds for every a.
+- Along the orbit a = 3 (mod 4) at every configuration: a = 11 at init, 3 after each overflow, and +4 per increment.
+- So in this representation the whole timer side is parity-safe. #37 can halt only on the counter side: in a concrete R-sweep, or in a counter-word segment with an odd E-run.</p>
+<p><strong>Verdict.</strong> The halting event differs, so there is no halting port: TM2 halts on a guard #37 does not have, and #37 continues inside the same representation. Status stays STUCK (parked). Nothing new needs a decision from Dennis.</p>
+<p><strong>What it leaves for #37.</strong>
+- TM2's representation is an exact accelerator for #37. Its Coq lemmas could be re-proved for #37 under "a odd" with the same tactics.
+- It shrinks the open question to the counter word r. A nonhalt proof still needs the counter-side invariant (lemma B' / rule M of the follow stage). A halting proof would need a counter-side odd E-run later than phase 1,857.</p>
+</main></body></html>

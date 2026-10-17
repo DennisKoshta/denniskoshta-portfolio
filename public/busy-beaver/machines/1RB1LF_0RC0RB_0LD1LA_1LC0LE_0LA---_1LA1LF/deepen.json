@@ -1,0 +1,49 @@
+{
+ "tm": "1RB1LF_0RC0RB_0LD1LA_1LC0LE_0LA---_1LA1LF",
+ "stage": "funded:hunt",
+ "date": "2026-10-11",
+ "confidence": "high",
+ "recommend": "formalize (BECv5 TM1/TM2 template; proof.md drafted, Checkpoint B non-blocking)",
+ "mechanism": "Clean overflow states (typ, N, m) = K(std(N)|pk(N), 0, m). One clean-to-clean step B (closed form, scripts/hunt/closedform.py) covers the clean big steps, the resets with empty x, and the dirty two-cycle composites (gen-1 orbit cut at a dirty overflow, gen-2 orbit that merges back into a clean counter). The invariant I: 1 <= m <= N; parity class N = m (mod 2) with std even 2N <= 3m+6, std odd N <= 2m+3, pk even N <= 2m+3, pk odd 2N <= 5m+6; broken parity N <= m+3. Under I every halting/nested landing needs N >= 2m+4 (i = 0) or N >= 4m+7 (i >= 1), so it is excluded; dirty overflows happen only for std i=0 / pk i<=1 in the parity class and always in the final gap (past every landing), and the gen-2 orbit merges before its overflow. I is closed under B by a case analysis (proof.md 6).",
+ "closed_gaps": [
+  "Invariant found: I (scripts/hunt/inv3.py), a ratio bound per (type, parity of N) plus the parity class N = m (mod 2), with parity breaks only as N <= m+3.",
+  "Danger exclusion: every N/H (and R) landing at an overflow needs b+1 <= 2^(L-1), i.e. N >= 2m+4 for i = 0 and N >= 4m+7 for i >= 1; I forbids both.",
+  "Dirty composites resolved in closed form: gen-1 landing lemma (std: T_g = 2((k>>g<<g)+2^g), N/R by bit g+1, top at 2^(L+1); pk: H at 2^(L-1), even merge at 2^L) and gen-2 (x = E-bits K = k_s>>u, O-bits g = v>>(u+1), merge at T_x = 2^(lowK+1)).",
+  "Under I the dirty cases are only std i=0, pk i=0, pk i=1 (parity class), each in its final gap with barrier 3*2^(L-2) / 2^(L-2), v even (u >= 1), and n+1 > 2^(lowK+1): no gen-3 ever.",
+  "Closure of I: exhaustive for m <= 1300 (856,374 states) and 5.2M random boundary states up to m ~ 2^60; hand case analysis in proof.md 6.",
+  "Start F (349 via TM518): (std, 0, 1) -> (std, 2, 2), inside I."
+ ],
+ "remaining_gaps": [
+  "Rocq formalization (lemma plan in proof.md 8): new W(e,o) side, SW digit lemmas on flip tm, O3-O6 as sideRLs lemmas, general OV, BigStep per rule, Lemma S/C arithmetic.",
+  "Checkpoint B (Dennis) pending, non-blocking; no second-agent skeptic review yet."
+ ],
+ "evidence": [
+  "scripts/hunt/cf_vs_phi.py (seed 2): closed form B = phi iteration on 60,000 random states, 0 mismatches.",
+  "scripts/hunt/cf_vs_tm.py (seed 13): closed form B = direct TM simulation (tools/sim.py) on 1,587 random/constructed instances, every case (100 each; rare gen-2 cases 42/40/4/1), 0 mismatches after fixing the pk gen-1 R reset with kp a power of 2 (cannot occur under I). work/hunt_cf_vs_tm.json.",
+  "scripts/hunt/closure_check3.py: m <= 400 (83,499 states) and 401..1300 (772,875 states): I closed, no danger (work/hunt_closure_401_1300.out).",
+  "scripts/hunt/lemma_check.py: lemmas L1-L4 on all 856,374 states with m <= 1300 and 1,000,000 random states (m up to 2^60): 0 failures (work/hunt_lemma_*.out).",
+  "scripts/hunt/closure_random.py: 4,200,000 boundary-hugging states (2M to 2^60, 2M to 2^14, 200k to 2^48): 0 failures.",
+  "scripts/hunt/traj_inv.py: I at every clean state of the blank run, 17,000,000 cycles, m = 43,683,205 (work/hunt_traj_inv_17e6.out); traj_inv_start.py: start F, 999,999/999,999 (work/hunt_traj_inv_startF_1e6.out).",
+  "closure_random.py cross-checks B against phi iteration on every 20th sample: 110,000 states up to m ~ 2^60, 0 mismatches."
+ ],
+ "scripts": "scripts/hunt/: closedform.py (B), inv3.py (I), step.py (phi-iteration step), margin.py, closure_check3.py, closure_random.py, lemma_check.py, cf_vs_phi.py, cf_vs_tm.py, traj_inv.py, fig_ratio.py; exploration: closure2.py/closure3.py (cell closure), delta.py, parity.py, ratio8.py.",
+ "rounds": [
+  {
+   "date": "2026-10-11",
+   "option": "hunt",
+   "pass": "funded stage: find and test an invariant on (type, N, m) keeping overflows off the halting points, closed under the big steps and R3",
+   "confidence": "high",
+   "recommend": "formalize",
+   "result": "invariant I found (ratio bounds per type/parity + parity class); danger excluded analytically; closure checked exhaustively to m = 1300 and on 5.2M random states; I holds on 17M real cycles; proof.md drafted"
+  },
+  {
+   "date": "2026-10-11",
+   "option": "informal_proof",
+   "pass": "revise proof.md into a complete proof; check_proof.py for every claim",
+   "confidence": "high",
+   "recommend": "formalize",
+   "result": "proof.md complete: exact low-level rules, lemma SW + O3-O6, 11 macro rules, I with Lemma S/C by hand; check_proof.py 133/133 PASS (exhaustive m<=1300, random to 2^60, direct TM per rule, step formulas = direct run to 1e10)"
+  }
+ ],
+ "updated": "2026-10-11"
+}

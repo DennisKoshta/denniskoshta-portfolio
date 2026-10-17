@@ -1,0 +1,308 @@
+{
+ "tm": "1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD",
+ "rank": "R8",
+ "class_sheet": "Unknown",
+ "class_guess": "Sync bouncer counter (SBCv8 TM31 cousin): binary counter left, ternary throttle right, nested overflow pause",
+ "confidence": "low",
+ "summary": "TM31 cousin: binary counter left, ternary throttle right; the overflow pause and a one-off creep are unruled",
+ "mechanism": [
+  "The head shuttles between a left binary counter (6-cell digits) and a right ternary throttle, across 150 transparent middle blocks (0011 <-> 1110 per pass).",
+  "Each trip adds 1 on the left. On the right, s3 forwards 2 of 3 trips into K ternary digits; their carry-out appends one block, so a record comes every (3/2)*3^K trips.",
+  "A full left counter (3*2^m trips) starts an ~80*2^m-step pause. Only at m=14 did it end in a 150-trip creep that cost K a digit (3 -> 2). No halt to 2e11; hand tests with K=1,0,-1 keep running."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site_1e4.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge site view: bouncer with a slowly widening right edge",
+   "title": "bbchallenge Default, first 10,000 steps",
+   "why": "The site's own view. Look at the right edge moving out while the left edge stays nearly put.",
+   "primary": false,
+   "start": "blank",
+   "rows": "steps 0..10,000 squeezed into 500 rows by the site's bilinear filter (about 20 steps per row)",
+   "window": "cells -200..199, 1 px = 1 cell (site canvas, cell 0 at column 200)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head moving R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e8.png",
+   "html": null,
+   "steps": 100000000,
+   "caption": "Records: steady right growth, rare left records (horizontal lines)",
+   "title": "Records view to step 22.8 million",
+   "why": "One row per new left or right record. Compare the steady right diagonal with the rare full-width rows (left records).",
+   "primary": true,
+   "start": "blank",
+   "rows": "left/right records: one row per new leftmost or rightmost cell, 2,400 rows (row limit), up to step 22,765,042",
+   "window": "cells -69..2330, 1 px = 2 cells (every 2nd column sampled)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head moving R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:50",
+   "png": "img/overflow_ordinary_3.6e6.png",
+   "html": null,
+   "steps": 48000,
+   "caption": "An ordinary left-counter overflow: the nested pause, then repair",
+   "title": "Ordinary overflow pause at step 3.62 million",
+   "why": "Rows 60..860 are the pause. Compare the left strip (cells -60..50) with the unchanging columns to its right.",
+   "primary": true,
+   "start": "mid-run: step 3620000 (pause runs from step 3,622,995 to 3,664,343)",
+   "rows": "every 50 steps, steps 3,620,000..3,668,000 (961 rows)",
+   "window": "cells -80..119, 1 px = 1 cell (absolute positions; cell 0 = the start cell)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head moving R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:250",
+   "png": "img/creep_special_1.487e8.png",
+   "html": null,
+   "steps": 150000,
+   "caption": "The one special overflow (m=14): a front crosses the middle",
+   "title": "The m=14 overflow: creep across the middle",
+   "why": "Rows 0..70 end the pause. Follow the thin diagonal from cell 30 to about 620, then the right-counter columns.",
+   "primary": true,
+   "start": "mid-run: step 148740000",
+   "rows": "every 250 steps, steps 148,740,000..148,890,000 (601 rows)",
+   "window": "cells -100..699, 1 px = 1 cell (absolute positions)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head moving R/L",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:10",
+   "png": "img/right_counter_3e8.png",
+   "html": null,
+   "steps": 29420,
+   "caption": "Right counter close-up (K = 2): s3, two ternary digits, marker",
+   "title": "Right throttle close-up at step 3e8",
+   "why": "Cells 619..634 hold s3, t0, t1 and the 1011 marker. Watch the 4-cell digits change at head visits.",
+   "primary": false,
+   "start": "mid-run: step 300032419 (head at cell 301 moving right; canonical point, K = 2)",
+   "rows": "every 10 steps, steps 300,032,419..300,061,839 (2,943 rows; stopped by the stored-cell cap)",
+   "window": "cells 590..669, 1 px = 1 cell (absolute positions)",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head moving R/L",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf 1 [binary digits D_m..D_0: 001101=0, 101101=1] (1110)^150 [s3 t_0..t_(K-1) 1011] (0011)^e 0^inf  (at each left-counter overflow)",
+  "vars": [
+   "m (overflow ends the 3*2^m-trip period)",
+   "pause steps",
+   "K (ternary digits after)",
+   "right edge (cell)"
+  ],
+  "rows": [
+   {
+    "step": 3664343,
+    "values": [
+     "9 (start-up)",
+     42030,
+     3,
+     898
+    ]
+   },
+   {
+    "step": 7645681,
+    "values": [
+     10,
+     81564,
+     3,
+     1198
+    ]
+   },
+   {
+    "step": 15759543,
+    "values": [
+     11,
+     161928,
+     3,
+     1806
+    ]
+   },
+   {
+    "step": 32542539,
+    "values": [
+     12,
+     320582,
+     3,
+     3018
+    ]
+   },
+   {
+    "step": 68335917,
+    "values": [
+     13,
+     639884,
+     3,
+     5442
+    ]
+   },
+   {
+    "step": 148780415,
+    "values": [
+     "14 (creep)",
+     1299366,
+     2,
+     10294
+    ]
+   },
+   {
+    "step": 626342411,
+    "values": [
+     15,
+     2550784,
+     2,
+     39374
+    ]
+   },
+   {
+    "step": 2854429677,
+    "values": [
+     16,
+     5099496,
+     2,
+     97622
+    ]
+   },
+   {
+    "step": 12401584363,
+    "values": [
+     17,
+     "~10194818",
+     2,
+     214130
+    ]
+   },
+   {
+    "step": 51855760947,
+    "values": [
+     18,
+     "~20391632",
+     2,
+     447142
+    ]
+   },
+   {
+    "step": 200000000000,
+    "values": [
+     "(run end)",
+     "-",
+     2,
+     886362
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "RL left binary counter",
+   "from": "canonical point (head steps 300 -> 301), V = (D_15..D_1 D_0)_2 with D_i at cell -86+6(15-i), D_0 at 16..21; 0 = 001101, 1 = 101101",
+   "to": "next canonical point with V+1",
+   "steps": "one round trip (about 1,250 steps + 8e on a record trip)",
+   "cases": "V < 2^16 - 1 (no overflow); the overflow case is rule OV",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RS first right digit s3 (cells 619..622)",
+   "from": "s3 = P (1001) | Q (1011) | R (1000)",
+   "to": "P -> Q, no carry | Q -> R, carry | R -> P, carry",
+   "steps": null,
+   "cases": "3 cases; forwards 2 of every 3 trips",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RT ternary throttle + record",
+   "from": "digits t_0..t_(K-1) at 623+4j (P=0, R=1, Q=2), marker 1011, (0011)^e, carry c from RS",
+   "to": "T + c; if T + c = 3^K: digits -> 0, the trip runs to the right end, right edge +4 (e -> e+1); else right edge unchanged",
+   "steps": null,
+   "cases": "K = 0..5 tested; carry-out vs not",
+   "validated": {
+    "instances": 600,
+    "passed": 600
+   },
+   "source": "manual"
+  },
+  {
+   "name": "RM middle is transparent",
+   "from": "cells 22..618 at a canonical point ((0011)^150, toggled to (1110)^150 by each rightward pass)",
+   "to": "the same cells at the next canonical point",
+   "steps": null,
+   "cases": null,
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "OV left overflow (empirical, ordinary case)",
+   "from": "left counter full after 3*2^m trips (minus the previous residual)",
+   "to": "pause of about 80*2^m steps confined to cells -90..50; counter restarts with residual 10..23; middle and right counter unchanged",
+   "steps": "42,030 * 2^(m-9) roughly",
+   "cases": "fails once: m = 14 ends with a 150-trip creep that rebuilds the middle; the throttle loses its top digit (K 3 -> 2), residual 77",
+   "validated": {
+    "instances": 10,
+    "passed": 9
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "verify/SBCv8.v:9675",
+  "module": "TM31 (nonhalt via Longitudinal segRLs lemmas, BigStep312, progress_nonhalt_cond)",
+  "machine": "1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RE",
+  "diff": "F1: 0RD (ours) vs 0RE (TM31); the other 11 transitions are equal",
+  "applies": "partly",
+  "note": "Same vocabulary and layout: the 10 wall, d = 011011 blocks on the left (our binary digits), w = 0011/0110 blocks in the middle, and a (1110)^e right region. Simulated TM31: its tape at right records reads 0^inf 10 ...(1011)^30 0 (1101)^451 ... (1110)^4416, but its right edge grows in bursts (no right record from 4.65e8 to 1e9). Ours grows steadily under a ternary P/Q/R throttle and has nested overflow pauses. Reuse the segRLs transfer-lemma machinery (Incs_d/Incs_w style, DivModCases for the mod-3 digits), not TM31's P ls i c invariant or BigStep312."
+ },
+ "strategy": "Longitudinal proof like TM31: segRLs transfer lemmas per block (binary d digits, ternary P/Q/R digits, transparent 0011 middle).\nInvariant over (V, wall state, s3, T, K, e, middle length). Blocker: rules for the overflow pause and the creep (rule OV).",
+ "risks": [
+  "The overflow pause has no rules yet: an inner counter in the middle receives about 2^m trips, and how it exits decides creep vs no creep.",
+  "The creep trigger (only m = 14 among m = 9..18) may depend on arithmetic such as the base-3 digits of ~2^m. That would be cryptid-like in when it happens, though K drops proved harmless in tests.",
+  "Hand tests show K = 1, 0, -1 keep running, but what a creep does once no ternary digits are left is untested."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "creep_special_1.487e8: after the pause, does one thin front move right across the middle, about one 4-cell block per round trip, and stop at the right counter near cell 620?",
+   "figs": [
+    3
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "overflow_ordinary_3.6e6: is the ordinary pause confined to the left strip (cells -60..50), with the columns to its right the same before and after?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Priority call: confidence is low because the overflow pause and creep have no rules. Spend a deepen stage decoding them (inner counter, creep trigger), or park this machine?",
+   "figs": [
+    1
+   ],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 200000000000,
+  "cells": 191526,
+  "nonzeros": 126623,
+  "growth": "right edge +4 cells per record, records every (3/2)*3^K trips; ~t^0.5 asymptotically (t^0.70 over 1.3e8..1e10); left edge ~log t (capacity 3*2^m)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Normal regime ruled and validated (4 rules, 600/600 random instances; RM 300/300). The overflow pause and the m=14 creep are unruled. Confidence low, so this waits for Dennis before any proof work. Not cryptid so far: no halt to 2e11."
+}

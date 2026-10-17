@@ -1,0 +1,767 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>site-redesign.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/site-redesign.md · <a href="/busy-beaver/reports/site-redesign.md.html">raw</a></div>
+<h1 id="site-redesign-build-spec">Site redesign: build spec</h1>
+<p>Goal (Dennis, 2026-10-13): one simple, intuitive site. One nav, one page per machine, one machines table. Old URLs may break. The CLI commands keep their arguments. No information is lost: it moves.</p>
+<p>Everything stays static HTML, written by stdlib Python with atomic writes, using relative links and no external requests. tools/serve.py stays exactly as it is.</p>
+<h2 id="0-facts-the-spec-is-built-on-2026-10-13">0. Facts the spec is built on (2026-10-13)</h2>
+<ul>
+<li>64 machine directories: 31 kills, 1 active, 1 waiting, 31 parked (8 of them cryptid candidates). 678 machines on the list are untouched.</li>
+<li>54 directories have an observe.json, so 54 have a card.html. The other 10 are delta machines with a status.json <code>parent</code>: 8 kills (#24, #25, #11b, #12b, W4-3b, W4-3c, W5-8b, W5-8c) and 2 that are not killed (#32, a cryptid; #23, stuck).</li>
+<li>There are 30 kill.html pages. <strong>W5-4 has none</strong>, because <code>rebuild_pages.sh</code> never runs killreview. The new rebuild closes this gap.</li>
+<li>PRs: #14, #15 and #16 are merged; #17 and #18 are open. <code>dashboard.build_records()</code> already groups kills per PR in <code>meta["prs"]</code>.</li>
+<li>Package folders: <code>submission/family/</code> (#15, #16, #17), <code>submission/pr/</code> (#18), and for #14 the older form <code>submission/discord.md</code> + <code>submission/discord/</code>. Each package holds <code>pr_title.txt</code>, <code>pr_body.md</code>, <code>discord.txt</code> (with placeholders), <code>discord_dennis.txt</code> (links filled in), <code>attachments/*_writeup.md</code>, <code>images/*_spacetime_{10k,1e9}.png</code>, and optionally <code>forum/*.txt</code> and <code>names.txt</code>.</li>
+<li>All 18 decision.json files are answered, so the nav count is 0 today.</li>
+<li>Cost: <code>build_records()</code> takes 3.0 s, of which 2.8 s is <code>guess_class</code>. With a 5-line list it takes 0.4 s. <code>killreview.Ctx()</code> takes 0.4 s, one <code>killreview.build</code> 0.13 s, one <code>card.render_card</code> 0.02 s.</li>
+<li>Test baseline: test_card 26/26, test_dashboard 26/26 and test_decisions 18/18 are OK. test_killreview has 1 failure, <code>test_automatic_checks</code>: W4-3c has "coqchk finished" not met. That is a data fact, not a page bug, and it stays out of scope.</li>
+</ul>
+<h2 id="1-pages-and-urls">1. Pages and URLs</h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>File (URL under /)</th>
+<th>Anchors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td><code>dashboard/index.html</code>. <code>/</code> keeps redirecting there through root <code>index.html</code></td>
+<td><code>#needs</code>, <code>#recent</code>, <code>#counts</code></td>
+</tr>
+<tr>
+<td>Machines</td>
+<td><code>dashboard/machines.html</code></td>
+<td><code>#b-&lt;bucket&gt;</code> per group, <code>#untouched</code>, <code>#fam-&lt;lead tm&gt;</code></td>
+</tr>
+<tr>
+<td>Machine</td>
+<td><code>machines/&lt;tm&gt;/index.html</code> (always linked with the explicit <code>index.html</code>, so file:// works too)</td>
+<td><code>#overview</code>, <code>#mechanism</code>, <code>#proof</code>, <code>#files</code>. Kept inside: <code>#how</code>, <code>#fig-N</code>, <code>#q-N</code>, <code>#same</code>, <code>#s1</code>..<code>#s7</code></td>
+</tr>
+<tr>
+<td>Submissions</td>
+<td><code>dashboard/submissions.html</code></td>
+<td><code>#pr-&lt;n&gt;</code>, <code>#ready</code></td>
+</tr>
+<tr>
+<td>Decisions</td>
+<td><code>dashboard/decisions.html</code> (same file, gains the nav)</td>
+<td><code>#d-N</code> (existing), plus new <code>#tm-&lt;tm&gt;</code></td>
+</tr>
+<tr>
+<td>Reports</td>
+<td><code>dashboard/reports.html</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td>Explorer</td>
+<td><code>tools/explorer/</code> (not generated; nav link only)</td>
+<td><code>#tm=&lt;tm&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>Unchanged outputs: <code>dashboard/data.json</code>, <code>dashboard/kills.json</code>, <code>dashboard/thumbs/</code>, <code>dashboard/screens/</code>.</p>
+<p>Removed outputs: every <code>machines/&lt;tm&gt;/card.html</code>, every <code>machines/&lt;tm&gt;/kill.html</code>, <code>machines/index.html</code> and <code>machines/kills.html</code> (§6).</p>
+<p>The machine page sits in the same folder as card.html and kill.html did. Every relative link those fragments produce (<code>proof.md</code>, <code>img/x.png</code>, <code>submission/…</code>, <code>&lt;tm&gt;.v</code>) therefore stays valid as it is.</p>
+<h2 id="2-shared-module-toolssitepy">2. Shared module <code>tools/site.py</code></h2>
+<p>site.py has no top-level imports of card, dashboard or killreview. Any loader that needs them imports them inside the function, so card.py can import site.py without a cycle.</p>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>API</th>
+<th>Content / rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paths</td>
+<td><code>ROOT, MACHINES, OUT = ROOT/"dashboard"</code>, <code>PAGES = {"home": "index.html", "machines": "machines.html", "submissions": "submissions.html", "decisions": "decisions.html", "reports": "reports.html"}</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Theme tokens</td>
+<td><code>TOKENS</code> (CSS string)</td>
+<td>The <code>:root</code> light block, the dark block for <code>prefers-color-scheme</code> and the <code>[data-theme=dark]</code> block are <strong>moved verbatim</strong> from the top of <code>card.CSS</code>, together with dashboard's <code>--good-strong/--good-soft/--good-weak</code>. Then <code>card.CSS = site.TOKENS + &lt;the rest of card.CSS&gt;</code> and <code>DASH_CSS</code> drops its token lines. <code>ROOT_INDEX</code> uses <code>TOKENS</code> too. serve.py's own palette is left alone.</td>
+</tr>
+<tr>
+<td>Page shell</td>
+<td><code>page(title, body, *, active, prefix, css="", js="", built_ts)</code></td>
+<td>Doctype, viewport meta, <code>&lt;title&gt;</code>, <code>&lt;style&gt;{TOKENS}{BASE}{NAV_CSS}{css}&lt;/style&gt;</code>, the nav, the stale banner (<code>#stale</code>, filled by <code>TIME_JS</code>), <code>&lt;div class="wrap"&gt;{body}&lt;/div&gt;</code>, and <code>&lt;script&gt;{TIME_JS}{js}&lt;/script&gt;</code>. <code>prefix</code> is the path from the page to the repo root: <code>"../"</code> for dashboard/*, <code>"../../"</code> for machine pages. <code>card.page()</code> and the hand-made shells in decisions/dashboard/killreview are all replaced by this.</td>
+</tr>
+<tr>
+<td>Nav</td>
+<td><code>nav_html(active, prefix, open_n)</code></td>
+<td><code>&lt;nav class="sn"&gt;</code> holds the brand "BB(6) hunt" (links to Home) and six links in this order: Home · Machines · Submissions · Decisions <code>&lt;span class="sn-n"&gt;N&lt;/span&gt;</code> · Reports · Explorer. The current page gets <code>aria-current="page"</code>. Above 760 px the links are inline. At 760 px and below a <code>&lt;details class="sn-menu"&gt;&lt;summary&gt;Menu&lt;/summary&gt;…&lt;/details&gt;</code> holds the same six links, and the inline row is hidden by a media query. It works without JS. The links appear twice in the markup; tests check that both lists are identical. When N is 0 the badge is muted (<code>.sn-n.zero</code>). The nav is not sticky: the decisions footer and the Machines filter bar keep their own stickiness.</td>
+</tr>
+<tr>
+<td>Open decisions</td>
+<td><code>open_decisions(machines) -&gt; list[(tm, question or None)]</code></td>
+<td>Every <code>machines/*/decision.json</code> without <code>answer</code>. Unreadable files count as open (<code>dashboard._open_decision</code>). <code>nav_html</code> gets <code>len()</code> of this list, so every page, and the Decisions header, shows the same number.</td>
+</tr>
+<tr>
+<td>Display name</td>
+<td><code>Names(machines)</code> with <code>.label(tm) -&gt; (tag, tip)</code> and <code>name_html(tm, href=None, cls="")</code></td>
+<td>Tag, first match wins: (1) the pool rank from <code>reports/targeting.md</code>: <code>#3</code>, <code>R4</code>; (2) the status.json <code>label</code>: <code>W4-3</code>, <code>#3b</code>, <code>C2-552</code>; (3) <code>twin of #N</code> when the parent has a rank; (4) <code>line N</code> on the 740 list; (5) <code>778 line N</code>; (6) <code>off the list</code>. This is <code>dashboard.member_name</code>'s order. The tip is the full string, plus "also called W4-1" when (2) differs from (1); #31 is the only case today. HTML: <code>&lt;span class="nm"&gt;&lt;code class="tmn"&gt;</code> + the string with <code>&lt;wbr&gt;</code> after each <code>_</code> (<code>dashboard._tm_html</code>) + <code>&lt;/code&gt;&lt;span class="tag"&gt;#3&lt;/span&gt;&lt;/span&gt;</code>. It is cheap: only targeting.md, the status.json files and the list are read, never <code>build_records</code>. <code>dashboard.member_name</code>, <code>killreview.Ctx.name</code> and <code>decisions.rank_of</code> all delegate to it. Ctx switches its <code>line N</code> fallback from the 778 list to the 740 one, with 778 as the fallback.</td>
+</tr>
+<tr>
+<td>Repo (data)</td>
+<td><code>Repo(machines=MACHINES, list_path=D.LIST, prev_path=D.PREV_LIST, out=OUT, now=None)</code>, every property memoized</td>
+<td><code>.recs, .meta</code> = <code>dashboard.build_records(...)</code>. <code>.by_tm</code>. <code>.names</code>. <code>.ctx</code> = <code>killreview.Ctx(machines=…)</code>, after Ctx gains <code>machines</code>/<code>dash_data</code> parameters in place of the module globals. <code>.prs</code> = <code>meta["prs"]</code> plus the package found for each PR (§3.4). <code>.kill_summaries</code> = {tm: summary}, filled while machine pages are built, otherwise computed with <code>killreview.build_parts(…, vsmode="cache")</code>. <code>.open_decisions</code>. <code>.reports</code> (§3.6). Tests build a Repo on a temp tree with a 3-line list, which takes about 0.4 s. Optional: <code>build_records(guess_for={tm})</code> lets a single-machine build skip the 2.8 s guess pass.</td>
+</tr>
+<tr>
+<td>Buckets</td>
+<td><code>BUCKETS7 = accepted, submitted, claimed, active, waiting, parked, cryptid</code>. <code>bucket7(rec)</code>: <code>"cryptid"</code> when the dashboard bucket is <code>parked</code> and the status is <code>CRYPTID_CANDIDATE</code>, else the dashboard bucket.</td>
+<td>Today: 9/4/18/1/1/23/8, plus 678 untouched. The overnight report says "cryptid 10": the other two cryptids sit in waiting (W5-2) and active (R4, funded).</td>
+</tr>
+<tr>
+<td>Hrefs</td>
+<td><code>machine_href(tm, from_dir)</code>, <code>page_href(key, prefix)</code></td>
+<td>Always <code>…/machines/&lt;quote(tm)&gt;/index.html</code>.</td>
+</tr>
+<tr>
+<td>JS</td>
+<td><code>TIME_JS</code>, moved from dashboard.py unchanged</td>
+<td>Ages, the "working now" badges and the stale banner, on every page.</td>
+</tr>
+<tr>
+<td>Orchestrator</td>
+<td><code>build_all(repo, *, thumbs=True, force_thumbs=False, vsmode="fill", pages=ALL)</code> and <code>main()</code></td>
+<td>Order: thumbnails (<code>D.ensure_thumbs</code>), every machine page (which collects the kill summaries), Machines, Home, Submissions, Reports, Decisions, then data.json, kills.json and the root index.html. <code>python3 -B tools/site.py [--no-thumbs] [--force-thumbs] [--force] [--jobs N]</code> builds everything.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-each-page-sections-and-their-sources">3. Each page: sections and their sources</h2>
+<h3 id="31-machine-page-toolsmachinepagepy-new">3.1 Machine page: <code>tools/machinepage.py</code> (new)</h3>
+<p><code>render(repo, tm, vsmode="cache") -&gt; (html, info)</code> and <code>build(repo, tm, vsmode) -&gt; Path</code>. The page works for every machine directory, with or without observe.json.</p>
+<p>There are two refactors, and both keep the old functions' output byte-for-byte identical:</p>
+<ul>
+<li><strong><code>card.card_parts(obs, mdir, prefix="")</code></strong> returns <code>{rank_txt, class_html, state, state_html, howp, intro, look, folds, warns, plan}</code>. It is the body of <code>render_card</code> cut at its existing comments (header, intro, look, folds, footer warnings). <code>prefix</code> is threaded through <code>resolve()</code>, <code>figure_html</code>, <code>other_viewers</code>, <code>stats_html</code> and the discord <code>src</code>, so a delta page can show the parent's figures with <code>../&lt;parent&gt;/img/…</code>. <code>render_card</code> is deleted.</li>
+<li><strong><code>killreview.build_parts(ctx, tm, vsmode, ns="p")</code></strong> returns <code>{secs: [(sid, title, check, body)], verdict_html, summary, hp}</code>. It is the body of <code>build()</code> before <code># ---- page</code>. <code>figure()</code> takes <code>ns</code>, which gives ids <code>pfig-N</code> and labels <code>Fig P1, P2…</code>, so they never clash with the card's <code>fig-N</code>. Section 5 ("Mechanism pictures") is dropped from <code>secs</code>: its standard picture moves to the Overview and its card figures to Mechanism. Its check line moves under the Mechanism heading. In-body links change: <code>../&lt;o&gt;/kill.html</code> becomes <code>../&lt;o&gt;/index.html#proof</code>, <code>../&lt;o&gt;/kill.html#same</code> becomes <code>../&lt;o&gt;/index.html#same</code>, <code>../&lt;o&gt;/card.html</code> becomes <code>../&lt;o&gt;/index.html#mechanism</code>, and <code>card.html#q-</code> becomes <code>#q-</code>. <code>card_ref()</code> is replaced by <code>mechanism_ref()</code>, which returns the own page, else the first <code>parent</code> that has an observe.json. <code>build(ctx, tm, vsmode) -&gt; (proof_fragment_html, summary)</code> keeps its name for the tests.</li>
+</ul>
+<p>Page layout: the nav, then <code>&lt;header class="mh"&gt;</code>, then four <code>&lt;section class="mp" id=…&gt;</code> blocks, then the footer. A jump row under the header links Overview · Mechanism · Proof &amp; checks · Files; it is not sticky, so the card's sticky checkpoint column is unaffected.</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Block</th>
+<th>Source (reuse)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Header</td>
+<td><code>&lt;h1&gt;</code> = <code>names.name_html(tm)</code> with the copy button (<code>id="tmstr"</code>, card JS); "kill N"; the class; links: bbchallenge ↗ · explorer (<code>#tm=</code>) · parent's page</td>
+<td><code>card_parts.class_html</code>, else <code>rec["class"]</code>/guess (<code>D.class_html(rec)</code>); <code>rec["kill_no"]</code>; <code>C.tm_url</code></td>
+</tr>
+<tr>
+<td><strong>Overview</strong> <code>#overview</code></td>
+<td>State line</td>
+<td><code>C.state_html(C.card_state(obs or {}, st, qs, mdir))</code>, which works with <code>obs={}</code></td>
+</tr>
+<tr>
+<td></td>
+<td>"Needs you" box, only when there is something</td>
+<td><code>rec["ask"]</code> / <code>rec["questions"]</code> through <code>D.ask_html</code> (links now point to <code>#mechanism</code> / <code>#q-N</code>); <code>rec["ask_via"]</code> through <code>D.via_html</code>; an open decision.json links to <code>decisions.html#tm-&lt;tm&gt;</code></td>
+</tr>
+<tr>
+<td></td>
+<td>How we proved it (<code>#how</code>)</td>
+<td><code>C.how_proved_html(C.load_how_proved(mdir), title=C.how_title(status))</code> when <code>C.shows_how_proved</code>. This is the machine's own file; a derived kill never shows the parent's. It appears exactly once on the page.</td>
+</tr>
+<tr>
+<td></td>
+<td>In one sentence, plus folded mechanism notes</td>
+<td><code>card_parts.intro</code>. With no obs: <code>rec["summary"]</code> (the Mechanism line of submission/README.md) or status.json <code>relation</code> + <code>parent_note</code>.</td>
+</tr>
+<tr>
+<td></td>
+<td>Upstream / PR</td>
+<td><code>K.sub_chip(st)</code> + <code>D.pr_line(rec)</code> + a link to <code>submissions.html#pr-N</code></td>
+</tr>
+<tr>
+<td></td>
+<td>Kill facts (kills only)</td>
+<td>New <code>D.kill_facts_html(rec)</code>, extracted from <code>tile_big</code> (lines, KB, compile, coqchk, axioms, first PASS, re-run, "from #3"), plus <code>build_parts.verdict_html</code> (n/7, Checkpoint B, template reuse, vs parent), which links to <code>#proof</code></td>
+</tr>
+<tr>
+<td></td>
+<td>Progress (non-kills)</td>
+<td>New <code>D.progress_html(rec, now)</code>, extracted from <code>tile_big</code>: <code>pipe_html</code>, the first sentences of the reason, last change / idle since with the ledger tooltip, and <code>live_html</code></td>
+</tr>
+<tr>
+<td></td>
+<td>Relations</td>
+<td><code>D.table_html(rec)</code>, <code>D.eq_chip(rec)</code>, <code>D.off_chip(rec)</code>, the family list (<code>ctx.family(tm)</code>, each member as a <code>name_html</code> link with its status chip)</td>
+</tr>
+<tr>
+<td></td>
+<td>Facts</td>
+<td><code>D.meta_html(rec, rank=True)</code>: eqv, sim, flags, sheet status, the misattribution strike; the list line (<code>D.line_label</code>)</td>
+</tr>
+<tr>
+<td></td>
+<td>Calls on file (folded)</td>
+<td>status.json <code>priority_call_answered</code>, <code>parked</code>, <code>funded</code>, <code>next</code>; <code>machines/&lt;tm&gt;/decisions/*.json</code> (date, option, question); the current decision.json</td>
+</tr>
+<tr>
+<td></td>
+<td>Standard space-time picture (right column on wide screens)</td>
+<td><code>dashboard/thumbs/&lt;tm&gt;.png</code> shown at 1:1 (400×500, <code>image-rendering:pixelated</code>, <code>max-width:100%</code> on phones), linked to bbchallenge.org, with the label <code>C.label_html(D.THUMB_LABEL)</code>. A missing thumbnail gets a placeholder.</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong> <code>#mechanism</code></td>
+<td>Has observe.json</td>
+<td><code>card_parts.look</code> (primary figures + Checkpoint A + Discord draft), then <code>card_parts.folds</code> (More figures, Rules, Compressed history, Template comparison, Proof strategy &amp; risks, Stats &amp; provenance), unchanged. Figure ids stay <code>fig-N</code> in card numbering, so <code>card.html#fig-2</code> hrefs in decision.json map 1:1.</td>
+</tr>
+<tr>
+<td></td>
+<td>No observe.json, has a <code>parent</code> with one</td>
+<td>A banner: "No observation of its own: <relation>. Below are <parent tag>'s figures, rules and history." Then <code>card_parts(parent_obs, parent_mdir, prefix="../&lt;parent&gt;/")</code> with only look-figures (no checkpoint), More figures, Rules, Compressed history and Template. The parent's questions are linked (<code>../&lt;parent&gt;/index.html#mechanism</code>), not shown. A non-killed delta machine also gets <code>K.same_section(…, vsmode="cache")</code> here; for kills that section lives in Proof &amp; checks.</td>
+</tr>
+<tr>
+<td></td>
+<td>Neither</td>
+<td>"No observation yet", with a link to notes.md</td>
+</tr>
+<tr>
+<td><strong>Proof &amp; checks</strong> <code>#proof</code></td>
+<td>Killed</td>
+<td><code>build_parts.verdict_html</code>, then <code>K.section(k, …)</code> for each of <code>secs</code>: What is proved · [Same machine as X? <code>#same</code>] · Where it came from · Proof outline · What a maintainer reads · Family · Checklist. Then the review pages that exist (<code>D.REVIEW_GLOBS</code> minus kill.html: review<em>.html, compare</em>.html, review*.md). The footer line "nothing on this page is hand-written except the How box" stays.</td>
+</tr>
+<tr>
+<td></td>
+<td>Not killed</td>
+<td>Links to proof.md, check_proof*, <code>rocq/*.v</code>; Checkpoint B lines (<code>K.checkpoint_b(mdir)</code>); status.json <code>open_lemma(s)</code>. With none of these: "No proof work yet."</td>
+</tr>
+<tr>
+<td><strong>Files</strong> <code>#files</code></td>
+<td><code>&lt;details&gt;</code>, closed</td>
+<td>Every top-level entry of <code>machines/&lt;tm&gt;/</code>, with size and mtime: key files first (notes.md, proof.md, how_proved.md, status.json, observe.json, deepen.json, decision.json, <em>.v, check_kill</em>), then folders (<code>submission/</code>, <code>rocq/</code>, <code>scripts/</code>, <code>img/</code>, <code>decisions/</code>, <code>work/</code>, …: their own listings still work, since only the machine folder gets an index.html), then the rest. <code>status.json</code> is printed in full in a nested <code>&lt;details&gt;&lt;pre&gt;</code>. Card contract warnings (<code>card_parts.warns</code>) come last. This replaces the folder listing that <code>machines/&lt;tm&gt;/</code> used to serve.</td>
+</tr>
+<tr>
+<td>Footer</td>
+<td></td>
+<td>"rendered … by tools/card.py / killreview.py", plus the re-run commands</td>
+</tr>
+</tbody>
+</table>
+<p>CSS is <code>card.CSS</code> + <code>K.CSS_EXTRA</code> + a small <code>mp-</code> block (header, two-column overview, jump row). JS is <code>card.JS</code>; killreview's "no JS" rule still holds for the Proof &amp; checks fragment itself.</p>
+<h3 id="32-home-dashboardrender_homerepo-replacing-render_page">3.2 Home: <code>dashboard.render_home(repo)</code>, replacing <code>render_page</code></h3>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Content</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Counts <code>#counts</code></td>
+<td>7 tiles (accepted / submitted / claimed / active / waiting / parked / cryptid) plus untouched, each with icon, count and short meaning, and a "● n working now" badge. Each tile links to <code>machines.html#b-&lt;bucket&gt;</code>. One list line: "740 holdouts (current list) · +2 off the list · previous list 778 (38 gone) · 1,526 with equivalents · sim pending 130/35".</td>
+<td><code>site.bucket7</code> over <code>repo.recs</code>; <code>D.BUCKETS</code> text (adds cryptid ⚠ "cryptid candidate, parked"); <code>meta</code> (n, n_prev, prev_gone, eqv_total, pending, off_list)</td>
+</tr>
+<tr>
+<td>Needs you <code>#needs</code></td>
+<td>(1) Open decisions: question + recommended option, linked to <code>decisions.html#tm-&lt;tm&gt;</code>. (2) Waiting machines: <code>D.ask_html(rec)</code> with the link changed to the machine page. (3) PRs to answer: an open PR whose <code>comments</code> &gt; 0. (4) Discord to post: an open PR where no machine's status.json has <code>posted</code>, with "copy it on Submissions" → <code>#pr-N</code>. (5) Ready to submit: claimed kills grouped by family, linking <code>submissions.html#ready</code>, with the claimed key line ("They wait for the response to the open PR #17 and #18"). (6) Unanswered Checkpoint A questions: count on how many machines. (7) A folded block "Discord question drafts, not posted (n)": each distinct message once, with copy buttons, as at the bottom of the old cards index. When everything is empty: "Nothing needs you right now."</td>
+<td><code>repo.open_decisions</code> + <code>decisions.analyze</code> (recommended); <code>rec["bucket"]=="waiting"</code>; <code>repo.prs</code>; <code>D.kill_key("claimed", …)</code>; <code>C.norm_questions</code> / <code>card_state(...)["open"]</code> (add <code>open_q</code> to <code>machine_state</code>); <code>C.discord_message</code> over observe.json <code>discord_check</code></td>
+</tr>
+<tr>
+<td>Recent <code>#recent</code></td>
+<td>(a) Events from the last 4 days, newest first, at most 12, each with a machine link: kill verified (<code>kill.first_ts</code>), PR merged (<code>sub.merged_at</code>), PR opened (<code>sub.opened</code>), status changed (<code>rec["updated"]</code> + status chip + first sentence), call answered or filed (decision.json <code>answer.date</code> / <code>updated</code>). (b) The last 6 rows of <code>reports/overnight-ledger.md</code> (time, action cut at 220 chars, machine tokens linked), plus a link to the file. (c) A link to the latest report.</td>
+<td>New <code>site.recent_events(repo)</code>; <code>D._LEDGER_ROW</code> (extend the token map with status labels like W4-3); <code>repo.reports[0]</code></td>
+</tr>
+<tr>
+<td>Footer</td>
+<td>rebuilt time and the rebuild command</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-machines-dashboardrender_machinesrepo">3.3 Machines: <code>dashboard.render_machines(repo)</code></h3>
+<p>Header: "64 machine folders", the status chips per live status (from the old cards index header), the thumbnail label, and a folded "How to read this table" with the kills index's "What to check here" text and its colour key.</p>
+<p>Filter bar: dashboard's <code>#bar</code>, reused. Search, bucket chips (the 7 + untouched), the class menu with counts, sort, and "n of N shown". <code>DASH_JS</code> is generalised: items are <code>[data-tm]</code>, groups <code>tbody[data-b]</code> / <code>.minis</code>, families <code>tbody.fam</code>. With a sort other than the default, rows render flat and the group headers hide; switching back restores <code>data-o</code>. A <code>#b-X</code> hash on load selects bucket X. Without JS the whole table shows, grouped.</p>
+<p>The table has one <code>&lt;tbody data-b=…&gt;</code> per bucket, in the order of §2. Kill buckets have one <code>&lt;tbody class="fam"&gt;</code> per family. The family header comes from <code>ctx.family()</code>: "Family of #3 · class · 4 killed, 1 not; not killed: line 604 (untouched), …". Today's grouping ran within buckets on the dashboard and across buckets in kills.html. Now members that sit in another bucket are named as "also #3b in Accepted". Rows carry <code>D._data_attrs(rec, order)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Kills</th>
+<th>Others</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Picture</td>
+<td>64×80 thumbnail → machine page</td>
+<td>same</td>
+<td><code>D.thumb_html</code> (<code>thumb_target</code> now always returns the machine page for folders)</td>
+</tr>
+<tr>
+<td>Machine</td>
+<td><code>name_html</code>, class, Approach tag (→ <code>#how</code>)</td>
+<td><code>name_html</code>, class/guess/confidence</td>
+<td><code>site.Names</code>, <code>D.class_html</code>, <code>C.how_proved_tag</code></td>
+</tr>
+<tr>
+<td>State</td>
+<td>kill N, <code>K.sub_chip</code></td>
+<td>status chip, stage, <code>live_html</code>, <code>off_chip</code></td>
+<td><code>C.status_chip</code>, <code>rec</code></td>
+</tr>
+<tr>
+<td>Now</td>
+<td>mechanism line</td>
+<td>ask, or <code>card_state.short</code>, or the first sentence of the reason (2 lines, full text in the title)</td>
+<td><code>rec["summary"]</code>, <code>rec["ask"]</code>, <code>C.card_state</code></td>
+</tr>
+<tr>
+<td>Proof</td>
+<td>n/7 + <code>K.auto_why</code>, Checkpoint B mark, template kind + <code>K.bar</code> + "% identical · new/items", "same machine as X?" + <code>K.vs_short</code>, lines · items · compile</td>
+<td><code>pipe_html</code> (mini)</td>
+<td><code>repo.kill_summaries[tm]</code></td>
+</tr>
+<tr>
+<td>Related</td>
+<td>parent / table / eq-of</td>
+<td>same</td>
+<td><code>D.table_chip</code>, <code>D.eq_chip</code></td>
+</tr>
+<tr>
+<td>Changed</td>
+<td><code>ago_html(last_work)</code> · status.json date</td>
+<td>same</td>
+<td><code>rec</code></td>
+</tr>
+<tr>
+<td>Flags</td>
+<td>eqv, sim, sheet, UBRRBA, longit.</td>
+<td>the same + <code>n open Q</code>, <code>Discord</code>, <code>n unlabelled</code>, <code>observe.json unreadable</code></td>
+<td><code>D.meta_html</code> + card lint (<code>C.label_issues</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>At 760 px and below each row becomes a card (CSS grid on <code>tr</code>/<code>td</code>): picture, then machine, state and now. Proof, related, changed and flags shrink to one small line. Nothing scrolls sideways.</p>
+<p>Below the table: <code>&lt;details id="untouched"&gt;</code>, "Not started: 678 holdouts on the list with no folder". Inside is the old Untouched grid unchanged (<code>D.tile_mini</code>, the tier ordering and its key line, <code>content-visibility:auto</code>). The filters apply to it, and pressing the untouched chip opens it.</p>
+<p>The footer keeps the dashboard's data-sources list (list files, sheet, buckets, PR sync, kill numbers, same table, flags, off-list reasons) word for word.</p>
+<p>Dropped on purpose: the "no card" and "card stale" flags (every page is rebuilt together now), and the cards index's Fig 1 thumbnails (Fig 1 is the top of Mechanism; the table uses the uniform standard picture).</p>
+<h3 id="34-submissions-toolssubmissionspy-new-renderrepo">3.4 Submissions: <code>tools/submissions.py</code> (new), <code>render(repo)</code></h3>
+<ul>
+<li><strong><code>#pr-&lt;n&gt;</code> cards</strong>, newest PR first, one per entry in <code>repo.prs</code>:</li>
+<li>State chip (<code>D.pr_chip</code>), opened, merged at/by, comments (highlighted when &gt; 0), title (<code>pr_title.txt</code>).</li>
+<li>Machines: <code>name_html</code> + kill N + upstream file (<code>names.txt</code> column 2, else status.json <code>pr_file</code>) + links to <code>.v</code>/<code>proof.md</code> with view + <code>?download</code>.</li>
+<li>Discord: posted / not posted (status.json <code>posted</code>); the text in a <code>&lt;pre&gt;</code> with a copy button. Text priority: <code>discord_dennis.txt</code>, then <code>discord.txt</code>, then the <code>```text</code> blocks of <code>submission/discord.md</code> (+ <code>submission/discord/part2.txt</code>), with a link to the placeholder version.</li>
+<li>Forum posts (<code>forum/*.txt</code>, folded, copy).</li>
+<li>PR body (<code>pr_body.md</code> view + <code>?download</code>).</li>
+<li>Write-ups (<code>attachments/*_writeup.md</code>, else <code>submission/discord/*_writeup.md</code>: view + <code>?download</code>).</li>
+<li>Pictures (<code>images/*.png</code>: a small preview + <code>?download</code>).</li>
+<li>Checks: n/7, and the write-up lint from <code>kill_summaries</code>.</li>
+<li><strong>Package lookup</strong> <code>find_package(pr)</code>: for each machine of the PR, the first of <code>submission/pr/</code>, <code>submission/family/</code> that has <code>pr_title.txt</code> or <code>discord*.txt</code>. Failing that, the legacy pair <code>submission/discord.md</code> + <code>submission/discord/</code>. Read-only.</li>
+<li><strong><code>#ready</code>, "Ready to submit"</strong>: claimed kills by family (as on Machines), each with <code>submission/README.md</code>, the <code>discord.md</code> draft (copy), the write-up (<code>submission/proof.md</code> + <code>?download</code>), <code>.v</code>, n/7 and the write-up lint. Plus <code>D.kill_key("claimed")</code>.</li>
+<li>A PR closed unmerged (if one ever exists) gets its own card, in red.</li>
+</ul>
+<h3 id="35-decisions-decisionspy-changes-only">3.5 Decisions: <code>decisions.py</code>, changes only</h3>
+<ul>
+<li><code>render_page</code> uses <code>site.page(active="decisions")</code>; the old header links (dashboard · cards index · kills) go away.</li>
+<li>The <code>open_n</code> in the header comes from <code>site.open_decisions</code>, with unreadable files counted and said so.</li>
+<li>Rank comes from <code>site.Names.label</code>.</li>
+<li>The thumbnail and the "card or folder" links point to <code>machines/&lt;tm&gt;/index.html</code>.</li>
+<li><code>figure_ev_html</code>/<code>link_href</code>: <code>card.html#fig-N</code> and <code>#fig-N</code> resolve to <code>…/index.html#fig-N</code> (<code>has_card</code> becomes "has observe.json").</li>
+<li>Each article gets an inner <code>&lt;span id="tm-&lt;tm&gt;"&gt;&lt;/span&gt;</code>.</li>
+<li>The form, the sticky footer, <code>STORE_KEY</code> and the copied text stay unchanged.</li>
+</ul>
+<h3 id="36-reports-toolsreportspy-new-renderrepo">3.6 Reports: <code>tools/reports.py</code> (new), <code>render(repo)</code></h3>
+<ul>
+<li><strong><code>REPORTS</code> registry</strong>:
+  1. "Latest report": the newest <code>reports/overnight-20*.md</code> (not -plan, not -ledger).
+  2. "How we proved them": <code>reports/how-proved.md</code>.
+  3. "Wave rankings": <code>reports/wave*/ranking.md</code>, newest first.
+  4. "Landscape": <code>reports/landscape.md</code>.
+  5. "Targeting": <code>reports/targeting.md</code>.
+  6. "Project status": <code>STATUS.md</code>, <code>PLAN.md</code>.</li>
+<li><strong>Each entry</strong>: the first <code>#</code> heading as its title, the first paragraph (≤ 200 chars) as its description, mtime and size, a link to the <code>.md</code> (serve.py renders it), and <code>?raw</code>.</li>
+<li><strong>Folded "More notes"</strong>: every other <code>reports/**/*.md</code> (checkpoint-A-batch1, family-sweep, holdouts-740-impact, kill-forensics, discord-drafts, overnight-plan-<em>, phase0_compile, forensics/</em>.md, site-redesign.md).</li>
+<li><strong>Never listed</strong>: <code>*.log</code>, <code>*.tsv</code>, <code>overnight-ledger.md</code> (Home shows its tail), the screenshot folders.</li>
+<li>serve.py's rendered <code>.md</code> pages have no site nav. The browser's Back button covers that, and serve.py stays untouched.</li>
+</ul>
+<h2 id="4-cli-mapping-same-arguments-new-outputs">4. CLI mapping (same arguments, new outputs)</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Writes now</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python3 -B tools/card.py &lt;tm&gt;</code> (machine string, dir or observe.json)</td>
+<td><code>machines/&lt;tm&gt;/index.html</code> (full page: kill sections too when killed; <code>vsmode="cache"</code>). Works without observe.json. Prints path + URL + <code>error:</code>/<code>warn:</code> lines as before. A missing folder gives exit 1.</td>
+</tr>
+<tr>
+<td><code>card.py --lint &lt;tm&gt;</code></td>
+<td>unchanged (observe.json contract; a missing observe.json is still ERROR)</td>
+</tr>
+<tr>
+<td><code>card.py --index</code></td>
+<td><code>dashboard/machines.html</code></td>
+</tr>
+<tr>
+<td><code>card.py --all</code></td>
+<td>every machine page, then <code>dashboard/machines.html</code></td>
+</tr>
+<tr>
+<td><code>card.py --machines DIR [--out DIR]</code></td>
+<td>the same, into temp trees (tests). <code>--out</code> is new and defaults to <code>dashboard/</code>.</td>
+</tr>
+<tr>
+<td><code>python3 -B tools/killreview.py &lt;tm&gt;</code></td>
+<td><code>machines/&lt;tm&gt;/index.html</code> with <code>vsmode="fill"</code>. Prints the same summary line (<code>auto n/7 template … vs …</code>); a machine that is not killed prints "not killed". A missing folder gives exit 2.</td>
+</tr>
+<tr>
+<td><code>killreview.py --all [--force]</code></td>
+<td>every killed machine's page (fill / force), then <code>dashboard/machines.html</code></td>
+</tr>
+<tr>
+<td><code>python3 -B tools/dashboard.py [--no-thumbs] [--force-thumbs] [--screens] [--list] [--prev-list] [--out] [--jobs] [--no-root-index]</code></td>
+<td><code>site.build_all</code>: thumbnails, all machine pages, Home, Machines, Submissions, Reports, Decisions, data.json, kills.json, root index.html. <code>--no-cards-index</code> is kept as an alias that skips the machine pages. <code>--screens</code> shoots every top-level page plus 3 machine pages (kill with card, delta kill, cryptid) at 1920/1280/390 into <code>dashboard/screens/</code>.</td>
+</tr>
+<tr>
+<td><code>python3 -B tools/decisions.py</code> / <code>--lint [TM…]</code></td>
+<td><code>dashboard/decisions.html</code> / unchanged</td>
+</tr>
+<tr>
+<td><code>python3 -B tools/site.py […]</code></td>
+<td>the same as dashboard.py (the canonical entry point)</td>
+</tr>
+<tr>
+<td><code>tools/pr_sync.py</code></td>
+<td>unchanged; its docstring "then rebuild" becomes <code>python3 -B tools/dashboard.py</code></td>
+</tr>
+<tr>
+<td><code>tools/rebuild_pages.sh</code></td>
+<td>see below</td>
+</tr>
+</tbody>
+</table>
+<p>New <code>tools/rebuild_pages.sh</code>, which rebuilds everything when any input changed:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="c1"># tools/rebuild_pages.sh: rebuild the whole site when anything it is built from changed (bb6-pages timer, every 5 min).</span>
+<span class="nb">cd</span><span class="w"> </span>[local working file]<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="nb">exec</span><span class="w"> </span><span class="m">9</span>&gt;dashboard/.rebuild.lock<span class="p">;</span><span class="w"> </span>flock<span class="w"> </span>-n<span class="w"> </span><span class="m">9</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span><span class="w">        </span><span class="c1"># one build at a time</span>
+<span class="nv">stamp</span><span class="o">=</span>dashboard/.built<span class="w">                                      </span><span class="c1"># dot-file: serve.py never serves it</span>
+changed<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>find<span class="w"> </span>machines<span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">5</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-newer<span class="w"> </span><span class="s2">"</span><span class="nv">$stamp</span><span class="s2">"</span><span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span>index.html<span class="w"> </span>!<span class="w"> </span>-name<span class="w"> </span><span class="s1">'vs-parent*'</span><span class="w"> </span>!<span class="w"> </span>-path<span class="w"> </span><span class="s1">'*/__pycache__/*'</span><span class="w"> </span>-print<span class="w"> </span>-quit
+<span class="w">  </span>find<span class="w"> </span>reports<span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">2</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">'*.md'</span><span class="w"> </span>-newer<span class="w"> </span><span class="s2">"</span><span class="nv">$stamp</span><span class="s2">"</span><span class="w"> </span>-print<span class="w"> </span>-quit
+<span class="w">  </span>find<span class="w"> </span>data/holdouts<span class="w"> </span>tools<span class="w"> </span>-maxdepth<span class="w"> </span><span class="m">1</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span><span class="se">\(</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">'*.py'</span><span class="w"> </span>-o<span class="w"> </span>-name<span class="w"> </span><span class="s1">'*.txt'</span><span class="w"> </span><span class="se">\)</span><span class="w"> </span>-newer<span class="w"> </span><span class="s2">"</span><span class="nv">$stamp</span><span class="s2">"</span><span class="w"> </span>-print<span class="w"> </span>-quit
+<span class="o">}</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$stamp</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span>dashboard/index.html<span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>changed<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>touch<span class="w"> </span>dashboard/.built.new<span class="w">                              </span><span class="c1"># changes made during the build trigger the next run</span>
+<span class="w">  </span>nice<span class="w"> </span>-n<span class="w"> </span><span class="m">10</span><span class="w"> </span>python3<span class="w"> </span>-B<span class="w"> </span>tools/site.py<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mv<span class="w"> </span>dashboard/.built.new<span class="w"> </span><span class="s2">"</span><span class="nv">$stamp</span><span class="s2">"</span>
+<span class="k">fi</span>
+</code></pre></div>
+
+<p>The excluded names are what the build itself writes; without the exclusions every run would trigger the next. The rebuild costs about 15 s niced: build_records 3 s, 64 pages ≈ 5 s, then the rest. <code>vsmode="fill"</code> computes a new derived kill's comparison once (≈ 7 s) and caches it.</p>
+<h2 id="5-code-removed-with-the-old-pages">5. Code removed with the old pages</h2>
+<ul>
+<li>card.py: <code>render_card</code>, <code>card_path</code>, <code>build_card</code>, <code>render_index</code>, <code>build_index</code>, <code>INDEX_CSS</code>, <code>_rank_key</code>, <code>GROUP_ORDER</code>/<code>GROUP_HEAD</code>, plus <code>page()</code> (now site.page).</li>
+<li>killreview.py: <code>build_index</code>, the page assembly in <code>build()</code>, <code>card_ref</code>.</li>
+<li>dashboard.py:</li>
+<li>Removed: <code>render_page</code>, <code>_cards_index_link</code>, <code>tile_big</code>, the kill-section and family block code, <code>kill.html</code> in <code>REVIEW_GLOBS</code>, and the <code>card</code>/<code>parent_card</code> flags.</li>
+<li>Kept: <code>kill_key</code> and <code>fam_blocks</code>, only if used.</li>
+<li><code>machine_state</code> gains <code>open_q</code> (it already has <code>has_observe</code>, which replaces <code>card</code>); <code>WORK_SKIP</code> keeps index.html, card.html and kill.html.</li>
+<li>Everything that is reused stays: chips, <code>class_html</code>, <code>meta_html</code>, <code>table_*</code>, <code>pr_*</code>, <code>ask_html</code>, <code>via_html</code>, <code>tile_mini</code>, <code>thumb_*</code>, <code>TIME_JS</code>, <code>DASH_JS</code> (generalised), <code>DASH_CSS</code>.</li>
+</ul>
+<h2 id="6-deletion-what-and-when">6. Deletion: what and when</h2>
+<ol>
+<li>After the machine pages are built for all 64 folders and the link check passes (§7, test_site 3), run a one-time inventory script. It is a scratchpad script, not shipped. It pulls the visible facts from today's pages: chips, <code>kr-sub</code>, <code>howp-tag</code>, <code>kr-verdict</code>, figcaptions, <code>summary</code>, <code>kr-tab</code> cells, <code>tsum</code>/<code>kf</code>/<code>kpr</code> lines. It checks that each fact appears in the new page that took over that content, and it prints any misses for a fix round. Old copies go to the scratchpad for the headless review comparison.</li>
+<li>Then delete, in the integration step:
+   <code>bash
+   rm machines/*/card.html machines/*/kill.html machines/index.html machines/kills.html</code>
+   That is 54 + 30 + 2 files. Nothing else in machines/ is touched: review.html, compare.html, the img/vs-parent caches and all data stay.</li>
+<li>Rewrite links once in human reports (not machine data), using sed on paths only:
+   - <code>reports/how-proved.md</code> (18 links), <code>reports/overnight-2026-10-10.md</code> (Links section) and <code>STATUS.md</code>: <code>machines/&lt;tm&gt;/card.html</code> becomes <code>machines/&lt;tm&gt;/index.html#mechanism</code>, <code>kill.html</code> becomes <code>index.html#proof</code>, and <code>machines/kills.html</code> / <code>machines/index.html</code> become <code>dashboard/machines.html</code>.
+   - <code>overnight-ledger.md</code> is history and is not rewritten.
+   - The <code>card.html</code> links in <code>machines/*/notes.md</code> and decision.json files stay as they are (data files). decisions.py maps the figure ones.</li>
+<li>Update the docs in the same step: README-card.md, README-killreview.md, README-dashboard.md, README-decisions.md (their page sections now point to §3 of the new pages), a new short README-site.md (nav, names, Repo, CLI table, rebuild), and the root <code>ROOT_INDEX</code> links.</li>
+</ol>
+<h2 id="7-tests">7. Tests</h2>
+<p>Run with <code>python3 -B tools/test_&lt;x&gt;.py</code>. The headless parts use CLAUDE.md's playwright-core + chromium + <code>.syslibs</code>, never Dennis's desktop.</p>
+<p><strong>test_card.py (26).</strong> Every fragment test stays as it is. They render through <code>machinepage.render(Repo(tmp, list_path=tmp_list), tm)</code>, or through <code>card.card_parts</code> for the purely fragment-level ones.</p>
+<ul>
+<li><code>test_full_card</code>: the same assertions, split across the two sections. The header line, state line, How box, one sentence and folded notes are in <code>#overview</code>. Primary figures, label cells, Q backlinks, checkpoint tags, <code>see Fig 2</code>, "n open" and the six closed folds with their summaries are in <code>#mechanism</code>. The order is Overview, then Mechanism.</li>
+<li><code>test_how_proved</code>: the box sits under the state line and above "In one sentence", appears exactly once on the page, and only for KILLED_* or a <code>pr</code>. The "card stale" assertion is replaced by a check that <code>rebuild_pages.sh</code>'s <code>changed()</code> lists a touched how_proved.md (a shell-level test with a temp stamp).</li>
+<li><code>test_index</code> / <code>test_index_empty</code> become Machines page tests: one row per folder; a broken observe.json becomes a row with the flag "observe.json unreadable"; question objects are counted; the empty tree says "no machine folders".</li>
+<li><code>test_cli</code>: <code>card.py &lt;tm&gt;</code> writes only <code>&lt;tm&gt;/index.html</code> (no card.html); <code>--lint</code> still exits 1 on a missing label field while rendering succeeds; <code>--index</code> writes <code>&lt;out&gt;/machines.html</code>; a folder without observe.json builds with exit 0.</li>
+<li><code>test_no_js_static</code>, <code>test_links_resolve</code> and the anchor checks (<code>check_anchors</code>: every <code>#</code> link has a target, ids unique) run on the full page, including a killed fixture with Proof &amp; checks (<code>pfig-N</code> vs <code>fig-N</code>).</li>
+<li><code>test_browser_no_js</code>: the same checks on the machine page (images load, no external requests, no console errors, no overflow at 390 px, <code>Fig 4</code> opens "More figures", the zoom view).</li>
+<li><code>RealCards</code>: every real folder, all 64 including the 10 without observe.json, renders in memory.</li>
+</ul>
+<p><strong>test_dashboard.py (26).</strong> Inputs, Guess, Tables, Machines, Submission and Ledger are unchanged (build_records logic).</p>
+<ul>
+<li><code>test_counts_and_thumbs</code>: the Home tiles, with 7 buckets plus untouched; cryptid equals parked-with-CRYPTID_CANDIDATE.</li>
+<li><code>test_static_page</code>: Home + Machines without JS. Every folder has a row, the untouched grid is present, and the filter bar is hidden.</li>
+<li><code>test_hostile_strings</code> and <code>RealPage</code>: run on Home + Machines.</li>
+<li>The <code>how-proved.md</code> header link assertion (line 483) moves to the Reports test.</li>
+<li><code>Browser</code>: the Machines filters (search <code>#3</code>, <code>line 604</code>, a bucket chip, the class menu, <code>#b-parked</code> on load); Home at 390 px with no overflow; the nav menu collapsed at 390 px.</li>
+</ul>
+<p><strong>test_killreview.py (27).</strong> Parse, Compare, Markdown and SameMachine are unchanged.</p>
+<ul>
+<li><code>Pages.test_sections</code>: on the fragment from <code>K.build()</code>, "What to check here:" appears 7 times if derived, else 6 (s5 dropped). <code>id="same"</code> only on derived kills. There is no <code>&lt;script</code> in the fragment, no external <code>src</code>, and no absolute links.</li>
+<li><code>test_index*</code> become the Machines page family groups: one <code>tbody.fam</code> per family, non-killed members named, <code>sub_chip</code> per kill row, the header tally in Home's tiles.</li>
+<li><code>test_how_proved_box</code>: on the machine page Overview; a derived kill shows its own file, never the parent's.</li>
+<li><code>test_parent_links_same_section</code>: the family table links <code>../&lt;child&gt;/index.html#same</code>.</li>
+<li><code>test_automatic_checks</code>: unchanged. W4-3c's coqchk miss is the known data failure.</li>
+</ul>
+<p><strong>test_decisions.py (18).</strong> Unchanged except:
+- Links go to <code>machines/&lt;tm&gt;/index.html</code> (<code>#fig-N</code> for figures).
+- The nav is present, with a count equal to unanswered + unreadable decision.json in the fixture tree.
+- <code>#tm-&lt;tm&gt;</code> anchors exist and are unique.</p>
+<p><strong>New tools/test_site.py.</strong></p>
+<ol>
+<li><strong>Nav</strong>: Home, Machines, Submissions, Decisions, Reports and three machine pages each have one <code>nav.sn</code> with the six links in order, <code>aria-current</code> on the right one, both link lists identical, and N = the fixture's open decisions (2 open + 1 unreadable + 1 answered → 3).</li>
+<li><strong>Names</strong>: the precedence table of §2 (rank &gt; label &gt; twin &gt; 740 line &gt; 778 line &gt; off-list) and the alias tooltip. On real data <code>Names.label == D.member_name == Ctx.name</code> for every folder. A fixture machine's tag reads the same on all six page types.</li>
+<li><strong>Link check</strong>: crawl the temp build (and, in integration, the real one). Every relative <code>href</code>/<code>src</code> resolves on disk, with <code>?download</code>/<code>?raw</code> stripped and <code>#frag</code> checked against the target's ids. Nothing links to <code>card.html</code>, <code>kill.html</code>, <code>kills.html</code> or <code>machines/index.html</code>.</li>
+<li><strong>Machine page kinds</strong>: a kill with observe.json; a delta kill without (Mechanism images are <code>../&lt;parent&gt;/img/…</code> and exist; <code>#same</code> sits in Proof &amp; checks; the How box is its own); a cryptid (state "Parked", no kill sections, "Calls on file" shows <code>parked</code>); a broken observe.json (the page renders, with a banner).</li>
+<li><strong>Submissions</strong>: fixture packages in family/, pr/ and legacy discord.md give one card per PR, highest number first, with <code>discord_dennis.txt</code> preferred. Download links carry <code>?download</code> and resolve. "Not posted" shows when <code>posted</code> is missing. <code>#ready</code> lists the claimed kills by family.</li>
+<li><strong>Reports</strong>: the curated order, with the newest overnight report first; titles come from <code>#</code> headings; no <code>.log</code>/<code>.tsv</code>/ledger links.</li>
+<li><strong>Home</strong>: the tiles sum to the folder count; needs-you lists the open decisions, the waiting ask, a PR with comments &gt; 0 and an unposted open PR; recent events are sorted newest first, all within 4 days.</li>
+<li><strong>CLI</strong>: on temp trees each command of §4 writes exactly its files, and none writes card.html or kill.html.</li>
+<li><strong>Headless</strong>, over every page type at 1280 and 390 px, light and dark: no horizontal overflow, an explicit body background, no console errors, no external requests, all images load, and the nav menu opens at 390 px.</li>
+</ol>
+<h2 id="8-build-order-file-ownership-so-steps-can-run-in-parallel">8. Build order (file ownership, so steps can run in parallel)</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Owner files</th>
+<th>Needs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. Shared + machine page</td>
+<td>site.py, machinepage.py, card.py (card_parts, prefix), killreview.py (Ctx params, build_parts, ns, links), test_card.py, test_killreview.py, test_site.py §1, 2, 4</td>
+<td>this spec</td>
+</tr>
+<tr>
+<td>B1. Home + Machines</td>
+<td>dashboard.py (render_home, render_machines, kill_facts_html, progress_html, DASH_JS), test_dashboard.py</td>
+<td>A</td>
+</tr>
+<tr>
+<td>B2. Decisions</td>
+<td>decisions.py, test_decisions.py</td>
+<td>A (site.page, Names)</td>
+</tr>
+<tr>
+<td>B3. Submissions + Reports</td>
+<td>submissions.py, reports.py, test_site.py §5, 6</td>
+<td>A</td>
+</tr>
+<tr>
+<td>C. Integration</td>
+<td>site.build_all + CLI wiring in all four, rebuild_pages.sh, inventory → delete (§6), report link rewrite, READMEs, test_site.py §3, 7, 8 + full suite</td>
+<td>B1–B3</td>
+</tr>
+<tr>
+<td>D. Headless review</td>
+<td>screenshots at 1280/390 (<code>dashboard.py --screens</code>), with up to 2 fix rounds</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<p>Done means: all suites green apart from the known W4-3c data failure; the link check is clean on the real build; the inventory script reports 0 misses; <code>rebuild_pages.sh</code> run twice in a row rebuilds once, then exits as a no-op.</p>
+</main></body></html>

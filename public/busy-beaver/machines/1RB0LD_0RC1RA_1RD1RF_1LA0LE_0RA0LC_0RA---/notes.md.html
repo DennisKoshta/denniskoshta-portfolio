@@ -1,0 +1,597 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---/notes.md · <a href="/busy-beaver/machines/1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---/notes.md.html">raw</a></div>
+<h1 id="1rb0ld_0rc1ra_1rd1rf_1la0le_0ra0lc_0ra-">1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---</h1>
+<p>Status: CHECKPOINT_A
+Class guess (agent / Dennis): Shift-overflow counter: 4-state digit blocks in a bouncer, plus a one-time reset that leaves static walls / –
+Spreadsheet notes / Discord thread: Results row 621 has class "Shift-overflow structural counter"; status and notes are blank, with no link, no strikethrough and no xlsx comment. The machine is on mxdys's UBRRBA_TODO list (2026-08-24), which Dennis ruled fair game, and not on dyuan01's list. It is still in the 2026-10-07_778 list and has no proof in verify/. Its trajectory twin <code>1RB---_0RC1RA_1RD1RF_1LE0LF_1RB0LD_0RE0LC</code> is also still a holdout (identical lo/hi/nonzeros at 1e9), so one proof likely gives 2 kills.
+Viewer: https://bbchallenge.org/1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>C sim to 2e10: no halt. Span 227,260 cells, 146,198 nonzeros, 56,806 sweeps; edge ≈ 1.61·√t.</li>
+<li>Frame: P = <code>11111010</code>. Between P-runs sit 6-cell digit blocks <code>D0=111010 D1=101111 D2=101011 D3=111111</code> (phase −2) and the wall <code>X=11</code> (phase +2). Identities: <code>D0·X = X·D2</code>, <code>D3·X = X·D3</code>, <code>X·D0 = P</code>.</li>
+<li>Gen 1 (to 2.97e7): pure counter. The digit lines fan out from the left (img/phase_1e8.png, top part).</li>
+<li>Reset at 2.97e7–3.78e7: the carry reaches the left prefix (left record at −37), and an inner bouncer rebuilds the tape (img/blaze_reset_2.98e7.png). The old digit positions 194, 336, 606, 1150, 2244, 4396 and 8738 become static X walls (±6 wobble).</li>
+<li>Gen 2 (3.8e7 to 2e10): 11 walls, digits slide through them, no 2nd stall, no left record. Whole-tape parse finds 20 D and 11 X, constant.</li>
+<li>qsim: 0 prover rules (block 2/4/6/8/16). Block 8 chains well (2.2e8 steps in 100k loops).</li>
+<li>rulefit: tests fail (3 Antihydra tests), so its output was not used. Its fit found 0 validated rules here.</li>
+<li>How each card diagram was made (re-run 2026-10-10: byte-identical PNGs; label fields in observe.json come from these runs). The card now opens with Blaze; the phase maps are our own colours.</li>
+<li><code>blaze_1e8.png</code>: <code>tools/diagram.py "$TM" --mode blaze --steps 1e8 --as-site</code>.</li>
+<li><code>phase_1e8.png</code>: <code>scripts/phasemap.py 1e8 2</code>. Rows = every 2nd right-edge record in state D (sweep end), 2,069 rows, so rows are not equal time; the 8.0M-step reset falls between rows 1,093 and 1,094 and looks instantaneous. 1 px = 8 cells (-40..16551).</li>
+<li><code>phase_1e9_left.png</code>: exact crop (columns 0..1699 = cells -40..13559) of <code>phase_1e9.png</code> = <code>scripts/phasemap.py 1e9 6</code> (every 6th sweep end, 2,177 rows; reset between rows 363 and 364). The crop keeps the 7 walls left by the reset (+2 phase steps at cells ~192, 336, 608, 1160, 2248, 4408, 8752; the list above, at 8-cell resolution) large enough to see; the full-width file is kept.</li>
+<li><code>blaze_reset_2.98e7.png</code>: <code>--mode blaze --steps 8.1e6 --as-site --from-config @&lt;tape at step 29,754,243&gt;</code> (from <code>tools/sim/tmsim "$TM" --max-steps 29754243 --end-snapshot --dh</code>): mid-run, last right-edge visit before the reset.</li>
+<li><code>records_1e7.png</code>: <code>--mode records --steps 1e7</code>: left AND right records (not right only), stopped by the 5,000-row cap at step 9,473,093.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>Config E at each right-edge D record: <code>0^inf L … b1 P^n1 b0 P^n0 T D&gt; 0^inf</code>. Tail A = the last P ends under the head; tail B = <code>P^n0 101 D&gt;</code>.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>transition</th>
+<th>steps</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>edge</td>
+<td>A→B (n0 same), B→A (n0+1)</td>
+<td>–</td>
+<td>120/120</td>
+</tr>
+<tr>
+<td>turn@D0</td>
+<td><code>D0 P^a</code> → <code>D1 P^a</code>, head turns</td>
+<td>38a+22 (A) / 38a+30 (B)</td>
+<td>61/61</td>
+</tr>
+<tr>
+<td>turn@D1</td>
+<td><code>D1 P^a</code> → <code>D2 P^a</code>, head turns</td>
+<td>38a+20 / 38a+28</td>
+<td>59/59</td>
+</tr>
+<tr>
+<td>carry@D2</td>
+<td><code>D2 P^c</code> → <code>D3 P^c</code>, carry continues</td>
+<td>+38c+14</td>
+<td>69/69</td>
+</tr>
+<tr>
+<td>carry@D3</td>
+<td><code>D3 P^c</code> → <code>P D0 P^(c−1)</code>, carry continues</td>
+<td>+38c+36</td>
+<td>71/71</td>
+</tr>
+<tr>
+<td>wall</td>
+<td><code>X P^c</code> unchanged, carry passes</td>
+<td>–</td>
+<td>24/24</td>
+</tr>
+<tr>
+<td>D1 meets X</td>
+<td><code>D1 X P^c</code> → <code>X P D0 P^(c−1)</code>, carry continues</td>
+<td>–</td>
+<td>24/24</td>
+</tr>
+<tr>
+<td>full-sweep model on the real orbit</td>
+<td>297 sweeps @1e7 + 596 @1e9</td>
+<td>–</td>
+<td>893/893 (D–X adjacency excluded)</td>
+</tr>
+</tbody>
+</table>
+<p>Tests: random configurations with small (2–6), large (40–2000), odd and even run lengths, both tails, and every digit state, each simulated exactly to the next D record (scripts/validate.py, scripts/validate2.py, scripts/check_real.py, scripts/check_x.py).
+Open:
+- <code>D2·X</code> and <code>X·D1</code> adjacency make a transient block <code>(10)^5 1^3</code> that is not modelled yet.
+- The left-prefix overflow (new digit, or reset) is not modelled.
+- Whether the reset recurs is unknown; it would come after 2e10, beyond direct simulation.</p>
+<p>Template: nothing proved is within 8 transitions (SBCv6a, SBCv10, SOBLv1–3, SBCv6a2, Bouncer_v1). Only SBCv6a TM1's method fits (Longitudinal passes + an <code>RIncs</code>/<code>WF</code> digit list). Not a cryptid: no parity branching on growing numbers.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<h2 id="informal-proof">Informal proof</h2>
+<h2 id="formalization-log">Formalization log</h2>
+<h2 id="outcome">Outcome</h2>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<ul>
+<li>Figures on the card: Fig 1 = <code>img/blaze_1e8.png</code>, Fig 2 = <code>img/phase_1e8.png</code>, Fig 3 = <code>img/phase_1e9_left.png</code>, Fig 4 = <code>img/blaze_reset_2.98e7.png</code>, Fig 5 = <code>img/records_1e7.png</code>. Figs 1-3 are the primary figures, shown beside the checkpoint.</li>
+<li>The card's mechanism is cut to 3 bullets. The full list before the cut:</li>
+<li>Tape = runs of P=11111010 split by 6-cell digit blocks D0-D3; head sweeps from the right edge to the first D0/D1.</li>
+<li>Every sweep steps each visited digit D0&gt;D1&gt;D2&gt;D3&gt;D0: D2/D3 pass the carry left, D0/D1 turn the head back.</li>
+<li>D3&gt;D0 moves one P across the digit; the edge grows 4 cells per sweep, so run lengths double leftward.</li>
+<li>At 2.97e7 the carry hit the left end: an 8e6-step rebuild turned old digit boundaries into static walls X=11.</li>
+<li>Since then (to 2e10): carry passes walls unchanged, digits slide through them; no 2nd rebuild seen.</li>
+<li>Checkpoint questions are now yes/no questions about the figures. Moved off the card (strategy calls, not figure reading; settle them in proof.md / Checkpoint B):</li>
+<li>"blaze_1e8.png, flat step at 3e7: post the Discord question below before we spend proof time on the reset?"</li>
+<li>Old Q3 referred to "the Discord question below", but <code>discord_check</code> is null: no message was drafted.</li>
+</ul>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Confidence: <strong>med</strong> (unchanged), recommend: more observation. The gen-2 counter is now closed. The reset is now known to recur, so the machine is a nested generational counter, and the regrowth still has no rule. All scripts are under <code>scripts/deepen_*</code>.</p>
+<p><strong>1. Wall crossing (closes the D-X gap).</strong>
+- A digit moves right only through D3→D0. It therefore reaches a wall as D0, and the only adjacencies are D0·X and D1·X:
+  - <code>D3 P X → P D0 X</code> (carry)
+  - <code>D0 X → D1 X</code> (turn)
+  - <code>D1 X P^c → X P D0 P^(c−1)</code> (carry, c≥1)
+- The net effect is that the digit gains +2 as it crosses.
+- The tape identities D0·X = X·D2, D3·X = X·D3 and X·D0 = P made the old parse ambiguous. <code>deepen_model2.py</code> (<code>decode2</code>, <code>canon</code>, <code>predict2</code>) fixes this by always writing D0 0 X.
+- The "(10)^5 1^3" transient in the earlier notes was an artefact of that parse.
+- Validation:
+  - Real orbit: 3732/3732 right-edge sweeps from 3.8e7 to 2e8 match exactly (<code>deepen_check_gen2_3.8e7_2e8.json</code>).
+  - Random instances: 300/300 (<code>deepen_validate_cross_11.json</code>; small/large/odd/even runs, both tails, random guards and carry chains with walls).
+  - A longer real-orbit check from 2e8 to 3e9 was still running at write-up. It writes <code>deepen_check_gen2_2e8_3e9.json</code>.</p>
+<p><strong>2. The future, by hybrid fast-forward (<code>deepen_hybrid.py</code>, log <code>deepen_hybrid_events.txt</code>).</strong>
+- Method:
+  - Ordinary sweeps use <code>predict2</code>.
+  - Any sweep the model does not cover is simulated exactly in C on a copy with runs capped at 12. Every such event gave the same result at cap 20.
+  - Model sweeps were spot-checked against capped direct runs 381 times; all agree.
+- Starting from step 4e8, the carry first enters the raw left prefix 130,171 sweeps later. Ten such events are absorbed there with no left record.
+- The first true left record (type DA) is at sweep 6,202,107. A reset (CDAEA) follows at sweep 13,979,318, when the span is about 5.6e7 cells. By the rough t ≈ 15·s² fit, that is around 3e15 steps (an estimate).
+- So the reset does recur, far beyond direct simulation.</p>
+<p><strong>3. Which kind of left overflow happens.</strong>
+- If the tape starts with 7 ones (<code>1111111 0</code>), the overflow is type DA: the tape grows 2 cells and then starts with 9 ones.
+- If it starts with 9 ones, a reset happens, and the rebuilt tape starts with 7 ones again.
+- So DA and reset alternate. This fits every gen-1 left event except the start (DA at 51, 264, 739, 1992, 39589; reset at 107, 394, 1603, 5272, 29,787,121). It also predicted the DA-then-reset order in step 2.</p>
+<p><strong>4. What the reset does.</strong>
+- The full left pass leaves the tape in Q form (Q = <code>01010010</code>). An inner bouncer then grows from the left at +8 cells per inner sweep (1032 of 1051 front steps at the 2.97e7 reset; <code>deepen_reset_turns_2.98e7.txt</code>).
+- At each old digit the front jumps +4/+34/+16, and that digit becomes a static wall. The inner left turns stay at ≥ 34.
+- The predicted 2nd reset (<code>deepen_prereset_state.json</code>) was run on copies with runs capped at 16/32/64/128 (<code>deepen_force_reset.json</code>):
+  - All four give the same structure: digits 22→46, walls 10→30, and the same 194-cell prefix, which starts with 7 ones.
+  - After that, 399/400 sweeps match <code>predict2</code>.
+  - The one miss is the first sweep after regrowth, a new right-edge transient <code>D3 P^0 tail B → X P^1 tail A</code>.</p>
+<p><strong>Still open (for proof work):</strong>
+- A parametric rule for the regrowth over Q-territory.
+- Rules for the left zone. There are D–D adjacencies and D2·X, and the events are so far only simulated directly.
+- A generation invariant: a tape language closed under sweeps, prefix events, DA and reset.</p>
+<p><strong>Cryptid check.</strong> Not a cryptid. Digit values, including the +2 at walls, only move when events happen; whether the tape stays in the grammar does not depend on arithmetic.</p>
+<p><strong>Superseded.</strong> <code>deepen_force_overflow.py</code> (hand-mutated digits, unnatural configurations) and <code>deepen_ffwd.py</code> (model-only, wrong at the prefix) are replaced by <code>deepen_hybrid.py</code>.</p>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Confidence: <strong>med</strong> (unchanged), recommend: more observation. The reset is no longer a separate mechanism: it is the same counter with a different right edge. The open part is now just the left zone, plus the invariant that rests on it. Scripts and result files are in <code>scripts/deepen2/</code>. Run them with <code>python3 -B</code>; <code>ana.py</code> summarises a dump.</p>
+<p><strong>0. Round-1 leftover closed.</strong> The real-orbit check of <code>predict2</code> on 2e8–3e9 matches 16391/16391 sweeps (0 bad, 0 unmodelled; <code>scripts/deepen_check_gen2_2e8_3e9.json</code>).</p>
+<p><strong>1. Every sweep converts P to Q and back.</strong>
+- Low-level traces of ordinary sweeps (2.9733e7) and of the reset sweep (2.9754e7) show the same mechanism:
+  - The left-moving carry runs a D/A and E-C-F-A-B-C-F-A cycle that rewrites each block into Q form: <code>P→01010010</code>, <code>D0→010010</code>, <code>D3→010101</code>, <code>X→01</code>. Checked token by token on the real tape: 1080/1080 P and all 17 blocks.
+  - The return pass writes P form back and applies the carry rules.
+- The "full left pass" before a reset is therefore simply a carry that ran off the left end (the 9-leading-ones case). It leaves the whole tape in Q form, and the regrowth is that sweep's return pass.</p>
+<p><strong>2. Regrowth = the same counter with a Q-territory edge.</strong> At each inner front turn the tape is <code>L [counter tokens] TQ | 0010 Q^k M …</code> with <code>TQ = 1010101</code> (head: state A on the last cell of TQ).
+- One inner sweep: n0 += 1 (exactly one Q is consumed), then the unchanged <code>predict2</code> carry rules (turn at D0/D1, carry through D2/D3, wall crossing).
+- Random instances: 600/600 exact tape matches (<code>valq_*.json</code>). They cover all 7 carry targets, small/large/odd/even runs, k = 2–60 and d0/d3 next markers, on the real 94-cell prefix.
+- Real orbit: 1001/1065 inner sweeps of the gen-1 reset (<code>dump1.json</code>). Also 1081/1442 of the 2nd reset run on a cap-64 copy (<code>dump2_64.json</code>, start <code>reset2_cap64.json</code>).</p>
+<p><strong>3. Old digits in the Q territory become walls, each giving birth to 2 new digits.</strong> Every regrowth sweep that does not fit the model falls in a short episode of fixed shape:</p>
+<table>
+<thead>
+<tr>
+<th>shape</th>
+<th>sweeps</th>
+<th>front jumps</th>
+<th>leaves</th>
+<th>seen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>i</td>
+<td>9</td>
+<td>8,4,34,8×6</td>
+<td><code>X P^2 D2 P^1 D1 P^7</code></td>
+<td>15</td>
+</tr>
+<tr>
+<td>ii</td>
+<td>7</td>
+<td>38,8×6</td>
+<td><code>X P^1 D2 P^1 D1 P^7</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td>iii</td>
+<td>2</td>
+<td>34,8</td>
+<td><code>X P^1 X P^1 D0 P^3</code> (old digit next to an old wall)</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>During an episode, only the last 2–4 counter tokens change.</li>
+<li>The start of a regrowth is 1–4 longer episodes of the same kind (the new counter's own left zone).</li>
+<li>This is where the round-1 "front +8 per sweep, jumps +4/+34/+16 at old digits" came from. It also explains the digit counts: each old digit leaves 1 wall plus 2 digits.</li>
+</ul>
+<p><strong>4. End of regrowth.</strong> The round-1 rule had the wrong tail. The correct rule is <code>L [.. b1 P^n1] D3 P^0 tail-B → L [carry(.. b1 P^n1)] X P^1 tail-B</code>, with the carry continuing. Random instances: 400/400 (<code>valendB_*.json</code>). After it, ordinary 0^inf-edge sweeps resume (187/187 in the cap-64 run).</p>
+<p><strong>Still open (for proof work):</strong>
+- <strong>Left zone.</strong> There are no parametric carry rules for zero-length runs (<code>D_i 0 D_j</code>, <code>D2 0 X</code>, <code>D3 P^0</code> followed by X or D). This one gap covers the raw prefix (digit births, the gen-2 "absorbed" events, the DA/reset alternation of 7 and 9 leading ones) and the inside of the marker and start episodes.
+- <strong>Marker episodes.</strong> The 3 shapes, and the phase that picks between them (last digit D1 or D2 when the front arrives), are observed only (21 real + 20 capped instances), not randomised.
+- <strong>Generation invariant.</strong> It is not written yet. It needs a tape language closed under sweeps, both edge modes, the episodes and the left-zone events.</p>
+<p><strong>Cryptid check.</strong> Still not a cryptid. Run lengths only affect timing, and which episode shape occurs depends on the counter phase, not on arithmetic of large numbers.</p>
+<p><strong>Correction.</strong> Round-1 "post-regrowth transient <code>D3 P^0 B → X P^1 A</code>" should read <code>→ X P^1 B</code> (carry continues).</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Fund one more deepen stage on #9's left zone (parametric rules for zero-length runs, plus validated marker episodes), aiming to reach high confidence and go on to proof.md?
+Answer: <strong>left_zone</strong> (One targeted stage on the left zone, then proof.md). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-left_zone">Funded stage (2026-10-10, left_zone)</h2>
+<p>Confidence: <strong>med</strong> (unchanged), but the open part has moved. The left zone of ordinary sweeps is closed by one finite object. What is still open is the reset and its regrowth (left-end overflows of type CDAEA), plus the marker episodes inside it. Scripts and results are in <code>scripts/deepen3/</code>; run them with <code>python3 -B</code>.</p>
+<p><strong>1. A better alphabet: x/v words.</strong> At every sweep end the tape, read from its first 1 in cell pairs, is a word over x = <code>11</code> and v = <code>10</code>. The tokens are just words in it: P = xxvv, D0 = xvv, D1 = vxx, D2 = vvx, D3 = xxx, X = x. This explains every parse identity at once (D3 = XXX, X·D0 = P, D0·X = X·D2). The left zone contains words outside the token language, e.g. v^5 at the start of the 94-cell prefix (<code>xxxvvvvv...</code>) and v^6 at the start of the 194-cell one. Per-pair zero-run rules (<code>exp1.py</code>-<code>exp3.py</code>) showed the problem: the carry's effect at <code>b1 0 b2</code> depends on more than the pair (<code>D1 0 D2 -&gt; D3 0 D2</code>, carry continues; <code>D2 0 D2 -&gt; vvv D3</code>, stops; <code>X 0 X P^r -&gt; D1 0 D0 P^(r-1)</code>, stops; vvv acts like D2). So I dropped the per-pair rule table and tested whether the whole sweep is a finite-state process.</p>
+<p><strong>2. Every ordinary sweep is one finite transducer (<code>tlearn.py</code>, <code>ttable.json</code>).</strong> Take the crossing sequence (the states in which the head crosses, in order) at each pair boundary during one sweep:
+- Only 10 crossing sequences occur, the empty one included (e.g. <code>LD RB LA RA LD RA</code> inside P-runs, <code>LE RA</code> / <code>LC RD LA RC</code> at the turn).
+- The crossing sequence at a boundary is a function of the sequence one pair to its right plus the 4 input pairs to its left (lookahead 3). The output pair is then fixed by the two sequences around it.
+- Learned on 30,000 random words (seed 21, iid x/v words and token words with runs 0-3, raw vvv, every digit and wall): 100 table keys, 0 ambiguous.
+- Validated on 30,000 fresh random words (seed 22): 26,813/26,813 sweeps that stay inside the word match the table at every boundary, with 0 unseen keys (<code>tval_2.json</code>). This includes 419 sweeps whose carry reaches the first pair.
+- Real orbit from blank to 1.1e8 steps (exact Python simulation, <code>treal.py</code>): <strong>4,347/4,347 ordinary sweeps match the table exactly</strong>, across gen 1 and gen 2 (<code>treal_1.1e8.json</code>; to 2.9e7: 2,151/2,151, <code>treal_gen1.json</code>). The other 10 sweeps are left-end events, the last being the 8.0e6-step reset at 2.975e7.
+- <strong>No halts inside the word</strong>: in <code>haltwhere.py</code> (20,000 iid random words), 0 of the 17,183 sweeps that stay inside the word halt. All 63 halts happen after the head has crossed the left end of the word.
+- Consequence: zero-length runs, D-D adjacency, <code>D2 0 X</code>, <code>D3 P^0 X/D</code>, raw v-runs, digit births and the gen-2 "absorbed" events are not separate cases. The same 10-state table handles them, for any x/v word, so the left zone needs no extra rules for ordinary sweeps. predict2 is the reading of this table on the canonical parse with long runs.</p>
+<p><strong>3. Left-end events depend on the first symbols only (<code>tleft.py</code>).</strong>
+- Prefix <code>xxxv</code> (7 ones), random body, carry runs off the left end: 645/645 are type DA (left records D, A), the new word starts <code>xxxxvv</code>, and none halt (<code>tleft_x3v.json</code>).
+- Prefix <code>xxxxvv</code> (9 ones, the real post-DA form), random body: all 326 left-end events start with CDAEA, and the regrowth ends with prefix <code>xxxvvvvv</code> or <code>xxxxvvxx</code>. But with random bodies the regrowth often overflows again inside itself: 77 plain CDAEA, 98 CDAEA+DA, 55 CDAEA+DA+CDAEA, 92 deeper chains, and <strong>4 halts</strong>, all after the chain CDAEA DA CDAEA DA (<code>tleft_x4vv.json</code>).
+- The real orbit has nested events too: the reset at step 1,603 contains a DA at 1,992 in the same sweep (<code>treal_gen1.json</code>, sweep 14). The left-end sequence from blank is vv → <code>xxxvv</code> → <code>xxxxvvvv</code> → <code>xxxvvvvv</code> → <code>xxxxvvxx</code> → ..., which fits the DA/reset alternation.
+- So a DA is safe for any body, but a reset is not: whether the regrowth's inner counter overflows, and whether a nested overflow is safe, depends on the body. In the real orbit the body is a counter whose old digits sit at roughly doubling positions. Each old digit adds 2 digits to the inner counter (capacity ×4) while the Q-run to the next marker only doubles. That is a monotone capacity argument, not a cryptid, but it is not yet written or checked.</p>
+<p><strong>4. Not done in this stage.</strong>
+- Random-instance validation of the 3 marker-episode shapes. A harness was started (<code>tmark.py</code>), but its first version failed to parse the post-episode tape, and the script file was then lost. No numbers came out, so the shapes remain observed only (21 real + 20 capped).
+- With the transducer, the episodes should reduce to the same table plus a finite front rule at the Q-territory edge, but this is untested.</p>
+<p><strong>Generation invariant (draft).</strong> Reachable sweep-end tapes are x/v words W with:
+- (a) W starts with <code>xxxv</code> (next left-end event: DA) or <code>xxxxvv</code> (next: reset).
+- (b) Ordinary sweeps are the transducer above. They are total, never halt, keep (a), and append 2 symbols at the right.
+- (c) DA maps (a)'s first case to its second for every body (validated).
+- (d) Reset: the body must be in a counter language K, where the digits sit between P-runs whose lengths grow so that the regrowth never overflows the inner counter, or overflows only harmlessly. The new tape must again be in K with prefix <code>xxxv</code>.</p>
+<p>(d) is the open core. It needs the front rule over Q territory (Q-edge rule, done 600/600; marker episodes, open; end of regrowth, done 400/400) and the capacity inequality.</p>
+<p><strong>Proof route this suggests.</strong> Part (b) is a finite crossing-sequence fact, which is checkable exhaustively and does not depend on parameters. That makes a regular-language (CTL-style) certificate plausible for everything except the reset's capacity argument. busycoq's CTL deciders can check such a certificate if the search is done natively (never inside Coq; see rocq-notes).</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: Fund one more stage on #9's reset (front rule at the Q-territory edge, randomised marker episodes, the inner-counter capacity bound), aiming at high confidence and proof.md?
+Answer: <strong>reset</strong> (One targeted stage on the reset, then proof.md). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-reset">Funded stage (2026-10-10, reset)</h2>
+<p>Confidence: <strong>med</strong> (unchanged). Two of the three targets closed: the regrowth front is now one finite table, and it covers every marker arrival on random instances. The third, the capacity bound, is stated and checked numerically, but it is not proved. It turns out to depend on the left zone (the prefix) of each generation, so it needs an induction over generations. Scripts and results are in <code>scripts/deepen4/</code>; run them with <code>python3 -B</code>.</p>
+<p><strong>1. The regrowth in pair letters (<code>rg.py</code>, <code>look.py</code>).</strong> Use the pair letters x=11, v=10, a=01, o=00 in the grid of the new word.
+- The reset's left records CDAEA grow the tape by 5 cells, so the new grid is shifted by one cell from the old one. In the new grid, the Q-territory reads Q = <code>aovv</code> and P = <code>xxvv</code>, so every Q-edge sweep turns one <code>aovv</code> into <code>xxvv</code>.
+- Real gen-1 regrowth (from <code>deepen2/at_left2.json</code>; 1,075 inner sweeps under the round-2 cut):
+  - 1,059 front turns are in state A on an even cell. 15 are the ordinary state-D right records after the end, and 1 is the start.
+  - The front advances 8 cells in 1,046 sweeps. At an old digit it advances 4 then 34 (4 times), or 38 (3 times).
+- So at the cell level, a marker "episode" of round 2 is just one long front jump. The other sweeps of the episode are ordinary 8-cell advances whose token parse looked unusual.</p>
+<p><strong>2. Every inner sweep is one finite table (<code>tfront3.py</code>).</strong>
+- The round-2 cut (the head goes 24 cells left of its maximum) is not local. Short inner sweeps merge, and the front side stays ambiguous even with 20 pairs of lookahead (<code>ktest_c11_gapcut.txt</code>; 150 random regrowths, 11,128 sweeps).
+- New local cut: a sweep ends when the head enters a new front cell from state F (Q edge), or makes a new global right record in state D (0 edge, as in deepen3).
+- The table has two sides. Inner side (b &lt;= hp, where hp is the pair the head starts in): right-to-left key (crossing sequence at b+1, pairs b-3..b) -&gt; crossing sequence at b, with crossings labelled <dir><state> as in deepen3. Front side (b &gt;= hp): left-to-right key (crossing sequence at b, pairs b..b+3, b-hp) -&gt; crossing sequence at b+1, with crossings labelled <old state><dir><new state>. The old state is needed to see the F-cut. A first try that dropped it gave 15 spurious ambiguities (<code>tfront3_31_localcut_2label.txt</code>).
+- Learned on 68 random regrowths (seed 51, 9,128 inner sweeps): <strong>213 keys (69 inner side, 144 front side), 0 ambiguous, 23 crossing labels</strong>. The front side reaches at most 8 pairs right of the head.
+- Validation (<code>tfront3_51_52.json</code>):
+  - Fresh random regrowths (seed 52, 68 instances): <strong>24,457/24,463 inner sweeps match, 0 contradictions</strong>. The other 6 sweeps each have a key the 68 learning runs never saw (the table is not saturated yet), and nothing contradicts the table.
+  - Real gen-1 reset at 2.975e7: <strong>2,207/2,207</strong>.
+  - Real 2nd reset (run-capped at 64, <code>deepen2/reset2_cap64.json</code>): <strong>2,705/2,705</strong>.
+  - Excluded: the sweeps that cross the word's left end (233 random, 2 + 2 real). These are the CDAEA start and the nested left-end events, which item 3 covers.
+- The random pre-reset words are a 9-ones prefix (<code>xxxxvv</code>, <code>xxxxvvxx</code> or <code>xxxxvvvv</code>), then 2-12 random blocks D2/D3/X/<code>D1 X</code> with P-runs that are small (0-6), doubling or mixed, then the right end. Every inner sweep of all 68 + 68 regrowths was checked: Q-edge sweeps, every marker arrival (d0/d3/x, adjacent markers, zero runs), the start and end episodes, and the 0-edge sweeps that follow.
+- <strong>So the 3 marker shapes are no longer separate rules.</strong> They are what the same table does when the Q-territory window holds a marker. That is the randomised-marker validation asked for (thousands of marker arrivals; I did not count them per shape).
+- Caveat: the table is learned, not derived. Turning it into a proof needs an exhaustive check of the tiles, which are finite: 23 labels, 4 pair letters, the head marks.</p>
+<p><strong>3. Capacity: when does a regrowth overflow its own inner counter? (<code>tcap.py</code>)</strong> Each run is a pre-reset word, run exactly through its whole reset sweep. I recorded the left records after the initial CDAEA and any halt. Bodies: 4-9 random old markers, with Q-runs that grow by a random factor in [1, R] per marker.</p>
+<table>
+<thead>
+<tr>
+<th>prefix</th>
+<th>R</th>
+<th>runs</th>
+<th>plain CDAEA</th>
+<th>+1 nested DA</th>
+<th>nested reset</th>
+<th>halt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>real gen-2 prefix (50 cells)</td>
+<td>2</td>
+<td>200</td>
+<td>155</td>
+<td>22</td>
+<td><strong>0</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>real gen-2 prefix</td>
+<td>3</td>
+<td>100</td>
+<td>58</td>
+<td>29</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>bare <code>xxxxvv</code></td>
+<td>2</td>
+<td>150</td>
+<td>42</td>
+<td>46</td>
+<td>39</td>
+<td><strong>1</strong></td>
+</tr>
+<tr>
+<td>(round 3) <code>xxxxvv</code>, iid bodies</td>
+<td>–</td>
+<td>326</td>
+<td>77</td>
+<td>98</td>
+<td>147</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>The rest are runs with no left event: the first sweep's carry stopped inside the word, for example at a zero-length run (<code>D2 0 D2</code>).
+- The real orbit: the 5 resets from blank (sweeps 3, 5, 14, 30, 2188) have 0, 0, 1 (a nested DA), 0, 0 nested events. The 2nd reset (caps 16-128) has 0.
+- <strong>Statement (conjectured lemma).</strong> Suppose a reset starts from a 9-ones word whose left zone is at least as large as the real gen-2 prefix, and whose Q-runs at most double from one old marker to the next (real gen-2 body: ratios 1.96-2.03 for the long runs). Then the regrowth has at most one nested left-end event, and it is a DA. So there is no nested reset and no halt, and the next left event alternates as before.
+- Why: each old marker gives the inner counter 2 new digits (capacity x4), while the next Q-run only doubles. So overflow can only happen in the first few markers, and there the left zone sets the margin.
+- <strong>Not proved:</strong> (i) the run growth of at most x2 in the real pre-reset body of every generation; (ii) the base case. With the bare 6-pair prefix and the same x2 bodies, 39 of 150 regrowths nest a reset and 1 halts. So the left zone of each generation matters, and the 2 known real ones (gen 1, gen 2) are fine. Both need an induction over generations (static walls, drifting digits, and the left zone after each reset). Gen 3 is beyond any direct check (about 2^46 sweeps).</p>
+<p><strong>Still open (for proof.md):</strong>
+- (a) The generation induction behind the capacity lemma.
+- (b) An exhaustive, derived check of the two tables (the deepen3 ordinary-sweep table and this inner-sweep table), replacing the sampled ones.
+- (c) The 6 unseen-key sweeps: re-run with more learning instances to saturate the table.</p>
+<p>Not a cryptid: the open part is a monotone counting bound, not parity arithmetic.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: Fund one stage on #9's generation induction (show every reset body grows at most x2 per marker and keeps a large enough left zone), or park the machine?
+Answer: <strong>induct</strong> (One stage on the generation induction, then proof.md). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-induct">Funded stage (2026-10-10, induct)</h2>
+<p>Confidence: <strong>med</strong> (unchanged). Outcome: <strong>parked by the stage's stop rule.</strong> The right part of the induction is closed: the x2 run growth follows from counter arithmetic, and the real data fit it. The left zone is not closed. Every left zone computed (generations 2-5) is safe, but the zone is neither stable nor growing. Its size alternates between generations. Scripts and results are in <code>scripts/induct/</code>; run them with <code>python3 -B</code>.</p>
+<p><strong>1. The left window map (<code>phi.py</code>).</strong>
+- Key fact: the left part of the tape (raw prefix plus the first K blocks) changes only when a sweep's carry reaches it (an "arrival"). The next reset is the arrival at which the left end overflows for the second time after a reset (first a DA, then the CDAEA). So the window at the next reset is a function of the window at this reset. The digits to its right decide only <em>when</em> arrivals come, never what they do.
+- The map: Phi(W) = the exact reset sweep of <code>W + P^R + tail</code>, then the hybrid fast-forward (predict2 sweeps, exact C-simulated sweeps at left-zone events) until the next CDAEA.
+- Real-orbit check, gen 1 to gen 2 (<code>val12seq.json</code>). The start is the real gen-1 pre-reset window (<code>pre1.json</code>, step 29,754,243).
+  - Windows of 11-12 blocks, with R = 6, 12 or 30: 6/6 runs reproduce the real gen-2 left-zone event sequence <strong>exactly</strong> (11 events plus the reset, taken from the full-tape hybrid in <code>deepen_hybrid_events.txt</code>). Their pre-reset prefix and leading 12-17 tokens equal the real gen-2 pre-reset state.
+  - 9-block windows get the final prefix right but not the event sequence, because the window is too small.
+- Reset 2 with the near runs exact (<code>gradcap2_8000_64.json</code>, <code>gradcap2_30000_64.json</code>): runs left of cell 8,000 (or 30,000) are exact, and runs further right are capped at 64. The left records are CDAEA only, with no nested event, and the post-reset prefix is the known 194-cell one.
+  - The round-1 uniform caps (16-128) also cut the near runs 173-1711, and those carry most of the arrivals. So this is the first reset-2 check that keeps them.</p>
+<p><strong>2. The right part: x2 growth (counter arithmetic, plus the real data).</strong>
+- Over a arrivals, a digit passes the carry ⌊a/2⌋ or ⌈a/2⌉ times, ±1, and moves right ⌊a/4⌋ ± 1 P. A wall crossing adds one pass and one move (<code>D0 X → D1 X → X P D0</code>: two extra visits).
+- So the j-th digit right of the window receives about 2^j·N_W arrivals per generation, where N_W is what the window received. Its drift is about 2^(j-2)·N_W, and the gap between consecutive digits tends to ratio 2.
+- Real resets, digit gaps with walls ignored: gen 1 ratios ≤ 2.18. Gen 2 ratios 1.44-2.007, and the last 14 are 2 ± 0.01 (1,711.8, 3,430.8, 6,837.8, ... P).
+- Consequence (derivation only, O(1) error terms not tracked tightly): the arrivals reaching the window during a regrowth are N_reg ≲ (first gap) + Σ_j gap_j/4^j + O(1) ≈ (first gap) + ¾·N_W(previous generation). The far tape never matters, so capacity is decided by the left window alone.</p>
+<p><strong>3. The left zone over generations.</strong> Phi was iterated from the real gen-2 pre-reset state (<code>iter2_8_10*.json</code>). Each generation was run with 8- and 10-block windows, continuing from the 10-block result. The two window sizes agree on 203, 2,185 and 229 cells for gens 3, 4 and 5; gen 3 also agrees with a 12-block window (<code>val23_nb12.json</code>).</p>
+<table>
+<thead>
+<tr>
+<th>gen</th>
+<th>raw prefix (cells)</th>
+<th>left-zone events</th>
+<th>DA at event</th>
+<th>same cells as gen g−2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2 (real)</td>
+<td>50</td>
+<td>12</td>
+<td>8</td>
+<td>–</td>
+</tr>
+<tr>
+<td>3</td>
+<td>168</td>
+<td>123-128</td>
+<td>21-26</td>
+<td>–</td>
+</tr>
+<tr>
+<td>4</td>
+<td>96</td>
+<td>20-21</td>
+<td>10-11</td>
+<td>53 (gen 2)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>128</td>
+<td>98</td>
+<td>37</td>
+<td>91 (gen 3)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>212</td>
+<td>410</td>
+<td>–</td>
+<td>99 (gen 4)</td>
+</tr>
+</tbody>
+</table>
+<p>All five start with <code>xxxxvvxxxxx</code>. Gen 3 and gen 2 share only 23 cells. Gen 6 comes from <code>iter2_8_10_g7.json</code> (the same run continued; its gen-7 step did not finish within the stage).
+- Capacity of the predicted zones (<code>tcapgen.py</code>; same x2-body test as round 4's <code>tcap.py</code>):
+  - gen-3 zone: 0/80 nested events (72 plain CDAEA, 8 with no left event).
+  - gen-4 zone: 0/80 (75 and 5).
+  - Real gen-2 zone, for comparison: 22/200 nested DA, 0 nested resets.
+  - No halts.</p>
+<p><strong>Result.</strong> Every left zone computed is safe, and safer than gen 2's. But the zone is not stable: its size and event count jump around (50, 168, 96, 128, 212 cells; 12, ~125, ~20, 98, 410 events). It is also not monotonically growing. The only hint of structure is a possible 2-cycle: generations g and g−2 agree on 53, 91 and then 99 cells (gens 4, 5, 6). The event counts do not cycle, though. The stop rule ("park unless the left zone is shown stable or growing") applies, so the machine is parked.</p>
+<p><strong>Still open (for whoever reopens it):</strong>
+- An invariant of Phi on the left zone for all generations, for example a 2-cycle on the first ~100-200 cells. Iterating Phi is cheap: gens 3-5 took 5-34 s each. The question is whether the 2-cycle agreement keeps growing.
+- A proof that Phi's output on the zone depends only on the zone. Window-size independence is sampled only, with 2-3 sizes per generation.
+- The N_reg bound, as a written inequality with explicit error terms.
+- Both finite tables (<code>deepen3/ttable.json</code>, <code>deepen4</code> inner sweeps) are still learned, not derived.</p>
+<p>Superseded / scratch: <code>iter.py</code> (6-block windows; too small, the windows disagree with 8 blocks), <code>cmp12*.py</code> (exploration). Not a cryptid (unchanged).</p>
+<h2 id="note-2026-10-10-orchestrator">Note (2026-10-10, orchestrator)</h2>
+<p>The marker-episode harness reported lost above was found in the repo root and moved to scripts/deepen3/: tmark.py, tmark_test.json, root_tmark_test.log (60/60 UNPARSED, the first version). scripts/deepen3/tmark_test.log is a different, earlier log.</p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: Keep #9 parked, as the stop rule says, or fund one stage to test whether its left zone settles into a 2-cycle across generations?
+Answer: <strong>park</strong> (Keep parked). Dennis: go with recommendations (2026-10-11).</p>
+</main></body></html>

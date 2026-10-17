@@ -1,0 +1,68 @@
+{
+ "tm": "1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LD0RC",
+ "bucket_reason": "Low confidence at observe: the left-word language and the eat size e' are not derived, so proof work waits for a priority call.",
+ "question": "Spend a deepen stage on the left-word language and the eat size e', starting with an early cryptid test, or park R2 behind its sibling #29?",
+ "options": [
+  {
+   "id": "deepen",
+   "label": "One deepen stage (2 h), opening with a bounded-window test for e'",
+   "consequence": "First hour: test whether e' (and the word left after the eat) is a function of a bounded window of L at the reset, using rounds2.py dumps over the 1,082 epochs to 1e11. If yes, derive the carry/eat automaton on mixed words, closure-fuzz a language for L with an N >= c|L| bound, and choose between a BECv1-style digit-list proof and a CTL/RWL certificate. If e' needs the counter's value, flag CRYPTID_CANDIDATE and stop."
+  },
+  {
+   "id": "park_behind_29",
+   "label": "Park behind #29 and reuse its eat work",
+   "consequence": "#29 (F0 = 0LB, medium confidence, 99.7% of K-transitions ruled) has its own pending call to rule its eat. That machinery may transfer, but #29's marker is 00 where R2 has a 110|010 border, and the trajectories differ, so a shared proof is not guaranteed. R2 waits at least one stage."
+  },
+  {
+   "id": "park",
+   "label": "Park as STUCK at observe",
+   "consequence": "No spend. The question of whether the eat size is regular stays open."
+  }
+ ],
+ "recommended": "deepen",
+ "rationale": "The round and reset structure holds exactly on every round from blank to 1e11: 3,936,491 rounds, 1,082 epochs, 0 exceptions. The sweeps and INC2 are exact. The halting margin is growing: N/|L| stays >= 1.4 after epoch 20 and >= 41 over the last 100 epochs to 1e11 (N about 7,800, |L| at most 184). Halts appear only for artificial starts with N < |L|. The one real doubt is whether the eat size is regular or arithmetic, and the first hour can test that from data the observer already produces. A stage with this stop rule either opens a proof route or files R2 as a cryptid candidate, and both outcomes are useful. Parking behind #29 delays the same question without guaranteeing that #29's answer transfers.",
+ "evidence": [
+  {
+   "kind": "data",
+   "text": "epochs.c to 1e11: 3,936,491 rounds and 1,082 epochs with bad=0. N = 7,822 at 1e11, e' always in 1..47.",
+   "href": "epochs_1e11.txt"
+  },
+  {
+   "kind": "rules",
+   "text": "R1-R4 and INC2 (both suffix forms) pass 200/200 each with random contexts.",
+   "href": "validation.json"
+  },
+  {
+   "kind": "template",
+   "text": "tm108's cert holds 9 of 12 hypotheses here. HL2 (carry), HR2 (marker step) and HE2 (marker birth) fail 0/25, so the sweeps carry over but the counter, the marker and the eat size do not.",
+   "href": "template_check.json"
+  },
+  {
+   "kind": "fuzz",
+   "text": "Real left words with random small (e, f) halt 2/300, both with N < |L|. With N >= 0.3|L| + 1..20 they halt 0/400. The invariant needs a language for L plus a bound N >= c|L|.",
+   "href": "notes.md"
+  },
+  {
+   "kind": "sibling",
+   "text": "#29 (F0 = 0LB) is at CHECKPOINT_A with medium confidence and has its own priority call about ruling its eat.",
+   "href": "../1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC/status.json"
+  },
+  {
+   "kind": "figure",
+   "text": "Card Fig 2: rounds aligned at the bell boundary. Each triangle is an epoch, and the left word shrinks at each reset.",
+   "href": "card.html#fig-2"
+  },
+  {
+   "kind": "status",
+   "text": "status.json: CHECKPOINT_A, observe, confidence low, priority_call = deepen or park.",
+   "href": "status.json"
+  }
+ ],
+ "effort_if_yes": "One stage, at most 2 h of agent time; the first-hour test reuses existing scripts (rounds2.py, epochs.c) with one or two niced processes. If e' is regular, proof.md comes next, then a BECv1/BECv7-style file (estimated 30-50 KB) or a certificate attempt.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "deepen",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

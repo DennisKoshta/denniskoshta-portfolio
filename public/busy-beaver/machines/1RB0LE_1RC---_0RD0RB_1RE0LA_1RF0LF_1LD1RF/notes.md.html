@@ -1,0 +1,664 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/notes.md · <a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/notes.md.html">raw</a></div>
+<h1 id="w6-1-740-line-10-1rb0le_1rc-_0rd0rb_1re0la_1rf0lf_1ld1rf">W6-1 · 740 line 10 · <code>1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF</code></h1>
+<p>Observe stage, 2026-10-14 (Claude, Wave 6). Claimed in coord/claims.tsv; Astra told (coord/mailbox/to-astra/20261014-*-claude-w6-1-claim-holdout10.md).</p>
+<h2 id="pre-checks">Pre-checks</h2>
+<ul>
+<li>Byte-exact on data/holdouts/BB6_holdouts_740.txt (line 10).</li>
+<li>No claim: the sheet has it as "Shift-overflow bouncer counter" with an empty status; mxdys's UBRRBA list (data/discord/2026-08-24_mxdys_ubrrba_86.txt) is a to-do list, not a claim.</li>
+<li>Same table, other starts (canon up to renaming + mirror):</li>
+<li>from D: <code>1LB0RD_1LC0RC_1RA1LC_1LE0RB_1LF---_0LA0LE</code> = SOBCv10.v (upstream, nonhalting hand proof);</li>
+<li>from B: <code>1RB---_0RC0RA_1RD0LF_1RE0LE_1LC1RE_1RA0LD</code> = TCv1.v (decider);</li>
+<li>from C, E, F: not holdouts, not solved. No other start is on the 740 or 778 list.</li>
+</ul>
+<h2 id="frames-and-words">Frames and words</h2>
+<p>The state map from ours to SOBCv10 is A,B,C,D,E,F -&gt; D,E,F,A,B,C with a mirror. So our machine <strong>is</strong> SOBCv10's machine started in SOBCv10's D. Everything below is written in <strong>SOBCv10's frame</strong> (its wall on the left), because that is how its lemmas read. Our own frame is the mirror image: fossil and counters on the left, the tally growing to the right (Fig 2).</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>SOBCv10 frame</th>
+<th>our frame (mirrored)</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td><code>11111011</code></td>
+<td><code>11011111</code></td>
+<td>binary digit 0</td>
+</tr>
+<tr>
+<td><code>B</code></td>
+<td><code>11101111</code></td>
+<td><code>11110111</code></td>
+<td>binary digit 1</td>
+</tr>
+<tr>
+<td><code>C</code>, <code>D</code>, <code>E</code></td>
+<td><code>11111110</code>, <code>11101110</code>, <code>11111010</code></td>
+<td><code>01111111</code>, <code>01110111</code>, <code>01011111</code></td>
+<td>marker words, mixed digits</td>
+</tr>
+<tr>
+<td><code>U</code></td>
+<td><code>1011</code></td>
+<td><code>1101</code></td>
+<td>separator / pending signal</td>
+</tr>
+<tr>
+<td><code>X</code></td>
+<td><code>0100</code></td>
+<td><code>0010</code></td>
+<td>one unit of the tally</td>
+</tr>
+<tr>
+<td><code>W</code></td>
+<td><code>10100100</code></td>
+<td><code>00100101</code></td>
+<td>the wall (SOBCv10 <code>common_left_wall</code>)</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td><code>11</code></td>
+<td><code>11</code></td>
+<td>the edge mark (<code>[1;1]</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>hash</strong> is one signal: SOBCv10 <code>B&gt;</code> at the left end of the word region (our <code>&lt;E</code>), returning as SOBCv10 <code>&lt;F</code> (our <code>C&gt;</code>).</p>
+<h2 id="mechanism-same-as-sobcv10">Mechanism (same as SOBCv10)</h2>
+<ul>
+<li>The left part <code>W X^u</code> is a <strong>tally</strong>: every returning hash walks to the wall and back and adds one <code>X</code> (<code>left_emit_call</code>). Steps grow like u², which is why direct simulation sees so little.</li>
+<li>To its right sits a <strong>binary counter</strong> of <code>A</code>/<code>B</code> digits (least significant next to the head) that each hash increments. Its overflow carries are absorbed by marker words further right (<code>D -&gt; A</code> grows the counter, <code>C A U U -&gt; D C A</code> eats a <code>U</code> pair, ...).</li>
+<li>When the counter and everything behind it is all <code>B</code> and the carry reaches the edge <code>t</code>, an <strong>exception</strong> fires: the tally turns into exactly n = (u-1)/2 fresh hashes, which are fed into the rewritten counter (<code>E^w A</code>, a mixed-radix word), and the result is <code>W B&gt; C A U^(2n) output</code> (<code>exception_done</code>). The <code>C A U^(2n)</code> block then needs 2(2^n - 1) hashes to drain (<code>cd</code>), so each exception makes the next one exponentially later.</li>
+<li>SOBCv10's own start passes 4 exceptions and then enters its round invariant (<code>post_ca_state</code> + <code>sobc1_round_invariant</code>), where each round adds one binary column.</li>
+</ul>
+<h2 id="our-opening-exactly-hash-level-simulation">Our opening, exactly (hash-level simulation)</h2>
+<p>Tool: work/rsim4.c (exact TM simulation; a returning hash at the wall is teleported by the proven <code>left_emit_call</code>, so a hash costs O(1) instead of O(u)). Checked on SOBCv10's own start: it reproduces <code>sobc1_first_half</code> = 2^23+2^22+2^20-2 = 13,631,486 as the n of its third exception (work/hashlevel_run_sobcv10_start.txt). Our run: work/hashlevel_run_ours.txt.</p>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>hashes so far</th>
+<th>n</th>
+<th>what comes out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1, 2</td>
+<td>1, 1</td>
+<td>0, 0</td>
+<td>start-up</td>
+</tr>
+<tr>
+<td>3</td>
+<td>58</td>
+<td>28</td>
+<td><code>W B&gt; C A U^59 A B B t</code>, i.e. output <code>U^3 A B B t</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>3,221,225,527</td>
+<td>n4 = 3·2^29 - 2 = 1,610,612,734</td>
+<td>frontier <code>B^30 C t C A A t t</code> (not SOBCv10's <code>B^w t</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Between 3 and 4: <code>cd</code> drains 28 pairs, one more <code>U</code> pair is eaten, and the odd <code>C A U A B B t</code> turns into the frontier above (counter width 30).</p>
+<h2 id="our-opening-symbolically-families-checked-on-small-instances">Our opening, symbolically (families checked on small instances)</h2>
+<p>work/opening_checks.py, 40/40 PASS (work/opening_checks.out). Each family was run on small parameters and matched a closed form; the real parameters are m = 30, p = n4.</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Family</th>
+<th>Checked on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(a) exception 4</td>
+<td><code>W X^(2n+1) B&gt; B^m C t C A^2 t^2</code> with n = 3·2^(m-1)-2 gives <code>W B&gt; C A U^(2n) A^(m-1) D^2 A U E A</code></td>
+<td>m = 2..5 (full tape)</td>
+</tr>
+<tr>
+<td>cd</td>
+<td><code>C A U^(2n)</code> drains with 2(2^n-1) hashes (SOBCv10 <code>exception_done_cd</code>)</td>
+<td>rule 4, 10/10</td>
+</tr>
+<tr>
+<td>(b) fossil run</td>
+<td><code>A^p C A^m D^2 A U E A</code> (m even) needs H = 2^(p-1)(1292·2^m+4)/3 - 1 hashes to frontier <code>B^(p+m+5) U B t</code></td>
+<td>11 (p, m) pairs</td>
+</tr>
+<tr>
+<td>(c) exception 5 input</td>
+<td>the raw pass turns <code>B^W U B t</code> into <code>E^(W-1) U^3 A</code></td>
+<td>W = 3, 4, 5, 6, 8</td>
+</tr>
+<tr>
+<td>(d) exception 5 output</td>
+<td>n5 = 2^p - 2 + 2^(p-2)(1292·2^m+4)/3 hashes into <code>E^(p+m+4) U^3 A</code> give <code>A^(p-2) digits_{m+6}(R) U^3 A t</code>, R = (140·2^m+4)/3 + 4</td>
+<td>9 (p, m) pairs</td>
+</tr>
+</tbody>
+</table>
+<p>For m = 30, p = n4 this gives:</p>
+<div class="highlight"><pre><span></span><code>exception 5 output = A^(n4+2) B B A B A · B A B A B A B A B A B A B A B A B A B A B A B B B A B · U^3 A t
+</code></pre></div>
+
+<p>SOBCv10's generic <code>exception_done_ca n5 pairs rest</code> (pairs = n4/2 + 1) then gives</p>
+<div class="highlight"><pre><span></span><code>W X^(round_post_unary c p) B&gt;  A^(round_primary_width c p)  U U  [col]  U^3 A t
+c = (n5 - 6)/2,  p = n4/2 - 3 = 3·2^28 - 4  (half_parameter c = n5, half_parameter p = n4)
+col = B B B A B A B A B A B A B A B A B A B A B A B A B B B A B   (29 digits, LSB first)
+</code></pre></div>
+
+<h2 id="check-against-sobc1_round_invariant">Check against <code>sobc1_round_invariant</code></h2>
+<table>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Value</th>
+<th>Holds?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>shape <code>post_ca_state (round_post_unary c p) (round_primary_width c p) [col]</code></td>
+<td>exact, <strong>plus</strong> a far-end fossil <code>U^3 A t</code> after the column</td>
+<td><strong>no</strong> (fossil)</td>
+</tr>
+<tr>
+<td><code>round_width_dominance</code></td>
+<td>2·29+4 &lt;= n4+1; 2(n4+1+29)+4 &lt;= n5+1</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>columns_schedule</code> via <code>abstract_singleton_good</code></td>
+<td>width 29 = 2·14+1; value 391,468,375 in [3, 2^29-6]</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>columns_head_odd</code></td>
+<td>391,468,375 is odd</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>So the column fits perfectly, and the far-left fossil (our frame) is the one obstacle: the tape is <code>binary_columns_word [col] ++ U^3 ++ A ++ t</code> then blank, not <code>binary_columns_word [col]</code> then blank. This explains why ccz181078 proved SOBCv10/11/12 without this start.</p>
+<p>Does the fossil matter? Each round ends with carries reaching the far end (<code>binary_columns_to_frontier</code> appends the edge <code>t</code>). A small round analog (work/rside.c on <code>A^4 U^2 B A B A B U^3 A t</code>) shows the fossil digit is flipped (<code>A -&gt; B</code>) and the round's frontier becomes <code>... B^w U^3 B t</code> instead of <code>... B^w t</code>. So the fossil is a live one-digit pseudo-column with a <code>U^3</code> separator, and it changes the frontier that SOBCv10's exception lemmas expect. SOBCv10's round lemma does not apply verbatim.</p>
+<p>Lead for the next stage (crude round analog, work/round_analog_with_fossil.txt; the start <code>W X^5 B&gt; A^4 U^2 B B A B A U^3 A t</code> does not satisfy the round's numeric relations). Across two exceptions the fossil went <code>U^3 A t -&gt; U^5 B -&gt; U^7 D t</code>. The <code>U</code> run grows by one pair per exception, and <code>U</code> is transparent to hashes (<code>hash_U</code>). The working guess is a tail <code>U^(2k+1) x t</code> with k growing by 1 per round and a one-digit x. This must be confirmed on true round states.</p>
+<h2 id="rules-validated-workvalidate_rulespy-10-random-instances-each-on-our-machine-via-mirroring">Rules validated (work/validate_rules.py, 10 random instances each, on our machine via mirroring)</h2>
+<p>emit 10/10, d_absorb 10/10, u_pairs 10/10, cd 10/10, all_A_to_exception 10/10, exception (canonical) 10/10 (work/validate_10.txt).</p>
+<h2 id="cryptid-check">Cryptid check</h2>
+<p>No pseudo-random arithmetic. Every step is a binary counter or an exact exponential formula. The open question is structural (the fossil), not number-theoretic. Not a cryptid.</p>
+<h2 id="qsim">qsim</h2>
+<p>Block size 4, recursive rules on: 1.69e13 steps in 600 s, no rules proved (only chain steps), as the scout said (work/qsim_n4.jsonl).</p>
+<h2 id="next">Next</h2>
+<p>Study the fossil per round. Run hash-level analogs over 3-5 rounds with small parameters and find how <code>U^k x t</code> evolves: k, the digit x, and whether it ever feeds a carry back. Two outcomes:</p>
+<ul>
+<li>It has a closed per-round law. Then write proof.md for a generalized invariant: <code>sobc1_round_invariant</code> plus a tail state. This needs new frontier and exception lemmas for the tail (the delta against SOBCv10.v's <code>all_A_frontier_to_exception_done</code> and <code>exception_done_to_next_post</code>).</li>
+<li>It grows irregularly. Then STUCK.</li>
+</ul>
+<h2 id="wave-6-stage-1-2026-10-14">Wave 6, stage 1 (2026-10-14)</h2>
+<p>Goal: find the far-end tail's per-round law (Claude, about 1 h of the 2 h budget).</p>
+<p>Result: the law is closed, and it ends the SOBCv10 regime. Four more exceptions after the entry, a carry reaches the tail's edge in the middle of an exception. In every test that event turns the run into a <strong>translated cycler</strong>. So the machine looks non-halting, by a route quite unlike SOBCv10's.</p>
+<p>Everything below is in SOBCv10's frame. Tools and outputs: work/tail/ (build: <code>gcc -O2 -o rside ../rside.c; gcc -O2 -o fsim fsim.c; gcc -O2 -o tcyc tcyc.c; gcc -O2 -o cyccert cyccert.c</code>).</p>
+<h3 id="the-tail-as-one-digit-with-levels">The tail as one digit with levels</h3>
+<p>The tail is <code>U^(2k+1) y</code> after the last column. <code>U</code> passes hashes through unchanged, so <code>y</code> acts as one more digit. It has six levels:</p>
+<table>
+<thead>
+<tr>
+<th>level</th>
+<th>-1</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y</td>
+<td><code>A</code> (no t)</td>
+<td><code>B</code> (no t)</td>
+<td><code>E t</code></td>
+<td><code>D t</code></td>
+<td><code>A t</code></td>
+<td><code>B t</code></td>
+</tr>
+</tbody>
+</table>
+<p>A carry into the tail raises the level by one. A carry that arrives at level 4 is the exception trigger.</p>
+<h3 id="three-laws">Three laws</h3>
+<p><strong>T1, timing.</strong> Count the digits as <code>A</code> = 0, <code>B</code> = 1, <code>D</code> = -1, <code>E</code> = -2, with the tail level at weight 2^W (W = number of digits before the tail). Call the total V. Each hash adds 1, and the trigger can only come when everything is <code>B</code> and the tail is at level 4. So the trigger is hash number</p>
+<div class="highlight"><pre><span></span><code>5 * 2^W - V        (SOBCv10's own count is 3 * 2^W - V)
+</code></pre></div>
+
+<p>modelA.py: 80/80 random instances, including tails at levels -1 and 0.</p>
+<p><strong>T2, raw pass.</strong> The exception's raw return turns</p>
+<div class="highlight"><pre><span></span><code>B^w U^(2k+1) B t   into   E^(w-1) U^(2k+3) y,   level(y) = k - 1   (k = 0..5)
+</code></pre></div>
+
+<p>The last column loses its top digit, and the U run grows by one pair. For k &gt;= 6 the return overflows the tail. rawlaw.py: 48/48 for k = 0..5 (1-3 columns, widths 2-9); 16/16 overflow cases for k = 6..9 end in the cycler below.</p>
+<p><strong>T3, decode.</strong> Let L be the effective tail level: the level minus any deficit left in the last column. By T1 and SOBCv10's frontier count,</p>
+<div class="highlight"><pre><span></span><code>n = n_s + (2 - L) * 2^(W-1)
+</code></pre></div>
+
+<p>Here n_s is SOBCv10's round_next_half for the same columns. The n_s part decodes exactly as in SOBCv10. Its last column ends below 2^(w-1), so nothing reaches the top digit, which is the eaten one. The extra part gives 2 - L carries into the tail. If L &gt; 2, the truncated last column is instead left short by L - 2 levels (pre-state <code>E</code>/<code>D</code> digits).</p>
+<p>modelD.py checks the whole exception (raw pass, launch, decode) against T2 plus a segment decode of n hashes on 25 random cases. 23 match; the other two are not decodes: one decode trigger (see below) and one n = 0.</p>
+<p>Per exception, then:</p>
+<div class="highlight"><pre><span></span><code>L' = k + 1 - L,   k' = k + 1
+last column: width w -&gt; w - 1,  value v -&gt; 2^(w-1) - floor(v/2)
+the decode triggers  iff  (k - 1) + (2 - L) &gt;= 5
+</code></pre></div>
+
+<h3 id="the-chain-from-the-entry-tailchainpy">The chain from the entry (tailchain.py)</h3>
+<table>
+<thead>
+<tr>
+<th>exception</th>
+<th>k</th>
+<th>L at post_ca</th>
+<th>last column: width, value</th>
+<th>tail after the raw pass</th>
+<th>decode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>1</td>
+<td>3</td>
+<td>29, 391,468,375</td>
+<td><code>U^5 B</code> (level 0)</td>
+<td>deficit 1, so L = -1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>2</td>
+<td>-1</td>
+<td>28, 72,701,269</td>
+<td><code>U^7 E t</code> (1)</td>
+<td>3 carries, reaching <code>B t</code>: L = 4</td>
+</tr>
+<tr>
+<td>8</td>
+<td>3</td>
+<td>4</td>
+<td>27, 97,867,094</td>
+<td><code>U^9 D t</code> (2)</td>
+<td>deficit 2, so L = 0</td>
+</tr>
+<tr>
+<td>9</td>
+<td>4</td>
+<td>0</td>
+<td>26, 18,175,317</td>
+<td><code>U^11 A t</code> (3)</td>
+<td>2 carries: the second hits <code>B t</code>, a trigger in the middle of the decode</td>
+</tr>
+</tbody>
+</table>
+<p>column_safe holds for the last column in every row. The z-columns born in each round are SOBCv10's, so SOBCv10's invariant covers them; only the round parameters differ, because n differs.</p>
+<p>The exit does not hinge on these exact numbers. Even if a level were off by one, k reaches 6 by exception 11 at the latest, and that exit (a raw-pass overflow) gives the same cycler.</p>
+<h3 id="the-exit-a-translated-cycler">The exit: a translated cycler</h3>
+<ul>
+<li><strong>Decode trigger.</strong> decodetrig2.py: 60/60 random cases (primary 1-6, 1-4 columns, k 0-5, n &lt;= 600) and 30/30 with k = 4 (the exception-9 case). decodetrig3.py: 8/8 with 3-4 columns and n up to 4,246. All reach the same cycler. For a fixed column layout its start time grows only by about 8 steps per extra unit of n (n = 2,887 vs 3,292: 11,636,681 vs 11,639,921).</li>
+<li><strong>Minimal pending calls.</strong> mintrig.py: 10 layouts, each with the trigger on the last or second-to-last decode hash (n = trigger + 1 or + 2): 20/20 reach the same cycler, at the same step up to 8 per unit of n.</li>
+<li><strong>Raw-pass overflow (k &gt;= 6).</strong> 16/16 reach the same cycler.</li>
+<li><strong>The cycler</strong> (cyccert.c, cycverify.py). Head in state B at the right end of</li>
+</ul>
+<p><code>1000100010001000100010001000100010010001000100010001000100010010100100</code></p>
+<p>with blank to the right. Every 919 steps it moves 3 cells right and never reaches more than 67 cells back. Checked over 2,000 periods with random junk to the left. In our frame it is the mirror image, a cycler running left.</p>
+<p>How the toys get there (trigtrace.py and sweeps2.c, k = 4, n = 900, columns 2, 2, 3, 2). This is <strong>not</strong> a short epilogue: the trigger starts a second counter phase.</p>
+<ol>
+<li>The trigger's return turns <code>x x</code> pairs into <code>D</code> going left as far as the <code>1 0</code> marker, then comes back.</li>
+<li>Phase P1, 256 long sweeps. Each sweep runs from the <code>1 0</code> marker to the right end, ticks a counter made of the old columns (now written in <code>B D</code> / <code>U C</code> / <code>B U</code> / <code>U A</code> patterns), takes 2 <code>v</code> from the pending-call block on the left, and adds 2 <code>x</code>.</li>
+<li>Phase P2, about 200 shorter sweeps, with the left block frozen.</li>
+<li>The counter runs out at the right end, and the 919/3 cycler starts there.</li>
+</ol>
+<p>P1's length (256) is the same for n = 874 ... 2,000. At n = 874 the <code>v</code> block runs out exactly at P1's end. That run takes another path through the wall and still reaches the same cycler (sweeps2_n900.out shows the n = 900 run).</p>
+<p>P1 law so far (p1fit.py, k = 4, n = trigger + 300): P1 = 2^(W-1) sweeps, W = P + sum of the column widths at post_ca. The layouts tested were 2 | 2,2,3,2 (1,024), 2 | 2,2,2,2 (512), 2 | 2,2,3 (256), 2 | 3,3 (128), 2 | 2,4 (128) and 3 | 2,2,3,2 (2,048). So for k = 4 (the exception-9 case) P1 is one full cycle of the truncated columns. P1 depends on k. For 2 | 2,2,3,2 it is 1,024, 3,072 and 4,096 for k = 4, 2 and 1, so</p>
+<div class="highlight"><pre><span></span><code>P1 = (5 - k) * 2^(W-1)
+</code></pre></div>
+
+<p>This is what T1 and T2 predict if the decode trigger acts like an ordinary trigger for the tail. Its return grows the U run to U^(2k+3) and leaves the tail at level k, and the counter then needs 5 - k full cycles to trigger again. So the run after a decode trigger looks like a short series of nested triggers, each growing the U run, until a raw pass overflows (k &gt;= 6).</p>
+<p>In exception 9 (k = 4) that is one cycle, then a trigger with U^13, so k = 6: overflow. P2, which comes before the cycler in the toys, is not explained yet. P1 uses 2 <code>v</code> per sweep. In the 2 | 2,3,2 runs (W = 9, P1 = 256) the <code>v</code> block at the trigger is 2n - 1,239 = 2^W - 3 + 2 * (pending calls). So it is just enough for P1, except for the last sweep or two when no calls are pending; that run takes the wall path and still reaches the cycler. Whether 2^W - 3 + 2 * (pending) holds in general is not yet checked. P2 (131 ... 1,855 sweeps) has no fitted law yet.</p>
+<p>At the real sizes this is a race between the P1/P2 counter (old columns, huge widths), the <code>x</code> fuel (finished calls) and the <code>v</code> block (pending calls). Every small case ends in the cycler, including the boundary ones, but the race is not computed.</p>
+<h3 id="what-this-changes">What this changes</h3>
+<ul>
+<li>There is no tail-aware infinite round invariant. The SOBCv10 rounds stop at exception 9, so the stage-0 plan (generalize sobc1_round_invariant) is dropped.</li>
+<li>Not a cryptid: every step is counter arithmetic with a fixed exit.</li>
+<li>Proof route: opening (families (a)-(d)), then 4 explicit tail-aware SOBCv10 rounds (exceptions 6-9), then the decode trigger in exception 9, then the second counter phase (P1, P2), then a translated-cycler lemma (window above, period 919, shift 3).</li>
+</ul>
+<h3 id="still-open">Still open</h3>
+<ul>
+<li>Families (a)-(d) at the real sizes (m = 30, p = n4) are still extrapolations.</li>
+<li>T1-T3 are checked on small instances only:</li>
+<li>T1 is a counting argument;</li>
+<li>T2 is six concrete raw-return lemmas, k = 0..5 (only k = 1..4 are used);</li>
+<li>T3 follows from SOBCv10's round_output_required plus a carry-shift lemma for the last column.</li>
+<li>The run after the trigger is a second counter phase (P1, P2 above). At the real sizes it needs its own law, a parametric sweep lemma per tick, and the race against the <code>v</code> and <code>x</code> blocks. This is the hardest new part, and the one place a different ending (another exception, or a halt) could still hide.</li>
+</ul>
+<h2 id="wave-6-stage-2-2026-10-14">Wave 6, stage 2 (2026-10-14)</h2>
+<p>Goal: explain what happens after the decode trigger in exception 9, then write proof.md (Claude, about 1 h 30 of the 2 h budget).</p>
+<p>Result: the exit is closed. Stage 1 read it as two "sweep phases", P1 and P2. They are two <strong>nested exceptions</strong>, and each one follows the same laws as the rounds. The second one overflows in a purely local way into the 919/3 cycler. proof.md is written (informal, full chain from blank to the cycler).</p>
+<p>Tools and outputs: work/s2/ (build: <code>gcc -O2 -o phase phase.c; gcc -O2 -o ywin ywin.c; gcc -O2 -o rside2 rside2.c</code>).</p>
+<h3 id="correction-to-stage-1">Correction to stage 1</h3>
+<ul>
+<li>What stage 1 called P1 is exception 9's own call phase (its decode). Its length (5 - k)·2^(W-1) is just T1.</li>
+<li>What it called P2 is the call phase of the nested exception E′ that the decode trigger starts.</li>
+<li>The "v block" and "x block" are SOBCv10's <code>exception_call_left</code>: pending calls <code>(0010)^(2r)</code> and finished calls <code>(0100)^(2f+5)</code>. These are the same period-4 pattern, shifted by one cell, which is why the tokens looked swapped.</li>
+</ul>
+<p>phase.c prints a tokenized tape at every long turn and groups runs by the left signature. Traces: t1.out (2 | 2,3,2) and t2.out (2 | 2,3,3).</p>
+<h3 id="the-exit-step-by-step-sobcv10-frame">The exit, step by step (SOBCv10 frame)</h3>
+<p>After a raw pass of an all-B counter, the word is <code>E^(P-1) A</code>, then <code>E^(w_j-1) A</code> per middle column, then <code>E^(w_m)</code> for the truncated last column. Its value is 2 - 2^(W+1) + S, with S = sum of 2^(offset) over the non-primary columns. So by T1, with tail level λ, the next trigger is on hash</p>
+<div class="highlight"><pre><span></span><code>h(λ) = (7 - λ)·2^W - S - 2
+</code></pre></div>
+
+<ol>
+<li><strong>Decode trigger.</strong> Exception 9 (λ = 3) triggers on call h_t = 4·2^W - S - 2. By T3, n9 = h_t + c, where c ≥ 0 is SOBCv10's decoded column value, so the trigger always happens, with c calls pending.</li>
+<li><strong>E′.</strong> The trigger's raw pass is T2 with k = 5: the tail becomes <code>U^13 B t</code> and the last column loses another digit (25 → 24). The return finds <code>101 ++ X4^(2f+5)</code> = <code>1010 ++ V4^(2f+4) ++ 010</code>, which is <code>exception_pre_left (f+1)</code> with another far end. So E′ has n′ = f + 1 = h_t calls, and exception 9's pending calls are frozen behind it.</li>
+<li><strong>E″.</strong> E′'s counter has W - 1 digits and λ = 4, so E″ fires on E′ call h″ = 3·2^(W-1) - S - 2. That is (5/2)·2^W calls before E′ would run out.</li>
+<li><strong>Overflow (k = 6).</strong> E″'s hash walks right over the all-B counter (<code>raw_B_forward</code>, <code>raw_U_to_X</code>). From <code>l B&gt; B^w U^13 B t 0^inf</code> (w ≥ 1) the machine reaches the cycler window Y in 1208 + 14(w - 1) steps and never visits l.</li>
+<li><strong>Cycler.</strong> <code>L Y B&gt; 0^inf</code> → <code>L 100 Y B&gt; 0^inf</code> in 919 steps for every L, never visiting L.</li>
+</ol>
+<h3 id="checks-all-pass">Checks (all PASS)</h3>
+<table>
+<thead>
+<tr>
+<th>check</th>
+<th>result</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>h_t and h″ formulas against the hash-level simulator; phase runs (calls - 5, the first short sweeps are below the trace's length cut); cycler reached; rem = 0, 1, 2, 50, 300</td>
+<td>52/52 (W ≤ 11)</td>
+<td>nested.py, nested_a.out, nested_b.out</td>
+</tr>
+<tr>
+<td>n′ = f + 1: from <code>exception_call_left r f</code> with the counter all B and the tail <code>U^11 B t</code>, the cycler comes iff f + 1 ≥ h″; the step count does not depend on f or r</td>
+<td>32/32</td>
+<td>eprime.py, eprime.out</td>
+</tr>
+<tr>
+<td>overflow lemma O, w = 1..30, random junk on the left (never read)</td>
+<td>90/90</td>
+<td>overflow_check.py, overflow_check.out</td>
+</tr>
+<tr>
+<td>cycler shift rule, random L (never read)</td>
+<td>50/50</td>
+<td>overflow_check.out</td>
+</tr>
+<tr>
+<td>T1 with <code>D</code>/<code>E</code> deficit digits in the columns</td>
+<td>120/120</td>
+<td>t1_deficit.py, t1_deficit.out</td>
+</tr>
+<tr>
+<td>family (a) exactly at m = 30: raw pass gives <code>E^30 D A U E A</code>; n4 = 3·2^29 - 2 hashes give <code>A^29 D^2 A U E A</code>, no trigger</td>
+<td>PASS (1,610,612,734 hashes, about 7 min)</td>
+<td>fam_a_m30.py, fam_a_m30.out</td>
+</tr>
+<tr>
+<td>deep cascades: decode triggers at k = 0..3 with a wide last column (2-6 nested exceptions)</td>
+<td>5/5 reach the cycler</td>
+<td>cascade.out</td>
+</tr>
+</tbody>
+</table>
+<p>A side fact: <code>U^13 B t</code> with no digit before it does <strong>not</strong> reach the cycler, because the head swings far to the left. U^15 and longer do. In the real run the last column still has 24 digits at E″, so this case does not occur.</p>
+<h3 id="robustness">Robustness</h3>
+<p>The levels in the chain (3, -1, 4, 0) decide when the run leaves the rounds, not whether it leaves:</p>
+<ul>
+<li>k grows by one per exception, nested ones included.</li>
+<li>An inner exception always reaches its own trigger: it gets (8 - k)·2^W - S - 2 calls and needs (7 - k)·2^(W-1) - S - 2.</li>
+<li>A raw pass at k = 6 always overflows into the cycler.</li>
+</ul>
+<p>So the exit comes by exception 11 at the latest. Stage 1's decodetrig2 (60/60, k = 0..5) agrees.</p>
+<h3 id="status">Status</h3>
+<ul>
+<li>proof.md is written. The informal proof is complete as a chain.</li>
+<li>Still model-level: the four tail-aware rounds (exceptions 6-9) at real sizes, and families (b) and (d) at p = n4. These use closed forms checked on small instances and need induction proofs.</li>
+<li>Formalization is large: a tail-aware copy of SOBCv10's round machinery (4,234 lines upstream), plus the opening, T2 (k = 0..5), the nested launch, and Lemmas O and C.</li>
+<li>Not a cryptid.</li>
+</ul>
+<h2 id="formal-planning-stage-2026-10-14">Formal planning stage (2026-10-14)</h2>
+<p>Goal (Dennis answered 'plan'): put the exit in Rocq, state the tail-aware round lemma, and price the full formalization (Claude, one 2 h stage). Plan: rocq/plan.md.</p>
+<p>Setup: rocq/cc.sh copies a file into rocq/build/ and compiles it with coqc 8.20.1 (one coqc at a time, only if fewer than 2 run system-wide). The library is the unmodified upstream SOBCv10.v (vendor 0940bb9, identical to cdaf693), compiled as W61.SOBCv10: 84 s, 0.8 GB.</p>
+<h3 id="proved-rocqw61exitv-366-lines-no-admitted-compiles-in-2-s">Proved: rocq/W61Exit.v (366 lines, no Admitted, compiles in 2 s)</h3>
+<ul>
+<li>T2, k = 0..5: base cases by direct computation (98-910 steps, left side never read), then induction on the column and on the layout (<code>raw_tail_columns</code>). All six base outputs agree with the stage-1 law.</li>
+<li>Lemma O: <code>B U^13 B t</code> gives <code>1010 Y B&gt; 0^inf</code> in 1208 steps (<code>overflow_base</code>), then any all-B layout (<code>overflow_columns</code>).</li>
+<li>Lemma C: <code>L Y B&gt; 0^inf</code> gives <code>L 100 Y B&gt; 0^inf</code> in 919 steps for every L (<code>cycler_step</code>, <code>cycler_nonhalt</code>). With O: <code>exit_nonhalt</code>.</li>
+<li>Nested launch: <code>[1;0;1] *&gt; exception_call_left c f = pre_left_far (S f) far</code> (<code>nested_pre_left</code>), launch and relaunch with any far end, <code>nested_launch</code>, and E′'s counter run to all B (<code>nested_counter</code>, <code>nested_required</code>).</li>
+<li><code>nested_exit</code>: from exception 9's trigger configuration, if <code>nested_required es e &lt;= f</code> the machine never halts. Print Assumptions: funext only, which the baseline allows.</li>
+</ul>
+<h3 id="stated-rocqw61planv-4-admitted-compiles-in-2-s">Stated: rocq/W61Plan.v (4 Admitted, compiles in 2 s)</h3>
+<ul>
+<li><code>tail_round</code>: the tail-aware round lemma, used three times.</li>
+<li><code>tail_round_trigger</code>: the exception-9 round.</li>
+<li><code>opening</code> and <code>entry_pre</code>.</li>
+<li>Proved from these: the four-round chain <code>sobc_D_nonhalt</code> (levels 3, -1, 4, 0 come from the lemma's level law; <code>entry_level</code> = 3 by computation), the Perm/flip bridge, and <code>nonhalt : ~ halts tm61 c0</code> for our table string.</li>
+<li><code>Print Assumptions nonhalt</code> lists exactly the four open statements.</li>
+</ul>
+<p>The precondition <code>tail_round_pre</code> is a draft. It holds at the entry by hand and is consistent with the four rows of proof.md section 4.</p>
+<h3 id="estimate">Estimate</h3>
+<p>About 10 stages of 2 h (range 9-12). By stage:</p>
+<ul>
+<li>R1-R2: counter phase to the trigger with a signed last column and the tail, and T1 as an identity.</li>
+<li>R3-R4: T3, the decode with deficit digits, against <code>round_output_required</code>.</li>
+<li>R5: next post state and keeping the precondition.</li>
+<li>R6: the trigger round.</li>
+<li>R7-R8: the opening families and the entry facts.</li>
+<li>R9: inline SOBCv10 into one kill file, check_kill, write-up.</li>
+</ul>
+<p>Main risk: the T3 decode with D/E digits, outside SOBCv10's A/B odometer lemmas. Fallback: explicit lemmas for the four rounds.</p>
+<h2 id="2026-10-16-completed-funded-spike">2026-10-16: completed funded spike</h2>
+<p>The exact blank-start theorem now passes all three unchanged kill checks, with
+completed kernel replays and source SHA256
+<code>cd0bfee325f897047164a4cc11325ca3e30d2acfadedf4c2abecec0a859327ca</code>.
+The proof connects the opening to three returning rounds, a nested overflow,
+and the 919-step translated cycle. The finite safe-column budget replaces the
+unbounded draft invariant. Earlier proof and status are retained under rocq/.
+Public package: submission/proof-package.zip. The kill is locally verified;
+upstream submission and acceptance are separate milestones.</p>
+</main></body></html>

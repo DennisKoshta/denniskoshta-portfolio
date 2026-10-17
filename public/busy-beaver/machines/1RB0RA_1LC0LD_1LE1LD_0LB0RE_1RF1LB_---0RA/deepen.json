@@ -1,0 +1,90 @@
+{
+ "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA",
+ "pass": "deepen (funded 2026-10-11, prove_l9)",
+ "confidence": "med",
+ "recommend": "park with #10 as one cryptid candidate (decision.json); the cryptid-protocol Rocq rule reduction is best done once for #10, its twin and #28",
+ "mechanism": "Bell eats counter: BECv1 tm10 with E1 = 1LB. A binary counter in 3-cell blocks (1/0 digits, f filler) eats tm10's unary run. Each phi-eat (EAT1/EAT0z) shifts the grid one cell (1->f, 0->0, f->s). The s blocks are flushed by CARRY_S, which in phase C adds e_i at bit p_i of the old value. The flush is a fresh counter: while s remain, the part right of the rightmost s has value t (increments since the eat), and the flush takes F = 2^(1+D_F) increments. Non-halting needs F <= N (epoch length) at every phi-eat. Chains of f-start words close by C0-C5, given the S1 bound L9. L9 reduces to one arithmetic case (H: exact carries PC = 2^D + sparse Y with N < 2^(D+1)); #28 is #10 mirrored and started in E, the orbits merge by epoch 350,328, and #10's counter-family breaks L9 and the flush from states that satisfy every local invariant: pseudo-random arithmetic (ground rule 6).",
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "flush_proof",
+   "confidence": "med",
+   "model": {
+    "flush_counter": "L1: while s remain, value(right of rightmost s, with b) = t; CARRY_S unrolled: X' s^e Y -> inc(incC^e X') f^e Y0",
+    "flush_time": "L2: F = 2^(1+D_F), D_F = Q - popcount((val(U) + sum_{i<r} e_i 2^p_i) mod 2^Q); Q = digits right of the leftmost f of U",
+    "post_flush": "L3: v(W,b) = t = m; filler pattern on U's digit positions = binary PC = val(U) + sum_i e_i 2^p_i (1 = f)",
+    "budget": "L4: v(W,b) <= m for the rest of the epoch; hence N >= 2 val(U) at EAT1 and N >= 4 val(U) at EAT0z",
+    "generic_bound": "L5: U starts with 1 => F <= 2^(1+Q) <= 2^d <= 2 val(U) <= N"
+   },
+   "closed_gaps": [
+    "Exact flush formula (L1-L3). Checks: 19,236/19,236 random abstract U; 256/256 random U on the real machine; every flush to 1e10 (567 epochs, 1,004,198 rounds identical to dump_rounds).",
+    "Flush in time whenever U starts with 1 (L5), at every EAT0z (L6), when X mod 2^d != 0 (iii), and in the bottom-exact cases iv-1 and iv-2, where iv-2 is impossible by L4.",
+    "Leading-digit invariant L7 for epochs whose U starts with 1: an overflow happens, or a top exact carry (PC = 2^d) leaves digit 1 under the leading f."
+   ],
+   "remaining_gaps": [
+    "Chain case: a phi-eat whose U starts with f right after another such phi-eat (iv-3: bottom exact at that step; plus L7 for that step). The top run e = 1 and the carry <= 1 have to propagate along the chain. Chains of length 2 occur twice in 200,000 epochs from blank (1115-1116, 2061-2062, flush F/N 0.002 at the second step); iv-3 itself never occurs.",
+    "proof.md and the formalization are not started. The rule schemas (CARRY_S recursion, eats) are validated, not proved."
+   ],
+   "evidence": [
+    "scripts/flush_check.py exact 567 rounds_1e10.tsv: 0 mismatches and 0 lemma violations over 1,004,198 rounds.",
+    "scripts/flush_check.py fast 200000 -> data/flush_fast_200k.json: 2.2e11 rounds, 0 violations, worst F/N 0.505, 4 epochs whose U starts with f, 17 top exact carries.",
+    "scripts/flush_random.py 20000 300 2810 -> scripts/flush_random.json: abstract L1/L2/L3 19,236/19,236; TM-level flush 256/256."
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "close_chain",
+   "confidence": "med",
+   "model": {
+    "S1_S2": "S1: U starts with digit 1; S2: U starts with f. For S2: Y = val + sigma - e 2^D, c = Y div 2^D, P = Y mod 2^D, F = 2^(1+zeros(P)).",
+    "C0_C2": "N_{k+1} >= N_k + 1; an uncut epoch (EAT1 at its first eat) gives N_{k+1} = 2 val(U_{k+1}), which is even, so the next epoch is cut (no two uncut epochs in a row).",
+    "C3_capacity": "no overflow in epoch k => 2^(Z_k) <= N_k (S1 via L9; S2 with c = 1 via Z_k = 1 + zeros(P_k) and F_k <= N_k).",
+    "C4_shape": "every S2 word is f 1 ... with c <= 2 (c = 0 or 2 => the next word starts with 1).",
+    "C5_chain": "F <= N at every S2 phi-eat: cut previous epoch => F <= 2^(Z_k) <= N_k < N_{k+1}; uncut => not bottom exact (val(U_{k+1}) > val(U_k)).",
+    "L9_open": "S1 bound PC(U) = val + sigma < 2^(D+1); used by C3, C4 and last stage's L7; not implied by the state invariant alone."
+   },
+   "closed_gaps": [
+    "Chain case iv-3 and L7 inside chains: proved (C0-C5), assuming L9 for words that start with 1.",
+    "Carry bound: c <= 1 after S1 or a bottom-exact S2 word, c <= 2 after P = 2^q; top run length 1 always."
+   ],
+   "remaining_gaps": [
+    "L9: PC(U) < 2^(D+1) at every phi-eat whose word starts with 1. Holds on 1,000,000 epochs (max 1.5625 at epoch 22). Small hand-made words break it in one epoch, so the proof needs an invariant tying the f weight sigma of the word after a flush to N (needed: sigma(after flush k) < 2^(floor(log2 N_k)) minus the counter).",
+    "Degenerate EAT0f with d from 0^inf (word eaten down to f^k 1^j): must be excluded in proof.md (never on the blank run).",
+    "proof.md and the formalization are not started."
+   ],
+   "evidence": [
+    "scripts/chain_check.py blank 1000000 -> data/chain_blank_1M.json: 0 violations of C1-C5, L9, F <= N; 337,508 uncut epochs, never two in a row; 3 chains of length 2 (1115-1116, 2061-2062, 350330-350331).",
+    "scripts/chain_check.py exh 9 40 -> scripts/chain_exh.json: 758,058 states, 2,985 S1->S2 and 3,512 S2->S2, 0 breaks outside L9 (L9 breaks 7,880 on hand-made small words).",
+    "scripts/chain_check.py rand 20000 2810 and chainrand 20000 2811: 0 chain-lemma breaks; 3,345 S2->S2 epochs in the chain-continuing range.",
+    "scripts/chain_check.py tm 1000 2812 -> scripts/chain_tm.json: the real machine matches the abstract epoch 1,000/1,000 (553 S1, 372 S2, 75 other)."
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "option": "prove_l9",
+   "confidence": "med",
+   "model": {
+    "debris_weight": "s(U) = sigma(U)/2^D. W1: after the flush s never grows (an overflow halves it, eats do not raise it). W2: sigma(W_post) = g(X) + h(U), X = PC(U), g(X) = sum over 1-bits i of 2^(zeros of X below i), h = sum over U's f blocks at p of 2^(zeros of X below p).",
+    "successor_bound": "W3: for S1 -> S1, s(U') <= sigma(W_post)/2^max(L, Z0+1). Lemma G: g(X) <= 2^T.",
+    "cases": "W4: T = D-1 gives s' < 1; T = D, L >= D+1 gives s' <= 1/2 + s/2; X = 2^D gives s' <= 3/4; hard case H (T = D, L = D, popcount >= 2) has no bound. W5: s < 1 implies L9.",
+    "conjugacy": "#28 = #10 (1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC) mirrored with A..F -> E,A,B,F,C,D, started in #10's E; orbit merges with #10's at our epoch 350,328 = #10's t = 350,272 (offset 56).",
+    "cryptid": "#10's counter-family sigma0(B) in #28's rules: INV (with L9) at the first phi-eat, L9 fails at the next two, and the third flush is late (an eat sees an s), every B = 8..18; TM-confirmed at B = 8 (779/779 rounds, then recovery)."
+   },
+   "closed_gaps": [
+    "L9 along S1 -> S1 steps outside the hard case H (W1-W5, proved; 100,000 random states, 0 violations).",
+    "Why L9 is open: it cannot follow from INV or any local strengthening that admits #10's family; the remaining condition is #10's Lemma X on a shared orbit."
+   ],
+   "remaining_gaps": [
+    "Lemma H / L9 on the orbit: equivalent to #10's open Lemma X (exact coincidences PC = 2^D + sparse pattern along one deterministic orbit). Flagged CRYPTID_CANDIDATE.",
+    "Cryptid-protocol deliverable: AntiHydra-style Rocq rule reduction (shared with #10 and its twin)."
+   ],
+   "evidence": [
+    "scripts/l9_check.py reduce 100000 2810 -> scripts/l9_reduce.json: W1-W5 0 violations; case H 34,982, of which 1,836 S1 successors have s >= 1.",
+    "scripts/l9_check.py escape 20000 2812 -> scripts/l9_escape.json: from case-H starts with s < 1, s >= 1 reached in 982 runs and L9 fails often, but no eat with an s within 12 epochs.",
+    "scripts/conj10.py 3000000 -> scripts/conj10.json: 12/12 table entries, 3e6 steps lock-step; merge at epoch 350,328 (notes.md).",
+    "scripts/family10.py 8 18 6 -> scripts/family10.json and scripts/tm_family.py 8 3000 -> scripts/tm_family_B8.json: INV holds, then L9 fails and an eat sees an s, every B = 8..18; TM 779/779 rounds, unsafe eat at N = 194, recovery at 207.",
+    "scripts/l9_check.py blank 400000 -> data/l9_blank_400k.json: 0 violations of INV, L9, F <= N or s < 1 at S1; case H 544 times; max s 0.875 (epoch 22); max s after S2 -> S1 0.0145."
+   ]
+  }
+ ]
+}

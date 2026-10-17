@@ -1,0 +1,543 @@
+{
+ "tm": "1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE",
+ "rank": null,
+ "class_sheet": "Unknown",
+ "class_guess": "Skelet-like nested bouncer: walls between (01) runs, a left buffer, multi-level counter (no rule table yet)",
+ "confidence": "low",
+ "summary": "Head bounces between movable walls (extra 0s) in (01) runs; local rules exact, counter level and proof open",
+ "mechanism": [
+  "Every E left record is K(n; a) = 0^inf <E 01^n 0 01^a1 0 ... 0 01^aL 0^inf: a buffer of n pairs (n+1 per cycle), then walls (single extra 0s); true at all 223,095 records to 1e11.",
+  "Leftward E/F sweeps close open walls and bounce at the first closed one (L3); rightward A/F or C/D phases shift a wall (R5), open it (R6, R7) or turn back (R8, R9, R11). 20 local rules, 6,000/6,000 checks.",
+  "a_j is exactly 2^(j+1)-periodic in cycles (j = 1..8) and the right end is reached at doubling intervals: a counter hierarchy. Halts seen only from a1 = 0, n odd; on the orbit a1 is 7 or 8. Twin: line 612 (start E)."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge default view, first 10,000 steps",
+   "title": "bbchallenge default view, 10,000 steps",
+   "why": "The site's view. The tape grows left; on the right, slanted bursts reach a little deeper each time.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step: steps 0..9,999 squeezed into 500 px rows as on bbchallenge.org (each px row blends steps 20y+9 and 20y+10, so 1 px row = 20 steps)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head after a right/left move (pale = blended by the squeeze)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom",
+   "png": "img/gapmap_1024.png",
+   "html": null,
+   "steps": 3354849,
+   "caption": "Walls per cycle: one row per E left record, k = 1..1024",
+   "title": "Walls (extra 0s), one row per cycle",
+   "why": "Each black line is a wall. Compare the walls next to the grey buffer with the deep ones.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per cycle: the tape at the k-th new leftmost cell entered in state E, k = 1..1,024 (steps 23..3,354,849; not evenly spaced in time)",
+   "window": "cells -359..0, 1 px = 1 cell, counted from the right end of the written tape (the last 1 is the last column); the buffer (01)^n is cut off at the left",
+   "legend": "black = wall (an extra 0 between (01) runs), white = cells of the (01) runs, grey = the buffer (01)^n or not yet written",
+   "style": "custom"
+  },
+  {
+   "mode": "explore",
+   "png": "img/explore_400.png",
+   "html": null,
+   "steps": 400,
+   "caption": "First 400 steps: the first five cycles from blank",
+   "title": "From blank: the first cycles",
+   "why": "One row per step. Follow the head: leftward sweeps end two cells further left each time; the right part bounces.",
+   "primary": false,
+   "start": "blank",
+   "rows": "every step, steps 0..400 (row r = the configuration after r steps), 10 px per row",
+   "window": "cells -8..39, 1 px = 1/10 cell (10 px per cell)",
+   "legend": "slate = 0, white = 1, head cell coloured by state: A red, B orange, C blue, D green, E magenta, F cyan",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "records:L",
+   "png": "img/recL_right_2e6.png",
+   "html": null,
+   "steps": 2400000,
+   "caption": "Left records to 2.4e6, right end pinned",
+   "title": "Left records, right edge fixed",
+   "why": "Same walls as Fig 2 but in raw cells: a wall shows as a break in the stripe phase.",
+   "primary": false,
+   "start": "blank",
+   "rows": "the start, then one row per new leftmost cell (1,665 rows, steps 0..2,400,000; two rows per cycle, E then F); not evenly spaced in time",
+   "window": "cells -259..0, 1 px = 1 cell, counted from the right edge (each row's rightmost visited cell is pinned to the last column)",
+   "legend": "white = 1, black = 0 or never visited, green = head (just moved left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "custom",
+   "png": "img/farmap_2e25.png",
+   "html": null,
+   "steps": 2260000000000000,
+   "caption": "Walls from wall 1, every 32,768 cycles to 2^25",
+   "title": "Far run: walls merge, right part rearranges",
+   "why": "Left walls stay put. The right part jumps at wall merges; the first (k = 650,686) shows at row 20.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per 32,768 cycles: the E left record at k = 32,768 i, i = 1..1,023 (k to 33,521,664, about 2.3e15 steps), from scripts/hyb2 (cycle map with cell-level TM fallback); faster wall motion is aliased by the sampling",
+   "window": "cells 0..719, 1 px = 1 cell, counted from wall 1 (which never moves); the buffer (01)^n left of wall 1 is cut off",
+   "legend": "black = wall (an extra 0), white = cells of the (01) runs, grey = past the right end; two black px side by side = a double wall (gap 0)",
+   "style": "custom"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf <E 01^n 0 01^a1 0 01^a2 0 01^a3 0 01^a4 ... 0 01^aL 0^inf",
+  "vars": [
+   "k (cycle)",
+   "n",
+   "a1",
+   "a2",
+   "a3",
+   "a4",
+   "L (walls)",
+   "region cells (2 sum a + L)"
+  ],
+  "rows": [
+   {
+    "step": 23,
+    "values": [
+     1,
+     0,
+     4,
+     "-",
+     "-",
+     "-",
+     1,
+     9
+    ]
+   },
+   {
+    "step": 83,
+    "values": [
+     2,
+     1,
+     8,
+     "-",
+     "-",
+     "-",
+     1,
+     17
+    ]
+   },
+   {
+    "step": 389,
+    "values": [
+     4,
+     3,
+     7,
+     12,
+     "-",
+     "-",
+     2,
+     40
+    ]
+   },
+   {
+    "step": 1883,
+    "values": [
+     8,
+     7,
+     7,
+     13,
+     24,
+     "-",
+     3,
+     91
+    ]
+   },
+   {
+    "step": 7329,
+    "values": [
+     16,
+     15,
+     7,
+     13,
+     25,
+     6,
+     9,
+     139
+    ]
+   },
+   {
+    "step": 38745,
+    "values": [
+     32,
+     31,
+     7,
+     13,
+     25,
+     5,
+     17,
+     195
+    ]
+   },
+   {
+    "step": 106569,
+    "values": [
+     64,
+     63,
+     7,
+     13,
+     25,
+     9,
+     19,
+     229
+    ]
+   },
+   {
+    "step": 183183,
+    "values": [
+     128,
+     127,
+     7,
+     13,
+     25,
+     9,
+     17,
+     229
+    ]
+   },
+   {
+    "step": 415233,
+    "values": [
+     256,
+     255,
+     7,
+     13,
+     25,
+     9,
+     17,
+     255
+    ]
+   },
+   {
+    "step": 1174333,
+    "values": [
+     512,
+     511,
+     7,
+     13,
+     25,
+     9,
+     21,
+     303
+    ]
+   },
+   {
+    "step": 3354849,
+    "values": [
+     1024,
+     1023,
+     7,
+     13,
+     25,
+     9,
+     21,
+     303
+    ]
+   },
+   {
+    "step": 11270137,
+    "values": [
+     2048,
+     2047,
+     7,
+     13,
+     25,
+     9,
+     23,
+     337
+    ]
+   },
+   {
+    "step": 40337701,
+    "values": [
+     4096,
+     4095,
+     7,
+     13,
+     25,
+     9,
+     27,
+     413
+    ]
+   },
+   {
+    "step": 148285829,
+    "values": [
+     8192,
+     8191,
+     7,
+     13,
+     25,
+     9,
+     27,
+     413
+    ]
+   },
+   {
+    "step": 566783241,
+    "values": [
+     16384,
+     16383,
+     7,
+     13,
+     25,
+     9,
+     29,
+     427
+    ]
+   },
+   {
+    "step": 2209908413,
+    "values": [
+     32768,
+     32767,
+     7,
+     13,
+     25,
+     9,
+     31,
+     441
+    ]
+   },
+   {
+    "step": 8719958853,
+    "values": [
+     65536,
+     65535,
+     7,
+     13,
+     25,
+     9,
+     33,
+     455
+    ]
+   },
+   {
+    "step": 34637156209,
+    "values": [
+     131072,
+     131071,
+     7,
+     13,
+     25,
+     9,
+     37,
+     483
+    ]
+   },
+   {
+    "step": 99999873061,
+    "values": [
+     223095,
+     223094,
+     7,
+     13,
+     26,
+     10,
+     37,
+     483
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "L-sweep",
+   "from": "(10)^j <E",
+   "to": "<E (01)^j",
+   "steps": "2j",
+   "cases": "j >= 1",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "AF-sweep",
+   "from": "A> (01)^(2j)",
+   "to": "(10)^(2j) A>",
+   "steps": "4j",
+   "cases": "same for F",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "CD-sweep",
+   "from": "C> (01)^(2j)",
+   "to": "(10)^(2j) C>",
+   "steps": "12j",
+   "cases": "zigzag C,D phases",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R1/R2 phase flip",
+   "from": "A> 01",
+   "to": "10 F>",
+   "steps": "2",
+   "cases": "F> 01 -> 10 A> (2 steps)",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R3/R4 C/D half-pairs",
+   "from": "C> 01",
+   "to": "00 D>",
+   "steps": "4",
+   "cases": "then 00 D> 01 -> 1010 C> (8 steps)",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R5 A shifts wall",
+   "from": "A> 0 01",
+   "to": "10 0 A>",
+   "steps": "3",
+   "cases": "wall moves one pair right",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R6 F opens wall",
+   "from": "F> 0 01",
+   "to": "1 00 D>",
+   "steps": "5",
+   "cases": "extra 0 becomes an extra 1",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R7 C opens wall",
+   "from": "10 C> 0 01",
+   "to": "1 10 10 C>",
+   "steps": "9",
+   "cases": "open wall one pair further left",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R8/R9/R11 turn back",
+   "from": "11 C> 0 01",
+   "to": "<E 00100",
+   "steps": "7",
+   "cases": "00 D> 0 01 -> <E 01010 (13); 10 C> 0 0 01 -> <E 001010 (15)",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R10 D at double wall",
+   "from": "00 D> 0 0 01",
+   "to": "101010 A>",
+   "steps": "10",
+   "cases": null,
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "L2 open wall closes",
+   "from": "1 <E",
+   "to": "<E 0",
+   "steps": "1",
+   "cases": null,
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  },
+  {
+   "name": "L3 bounce at wall",
+   "from": "0 0 <E",
+   "to": "1 0 A>",
+   "steps": "3",
+   "cases": "on the blank this is the edge step 0^inf <E -> 0^inf 10 A>",
+   "validated": {
+    "instances": 300,
+    "passed": 300
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---.v",
+  "module": null,
+  "machine": "1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---",
+  "diff": "different table; #3 has digit blocks s(d) = 0001/0010 and one sweep per decrement, this machine has single-cell walls and nested bounces",
+  "applies": "partly",
+  "note": "Only #3's proof plumbing carries over: sweep lemmas folded over a block list (RP/LP, PassesR/PassesL) and progress_nonhalt_cond with an invariant. Its macro rules (Dec_k, DecMerge, End, Ov, X1, X2) have no counterpart; here a cycle is a nested bounce over walls, not one decrement."
+ },
+ "strategy": "Next: a wall-level abstract simulator built from R1-R11/L1-L3 plus the right-end routine, checked against the TM to 1e11; derive the cycle map on (n; a) and the carry hierarchy. Then either an invariant (a1 >= 1, wall spacing) with progress_nonhalt_cond, or a closed-tape-language certificate (robust: no halts from random K with a1 >= 1).",
+ "risks": [
+  "No macro (cycle-level) rule yet: one cycle is a nested bounce whose depth depends on the whole wall vector; the right-end routine reads a long left context.",
+  "The settled digits (7 13 25 9 3 10 9 6 34 ...) have no closed form yet, so an inductive invariant may need a new idea.",
+  "25 busycoq CTL parameter sets (NG n-gram 4-24, RWL_mod, CPS_LRU) found no certificate; 4 hit the 6 GB cap."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 2: do the walls next to the grey buffer wiggle faster than the deep ones, with the deep walls frozen for long stretches (a counter-like hierarchy)?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fig 1 vs Fig 2: is 'walls = extra 0s between (01) runs' a good name for what you see, or would you read the site view differently?",
+   "figs": [
+    0,
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Should we fund a wall-level model stage for this table (covers 740 lines 99 and 612), run a bigger CTL search only, or park it?",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 100000000000,
+  "cells": 446672,
+  "nonzeros": null,
+  "growth": "left buffer: 2 cells per cycle, cycles ~ sqrt(steps/2); wall region ~ log2(cycles), 483 cells at 1e11"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Local rules exact (20/20 rules, 6,000/6,000 random checks); cycle-level rules and a non-halting argument are open."
+}

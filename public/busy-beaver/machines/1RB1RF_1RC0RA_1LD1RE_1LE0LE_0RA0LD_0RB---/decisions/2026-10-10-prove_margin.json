@@ -1,0 +1,68 @@
+{
+ "tm": "1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---",
+ "bucket_reason": "Priority call raised by deepen 2. The mechanism is fully replayed (1,321/1,321 phase starts to 1e11), but non-halting reduces to one unproven inequality, the margin M-1 >= k_align(C). Confidence med.",
+ "question": "Non-halting of #18 now reduces to the margin M-1 >= k_align(C) at every phase start. Fund one stage to prove it, or park #18 as a cryptid-margin case?",
+ "options": [
+  {
+   "id": "prove_margin",
+   "label": "Fund one ~2 h stage on the margin lemma",
+   "consequence": "The agent first extends the bounce-level replay well past 1e11 (the bell is removed, so this is cheap) and tracks k_align/M. It then looks for a bound on k_align of the walk's output in terms of the walk's own data: the d=3 frames crossed and the J chain (deepen.json next-stage items 2-3). Exit: an inductive bound that holds on every replayed phase and on random reachable-looking counters means proof.md is next. A failed bound, or a worst ratio drifting toward 1, means park as cryptid-margin."
+  },
+  {
+   "id": "park_cryptid",
+   "label": "Park now as a cryptid-margin suspect",
+   "consequence": "No compute. Status becomes STUCK (or CRYPTID_CANDIDATE, if you prefer that flag), and the rule set, the G1 grammar and the digit heuristic are written up per the cryptid protocol. The J-rule validation and the 1,324-phase replay are kept."
+  },
+  {
+   "id": "formalize_walk",
+   "label": "Start Rocq on the aligned-walk lemma only",
+   "consequence": "This formalizes the lemma that Phase(m, A) never halts and lands in G1 (round-1 rules plus aligned Inc), which any final proof needs. It does not kill the machine, and it spends Rocq time before the margin is settled, which the med-confidence rule forbids unless you waive it."
+  }
+ ],
+ "recommended": "prove_margin",
+ "rationale": "Only one inequality is open, and the orbit data look structural rather than random. Take the 250-phase windows after the first. Their largest k_align/M is 0.40, 0.31, 0.32 and 0.40, and their smallest (M-1)/k_align is 2.5, 3.3, 3.1 and 2.5. Over the same windows M grows from 1.8k to 10.9k, and the largest k_align grows with it (1,152 to 3,456). So the margin holds at a steady factor of about 2.5 and neither erodes nor improves. deepen.json's crude random-digit model (P(h >= k) ~ 2^-k), with phases independent, would put the largest h near 10 over 1,324 phases. The orbit's largest is 6, which that model gives a probability of about 3e-5. Random G1 counters break the margin (only 192/316 keep it), so a proof has to use reachable structure, and the steady cap suggests such structure exists. Everything else is closed: J-rule 1,500/1,500, replay 1,321/1,321 phase starts, and halting needs M-1 < k_align (0/2,200 halts with M > k_align). One stage is cheap next to the two deepen rounds already spent, and if it fails, parking afterwards costs nothing extra.",
+ "evidence": [
+  {
+   "kind": "data",
+   "text": "The bounce-level replay (bell removed) reproduces all 1,321 phase starts 3..1323 to step 1e11 exactly. Every Inc and crossing is a validated rule, and 1,702/1,702 junction bounces match the J-rule.",
+   "href": "scripts/deepen2_orbit_1324.txt"
+  },
+  {
+   "kind": "rules",
+   "text": "J-rule 1,500/1,500 on random instances (157 of them halt in both), Gap-Inc 1,500/1,500, J-crossing 366/366 plus 34 that halt in both. A mutation (j instead of j-1) fails 187/200.",
+   "href": "scripts/deepen2_validate_jrule_s2.txt"
+  },
+  {
+   "kind": "data",
+   "text": "M-1 >= k_align at 1,320/1,322 phase starts (the exceptions are phases 5 and 7, with M = 8 and 10). In the 250-phase windows after the first: max k_align/M = 0.40, 0.31, 0.32, 0.40 and min (M-1)/k_align = 2.5, 3.3, 3.1, 2.5. The window figures were computed from this file for this decision.",
+   "href": "scripts/deepen2_margin.txt"
+  },
+  {
+   "kind": "probe",
+   "text": "The margin is not inductive on random G1 counters: 192/316 keep it. With M-1 = c*k_align for c = 1, 2, 4, 10, the next ratio falls below 1 in 15, 43, 6 and 3 of 182 cases (none halt).",
+   "href": "scripts/deepen2_ratio_s3.txt"
+  },
+  {
+   "kind": "probe",
+   "text": "Halting needs a margin violation. Orbit counters with the bell shrunk to M <= k_align halt in 7 of 3,293 runs (6 of them with M < k_align/3); with M > k_align, 0 of 2,200 halt.",
+   "href": "scripts/deepen2_lowM.txt"
+  },
+  {
+   "kind": "heuristic",
+   "text": "Under the crude digit model (each crossed digit is a 2 with probability 1/3, so P(h >= k) ~ 2^-k), margin violations would be rare but not summable. On the orbit h has mean 1.0-1.2 and max 6, a thinner tail than the model.",
+   "href": "deepen.json"
+  },
+  {
+   "kind": "template",
+   "text": "BMO7.v (C1 differs) supplies the layout only: LIncs holds 36/36, but the binary RInc fails (16/40). Here the counter is base 3 with a recursive J-rule, so the proof is new.",
+   "href": "notes.md"
+  }
+ ],
+ "effort_if_yes": "One ~2 h stage with 1 heavy process (the bounce-level replay is cheap) and no Rocq. If a bound is found, proof.md follows, plus a recursive (nested-phase) Rocq lemma; expect a file well above BMO7's 441 lines.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "prove_margin",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

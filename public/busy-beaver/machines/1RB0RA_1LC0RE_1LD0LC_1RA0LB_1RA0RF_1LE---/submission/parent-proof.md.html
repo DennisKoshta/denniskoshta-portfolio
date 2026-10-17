@@ -1,0 +1,1883 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>parent-proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---/submission/parent-proof.md · <a href="/busy-beaver/machines/1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---/submission/parent-proof.md.html">raw</a></div>
+<h1 id="1rb0rf_1rc0rb_1ld0ra_1le0ld_1rb0lc_1la-never-halts">1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---: never halts</h1>
+<p>This machine never halts. Between two blank ends, its tape is an alternating pattern <code>...0101...</code> with a few
+exceptions, and the head sweeps back and forth across it. The exceptions are <strong>defects</strong>, places where two
+neighbouring cells are equal.</p>
+<p>A sweep complements every cell it crosses, which keeps every defect where it is. So the defect pattern changes only
+when the head meets a defect.</p>
+<p>The defects form a counter in base 3. A small word at the left end counts to 81. A chain of digit blocks in the middle
+counts the head's visits. Two growing blocks at the right end keep pace with the chain.</p>
+<p>Every 81 x 3^K visits the left word overflows, the chain is regrouped, and the right end starts the next of six
+phases. After six phases the picture repeats with two more digits.</p>
+<p>The long blocks have lengths affine in a scale u, and six phases take u to 9u. So a long block grows by a factor
+close to 9, but not exactly 9: for example 74844u - 36 becomes 673596u - 36.</p>
+<p>The proof is an induction over these six-phase periods. Each step is built from three finite lemmas, one per region,
+and a symbolic computation that is exact for every period.</p>
+<h2 id="machine-and-status">Machine and status</h2>
+<ul>
+<li><strong>Machine:</strong> <code>1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</code>, viewer
+  https://bbchallenge.org/1RB0RF_1RC0RB_1LD0RA_1LE0LD_1RB0LC_1LA---</li>
+<li><strong>Holdout:</strong> on the current BB(6) holdout list, class "Skelet 1-like Class 2".</li>
+<li><strong>Written for:</strong> the string itself, with no mirror or state renaming. The same table started in two other states
+  gives two more holdouts (section 9). This .v does not cover them; each has its own file and write-up.</li>
+<li><strong>Status: fully formalized.</strong> The accompanying <code>verify/Skelet1LikeC2_1RB0RF_1RC0RB.v</code> (2,584 lines) proves
+  <code>Lemma nonhalt: ~halts tm c0.</code> in Coq 8.20.1 against unmodified busycoq BB6 (commit <code>0940bb9</code>).</li>
+<li>It compiles in about a minute with <code>-native-compiler yes</code>.</li>
+<li><code>Print Assumptions nonhalt</code> is closed (no axioms).</li>
+<li>coqchk does not finish within a 600 s cap. The base case is 38 <code>native_compute</code> steps, so the result rests on
+    coqc's kernel check at <code>Qed</code>, with the VM and the native compiler in the trusted base.</li>
+</ul>
+<h3 id="template">Template</h3>
+<p>The outer shape follows <code>verify/SBCv6.v</code>, <code>Module TM21</code>:</p>
+<ul>
+<li>a configuration built from a list of digit blocks;</li>
+<li>one invariant on macro states and a closure lemma <code>inv_step : Inv s -&gt; exists s', cfgI s --&gt;+ cfgI s' /\ Inv s'</code>;</li>
+<li>the end by <code>multistep_nonhalt</code> and <code>progress_nonhalt_cond</code>.</li>
+</ul>
+<p>The finite runs follow the idea of <code>verify/Sk1like_TC_v1.v</code>: a step function that is computed, proved correct once,
+and then run by evaluation.</p>
+<p>What is different here:</p>
+<ul>
+<li><strong>A verified symbolic simulator.</strong> Every finite run (block runs, left episodes, right-region episodes, record-exit
+  episodes and the base case) is computed by one run-length simulator of the table, with a soundness theorem. Run
+  lengths are linear forms c + v_1 x_1 + ... + v_n x_n over N, so one computation covers every value of the gaps.</li>
+<li><strong>A chain of eight-state blocks.</strong> The digit list is a chain of blocks with an exit phase, and Lemma T counts the
+  visits of a whole record interval.</li>
+<li><strong>A right region with jumps.</strong> The right end is run by a verified executor for interval programs, with 4-cycle
+  jumps by induction on the cycle count.</li>
+<li><strong>A long macro step.</strong> One macro step is a whole record interval (81 x 3^K visits). The invariant has six classes,
+  and after six steps u becomes 9u.</li>
+</ul>
+<h3 id="where-each-section-lives-in-the-v">Where each section lives in the .v</h3>
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>in the .v</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§2 (defect model, transfer lemma)</td>
+<td>not needed: the simulator <code>sstep</code> runs the table itself (<code>sstep_spec</code>, <code>runp_spec</code>, <code>reach_spec</code>)</td>
+</tr>
+<tr>
+<td>§3.2 blocks</td>
+<td><code>lab</code>, <code>lens</code>, <code>blk</code>, <code>rblk</code> (m = 3); <code>lab1</code>, <code>blk1</code> (block 1)</td>
+</tr>
+<tr>
+<td>§3.3, §3.4 invariant</td>
+<td><code>Inv</code>, <code>win</code>, <code>cfgI</code>, start vectors <code>Rs_r5</code> .. <code>Rs_r4</code></td>
+</tr>
+<tr>
+<td>§4.1 single-block runs</td>
+<td><code>blk_turn</code>, <code>blk_pass</code>, <code>blk_reset</code>, <code>blk1_turn</code>, <code>blk1_pass</code>, <code>blk1_back</code></td>
+</tr>
+<tr>
+<td>§4.1 Lemma C, C'</td>
+<td><code>visit3_spec</code>, <code>pass_spec</code>, <code>cb_spec</code>, <code>vis_spec</code>, <code>runv_spec</code></td>
+</tr>
+<tr>
+<td>§4.1 Lemma T</td>
+<td><code>interval</code> (pieces <code>CU</code>, <code>CW</code>, <code>S3</code>, <code>allD</code>, <code>cycs</code>), <code>interval_tm</code></td>
+</tr>
+<tr>
+<td>§4.2 Lemma L, L81</td>
+<td><code>lw</code>, <code>lw_all</code>, <code>lw_ep</code> (episodes numbered 0..80; 80 is the left record)</td>
+</tr>
+<tr>
+<td>§4.3 Lemma R, §5.3 Lemma J</td>
+<td><code>ep_run_spec</code>, <code>jump_lemma</code>, <code>jump_run_spec</code>, <code>exec_spec</code>, <code>prog_check_spec</code></td>
+</tr>
+<tr>
+<td>§5.3, Appendix B</td>
+<td><code>prog_r5</code> .. <code>prog_r4</code>, checked by <code>int_r5</code> .. <code>int_r4</code></td>
+</tr>
+<tr>
+<td>§6.1 record visit</td>
+<td><code>record_visit</code></td>
+</tr>
+<tr>
+<td>§6.2 regrouping</td>
+<td><code>regroup</code>, <code>regroup_b1</code></td>
+</tr>
+<tr>
+<td>§6.3, §6.4 exchange and window</td>
+<td><code>step_r5</code> .. <code>step_r4</code> (with <code>drop_step</code>, <code>take_step</code>, <code>split4</code>)</td>
+</tr>
+<tr>
+<td>§6 Lemma S</td>
+<td><code>S_r5</code>, <code>S_r0</code>, <code>S_r1</code>, <code>S_r2</code>, <code>S_r3</code>, <code>S_r4</code></td>
+</tr>
+<tr>
+<td>§7 progress</td>
+<td><code>inv_step</code></td>
+</tr>
+<tr>
+<td>§8 base case</td>
+<td><code>init28</code> (<code>ck_0</code> .. <code>ck_37</code>), <code>base28</code>, <code>inv28</code></td>
+</tr>
+<tr>
+<td>§8 theorem</td>
+<td><code>nonhalt</code></td>
+</tr>
+</tbody>
+</table>
+<p>Section 10 describes the .v in more detail, including the places where it takes a different route from the text.</p>
+<h2 id="overview">Overview</h2>
+<h3 id="summary">Summary</h3>
+<p>Between the two blank ends the tape alternates, except at defects, two equal neighbouring cells. A sweep complements
+every cell it crosses but keeps the defects in place. So the defect pattern changes only when the head meets a
+defect.</p>
+<p>The defects form three regions:</p>
+<ul>
+<li>a <strong>left word</strong> of 10 defects next to the left end, which counts to 81 and then moves 3 cells left;</li>
+<li>a <strong>chain</strong> of K digit blocks, a base-3 counter that the head increments once per visit from the right;</li>
+<li>a <strong>right region</strong>: old blocks ("fossils"), and two growing blocks X and Y next to the right end.</li>
+</ul>
+<p>Every 81 x 3^K visits the left word overflows. At that moment the chain is regrouped, K changes, and the right region
+starts the next of six phases. After six phases the whole picture repeats, with K larger by 2.</p>
+<p>The long gaps are affine in a scale u (section 3.4), and u becomes 9u over the six phases. So every long gap grows by a factor
+close to 9 (not exactly 9: the constant terms stay).</p>
+<h3 id="the-proof-idea">The proof idea</h3>
+<p>The proof is an induction over these six-phase periods.</p>
+<ul>
+<li>A configuration at a <strong>record exit</strong> (the moment just after an overflow) is described by an invariant C_r(e): a
+  class r (one of six), an epoch e, and a window of exact gap lengths, all affine in u = 9^(e-2).</li>
+<li>Lemma S maps C_r(e) to C_(r+1)(e), and C_r4(e) to C_r5(e+1).</li>
+<li>Each step of Lemma S is assembled from three region lemmas (C for the chain, L for the left word, R for the right
+  region), a counting lemma T, and a symbolic run of the right region that is exact for every u.</li>
+</ul>
+<p>The two growing blocks stay in step with the counter by an exact cancellation (section 5.4). The halting transition
+needs two defects at distance 1 in a particular phase, and every run in the proof avoids it.</p>
+<h2 id="1-the-machine">1. The machine</h2>
+<div class="highlight"><pre><span></span><code>     0    1
+A   1RB  0RF
+B   1RC  0RB
+C   1LD  0RA
+D   1LE  0LD
+E   1RB  0LC
+F   1LA  ---
+</code></pre></div>
+
+<p>The only undefined transition is F reading 1. F is entered only from A reading 1.</p>
+<h2 id="2-the-defect-model">2. The defect model</h2>
+<h3 id="21-defects-and-the-head-phase">2.1 Defects and the head phase</h3>
+<p>Number the cells by integers. Edge e lies between cells e and e+1. Edge e is a <strong>defect</strong> if cells e and e+1 hold the
+same symbol.</p>
+<ul>
+<li>Far to the left and far to the right the tape is blank, so every edge there is a defect. Write <code>lo</code> and <code>hi</code> for the
+  ends of these two blank zones: every edge below <code>lo</code> and every edge at or above <code>hi</code> is a defect.</li>
+<li>D is the finite set of defects strictly between them.</li>
+</ul>
+<p>A sweep of the head over alternating cells runs through a fixed 4-cycle of states, and every sweep step writes the
+complement of the cell it reads:</p>
+<div class="highlight"><pre><span></span><code>moving right: B0 C1 A0 B1 B0 ...      (1RC, 0RA, 1RB, 0RB)
+moving left : D1 D0 E1 C0 D1 ...      (0LD, 1LE, 0LC, 1LD)
+</code></pre></div>
+
+<p>So between defects the head is described by its direction and a <strong>phase</strong> φ in Z/4:</p>
+<div class="highlight"><pre><span></span><code>moving left : D1 at cells = φ,   D0 at φ-1,  E1 at φ-2,  C0 at φ-3   (mod 4)
+moving right: B0 at cells = φ,   C1 at φ+1,  A0 at φ+2,  B1 at φ+3   (mod 4)
+</code></pre></div>
+
+<p>A sweep complements every cell it crosses, which keeps every defect where it is. So D changes only at the events
+below.</p>
+<p>D is read in the frame "before the current sweep". The edge between the head and the cell it has just left is counted
+as it was before the sweep complemented that cell.</p>
+<h3 id="22-the-eight-rules">2.2 The eight rules</h3>
+<p>At a defect e the head sees d = (e - φ) mod 4. Here <code>^</code> is symmetric difference.</p>
+<table>
+<thead>
+<tr>
+<th>head</th>
+<th>d = 0</th>
+<th>d = 1</th>
+<th>d = 2</th>
+<th>d = 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>moving left</td>
+<td>pass, φ+1</td>
+<td>turn right; D ^= {e-1, e}</td>
+<td>turn right; D ^= {e-1, e}</td>
+<td>pass, φ-1</td>
+</tr>
+<tr>
+<td>moving right</td>
+<td>turn left; D ^= {e, e+1}</td>
+<td>wiggle; D ^= {e, e+2}, then pass, φ+1</td>
+<td>pass, φ-1</td>
+<td>pass, φ+1</td>
+</tr>
+</tbody>
+</table>
+<p>Turns keep φ. A turn moves the defect by one cell, a wiggle by two.</p>
+<p>Each rule is a run of two to five transitions at the defect. The state on the near cell follows from the phase. The
+far cell holds the same symbol as the near one, which breaks the cycle:</p>
+<table>
+<thead>
+<tr>
+<th>head</th>
+<th>d</th>
+<th>near cell</th>
+<th>transitions</th>
+<th>what breaks the cycle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>left</td>
+<td>0</td>
+<td>C0 on e+1</td>
+<td>C0, D0</td>
+<td>nothing: D0 is in the left cycle at the new phase</td>
+</tr>
+<tr>
+<td>left</td>
+<td>1</td>
+<td>E1 on e+1</td>
+<td>E1, C1</td>
+<td>C1 = 0RA turns the head right</td>
+</tr>
+<tr>
+<td>left</td>
+<td>2</td>
+<td>D0 on e+1</td>
+<td>D0, E0</td>
+<td>E0 = 1RB turns the head right</td>
+</tr>
+<tr>
+<td>left</td>
+<td>3</td>
+<td>D1 on e+1</td>
+<td>D1, D1</td>
+<td>nothing</td>
+</tr>
+<tr>
+<td>right</td>
+<td>0</td>
+<td>B0 on e</td>
+<td>B0, C0</td>
+<td>C0 = 1LD turns the head left</td>
+</tr>
+<tr>
+<td>right</td>
+<td>1</td>
+<td>C1 on e</td>
+<td>C1, A1, F0, A0, B1</td>
+<td>A1 = 0RF; F reads cell e+2</td>
+</tr>
+<tr>
+<td>right</td>
+<td>2</td>
+<td>A0 on e</td>
+<td>A0, B0</td>
+<td>nothing</td>
+</tr>
+<tr>
+<td>right</td>
+<td>3</td>
+<td>B1 on e</td>
+<td>B1, B1</td>
+<td>nothing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Halting.</strong> The machine halts only through F reading 1, and F is entered only by A1, which occurs only in the
+wiggle. There F reads cell e+2, and cell e+2 holds 1 exactly when e+1 is also a defect.</p>
+<p>So the machine halts exactly when the head moves right, sees d = 1, and e+1 is also a defect.</p>
+<p><strong>Collisions.</strong> A turn or wiggle whose toggled edge is already a defect makes two defects cancel. This does happen,
+inside some right-region episodes (4.3 works out an example). The rules above already cover it, since a toggle is a
+symmetric difference.</p>
+<p>So the proof does not assume that defects never cancel. Only the halting case has to be ruled out.</p>
+<h3 id="23-decisions-depend-on-residues-only">2.3 Decisions depend on residues only</h3>
+<p>Every decision uses only d, that is the defect position mod 4 relative to the phase, plus the order of the defects.</p>
+<p>So two tapes whose defects have the same order and the same residues mod 4 behave identically, as long as no
+collision happens. A collision needs two defects within 2 cells of each other.</p>
+<p>This is the reason long gaps can be treated as counters that only matter mod 4. Lemma 2.4 makes this precise.</p>
+<h3 id="24-stretching-a-gap-the-transfer-lemma">2.4 Stretching a gap (the transfer lemma)</h3>
+<p>Several lemmas are checked at small gap values and then used for every larger value with the same residue. One
+argument covers all of them.</p>
+<p><strong>Lemma 2.4 (transfer).</strong> Take a run of the defect model and an edge m such that during the run no defect ever sits on
+the edges m - 1, m, m + 1. Make a second tape by inserting 4j cells between cells m + 1 and m + 2 that continue the
+alternation. In defect terms:</p>
+<div class="highlight"><pre><span></span><code>D'  =  { e : e in D, e &lt;= m }  ∪  { e + 4j : e in D, e &gt;= m + 1 }
+</code></pre></div>
+
+<p>The head, if it is right of m, moves up by 4j with the same phase. Then the two runs have the same events (same rule,
+same d, at corresponding defects), and after every event the configurations correspond in the same way.</p>
+<p><strong>Proof.</strong> Induction on the events.</p>
+<ul>
+<li>The inserted stretch holds no defect, so the head's next defect is the corresponding one.</li>
+<li>A shift by 4j does not change d = (e - φ) mod 4.</li>
+<li>A rule at a defect e toggles or tests only edges in [e - 1, e + 2]. By the hypothesis e is never m - 1, m or m + 1.
+  For e &lt;= m - 2 all these edges are at most m (not shifted); for e &gt;= m + 2 all are at least m + 1 (shifted). So the
+  toggles correspond, and the halting test (is e + 1 a defect?) has the same answer.</li>
+</ul>
+<p><strong>Use.</strong> If a run with a gap g keeps three consecutive edges of that gap free of defects throughout, then the runs with
+g + 4j, j &gt;= 0, have the same events.</p>
+<p>This is applied to the gaps inside a block (4.1), to the long gaps of the right region (4.3), and to the deep chain
+gaps (only residues and minimums matter).</p>
+<h2 id="3-the-configuration-at-a-record-exit">3. The configuration at a record exit</h2>
+<h3 id="31-records-and-classes">3.1 Records and classes</h3>
+<p>Let λ be the leftmost cell that has held 1 at some step so far, and lo = λ - 1. Then λ only moves left.</p>
+<p>In the run from the blank tape, λ moves left</p>
+<ul>
+<li>by 1 or 2 cells at steps 1, 6-7, 838-839, 7820 and 17531-17532 (the start-up), and</li>
+<li>otherwise always by 3 cells, in 3 consecutive steps.</li>
+</ul>
+<p>A <strong>left record</strong> is a move of λ by 3 cells. Only these moves are numbered: n = 1, 2, 3, ... in order. Record 16 is
+the move at steps 398,088,768-770.</p>
+<p>From record 16 on, lo moves only in left episode 81 (Lemma L81), by 3 cells. So there is exactly one record per
+interval, and the numbering stays aligned.</p>
+<p>The <strong>class</strong> of record n is r = (n - 11) mod 6, written r0, ..., r5. The <strong>epoch</strong> is e = (n - 16) div 6, so records
+16-21 have e = 0, records 22-27 have e = 1, and so on. Classes come in the order r5, r0, r1, r2, r3, r4 within an
+epoch.</p>
+<p>The <strong>record exit</strong> of record n is defined in 3.3 (H): the first moment after left record n at which the head, moving
+right, has just passed the chain end B - 2.</p>
+<h3 id="32-blocks">3.2 Blocks</h3>
+<p>A <strong>block</strong> is one digit defect followed by m separator defects, m = 1 or 3. Its base b is the digit's position in
+state U0, and its separators sit at b + g1 &lt; b + g2 &lt; b + g3 with g_i = 1 mod 4.</p>
+<p>Eight block states for m = 3, as offsets from b:</p>
+<table>
+<thead>
+<tr>
+<th>state</th>
+<th>offsets</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Us (s = 0, 1, 2)</td>
+<td><code>(-s, g1, g2, g3)</code></td>
+<td>s</td>
+</tr>
+<tr>
+<td>Ww (w = 0, 1)</td>
+<td><code>(-2, g1+1, g2+3-w, g3)</code></td>
+<td>w</td>
+</tr>
+<tr>
+<td>Dk (k = 2, 1, 0)</td>
+<td><code>(-2, g1+1, g2+1, g3+k)</code></td>
+<td>2 - k</td>
+</tr>
+</tbody>
+</table>
+<p>For m = 1 the states are Us = <code>(-s, g1)</code> and Dk = <code>(-2, g1+k)</code>. There U2 and D0 are the same configuration, and
+there is no W state.</p>
+<p>A block is <strong>full</strong> in state U2 or D0. The phase that belongs to a block is c = b + 1 mod 4, the residue of its
+separators.</p>
+<p>Read in the U0 state, every gap of a chain has a <strong>role</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>role</th>
+<th>from</th>
+<th>to</th>
+<th>residue mod 4</th>
+<th>smallest value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>digit gap</td>
+<td>digit</td>
+<td>first separator</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>separator gap</td>
+<td>separator</td>
+<td>next separator</td>
+<td>0</td>
+<td>4</td>
+</tr>
+<tr>
+<td>inter gap</td>
+<td>last separator</td>
+<td>next block's digit</td>
+<td>1</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-the-invariant">3.3 The invariant</h3>
+<p>Fix a record exit of class r and epoch e. Let K = K0(r) + 2e with</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>r5</th>
+<th>r0</th>
+<th>r1</th>
+<th>r2</th>
+<th>r3</th>
+<th>r4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K0(r)</td>
+<td>3</td>
+<td>3</td>
+<td>4</td>
+<td>3</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>J(r)</td>
+<td>3</td>
+<td>2</td>
+<td>5</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The configuration <strong>C_r(e)</strong> consists of the following four parts, for some cell A.</p>
+<p><strong>(L) Left word.</strong> <code>lo = A - 34</code>, and the defects left of A are</p>
+<div class="highlight"><pre><span></span><code>A - 32, -27, -26, -21, -20, -15, -14, -9, -8, -4
+</code></pre></div>
+
+<p><strong>(C) Chain.</strong> The defects in [A, B] are K blocks, all in state U0:</p>
+<ul>
+<li>block 1 is <code>(A+2; A+3)</code> with m = 1;</li>
+<li>blocks 2..K have m = 3, and each base is 2 more (mod 4) than the one before;</li>
+<li>every chain gap has the residue and at least the smallest value of its role (table above);</li>
+<li>the last separator of block K is at B - 2.</li>
+</ul>
+<p><strong>(W) Window.</strong> The last J(r) chain gaps, and the gaps from B through the right-region defects up to <code>hi</code>, are given
+exactly by the vector V_r(u) of section 3.4, where u = 9^(e-2).</p>
+<p><strong>(H) Head.</strong> The head is on cell B - 1 in state B, and cell B - 1 holds 1. State B moves right.</p>
+<ul>
+<li>In phase terms: the head moves right with phase φ = c_K + 2, where c_K is the phase of block K. Cell B - 1 is
+  c_K + 1 = φ + 3 mod 4, the B1 place of the right cycle.</li>
+<li>It has just passed the last separator B - 2 with d = 3 (transitions B1, B1 on cells B - 2 and B - 1).</li>
+<li>On the actual tape cells B - 2 and B - 1 differ, because the sweep has just complemented cell B - 2. Edge B - 2 is a
+  defect in the pre-sweep frame of 2.1, and it is counted as one.</li>
+</ul>
+<p><strong>Locating A and B.</strong> A = lo + 34 and K = K0(r) + 2e. The chain holds 4K - 2 defects, from A + 2 (the digit of
+block 1) to B - 2, so</p>
+<div class="highlight"><pre><span></span><code>B  =  (the (4K - 2)-th defect at or right of A)  +  2
+</code></pre></div>
+
+<p><strong>The record exit, operationally.</strong> The record exit of record n is the first configuration after left record n in
+which</p>
+<ul>
+<li>the head is in state B reading 1, and</li>
+<li>exactly 10 + 4K - 2 edges in (lo, h - 1] are defects in the pre-sweep frame (h = head cell; the edges up to h - 2 as
+  on the tape, edge h - 1 toggled).</li>
+</ul>
+<p>Then B = h + 1. The 10 are the left word, the 4K - 2 the chain.</p>
+<p>This is the moment of (H). After the record, the head runs the carry back from left to right. Before it first reaches
+cell B - 1, the defect at B - 2 is not yet behind it; directly after passing B - 2 it reads B1 on cell B - 1.</p>
+<h3 id="34-the-window-vectors">3.4 The window vectors</h3>
+<p>Each entry of V_r(u) is affine in u = 9^(e-2), and is valid for e &gt;= 2 (u = 1, 9, 81, ...). The chain part lists the
+last J(r) chain gaps; the right part lists the gaps B -&gt; x_1 -&gt; ... -&gt; hi.</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>chain window (last J gaps)</th>
+<th>right region: B -&gt; x_1 -&gt; ... -&gt; hi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r5</td>
+<td>8316u-39, 24948u-36, 74844u-36</td>
+<td>224532u-39, 673596u-37, 7, (19683u-1)/2, 1942056u-16, 3</td>
+</tr>
+<tr>
+<td>r0</td>
+<td>8316u-36, 24948u-36</td>
+<td>74844u-39, 224532u-37, 673596u-36, 2020788u-36, 4, (1043199u+7)/2</td>
+</tr>
+<tr>
+<td>r1</td>
+<td>8316u-36, 24948u-35, 74844u-39, 224532u-36, 673596u-36</td>
+<td>2020788u-39, 7, 551124u-4, (3129597u-1)/2, 2</td>
+</tr>
+<tr>
+<td>r2</td>
+<td>(none)</td>
+<td>8316u-39, 24948u-37, 74844u-36, 224532u-36, 673596u-37, 2020788u-37, 8, (59049u-7)/2, 5826168u-7, 3</td>
+</tr>
+<tr>
+<td>r3</td>
+<td>74844u-36</td>
+<td>224532u-39, 673596u-37, 2020788u-36, 6062364u-36, 3, (3129597u+5)/2, 2</td>
+</tr>
+<tr>
+<td>r4</td>
+<td>(none)</td>
+<td>74844u-39, 224532u-37, 673596u-36, 2020788u-36, 6062364u-37, 7, 1653372u-4, (9388791u+3)/2, 3</td>
+</tr>
+</tbody>
+</table>
+<p>For example, at record exit 28 (class r5, u = 1) the right region reads</p>
+<div class="highlight"><pre><span></span><code>B  -224493-  x1  -673559-  x2  -7-  x3  -9841-  x4  -1942040-  x5  -3-  hi
+</code></pre></div>
+
+<p>Reading the right part:</p>
+<ul>
+<li>the first gaps are <strong>fossils</strong>, old Y blocks. Their exact lengths never matter, only their residues mod 4 and that
+  they are long;</li>
+<li>then comes a short gap (2 to 8 cells) at the left end of X;</li>
+<li>then the blocks X and Y, whose exact lengths are tied to K (section 5.4);</li>
+<li>the last gap (2 or 3) is the distance to the blank right end.</li>
+</ul>
+<p>For e = 0 and e = 1 (records 16-27) the same description holds with concrete numbers instead of V_r(u). Appendix C
+lists them. There the window still contains start-up values, such as the first fossil (969 to 973 cells).</p>
+<h2 id="4-three-regions-three-lemmas">4. Three regions, three lemmas</h2>
+<p>Between record exits, the head moves inside one region at a time and crosses the boundaries A and B with a known
+phase. Each region has its own lemma.</p>
+<h3 id="41-the-chain-lemma">4.1 The chain lemma</h3>
+<p>A <strong>visit</strong> is the head entering the chain from the right at phase c_K. Read the chain as a ternary number, with the
+block values as digits and the least significant digit on the right.</p>
+<p><strong>Lemma C (visit).</strong> Suppose the chain word has the shape <code>D^a [W] U^b</code> (left to right). Then:</p>
+<ul>
+<li><strong>Not all full.</strong> The value goes up by 1, and the head leaves to the right.</li>
+<li>The rightmost non-full block moves to its successor: U0 &gt; U1 &gt; U2, W0 &gt; W1 &gt; D0, D2 &gt; D1 &gt; D0.</li>
+<li>The full blocks right of it are reset to value 0. After a U or W turn they all become U0. After a D turn, the D0
+    blocks become D2, the first U2 becomes W0, and the other U2 become U0.</li>
+<li>Exit phase: c_K if the turned block is a D block and the last block is D afterwards, else c_K + 2.</li>
+<li><strong>All full.</strong> The head leaves to the left at phase c_1 + 2, and the chain is unchanged (a <strong>carry-out</strong>).</li>
+</ul>
+<p><strong>Lemma C' (carry back).</strong> Suppose all blocks are full and the head enters from the left at phase c_1 + 2. Then every
+block is reset to value 0 with the D-turn labels. The head leaves to the right at phase c_K if the chain is then all
+D, and at c_K + 2 otherwise.</p>
+<p>The shape <code>D^a [W] U^b</code> is preserved by both lemmas.</p>
+<p><strong>The single-block runs.</strong> The lemmas are compositions of 18 runs on one block. Each entry gives the exit side, the
+change of phase between entry and exit, and the new state. Entry phases are relative to the block's c.</p>
+<table>
+<thead>
+<tr>
+<th>m</th>
+<th>state</th>
+<th>enters from</th>
+<th>at</th>
+<th>leaves</th>
+<th>phase change</th>
+<th>new state</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>U0</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>U1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>U1</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>U2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>U2</td>
+<td>right</td>
+<td>c</td>
+<td>left</td>
+<td>+2</td>
+<td>U2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>W0</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>W1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>W1</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>D0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>D0</td>
+<td>right</td>
+<td>c</td>
+<td>left</td>
+<td>+2</td>
+<td>D0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>D1</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>0</td>
+<td>D0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>D2</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>0</td>
+<td>D1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>U2</td>
+<td>left</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>U0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>U2</td>
+<td>left</td>
+<td>c+2</td>
+<td>right</td>
+<td>0</td>
+<td>W0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>D0</td>
+<td>left</td>
+<td>c+2</td>
+<td>right</td>
+<td>+2</td>
+<td>D2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>U0</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>U1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>U1</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>D0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>D0</td>
+<td>right</td>
+<td>c</td>
+<td>left</td>
+<td>+2</td>
+<td>D0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>D1</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>0</td>
+<td>D0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>D2</td>
+<td>right</td>
+<td>c</td>
+<td>right</td>
+<td>0</td>
+<td>D1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>D0</td>
+<td>left</td>
+<td>c</td>
+<td>right</td>
+<td>+2</td>
+<td>U0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>D0</td>
+<td>left</td>
+<td>c+2</td>
+<td>right</td>
+<td>+2</td>
+<td>D2</td>
+</tr>
+</tbody>
+</table>
+<p>Appendix D lists the events of each run: for every event the direction, the defect (dg = digit, s1-s3 = separators,
+sp = the m = 1 separator), d and the rule of 2.2. A reader can replay each run with the table of 2.2.</p>
+<p>The proof uses 17 of these 18 runs. Block 1 is entered from the left only by a carry back, at phase c_1 + 2 (Lemma L).
+So the m = 1 run "D0 entered from the left at c" never occurs; the table lists it for completeness.</p>
+<p><strong>Lemma B (one block).</strong> Let a block have digit gap at least 1 and separator gaps at least 4, with the residues of
+3.2 (for m = 1 the digit gap is the only gap). For each of the 18 runs:</p>
+<ol>
+<li><strong>Events.</strong> The run has the event list of Appendix D, whatever the gaps.</li>
+<li><strong>Footprint.</strong> During the run each defect stays within these offsets of its U0 place:</li>
+</ol>
+<p><code>m = 3:   digit -2..0    s1 0..+2    s2 0..+3    s3 0..+2
+   m = 1:   digit -2..0    separator 0..+2</code></p>
+<p>Every edge the run toggles or tests (the wiggle's e + 1) lies between two places of one defect. So the run touches
+   only edges in [b - 2, b + g_last + 2], where g_last is the offset of the last separator.
+3. <strong>No halt.</strong> A wiggle at e tests e + 1, which lies strictly between the old and the new place of the moved defect.
+   By the footprint no other defect of the block is there, so no wiggle halts.</p>
+<p><strong>Proof.</strong> The 18 runs were computed for every combination of the gaps in {tight, tight + 4, long}, plus 40 random
+choices per run (1,045 runs on the exact model). All give the same event list and stay in the footprint.</p>
+<p>Larger gaps follow from the transfer lemma 2.4. By the footprint, a digit gap of 5 or more keeps the edges b + 1,
+b + 2, b + 3 free of defects. A separator gap of 8 or more keeps three edges in its middle free (s1 stays at most
+g1 + 2 and s2 at least g2; s2 stays at most g2 + 3 and s3 at least g3).</p>
+<p>So a gap of tight + 4 + 4j runs like tight + 4. The tight values (digit gap 1, separator gap 4) are their own cases.</p>
+<p>In the .v each of the 11 runs with m = 3 is a single symbolic computation with every gap a variable, so it holds for
+all gap values at once. Block 1 always has digit gap 1 by (C), so its 6 runs that the proof uses are computed with
+concrete lengths (section 10).</p>
+<p><strong>Lemma B' (blocks in a chain).</strong> In a chain with inter gaps at least 5 (U0 frame), each single-block run is exactly
+the run of Appendix D, and a visit is a sequence of such runs.</p>
+<p><strong>Proof.</strong> By the footprint, the defects of block j always lie in [b_j - 2, b_j + g3_j + 2]. These intervals are
+disjoint for different blocks: an inter gap of at least 5 leaves at least one edge between the end of one interval
+and the start of the next. (With inter gap 5 two neighbouring D blocks can touch, at distance 1, but their intervals
+still do not overlap.)</p>
+<p>So a run on block j never toggles or tests an edge of another block's interval. Between two of its events the head
+meets no defect of another block, because those lie outside block j's interval, in their order.</p>
+<p>When the run ends, the head leaves block j's interval. Its next event is the first event of the neighbour's run, at
+the phase where block j's run left.</p>
+<p>At the two ends of the chain: block 1's interval starts at A, and the left word ends at A - 4. Block K's interval ends
+at B, and the right region starts at x_1, which is never touched (4.3).</p>
+<p><strong>Proof of Lemma C and C'.</strong> By Lemma B' a visit is a list of single-block runs, so Lemma C is an induction on the
+list, keeping track of the phase at each hand-over. Consecutive bases differ by 2 mod 4, so the c of the left
+neighbour is c + 2.</p>
+<ul>
+<li>A full block passed leftward exits at c + 2, which is the entry phase of the block on its left.</li>
+<li>A U or W turn sends c + 0 to the right block (its c + 2), and each reset U2 -&gt; U0 passes that on.</li>
+<li>A D turn sends c + 2, D0 -&gt; D2 keeps it, and the first U2 -&gt; W0 switches it.</li>
+<li>The rightmost non-full block is the one that turns; the exit phase follows from the last run.</li>
+</ul>
+<p><strong>Lemma T (counting).</strong> Start from the record-exit chain: one m = 1 block and K - 1 blocks with m = 3, all U0. Then:</p>
+<ul>
+<li>the first T(K) = (3^(K+1) - 5)/2 visits exit at phase c_K + 2, and every later visit exits at phase c_K;</li>
+<li>carry-outs happen exactly every 3^K visits;</li>
+<li>from the second carry-out on, the chain is all D0 at every carry-out and all D2 after every carry back.</li>
+</ul>
+<p><strong>Proof.</strong> A suffix starting at W0 U0^(j-1) needs 2 x 3^(j-1) visits to reach D0 U0^(j-1), then 3^(j-1) more to reach
+D2 W0 U0^(j-2), then the (j-1)-suffix. So T(1) = 2 and T(j) = 3^j + T(j-1). The leading m = 1 block plays the role
+of W.</p>
+<p>Exit phase c_K happens exactly when the word is all D, and an all-D word stays all D. Since T(K) &lt; 2 x 3^K, the chain
+is all D before the second carry-out.</p>
+<h3 id="42-the-left-end">4.2 The left end</h3>
+<p>At every carry-out the head crosses A leftward with phase 1 relative to A. It runs a <strong>left episode</strong> and crosses A
+rightward again.</p>
+<p><strong>The left word is a ternary counter.</strong> It consists of the two fixed defects A - 32 and A - 4 and four m = 1 blocks
+with digit gap 1. Write i = 1..81 and v = i - 1 = (v1 v2 v3 v4) in base 3, v1 most significant. Then</p>
+<div class="highlight"><pre><span></span><code>W_i  =  { A-32, A-4 }  ∪  { A+p_j-v_j , A+p_j+1 : j = 1..4 },      p = (-27, -21, -15, -9)
+</code></pre></div>
+
+<p>So block j is in state U_(v_j), with its base at A + p_j. W_1 is the word of (L).</p>
+<p><strong>Lemma L.</strong></p>
+<ul>
+<li>Left episode i (i = 1..80) turns W_i into W_(i+1): it adds 1 to the counter. It is entered and left at phase 1
+  relative to A, which is the carry-out phase and the carry-back phase c_1 + 2 of Lemmas C and C'.</li>
+<li>Episode 81 (v = 2222) is the left record. The counter overflows into the blank zone: <code>lo</code> moves 3 cells left, and
+  the word becomes W_1 moved 3 cells left, plus one new defect at A - 1. Lemma L81 states it exactly.</li>
+</ul>
+<p>The left word contains no long gap, so each episode is a fixed finite computation of at most 31 events.</p>
+<p><strong>Lemma L81 (the left record).</strong> At the 81st carry-out of an interval:</p>
+<ul>
+<li><strong>Input.</strong> lo = A - 34, the left word W_81, the chain all D0 (Lemma T) with block 1 at (A; A + 3), and the head
+  moving left, about to read cell A - 1, at phase 1 relative to A.</li>
+<li><strong>Output, after 31 events (Appendix E).</strong> lo = A - 37, the left word W_1 - 3 plus a new defect at A - 1, and the
+  head on cell A, moving right at phase 1 relative to A. Its next defect is block 1's digit at A, with d = 3.</li>
+<li><strong>On the way.</strong> No event is at a defect &gt;= A, so the chain is untouched. Each of the six rightward d = 1 events
+  (wiggles) finds no defect at e + 1, so none halts.</li>
+</ul>
+<p>The new defect at A - 1 is made by the wiggle at A - 3 (event 30), whose test edge A - 2 is free. It is then passed
+with d = 3 (event 31). A rightward head with d = 1 at A - 1 would halt, since A is a defect; this never happens.</p>
+<p>Phase 1 relative to A is c_1 + 2 (c_1 = A + 3). So the state after episode 81 is the entry of Lemma C' for block 1:
+D0, entered from the left at c + 2. The carry back starts from this state.</p>
+<p>By Lemma B the run D0 -&gt; D2 of block 1 touches only edges in [A, A + 5]. So the defect at A - 1 is neither toggled
+nor tested, and the head does not come back to it before the record exit.</p>
+<p>The two regions stay apart in the other direction too. Chain events never move a defect left of A (4.1). While the
+chain is active, the left word's last defect is at A - 4, so the two never come within 2 cells of each other.</p>
+<h3 id="43-the-right-region">4.3 The right region</h3>
+<p>An <strong>episode</strong> starts when the head, moving right, has passed the chain's last defect B - 2. It ends when the head,
+moving left, has passed x_1 and its next defect is B - 2 again. In between it touches only defects right of B.</p>
+<p>There is no defect between B - 2 and x_1, so the head's phase there is well defined. It is the exit and return phase.</p>
+<p>The <strong>shape</strong> of the right region is its list of gaps B -&gt; x_1 -&gt; ... -&gt; hi. A gap below 24 is kept exactly; a gap of
+24 or more is kept as ("long", gap mod 4), written <code>Lc</code> for residue c.</p>
+<p><strong>Lemma R.</strong> The result of an episode depends only on the exit phase and the shape. The result is the new defects
+(each as an old defect plus an offset), the new <code>hi</code>, and the return phase. Appendix A lists the 81 entries that
+occur, grouped by the class in which they occur:</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>r0</th>
+<th>r1</th>
+<th>r2</th>
+<th>r3</th>
+<th>r4</th>
+<th>r5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>entries</td>
+<td>13</td>
+<td>9</td>
+<td>13</td>
+<td>13</td>
+<td>10</td>
+<td>23</td>
+</tr>
+</tbody>
+</table>
+<p>Every entry returns the head at phase c_K, which is the entry condition of Lemma C.</p>
+<p><strong>Proof.</strong> Each entry is one finite run, the <strong>base run</strong>, made valid for all long gaps by the transfer lemma 2.4.</p>
+<ul>
+<li><strong>(1) The base run.</strong> On a tape that holds only the right region, with every long gap at its smallest value (24 to 27,
+  by residue), the entry gives the table's result: the new defects, the new hi, the return phase and the counts.</li>
+<li><strong>(2) Free stretches.</strong> In every base run, every long gap keeps at least 11 consecutive edges that never hold a defect
+  and are never toggled or tested. No edge left of x_1 is ever touched.</li>
+<li><strong>(3) Every longer gap.</strong> A long gap of value min + 4j is the base gap with 4j cells inserted in its free stretch. By
+  2.4, applied once per long gap, the run has the same events. So the entry's result holds unchanged: each new
+  defect is the same old defect plus the same offset.</li>
+<li><strong>(4) The chain plays no part.</strong> Nothing left of x_1 is touched, and the first gap B -&gt; x_1 is long in every entry, so
+  the chain (whose last defect is B - 2) is never reached.</li>
+</ul>
+<p>In simulation terms, the event sequences of the two runs in (3) are identical, by induction on the events. Two
+defects on opposite sides of a long gap always stay at least 12 cells apart, so no rule ever sees across the gap.</p>
+<p><strong>Cancellations inside an episode.</strong> An episode may cancel two defects on the way. The entry's result already
+accounts for this, and the transfer lemma 2.4 needs no assumption about it: its proof matches the toggles one for one.</p>
+<p>Entry r5.23 is an example. Take the chain end B = 2, so c_K = 0, and the exit phase c_K, with</p>
+<div class="highlight"><pre><span></span><code>x_1 .. x_5  =  27, 54, 62, 63, 88        hi = 91        (shape L1 L3 8 1 L1 3)
+</code></pre></div>
+
+<p>Moving right, the head meets:</p>
+<table>
+<thead>
+<tr>
+<th>defect</th>
+<th>d</th>
+<th>rule</th>
+<th>defects afterwards</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>27</td>
+<td>3</td>
+<td>pass, φ becomes 1</td>
+<td>27, 54, 62, 63, 88</td>
+</tr>
+<tr>
+<td>54</td>
+<td>1</td>
+<td>wiggle: 54 moves to 56 (55 is no defect)</td>
+<td>27, 56, 62, 63, 88</td>
+</tr>
+<tr>
+<td>56</td>
+<td>3</td>
+<td>pass, φ becomes 2</td>
+<td>27, 56, 62, 63, 88</td>
+</tr>
+<tr>
+<td>62</td>
+<td>0</td>
+<td>turn left, toggling 62 and 63</td>
+<td>27, 56, 88</td>
+</tr>
+</tbody>
+</table>
+<p>Both 62 and 63 were defects, so they cancel. The episode goes on without a halt and returns at phase 0 with the
+defects 27, 55, 87, 92 and hi = 94. This is the entry's result: x1, x2+1, x5-1, hi+1, and hi grows by 3.</p>
+<p>The .v does not use the table: it runs every episode of an interval symbolically, with the long gaps as linear forms
+(section 10). The table is the readable form of those runs.</p>
+<h2 id="5-one-record-interval">5. One record interval</h2>
+<h3 id="51-the-order-of-events">5.1 The order of events</h3>
+<p>Start at a record exit in C_r(e). From there the head alternates between the three regions:</p>
+<ol>
+<li>one episode (the record-exit episode, entered at phase c_K + 2);</li>
+<li>then repeatedly: a chain visit (Lemma C), then an episode at the visit's exit phase (Lemma R);</li>
+<li>every 3^K visits a carry-out instead: a left episode (Lemma L), a carry back (Lemma C'), and then an episode.</li>
+</ol>
+<h3 id="52-counts">5.2 Counts</h3>
+<p>By Lemma T:</p>
+<ul>
+<li>the episode exit phases are c_K + 2 for the first T(K) visits and c_K afterwards;</li>
+<li>the interval has 81 carry-outs, the 81st being the left record;</li>
+<li>there are 81 x 3^K - 1 episodes after the record-exit episode, up to the next record exit.</li>
+</ul>
+<h3 id="53-the-right-region-over-a-whole-interval">5.3 The right region over a whole interval</h3>
+<p>With u fixed, the right region over an interval is a run of Lemma R entries with known exit phases. Long gaps are
+affine in u, so this run can be done symbolically. Appendix B lists the run for each class as a <strong>program</strong>:</p>
+<ul>
+<li>single entries, at the start, around the regime switch and at the end (20 to 30 per class);</li>
+<li>two <strong>4-cycles</strong>, one per regime: four entries whose shapes come back after the fourth, with some long gaps changed
+  by fixed multiples of 4. Each is repeated c times, c affine in u.</li>
+</ul>
+<p><strong>Gap maps.</strong> An entry puts every new defect at an old defect plus a fixed offset (Appendix A). On gap vectors this
+is an affine map: each new gap is a sum of consecutive old gaps plus a constant.</p>
+<p>With the small gaps of the shape written as numbers and the long gaps as variables g_i, for example</p>
+<div class="highlight"><pre><span></span><code>r1.1   (g1, 7, g3, g4, 3) -&gt; (g1, 7, g3 - 1, g4 + 8, 2)
+</code></pre></div>
+
+<p>Appendix F writes out the maps of all nine r1 entries and runs the whole r1 interval with them.</p>
+<p><strong>Lemma J (the jump).</strong> Let a 4-cycle have shapes s_1, ..., s_4 and gap maps f_1, ..., f_4, and let f be their
+composite.</p>
+<ul>
+<li><strong>(1) Translation.</strong> For each of the 12 cycles of Appendix B, f(h) = h + d: each long gap maps to itself plus its
+  increment, and each small gap to its own value. In particular f(h + d) = f(h) + d, so k cycles from h give
+  h + k d, as long as the shapes hold.</li>
+<li><strong>(2) Shapes in between.</strong> Inside cycle k, each of the four intermediate vectors is affine in k. Its slope is a sum of
+  entries of d (the linear parts only add consecutive gaps), so it is a multiple of 4, and small gaps have slope 0.</li>
+<li><strong>(3) The shapes hold throughout.</strong> Suppose the four shapes hold at k = 0 and at k = c - 1. Then every long gap is at
+  least 24 at both ends, hence at least 24 in between, with the same residue. So the shapes hold for every k from 0
+  to c - 1.</li>
+<li><strong>(4) Count.</strong> When the cycle is found, R visits of the regime are left. The jump does c = (R - m)/4 cycles, with
+  m = 4 + ((R - 4) mod 4) visits left for single entries (4 to 7). c is an integer and at least 1 for every u = 1
+  mod 8.</li>
+</ul>
+<p><strong>Uniformity in u.</strong> Write u = 1 + 8t with t &gt;= 0. A gap a + bu then equals</p>
+<div class="highlight"><pre><span></span><code>(a + b)  +  8b t
+</code></pre></div>
+
+<p>In every vector of the run, 8b is an integer divisible by 4 and b &gt;= 0. So the gap is an integer, its residue mod 4
+is that at u = 1, and it is at least its value at u = 1.</p>
+<p>Hence every vector has the same shape for every u, and the choice of entries made at u = 1 holds for all u. The
+visit counts V1 and E are affine in u as well (5.2, with 3^K = 3^(K0 + 4) u).</p>
+<p><strong>Worked example.</strong> Appendix F runs class r1 step by step: the vector after each of the 20 single entries, the two
+cycles with their composites, their counts c, and the vectors at the first and the last jumped cycle. The two
+composites are</p>
+<div class="highlight"><pre><span></span><code>f(h1, 7, h3, h4, 3)  =  (h1, 7, h3, h4 + 36, 3)
+f(h1, 8, h3, h4, 3)  =  (h1, 8, h3 - 4, h4 + 32, 3)
+</code></pre></div>
+
+<h3 id="54-why-x-and-y-stay-in-step-with-the-counter">5.4 Why X and Y stay in step with the counter</h3>
+<p>The X/Y synchronization is an exact cancellation. In this section w = 9^e = 81u; for example
+24948w - 36 = 2020788u - 36.</p>
+<p>Class r5 is an example. X is gap 4 of the Appendix B program.</p>
+<ul>
+<li>At the start of the interval, X = 3 V1 + 2 = (19683u - 11)/2 cells, where V1 = T(K) is the number of
+  phase-(c_K + 2) visits.</li>
+<li>Each 4-cycle of those visits eats 12 cells of X. The first cycle runs as four single entries, then
+  c = (6561u - 25)/8 cycles are jumped.</li>
+<li>So the u-terms cancel exactly. After the last jumped cycle</li>
+</ul>
+<p><code>X  =  (19683u - 11)/2  -  12  -  12 (6561u - 25)/8  =  20</code></p>
+<p>(and X = 32 at the start of that cycle). These are the 20 cells of entry r5.5 (shape <code>L1 L3 8 20 L2</code>), the entry
+  that comes next.
+- The X-exhausted transient then runs inside the table (r5.5 r5.4 r5.3 r5.1 r5.7 r5.6 are the last
+  phase-(c_K + 2) visits), and the old Y becomes a fossil of length 24948w - 36.</p>
+<p>The other classes work the same way. The per-visit rates are the 4-cycle increments of Appendix B divided by 4:</p>
+<table>
+<thead>
+<tr>
+<th>class</th>
+<th>first T(K) visits</th>
+<th>remaining visits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r5</td>
+<td>X eaten 3, Y grows 24; X exhausted at the switch, the old Y becomes a fossil</td>
+<td>new X grows 3</td>
+</tr>
+<tr>
+<td>r0</td>
+<td>X grows 9; frozen at the switch at 6804w - 4</td>
+<td>new Y grows 9</td>
+</tr>
+<tr>
+<td>r1</td>
+<td>Y grows 9</td>
+<td>X eaten 1, Y grows 8</td>
+</tr>
+<tr>
+<td>r2</td>
+<td>X eaten 9, Y grows 72; exhausted at the switch, Y becomes a fossil of 74844w - 36</td>
+<td>new X grows 9</td>
+</tr>
+<tr>
+<td>r3</td>
+<td>X grows 9; frozen at 20412w - 4</td>
+<td>new Y grows 9</td>
+</tr>
+<tr>
+<td>r4</td>
+<td>Y grows 27</td>
+<td>X eaten 3, Y grows 24</td>
+</tr>
+</tbody>
+</table>
+<p>These give X' = 3X + 8 and F' = 3F + 72 for the frozen blocks and the fossils:</p>
+<div class="highlight"><pre><span></span><code>X_k  =  6804 x 3^(k-4) - 4
+F_j  =  24948 x 3^j - 36
+</code></pre></div>
+
+<h2 id="6-the-record-step">6. The record step</h2>
+<p><strong>Lemma S.</strong> From a record exit in C_r(e), the machine reaches the next record exit, without halting, in
+C_(r+1)(e). After r4 the next class is r5, with e + 1.</p>
+<h3 id="61-what-happens-at-the-record">6.1 What happens at the record</h3>
+<ul>
+<li>The 81st carry-out leaves the chain all D0 (Lemma T).</li>
+<li>The left episode 81 moves the left word 3 cells left and adds a digit at A - 1 (Lemma L81).</li>
+<li>The carry back sweeps the chain from left to right and turns every D0 block into D2 (Lemma C').</li>
+</ul>
+<p>In D2 every defect has moved from its U0 place:</p>
+<div class="highlight"><pre><span></span><code>digit  -2      s1  +1      s2  +1      s3  +2        (D0: the same, but s3 +0)
+digit  -2      separator +2                          (the m = 1 block)
+</code></pre></div>
+
+<h3 id="62-the-regrouping">6.2 The regrouping</h3>
+<p>The new parse groups the same defects <strong>one defect later</strong>:</p>
+<div class="highlight"><pre><span></span><code>new block j  =  (s3 of old block j ; digit, s1, s2 of old block j+1)
+</code></pre></div>
+
+<p>Under this shift each gap moves to the next role. Its value changes by the D2 offsets:</p>
+<table>
+<thead>
+<tr>
+<th>old role</th>
+<th>new role</th>
+<th>change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>digit gap</td>
+<td>separator gap</td>
+<td>+3</td>
+</tr>
+<tr>
+<td>separator gap (1st)</td>
+<td>separator gap (2nd)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>separator gap (2nd)</td>
+<td>inter gap</td>
+<td>+1</td>
+</tr>
+<tr>
+<td>inter gap</td>
+<td>digit gap</td>
+<td>-4</td>
+</tr>
+</tbody>
+</table>
+<p>So every residue and every lower bound of (C) is preserved: digit gap &gt;= 1 becomes &gt;= 4, separator gaps stay &gt;= 4,
+the second becomes an inter gap &gt;= 5, and an inter gap &gt;= 5 becomes a digit gap &gt;= 1.</p>
+<p>At the left end, the new digit at A - 1 and the old first digit form the new m = 1 block <code>(A'+2; A'+3)</code> with
+A' = A - 3. The old m = 1 separator becomes the digit of the new block 2, at inter gap 5 from A.</p>
+<h3 id="63-the-exchange-at-the-right-end">6.3 The exchange at the right end</h3>
+<p>At the right end the chain gives defects to the right region, or takes some from it:</p>
+<table>
+<thead>
+<tr>
+<th>step</th>
+<th>K</th>
+<th>exchange</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r5 -&gt; r0</td>
+<td>K -&gt; K</td>
+<td>the last defect leaves the chain</td>
+</tr>
+<tr>
+<td>r0 -&gt; r1</td>
+<td>K -&gt; K + 1</td>
+<td>x_1, x_2, x_3 join as the separators of a new last block</td>
+</tr>
+<tr>
+<td>r1 -&gt; r2</td>
+<td>K -&gt; K - 1</td>
+<td>the last 5 defects leave the chain</td>
+</tr>
+<tr>
+<td>r2 -&gt; r3</td>
+<td>K -&gt; K + 1</td>
+<td>x_1, x_2, x_3 join</td>
+</tr>
+<tr>
+<td>r3 -&gt; r4</td>
+<td>K -&gt; K</td>
+<td>the last defect leaves</td>
+</tr>
+<tr>
+<td>r4 -&gt; r5</td>
+<td>K -&gt; K + 1, e -&gt; e + 1</td>
+<td>x_1, x_2, x_3 join</td>
+</tr>
+</tbody>
+</table>
+<p>A chain of K blocks has 4K - 2 defects. With the new left digit and the exchange this gives 4K' - 2 in every step.
+Over one epoch K grows by 2: the 6 new left digits plus 2 net defects from the right make 8 = 2 x 4.</p>
+<p>The new record exit is the moment of (H) for the new end B'. There are two cases, both decided by residues.</p>
+<p><strong>Defects leave the chain</strong> (r5 and r3 drop 1, r1 drops 5). The new last block is (old s3 of block j - 1; digit, s1,
+s2 of block j), with j = K for r5, r3 and j = K - 1 for r1. Its last defect is the old s2 of block j, which has the
+same place in D0 and D2 (+1). So B' lies inside the old chain.</p>
+<ul>
+<li>The carry back enters block j in D0 from the left at phase c_j + 2. By Appendix D its run is: pass the digit
+  (d = 3), pass s1 (d = 2), pass s2 (d = 3), wiggle s3 (d = 1), pass s3 (d = 3).</li>
+<li>After the pass at s2 the head is on cell s2 + 1 = B' - 1 in state B reading 1, with phase c_j + 3.</li>
+<li>The new block's separators are the old digit, s1 and s2 of block j at their D2 places, all c_j + 1 mod 4. So
+  c' = c_j + 1, and the phase c_j + 3 is c' + 2, as (H) requires.</li>
+<li>The defects that leave (s3 of block j, and for r1 all of block K) are not reached yet: they are still at their D0
+  places.</li>
+</ul>
+<p><strong>Defects join the chain</strong> (r0, r2, r4 take in x_1, x_2, x_3). The carry back turns the whole chain into D2 and
+leaves block K to the right at phase c_K (Lemma C', all D).</p>
+<ul>
+<li>The new last block is (old s3 of block K at its D2 place; x_1, x_2, x_3). Its base is b' = b_K + g3 + 2, which is
+  c_K + 2 mod 4, so its phase is c' = c_K + 3.</li>
+<li>In all three classes the interval ends with E_1 = 1 and E_2 = E_3 = 0 mod 4 (Appendix B), and B = c_K + 2 mod 4.
+  So x_1, x_2, x_3 are all c_K + 3 mod 4.</li>
+<li>Arriving at phase c_K, the head sees d = 3, 2, 3 at x_1, x_2, x_3: three passes, with phases c_K + 1, c_K, c_K + 1.
+  The gaps around them are long, so no other defect is near.</li>
+<li>After the pass at x_3 the head is on cell x_3 + 1 = B' - 1 in state B reading 1, with phase c_K + 1 = c' + 2.</li>
+</ul>
+<h3 id="64-the-window-closes">6.4 The window closes</h3>
+<p>The whole step is computed symbolically in u:</p>
+<ol>
+<li>the record-exit episode, using a Lemma R entry;</li>
+<li>the interval, using sections 5.2 and 5.3 (the programs of Appendix B);</li>
+<li>the record visit, using the D2/D0 offsets and the exchange.</li>
+</ol>
+<p><strong>For all six classes the result is exactly V_(r+1)(u)</strong>; after r4 it is V_r5(9u). The chain gaps that leave the
+window for the deep chain have the residues and lower bounds of their roles.</p>
+<p><strong>The record-visit map.</strong> Write the window at the record exit as c_1, ..., c_J (the last J chain gaps, c_J ending at
+B - 2). Write the right region at the end of the interval as E_1, ..., E_n (B -&gt; x_1 -&gt; ... -&gt; hi, the <code>end</code> line of
+Appendix B). The record visit</p>
+<ul>
+<li>moves every chain defect that stays in the chain from its U0 place to its D2 place (digit -2, s1 +1, s2 +1, s3 +2),</li>
+<li>leaves every chain defect that leaves at its D0 place (the same, but s3 +0),</li>
+<li>leaves x_1, ..., x_n and hi where they are.</li>
+</ul>
+<p>Reading the gaps from the new end B' gives, per class:</p>
+<div class="highlight"><pre><span></span><code>r5 -&gt; r0 (drop 1): chain window (c1 + 3, c2) | right (c3 - 3, E1 + 2, E2, E3, E4, E5)
+r0 -&gt; r1 (take in 3): chain window (c1, c2 + 1, E1, E2, E3) | right (E4 - 2, E5, E6, E7, E8)
+r1 -&gt; r2 (drop 5): chain window (none) | right (c1 - 3, c2 - 2, c3 + 3, c4, c5 - 1, E1 + 2, E2, E3, E4, E5)
+r2 -&gt; r3 (take in 3): chain window (E3) | right (E4 - 2, E5, E6, E7, E8, E9, E10) | to the deep chain (E1, E2) as (digit gap, separator gap)
+r3 -&gt; r4 (drop 1): chain window (none) | right (c1 - 3, E1 + 2, E2, E3, E4, E5, E6, E7, E8)
+r4 -&gt; r5 (take in 3): chain window (E1, E2, E3) | right (E4 - 2, E5, E6, E7, E8, E9)
+</code></pre></div>
+
+<p>For example, r5 -&gt; r0. The window has c_1 (digit gap), c_2, c_3 (separator gaps) of block K.</p>
+<ul>
+<li>The old s3 leaves at its D0 place (+0). The new chain ends at the old s2 (+1), so B' = old s2 + 3, and the first
+  right gap is c_3 - 3.</li>
+<li>The next right gap runs from the old s3 to x_1 = B + E_1 = old s3 + 2 + E_1, so it is E_1 + 2.</li>
+<li>The chain gaps change as in 6.2: c_1 + 3 (digit -2 to s1 +1) and c_2 + 0 (s1 +1 to s2 +1).</li>
+</ul>
+<p>Substituting V_r5(u) and the r5 end of Appendix B gives V_r0(u) entry by entry:</p>
+<div class="highlight"><pre><span></span><code>c_1 + 3  =  8316u - 36        c_2  =  24948u - 36        c_3 - 3  =  74844u - 39
+E_1 + 2  =  224532u - 37      E_2, ..., E_5 unchanged
+</code></pre></div>
+
+<p>The other five lines are evaluated in the same way.</p>
+<p>In the take-in classes the gap from the old s3 (at +2) to x_1 = old s3 + 2 + E_1 is E_1, and the new end is
+B' = x_3 + 2, so the first right gap is E_4 - 2.</p>
+<p>At r2 -&gt; r3 the gaps E_1 and E_2 leave the window for the deep chain, as the digit gap and the first separator gap of
+the new last block. They are 8316u - 39 (1 mod 4, at least 1) and 24948u - 36 (0 mod 4, at least 4).</p>
+<p>The window sizes J(r) are the smallest that let the window reproduce itself. A step that drops d defects needs J(r) at
+least d + J(r+1), and a step that takes in 3 needs J(r) at least J(r+1) - 3.</p>
+<h2 id="7-progress-and-halting">7. Progress and halting</h2>
+<p><strong>Progress.</strong> Lemma S is a finite run of at least one step.</p>
+<ul>
+<li>An interval has 81 x 3^K visits and as many episodes, plus 81 left episodes.</li>
+<li>In a visit each block takes part in at most two of the single-block runs of 4.1 (one leftward, one rightward), each
+  of at most 8 events.</li>
+<li>A left episode has at most 31 events, and an episode is one table entry, a fixed finite run.</li>
+</ul>
+<p>So from every record exit the machine reaches the next record exit in finitely many steps, and that next record exit
+is again in the invariant. The record exits never end, so the run is infinite.</p>
+<p><strong>Halting is unreachable.</strong> By 2.2 a halt needs a rightward head with d = 1 at a defect e with e + 1 also a defect,
+that is two defects at distance 1. After the base case every step lies in one of the following runs:</p>
+<ul>
+<li>a chain visit or carry back (Lemma C, C'), including the record visit: by Lemma B' it is a list of single-block
+  runs, each of which is the run of Appendix D and does not halt (Lemma B, part 3);</li>
+<li>a left episode (Lemma L): a fixed finite run, checked without halt, alone and with the chain present; episode 81 is
+  Lemma L81, whose six rightward d = 1 events all find e + 1 free;</li>
+<li>an episode (Lemma R): the base run of its entry, transferred to the actual gaps by 2.4; the base runs do not halt.</li>
+</ul>
+<p>The regions never come close to each other. The left word ends at A - 4, and block 1's interval starts at A. Block K's
+interval ends at B, and x_1, at least 24 cells right of B, is never touched.</p>
+<p>The one close pair across a region boundary is the new defect at A - 1 next to block 1's digit at A, during the record
+visit. Lemma L81 and Lemma B show that no rule ever tests or toggles it. The base case itself is a direct simulation of
+the table, which does not halt.</p>
+<h2 id="8-base-case-and-conclusion">8. Base case and conclusion</h2>
+<p><strong>Base case.</strong> The run from the blank tape reaches record exit 16 in C_r5(0) after 398,090,000 steps. Appendix C gives
+this configuration exactly.</p>
+<p><strong>Steps 16 -&gt; 28.</strong> These are twelve concrete instances of Lemma S, on the exact numbers of Appendix C.</p>
+<p><strong>Record exit 28 onwards.</strong> At record exit 28 the window equals V_r5(1), at step 2,629,088,227,408. Section 6.4
+closes Lemma S symbolically for every u, in all six classes.</p>
+<p><strong>Theorem.</strong> The machine never halts.</p>
+<p><strong>Proof.</strong> By induction over record exits, the configuration is in C_r(e) at every record exit n &gt;= 16. Between two
+record exits every step lies in a run covered by Lemma C, C', L or R, or in the record visit of 6.1. None of these
+runs halts (section 7). Some right-region episodes cancel two defects on the way (4.3); the results of Lemma R already
+include this.</p>
+<p>The .v takes a shorter route to the start of the induction. It simulates the run from the blank tape directly up to
+record exit 28, so it needs neither the configuration at record exit 16 nor the twelve concrete steps (section 10).</p>
+<h2 id="9-other-starts-of-the-same-table">9. Other starts of the same table</h2>
+<p>Two more holdouts run this transition table from another start state:</p>
+<table>
+<thead>
+<tr>
+<th>holdout</th>
+<th>relation to this machine</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1RB0RA_1LC0RE_1LD0LC_1RA0LB_1RA0RF_1LE---</code></td>
+<td>this table started in B; their A..F are this machine's B, C, D, E, A, F</td>
+</tr>
+<tr>
+<td><code>1RB---_1LC0LA_1LD0LC_1RE0LB_1RF0RE_1LC0RD</code></td>
+<td>this table started in F, mirrored; their A..F are this machine's F, A, B, C, D, E</td>
+</tr>
+</tbody>
+</table>
+<p>The first has the same record numbering. The second has one more 3-cell move of λ in its start-up, so its record n
+is its (n + 1)-th 3-cell move.</p>
+<p>The first reaches record exit 16 in C_r5(0), after 398,095,384 steps from its start. From there on its gaps are this
+machine's, except one deep chain gap that is 4 cells longer. The deep chain enters only through residues and lower
+bounds.</p>
+<p>The second reaches record exit 16 after 397,796,108 steps, and its record exits 16-27 satisfy (L), (C) and (H). Its
+windows at record exits 16-25 are not those of Appendix C, however. One start-up gap is 36 cells shorter (936 against
+972 at record exit 16), and up to record exit 25 it still lies in the window or in the right region. From record exit
+26 on, only deep chain gaps differ.</p>
+<p>Both runs are in C_r5(2) at record exit 28, with the window V_r5(1). That is the base case of their proofs.</p>
+<p>So the argument of sections 3-8 applies to both from record exit 28 on. The .v proves only the string of this
+write-up.</p>
+<p>The other two are proved in <code>verify/Skelet1LikeC2_1RB0RA_1LC0RE.v</code> and <code>verify/Skelet1LikeC2_1RB1RZ_1LC0LA.v</code>. Each
+keeps the library part of this .v word for word, stated for this table as <code>tmP</code>: the simulator and its soundness, the
+chain and region lemmas, Lemma S, <code>Inv</code> and <code>inv_step</code>.</p>
+<p>Each has its own base case and its own final theorems. A renaming lemma (for the second, with a mirror) turns a halt
+of that machine into a halt of this table. Their write-ups are attached alongside.</p>
+<h2 id="10-the-formalization">10. The formalization</h2>
+<h3 id="101-the-simulator">10.1 The simulator</h3>
+<p>The .v does not formalize the defect model of section 2. It runs the transition table itself, on a run-length
+encoding of the tape.</p>
+<ul>
+<li>A <strong>run</strong> is a first symbol and a length; the cells of a run alternate. Where two runs meet with equal symbols
+  there is a defect of 2.1. The boundaries between regions are cuts placed inside alternating stretches.</li>
+<li>A <strong>length</strong> is a linear form <code>LF c [v1; ...; vn]</code>, standing for c + v_1 x_1 + ... + v_n x_n over N.</li>
+<li>A <strong>side</strong> is a list of runs, nearest the head first, followed by the blank stream or an abstract side.</li>
+</ul>
+<p>One simulator step <code>sstep</code> crosses a whole run at once when the head state and the run's first symbol are in a sweep
+cycle of 2.1 and every coefficient v_i is divisible by 4. Otherwise it makes one machine step with <code>tm</code>.</p>
+<p>The soundness theorem <code>sstep_spec</code> holds for every value of the x_i and every content of the abstract sides. <code>reach</code>
+iterates the simulator to a target configuration, and <code>reach_spec</code> turns a successful computation into a <code>--&gt;+</code> run
+of <code>tm</code>.</p>
+<p>A simulator step returns nothing when <code>tm</code> has no transition, so every run proved this way is free of halts. If a
+computation would read an abstract side, it fails. So a successful <code>reach</code> is also a locality proof: the run holds
+for every content of the abstract sides.</p>
+<p>This replaces the transfer lemma 2.4. A gap of residue c is a run of length c + 4x, and one computation covers every x.</p>
+<h3 id="102-the-pieces">10.2 The pieces</h3>
+<ul>
+<li><strong>Blocks.</strong> The eight m = 3 states are the labels <code>lab</code>, with run lengths <code>lens</code>. The gap variables are
+  t = 4 + 4x_0 and s = 4 + 4x_1 (separator gaps), a = 1 + 4x_2 (digit gap) and lp = 2 + 4x_3 (the inter gap on the
+  block's left, minus 3). The tight gaps are the instance x = 0, so they need no separate case.</li>
+<li><strong>Single-block runs.</strong> The 17 runs of 4.1 that the proof uses are <code>blk_turn</code>, <code>blk_pass</code>, <code>blk_reset</code> (11 runs,
+  m = 3, every gap a variable) and <code>blk1_turn</code>, <code>blk1_pass</code>, <code>blk1_back</code> (6 runs of block 1, five states <code>lab1</code>,
+  concrete lengths). Each case is one <code>reach</code> computation with both sides abstract.</li>
+<li><strong>The unused run.</strong> The m = 1 run "D0 entered from the left at c" never occurs (4.1), and the .v does not state it.</li>
+<li><strong>Lemma C, C'.</strong> The functions <code>visit3</code>, <code>cb</code> and <code>vis</code> compute a visit on the label list. <code>visit3_spec</code>, <code>cb_spec</code>
+  and <code>vis_spec</code> prove by list induction that the machine follows them. <code>runv_spec</code> chains n visits with the
+  episodes between them.</li>
+<li><strong>Lemma T.</strong> <code>interval</code> computes the visits of a whole interval on labels for every number m &gt;= 2 of m = 3 blocks:
+  81 x 3^(m+1) - 1 visits, the first T of them at phase c_K + 2, with 2T + 5 = 3^(m+2). This is a proof for every K,
+  in the pieces <code>CU</code>, <code>CW</code>, <code>S3</code>, <code>allD</code> and <code>cycs</code>.</li>
+<li><strong>Lemma L, L81.</strong> The left word <code>lw i</code> is the closed form of 4.2 (<code>lw 81</code> is the word after the record). <code>lw_all</code>
+  checks all 81 episodes in one computation, and <code>lw_ep</code> states them. The .v numbers the episodes 0..80, so its
+  episode 80 is the left record.</li>
+<li><strong>The right region.</strong> <code>ep_run</code> runs one episode with the chain side abstract. <code>jump_run</code> checks one 4-cycle on a
+  template with a fresh variable per changing run, and <code>jump_lemma</code> repeats it by induction on the cycle count (Lemma
+  J). <code>exec</code> runs a program of single episodes and jumps, with soundness <code>exec_spec</code>.</li>
+<li><strong>The six interval programs.</strong> <code>prog_r5</code> .. <code>prog_r4</code> are the programs of Appendix B with u = 1 + 8t, and
+  <code>int_r5</code> .. <code>int_r4</code> check them by <code>vm_compute</code>. Each check also confirms the phase counts of Lemma T. For class r5
+  these are 3278 + 26244t episodes at phase c_K + 2 and 173868 + 1390932t at phase c_K.</li>
+</ul>
+<h3 id="103-lemma-s-and-the-invariant">10.3 Lemma S and the invariant</h3>
+<ul>
+<li><strong>Record visit.</strong> <code>record_visit</code> is the carry-out at all D0, left episode 81 and the carry back to all D2 (6.1).</li>
+<li><strong>Regrouping.</strong> <code>regroup</code> is the tape equality of 6.2, by list induction on the chain. It takes no machine steps.</li>
+<li><strong>Exchange and window.</strong> <code>step_r5</code> .. <code>step_r4</code> do the exchange of 6.3 and the next record-exit episode as <code>reach</code>
+  computations. The take-in classes first split one run of the right region (<code>split4</code>).</li>
+<li><strong>Lemma S.</strong> <code>S_r5</code> .. <code>S_r4</code> compose the interval, the record visit, the regrouping and the exchange, for every
+  e &gt;= 2 and every deep chain.</li>
+</ul>
+<p>The invariant <code>Inv (r, e, t, nus)</code> is taken one episode later than C_r(e): after the record-exit episode, with the head
+entering the chain at phase c_K and the right region at the <code>start</code> vector of Appendix B.</p>
+<ul>
+<li>Reading from the head leftward, the chain is the m = 3 blocks in U0 with gap variables <code>nus</code>, then block 1 in U0,
+  then the left word W_1.</li>
+<li><code>win</code> fixes the window part of <code>nus</code> (for example x_0 = 18701 + 149688t for the last block in class r5) and the
+  length of the deep part. The deep part is arbitrary, so the residues and minimums of (C) are built into the encoding.</li>
+<li>The arithmetic side is 2 &lt;= e and 1 + 8t = 9^(e-2). After r4, t becomes 1 + 9t.</li>
+</ul>
+<p><code>inv_step</code> is the closure lemma, one class at a time.</p>
+<h3 id="104-base-case-and-conclusion">10.4 Base case and conclusion</h3>
+<ul>
+<li><code>init28</code> runs the simulator from the blank tape to record exit 28: 18,571,896 simulator steps, about 2.63 x 10^12
+  machine steps. It is cut into 38 pieces <code>ck_0</code> .. <code>ck_37</code>, each one <code>native_compute</code> check between two written-out
+  configurations.</li>
+<li><code>base28</code> moves the head 3 cells to the chain cut and runs the record-exit episode, reaching the invariant at class
+  r5, e = 2, t = 0 (<code>inv28</code>). The chain there has K = 7 blocks.</li>
+<li><code>nonhalt</code> is <code>multistep_nonhalt</code> with <code>init28</code> and <code>base28</code>, then <code>progress_nonhalt_cond</code> with <code>Inv</code> and <code>inv_step</code>.</li>
+</ul>
+<h2 id="11-numerical-checks">11. Numerical checks</h2>
+<p>They are evidence only; the result rests on the .v file alone.</p>
+<ul>
+<li><strong>Defect model.</strong> The rules of 2.2 agree with direct simulation of the table on every tape word of length 1 to 12
+  between blank ends, with the head on every cell within 2 of the word and in every sweep state (122,884 runs, 34,134
+  of them ending in the halt). They also agree on 10,000 random tapes of up to about 2,400 cells.</li>
+<li><strong>Record exits.</strong> The operational definition of 3.3 finds record exit 16 on the direct simulation. (H) and the
+  formula for B hold at every record exit 16-39 of the defect-model run.</li>
+<li><strong>Base configuration.</strong> Appendix C agrees with direct simulation, cell by cell.</li>
+<li><strong>Chain.</strong> Every word of Lemma C's shape for K &lt;= 2, and the pair (2, 3) at K = 3 entered from block 1, was run with
+  every gap in {tight, tight + 4, long} and both entries (1,432,212 runs). 4,000 random chains with K = 3..10 and tight
+  gaps add 5,210 runs. All give the lemma's result, with no collision, and no defect is ever left of A.</li>
+<li><strong>Lemma T.</strong> It holds on chain words for K = 2..9, and on the exact defect model for K = 2..8 (the chain alone,
+  re-entered from the left at c_1 + 2 after each carry-out, 81 x 3^K visits each).</li>
+<li><strong>Left end.</strong> All 81 episodes, run in a row from W_1 on a tape that holds only the left region, give the words of
+  4.2 and the record, without halt. With the first three chain blocks present in their full states at the tightest
+  gaps (4 contexts, 324 runs), the result is the same and the chain is untouched.</li>
+<li><strong>Right table.</strong> It was built from records 16-27 (262,430 episodes) and predicts every one of the 2,125,759 episodes
+  of records 28-33. Every combination of the long gaps in {min, min + 4} (5,376 runs) and every long gap increased by
+  4j with j up to 10^6 (810 runs) give the table's result, with no halt.</li>
+<li><strong>Record steps.</strong> On exact numbers, with every episode run singly (no jumps), the step reproduces every next record
+  exit from record exits 16-27, and maps V_r(1) to V_(r+1)(1) and V_r(9) to V_(r+1)(9) at record exits 28-39 (up to
+  4,782,968 episodes per step).</li>
+<li><strong>Deep chain.</strong> Replacing every deep chain gap by a random value with the same residue and at least its minimum
+  gives the same next window and a deep chain in the invariant (120 trials at record exits 16-27, 15 at 28-32).</li>
+<li><strong>The run.</strong> Record exits 28-39 have the windows V_r(1) and V_r(9). The defect model runs to 1.2 x 10^14 steps
+  without a halt.</li>
+<li><strong>Other starts.</strong> For both holdouts of section 9, record exits 16-33 satisfy (L), (C) and (H), the step on exact
+  numbers maps each record exit 16-27 to the next one, and the windows at 28-33 equal V_r(1). For the first, record
+  exits 16-27 also have the windows of Appendix C, so they are in C_r(e). For the second they are not (section 9).</li>
+</ul>
+<h2 id="appendix-a-the-right-region-table">Appendix A. The right-region table</h2>
+<p>One line per entry: id, exit phase class (2 = c_K + 2, 0 = c_K), shape (gaps B -&gt; x_1 -&gt; ... -&gt; hi, <code>Lc</code> = long with
+residue c), the defects after the episode (<code>x_i+o</code>, <code>hi+o</code> = old defect plus offset), the new <code>hi</code>, and the counts of
+right-edge trips, turns inside the region and wiggles. Every entry returns at phase c_K.</p>
+<div class="highlight"><pre><span></span><code>class r5: 23 entries
+r5.1   2 | L1 L3 7 13 L0 3                          | x1 x2 x3+1 x4-4                    | hi = hi+23   | trips 8, mid turns 5, wiggles 8
+r5.2   2 | L1 L3 7 L1 L0 3                          | x1 x2 x3+1 x4-4                    | hi = hi+23   | trips 8, mid turns 5, wiggles 8
+r5.3   2 | L1 L3 8 13 L1 3                          | x1 x2 x3-1 x4-1 hi+11              | hi = hi+14   | trips 5, mid turns 4, wiggles 4
+r5.4   2 | L1 L3 8 18 L0 3                          | x1 x2 x3 x4-5 hi+25                | hi = hi+28   | trips 10, mid turns 5, wiggles 8
+r5.5   2 | L1 L3 8 20 L2                            | x1 x2 x3 x4-2 hi+16                | hi = hi+19   | trips 7, mid turns 4, wiggles 5
+r5.6   2 | L1 L3 8 6 L0 3                           | x1 x2 x3 x3+1 hi+25                | hi = hi+28   | trips 10, mid turns 5, wiggles 8
+r5.7   2 | L1 L3 8 8 L2                             | x1 x2 x3 x4-2 hi+16                | hi = hi+19   | trips 7, mid turns 4, wiggles 5
+r5.8   2 | L1 L3 8 L0 L2                            | x1 x2 x3 x4-2 hi+16                | hi = hi+19   | trips 7, mid turns 4, wiggles 5
+r5.9   2 | L1 L3 8 L1 L1 3                          | x1 x2 x3-1 x4-1 hi+11              | hi = hi+14   | trips 5, mid turns 4, wiggles 4
+r5.10  2 | L1 L3 8 L2 L0 3                          | x1 x2 x3 x4-5 hi+25                | hi = hi+28   | trips 10, mid turns 5, wiggles 8
+r5.11  0 | L1 L0 L0 3 13 2                          | x1 x2 x3 x4+1 hi+3                 | hi = hi+6    | trips 2, mid turns 0, wiggles 2
+r5.12  0 | L1 L0 L0 3 L1 2                          | x1 x2 x3 x4+1 hi+3                 | hi = hi+6    | trips 2, mid turns 0, wiggles 2
+r5.13  0 | L1 L0 L0 4 11                            | x1 x2 x3 x4-1 hi+1                 | hi = hi+3    | trips 1, mid turns 1, wiggles 0
+r5.14  0 | L1 L0 L0 4 17 3                          | x1 x2 x3 x4 x5+1                   | hi = hi      | trips 0, mid turns 1, wiggles 0
+r5.15  0 | L1 L0 L0 4 18 2                          | x1 x2 x3 x4                        | hi = hi+3    | trips 1, mid turns 0, wiggles 1
+r5.16  0 | L1 L0 L0 4 23                            | x1 x2 x3 x4-1 hi+1                 | hi = hi+3    | trips 1, mid turns 1, wiggles 0
+r5.17  0 | L1 L0 L0 4 5 3                           | x1 x2 x3 x4 x5+1                   | hi = hi      | trips 0, mid turns 1, wiggles 0
+r5.18  0 | L1 L0 L0 4 6 2                           | x1 x2 x3 x4                        | hi = hi+3    | trips 1, mid turns 0, wiggles 1
+r5.19  0 | L1 L0 L0 4 L1 3                          | x1 x2 x3 x4 x5+1                   | hi = hi      | trips 0, mid turns 1, wiggles 0
+r5.20  0 | L1 L0 L0 4 L2 2                          | x1 x2 x3 x4                        | hi = hi+3    | trips 1, mid turns 0, wiggles 1
+r5.21  0 | L1 L0 L0 4 L3                            | x1 x2 x3 x4-1 hi+1                 | hi = hi+3    | trips 1, mid turns 1, wiggles 0
+r5.22  0 | L1 L0 L0 5 2                             | x1 x2 x3 x4-1 hi+2                 | hi = hi+5    | trips 2, mid turns 0, wiggles 0
+r5.23  0 | L1 L3 8 1 L1 3                           | x1 x2+1 x5-1 hi+1                  | hi = hi+3    | trips 1, mid turns 2, wiggles 1
+class r0: 13 entries
+r0.1   2 | L1 L3 L0 L0 3 L1 2                       | x1 x2 x3 x4 x5+1                   | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r0.2   2 | L1 L3 L0 L0 4 L1 3                       | x1 x2 x3 x4 x5-1 hi+4              | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r0.3   2 | L1 L3 L0 L0 4 L2 2                       | x1 x2 x3 x4 x5 hi+9                | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r0.4   2 | L1 L3 L0 L0 4 L3                         | x1 x2 x3 x4 x5 hi+7                | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r0.5   0 | L1 L0 L0 L3 4 L3                         | x1 x2 x3 x4 x5+3 hi-1 hi+4         | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r0.6   0 | L1 L0 L0 L3 7 L0 15                      | x1 x2 x3 x4 x5 x6 hi+7             | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r0.7   0 | L1 L0 L0 L3 7 L0 22 2                    | x1 x2 x3 x4 x5 x6 hi+9             | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r0.8   0 | L1 L0 L0 L3 7 L0 L1 3                    | x1 x2 x3 x4 x5 x6-1 hi+4           | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r0.9   0 | L1 L0 L0 L3 7 L0 L2 2                    | x1 x2 x3 x4 x5 x6 hi+9             | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r0.10  0 | L1 L0 L0 L3 7 L0 L3                      | x1 x2 x3 x4 x5 x6 hi+7             | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r0.11  0 | L1 L0 L0 L3 7 L3 5 2                     | x1 x2 x3 x4 x5 x6+1                | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r0.12  0 | L1 L0 L0 L3 7 L3 L1 2                    | x1 x2 x3 x4 x5 x6+1                | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r0.13  0 | L1 L3 L0 L0 3 L1 2                       | x1 x2+1 x3+1 x4 x5+1               | hi = hi+9    | trips 3, mid turns 2, wiggles 5
+class r1: 9 entries
+r1.1   2 | L1 7 L0 L1 3                             | x1 x2 x3-1 hi+4                    | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r1.2   2 | L1 7 L0 L2 2                             | x1 x2 x3 hi+9                      | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r1.3   2 | L1 7 L0 L3                               | x1 x2 x3 hi+7                      | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r1.4   2 | L1 7 L3 L1 2                             | x1 x2 x3+1                         | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r1.5   0 | L1 7 L0 L2 2                             | x1 x2+1 x3+2 hi+3                  | hi = hi+6    | trips 2, mid turns 1, wiggles 3
+r1.6   0 | L1 7 L1 L0 3                             | x1 x2+1 x3-3 hi+11                 | hi = hi+14   | trips 5, mid turns 2, wiggles 4
+r1.7   0 | L1 8 L0 L2                               | x1 x2-1 x3 hi+2                    | hi = hi+5    | trips 2, mid turns 1, wiggles 0
+r1.8   0 | L1 8 L1 L1 3                             | x1 x2 x3+1 x4                      | hi = hi      | trips 0, mid turns 1, wiggles 0
+r1.9   0 | L1 8 L2 L0 3                             | x1 x2 x3-2                         | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+class r2: 13 entries
+r2.1   2 | L1 L3 L0 L0 L3 L3 7 L1 L0 3              | x1 x2 x3 x4 x5 x6 x7+1 x8-11 hi+67 | hi = hi+70   | trips 25, mid turns 14, wiggles 22
+r2.2   2 | L1 L3 L0 L0 L3 L3 8 20 L2                | x1 x2 x3 x4 x5 x6 x7-1 x8-8 hi+58  | hi = hi+61   | trips 22, mid turns 13, wiggles 18
+r2.3   2 | L1 L3 L0 L0 L3 L3 8 L0 L2                | x1 x2 x3 x4 x5 x6 x7-1 x8-8 hi+58  | hi = hi+61   | trips 22, mid turns 13, wiggles 18
+r2.4   2 | L1 L3 L0 L0 L3 L3 8 L1 L1 3              | x1 x2 x3 x4 x5 x6 x7 x8-7 hi+53    | hi = hi+56   | trips 20, mid turns 13, wiggles 18
+r2.5   2 | L1 L3 L0 L0 L3 L3 8 L2 L0 3              | x1 x2 x3 x4 x5 x6 x7 x8-10         | hi = hi+65   | trips 23, mid turns 14, wiggles 21
+r2.6   0 | L1 L0 L0 L3 L3 L0 L0 3 L1 2              | x1 x2 x3 x4 x5 x6 x7 x8+1          | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r2.7   0 | L1 L0 L0 L3 L3 L0 L0 4 17 3              | x1 x2 x3 x4 x5 x6 x7 x8-1 hi+4     | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r2.8   0 | L1 L0 L0 L3 L3 L0 L0 4 6 2               | x1 x2 x3 x4 x5 x6 x7 x8 hi+9       | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r2.9   0 | L1 L0 L0 L3 L3 L0 L0 4 L1 3              | x1 x2 x3 x4 x5 x6 x7 x8-1 hi+4     | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r2.10  0 | L1 L0 L0 L3 L3 L0 L0 4 L2 2              | x1 x2 x3 x4 x5 x6 x7 x8 hi+9       | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r2.11  0 | L1 L0 L0 L3 L3 L0 L0 4 L3                | x1 x2 x3 x4 x5 x6 x7 x8 hi+7       | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r2.12  0 | L1 L0 L0 L3 L3 L3 8 1 L1 3               | x1 x2 x3 x4 x5 x6+1 x9-1 hi hi+6   | hi = hi+8    | trips 3, mid turns 3, wiggles 2
+r2.13  0 | L1 L3 L0 L0 L3 L3 7 13 L0 3              | x1 x2+1 x3+1 x4 x5 x6 x7+1 x7+2 hi+67 | hi = hi+70   | trips 25, mid turns 15, wiggles 23
+class r3: 13 entries
+r3.1   2 | L1 L3 L0 L0 3 L1 2                       | x1 x2 x3 x4 x5+1                   | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r3.2   2 | L1 L3 L0 L0 4 L1 3                       | x1 x2 x3 x4 x5-1 hi+4              | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r3.3   2 | L1 L3 L0 L0 4 L2 2                       | x1 x2 x3 x4 x5 hi+9                | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r3.4   2 | L1 L3 L0 L0 4 L3                         | x1 x2 x3 x4 x5 hi+7                | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r3.5   0 | L1 L0 L0 L3 4 L3                         | x1 x2 x3 x4 x5+3 hi-1 hi+4         | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r3.6   0 | L1 L0 L0 L3 7 L0 15                      | x1 x2 x3 x4 x5 x6 hi+7             | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r3.7   0 | L1 L0 L0 L3 7 L0 22 2                    | x1 x2 x3 x4 x5 x6 hi+9             | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r3.8   0 | L1 L0 L0 L3 7 L0 L1 3                    | x1 x2 x3 x4 x5 x6-1 hi+4           | hi = hi+6    | trips 2, mid turns 2, wiggles 2
+r3.9   0 | L1 L0 L0 L3 7 L0 L2 2                    | x1 x2 x3 x4 x5 x6 hi+9             | hi = hi+12   | trips 4, mid turns 1, wiggles 4
+r3.10  0 | L1 L0 L0 L3 7 L0 L3                      | x1 x2 x3 x4 x5 x6 hi+7             | hi = hi+9    | trips 3, mid turns 2, wiggles 3
+r3.11  0 | L1 L0 L0 L3 7 L3 5 2                     | x1 x2 x3 x4 x5 x6+1                | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r3.12  0 | L1 L0 L0 L3 7 L3 L1 2                    | x1 x2 x3 x4 x5 x6+1                | hi = hi+9    | trips 3, mid turns 1, wiggles 4
+r3.13  0 | L1 L3 L0 L0 3 L1 2                       | x1 x2+1 x3+1 x4 x5+1               | hi = hi+9    | trips 3, mid turns 2, wiggles 5
+class r4: 10 entries
+r4.1   2 | L1 L3 L0 L0 L3 7 L0 L1 3                 | x1 x2 x3 x4 x5 x6 x7 hi+22         | hi = hi+24   | trips 8, mid turns 5, wiggles 10
+r4.2   2 | L1 L3 L0 L0 L3 7 L0 L2 2                 | x1 x2 x3 x4 x5 x6 x7               | hi = hi+27   | trips 9, mid turns 4, wiggles 11
+r4.3   2 | L1 L3 L0 L0 L3 7 L0 L3                   | x1 x2 x3 x4 x5 x6 x7-1 hi+25       | hi = hi+27   | trips 9, mid turns 5, wiggles 10
+r4.4   2 | L1 L3 L0 L0 L3 7 L3 L1 2                 | x1 x2 x3 x4 x5 x6 x7+1 hi+27       | hi = hi+30   | trips 10, mid turns 4, wiggles 12
+r4.5   0 | L1 L0 L0 L3 L3 7 L0 L2 2                 | x1 x2 x3 x4 x5 x6+1 x7+1           | hi = hi+15   | trips 5, mid turns 4, wiggles 7
+r4.6   0 | L1 L0 L0 L3 L3 7 L1 L0 3                 | x1 x2 x3 x4 x5 x6+1 x7-4           | hi = hi+23   | trips 8, mid turns 5, wiggles 8
+r4.7   0 | L1 L0 L0 L3 L3 8 L0 L2                   | x1 x2 x3 x4 x5 x6 x7-2 hi+16       | hi = hi+19   | trips 7, mid turns 4, wiggles 5
+r4.8   0 | L1 L0 L0 L3 L3 8 L1 L1 3                 | x1 x2 x3 x4 x5 x6-1 x7-1 hi+11     | hi = hi+14   | trips 5, mid turns 4, wiggles 4
+r4.9   0 | L1 L0 L0 L3 L3 8 L2 L0 3                 | x1 x2 x3 x4 x5 x6 x7-5 hi+25       | hi = hi+28   | trips 10, mid turns 5, wiggles 8
+r4.10  0 | L1 L3 L0 L0 L3 7 L0 L1 3                 | x1 x2+1 x3+1 x4 x5 x6 x7 hi+22     | hi = hi+24   | trips 8, mid turns 6, wiggles 11
+</code></pre></div>
+
+<h2 id="appendix-b-the-interval-programs">Appendix B. The interval programs</h2>
+<p>For each class: the right region after the record-exit episode (at record exit e = 2 + log_9 u), the entries run one
+by one (<code>single</code>), the 4-cycles with their repeat counts and increments (gap i = the i-th gap from B), and the right
+region at the end of the interval, before the record visit.</p>
+<div class="highlight"><pre><span></span><code>class r5: start  224532u-39, 673596u-37, 8, (19683u-11)/2, 1942056u+14
+   single: r5.8 r5.10 r5.9 r5.2
+   cycle (r5.8 r5.10 r5.9 r5.2) x (6561u-25)/8: gap 4 -12, gap 5 +96; 30 trips per cycle
+   single: r5.5 r5.4 r5.3 r5.1 r5.7 r5.6 r5.23 r5.22 r5.17 r5.18 r5.13 r5.11 r5.14 r5.15 r5.16 r5.12 r5.19 r5.20 r5.21
+   cycle (r5.12 r5.19 r5.20 r5.21) x (347733u-37)/8: gap 5 +12; 4 trips per cycle
+   single: r5.12 r5.19 r5.20 r5.21 r5.12 r5.19 r5.20
+   end    224532u-39, 673596u-36, 2020788u-36, 4, (1043199u+7)/2
+class r0: start  74844u-39, 224532u-37, 673596u-36, 2020788u-36, 4, (1043199u+21)/2, 2
+   single: r0.3 r0.2 r0.1 r0.4
+   cycle (r0.3 r0.2 r0.1 r0.4) x (6561u-25)/8: gap 6 +36; 12 trips per cycle
+   single: r0.3 r0.2 r0.1 r0.4 r0.3 r0.2 r0.13 r0.5 r0.11 r0.6 r0.7 r0.8 r0.12 r0.10 r0.9
+   cycle (r0.8 r0.12 r0.10 r0.9) x (347733u-29)/8: gap 7 +36; 12 trips per cycle
+   single: r0.8 r0.12 r0.10 r0.9 r0.8 r0.12 r0.10
+   end    74844u-39, 224532u-36, 673596u-36, 2020788u-37, 7, 551124u-4, (3129597u-1)/2, 2
+class r1: start  2020788u-39, 7, 551124u-4, (3129597u+21)/2, 3
+   single: r1.1 r1.4 r1.3 r1.2
+   cycle (r1.1 r1.4 r1.3 r1.2) x (19683u-27)/8: gap 4 +36; 12 trips per cycle
+   single: r1.1 r1.4 r1.3 r1.2 r1.1 r1.4 r1.3 r1.5 r1.8 r1.9 r1.7 r1.6
+   cycle (r1.8 r1.9 r1.7 r1.6) x (1043199u-15)/8: gap 3 -4, gap 4 +32; 10 trips per cycle
+   single: r1.8 r1.9 r1.7 r1.6
+   end    2020788u-39, 8, (59049u-7)/2, 5826168u-7, 3
+class r2: start  8316u-39, 24948u-37, 74844u-36, 224532u-36, 673596u-37, 2020788u-37, 8, (59049u-21)/2, 5826168u+56, 3
+   single: r2.5 r2.3 r2.1 r2.4
+   cycle (r2.5 r2.3 r2.1 r2.4) x (6561u-25)/8: gap 8 -36, gap 9 +288; 90 trips per cycle
+   single: r2.5 r2.3 r2.1 r2.4 r2.5 r2.2 r2.13 r2.12 r2.8 r2.7 r2.6 r2.11 r2.10 r2.9
+   cycle (r2.6 r2.11 r2.10 r2.9) x (347733u-21)/8: gap 9 +36; 12 trips per cycle
+   single: r2.6 r2.11 r2.10 r2.9
+   end    8316u-39, 24948u-36, 74844u-36, 224532u-37, 673596u-37, 2020788u-36, 6062364u-36, 3, (3129597u+5)/2, 2
+class r3: start  224532u-39, 673596u-37, 2020788u-36, 6062364u-36, 4, (3129597u+25)/2
+   single: r3.4 r3.3 r3.2 r3.1
+   cycle (r3.4 r3.3 r3.2 r3.1) x (19683u-27)/8: gap 6 +36; 12 trips per cycle
+   single: r3.4 r3.3 r3.2 r3.1 r3.4 r3.3 r3.2 r3.13 r3.5 r3.11 r3.6 r3.7 r3.8 r3.12 r3.10 r3.9
+   cycle (r3.8 r3.12 r3.10 r3.9) x (1043199u-23)/8: gap 7 +36; 12 trips per cycle
+   single: r3.8 r3.12 r3.10 r3.9
+   end    224532u-39, 673596u-36, 2020788u-36, 6062364u-37, 7, 1653372u-4, (9388791u+3)/2, 3
+class r4: start  74844u-39, 224532u-37, 673596u-36, 2020788u-36, 6062364u-37, 7, 1653372u-4, (9388791u+53)/2, 2
+   single: r4.2 r4.3 r4.4 r4.1
+   cycle (r4.2 r4.3 r4.4 r4.1) x (19683u-27)/8: gap 8 +108; 36 trips per cycle
+   single: r4.2 r4.3 r4.4 r4.1 r4.2 r4.3 r4.4 r4.10 r4.5 r4.7 r4.9 r4.8 r4.6
+   cycle (r4.7 r4.9 r4.8 r4.6) x (1043199u-23)/8: gap 7 -12, gap 8 +96; 30 trips per cycle
+   single: r4.7 r4.9 r4.8 r4.6 r4.7 r4.9 r4.8
+   end    74844u-39, 224532u-36, 673596u-36, 2020788u-37, 6062364u-37, 7, (177147u-1)/2, 17478504u-16, 3
+</code></pre></div>
+
+<h2 id="appendix-c-the-base-configuration-and-the-start-up-windows">Appendix C. The base configuration and the start-up windows</h2>
+<p><strong>Record exit 16, step 398,090,000.</strong></p>
+<div class="highlight"><pre><span></span><code>head  : state B on cell 1154, which holds 1 (moving right)
+tape  : 0 outside cells -55 .. 36257; cell -55 holds 1;
+        for -55 &lt;= x &lt; 36257, cells x and x+1 are equal exactly when x is one of
+        -54 -49 -48 -43 -42 -37 -36 -31 -30 -26   -20 -19   -10 3 27 71   108 145 181
+        3888 12167 12174 12295 36255
+</code></pre></div>
+
+<p>In the defect frame of 2.1 this is:</p>
+<ul>
+<li>A = -22, lo = -56 = A - 34, and the left word W_1;</li>
+<li>the chain <code>(-20; -19)</code>, <code>(-10; 3, 27, 71)</code>, <code>(108; 145, 181, 1153)</code>, all U0, B = 1155, K = 3;</li>
+<li>the right region x = 3888, 12167, 12174, 12295, 36255 and hi = 36258;</li>
+<li>the head at phase 3 = c_K + 2 (c_K = 1).</li>
+</ul>
+<p>Edge 1153 is the last separator, B - 2. The head has just crossed it, so the current tape does not show it (cells
+1153 and 1154 differ), while the defect frame still counts it.</p>
+<p>This is (H): the head is on cell B - 1 = 1154 in state B, reading 1. By the operational definition of 3.3 this is the
+first configuration after record 16 (steps 398,088,768-770) with the head in state B reading 1 and 10 + 4K - 2 = 20
+pre-sweep defects in (lo, h - 1].</p>
+<p><strong>Windows at record exits 16-27.</strong> Record exit, class, K, the last J(r) chain gaps, and the right region.</p>
+<div class="highlight"><pre><span></span><code>16 r5 K=3 | 37, 36, 972 | 2733, 8279, 7, 121, 23960, 3
+17 r0 K=3 | 40, 36 | 969, 2735, 8280, 24912, 4, 6443
+18 r1 K=4 | 40, 37, 969, 2736, 8280 | 24909, 7, 6800, 19318, 2
+19 r2 K=3 | - | 37, 35, 972, 2736, 8279, 24911, 8, 361, 71921, 3
+20 r3 K=4 | 972 | 2733, 8279, 24912, 74808, 3, 19321, 2
+21 r4 K=4 | - | 969, 2735, 8280, 24912, 74807, 7, 20408, 57957, 3
+22 r5 K=5 | 969, 2736, 8280 | 24909, 74807, 7, 1093, 215768, 3
+23 r0 K=5 | 972, 2736 | 8277, 24911, 74808, 224496, 4, 57959
+24 r1 K=6 | 972, 2737, 8277, 24912, 74808 | 224493, 7, 61232, 173866, 2
+25 r2 K=5 | - | 969, 2735, 8280, 24912, 74807, 224495, 8, 3277, 647345, 3
+26 r3 K=6 | 8280 | 24909, 74807, 224496, 673560, 3, 173869, 2
+27 r4 K=6 | - | 8277, 24911, 74808, 224496, 673559, 7, 183704, 521601, 3
+</code></pre></div>
+
+<p>From record exit 28 on, the windows are V_r(1), V_r(9), and so on.</p>
+<h2 id="appendix-d-the-single-block-runs">Appendix D. The single-block runs</h2>
+<p>One line per run of the table in 4.1: m, state, entry side and phase (relative to the block's c), exit side, phase
+change and new state, then the events in order.</p>
+<p>Each event is the direction, the defect (dg = digit, s1-s3 = separators, sp = the m = 1 separator), d, and the rule of
+2.2 ("turn" for a reversal, "wiggle" for the d = 1 rule). After a wiggle the moved defect is met again at once, with
+d = 3. The lists are the same for every gap choice (Lemma B).</p>
+<div class="highlight"><pre><span></span><code>m=3 U0 right c+0 -&gt; right +2 U1 | L s3 d=0 pass, L s2 d=3 pass, L s1 d=0 pass, L dg d=2 turn, R s1 d=3 pass, R s2 d=2 pass, R s3 d=3 pass
+m=3 U1 right c+0 -&gt; right +2 U2 | L s3 d=0 pass, L s2 d=3 pass, L s1 d=0 pass, L dg d=1 turn, R s1 d=3 pass, R s2 d=2 pass, R s3 d=3 pass
+m=3 U2 right c+0 -&gt; left  +2 U2 | L s3 d=0 pass, L s2 d=3 pass, L s1 d=0 pass, L dg d=0 pass
+m=3 W0 right c+0 -&gt; right +2 W1 | L s3 d=0 pass, L s2 d=2 turn, R s3 d=3 pass
+m=3 W1 right c+0 -&gt; right +2 D0 | L s3 d=0 pass, L s2 d=1 turn, R s3 d=3 pass
+m=3 D0 right c+0 -&gt; left  +2 D0 | L s3 d=0 pass, L s2 d=0 pass, L s1 d=3 pass, L dg d=0 pass
+m=3 D1 right c+0 -&gt; right +0 D0 | L s3 d=1 turn
+m=3 D2 right c+0 -&gt; right +0 D1 | L s3 d=2 turn
+m=3 U2 left  c+0 -&gt; right +2 U0 | R dg d=1 wiggle, R dg d=3 pass, R s1 d=3 pass, R s2 d=2 pass, R s3 d=3 pass
+m=3 U2 left  c+2 -&gt; right +0 W0 | R dg d=3 pass, R s1 d=1 wiggle, R s1 d=3 pass, R s2 d=0 turn, L s1 d=2 turn, R s2 d=1 wiggle, R s2 d=3 pass, R s3 d=3 pass
+m=3 D0 left  c+2 -&gt; right +2 D2 | R dg d=3 pass, R s1 d=2 pass, R s2 d=3 pass, R s3 d=1 wiggle, R s3 d=3 pass
+m=1 U0 right c+0 -&gt; right +2 U1 | L sp d=0 pass, L dg d=2 turn, R sp d=3 pass
+m=1 U1 right c+0 -&gt; right +2 D0 | L sp d=0 pass, L dg d=1 turn, R sp d=3 pass
+m=1 D0 right c+0 -&gt; left  +2 D0 | L sp d=0 pass, L dg d=0 pass
+m=1 D1 right c+0 -&gt; right +0 D0 | L sp d=1 turn
+m=1 D2 right c+0 -&gt; right +0 D1 | L sp d=2 turn
+m=1 D0 left  c+0 -&gt; right +2 U0 | R dg d=1 wiggle, R dg d=3 pass, R sp d=3 pass
+m=1 D0 left  c+2 -&gt; right +2 D2 | R dg d=3 pass, R sp d=1 wiggle, R sp d=3 pass
+</code></pre></div>
+
+<h2 id="appendix-e-left-episode-81">Appendix E. Left episode 81</h2>
+<p>Lemma L81, event by event, with the chain all D0 (block 1 at (A; A+3)). The head starts moving left, about to read
+cell A - 1, at phase 1 relative to A. Positions are relative to A; lo = A - 34 at the start.</p>
+<div class="highlight"><pre><span></span><code>  1  L  A-4    d=3  pass
+  2  L  A-8    d=0  pass
+  3  L  A-11   d=0  pass
+  4  L  A-14   d=0  pass
+  5  L  A-17   d=0  pass
+  6  L  A-20   d=0  pass
+  7  L  A-23   d=0  pass
+  8  L  A-26   d=0  pass
+  9  L  A-29   d=0  pass
+ 10  L  A-32   d=0  pass
+ 11  L  A-35   d=0  pass
+ 12  L  A-36   d=2  turn at the blank end: lo A-34 -&gt; A-37, A-35 is now a defect
+ 13  R  A-35   d=3  pass
+ 14  R  A-32   d=1  wiggle: A-32 -&gt; A-30 (e+1 = A-31 is no defect)
+ 15  R  A-30   d=3  pass
+ 16  R  A-29   d=3  pass
+ 17  R  A-26   d=1  wiggle: A-26 -&gt; A-24 (e+1 = A-25 is no defect)
+ 18  R  A-24   d=3  pass
+ 19  R  A-23   d=3  pass
+ 20  R  A-20   d=1  wiggle: A-20 -&gt; A-18 (e+1 = A-19 is no defect)
+ 21  R  A-18   d=3  pass
+ 22  R  A-17   d=3  pass
+ 23  R  A-14   d=1  wiggle: A-14 -&gt; A-12 (e+1 = A-13 is no defect)
+ 24  R  A-12   d=3  pass
+ 25  R  A-11   d=3  pass
+ 26  R  A-8    d=1  wiggle: A-8 -&gt; A-6 (e+1 = A-7 is no defect)
+ 27  R  A-6    d=3  pass
+ 28  R  A-4    d=0  turn: A-4 -&gt; A-3
+ 29  L  A-6    d=2  turn: A-6 -&gt; A-7
+ 30  R  A-3    d=1  wiggle: A-3 -&gt; A-1 (e+1 = A-2 is no defect)
+ 31  R  A-1    d=3  pass
+</code></pre></div>
+
+<p>After event 31 the head is on cell A, moving right at phase 1 relative to A, and its next defect is block 1's digit
+at A (d = 3). The left defects are W_1 - 3 plus A - 1, and lo = A - 37.</p>
+<h2 id="appendix-f-the-interval-of-class-r1-worked-out">Appendix F. The interval of class r1, worked out</h2>
+<p><strong>Gap maps.</strong> One line per r1 entry: the gap vector of its shape (long gaps as variables g_i, small gaps as their
+exact values) and its image. Each new gap is a sum of consecutive old gaps plus a constant, read off Appendix A.</p>
+<div class="highlight"><pre><span></span><code>r1.1   (g1, 7, g3, g4, 3) -&gt; (g1, 7, g3 - 1, g4 + 8, 2)
+r1.2   (g1, 7, g3, g4, 2) -&gt; (g1, 7, g3, g4 + 11, 3)
+r1.3   (g1, 7, g3, g4) -&gt; (g1, 7, g3, g4 + 7, 2)
+r1.4   (g1, 7, g3, g4, 2) -&gt; (g1, 7, g3 + 1, g4 + 10)
+r1.5   (g1, 7, g3, g4, 2) -&gt; (g1, 8, g3 + 1, g4 + 3, 3)
+r1.6   (g1, 7, g3, g4, 3) -&gt; (g1, 8, g3 - 4, g4 + 17, 3)
+r1.7   (g1, 8, g3, g4) -&gt; (g1, 7, g3 + 1, g4 + 2, 3)
+r1.8   (g1, 8, g3, g4, 3) -&gt; (g1, 8, g3 + 1, g4 - 1, 3)
+r1.9   (g1, 8, g3, g4, 3) -&gt; (g1, 8, g3 - 2, g4 + 14)
+</code></pre></div>
+
+<p><strong>The run, symbolically in u.</strong> <code>start</code> is the right region after the record-exit episode (entry r1.2 applied to
+V_r1). Each entry line gives the entry, its exit phase class (ph 2 = c_K + 2, ph 0 = c_K), the gap vector after it,
+and the visits R of the regime still to run.</p>
+<p>The first regime has V1 = (19683u - 5)/2 visits, the second E - V1 = (1043199u + 3)/2.</p>
+<p>For each cycle the run gives its composite f (Lemma J), the visits left, the count c, and the vector at the start of
+the first and of the last jumped cycle. All long gaps there are at least 24 for every u &gt;= 1, so the four shapes hold
+throughout the jump.</p>
+<div class="highlight"><pre><span></span><code>start        2020788u-39, 7, 551124u-4, (3129597u+21)/2, 3
+r1.1   ph 2  2020788u-39, 7, 551124u-5, (3129597u+37)/2, 2   (R = (19683u-7)/2)
+r1.4   ph 2  2020788u-39, 7, 551124u-4, (3129597u+57)/2   (R = (19683u-9)/2)
+r1.3   ph 2  2020788u-39, 7, 551124u-4, (3129597u+71)/2, 2   (R = (19683u-11)/2)
+r1.2   ph 2  2020788u-39, 7, 551124u-4, (3129597u+93)/2, 3   (R = (19683u-13)/2)
+cycle (r1.1 r1.4 r1.3 r1.2): f(h1, 7, h3, h4, 3) = (h1, 7, h3, h4 + 36, 3)
+   R = (19683u-13)/2 visits left; c = (R - m)/4 = (19683u-27)/8 cycles, m = 7 visits left after
+   first jumped cycle starts at 2020788u-39, 7, 551124u-4, (3129597u+93)/2, 3
+   last jumped cycle starts at  2020788u-39, 7, 551124u-4, 1653372u-111, 3
+   after the jump               2020788u-39, 7, 551124u-4, 1653372u-75, 3   (R = 7)
+r1.1   ph 2  2020788u-39, 7, 551124u-5, 1653372u-67, 2   (R = 6)
+r1.4   ph 2  2020788u-39, 7, 551124u-4, 1653372u-57   (R = 5)
+r1.3   ph 2  2020788u-39, 7, 551124u-4, 1653372u-50, 2   (R = 4)
+r1.2   ph 2  2020788u-39, 7, 551124u-4, 1653372u-39, 3   (R = 3)
+r1.1   ph 2  2020788u-39, 7, 551124u-5, 1653372u-31, 2   (R = 2)
+r1.4   ph 2  2020788u-39, 7, 551124u-4, 1653372u-21   (R = 1)
+r1.3   ph 2  2020788u-39, 7, 551124u-4, 1653372u-14, 2   (R = 0)
+r1.5   ph 0  2020788u-39, 8, 551124u-3, 1653372u-11, 3   (R = (1043199u+1)/2)
+r1.8   ph 0  2020788u-39, 8, 551124u-2, 1653372u-12, 3   (R = (1043199u-1)/2)
+r1.9   ph 0  2020788u-39, 8, 551124u-4, 1653372u+2   (R = (1043199u-3)/2)
+r1.7   ph 0  2020788u-39, 7, 551124u-3, 1653372u+4, 3   (R = (1043199u-5)/2)
+r1.6   ph 0  2020788u-39, 8, 551124u-7, 1653372u+21, 3   (R = (1043199u-7)/2)
+cycle (r1.8 r1.9 r1.7 r1.6): f(h1, 8, h3, h4, 3) = (h1, 8, h3 - 4, h4 + 32, 3)
+   R = (1043199u-7)/2 visits left; c = (R - m)/4 = (1043199u-15)/8 cycles, m = 4 visits left after
+   first jumped cycle starts at 2020788u-39, 8, 551124u-7, 1653372u+21, 3
+   last jumped cycle starts at  2020788u-39, 8, (59049u+9)/2, 5826168u-71, 3
+   after the jump               2020788u-39, 8, (59049u+1)/2, 5826168u-39, 3   (R = 4)
+r1.8   ph 0  2020788u-39, 8, (59049u+3)/2, 5826168u-40, 3   (R = 3)
+r1.9   ph 0  2020788u-39, 8, (59049u-1)/2, 5826168u-26   (R = 2)
+r1.7   ph 0  2020788u-39, 7, (59049u+1)/2, 5826168u-24, 3   (R = 1)
+r1.6   ph 0  2020788u-39, 8, (59049u-7)/2, 5826168u-7, 3   (R = 0)
+end          2020788u-39, 8, (59049u-7)/2, 5826168u-7, 3
+</code></pre></div>
+
+<p>The end vector equals the <code>end</code> line of Appendix B, and 6.4 maps it to V_r2(u).</p>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic); corrections from an independent audit by GPT-6 Astra (OpenAI).</p>
+</main></body></html>

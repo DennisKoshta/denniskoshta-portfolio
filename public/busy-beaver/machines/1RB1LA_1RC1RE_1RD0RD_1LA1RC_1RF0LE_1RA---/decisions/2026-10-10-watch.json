@@ -1,0 +1,62 @@
+{
+ "tm": "1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---",
+ "bucket_reason": "Priority call with mechanism confidence low. The binary counter inside an epoch is validated, but halting is decided by an overflow that has not been observed.",
+ "question": "Before any more agent time on R5, run one niced background qsim (block 12) for up to 24 h to watch the counter reach the left prefix, and park agent work until it reports?",
+ "options": [
+  {
+   "id": "watch",
+   "label": "Background qsim to the overflow; park agent work",
+   "consequence": "One niced process for up to 24 h. At the measured 47k loops/s that is about 1e17 steps after about 8 h and about 9e17 after 24 h. It logs the leftmost 600 cells, as work/scripts/qleft.py already does. Agent time is only starting the run and reading the log. If the overflow shows up, you decide on the epoch map from a real picture. If it does not by the cap, park."
+  },
+  {
+   "id": "epoch_map",
+   "label": "One agent stage on the epoch map now",
+   "consequence": "About 2 h of agent time, the observer's proposal: exact rules for RC2 and the boundary gadgets, then an abstract simulator to watch 2-3 overflows. It reaches the overflow sooner if the gadget rules close, but it spends agent budget on a low-confidence machine."
+  },
+  {
+   "id": "park",
+   "label": "Park now",
+   "consequence": "Status becomes STUCK (parked) at observe. Costs nothing. What happens after the reservoir runs out stays unknown."
+  }
+ ],
+ "recommended": "watch",
+ "rationale": "Inside an epoch R5 is well understood. Six exact rules pass all their random instances, and the binary-ruler law holds for 37,885 of 37,885 cycle spacings to 1e10. What decides halting is the overflow that comes after the counter has eaten the reservoir and the prefix gadgets, and nobody has seen it. A qsim run that finished after the observe notes were written got 2.8x further than the notes say: 2.33e14 steps in 1,400 s, with no halt. Its log shows the leftmost rewritten cell stuck at index 63 of the left tape from 9.4e13 to 2.3e14 steps, and the 36-cell prefix '0 1^4 (01)^11 1 (10)^4' is intact. qsim's loop count grows like the square root of the step count, so compute alone can probably reach the overflow in 8-24 h. That evidence is worth having before deciding whether the epoch map deserves a proof stage. The run may hit its cap before the overflow; then park, with no agent time lost. No sign of a cryptid so far.",
+ "evidence": [
+  {
+   "kind": "validation",
+   "text": "6 exact rules (Z, RS, H, RC0, RC1, RC3), each passing all of its 50-100 random instances. RC2 (the carry to the left) has no exact rule yet.",
+   "href": "observe.json"
+  },
+  {
+   "kind": "validation",
+   "text": "Binary-ruler law for cycle depths: 37,885/37,885 spacings, steps 5e4..1e10, 13 levels.",
+   "href": "work/allcyc_1e10.txt"
+  },
+  {
+   "kind": "sim",
+   "text": "qsim block 12, finished after notes.md was written: no halt to 233,225,172,724,089 steps (2.33e14) in 1,400 s. That is 66.4M loops, about 47k loops/s. Loops grew 8.3x while steps grew 69x (from 3.39e12), so loops grow like sqrt(steps).",
+   "href": "work/qlong.txt"
+  },
+  {
+   "kind": "analysis",
+   "text": "Left-tape log: the leftmost rewritten cell was at index 325 (3.4e12 steps), 103 (7.7e12), 89 (1.7e13), 67 (3.1e13) and 63 (9.4e13), and was still at 63 at 2.3e14. The prefix '0 1^4 (01)^11 1 (10)^4' is intact.",
+   "href": "work/qleft.txt"
+  },
+  {
+   "kind": "risk",
+   "text": "The front stalled for at least a 2.5x span in steps, so the overflow may lie past the 24 h horizon of about 9e17 steps. The observer guessed about 1e16 steps. If the overflow is that far out, this option ends in park."
+  },
+  {
+   "kind": "figure",
+   "text": "Fig 2: cycle depths form a binary ruler.",
+   "href": "img/cycle_depth_256.png"
+  }
+ ],
+ "effort_if_yes": "One niced background process (qsim block 12 via work/scripts/qleft.py, under ulimit -v 6000000), capped at 24 h, plus about 15 minutes of agent time to start it and read the log. No proof work until it reports.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "watch",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

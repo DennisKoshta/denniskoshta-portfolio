@@ -1,0 +1,479 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA/notes.md · <a href="/busy-beaver/machines/1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA/notes.md.html">raw</a></div>
+<h1 id="1rb0ra_0rc0le_1ld1rf_1lb1rd_1ld1le_-1ra">1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA</h1>
+<p>Label: H-3 (halting hunt). 740 list line 244. Class: Counter Class 3.</p>
+<p>Family, checked here by exhaustive renaming and mirroring against CounterClass3v1 TM4 (<code>1LB1LA_1LC1RB_0RD0LA_1LA1RE_---1RF_1RC0RF</code>). In TM4's labels the three tables differ from TM4 only in D0:</p>
+<table>
+<thead>
+<tr>
+<th>line</th>
+<th>holdout string</th>
+<th>D0 in TM4 labels</th>
+<th>start (TM4 labels)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>244</td>
+<td><code>1RB0RA_0RC0LE_1LD1RF_1LB1RD_1LD1LE_---1RA</code></td>
+<td>1LB</td>
+<td>F</td>
+</tr>
+<tr>
+<td>216</td>
+<td><code>1RB0RA_0RC0LD_1LA1RF_1LE1LD_1LB1RE_---1RA</code></td>
+<td>1LF</td>
+<td>F</td>
+</tr>
+<tr>
+<td>701</td>
+<td><code>1RB1RA_1RC1LB_0LD0RA_1RF1LE_---1LF_1LC0LF</code></td>
+<td>1LF</td>
+<td>A, mirrored</td>
+</tr>
+</tbody>
+</table>
+<p>216 and 701 are one table from two starts. In 244's own labels the differing transition is C0. All three are claimed by claude in <code>coord/claims.tsv</code> (2026-10-13).</p>
+<h2 id="halting-hunt-exact-model-2026-10-13">Halting hunt: exact model (2026-10-13)</h2>
+<p>Result: <strong>no halt to the horizon</strong> for all three machines (numbers in the results table below). The exact model reached these epochs:</p>
+<ul>
+<li>244: epoch 108. The counter block is b = 7.3e35, and the TM step count is about 10^(2.2e35) when the run stops on the model's 2^120 count limit.</li>
+<li>216: epoch 97 (b = 1.2e32).</li>
+<li>701: epoch 96 (b = 6.0e31).</li>
+</ul>
+<p>The earlier cc3acc runs reached about epoch 11.</p>
+<p>Two findings change the H-3 brief:</p>
+<ul>
+<li><strong>The differing transition is not startup-only.</strong> It fires again at every right-end event. Example: 244 fires C0 at step 402,723,884. This was checked with <code>tools/sim.py</code> (C engine) on the original holdout string, against the model's configuration cell for cell. By epoch 59, 244 has fired it 116,088 times. The brief's "fires 4 to 6 times, all before step 787,288" covered only the first 0.8 M steps. So these machines do not run TM4's table. Their own D0 drives the right end of the tape.</li>
+<li><strong>Real step counts are doubly exponential.</strong> The upstream P0_n step (its Rocq proof uses the induction hypothesis twice) costs exactly 24*2^n - 6n - 24 TM steps. The cc3acc runs at 5.9e8 to 6.9e8 msteps were therefore already at roughly 10^1600 to 10^3200 TM steps (epochs 10 to 11). TM4's own certified halt comes out of the model at 1012 macro moves, with an exact step count of about 1.341e395 (a 396-digit integer). The plain and batched models agree on it exactly.</li>
+</ul>
+<h3 id="the-model-scriptsrlepy-scriptsrle2py">The model (<code>scripts/rle.py</code>, <code>scripts/rle2.py</code>)</h3>
+<p>Everything is in TM4's labels with the machine's own D0. The tape is run-length encoded with exact Python integers.</p>
+<p><strong>Plain model (<code>rle.py</code>).</strong> It uses three kinds of move:</p>
+<ul>
+<li>Chain moves for the self-loops A1 (1LA), B1 (1RB) and F1 (0RF). Each crosses a whole run in one move, with exact step counts.</li>
+<li>The upstream accelerator P0_n, proved in CounterClass3v1. It holds for our tables too, with the same step counts as TM4 on every check, so D0 plays no part in it:</li>
+</ul>
+<p><code>l 0^(2n) &lt;B 1^2 0 1^n r   --&gt;   l &lt;B 1^(2n+2) 0 1^n r          24*2^n - 6n - 24 steps</code></p>
+<ul>
+<li>Single TM steps otherwise. Every D0 firing is counted.</li>
+</ul>
+<p><strong>Batched model (<code>rle2.py</code>).</strong> It adds a word run <code>U = (0 1^2)</code>, kept only in the left stack, and three batch rules. Each rule is a closed form of an iterated macro step that was derived from the table:</p>
+<div class="highlight"><pre><span></span><code>W  (wave, k &gt;= 1, any L, R' starting with 0 or blank)
+   L 0^2 &lt;B 1^(2k+2) 0 1^k R'  --&gt;  L U^k 0^2 &lt;B 1^2 0 R'
+   one iteration: L 0^2 &lt;B 1^(2j+2) 0 1^j R' --&gt; L U 0^2 &lt;B 1^(2j) 0 1^(j-1) R'
+   steps 24(2^k - 1) - 2k(k+1) - 9k
+
+A  (absorption, x &gt;= 1, c &gt;= 1, any L, R'')
+   L U^u &lt;A:0 1^x 0 1^c R''  --&gt;  L &lt;A:0 1^(x+2u) 0 1^(c+u) R''
+   steps 2ux + 2u(u-1) + 7u
+
+P  (passes, g &gt;= 3 zeros ending at the head, j &lt;= b-1, any X, R)
+   X 0^g &lt;A:0 1^(2j+1) 0 1^b R  --&gt;  X 0^(g-2p) &lt;A:0 1^(2j+2p+1) 0 1^b R,
+   with p = min(b - j, (g-1)//2) and g = infinity at the left end
+   steps 24(2^(j+p) - 2^j) - 6p
+</code></pre></div>
+
+<p>Above 4000 bits, step counts are kept as log2 (<code>steps_str</code> prints <code>~10^x</code>). Everything else stays exact.</p>
+<p><strong>Epoch structure.</strong> An epoch starts at <code>0^inf &lt;A 1 0 1^b 0 1^c ...</code> (the driver logs each one). It runs in four phases:</p>
+<ol>
+<li>Passes grow the left block to 2b+1.</li>
+<li>A wave turns b into <code>U^b</code>.</li>
+<li>The same pass/wave machinery recurses into c, d, ..., down to the right end, where D0 fires.</li>
+<li>Absorption folds the units back in. The next epoch starts with b' = 2b + 5 + (units made deeper down).</li>
+</ol>
+<p>b roughly doubles per epoch.</p>
+<h3 id="validation">Validation</h3>
+<ul>
+<li><strong>Rules on constructed tapes</strong> (<code>scripts/validate.py</code>): 1848 of 1848 pass. The checks cover P0_n (n &lt;= 14), W (k &lt;= 14), A (u &lt;= 8, x &lt;= 11, c &lt;= 4) and P (j &lt;= 9, all g up to the limit), on the 244, 216/701 and TM4 tables, with random contexts. Each check confirms the exact target configuration, the exact predicted step count, and that no cell outside the rule's window is read.</li>
+<li><strong>Larger parameters:</strong> a further 174 of 174 checks pass, covering W (k &lt;= 18), A (u &lt;= 30, x &lt;= 40, c &lt;= 17) and P (j &lt;= 14, b &lt;= j+9, g &lt;= 30). The largest is a 200,933,322-step pass batch.</li>
+<li><strong>Direct simulation of the original holdout strings</strong> (<code>scripts/anchors.py</code>, <code>tools/sim.py</code> C engine): 14 of 14 anchors match on state, head and the whole tape.</li>
+<li>244: epoch 2 (72,175 steps), the 5th C0 firing (402,723,884) and epoch 3 (805,378,447).</li>
+<li>216: epoch 3 (2,360,753).</li>
+<li>701: epoch 3 (197,316), the 5th D0 firing (98,621), the 7th D0 firing (6,442,646,598) and epoch 4 (57,982,256,712).</li>
+<li>Step-targeted anchors use P0_n applied partially (P0_n' for n' &lt; n is the same lemma) to land on a chosen step: 216 at 29,999,998, 244 at 150,000,000, and the deep anchors 216 at 149,999,999,999, 701 at 150,000,000,000 and 244 at 149,999,999,994 (<code>work/anchors_deep.out</code>). The deep ones sit mid-epoch: inside epoch 3 for 216 and 244, and inside epoch 4 for 701.</li>
+<li><code>scripts/cmpdirect.py</code> also matched every macro move of 244 up to step 2.0e8.</li>
+<li><strong>Plain against batched model</strong> (<code>scripts/cmp12.py</code>): full tape, state, step string and D0 count are identical at every epoch start up to epoch 19 for all three machines, and up to epoch 21 for 244 (<code>work/cmp12_*.out</code>). At epoch 21 that is 656 M plain moves against 16,643 batched moves.</li>
+<li><strong>Batched model with and without rule P</strong> (driver2 against driver3): b, tail, D0 count, block lists and step string are equal at all 64 common epochs of each machine.</li>
+<li><strong>C port against Python</strong> (<code>rle2c</code> against driver3): msteps (exactly), b, tail, D0 count, nblocks and census are equal at all 64 common epochs of each machine. The C port also reproduces TM4's halt (1012 msteps, log10 steps 395.127).</li>
+<li><strong>Against the cc3acc runs:</strong> the epoch-start block lists equal the cc3acc-style run (port of <code>hints/cc3acc.py</code>) for 244 epochs 1 to 9. They also agree with <code>hints/trace244.txt</code> and <code>hints/trace216.txt</code> (e.g. <code>[10679, 6490, 993, 164, 23, 12]</code> and <code>[7427, 4001, 1279, 745, 151, 77, 35, 20]</code>).</li>
+<li><strong>TM4 reproduced:</strong> TM4 halts in the model at <code>U^15 0 &lt;B 1^2 0^2 1</code> -&gt; E0, after 1012 macro moves. That is the halt certified in CounterClass3v1.</li>
+</ul>
+<h3 id="how-these-machines-would-halt">How these machines would halt</h3>
+<p>The only halting transition is E0. E is entered only by D1, and D only by C0.</p>
+<p>Halting needs exactly this: a wave has just consumed a block, and the next block has length 1:</p>
+<div class="highlight"><pre><span></span><code>&lt;B 1^2 0^2 1^L 0   (just after W)   halts  iff  L = 1     (F0, C0, D1, E0)
+</code></pre></div>
+
+<p>TM4 halts this way, with tail <code>[.., 16, 1]</code>.</p>
+<p>This pattern catches every possible halt. C is entered by B0 (1LC) or F0 (1RC), and a B0 entry cannot reach E0:</p>
+<ul>
+<li>B is entered by A0 or D0 (244). Either way B's right neighbour holds a 1, so the path runs C0, D1, then E1.</li>
+<li>B is also entered by B1, but then B's left neighbour is 1, so C1 fires.</li>
+</ul>
+<p>So every E0 comes from <code>F&gt; 0 0 1 0</code>. The F0 steps inside batch rules cannot halt, because each rule reaches its target configuration (derived, and checked on constructed tapes). Every other F0 is a single step at a macro boundary, and the census checks those. So the census misses no halt.</p>
+<p>The census of L over the whole run:</p>
+<table>
+<thead>
+<tr>
+<th>machine</th>
+<th>smallest L</th>
+<th>L = 2</th>
+<th>L = 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>244</td>
+<td>2</td>
+<td>6,969,750</td>
+<td>68,135,398</td>
+</tr>
+<tr>
+<td>216</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>701</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>These counts cover the whole C run. The Python census (<code>driver3.py</code>) agrees on the 64 epochs they share.</p>
+<p>L = 1 never occurs.</p>
+<p>Small counter blocks are made at the right end, where the right-end routines re-seed the last blocks. Right-end events have two forms:</p>
+<div class="highlight"><pre><span></span><code>(i)  U^k 0 1^2 0 1 0 &lt;D:0          (a wave ate the last block)
+(ii) 1^2 0 1 0 1^2 0^g 1 0 &lt;D:0    (F erased a last block of length g+2)
+</code></pre></div>
+
+<p>Each routine is linear in k or g (<code>scripts/endroutine*.py</code>, k &lt;= 24, g &lt;= 39). Only two parameter values create a 1-block:</p>
+<ul>
+<li><strong>244:</strong> only routine (ii) with <strong>g = 4</strong>. In a constructed context it halts 163 moves later (<code>U^13 0 1^2 0 1 0 1 E0</code>).</li>
+<li><strong>216/701:</strong> only routine (i) with <strong>k = 0</strong>.</li>
+</ul>
+<p>These two values really are the halting doors. Injecting them into real right-end configurations of the run, then continuing the exact model to the next epoch start, gives:</p>
+<table>
+<thead>
+<tr>
+<th>injection</th>
+<th>contexts</th>
+<th>halt before the next epoch start</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>g set to 4 in 244's (ii) events (<code>scripts/g4test.py</code>)</td>
+<td>40</td>
+<td>12</td>
+</tr>
+<tr>
+<td>units removed (k = 0) in 216's (i) events (<code>scripts/k0test.py</code>)</td>
+<td>40</td>
+<td>38</td>
+</tr>
+</tbody>
+</table>
+<p>Over 30,000 right-end events (<code>scripts/endseq.py</code>, with bigrams) the event sequence follows a rigid grammar, for example:</p>
+<div class="highlight"><pre><span></span><code>k1 -&gt; g1 | k2 | big
+k2 -&gt; g2
+g1 -&gt; k9 | k10 | g8 | big
+gX -&gt; k1   (244)
+</code></pre></div>
+
+<ul>
+<li>244 (30,000 events, about 50 epochs; the whole C run agrees, see Results) has small g only in {1, 2, 8, 9, 10, ...}. g = 3 to 7 never occur.</li>
+<li>216/701 (20,000 events each) have k in {3, 4, 16, 18, 19, ...}. k = 0 never occurs (k = 3 only at startup).</li>
+</ul>
+<p>The successor values are structural, not free:</p>
+<ul>
+<li>After a g1 event the next k is u + 5 (4,985 of 5,078 cases, u + 4 in 72), where u is the number of units next to the end. u is 4, 5 or at least 10 at every g1 event seen, so k = 4 does not follow g1.</li>
+<li>
+<p>A g after g1 occurs only when the gap to the <code>1 0 1^2</code> marker is 4 or 5 (the observed values are g8, g61, g363 and g364).</p>
+</li>
+<li>
+<p><strong>244's nearest door is k2 -&gt; k3.</strong> On constructed k2 contexts <code>... 1^2 0^G U^2 0 1^2 0 1 0 &lt;D:0</code> (<code>scripts/k2test.py</code>, M &lt; 70, G &lt; 60), the next event is k3 or k4 when the gap G is small: k3 needs G &lt;= 16, mostly even G; k4 needs G = 1. Otherwise the next event is g2. Through epoch 52 the run's k2 events (1,888 of them, <code>scripts/k2gaps.py</code>) all have G &gt;= 18. The observed values are 18, 19, 22, 23, 26, 27, 31, 62, 63, ... So the closest the run comes to the halting door is G = 18 against a needed G &lt;= 16.</p>
+</li>
+<li>
+<p><strong>216/701's right end is even more rigid.</strong> Over the whole C run (<code>work/c_run/bigrams_216.txt</code>, <code>bigrams_701.txt</code>), after startup the only small events are k4 (repeated) and g3:</p>
+</li>
+</ul>
+<p><code>o -&gt; k4 -&gt; k4* -&gt; g3 -&gt; o
+  o -&gt; k&gt;15 -&gt; ... -&gt; g&gt;15 -&gt; o</code></p>
+<p>701's startup alone shows k3, g2 and g6, once each. A nonhalting proof for 216/701 looks tractable along this line: the right end re-seeds from a fixed small seed (k = 4) or from big values only.</p>
+<p>So the right end lives on a structured set that avoids the one halting value. Whether that holds forever is open. It is the natural nonhalting route, and the side upstream works on (CounterClass3v2).</p>
+<h3 id="assessment">Assessment</h3>
+<ul>
+<li><strong>Outcome: no_halt_to_horizon</strong> for 244, 216 and 701. The exit rule of the brief (last tail block invariant) does not literally hold: the last block cycles through {3, 12, 11, 2, ...} for 244. The stronger statement above holds instead: the right end never reaches the one halting configuration.</li>
+<li><strong>Not flagged as cryptid.</strong> The rules are exact linear maps with min/compare branches, and the irregularity comes from nested counter comparisons. No modular (Collatz-type) step was seen. The end-event grammar looks finite at small values.</li>
+<li><strong>Certification route if a halt ever appears.</strong> The CounterClass3v1 <code>msteps</code> module runs our TM string unchanged, since P0_n holds for our tables and D0 is an ordinary transition. It is cheap only while the halt is within about 1e9 cc3acc msteps, roughly epoch 12. Beyond that, the W, A and P batch rules need Rocq lemmas. All three are simple inductions (W and P iterate P0, A is a chain).</li>
+<li><strong>Cost of going deeper.</strong> The batched model costs about 1.15x more moves per epoch, and 70% of the moves are right-end excursions (R depth &lt;= 7).</li>
+<li><code>scripts/rle2c.c</code> is a C port with the same move semantics and exact <code>__int128</code> counts (TM steps as log2). It equals the Python census run on msteps, b, tail, D0 count, nblocks and census at all 64 common epochs of each machine. It runs about 60x faster.</li>
+<li>The port also logs, per epoch, the right-end event histograms (<code>g_hist</code>, <code>k_hist</code>) and 244's k2 gap minimum. It writes the bigram table to <code>work/c_run/bigrams_&lt;line&gt;.txt</code>. Its histograms equal <code>endseq.py</code> at epoch 50 (e.g. g1 4952, g2 1459, g8 6), and its k2 count equals <code>k2gaps.py</code> at epoch 52 (1,888 events, minimum G 18).</li>
+<li>The port stops itself when a count passes 2^120, about epoch 110. Going further needs a bignum port (no GMP on this box) or memoising right-end excursions.</li>
+</ul>
+<h3 id="results-c-run-workc_run-2026-10-13">Results (C run <code>work/c_run/</code>, 2026-10-13)</h3>
+<table>
+<thead>
+<tr>
+<th>machine</th>
+<th>epochs</th>
+<th>b at the last epoch start</th>
+<th>TM steps</th>
+<th>D0 firings</th>
+<th>post-wave L: min / L=2 / L=3</th>
+<th>halts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>244</td>
+<td>108</td>
+<td>728220738755644974829897585431960599 (10^35.86)</td>
+<td>about 10^(1.1e+35)</td>
+<td>397,998,429</td>
+<td>2 / 6,969,750 / 68,135,398</td>
+<td>none</td>
+</tr>
+<tr>
+<td>216</td>
+<td>97</td>
+<td>120860769075791407668089466898701 (10^32.08)</td>
+<td>about 10^(1.82e+31)</td>
+<td>74,294,216</td>
+<td>5 / 0 / 0</td>
+<td>none</td>
+</tr>
+<tr>
+<td>701</td>
+<td>96</td>
+<td>59946721306034064405925122421303 (10^31.78)</td>
+<td>about 10^(9.02e+30)</td>
+<td>63,432,649</td>
+<td>4 / 0 / 0</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p>Right-end statistics over the whole run (<code>work/c_run/bigrams_&lt;line&gt;.txt</code> and the <code>g_hist</code>/<code>k_hist</code> fields):</p>
+<ul>
+<li>244: small g only in {1, 2, 8, 9, 10, 11, 12}; small k only in {0, 1, 2, 9, 10, 11, 12} (k0 once, at startup). k2 events: 20,457,604, minimum gap G = 18, none with G &lt;= 17.</li>
+<li>216: small g only in {3}; small k only in {3, 4}; k = 0 never.</li>
+<li>701: small g only in {2, 3, 6}; small k only in {3, 4}; k = 0 never.</li>
+</ul>
+<p>Notes on the run:</p>
+<ul>
+<li>244 stopped itself on the 2^120 count limit at epoch 108, after 31,069,556,794 macro moves.</li>
+<li>216 and 701 were stopped by hand at epochs 97 and 96, to free a slot for the deep anchors.</li>
+<li>Each epoch costs about 1.15x the previous one, and the expensive epochs alternate with near-empty ones.</li>
+<li>Python runs: <code>work/rle2_run/</code> reached epoch 66 to 68, and <code>work/rle3_run/</code> (census) reached 64.</li>
+</ul>
+<h3 id="scripts-and-logs">Scripts and logs</h3>
+<p>All in <code>scripts/</code>:</p>
+<ul>
+<li><code>rle.py</code>: plain model.</li>
+<li><code>rle2.py</code>: batched model.</li>
+<li><code>validate.py</code>: rule checks.</li>
+<li><code>anchors.py</code> and <code>cmpdirect.py</code>: direct-simulation anchors.</li>
+<li><code>cmp12.py</code>: plain vs batched.</li>
+<li><code>driver.py</code>, <code>driver2.py</code> and <code>driver3.py</code> (census): run drivers.</li>
+<li><code>nearmiss.py</code>, <code>d0classes.py</code>, <code>endseq.py</code>, <code>endctx.py</code>, <code>endev.py</code> and <code>endroutine*.py</code>: right-end analysis.</li>
+<li><code>g4test.py</code>, <code>k0test.py</code>, <code>k2test.py</code> and <code>k2gaps.py</code>: halting-door experiments.</li>
+<li><code>rle2c.c</code> (binary <code>rle2c</code>): C port of the batched model and census. <code>summarize.py</code> summarizes its logs.</li>
+<li><code>explore*.py</code>: tracing. <code>prof*.py</code>, <code>run2.py</code>, <code>d0check.py</code>, <code>firstd0.py</code> and <code>fitp0.py</code> are the profiling and fitting scratch behind the statements above.</li>
+</ul>
+<p>The long run's logs are in <code>work/c_run/</code> (<code>epochs_&lt;line&gt;.jsonl</code>). Logs of the Python runs are in <code>work/rle2_run/</code> and <code>work/rle3_run/</code> (<code>epochs_&lt;line&gt;.jsonl</code>, one line per epoch; checkpoint <code>ckpt.pkl</code>). <code>work/anchors_long*.out</code> and <code>work/cmp12_*.out</code> hold the anchor and comparison outputs. <code>work/rle_run/</code> is the first plain-model run, stopped at epoch 15/16 because it was superseded.</p>
+</main></body></html>

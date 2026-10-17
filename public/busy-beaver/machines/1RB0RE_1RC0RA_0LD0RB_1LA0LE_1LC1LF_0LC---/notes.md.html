@@ -1,0 +1,546 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/notes.md · <a href="/busy-beaver/machines/1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC---/notes.md.html">raw</a></div>
+<h1 id="w5-5-1rb0re_1rc0ra_0ld0rb_1la0le_1lc1lf_0lc-740-line-29">W5-5 · 1RB0RE_1RC0RA_0LD0RB_1LA0LE_1LC1LF_0LC--- (740 line 29)</h1>
+<p>Observe stage, 2026-10-13. Sheet class: Bell eats counter (results row 1007: "Chaotic"; level-0 note: "chaotic bell eats counter"). No claim, no Discord thread.</p>
+<h2 id="checks">Checks</h2>
+<ul>
+<li>Byte-exact on data/holdouts/BB6_holdouts_740.txt, line 29.</li>
+<li>No claim: results.csv row 1007 has only the class and "Chaotic", level-0.csv row 33 only the note, classifications.csv lists it under Bell eats counter. Nothing in data/discord/*.txt.</li>
+<li><code>holdouts.py solved</code>: no completed proof. The string is <code>tm'</code> of Eqv_v2 TM291 (line 3030; also lines 4040 and 19250), and its mirror appears in Eqv_v3 (lines 10629, 11475). So a proof of this machine also covers those equivalence partners.</li>
+<li>Upstream busycoq 9cf9e88: not there.</li>
+<li>Siblings by canon (all 6 starts, renaming + mirror) on the 740 list: none.</li>
+</ul>
+<h2 id="configuration-family">Configuration family</h2>
+<p>Round start (the head has just turned right at the counter boundary):</p>
+<div class="highlight"><pre><span></span><code>K(w, b, c) = 0^inf w 0 E&gt; 101 (001)^b 0001 (001)^c 0^inf
+</code></pre></div>
+
+<ul>
+<li>w is the <strong>counter</strong>: 3-cell digits, most significant first. A clean digit is x0y with value e = 2x - y: <code>001</code> = -1, <code>000</code> = 0, <code>101</code> = 1, <code>100</code> = 2. Blank = 0, so leading zeros are free.</li>
+<li>Counter value C(w) = sum e_i 4^i. Every integer has exactly one such representation (base 4, digits -1..2).</li>
+<li>Read as cells from the boundary leftwards, the bits have weights -1, (0), +2, -4, (0), +8, ...: a negabinary number with every third cell kept at 0.</li>
+<li>Right of the boundary is the <strong>bell</strong>: <code>101</code> (the 1-gap), b blocks <code>001</code>, the 3-gap defect <code>0001</code>, then c blocks <code>001</code>. L = b + c + 1 is the bell length in blocks.</li>
+<li>Real run: 243,388 round starts to 1e9 steps (scripts/eats.c, work/rounds_1e9.txt). The right side has this exact form at every one of them (c = 1 once, early). The counter uses only the codes 001/000/101/100 plus the dirty 010/011.</li>
+</ul>
+<h2 id="rules">Rules</h2>
+<ul>
+<li><strong>ROUND</strong> (b &gt;= 3, clean w): <code>K(w,b,c) -&gt; K(w+1, b-1, c+1)</code> in <code>12b + 22 + 14t (+4)</code> steps. Here t is the number of trailing <code>100</code> digits, and the +4 applies when the digit that absorbs the carry is <code>000</code> or blank.</li>
+<li>The head zigzags right (9 steps per block) carrying a defect to the 3-gap, which moves one block left. Then a straight left sweep comes back and adds 1 to the counter.</li>
+<li>c plays no part.</li>
+<li>Validated 300/300 random instances (k &lt;= 6 digits, b 3..40, c 0..40; scripts/validate_round.py seed 11, work/validate_round_seed11.json). The step formula fitted 40/40.</li>
+<li><strong>ROUND, dirty w</strong>: the shape is the same (b-1, c+1), but the counter map is not additive.</li>
+<li>Example: <code>010</code> -&gt; <code>100 001</code>; <code>001 010</code> -&gt; <code>101 001</code>; <code>100 010</code> -&gt; <code>100 001 001</code>.</li>
+<li>Exhaustive over every 1-3 digit word on the 6 codes with a dirty digit, 40-70 rounds each (scripts/inc_closure.py): 172/172, no halt, no other code ever appears, and every word is clean again after the carry passes through.</li>
+<li><strong>EAT</strong> (b = 2): the next round reaches the counter itself.</li>
+<li>1-7 sub-rounds follow (most: 1-2), each a full trip over the bell, until a round start with b' &gt;= 3.</li>
+<li>Measured (random, scripts/eat_random.py, 3,000 instances clean + 30%-dirty, c 20..120): never halts, always returns to K-form with b' = c + delta, delta in 1..5, c' in 0..6.</li>
+<li>Real run to 1e9 (496 eats): the boundary moves left by d = 3j+2 cells (d = 2: 228, 5: 137, 8: 68, 11: 27, 14: 20, 17: 6, 20: 6; d = 0 four times, early). Bites of 5 or more cells leave every cell left of the new boundary unchanged (pure truncation of the low end). Bites of 2 cells rewrite 1-8 cells near the boundary (a carry or borrow).</li>
+<li>Since d = 2 (mod 3), every eat shifts the digit alignment by 2 cells. The surviving high cells are then re-read in the new alignment, which is where the dirty digits 010/011 come from (5.8% of round starts to 1e9).</li>
+<li><strong>No closed form for w' yet.</strong> This is the open part.</li>
+<li><strong>Halting routes</strong> (direct simulation from constructed K):</li>
+<li>A: a round on w ending in cells <code>1 110</code> (low block 110 with a 1 to its left) halts in 6 steps. All four 2-digit cases.</li>
+<li>B: an eat on a counter with top block <code>111</code> can halt (<code>111001011</code>, <code>111000001</code>, <code>111000101</code>, at c = 30, 31, 32).</li>
+<li>Feeding B: an eat on a top-<code>011</code> counter that bites down to it leaves a <code>110</code>/<code>111</code> top (14 words of 3 digits, scripts/eat_closure.py, work/eat_closure_k3.txt, work/closure2_k3.txt). Such tops are harmless under rounds (they become clean high digits after 1-8 rounds), but another eat on them first can halt.</li>
+</ul>
+<h2 id="long-run">Long run</h2>
+<ul>
+<li>tools/sim.py: no halt to 1e10 steps (span -5352..1095).</li>
+<li>scripts/eats.c (direct C, eats only): no halt to 3e10 steps. That is 1,597 eats, L = 3,072 blocks at the end, and a counter of 6-8 digits.</li>
+<li>A cycle (L rounds) costs about 12 L^2 steps, so L grows like step^(1/3), about 1-3 blocks per eat. The counter stays at about log4(L) + 2 digits: each cycle adds about L to it, then the next eat bites its low end.</li>
+<li>Pre-eat counters (the K(w,2,c) states, work/eats_3e10.txt): over all 1,597 there are only 8 dirty blocks, all <code>010</code>, 7 of them the top block. The top block is never 011 or 111, so halting route B is never even set up.</li>
+</ul>
+<h2 id="template-comparison-w4-2-becv5">Template comparison (W4-2 / BECv5)</h2>
+<ul>
+<li><strong>Same architecture as W4-2</strong> (BECv5 TM1/TM2 plus an invariant). W4-2's K(w,n,m) = w &lt;A 1 (10)^(1+n) 0 (10)^m, with:</li>
+<li>a bounce n-1, m+1, w -&gt; phi(w) (binary +1);</li>
+<li>an overflow at n = 0 that bites q+1 cells;</li>
+<li>parity of q deciding safety;</li>
+<li>dirty words after the bite.</li>
+<li>Here the bounce is the ROUND rule with a signed base-4 counter on 3-cell digits.</li>
+<li>The overflow is a multi-sub-round EAT that bites 3j+2 cells, and the bite re-aligns the digits.</li>
+<li>The halting points are dirty top digits under a deep bite, rather than W4-2's q-odd landings.</li>
+<li>RIncs/LIncs-style lemmas carry over in shape (ROUND = RIncs + a left sweep). The eat and the dirty-digit bookkeeping are new.</li>
+<li>The table is not a near neighbour of any BECv5 machine (different transitions throughout).</li>
+</ul>
+<h2 id="cryptid-check-ground-rule-6">Cryptid check (ground rule 6)</h2>
+<ul>
+<li>The abstract system has halting branches (A, B), so non-halting rests on avoiding states, as in W4-2.</li>
+<li>Avoidance looks structural, not lucky:</li>
+<li>Halting needs a 011/111 top at an eat. That top is a dirty high digit that survived a whole cycle of about L &gt;= 4^5 increments without a carry cleaning it, and then met a bite deep enough to reach it.</li>
+<li>In 1,597 eats the precondition never occurred once, not even as a near miss: the pre-eat counters hold 8 dirty blocks in all (010) and never a 011/111 top.</li>
+<li>A random-digit model would predict many hits: in the exhaustive 3-digit eat test, 51 of 777 cases (6.6%) leave a 110/111 top, and in the wider closure test 60 of 1,152 cases fail, some halting outright.</li>
+<li>Verdict: not cryptid-like on current evidence. The eat rule still has to be written exactly before an invariant can be stated.</li>
+</ul>
+<h2 id="figures">Figures</h2>
+<ul>
+<li>img/default_site.png: the site's default view.</li>
+<li>img/rounds_late.png: every 6th round start near 1e9, three cycles.</li>
+<li>img/eat_pairs.png: the counter before and after each of 120 eats to 1e9.</li>
+<li>img/state_ER_2e5.png: entries into E moving right, from blank.</li>
+<li>Renderer: scripts/fig_rounds.py (from the eats.c dumps).</li>
+</ul>
+<h2 id="files">Files</h2>
+<ul>
+<li>scripts/rules.py: K, inc, parse_K, next_K.</li>
+<li>scripts/validate_round.py, scripts/inc_closure.py, scripts/eat_random.py, scripts/eat_closure.py, scripts/closure2.py.</li>
+<li>scripts/eats.c (direct C round/eat dumper; <code>eats N</code> prints every round start, <code>eats N -e</code> only the pre-eat round and the sub-rounds with a longer sweep).</li>
+<li>scripts/peek.py, scripts/peek2.py (3-block views).</li>
+<li>work/: rounds_1e9.txt, eats_3e10.txt, validate_round_seed11.json, eat_random_*.txt, eat_closure_k3.txt, closure2_k3.txt, history_rows.json.</li>
+</ul>
+<h2 id="next">Next</h2>
+<p>Derive the EAT exactly, then test an invariant (W4-2 style). Spelled out under next_goal in the stage report.</p>
+<h2 id="wave-5-stage-1-2026-10-12">Wave 5, stage 1 (2026-10-12)</h2>
+<p><strong>Result: the machine is predicted to HALT, at about 1.82e18 steps.</strong> Not certified. The last cycle is checked by direct simulation. The path to it rests on a cycle model that is TM-grounded and checked several ways (below).</p>
+<h3 id="cycle-model-exact-on-everything-tested">Cycle model (exact on everything tested)</h3>
+<ul>
+<li>Cycle start <code>K0(w, c) = K(w, 0, c) = 0^inf w 0 E&gt; 101 0001 (001)^c 0^inf</code>. The blank run reaches <code>K0('', 2)</code> at step 288.</li>
+<li><strong>Eat:</strong> from K0, run the TM until the first <code>K(w', b', c')</code> with b' &gt;= 3. Then b' = c + delta, and (w', delta, c') do not depend on c.</li>
+<li><strong>Rounds:</strong> b' rounds <code>K(w, b, c) -&gt; K(inc(w), b-1, c+1)</code>. inc does not depend on b or c. The next cycle starts at <code>K0(inc^b'(w'), c + delta + c')</code>.</li>
+<li>inc on a clean word is +1 in base 4 with digits -1..2, at <code>12b + 22 + 14t + 4[absorbing digit 000]</code> steps (9,000/9,000 at b = 3, 7, 20).</li>
+<li>scripts/fastabs2.c runs the model. The eat is a TM run at bell size 40. Clean stretches of increments are done arithmetically. Each carry into a dirty digit is one TM round at b = 3.</li>
+<li>It reproduces all 1,572 K0 states of the direct run to 3e10 (words, c and exact step counts; work/k0_3e10.txt, scripts/runk.c, scripts/steps.py).</li>
+</ul>
+<h3 id="what-the-observe-stage-missed">What the observe stage missed</h3>
+<ul>
+<li><strong>Dirty digits are not values.</strong> An eat realigns the counter into 0my digits (000, 001, 010, 011). A carry into a 010 run converts the whole run at once and sends a large carry upward. Each realigned word has a well-defined effective value G (value after conversion minus increments, constant once converted). G(010^k) = 6, 42, 426, 2730, ..., about (4k - 16/3) 4^k.</li>
+<li><strong>Excursions.</strong> The counter inflates through such conversions and grows long runs of 001 digits. Up to 121 digits more than log4(c) appear in the long run; 16 digits already at 1.5e10 in the direct run. Each excursion is then eaten back (img/excess_all.png).</li>
+<li><strong>Dirty K0 words do occur</strong> after 3e10: 976 of 611,577 cycles (2nd digit 010, top 011, top 110, ...; work/abstract_dirty_k0.txt). Post-eat 111 tops: 37 in 1e5 cycles, always carried within the cycle (margin R / t &gt;= 7.1; work/post_eat_111_1e5.txt).</li>
+</ul>
+<h3 id="the-halt">The halt</h3>
+<ul>
+<li>Cycle 611,577 (0-based), c = 1,218,828. K0 word <code>010 111 100 100 001 101 000 000 000 001 001 000 101</code>, already dirty after an excursion. In cycle 611,575 a 14-digit counter left a 011 unconverted. The eat turned it into 111, and that 111 was not converted either (img/k0_last400.png).</li>
+<li>The eat gives <code>101 111 001 000 011 010 000 000</code>: a 111 digit with y = 1 above it.</li>
+<li>The carries reach the 111 twice: 111 -&gt; 110, then <code>1 110</code> -&gt; F reads 1. The halt comes in round 7,435 of the cycle.</li>
+<li><strong>Direct TM run</strong> from <code>0^inf w 0 E&gt; 101 0001 (001)^1218828 0^inf</code>: halts after 108,456,557,258 steps (halting transition counted), after 7,435 round starts (scripts/directk0.c).</li>
+<li>The model's step accounting for this cycle (scripts/steps_chunk.py: eat cost affine in c, rounds 12b + h, clean batches counted arithmetically) gives exactly 108,456,557,258, equal to the direct run.</li>
+<li>Total: the 6R(R+1) round cost alone sums to 1.8168e18. The exact total = 288 + PARTSUM(cycles 0..429,999) + PARTSUM(430,000..611,577), from <code>steps_chunk.py fast2_all.txt a b</code>. It reproduces the 3e10 run's K0 steps exactly. Chunks were still running at the end of the stage (scratchpad w55/indep/chunkA.txt, chunkB.txt); fast2_all.txt is regenerated by <code>fastabs2 - 2 611578 40 1</code> in 8 s.</li>
+</ul>
+<h3 id="checks-of-the-path-to-the-halting-cycle">Checks of the path to the halting cycle</h3>
+<ul>
+<li>Eat bell-size independence: bell 40 vs 300 give identical (d, w', delta, c') on all 611,577 eats. Bell 60/120 match too, and step counts are affine in c (bell 180 checked on every 97th eat).</li>
+<li>Round b-independence: about 2.0M oracle rounds (every carry into a dirty digit) give the same word at b = 1, 2, 3 and 9.</li>
+<li>Independent re-implementation (scripts/check_cycles.py): tools/sim.py Python engine, Python integers, bell 60, b = 4. It matches 22,905 cycles (20,000 random plus the last 3,000) and finds the same halt (after 7,434 rounds of cycle 611,577).</li>
+<li>Not checked: the full 1.8e18-step direct run (out of reach). The model is the only route to cycle 611,577.</li>
+</ul>
+<h3 id="open">Open</h3>
+<ul>
+<li>Certify the halt (decision.json): a Rocq certificate in the C2-552 style. It needs parametric eat and round lemmas plus a checked replay of 611,577 cycles.</li>
+<li>An exact total step count.</li>
+<li>Equivalence partners: this string is <code>tm'</code> of Eqv_v2 TM291 (plus 2 more Eqv_v2 modules), and its mirror is in Eqv_v3, so a certified halt decides those too.</li>
+</ul>
+<h2 id="halt-certification-independent-re-check-2026-10-13">Halt certification: independent re-check (2026-10-13)</h2>
+<p><strong>Result: agrees.</strong> I wrote a second implementation from the TM table alone. It does not read or import scripts/fastabs2.c, steps_chunk.py, check_cycles.py or runk.c. It reaches the same halt:</p>
+<ul>
+<li>cycle 611,577 (0-based; cycle 0 is K0('', 2) at step 288), c = 1,218,828;</li>
+<li>K0 word <code>010 111 100 100 001 101 000 000 000 001 001 000 101</code>, reached at step 1,816,823,958,776,312,687;</li>
+<li>eat: K(<code>101 111 001 000 011 010 000 000</code>, b = 1,218,830, c = 3) after 58,503,988 steps;</li>
+<li>the halt comes in round 7,435 after the eat: 7,434 rounds complete, and the 7,435th round starts at K(<code>101 110 100 100 100 100 100 100</code>, 1,211,396, 7,437).</li>
+<li>In that round the carry runs through the six 100 digits into 110 (D reads m = 1). Then E reads x = 1, and F reads the y = 1 of the top 101: the halt. That is 36 steps into the round, at cell -23 from the boundary.</li>
+<li>108,456,557,258 steps from K0 to the halt, with the halting transition counted. This is the same number scripts/directk0.c gives.</li>
+<li><strong>Exact total: 1,816,824,067,232,869,945 steps</strong> (halting transition counted; busycoq's <code>halts_in</code> index is one less).</li>
+</ul>
+<p>Everything is in work/indep/.</p>
+<h3 id="how-the-second-model-works">How the second model works</h3>
+<p>The rules below were derived from traces of constructed tapes, not taken from the stage-1 notes.</p>
+<ul>
+<li><strong>Round = COUNTER + BELL.</strong> From <code>w 0 E&gt; 1...</code>, the head goes left into the counter. It first comes back to the boundary cell in state C, with the cell left of the boundary now 1. In between it visits no bell cell except the boundary cell, which E rewrites as 1. So w' = COUNTER(w) depends on w alone, and it is computed by running the TM on the counter cells.</li>
+<li><strong>BELL lemma (b &gt;= 1).</strong> From <code>1 C&gt; 101 (001)^b 0001 (001)^c</code>, the head first returns left of the boundary in state A reading 1, after 12b + 17 steps. The bell is then <code>101 (001)^(b-1) 0001 (001)^(c+1)</code>. The rightmost cell visited is 3b + 5, inside the defect, so c plays no part. Then A1 = 0RE closes the round, so a round costs COUNTER + 12b + 18.</li>
+<li><strong>Clean increments</strong> (the carry stays in clean digits): +1 in base 4 with digits -1..2, at a cost of 4 + 14t + 4[the absorbing digit is 000 or blank]. These are batched in closed form, up to the point where the clean low part would carry into the lowest dirty digit (m = 1). Step sums come from residue counts: the v with t(v) &gt;= k are the v congruent to 2(4^k - 1)/3 mod 4^k.</li>
+<li><strong>Carries into a dirty digit</strong> are run as one exact TM COUNTER run on the whole word. There were 2,096,688 of these and 2,234,206 arithmetic batches.</li>
+<li><strong>The eat uses no rule at all.</strong> The TM is run exactly, at the true c, by a macro simulator on run-length blocks.</li>
+<li>Its only shortcut is a shift rule <code>a P^j -&gt; P' a P^(j-1)</code> (and its mirror image), found by simulating the rule's window and checked there; the head never leaves the window.</li>
+<li>A period in which E reads a 1 is refused, so no K-form can hide inside an accelerated stretch.</li>
+<li>The eat ends at the first K-form, detected cell by cell.</li>
+<li>So the eat does not assume c-independence. There were 4,264,432 rule applications over all eats, and the eat at c = 1.2M takes about 0.3 ms.</li>
+<li>Run from blank to the halt: 503 s in Python (run.py; output k0_model_all.txt, one line per cycle start).</li>
+</ul>
+<h3 id="validation-against-the-real-tm">Validation against the real TM</h3>
+<ul>
+<li><strong>Method.</strong> Each case was checked two ways:</li>
+<li>tools/sim.py (reference engine) gives the configuration at the predicted step count, or confirms a halt at the predicted step;</li>
+<li>work/indep/direct.c (my own C simulator) confirms that the predicted K-form is the <em>first</em> one after the start.</li>
+<li><strong>Results</strong> (validate.py, val_*.json). Words were random with dirty digits; 0 failures in every set:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Set</th>
+<th>Cases</th>
+<th>Range</th>
+<th>Halts</th>
+<th>Dirty words</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single rounds</td>
+<td>3,000</td>
+<td>b &lt;= 200, c &lt;= 300</td>
+<td>184</td>
+<td>1,422</td>
+<td></td>
+</tr>
+<tr>
+<td>Multi-round batches</td>
+<td>1,500</td>
+<td>b &lt;= 3,000</td>
+<td>62</td>
+<td>—</td>
+<td>1,726 arithmetic batches, 316 dirty carries; every intermediate K-form checked</td>
+</tr>
+<tr>
+<td>Eats</td>
+<td>3,000</td>
+<td>c &lt;= 300</td>
+<td>398</td>
+<td>1,488</td>
+<td></td>
+</tr>
+<tr>
+<td>Eats</td>
+<td>300</td>
+<td>c up to 19,256</td>
+<td>42</td>
+<td>—</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Real-run rounds and eats.</strong> Every round start of the direct run below 1.9e9 was replayed: 378,178 single rounds and 616 eats, all identical.</li>
+<li><strong>Huge b</strong> (check_bigb.py). 400 rounds with b up to 2e6 and c up to 2e6 were run exactly with the macro simulator and compared with the ROUND rule: identical, including 16 halts.</li>
+</ul>
+<h3 id="cross-checks-of-the-path">Cross-checks of the path</h3>
+<ul>
+<li><strong>3e10 run.</strong> direct.c from blank to 3e10 steps gives 1,573 K0 states (step-288 one included). The model reproduces every one: step, c and w.</li>
+<li><strong>10 whole cycles by direct.c</strong>, from the model's K0 (spot_cycles.txt, spot_results.txt). Five were random and five had a dirty K0 word not starting with 010; c ran from 18,422 to 87,349 and cycles were up to 4.6e10 steps long. The next K0 matched in step, c and w in all 10.</li>
+<li><strong>Final cycle by direct.c</strong>, from the model's K0 of cycle 611,577 (direct_final_cycle.txt, compare_final_cycle.py). All 7,435 round starts are identical in w, b, c and step, and so is the halt at 108,456,557,258.</li>
+</ul>
+<h3 id="comparison-with-the-stage-1-outputs-read-only-at-the-end">Comparison with the stage-1 outputs (read only at the end)</h3>
+<ul>
+<li>work/k0_3e10.txt (1,573 K0 lines) is identical to my direct run and to my model.</li>
+<li>work/abstract_cycles_sampled.txt: all 3,608 rows match. Their row n gives the K0 that <em>ends</em> cycle n, which is my cycle n + 1.</li>
+<li>work/abstract_dirty_k0.txt: all 976 rows match on the same n + 1 offset.</li>
+<li>My model has 2,915 K0 words that contain any m = 1 digit.</li>
+<li>The extra 1,939 all have a dirty top 010, which that file leaves out. This is a difference of definition, not of data.</li>
+<li>status.json <code>halt_prediction</code>: the cycle, c, K0 word, post-eat word, round 7,435 and 108,456,557,258 all agree.</li>
+<li>Small wording differences:</li>
+<li>"1,572 K0 states" in stage 1 is 1,573 lines in both files.</li>
+<li>check_cycles.py's "after 7,434 rounds" means the halt in the 7,435th round.</li>
+</ul>
+<h3 id="what-this-does-and-does-not-show">What this does and does not show</h3>
+<ul>
+<li>Two independent implementations now agree exactly on the path to cycle 611,577 and on the halt. The eat and every dirty carry are exact TM runs here, so the only parametric pieces are:</li>
+<li>the BELL lemma;</li>
+<li>the clean increment, with its cost.</li>
+<li>Both were validated on random instances against tools/sim.py and checked against every round of the direct run to 1.9e9.</li>
+<li>It is still simulation evidence, not a proof. The Rocq certificate (decision <code>certify</code>) remains to be written.</li>
+</ul>
+<h2 id="halt-certification-exact-step-count-2026-10-13">Halt certification: exact step count (2026-10-13)</h2>
+<p><strong>Exact total: 1,816,824,067,232,869,945 steps</strong> from the blank tape (state A) to the halt, with the halting transition counted (tools/sim convention, as in BB(5) = 47,176,870). In busycoq terms this is <code>halts_in tm c0 1816824067232869944</code>.</p>
+<p>This is still a prediction. It rests on the cycle model for cycles 0..611,576, which is not proved. Every formula used in the count is checked against the real TM (below). Everything is in work/steps_exact/.</p>
+<h3 id="the-count">The count</h3>
+<ul>
+<li>Cycle n starts at K0(w, c). The eat runs to K(w', R, c') with R = c + delta. Then R rounds follow at b = R, R-1, ..., 1, each costing 12b + h.</li>
+<li>Total = 288 + (sum over cycles 0..611,576 of eat + 6R(R+1) + sum of h) + the halting cycle 611,577.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>part</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>blank -&gt; K0('', 2)</td>
+<td>288</td>
+</tr>
+<tr>
+<td>133 cycles with c &lt;= 250, run whole on the TM</td>
+<td>17,789,836</td>
+</tr>
+<tr>
+<td>eats (cycles 133..611,577)</td>
+<td>15,593,792,071,655</td>
+</tr>
+<tr>
+<td>round cost 12b</td>
+<td>1,816,798,040,775,616,704</td>
+</tr>
+<tr>
+<td>round excess h (incl. the 36-step halting round)</td>
+<td>10,432,647,391,462</td>
+</tr>
+<tr>
+<td><strong>total</strong></td>
+<td><strong>1,816,824,067,232,869,945</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The halting cycle 611,577 starts (K0) at step 1,816,823,958,776,312,687.</li>
+<li>It then runs 108,456,557,258 more steps: an eat of 58,503,988 steps (R = 1,218,830), 7,434 complete rounds, and a 36-step halting round (F reads 1).</li>
+</ul>
+<h3 id="independent-counts-same-number">Independent counts, same number</h3>
+<ul>
+<li><strong>Python</strong> (steps.py and steps_chunk.py, copied unchanged), in 16 parallel chunks (py_chunks/):</li>
+<li>eats at bells 60 and 120, extrapolated (also bell 180 on every 97th);</li>
+<li>each carry into a dirty digit is one TM round at b = 4 (also b = 7 on every 13th);</li>
+<li>clean stretches are counted by congruences.</li>
+<li>Same total as the stage-1 run, which used two chunks.</li>
+<li><strong>C</strong> (stepsx.c, with its own simulator and its own table parsed from the machine string):</li>
+<li>cycles with c &lt;= 250 are run whole on the TM;</li>
+<li>eats at bells 100 and 250, extrapolated (also bell 600 on every 61st, and the real c on every 307th);</li>
+<li>each carry into a dirty digit is one TM round at b = 5, c = 3. Of these 2,096,514 rounds, 462,866 are re-run at b = 1 or 2;</li>
+<li>clean stretches are counted by digit-count identities: sum of t = (k - dS)/3, and #(absorbing digit 0) = (k + dN1 - dN0)/3.</li>
+<li>It reproduces fast2_all.txt at all 611,578 cycles.</li>
+<li>The two counts agree at all 47 comparison points (chunk boundaries and 20,000-cycle marks) and on the total.</li>
+<li>They also agree cycle by cycle on 4,988 single cycles (3,000 random plus the last 2,000) recounted in Python (percycle_sample.py).</li>
+<li>A third count gives the same total: the independent re-check above (work/indep/), whose eats are exact TM runs at the true c by a run-length macro simulator.</li>
+</ul>
+<h3 id="cross-checks-all-pass">Cross-checks (all pass)</h3>
+<ul>
+<li><strong>Direct run to 3e10.</strong> Both counts hit all 1,573 K0 states of work/k0_3e10.txt at the exact step, word and c. The last is at step 29,992,405,167.</li>
+<li><strong>Whole cycles on the TM past 3e10</strong> (directcyc.c, direct/).</li>
+<li>14 cycles, at c = 4,399 to 229,443. 9 of them start from a dirty K0 word (an 011 or 110 top, or 010/011 digits), and 4 from 78- to 124-digit excursion words.</li>
+<li>The largest is cycle 115,284, with 315,886,109,619 steps.</li>
+<li>For each one, the step count and the next K0 equal the accounting.</li>
+<li><strong>Halting cycle on the TM.</strong> From the cycle-611,577 K0, directcyc.c (written fresh, not directk0.c) halts after 108,456,557,258 steps, equal to both counts.</li>
+<li><strong>Every eat at its real bell size</strong> (eatreal.c and eatreal_desc.c, eatreal_out/).</li>
+<li>All 611,445 eats with c &gt; 250 (cycles 133..611,577, up to c = 1,218,828) were run on the TM at their real c.</li>
+<li>Each step count equals the extrapolated one, and each (w', delta, c') equals the bell-100 eat.</li>
+<li><strong>Formulas on constructed tapes</strong> (validate.c, 8 seeds, 0 failures):</li>
+<li>160,000 single clean rounds at b = 1..60, 56,916 of them at b = 1 or 2. Each goes K(w,b,c) -&gt; K(inc w, b-1, c+1) in 12b + 22 + 14t + 4[absorbing digit 000] steps.</li>
+<li>22,890 clean batches of k &lt;= 400 rounds, each as one TM run K(w,k,c) -&gt; K(w+k, 0, c+k) in 6k(k+1) + (batch sum) steps. In 10,890 of them the batch runs below a dirty digit.</li>
+<li>1.6M batch sums: the identities equal the explicit per-increment sum.</li>
+<li>37,133 carries into a dirty digit (real and random words) at b = 1, 2, 3, 5, 9, 17. Each gives the same word, b-1 and c+1, and steps - 12b is constant. The 2,943 halting ones halt at the same step for every b.</li>
+<li>12,000 eats at c = 100..2,000 (2/3 of them real pre-eat words): the same (w', delta, c') at every c, and the step count is exactly affine in c.</li>
+<li><strong>Lower bound.</strong> The total exceeds sum 12b = 1,816,798,040,775,616,704 by 26,026,457,253,241, a factor of 1.0000143.</li>
+</ul>
+<h3 id="found-on-the-way">Found on the way</h3>
+<ul>
+<li>The eat's c-independence is not universal. In 4 of 4,000 random counters, the eat wipes the counter and ends at a fixed b' (3 or 4); c' - c and the step count are then constant.</li>
+<li>No real eat is of this kind: bells 100 and 250 agree on every eat, and so does the real c. A Rocq eat lemma has to exclude this case word by word.</li>
+</ul>
+<h3 id="files-worksteps_exact">Files (work/steps_exact/)</h3>
+<ul>
+<li>stepsx.c, tm.h, stepsx_out.txt, stepsx_percycle.txt (columns: n, c after, R, eat, cycle steps, cumulative; small cycles marked <code>direct</code>).</li>
+<li>steps.py, steps_chunk.py, check_cycles.py (copies), run_py_chunks.sh, py_chunks/.</li>
+<li>steps_anchor.py, percycle_sample.py, compare_impl.py, compare_direct.py, compare_eatreal.py, breakdown.py.</li>
+<li>directcyc.c, run_direct.sh, direct/.</li>
+<li>eatreal.c, eatreal_desc.c, run_eatreal.sh, eatreal_watch.sh, eatreal_out/.</li>
+<li>validate.c, validate_seed1..8.txt.</li>
+<li>fast2_all.txt, regenerated by <code>fastabs2 - 2 611578 40 1</code>; same md5 as the stage-1 file.</li>
+</ul>
+<h2 id="kill-halting">Kill (halting)</h2>
+<p><strong>KILLED_HALT (2026-10-13).</strong> <code>Lemma halt: halts tm c0.</code> in the 2,975-line .v: a checked certificate runner in the style of busycoq <code>verify/Sk1Machines.v</code> Module Sk1Auto. Rounds and the clean carry are es-lemmas (<code>bellpart</code>, <code>round</code>, <code>absm</code>/<code>abs0</code>/<code>abs1</code>/<code>pass2</code>, <code>callw_inc</code>), <code>rounds</code> applies n rounds in closed form (batch via <code>split 16</code>, untrusted <code>propose</code>, <code>addn</code>), and eats plus carries into dirty digits run on a verified run-length macro simulator (single steps + block rules found by window simulation, crossed by <code>shift_rule_L/R</code>). <code>init</code> (288 steps, solve_init) then 751 <code>vm_check_eq</code> chunks: 4,942,483 checker moves (611,578 eats, 2,234,211 batches, 2,096,694 simulated rounds; 300,612,334 macro steps), ending in the halt in round 7,435 of cycle 611,577 (F reads the y = 1 of the <code>101</code> above <code>110</code>).</p>
+<h3 id="checks_1">Checks</h3>
+<ul>
+<li>Formalizer run rocq/check_kill_r1.log: PASS (compile 609.7 s, coqchk timeout at 600 s), sha256 851ca695…0ea92.</li>
+<li>Independent audit (same sha256): PASS, exit 0 (compile 615.9 s, coqchk timeout); holdout line 29 byte-exact; whole file read; soundness chain s1..s751 / h750..h0 / halt checked mechanically; Print Assumptions halt closed (in-file and isolated). One cosmetic finding: line 699's comment said "chunks of about 200,000 macro steps" (really ~400k).</li>
+<li>Packaging: fixed that comment (also in rocq/test/assemble.py); shipped sha256 866a5226…27f4, diff = that one line. Fresh <code>tools/check_kill.sh --halt</code> on the shipped file: PASS, exit 0, checked_at 2026-10-13T18:31:15Z, compile 613.1 s (-native-compiler yes), 0 assumptions, coqchk timeout at 600.2 s (policy A warning: the chunks rest on coqc's kernel check at Qed). Log: submission/check_kill.txt.</li>
+<li>killreview: 6/7; the only miss is "coqchk finished". A finishing coqchk would need several hours (3-chunk prefix took 31 s for 600k macro steps; 300.6M in all, roughly 4 h) with <code>--coqchk-timeout</code>; not run.</li>
+</ul>
+<h3 id="step-count-computed-not-proved">Step count (computed, not proved)</h3>
+<p>1,816,824,067,232,869,945 steps (halting step included; busycoq halts_in n = N − 1), from the three independent counts in "Halt certification: exact step count" and work/indep/. status.json <code>halt_steps</code> has proven_in_coq = false.</p>
+<h3 id="package">Package</h3>
+<ul>
+<li>submission/: the .v (= the machine dir copy, same sha256), proof.md (public; writeup_lint 0 errors, 0 warnings), check_kill.txt (fresh run), README.md. No Discord message written; nothing posted.</li>
+<li>proof.md (working copy) = the public text + an internal appendix (written after the .v this time). how_proved.md in the house format.</li>
+<li>The §8 counts of the write-up (369 cycles with a post-eat <code>110</code>/<code>111</code> digit, only cycle 611,577 under a digit ending in 1; d ≡ 2 mod 3 in 610,646 of 611,445 eats with c &gt; 250; b' = c − 1 and c' = 2 in half the eats) are from work/writeup_stats/ (scan.py, stats.py over work/indep/model.py's eat and work/indep/k0_model_all.txt).</li>
+<li>Equivalence partners settled with it: Eqv_v2 TM291, TM392, TM1913 (tm' = this string) and Eqv_v3 TM558, TM605 (tm' = its mirror); none on the 740 list.</li>
+<li>decision.json (answered: certify) moved to decisions/2026-10-13-certify.json; no new decision.</li>
+</ul>
+</main></body></html>

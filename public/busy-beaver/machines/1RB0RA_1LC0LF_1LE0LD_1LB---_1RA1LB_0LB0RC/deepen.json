@@ -1,0 +1,124 @@
+{
+ "tm": "1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC",
+ "pass": "tight (funded 2026-10-11, hard stop)",
+ "confidence": "med",
+ "recommend": "none: parked STUCK by the agreed hard stop (recovery lemma not proved in the tight stage). If ever reopened: a unit rule for the C-meets-v event in the head, then a head invariant (real word = shadow plus a head) and a bound of 3 on the eats the head survives.",
+ "mechanism": "The machine alternates two exact sweeps (A-sweep law, unit phase table). Rounds on {z,o,s,t} words are CASCADE. The eat is a closed unit rule (EATU): levels W_1 = inc(W), W = Y s^(j+1) o^k -> inc^(j+1)(Y), stop at Y z o^k; then P = cascade(reread(Y) o), delta = units removed. A potential Hub never grows under CASCADE, so the t's of P clear after 2^h - 2 rounds with h <= Hub(P) <= G(W) (digits below W's top spacer). Generic eat words (first unit a digit) have G <= D-1, so every epoch from them is t-free at the next eat; leading-spacer words have G = D, one short.",
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "deepen",
+   "confidence": "med",
+   "model": {
+    "a_sweep": "A from a turn: out[p] = [x[p]=0 and x[p+1]=1] up to the first 00; there 00 -> 01 and D reads the cell to its left",
+    "phase_table": "B: s->101 B, o->111 B, z->100 turn, t->100 C; C: s->111 C, t->110 C, o->110 turn, z->010 turn; D: s->001 B, o->011 D, z->111 E(left), t->HALT; E: t->111 E, s->011 / o->101 / z->001 turn (scripts/deepen/phase_table.json, all 8 units x 5 entry states)",
+    "eat": "W' = inc(W) = Y x o^k; o^k -> u^k; x=s: new marker t, Y's trailing s are its bell (mini-eat, recurse on inc(Y)); x=z: E turns one unit left; x=t: halt; finally the marker is reborn at the right end and the grid shifts by one cell",
+    "eat_law": "t-free W, c>=2: K(W,0,c) -> clean K(P, c+delta(W), 1), with P and delta in [0,13] independent of c",
+    "counter": "epoch eat: value(W) = c+1 (o=1, z=0, s skipped), D(W) = bitlen(c+1); post-eat: value(P) = 2 (s, t skipped); ROUND keeps value - c fixed"
+   },
+   "closed_gaps": [
+    "The eat is ruled: the A-sweep law (3,000/3,000) and the unit phase table (3,000/3,000 compositions vs the TM) give it as a recursive unit-rewrite process.",
+    "Eat safety: every t-free word eats without halting, and the result does not depend on c. Exhaustive to 12 units (354,293 words; 39,365 at c = 2/12/30, identical outputs); random 13..45 units 1,500/1,500.",
+    "Halting mechanism: only a bounce with t o^k to its left can halt (the D phase meeting t).",
+    "Counter invariant: value(W) = c+1 at all 529 eats and value(P) = 2 at all 529 post-eat K-moments to 1e10.",
+    "Cryptid check: the eat does not use the counter's bits. Only the epoch's size margin does, and that is an inequality, not a pseudo-random rule. Not flagged."
+   ],
+   "remaining_gaps": [
+    "Size invariant, not proven: every t created by an eat clears before the next eat. Observed on all 529 real epochs with t-lifetime (k0+1)/N <= 0.286 (<= 0.124 for N >= 1000). It is needed: forced early eats halt 173/7,830.",
+    "The rounds whose carry enters a t segment, including their internal bounces (304 of 529 epochs), have no unit-level rule, and there is no formula for k0(P).",
+    "The reachable language. Random counter-consistent starts still carry t units at the second eat in 5/3,300 cases and at the third eat in 3/3,300 (all with a tiny bell, none halting); by the fourth eat all are clean. So the invariant needs the reachable spacer structure or a bell-size margin, not only value(W) = c+1.",
+    "No epoch model past 1e10 (only 529 epochs); sibling R2 used one to reach N = 1e7."
+   ],
+   "evidence": [
+    "scripts/deepen/validate_deepen.py -> validate_deepen.json: A-sweep law 3,000/3,000; phase-table composition 3,000/3,000; long-word eats 1,500/1,500.",
+    "scripts/deepen/episode.c (exact oracle) with gen_words.py: 354,293/354,293 t-free words up to 12 units eat safely to a clean K.",
+    "data/deepen/eat_episodes_1e10.txt (529 episodes from data/kscan_eats_1e10.txt) and data/deepen/epoch_tlifetime_1e10.txt (k0 per epoch).",
+    "data/deepen/early_eat_summary.txt.gz: 173 halts in 7,830 forced early eats.",
+    "scripts/deepen/epochfuzz.c with gen_consistent.py: 0 halts in 400 x 3 epochs plus 3300 x 4 epochs from counter-consistent states (3000 random with D = 3..12, 300 power-of-two with D = 3..13)."
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "size_invariant",
+   "confidence": "med",
+   "model": {
+    "cascade": "carry enters at the bottom in phase B: o->z continue, s pass, z->o STOP, t->s and C run above; C run = maximal {s,t} run, s->z, t stays; TURN unit above it z->s (0^inf counts as z; turn on o outside the rule); then: empty run -> B continues above the turn unit; run's lowest unit was s -> it becomes o, STOP; it was t -> that t is entered from below (t->s, new C run on the converted units)",
+    "t_lifetime": "k0 + 2 = 2^h, h = digit positions below the top t when the carry enters it; t's clear before the next eat iff h <= bitlen(N_new+1)-1",
+    "bound_hub": "h <= Hub(P) = #{s,z strictly between top and lowest t} + #{z,o below the lowest t} (not tight)",
+    "epoch_model": "scripts/sizeinv/emodel.c: ROUND jumps on the t-free suffix, exact TM on rounds entering the t segment and on eats (two c values), binary add once t-free"
+   },
+   "closed_gaps": [
+    "Shifted carry ruled: CASCADE matches the TM on 3,821/3,821 random {z,o,s,t} words (1,179 outside the rule: turn on o) and on 10,371/10,371 exact rounds of 3,000 real epochs.",
+    "Exact t-lifetime law: k0 + 2 = 2^h in all 7,015,292 epochs with t to N = 1e8 and for all 66,530 eat images of t-free words up to 12 units.",
+    "Epoch model validated: 528/528 one-step epochs from the real run to 1e10 (W, c, P, b, k0 vs direct simulation), 527/527 free run; then run from blank to N = 1e8 (~7.1M epochs): 0 halts, 0 t at any eat, value(W) = c+1 and D(W) = bitlen(N+1) at every eat, EAT c-independence re-checked at every eat.",
+    "Generic size lemma (eat word starts with a digit): h(eat(W)) <= D(W)-1 for every t-free W, exhaustive to 12 units (177,135 words) plus 14,098 random words of 13..70 units, 0 failures; no reachability or arithmetic needed."
+   ],
+   "remaining_gaps": [
+    "The deepen margin (>= 3.5x) does not extrapolate: the slack D_old-1-h is 0 at N = 8,110, 16,221 and 4,193,610 (k0/N = 0.505); the bound is structural and exactly tight, so no numeric-slack proof.",
+    "Leading-spacer eats (W = s..., 6 epochs to N = 1e7): the bound depends on the counter's low bits (one failing bit pattern per layout, e.g. value 8,101 instead of 8,102). When it fails a top t survives one eat; in all tests it never halts and clears within 2 epochs (24,576 patterns on the real layouts; 88,507 short leading-spacer words). A recovery lemma (with one more rule for the transient v = 110 unit) or a reachability argument is needed.",
+    "Proofs (informal) of the generic lemma (eat recursion + CASCADE) and of CASCADE / the k0 law from the phase table; no closed formula for the exact h (Hub - h in 0..6)."
+   ],
+   "evidence": [
+    "scripts/sizeinv/val_real.json (528/528), data/sizeinv/emodel_1e7.txt.gz (804,148 epochs), data/sizeinv/emodel_1e8_summary.txt (to N = 1e8, slack histogram in the END line)",
+    "scripts/sizeinv/cascade_validate.json; scripts/sizeinv/lemma_test_L12.json; scripts/sizeinv/generic_test_L12.json",
+    "scripts/sizeinv/leadbits.json, leadhalt_real.json, leadhalt_L12.json, bits_test_11.json, fuzz_b_7.json, layout_test_L11.json"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "recovery",
+   "confidence": "med",
+   "model": {
+    "eatu": "t-free W: W_1 = inc(W); W_i = Y x o^k; x = z: stop; x = s: Y = Y0 s^j, W_(i+1) = inc^(j+1)(Y0); then X = reread(Y) o (o->s, z->z, s->t), P = cascade(X), b' = c + delta, delta = units removed by the levels",
+    "hub_lemma": "on {z,o,s,t} words with no o above the lowest t: a CASCADE round keeps that invariant, never turns on o, adds 1 to the value, creates no t, never raises Hub = #{s,z between top and lowest t} + #{z,o below lowest t}; the round removing the top t leaves value 2^m, m <= Hub",
+    "generic_chain": "h <= Hub(P) <= Hub(X) <= G(Y)+1 <= G(W_final) <= G(W) <= D(W)-1 for generic W (first unit a digit); so k0 = 2^h - 2 <= c-1 < b'",
+    "halting_in_transients": "eat: the level recursion reaches a surviving t (D meets t); rounds: the B carry reaches v = 110 (Bv -> D reads 1), directly or after an empty C run; a C run reaching v through s's is safe (Cv = 011 L F)"
+   },
+   "closed_gaps": [
+    "Eat in closed form: EATU matches the cell-level oracle (P and delta) on 1,070,595/1,070,595 words (all t-free words to 13 units + 20,000 random of 13..90 units).",
+    "Hub lemma: clauses (a)-(f) on all 649,539 invariant words with a t to 11 units; CASCADE equals the TM round on all 17,496 invariant words to 8 units.",
+    "Generic size lemma proved (informally): every link of the chain holds on all 294,590 eat words with a t in P (t-free words to 12 units), 0 failures. Generic epochs are t-free at the next eat with value(W) = c+1 kept.",
+    "The t-lifetime law k0 + 2 = 2^h and the c-independence of the eat now have proofs (value +1 per round under the invariant; no c in EATU)."
+   ],
+   "remaining_gaps": [
+    "Leading-spacer recovery lemma unproved: from a t-free leading-spacer eat word, a t-free value-consistent eat word within 3 epochs, no halt. True on all 265,642 such words to 13 units (8 epochs, 0 halts, at most 3 t-epochs) and all 24,576 real-layout patterns.",
+    "Surviving-t states are unsafe in general: 862 of 2,179 eat words pre t Z (Z t-free to 8 units) halt (207 in the first eat, 655 later); failure-produced shapes include the halting-prone 'tzvz' (62 of 127 'stoz' cases) yet never halt, so the proof must use how a tight failure builds the word.",
+    "proof.md lemmas for EATU and CASCADE written out from the phase table; step counts per macro rule."
+   ],
+   "evidence": [
+    "scripts/recovery/eatu_validate.json (1,070,595/1,070,595)",
+    "scripts/recovery/lemma_h_L11.json; scripts/recovery/generic_chain_L12.json",
+    "scripts/recovery/leadrec_L13_E8.json, leadrec_L11_E10.json (0 halts); survshape_s_L8.json, survshape_none_L8.json (862/2,179 halt); survprefix_L11.json"
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "option": "tight",
+   "confidence": "med",
+   "model": {
+    "equality_cases": "a t survives the epoch of a leading-spacer eat word W = s^a M only if W ends in o, the eat has a single level (W_final = inc(W)) and delta = 0, Y = inc(W) minus its last z has no o below its lowest spacer, and Hub never drops in the epoch",
+    "tf": "Y = s^a Z, Z = g_0 s^e1 g_1 ... s^em g_m (digit groups g_i, value o_i, length L_i): W is a tight failure iff W ends in o, m >= 1, g_m in z*, value(W) <= 2^D - 2 and o_i + N_i = 0 mod 2^L_i for i = m-1..0, with N_(m-1) = e_m, N_i = e_(i+1) + C_(i+1), C_i = (o_i + N_i)/2^L_i. Reason: entering a t is one old increment of the groups above the lowest t-run; exposing a group keeps Hub iff its last increment rolls it over from all ones",
+    "t1": "the next eat word after a tight failure is bin(C_0) t^a inc(W)[a:] (bin in s = 1, z = 0)",
+    "next_eat": "N0: value(inc(W)[a:]) is even, so the eat's first round stays in the body; N1: at most two levels (g_m nonempty: stop at once, delta 1; g_m empty: e_m mini-rounds roll g_(m-1) to all z by TF, stop at level 2, delta e_m + 1); the levels never reach the block; mini-round overflow into the block is a CASCADE round on an I-word",
+    "first_contact_with_v": "in epoch 2 the groups below the new v replay the TF arithmetic (top group mod 2^(L_0 - 1)), so every exposure is a full rollover, no C run is empty, and the first unit to reach v is a C run (Cv: v -> u, then F), never the B carry",
+    "shadow": "observed: the body of each surviving word equals the body of the t-free shadow S_k = s^(a_k) B_k run through the same epochs; the head rides on top"
+   },
+   "closed_gaps": [
+    "Tight failures pinned by a closed form (TF), with a proof sketch from CASCADE: TF agrees with the exact chain on all 265,642 leading-spacer words to 13 units (1,986 tight) and on 100,000 random words of the forced shape of 10..45 units (175 tight); 3,000 words built by the TF recursion (2,145 with 20..50 units) are all exact tight failures.",
+    "T1 proved: the next eat word is bin(C_0) t^a inc(W)[a:]; exact on 1,986/1,986 (13 units, 8 epochs), 2/2 real-layout patterns, 6/6 random D = 12..15 layouts, 84/84 of 150,000 random forced-shape words, and every TF-built word.",
+    "N0 and N1 proved from TF: the eat after a tight failure never reaches the surviving t (942/942 to 12 units: 734 stop inside the body, 208 overflow into the block, 0 reach it).",
+    "The first unit to touch the new v is a C run, by the replayed TF arithmetic; in all 511 such epochs to 12 units the bodies of the real and the shadow word agree below v until that round."
+   ],
+   "remaining_gaps": [
+    "Recovery lemma still unproved: after the C-meets-v event the head goes through an F/D/E pass and an A bounce inside the head with no unit rule; observed afterwards real = t + shadow in 241 of 511 cases (a = 1, A' = s) and shadow plus a few head units in the other 270.",
+    "No invariant yet for the head through later rounds and eats, and no proof that it survives at most 3 eats (observed 1/2/3 eats: 781/1,090/103 to 13 units; never more).",
+    "Overflow case (208 of 942): the block is converted inside the eat and a t can come back at the next eat (73 of 208) by the ordinary leading-spacer mechanism; not analysed further."
+   ],
+   "evidence": [
+    "scripts/tight/tf_exh_L13.json, tf_both_100000_s5.json, tf_build_3000_s11_E6.json (TF)",
+    "scripts/tight/tight_exh_L13_E8.json, tight_real_E6.json, tight_rand_10_D12-15_s20261011_E5.json, tight_struct_150000_L8-40_s20261011_E5.json (T1, shadow, 0 halts)",
+    "scripts/tight/next_eat_L12.json (N0, N1), cv_event_L12.json (first contact with v, Cv round)"
+   ]
+  }
+ ]
+}

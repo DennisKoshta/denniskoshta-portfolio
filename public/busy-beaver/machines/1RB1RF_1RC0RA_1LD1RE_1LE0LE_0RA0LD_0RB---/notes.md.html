@@ -1,0 +1,595 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---/notes.md · <a href="/busy-beaver/machines/1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---/notes.md.html">raw</a></div>
+<h1 id="1rb1rf_1rc0ra_1ld1re_1le0le_0ra0ld_0rb-">1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</h1>
+<p>Status: CHECKPOINT_A
+Class guess (agent / Dennis): Bell eats counter, BMO 7 layout with a base-3 counter (med) / _
+Spreadsheet notes / Discord thread: Results row 1037: status blank, "Bell eats counter", no notes, link, comment or strikethrough. Not in the UBRRBA or dyuan01 lists. Absent from solved_index. Pilot rank #18.
+Viewer: https://bbchallenge.org/1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>1e9 steps: no halt; span -312..4272 (4,585 cells), 2,285 nonzeros. Bell M ~ t^0.342; 312 phases.</li>
+<li>Most telling: <code>img/state_C_one_phase_x2.png</code> (one phase; marker diagonal + ticking counter strip), <code>img/counter_from_zero.png</code>.</li>
+<li>How each card diagram was made (re-run 2026-10-10: byte-identical PNGs; label fields in observe.json come from these runs). All via <code>tools/diagram.py "$TM"</code>:</li>
+<li><code>state_C_one_phase_x2.png</code>: <code>--mode state:C --steps 158600 --from-config @work/phase_2097352.cfg --max-width 300</code>. That cfg is the real tape at step 2,097,352 (checked), a phase start. <code>--max-width 300</code> makes the tool draw only every 2nd cell ("x2"), which turns the bell <code>(10)^M</code> solid white or black and so shows the marker as the diagonal edge.</li>
+<li><code>counter_from_zero.png</code>: <code>--mode state:C --steps 21000 --from-config "0^inf A&gt; (10)^100 00101001 0^inf" --width 28 --ox -7.02 --scale 5</code> (window = cells 197..224, the bell's right end + the counter; constructed, counter X(0) = value 0).</li>
+<li><code>phase_starts_counter_1e9.png</code>: <code>--mode records:L --frame right --width 110 --steps 1e9 --scale 3</code> (one row per left record = phase start, 313 rows).</li>
+<li><code>records_1e8.png</code>: <code>--mode records --steps 1e8</code>. <code>blaze_1e8.png</code>: <code>--mode blaze --steps 1e8 --as-site</code>.</li>
+<li>Phase start: <code>0^inf A&gt; (10)^M W 0^inf</code>. The marker (a 00/01 phase boundary) moves right 1 block per bounce, and each bounce adds 1 to W.</li>
+<li>W as domain walls (cells where neighbours are equal): <code>1, d0, w0-d0, d1, w1-d1, ...</code>, i.e. frames (d_i in 1..3, even width w_i &gt;= 4). Inc = base 3 on the d's; widths never change in Inc.</li>
+<li>Eat: when the marker reaches W, the bell grows by g(W) &gt;= 2 and W is rebuilt (W'). g and W' are independent of M. Per-phase dM: 1 in ~half of phases, else 4..38 (last 150 phases).</li>
+<li>History at phase starts: observe.json <code>history</code> (39 rows).</li>
+<li>Tools: rulefit gets 19% coverage (right-edge records only); sligocki prover gets 0 rules at block size 2; compress gives 244 skeletons out of 300 snapshots. None of them sees the wall counter, so the analysis is by hand (<code>work/*.py</code>).</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All were checked by direct simulation (tools/sim) from concrete configurations: <code>work/validate.py</code>, <code>work/validate_phase.py</code>.
+| rule | from -&gt; to | tested |
+|---|---|---|
+| sweep chains | <code>A&gt; (10)^n -&gt; 10 (01)^(n-1) B&gt;</code>, <code>B&gt; (10)^n -&gt; (01)^n B&gt;</code>, <code>(10)^n &lt;D -&gt; &lt;D (01)^n</code>, <code>A&gt; (01)^n -&gt; (10)^n A&gt;</code> (2n steps) | 240/240 |
+| Inc, X form | <code>0^inf (10)^a A&gt; (10)^(b+1) X(v) -&gt; 0^inf (10)^(a+1) A&gt; (10)^b X(v+1)</code>, b&gt;=1; X(v)=D(v%3) 1 T(v/3) 001, D=0010/0110/0100, T=bijective base 3, 1/2/3=0001/0011/0010 | 450/450 |
+| Inc, frames | same with any frame list F -&gt; inc(F) | 400/400 |
+| Phase | <code>0^inf A&gt; (10)^M X(v) -&gt; 0^inf (10)^(M-1) A&gt; 10 X(v+M-1)</code> | 40/40 |
+| Eat | <code>0^inf (10)^N A&gt; 10 F -&gt; 0^inf &lt;E (10)^(N+g(F)) F'</code>, with g, F' independent of N | 60/60 |
+OPEN: a closed description of the Eat step. Its outputs include transient "pending" shapes (e.g. walls 1,1,1,3) that Inc then merges into new frames.</p>
+<p>Template check (BMO7.v; diff C1 1RC -&gt; 1RE): <strong>partly</strong>. LIncs (left bounce) holds 36/36; RInc (binary) fails on every odd counter (16/40 pass); the S1 big-step shape is reached 3/8 times, and then with a non-binary counter.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<h2 id="informal-proof">Informal proof</h2>
+<p>(not started)</p>
+<h2 id="formalization-log">Formalization log</h2>
+<h2 id="outcome">Outcome</h2>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<p>The card now shows at most 3 short mechanism bullets and yes/no questions that point at figures by number (primary figures first). The text they replaced is kept here.
+- Figure order on the card: Fig 1 = <code>img/state_C_one_phase_x2.png</code>, Fig 2 = <code>img/counter_from_zero.png</code>, Fig 3 = <code>img/phase_starts_counter_1e9.png</code>, Fig 4 = <code>img/records_1e8.png</code>, Fig 5 = <code>img/blaze_1e8.png</code> (Figs 1-3 primary).
+- Mechanism, full observer version:
+  - Tape = long 10-sea (the bell) + short counter at its right end.
+  - A marker walks right through the bell one block per bounce; each bounce adds 1 to the counter.
+  - Counter is base 3: each digit is a wall at offset 1/2/3 inside its own frame; overflow appends a digit.
+  - When the marker hits the counter, the bell eats its low end: bell grows by g&gt;=2, counter is rebuilt.
+  - g and the rebuilt counter depend only on the counter, not on bell size; bell ~ t^0.34.
+- Checkpoint questions before the rewrite (some were decisions, not questions about a figure):
+  - state_C_one_phase_x2.png: is the black/white diagonal the bell's marker, with the right strip the counter?
+  - counter_from_zero.png: do you read the ruler pattern as a base-3 counter (staircase = new digit)?
+  - phase_starts_counter_1e9.png looks irregular: spend the next stage closing the eat step before any Rocq?</p>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Result: <strong>confidence med, recommend more_observation</strong> (not cryptid). The eat step is now closed for aligned counters. The next-phase "shifted" frames are explained, but their Inc and crossing rules are still open, and no closed invariant has been found yet. Full record: <code>deepen.json</code>; scripts: <code>scripts/deepen_*</code>.</p>
+<p><strong>What the eat is.</strong> It is not a separate rebuild. The marker keeps walking right through the counter, one bounce at a time, and each bounce increments the frames to the right of the marker's current S-run. So while the marker crosses frame j, frame j+1 is the low digit. The phase ends at the first frame that has digit 2 when the marker reaches it, or at the counter's end. g and the new counter don't depend on N because the walk only reads the counter.</p>
+<p>Notation: 2-cell blocks aligned with the bell: S=10, Z=01, o=00, #=11. An aligned frame (d,e) is d=1 <code>o S^(e+1)</code>, d=2 <code>Z S^(e+1)</code> or d=3 <code>Z o S^e</code> (width 2e+4); the terminator is <code>Z</code>. L is any word over {S,#}; sweep maps S-&gt;Z and #-&gt;o.</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from -&gt; to</th>
+<th>tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inc</td>
+<td><code>L A&gt; S^(b+1) R -&gt; L S A&gt; S^b inc(R)</code>, b&gt;=1</td>
+<td>1300/1300</td>
+</tr>
+<tr>
+<td>C1a (meet d=1)</td>
+<td><code>L A&gt; S o S^(e+1) R -&gt; L S A&gt; Z S^(e+1) R</code> (1 bounce, R untouched)</td>
+<td>1300/1300</td>
+</tr>
+<tr>
+<td>Z-absorb</td>
+<td><code>A&gt; Z -&gt; S A&gt;</code> (2 steps)</td>
+<td>1300/1300</td>
+</tr>
+<tr>
+<td>C3a (meet d=3)</td>
+<td><code>L A&gt; S Z o S^e R -&gt; L S A&gt; o S^(e+1) inc(R)</code> (1 bounce, the carry)</td>
+<td>1300/1300</td>
+</tr>
+<tr>
+<td>C3b</td>
+<td><code>A&gt; o S -&gt; # S A&gt;</code> (4 steps; leaves a # wall)</td>
+<td>1300/1300</td>
+</tr>
+<tr>
+<td>C2 (meet d=2)</td>
+<td><code>0^inf L A&gt; S Z S^(e+1) R 0^inf -&gt;* 0^inf &lt;D sweep(L S) o o S^e R 0^inf</code> (left record)</td>
+<td>1300/1300</td>
+</tr>
+<tr>
+<td>T (meet end)</td>
+<td><code>0^inf L A&gt; S Z 0^inf -&gt;* 0^inf &lt;D sweep(L S # S S) o S 0^inf</code> (left record)</td>
+<td>1300/1300</td>
+</tr>
+</tbody>
+</table>
+<p>Tests: <code>scripts/deepen_validate_walk.py</code> with seed 1 (300 instances) and seed 2 (1000 instances). The left part L includes # walls, and e goes up to 40. As a mutation check, changing C1a or C2 by one block makes those rules fail 1000/1000.</p>
+<p><strong>The walk.</strong> R := inc^(M-1)(F), then frame by frame:
+- d=2: C2 ends the phase.
+- terminator: T ends the phase.
+- d=1: the frame is absorbed into the bell, then e_j more incs go to the rest.
+- d=3 with e_j&gt;=1: a # is left behind, and the rest gets e_j incs (1 from C3a, then e_j-1 bounces).</p>
+<p>Every branch is non-halting whatever the digits. Test: 3000/3000 random aligned counters ran 8 phases with no halt (<code>scripts/deepen_xrand.c</code>, <code>scripts/deepen_randctr.py aligned</code>).</p>
+<p><strong>Next phase.</strong> The new phase starts 2 steps after the left record. Its tape is read one cell shifted, so every untouched frame looks different:</p>
+<table>
+<thead>
+<tr>
+<th>frame (aligned)</th>
+<th>read shifted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>d=1</td>
+<td><code>o Z^(e+1)</code></td>
+</tr>
+<tr>
+<td>d=2</td>
+<td><code>o # Z^e</code></td>
+</tr>
+<tr>
+<td>d=3</td>
+<td><code>o S Z^e</code></td>
+</tr>
+<tr>
+<td>terminator</td>
+<td><code>o S</code></td>
+</tr>
+</tbody>
+</table>
+<p>This explains the Z-runs and the "pending" shapes such as 1,1,1,3.</p>
+<p>Phase starts to 1e11 (<code>scripts/deepen_phases_1e11.txt</code>): no halt, 1324 phases, span -1324..20540, M=10902. They fall into three shapes:
+- 1071 have the shape <code>(o S+)* (o Z*) (shifted frame)* o S</code> (a C2 end).
+- 102 are aligned frames + <code>Z</code> (a T end).
+- 61 have a third junction shape, <code>o S2 Z</code> followed by #, Z or S; it is not derived yet.</p>
+<p>Junction invariant: <code>o S</code> (one S) never sits directly before an empty junction (0 of 1324 phase starts). The reason is that C3b always leaves <code># S A&gt;</code>. Random counters that break this halt 37 of 3000 times.</p>
+<p><strong>Open (why not high):</strong>
+1. Inc on shifted frames (renormalisation) has no closed rule. Example: <code>o Z o Z o Z o S -&gt; Z2 o Z o Z o S -&gt; o S6 o S2 Z</code>.
+2. The marker crossing shifted frames, or landing directly on a token (after a width-4 digit-3 frame), is not tabulated.
+3. The third junction shape is not derived.
+4. There is no closed invariant. Random counters that fit the grammar still halt 19 of 9000 times, all with small odd M (up to about 37); for larger M the same counters run on. So the invariant must tie the shape to M, e.g. M at least the capacity of the aligned low part. The orbit has the risky shape (empty junction + shifted width-4 digit-3 frame) 37 times, 23 of them with odd M, always with M in the hundreds or more.</p>
+<p>Not cryptid: in these tests halting needs M small next to the counter, not digit coincidences. That still has to be proven.</p>
+<p>Next stage:
+- Close gaps 1-2 with the same block-level method using the block-level micro-rules below (derived by hand from the table and checked against traces).
+  - Moving right, head on the block's left cell:
+    - <code>B&gt; S -&gt; Z B&gt;</code>
+    - <code>B&gt; Z -&gt; # E&gt;</code>
+    - <code>B&gt; o</code>: turn; the block becomes Z; go left in L1 mode
+    - <code>B&gt; #</code>: write o, then F reads the next block's left cell; if that cell is 1, HALT
+    - <code>E&gt; o -&gt; Z B&gt;</code>
+    - <code>E&gt; S</code>: turn; the block becomes o; go left in L2 mode
+    - <code>E&gt; #</code>: turn; the block becomes Z; go left in L2 mode
+    - <code>E&gt; Z</code>: F reads the next block's left cell; if that cell is 1, HALT
+  - L1 (E reads the right cell): Z -&gt; S and # -&gt; o, keep going; stop on S or o, and A&gt; starts on the block to the right.
+  - L2 (D reads the right cell):
+    - S -&gt; Z and # -&gt; o, keep going.
+    - On Z, a B&gt; restart on the block to the right.
+    - On o: the block becomes Z, then F reads the next block; if that is 1, HALT.
+    - At the left edge, the phase ends.
+- Then state an invariant grammar with an M-vs-capacity condition, and check closure by random phases.
+- The BMO7 template is not enough: the walk is recursive and spans several phases.</p>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Result: <strong>confidence med, recommend more_observation</strong> (not cryptid; one quantitative question is flagged below). Round 2 closes gaps 1-3: every Inc, marker crossing and sub-phase from phase 3 to step 1e11 (1321 phases) now falls under a validated rule. Phases 0-2 are just the first 41 steps. Gap 4 (the invariant) is now one inequality between M and the counter. It holds on the orbit, but in its simple form it does not carry over from one phase to the next. Full record: <code>deepen.json</code>. Scripts: <code>scripts/deepen2_*</code>.</p>
+<p><strong>New view: walls instead of blocks.</strong> A wall is a cell k with c[k-1] == c[k]. The bell (10)^M has no walls, and the zero tail has a wall at every cell. Write the counter C (the cells after the bell, starting on an even cell) as wall offsets 0 = p0 &lt; p1 &lt; p2 &lt; ... . This view does not depend on the grid, so the "shifted" frames from round 1 are just frames that start at odd offsets. Aligned frame (d,e) = walls at 0 and d, next frame at 2e+4. The terminator <code>Z</code> is the frame (3, width 4) followed by the tail, and the tail itself is an endless run of width-2 frames <code>o</code>.</p>
+<p><strong>Rules (all checked by direct simulation from random concrete instances).</strong></p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>statement</th>
+<th>tested</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gap-Inc</td>
+<td>p1 in {1,2}: one bounce moves p1 one cell right; if it lands on p2, both walls vanish</td>
+<td>1500/1500 random wall counters (p2 of either parity)</td>
+</tr>
+<tr>
+<td>J-rule</td>
+<td>p1 = 2j+1 odd, i.e. C = <code>0 (10)^j W</code>: <code>L A&gt; S^(b+1) C -&gt;+ L S A&gt; S^b 00 (10)^M' C'</code>, where (M',C') = Phase(j-1, W), the next phase start reached from <code>0^inf 0 A&gt; (10)^(j-1) W 0^inf</code>. Halting agrees both ways</td>
+<td>1500/1500 random (157 of them halt in both), j=1..12, b=1..30, aligned and wall-random W; a mutation (j instead of j-1) fails 187/200; 84/84 structured; 1702/1702 junction bounces on the orbit</td>
+</tr>
+<tr>
+<td>Even head</td>
+<td>p1 even &gt;= 4: p1 = 4 halts at once (<code>B&gt; Z -&gt; # E&gt;</code>, <code>E&gt; Z -&gt; F</code> reads 1)</td>
+<td>never reached on the orbit (0 of about 6.94e6 incs)</td>
+</tr>
+<tr>
+<td>J-crossing</td>
+<td>marker meets a frame with p1 odd (d=3 frame or junction): the J-rule with b=0, then <code>A&gt; o S -&gt; # S A&gt;</code></td>
+<td>366/366, plus 34 that halt in both</td>
+</tr>
+<tr>
+<td>round 1</td>
+<td>Inc (aligned), C1a, Z-absorb, C3a, C3b, C2, T</td>
+<td>1300/1300 each (round 1)</td>
+</tr>
+</tbody>
+</table>
+<p>What the J-rule means: a junction is a sub-bell for the counter W to its right, which lives on the other grid. The first carry into it runs one complete phase of the same machine on (j-1, W), and the sub-bell comes back as the aligned d=1 frame <code>o S^M'</code>, followed by the sub-phase's new counter. This is the "renormalisation" from round 1. For j=1 the J-rule is the ordinary d=3 carry. The "third junction shape" (<code>Z #</code> = walls 0,2,3, then an even run) is a narrow frame: one Gap-Inc merges it into a junction with odd p1, and the J-rule takes over.</p>
+<p><strong>Orbit replay</strong> (<code>scripts/deepen2_orbit.py</code>). The replay runs each phase at bounce level with the bell removed (Inc does not depend on the bell size). It reproduces all 1321 logged phase starts to 1e11 exactly. Every J bounce matches the J-rule (1702/1702); sub-phases are checked recursively. Kinds of Inc seen: Gap-Inc (p1 = 1 or 2, including the merges <code>o o</code>, <code>o Z</code>, <code>o #</code>, <code>Z #</code>), the J-rule (junction j = 1..34), and the tail. Marker crossings seen: d1, d2, d3 and T only; the marker never met a junction. Sub-phases use only the aligned rules.</p>
+<p><strong>Invariant, as far as it goes</strong> (<code>scripts/deepen2_inv.py</code>, <code>deepen2_validate_closure.py</code>).
+- <strong>A</strong> (aligned): every frame is wide, i.e. p1 in {1,2,3} and p2 even &gt;= 4, all the way to the tail.
+- <strong>G1</strong>: either A, or (wide aligned prefix) X W. Here X is a junction head and W, read from where the head ends, is in A. X is one of: a narrow frame (p2 &lt;= 3) with p3 odd; p1 odd &gt;= 5; or p1 = 3 with p2 odd.
+- All 1324 orbit phase starts are in G1: 1149 have a narrow <code>o</code> head, 129 are A, and 46 have other heads.</p>
+<table>
+<thead>
+<tr>
+<th>claim</th>
+<th>evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inc maps G1 into G1 and never halts there</td>
+<td>1000/1000 random G1 counters, 150 Incs each</td>
+</tr>
+<tr>
+<td>Phase(m, A) is in G1 and never halts, for every m &gt;= 0 (this covers every sub-phase)</td>
+<td>1600/1600 random (m up to 400); on the orbit every J-rule input W is in A</td>
+</tr>
+<tr>
+<td>Phase(M, C), C in G1, with M-1 &gt;= k_align(C) gives G1 and no halt (k_align = number of Incs until C is in A)</td>
+<td>549/549</td>
+</tr>
+<tr>
+<td>same with M-1 &lt; k_align</td>
+<td>3 halts in 380; 210 outputs leave G1 (two nested junctions)</td>
+</tr>
+<tr>
+<td>the margin carries over (M-1 &gt;= k_align implies the same at the next phase start)</td>
+<td><strong>no</strong>: 192/316 random; with M-1 = c·k_align for c = 1, 2, 4, 10, the next ratio drops below 1 in 15, 43, 6 and 3 of 182 random cases (no halts, and every next start is in G1)</td>
+</tr>
+<tr>
+<td>orbit margin</td>
+<td>M-1 &gt;= k_align in 1320/1322 phases (the exceptions are phases 5 and 7, with M = 8 and 10). The smallest (M-1)/k_align is 1.4 (phase 16), and it is at least 2.4 after phase 68. The share of phases below 5 falls from 14/92 to 2/324</td>
+</tr>
+<tr>
+<td>margin is where halting comes from</td>
+<td>orbit counters with M forced down to k_align or less: 7 halts in 3293 (6 of them with M &lt; k_align/3). With M &gt; k_align: 0 in 2200, 8 phases each</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Open (why not high):</strong> a proof needs a margin lemma: <strong>M-1 &gt;= k_align(C) at every phase start</strong>. With it, the chain is: G1 start, then the Incs give A (Gap-Inc, plus J-rule sub-phases on aligned W, which are non-halting by the aligned walk), then the round-1 walk gives a G1 start. k_align is about 2·3^(h_total), where h_total counts the d=1 prefix frames, which come from <code>#</code> walls, along the chain of J outputs. On the orbit h (the <code>#</code> walls) is small: mean 1.0-1.2, max 6, while log3 M grows to 8.4. Also, max 3^h/M drops from 0.58 to 0.008 across the windows. Crude heuristic: each crossed digit is 2 (which stops the walk) with probability 1/3, so P(h &gt;= k) ~ 2^-k. If digits behaved randomly, margin violations would be rare but not summable (about sum M^-0.63). This is the only place where something like pseudo-random arithmetic could enter, and mild violations look harmless (0/1100 halts with M in [3k/4, k]).</p>
+<p>Priority question for Dennis: should the next stage try to prove the margin lemma (a structural bound on k_align via the J chain), or park the machine as a probable cryptid-margin case?</p>
+<p>Next stage:
+1. Prove the aligned-walk lemma: Phase(m, A) is non-halting and lands in G1. It uses only the round-1 rules plus aligned Inc, so it can be formalized now.
+2. Bound k_align of the walk's output by the walk's own data: h = d=3 frames crossed, and the J chain set by the frames beyond the stop. Try to show M' - 1 &gt;= k_align(C'), or find a reachable-looking counterexample.
+3. If (2) fails, run a targeted search for margin violations: replay from the 1e11 state at bounce level, which is cheap. Then decide between cryptid and proof.</p>
+<p>Correction to round 1: the micro-rule <code>B&gt; #</code> writes Z, not o (B1 -&gt; 0RA, A1 -&gt; 1RF, then F reads the next block's left cell).</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: Non-halting of #18 now reduces to the margin M-1 &gt;= k_align(C) at every phase start. Fund one stage to prove it, or park #18 as a cryptid-margin case?
+Answer: <strong>prove_margin</strong> (Fund one ~2 h stage on the margin lemma). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-prove_margin">Funded stage (2026-10-10, prove_margin)</h2>
+<p>Result: <strong>no margin proof; the bound failed, so #18 is parked as STUCK (a cryptid-margin suspect), per the stage's exit rule.</strong>
+- The strict margin M-1 &gt;= k_align(C) is not provable from the counter's shape: random reachable-looking states break it.
+- It also depends on the exact bell. Changing a real orbit bell by 1 turns a next phase with k_align = 0 into one with k_align/(M'-1) = 0.979.
+- The orbit itself stays far from the edge: max ratio 0.467 up to M = 114,554, about 9.7e13 steps.
+- It is not flagged CRYPTID_CANDIDATE: no tested margin break has led to halting (0/400 runs), so it is not shown that the arithmetic decides halting.</p>
+<p>Scripts and outputs: <code>scripts/deepen3_*</code>.</p>
+<p><strong>Fast phase map</strong> (<code>scripts/deepen3_fast.py</code>). This is round 2's bounce-level replay with one speed-up. On an aligned counter, the frames below the top frame count in bijective base 3: digits d in 1..3, with the widths fixed. So the remaining incs of a phase are added arithmetically. Three steps stay at cell level: the incs before the counter is aligned, the one inc that carries into the top frame, and the marker walk (<code>deepen2_orbit.crossing</code>).
+- Logged phase starts 3..1323: 1321/1321 reproduced exactly (21 s).
+- Direct check: a C simulation of one phase from a phase start (<code>scripts/deepen3_onephase.c</code>) agrees with the fast map on 40/40 random extended phases. These are phases 1323..3222, with M up to 27,680 (<code>deepen3_onephase_check.txt</code>). One phase takes 2.00·M² steps (2.0006 to 2.0043 over these 40).</p>
+<p><strong>Extended orbit</strong> (<code>scripts/deepen3_extend.py</code> -&gt; <code>deepen3_orbit_ext.txt</code>):
+- Range: phases 1323..11798, M from 10,902 to 114,554.
+- About 9.7e13 steps. This is an estimate from 2.00·M² steps per phase, not a direct run.
+- No halt. The margin holds at all 10,475 new phase starts.</p>
+<p>Ratio r = k_align/(M-1) per phase window (<code>deepen3_tail.py</code> -&gt; <code>deepen3_margin_windows.txt</code>):</p>
+<table>
+<thead>
+<tr>
+<th>phases</th>
+<th>M</th>
+<th>max r</th>
+<th>P(r&gt;0.1)</th>
+<th>P(r&gt;0.2)</th>
+<th>P(r&gt;0.3)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>69-999</td>
+<td>421-8,068</td>
+<td>0.415</td>
+<td>0.072</td>
+<td>0.033</td>
+<td>0.013</td>
+</tr>
+<tr>
+<td>1000-1999</td>
+<td>8,072-17,271</td>
+<td>0.399</td>
+<td>0.035</td>
+<td>0.010</td>
+<td>0.002</td>
+</tr>
+<tr>
+<td>2000-3999</td>
+<td>17,296-35,818</td>
+<td>0.358</td>
+<td>0.020</td>
+<td>0.006</td>
+<td>0.001</td>
+</tr>
+<tr>
+<td>4000-5999</td>
+<td>35,845-55,947</td>
+<td>0.467</td>
+<td>0.028</td>
+<td>0.008</td>
+<td>0.001</td>
+</tr>
+<tr>
+<td>6000-7999</td>
+<td>55,948-74,926</td>
+<td>0.301</td>
+<td>0.018</td>
+<td>0.011</td>
+<td>0.0005</td>
+</tr>
+<tr>
+<td>8000-9999</td>
+<td>74,944-94,399</td>
+<td>0.164</td>
+<td>0.002</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>10000-11798</td>
+<td>94,433-114,554</td>
+<td>0.398</td>
+<td>0.013</td>
+<td>0.002</td>
+<td>0.002</td>
+</tr>
+</tbody>
+</table>
+<p>The worst ratio is not drifting toward 1, and the tail gets thinner as M grows.</p>
+<p><strong>What k_align counts</strong> (traced on the worst phases, 3535 and 1497):
+- <em>Widths add up.</em> The walk merges frames. Each <code>#</code> frame (D) of the next counter is the merger of one crossed d=3 frame and the d=1 frames after it, and its width is the sum of their widths. The d=1 frames before the first d=3 go into the bell: M' = M + 1 + (sum of w/2 over them).
+- <em>The chain.</em> Each junction in the next counter is resolved by a J-rule sub-phase. That sub-phase continues the old walk past a d=2 stop, with e-1 incs to the rest instead of e. The chain ends after the last d=2 digit of the post-inc counter: the digits above it are 1, so the last sub-walk runs to the top (T) and its output is aligned.
+- <em>Cost.</em> So k_align is the sum, over the chain's heads, of the 1-2 carries each head needs at its frame position q, each carry costing about 3^q incs.
+  - Phase 3535: heads at positions 4, 6, 7, 7 and 8; k_align = 11,097 with M = 30,990.
+  - Phase 1497: heads at 4, 4, 5, 5, 6, 6 and 7; k_align = 4,293.
+- <em>After the chain.</em> Once the chain has resolved, every digit of the aligned counter is 1. So the next post-inc counter is the base-3 expansion of x = M-1-k_align, written on that counter's frame widths.</p>
+<p><strong>The margin depends on the exact bell (the low base-3 digits of M-1-k_align).</strong> Orbit phase starts C_t were run for one phase with a changed bell:</p>
+<table>
+<thead>
+<tr>
+<th>bell</th>
+<th>next ratio</th>
+<th>file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uniform in [0.5, 2]·M_t</td>
+<td>&lt; 0.5 in 800/800 (794 &lt; 0.25), max 0.287</td>
+<td><code>deepen3_perturbM_wide_s2.txt</code></td>
+</tr>
+<tr>
+<td>M_t ± 30</td>
+<td>&lt; 0.25 in 147/150, max <strong>0.979</strong></td>
+<td><code>deepen3_perturbM_small_s1.txt</code></td>
+</tr>
+<tr>
+<td>x = M-1-k_align with no zero base-3 digit</td>
+<td>&lt; 0.25 in 120/120, max 0.227</td>
+<td><code>deepen3_nozero_s1.txt</code>; uniform-x control <code>deepen3_nozero_uniform_s1.txt</code></td>
+</tr>
+</tbody>
+</table>
+<p>The two near-misses in the ± 30 row:
+- Phase 10666 (M = 102,052) with a bell one smaller (102,051): the next start has k_align = 99,927 with M' = 102,052, ratio 0.979. On the orbit, the same phase gives M' = 102,077 with k_align = 0.
+- Phase 1675 (M = 14,268) with bell 14,264: ratio 0.77. The orbit gives 0.257.</p>
+<p>So which counter comes next, and how deep its junction chain is, turns on the low base-3 digits of the bell, as in round 2's digit picture. My guess that a zero-free x is the bad case was wrong (120/120 fine). The bad digit patterns are rarer and also depend on the frame widths.</p>
+<p><strong>The margin does not follow from the counter's coarse shape either.</strong> Random starts were given exactly the shape that chain resolution leaves: an aligned counter with every digit 1 and V_al &lt;= M-1, random widths 4..160, and a random bell M0 in [100, 2e4] (<code>deepen3_inductive_lib.py</code>).
+- Margin, 12 phases each (<code>deepen3_violate.py</code>, seed 3): it fails in 7/200 runs, with k_align/(M-1) up to 2.84. Each failure lasted one phase, then the margin held again. 0/200 runs halt and 0/200 leave G1.
+- Inv(k_align &lt;= (M-1)/2 and V_al &lt;= M-1), 8 phases each (<code>deepen3_inductive.py</code>, seed 1): it fails in 60/300 runs, from the k part 17 times and the V part 43 times.
+- Same margin test with widths drawn from real orbit frames (seed 4, <code>deepen3_violate_s4_orbitw.txt</code>): it fails in 4/200 runs, with k_align/(M-1) up to 2.66. Each failure lasted one phase. 0/200 runs halt, and 1/200 leaves G1.</p>
+<p>No bound written only in terms of M, k_align and V_al is inductive on these families. What keeps the orbit's margin is the exact arithmetic of its bells and widths, which we have no structural description of.</p>
+<p><strong>Open (why STUCK and not proof-ready, and why not CRYPTID_CANDIDATE):</strong>
+1. The strict margin lemma fails as a lemma. Random reachable-looking counters break it, by factors up to 2.84, and a one-cell change of a real orbit bell brings it to 0.979. On the orbit it holds to M = 114,554 with max ratio 0.467, but that rests on the arithmetic of the bells, not on a structure we can state.
+2. Breaking the margin has not led to halting. All 11 breaks seen this stage (7 + 4 runs) recovered within one phase. Halting has only been seen with deep deficits (round 2: 6 of 7 halts had M &lt; k_align/3).
+   - A violation-tolerant invariant (k_align &lt;= c·(M-1), c near 3, plus a recovery argument) is conceivable.
+   - It would face the same question, though: whether the digit arithmetic ever produces a deep deficit.
+   - It would also need the walk on an unaligned counter to be covered by rules (J-crossing with j &gt;= 2, never met on the orbit).
+3. What stays valid for any later attempt:
+   - the rule set (J-rule, Gap-Inc, J-crossing, round-1 walk rules);
+   - G1;
+   - the fast phase map (exact, checked 1321/1321 and 40/40);
+   - the extended orbit file.
+4. Ready but not run: <code>deepen3_perturb_multi.py</code> follows orbit counters with a changed bell for several phases off the orbit.</p>
+<p>Parked. If #18 is ever reopened, start here:
+- Measure how far a deficit can grow: for broken starts, look at the largest k_align/(M-1) over many phases, and test Inv_c (k_align &lt;= c·(M-1), G1) for c = 2, 3, 4 on the random families above.
+- Write rules for the walk on an unaligned counter.</p>
+</main></body></html>

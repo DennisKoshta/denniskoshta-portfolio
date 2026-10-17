@@ -1,0 +1,72 @@
+{
+ "tm": "1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA",
+ "bucket_reason": "Mechanism confidence med, so proof work waits for you. The closed-form rules are validated, but the grammar with free exponents can halt, so non-halting rests on a parity invariant that has not been found.",
+ "question": "Fund one targeted deepen stage on #16's parity invariant (a parity census at every event, then a parity-aware DFA search) before any proof work?",
+ "options": [
+  {
+   "id": "parity_round",
+   "label": "One targeted stage: find the parity invariant",
+   "consequence": "About 2 h of agent time and 1-2 processes. Log (P, q, ak, d, a_i, b_i, chunk exponents) mod 2 at every event on the accelerated simulator to 1e10-1e12. State the invariant, check that every closed-form event preserves it, then run a parity-aware DFA (MITM) search. Exits: if the invariant is local and preserved, go to proof.md; if it needs the parity of a sum over segments, flag the machine cryptid-like."
+  },
+  {
+   "id": "proceed",
+   "label": "Start proof.md now, at med confidence",
+   "consequence": "The proof would stop at the same missing invariant. It would also hit the event types that have no closed form yet: Push with p=2 or d<4, the right-exhaustion events, and Sweep for k segments."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "Status becomes parked at deepen2. #39 and R7, which share #16's Quick_Sim signature, lose their best lead."
+  }
+ ],
+ "recommended": "parity_round",
+ "rationale": "The bulk dynamics are exact. BounceP and BounceE pass 140/140 each, the eat-through rules 60/60 each, and the round-2 events Push 40/40, AbsorbChain 51/52 (the one miss is a frame-definition case) and ToEdge 52/52. The accelerated simulator matches the C engine exactly at seven checkpoints up to 1.16e10 steps and ran to 1.02e12 steps without a halt. The open question is sharp, and the existing tools can attack it cheaply. Random grammar instances halt (40/150 and 55/150). The halting factor is a Push at an odd wall with odd ak, and every such event from blank has even ak. Both bulk bounces and every closed-form left-exhaustion event change ak by +2 or +4, so ak keeps its parity wherever the rules are known. The question therefore narrows to the right-phase events that create frames, which points toward a local, regular invariant rather than arithmetic. A result here may carry over to #39 and R7, which share #16's Quick_Sim signature, so it also serves the family sweep.",
+ "evidence": [
+  {
+   "kind": "validation",
+   "text": "BounceP 140/140, BounceE 140/140, EatP6/EatP2/EatE6/EatE2 60/60 each. Negative controls: 0/6.",
+   "href": "scripts/val_bounce_11.json"
+  },
+  {
+   "kind": "validation",
+   "text": "Round-2 events: Push 40/40 + 10/10, AbsorbChain 51/52 (the miss is the p_J=1 frame-definition case), ToEdge1 and ToEdge2 52/52. Negative controls: 0/16.",
+   "href": "scripts/val_events2_22.txt"
+  },
+  {
+   "kind": "sim",
+   "text": "The accelerated simulator equals the C engine (tape, head, state, step) at 1e5 ... 1.16e10 steps. No halt to 1.02e12 steps (span 1.4M cells).",
+   "href": "notes.md"
+  },
+  {
+   "kind": "risk",
+   "text": "Random grammar instances halt: 40/150 with L-aligned chunks and 55/150 with mixed alignments. So no value-free invariant can work, and the regular-CTL searches tried (n-gram, RWL_mod, alignment-free) all reach HALT.",
+   "href": "scripts/stress_grammar_31_L.txt"
+  },
+  {
+   "kind": "analysis",
+   "text": "Factor test: across 12 probes, the machine halts exactly when P is odd (a Push), q is odd and ak is odd. From blank, every Push at an odd wall has even ak (for example step 536,736: q=71, ak=32).",
+   "href": "deepen.json"
+  },
+  {
+   "kind": "analysis",
+   "text": "In every closed-form left-exhaustion rule and both bulk bounces, ak changes by +2 (BounceP, BounceE, AbsorbChain, ToEdge1) or +4 (Push). So ak's parity can change only where frames are created."
+  },
+  {
+   "kind": "doc",
+   "text": "Family lead: #16, #39 (1RB0RF_0LC---_1LE1LD_1RE0LA_1RA0RD_1LB1RD) and R7 (1RB1LF_0RC---_1RD1RF_1LE0LF_1LB0LA_1LD0RE) share a Quick_Sim signature (block size 6, 76-77 parity-split rules).",
+   "href": "../../reports/targeting.md"
+  },
+  {
+   "kind": "figure",
+   "text": "Fig 2: one right phase, with smaller domes nested to the right of each big one.",
+   "href": "img/blaze_rightphase_x1400.png"
+  }
+ ],
+ "effort_if_yes": "One deepen stage: about 2 h of agent time and 1-2 heavy processes (a parity census on the existing accelerated simulator, then a parity-aware DFA search).",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "parity_round",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

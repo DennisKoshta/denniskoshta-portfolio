@@ -1,0 +1,73 @@
+{
+ "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF0LA_---0RA",
+ "bucket_reason": "Medium confidence after deepen round 2 (recommend: more_observation). The stale-1 cascade has no rules, and the 4-gram invariant L4 is closed only under random fuzzing.",
+ "question": "Make the next stage a closure stage (exhaustive L4 closure check plus a CTL certificate attempt), hand-derive the stale-1 cascade rules first, or park?",
+ "options": [
+  {
+   "id": "closure_ctl",
+   "label": "Closure stage: exhaustive L4 closure to length >= 12, plus a CTL certificate attempt (RWL_mod with block length 3, or NG with n about 12-16)",
+   "consequence": "The exhaustive check either confirms that the 806 4-grams are closed or yields a concrete escape to study. A CTL certificate would be checked by busycoq's CTL.v, which concludes non-halting from the blank tape directly, so no cascade rules would be needed. Per rocq-notes, parameters are searched natively (e.g. an OCaml extraction of CTL.v's decider, or #13's scratch ngcps.cpp for NG). Exploratory solve_cert runs inside Coq happen only under ulimit -v, one at a time."
+  },
+  {
+   "id": "cascade_rules",
+   "label": "Hand-derive the stale-1 cascade rules (3 shapes) first",
+   "consequence": "Raises blank-run coverage from 99.898% toward 100%. Even with full rules, a proof still needs a closed language, and an 806-4-gram set cannot be proved closed by hand. This route therefore ends at the same machine-checked closure anyway."
+  },
+  {
+   "id": "proof_now",
+   "label": "Start proof.md now, cascade left open",
+   "consequence": "A conditional proof with a known unruled regime, which a skeptic review would mark fatal."
+  },
+  {
+   "id": "park",
+   "label": "Park",
+   "consequence": "Drops a machine with 0 mismatches over 671,488 round transitions and an invariant candidate with 0 halts in 3,300 fuzz samples."
+  }
+ ],
+ "recommended": "closure_ctl",
+ "rationale": "The mechanism is understood and not cryptid. Every round transition the rules cover is exact: 99.898% coverage to 1e10, 0 mismatches. After step 320,000 the only uncovered regime is the stale-1 cascade (644 transitions), and arithmetic only chooses which local case fires. The invariant candidate L4 is a locally testable token language with filler runs abstracted. That is the shape busycoq's RWL_mod and NG certificates handle. A certificate would make the cascade rules unnecessary, and the exhaustive check is the cheap way to find out whether L4 really is closed. Hand-ruling the cascade does not remove the need for a machine-checked closure, so it comes second, and only if the closure stage fails.",
+ "evidence": [
+  {
+   "kind": "coverage",
+   "text": "Blank tape to 1e10: 671,488 round transitions, 99.898% predicted exactly, 0 mismatches. From step 320,000, every uncovered transition (644) is a stale-1 cascade.",
+   "href": "scripts/deepen2_coverage_1e10_from320k.txt"
+  },
+  {
+   "kind": "rules",
+   "text": "Round-2 rules: 380/380 targeted instances pass (LEFTCYCLE, EAT1_c, MERGE5, MERGE13, LSB7, LSB7_INC0). On random 4-gram-language words, 386/386 predicted transitions are exact.",
+   "href": "scripts/deepen2_validation.json"
+  },
+  {
+   "kind": "invariant",
+   "text": "L4 reaches a fixed point at 806 4-grams with 0 halts in 3,300 fuzz samples (about 81,000 rounds) over two chains. Every late addition is in the tiny-counter corner.",
+   "href": "scripts/deepen2_kgrams4.json"
+  },
+  {
+   "kind": "open",
+   "text": "Cascade shapes to 1e10: stale 1 before the LSB (246), before an interior bit-1 digit (241), and a '2 3' borrow (159). Their results are not a plain +1.",
+   "href": "scripts/deepen2_stale_1e10.txt"
+  },
+  {
+   "kind": "tooling",
+   "text": "rocq-notes lesson from #13: CTL62 Nsolve_cert parameter searches inside Coq hit about 10 GB RSS within 5 min. Search natively and let Coq check only the winning certificate. #13 also has a scratch whole-machine n-gram CPS tool (checked only on toy machines).",
+   "href": "../1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC/scripts/edge_cps/README.txt"
+  },
+  {
+   "kind": "status",
+   "text": "status.json: CHECKPOINT_A, stage deepen2, confidence med, not cryptid.",
+   "href": "status.json"
+  },
+  {
+   "kind": "figure",
+   "text": "Card Fig 1: one row per left entry into E (the marker walking left; digits eaten).",
+   "href": "card.html#fig-1"
+  }
+ ],
+ "effort_if_yes": "One stage (2 h of agent time) plus background compute within 2 heavy processes (ulimit -v 6000000; 8000000 for any coqc). Building a native parameter search is the main cost; #13 estimated days for a full reimplementation of the stronger CTL modes, and an extraction route is untried. If a certificate turns up, the Coq check and check_kill follow (watch the 8 GB coqc cap). If not, a cascade-rules stage follows.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "closure_ctl",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

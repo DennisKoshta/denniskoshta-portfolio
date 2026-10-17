@@ -1,0 +1,38 @@
+{
+ "tm": "1RB0LA_1RC---_0LD1RD_0RA0RE_0RF1RC_1LF0LA",
+ "label": "W7-6",
+ "status": "CRYPTID_CANDIDATE",
+ "stage": "wave7-stage1",
+ "updated": "2026-10-14",
+ "confidence": "med",
+ "reason": "Stage 1 (W7-6) stopped by its stop rule. The counting phase is exact: at every C right record the word is a base-4 counter on pairs of 1-runs (23=0, 22=1, 33=2, 32=3, top digit 3) and each record adds 1 (10,416/10,416 random transitions, w = 2..40); it cannot halt while counting. Halting is possible only at phase events: overflow -> A erases the trail -> nested rebuild -> the new counter collides with markers / the old remnant. Synthetic scans show a collision halts only for an exact (value, gap) pair (w=3: V=49, gap 28 halts at 6,290 steps). The real orbit survived every event to 2.1e7; the current 23-pair counter (V = 61,170,343,443,693 at step 100,000,903, irregular high digits) overflows after ~9.2e12 increments, about 4.6e15 steps, trail ~1.8e13. Whether that transition halts is an exact big-number coincidence question: cryptid-like lottery, not settled. No nonhalting work (taken class, M-Abozaid SOTCv2.v).",
+ "siblings": [
+  {
+   "line": 472,
+   "tm": "1RB0LA_1RC---_0LD1RD_1RA0RE_0RF1RC_1LF0LA",
+   "note": "distinct table (D0 1RA vs 0RA); same architecture by end tape (1^5408013 + ~30-cell counter at 1e9); qsim 0 rules; not modelled"
+  },
+  {
+   "line": 569,
+   "tm": "1RB0RD_1RC---_0LA1RA_0RE1RC_1LE0LF_0RC0LF",
+   "note": "distinct table; same architecture by end tape (1^4591407 at 1e9); qsim 0 rules; not modelled"
+  },
+  {
+   "line": 690,
+   "tm": "1RB0LA_1RC---_0LD1RD_0RB0RE_0RF0LD_1LF0LA",
+   "note": "distinct table (D0 0RB, E1 0LD); end tape 1^10536 0 1^2 0 1^5410013 at 1e9; qsim 0 rules; not modelled"
+  }
+ ],
+ "family_note": "The four W7-6 lines are four different tables (canon over all starts, renaming + mirror), not starts of one table; no start-parametric argument applies. Line 33's table has no other start on the 740 list.",
+ "template": "SOTCv2.v TM1 (M-Abozaid): applies partly (sweep/token lemmas fit the counting phase); nothing upstream covers overflow -> erase -> nested rebuild -> collision.",
+ "checks": {
+  "byte_exact_740": "line 33",
+  "claims": "none before ours (claims.tsv); sheet: 'Has to halt in the counting phase'; no proof file names any of the 4 lines",
+  "ledger": "query 33: parked 10-13 (halting-hunt, retry_if exact model with a margin); qsim/margin scouts negative",
+  "qsim": "0 rules on 33/472/569/690 at 200,000 loops (work/qsim_*.jsonl)",
+  "sim": "no halt to 1e9 on all four lines (work/sim1e9_*.jsonl)",
+  "increment_rule": "scripts/validate_increment.py: 10,416/10,416 record transitions",
+  "collision_scan": "scripts/collide_scan.py, scripts/overflow_scan.py, scripts/halt_orbit.py"
+ },
+ "next_goal": "If funded (2 h): exact phase-level simulator = R1 closed form (exact trail growth and step cost per increment, fitted then validated on random words) + run-length simulation of overflow/erase/nested rebuild/collision, validated against direct simulation to 2.2e7 (3 phase events); then run it through the overflow of the 23-pair counter (~4.6e15 steps) and report HALT (with step count, the C2-552/W5-5 checked-runner route) or the next phase's parameters."
+}

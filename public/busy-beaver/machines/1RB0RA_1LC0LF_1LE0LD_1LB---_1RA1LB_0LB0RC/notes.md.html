@@ -1,0 +1,613 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC/notes.md · <a href="/busy-beaver/machines/1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC/notes.md.html">raw</a></div>
+<h1 id="1rb0ra_1lc0lf_1le0ld_1lb-_1ra1lb_0lb0rc">1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC</h1>
+<p>Status: STUCK (tight stage done 2026-10-11, hard stop: tight failures pinned by a closed form (TF) and the next eat proved safe up to the first C-meets-v event; the head dynamics after it, and so the leading-spacer recovery lemma, unproved; no further stages)
+Class guess (agent / Dennis): Bell eats counter. It is a BECv1 tm108 twin (E1 differs) whose counter has 3-cell digits and whose eat shifts the grid / —
+Spreadsheet notes / Discord thread: Results tab: blank status, Classifications tab "Bell eats counter", no notes. Not in dyuan's Oct 1 list (24) or mxdys's Aug 24 UBRRBA list (86). No row in <code>data/solved_index.tsv</code> (no exact, notation or mirror/renamed match). Still on the 2026-10-07 list of 778 (line 202). I had no live Discord access, so I could not search the threads. Not SKIPPED.
+Viewer: https://bbchallenge.org/1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LB0RC
+Pool: #29 (reports/targeting.md §4.3). R2 = <code>1RB0RA_1LC0LF_1LE0LD_1LB---_1RA1LB_0LD0RC</code> is the 1-transition sibling (F0).</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li><strong>Simulation:</strong> 1e10 steps with no halt (<code>sim_1e10.jsonl</code>): span -9564..1063 (10,628 cells), 6,528 nonzeros. Quick_Sim (block size 3) proves no rules (<code>qsim_summary.jsonl</code>). <code>compress track</code> skeletons at left records look like <code>0^inf &lt;B 1^a J (101)^b 0^2 (101)^c 0^inf</code>, with a +3 per left record, c doubling and J a phase-dependent junk word (<code>compress_track_*.txt</code>).</li>
+<li><strong>Unit view.</strong> Read the tape in 3-cell units, in the alignment of BECv1 tm108 (w0 = 101, w0' = 010, w1 = 00):</li>
+<li>A-swept units are <code>s = 010</code> (spacer), <code>z = 000</code> (digit 0) and <code>o = 100</code> (digit 1).</li>
+<li>B-swept units are <code>S = 101</code> and <code>D = 111</code> (a carried digit).</li>
+<li><strong>K-moment</strong>, once per round: <code>K(W,b,c) = 0^inf W (010)^b A&gt; 101 00 (101)^c 0^inf</code>, where W is the counter (MSB on the left), <code>(010)^b</code> is the unary bell, <code>00</code> is the marker and <code>(101)^c</code> is the eaten part.</li>
+<li><strong>Round.</strong> The marker steps one unit left. B sweeps back: spacers become 101, 1-digits carry (100 -&gt; 111), and B turns at the first 0-digit (000 -&gt; 100). A sweeps right again (101 -&gt; 010, 111 -&gt; 000). Net effect: W += 1 in binary, ignoring spacers; b -= 1; c += 1.</li>
+<li><strong>Overflow.</strong> B reaches 0^inf and writes a new 100 digit, so the left edge grows by 3 cells. At every clean left record c = 2^D - 1 (2,911 of 2,919 records to 1e10).</li>
+<li><strong>Eat.</strong> When b = 0, the A sweep runs from the turned digit straight into the marker (<code>100 A&gt; 00</code> or <code>000 A&gt; 00</code>). A leftward C/D cascade follows, and the effect is a <strong>one-cell shift of the 3-cell grid</strong>:</li>
+<li>re-read in the new grid, old 1-digits become spacers (100 -&gt; 010), 0-digits stay (000), and old spacers become <code>t = 001</code>;</li>
+<li>the old <code>(101)^c</code> becomes the new unary;</li>
+<li>the marker is reborn at the right end (R8).
+  The shifted segments (t units) then trigger <strong>mini-eats</strong>: the A sweep meets pseudo-markers inside them (K-moments with b &lt;= 4 and a long unswept "rest" region beyond). The mini-eats re-align W, and by the next left record W is a clean word over {111, 101} again. At late times, eats mostly rewrite the leading run of digits, e.g. d^7 SSSdSdSSSdd -&gt; SSS d^5 SSSdSdSSSdd at step 9.87e9 -&gt; 9.90e9.</li>
+<li><strong>Growth.</strong> The epoch length is about N rounds, where N = b + c (the unary size). N grows by 0..38 units per epoch, N ~ (4t)^(1/3) (52 at 5e4, 1,018 at 2.6e8, 3,452 at 9.5e9), and the span is about 3N. W stays short: at most 141 cells to 1e10.</li>
+<li><strong>Figures (img/):</strong></li>
+<li><code>default_site.png</code>: the site view.</li>
+<li><code>eat_closeup_19500.png</code>: steps 19,500..20,399, every step. The marker walks into the counter, the eat happens near step 19,830, then the head runs to the right end and the marker is reborn.</li>
+<li><code>blaze_1e9.png</code>.</li>
+<li><code>recordsL_left_1e7.png</code>.</li>
+<li><code>viewer.html</code>: the interactive viewer.</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<p>All of these are validated by <code>scripts/validate_rules.py</code>, which writes <code>validation.json</code> (random instances, fixed seed):</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>from -&gt; to</th>
+<th>steps</th>
+<th>validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 (= HR1)</td>
+<td><code>l A&gt; 101^n r -&gt; l 010^n A&gt; r</code></td>
+<td>7n</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R2</td>
+<td><code>l A&gt; 111 r -&gt; l 000 A&gt; r</code></td>
+<td>3</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R3 (= HR3)</td>
+<td><code>l 010^n &lt;B r -&gt; l &lt;B 101^n r</code></td>
+<td>3n</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R4 carry</td>
+<td><code>l 100 &lt;B r -&gt; l &lt;B 111 r</code></td>
+<td>3</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R5 turn</td>
+<td><code>l 000 &lt;B r -&gt; l 100 A&gt; r</code></td>
+<td>5</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R6 overflow</td>
+<td><code>0^inf &lt;B r -&gt; 0^inf 100 A&gt; r</code></td>
+<td>5</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R7 marker step (= HR2)</td>
+<td><code>l A&gt; 101 00 101 r -&gt; l &lt;B 00 101 101 r</code></td>
+<td>13</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>R8 marker birth (= HE2)</td>
+<td><code>l 010 A&gt; 0^inf -&gt; l &lt;B 00 101 0^inf</code></td>
+<td>6</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>ROUND</td>
+<td><code>K(W,b+1,c) -&gt; K(inc W, b, c+1)</code></td>
+<td>10b+21+10s+6o</td>
+<td>372/372 (steps exact)</td>
+</tr>
+<tr>
+<td>OVERFLOW (macro)</td>
+<td><code>0^inf &lt;B W 101^b 00 101^c -&gt; 0^inf &lt;B 111 W 101^(b-2^D) 00 101^(c+2^D)</code>, b &gt; 2^D</td>
+<td></td>
+<td>150/150</td>
+</tr>
+<tr>
+<td>EAT shape, aligned W</td>
+<td><code>K(W,0,c)</code> reaches the next K without halting</td>
+<td></td>
+<td>400/400 (shape only)</td>
+</tr>
+<tr>
+<td>EAT exact</td>
+<td>open</td>
+<td></td>
+<td>untested</td>
+</tr>
+</tbody>
+</table>
+<p>In ROUND, inc(W) works as follows. Write W = U 000 V with V in {010,100}*. Then inc(W) = U 100 V', where V' is V with every 100 replaced by 000; s and o are the counts of 010 and 100 in V. If W contains no 000, then inc(W) = 100 V' (overflow).</p>
+<p><strong>Coverage from blank</strong> (<code>scripts/analysis/kscan2.c</code> dumps every K-moment; <code>coverage.py</code> classifies them; summary in <code>data/coverage_K_1e10.json</code>):
+- To 1e10 there are 872,742 K-moments, and 870,221 transitions are exactly ROUND, with 0 mismatches.
+- 334 more are rounds whose carry enters a shifted segment.
+- 1,756 follow a b = 0 eat, and 430 are other mini-eat transitions.
+- So 0.29% of transitions are not ruled.
+- Every clean left-record pair within an epoch obeys OVERFLOW (2,382/2,382).</p>
+<p><strong>Probes of the eat:</strong>
+- Aligned words over {010,000,100} never halted in 400 random eats.
+- Random words that also contain <code>001</code> units halt often. All 6 halting samples I printed contained <code>100 001</code>. Banning that pair still leaves about 5% of samples halting (29 of 542; <code>scripts/analysis/closure.py</code>).
+- So the reachable language is finer than "no 100 001". The t-units come from the grid re-read of old spacers. To 1e9 they always follow s, z or t (never o), are never among the last 3 units at eat time, and often appear in runs (ttt).</p>
+<p><strong>Halting mechanics</strong> (for the invariant later): the only undefined transition is D1. D is entered only by C1 = 0LD, so the machine halts only if B reads 0 at p+1 while cells p-1, p are 11 (B0 -&gt; C reads 1 -&gt; D reads 1). A-swept aligned words contain no 11, which is why rounds cannot halt (argument; also 870,221 rounds observed). The 11s come only from shifted segments (<code>001 100</code>).</p>
+<p><strong>Template check:</strong> tm108 at <code>verify/BECv1_6x2_solved.v:872</code> differs only in E1, and its right half (HR1/HR2/HR3/HE2) carries over unchanged. The left counter does not carry over:
+- In tm108, E carries over single-cell digits, and m0 = 00 separates the counter from the unary.
+- Here, E1 = 1LB hands the carry to B (R4), so each digit is a 3-cell unit, spacers can sit between digits, and the eat shifts the grid.</p>
+<p>solve_BECv1 cannot express any of this. The closest proof styles are BECv7.v (carry heads, mutually strengthened modes) and BECv8.v (two-track suffix transducer).</p>
+<p><strong>Sibling R2</strong> (F0 = 0LD) passes R1, R3, R4 and R5 (20/20 each) but fails R7 (0/20). It has the same counter and a different marker step.</p>
+<p><strong>Cryptid check (ground rule 6):</strong> I found no Collatz-like or pseudo-random arithmetic rule. However, the eat consumes the counter's bit pattern at eat time (about N mod 2^D). If the safety of the later mini-eats depends on those bits, the question becomes arithmetic. Not flagged as CRYPTID_CANDIDATE: undecided until the eat is ruled.</p>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>Questions are on the card (machines/…/card.html). Confidence is med, so proof work waits for an answer. In particular: rule the eat (one more stage), or park as STUCK?</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>Not started (blocked on the eat rule and Checkpoint A).</p>
+<h2 id="formalization-log">Formalization log</h2>
+<p>None.</p>
+<h2 id="outcome">Outcome</h2>
+<p>Parked STUCK at the leading-spacer recovery lemma, after the hard-stop stage <code>tight</code> (2026-10-11). The open part is now only the head after the first C-meets-v event (see the last funded-stage section). Earlier stages: observe, deepen, size_invariant and recovery (2026-10-10).</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: #29's rounds, overflow and marker are ruled (99.7% of K-transitions to 1e10), but the grid-shifting eat is not. Spend one ~2 h deepen stage ruling the eat, or park #29 as STUCK?
+Answer: <strong>deepen</strong> (Fund one ~2 h deepen stage on the eat). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-deepen">Funded stage (2026-10-10, deepen)</h2>
+<p>Scripts: <code>scripts/deepen/</code> (C oracles <code>episode.c</code>, <code>epochfuzz.c</code>; <code>phase_table.py</code>, <code>validate_deepen.py</code>, <code>sweeps.py</code>, generators). Data: <code>data/deepen/</code>. Validation summary: <code>scripts/deepen/validate_deepen.json</code>. Seed 20261010 where random.</p>
+<p><strong>What was done.</strong> The machine reduces to two exact sweep laws, and the eat is now a ruled process.
+- <strong>A-sweep law.</strong> A moving right rewrites each cell p to <code>[x[p]=0 and x[p+1]=1]</code> up to the first <code>00</code>, where it bounces: <code>00</code> becomes <code>01</code> and D reads the cell to its left. So A-swept cells never contain <code>11</code>. Checked 3,000/3,000 random strings.
+- <strong>Leftward sweep = a unit phase table</strong> (<code>phase_table.py</code> -&gt; <code>phase_table.json</code>, derived from the TM). The entry state X at cell 3 of a unit decides what happens. On the A-swept units:</p>
+<table>
+<thead>
+<tr>
+<th>X</th>
+<th>s=010</th>
+<th>o=100</th>
+<th>z=000</th>
+<th>t=001</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B (normal)</td>
+<td>101, B</td>
+<td>111, B (carry)</td>
+<td>100, turn</td>
+<td>100, C</td>
+</tr>
+<tr>
+<td>C</td>
+<td>111, C</td>
+<td>110, turn</td>
+<td>010, turn</td>
+<td>110, C</td>
+</tr>
+<tr>
+<td>D (after a bounce)</td>
+<td>001, B</td>
+<td>011, D</td>
+<td>111, E on the unit to the left</td>
+<td><strong>halt</strong></td>
+</tr>
+<tr>
+<td>E</td>
+<td>011, turn</td>
+<td>101, turn</td>
+<td>001, turn</td>
+<td>111, E</td>
+</tr>
+</tbody>
+</table>
+<p>Composing the table reproduces the TM's leftward sweep on random unit words in 3,000/3,000 cases. D is entered only at a bounce and survives only over o units, so <strong>a halt needs a bounce with <code>t o^k</code> (k &gt;= 0) directly to its left</strong>.
+- <strong>The eat, as unit rewrites.</strong> At b = 0 the round increments W and A bounces right after W' = inc(W) (D phase). Write W' = Y x o^k:
+  - o^k becomes u^k = 011.
+  - x = s: it becomes t, the new marker. Y is incremented with the trailing spacers of Y as its bell. This is the mini-eat, and the same rule then applies to inc(Y).
+  - x = z: E turns on the unit to its left.
+  - x = t: halt (cannot happen when W is t-free, because every level only sees increments of t-free prefixes).
+  - Finally A runs through the old bell to the right end, the marker is reborn there (R8), and the grid shifts by one cell. This is the observed re-read o-&gt;s, z-&gt;z, s-&gt;t.
+- <strong>EAT law (validated).</strong> For every t-free W (over o/z/s, last unit a digit), <code>K(W,0,c)</code> with c &gt;= 2 reaches the clean <code>K(P, c+delta(W), 1)</code> without halting. P and delta in [0, 13] do not depend on c.
+  - Exhaustive at c = 3: all 354,293 t-free words up to 12 units.
+  - All 39,365 words up to 10 units give identical outputs at c = 2, 12 and 30.
+  - Random 13..45-unit words: 1,500/1,500, same output at c = 3 and c = 17.
+  - Real run: the oracle reproduces the episode at step 37,393 (867 steps, <code>ossssssssz</code>, b = 40).
+- <strong>Counter invariant (new, exact on all 529 epochs from blank to 1e10).</strong>
+  - At every epoch eat, W is t-free and value(W) = c + 1, reading o = 1, z = 0 and skipping s. So the counter has bitlen(c+1) digits.
+  - At every post-eat K-moment, value(P) = 2, skipping both s and t.
+  - ROUND keeps value - c fixed. Eats occur exactly when the counter value has caught up with the bell.
+- <strong>Epochs with t units.</strong>
+  - For all 529 real post-eat words P, the rounds from P never halt (checked over the first min(N, 600) rounds).
+  - The t units are gone after k0 rounds, with (k0+1)/N &lt;= 0.286 (the worst case is N = 7). For N &gt;= 100 the ratio is &lt;= 0.207, and for N &gt;= 1000 it is &lt;= 0.124 (so the margin is &gt;= 8x). Data: <code>data/deepen/epoch_tlifetime_1e10.txt</code>.
+  - 304 of these epochs contain internal bounces. These are the "carries into shifted segments": the carry runs in the C phase through the t segment as a carry in the old grid, and the A sweep bounces inside it. They are not ruled at unit level.
+- <strong>The size condition is real.</strong> Forcing the eat early (at round k &lt;= k0+3 of each real epoch) halts in 173 of 7,830 runs (<code>data/deepen/early_eat_summary.txt.gz</code>). So non-halting needs every t to clear before the next eat. This is the same reduction that sibling R2 reached in its own deepen stage.
+- <strong>Closure fuzz from random counter-consistent states</strong> (<code>gen_consistent.py</code> + <code>epochfuzz</code>). Each start is a random t-free W (random bits and spacer runs, D = 3..12 digits) with c = value(W) - 1, then several epochs are run.
+  - Results: 400 starts x 3 epochs, plus 3000 random starts (D = 3..12) and 300 power-of-two starts (value 2^(D-1), the most zero digits; D = 3..13), 4 epochs each: 0 halts.
+  - At the first eat after a random start, 253 of 3300 starts break the value invariant. At the second eat, 5 of 3300 still carry t units, yet still do not halt. Random starts lie outside the reachable set.
+  - At the third eat, 3 of 3,300 still carry t units. All 3 are spacer-heavy starts with a tiny bell (c &lt;= 13), and none halts. At the fourth eat, all 3,300 are t-free and value-consistent. Data: <code>data/deepen/closure_fuzz_{in,out}.txt</code>.</p>
+<p><strong>Cryptid check.</strong> Not flagged.
+- The eat itself is local: every t-free word eats safely (exhaustive to 12 units).
+- What depends on the counter's bits is the size race k0(P) &lt; N. Here k0 grows with the number of digits below the highest t, and those digits come from the zero digits of the eaten value c + 1.
+- That is an inequality with a &gt;= 3.5x margin (&gt;= 8x for N &gt;= 1000). In the fuzz, random bit patterns (power-of-two counters included) never break it from the fourth eat on, and never cause a halt.
+- It is not a pseudo-random arithmetic rule. The decision's cryptid exit (eat safety depending on N mod 2^D non-locally) is therefore not triggered: the eat does not depend on the bits; the epoch's size margin does, through an inequality.</p>
+<p><strong>Still open</strong> (why confidence stays med):
+1. A unit-level rule for rounds whose carry enters a t segment, including their internal bounces, and an exact formula for the t lifetime k0(P).
+2. A proof of the size invariant on the reachable set: every t created by an eat clears before the next eat. Random starts show it can fail off the reachable set (3 non-t-free eats), so the invariant needs the reachable spacer structure, not only value(W) = c + 1.
+3. An epoch model (W, c) -&gt; (W', c') that runs far past 1e10 steps. Only 529 epochs exist to 1e10. R2 used an epoch model to reach N = 1e7.</p>
+<h2 id="decision-2026-10-10-auto-applied">Decision (2026-10-10, auto-applied)</h2>
+<p>Question: With #29's eat ruled and safe for every t-free counter, fund one ~2 h stage on the last size invariant (eat-made t units clear before the next eat), or park #29 as STUCK at it?
+Answer: <strong>size_invariant</strong> (Fund one ~2 h stage on the size invariant). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was at lunch). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-size_invariant">Funded stage (2026-10-10, size_invariant)</h2>
+<p>Scope (decision <code>size_invariant</code>): rule the rounds whose carry enters a t segment, give an exact t-lifetime formula, build an epoch model and run it far past 1e10, then look for the inductive reason the size margin holds. Exit: a closed invariant gives proof.md at medium-high confidence; a shrinking margin or an unruled shifted carry parks #29 as STUCK.
+Scripts: <code>scripts/sizeinv/</code> (C: <code>emodel.c</code> epoch model, <code>kround.c</code> direct one-epoch oracle; Python: <code>wround.py</code>, <code>cascade.py</code>, <code>lemma_test.py</code>, <code>generic_test.py</code>, <code>layout_test.py</code>, <code>leadbits.py</code>, <code>leadhalt.py</code>, <code>leadhalt_real.py</code>, <code>bits_test.py</code>, <code>fuzz_b.py</code>, <code>val_real.py</code>, <code>ksim.py</code>). Data: <code>data/sizeinv/</code>. Each test writes a JSON summary next to its script.</p>
+<p><strong>Result in one line.</strong> The shifted carry is now ruled, and the t-lifetime law is exact. The epoch model runs from blank to N = 1e8 with no halt and no t at any eat. The size invariant splits into a generic case and a leading-spacer case. The generic case is a universal lemma by exhaustive test, with no reachability needed. The leading-spacer case is rare (6 of about 7.1 million epochs), its bound is exactly tight, and it depends on the counter's low bits. When it fails, a top t survives one eat, but it has never halted and clears within two epochs. No closed invariant yet, so confidence stays <strong>med</strong>. Neither exit fired: the carry is ruled, and the margin does not shrink with N but is structurally tight.</p>
+<p><strong>1. Epoch model</strong> (<code>emodel.c</code>). It works on the state K(W, b, 1) after an eat:
+- Rounds whose carry stays in the t-free suffix V (right of the lowest non-{z,o,s} unit) are jumped in bulk with the ROUND rule.
+- Rounds whose carry leaves V are simulated cell by cell with the real TM on <code>0^inf W 101101 00 101101</code>. The round ends when A enters the first bell cell.
+- Once W is t-free, the remaining rounds are a binary add.
+- The eat K(W,0,c) is simulated cell by cell at a small c and checked again at a second c (EAT law: P and delta do not depend on c). b' = c + delta.</p>
+<p>The 1e7 and 1e8 runs used the first build, whose left padding was 12 cells. A round that grows W by more than 4 units at the top makes that build stop with flag 4, and neither run stopped. The current build pads 3(n+16) cells.</p>
+<p>Validation:
+- One step from each of the 528 real post-eat states to 1e10: the next eat word W and c, the next P and b, and k0 all match (528/528). Here k0 is the number of rounds until W is t-free; it is checked against the direct simulation <code>kround</code>, which skips pseudo-K-moments inside a round (<code>val_real.json</code>).
+- Free run from epoch 1: it reproduces all 527 later epochs.</p>
+<p><strong>2. Far run</strong> (<code>data/sizeinv/emodel_1e7.txt.gz</code>, every epoch; <code>emodel_1e8_summary.txt</code>, epochs with slack &lt;= 2 plus every 100,000th). To N = 1e8 (about 7.1 million epochs, very roughly 2.5e23 TM steps if the span stays about 3N; the model does 1.4e11 cell steps):
+- 0 halts and 0 t at any eat.
+- value(W) = c+1 at every eat, and D(W) = bitlen(N+1) at every eat (804,148/804,148 to 1e7).
+- The EAT law's c-independence is re-checked at every eat (two c values each), with 0 mismatches.</p>
+<p><strong>3. The shifted carry, ruled</strong> (<code>cascade.py</code>; <code>cascade_validate.json</code>). This is one unit-level rule for every round on {z,o,s,t} words. The carry enters at the bottom in phase B and moves up:
+- <strong>B phase:</strong> o -&gt; z (the carry continues), s passes, z -&gt; o (STOP), t -&gt; s (and a C run starts above it).
+- <strong>C run:</strong> the maximal {s,t} run directly above that t. In the run, s -&gt; z (a new digit) and t stays t. The first unit above the run is the TURN unit: z -&gt; s, where 0^inf counts as z. A turn on o is outside the rule; real words never meet it.
+- <strong>After the C run:</strong>
+  - if the run was empty, B continues above the TURN unit;
+  - if the run's lowest unit was an s, it becomes o (STOP);
+  - if it was a t, that t is entered from below in turn (t -&gt; s, then a new C run on the converted units).</p>
+<p>Read in the old grid (s = old 1, z = old 0, t = old spacer), a C run is a binary increment of the old counter above the t. The rule matches the cell-level TM on 3,821/3,821 random {z,o,s,t} words. The other 1,179 random words hit a turn on o, outside the rule; 660 of the 5,000 random words halt in the TM. It also matches 10,371/10,371 of the exact rounds in 3,000 sampled real epochs, with 0 rounds outside the rule. It is the composition of the deepen stage's phase table and A-sweep law.</p>
+<p><strong>4. t-lifetime law (exact).</strong>
+- k0 + 2 = 2^h holds in all 7,015,292 epochs with t to N = 1e8 (<code>npow2bad=0</code>) and for all 66,530 distinct P = eat(W) of t-free words up to 12 units.
+- h is the number of digit positions below the top t when the carry enters it, which happens when the counter value (starting at 2) reaches 2^h.
+- Since value(W) = c+1 at the next eat, <strong>the t's clear before the next eat iff 2^h &lt;= N_new + 1</strong>, that is, h &lt;= bitlen(N_new+1) - 1.
+- Explicit upper bound Hub(P) = #{s,z strictly between the top t and the lowest t} + #{z,o below the lowest t}. h &lt;= Hub(P) holds in all real epochs and all 66,530 exhaustive P (<code>lemma_test_L12.json</code>).
+- Hub is not tight (Hub - h ranges over 0..6 on short words). No closed formula for the exact h was found; it follows by iterating CASCADE.</p>
+<p><strong>5. The margin of the deepen stage was not structural.</strong>
+- The deepen stage measured &gt;= 3.5x overall (&gt;= 8x for N &gt;= 1000) to 1e10 (N &lt;= 3,516).
+- From blank to N = 1e8, h &lt;= D_old - 1 holds in every epoch, where D_old = digits of the previous eat word, which is at most bitlen(N_new+1). But the slack D_old - 1 - h is <strong>0</strong> in 4 epochs: N = 8, 8,110, 16,221 and 4,193,610. In the last three, k0/N = 0.505, so the margin is about 2x.
+- Slack histogram: 0:4, 1:1, 2:8, 3:31, … (<code>emodel_1e8_summary.txt</code> END line). No new tight epoch appears between N = 1e7 and 1e8.
+- So no numeric-slack argument is possible: the invariant is the structural bound itself.</p>
+<p><strong>6. Generic case versus the leading-spacer case.</strong>
+- <strong>Generic</strong> (the eat word's first unit is a digit o; every real epoch except 6). h(eat(W)) &lt;= D(W) - 1 holds for <strong>every</strong> t-free W of this shape: exhaustive to 12 units (177,135 words, all bit patterns) and on 14,098 random words of 13..70 units, with 0 failures (<code>generic_test_L12.json</code>). This is a universal lemma about the eat plus CASCADE, with no reachability and no arithmetic. It still needs a proof.
+- <strong>Leading spacer</strong> (W = s …). It arises when a C run reaches 0^inf through a top run of old 1-digits, for example <code>ssssssstoooo…</code> -&gt; <code>szzzzzzos…</code>. It lasts 2 epochs. In the full log to N = 1e7 this happened only at N = 8,101/8,110, 16,219/16,221 and 4,193,605/4,193,610 (<code>leadbits.py</code>). The 1e8 summary logs only epochs with slack &lt;= 2, and it shows no new ones between 1e7 and 1e8. Slack 0 (above N = 8) occurs only in leading-spacer epochs.
+  - Here the bound depends on the bits. On the 4 real leading-spacer layouts with D &lt;= 14, all bit patterns were tried (4,096 or 8,192 per layout; the two D = 22 layouts, with 2^21 patterns each, were not enumerated). Exactly one pattern breaks the bound on each of the two first-epoch layouts, and none on the two second-epoch layouts, for example value 8,101 instead of the real 8,102 on layout <code>sdddddddsddddsssdsssssssd</code> (<code>leadbits.json</code>).
+  - Exhaustively, 1,164 of 88,507 short leading-spacer words break it (one bit pattern per failing layout).
+  - <strong>The failures are benign in every test.</strong> A top t survives one eat, then everything is clean:
+    - all 24,576 patterns on the 4 real layouts with D &lt;= 14, over 5 epochs: 0 halts, all clean after 2 epochs (<code>leadhalt_real.json</code>);
+    - all 88,507 short leading-spacer words over 6 epochs: 0 halts and 942 with a t at the next eat; 88,363 are clean after epoch 2 (the other 144 still show some flag later) (<code>leadhalt_L12.json</code>).
+- Random-bit variants of 3,000 real eat words (20 each, 58,840 with t): 0 failures (<code>bits_test_11.json</code>).
+- Burn-in fuzz from 2,000 random counter-consistent starts over 12 epochs: a t at the eat only in epochs 1-4 (13, 11, 1, 1), the exact slack &gt;= 0 from epoch 3 on, and 0 halts (<code>fuzz_b_7.json</code>).</p>
+<p><strong>Cryptid check.</strong> Not flagged. The arithmetic touches only the leading-spacer epochs, and only through whether a top t survives one eat. In every test that survival is harmless: no halt, cleared within 2 epochs. If the recovery itself turns out to need the bits, flag then.</p>
+<p><strong>Still open</strong> (why confidence stays med):
+1. A proof of the generic lemma (h(eat(W)) &lt;= D(W) - 1 for t-free W whose first unit is o). It needs the eat recursion (the deepen-stage mini-eats) together with CASCADE.
+2. The leading-spacer case. Either replace the bound by a recovery lemma (a top t that survives one eat is cleared in the next epoch, without halting), or show the failing bit pattern cannot meet a reachable leading-spacer layout. The recovered states briefly contain units outside {z,o,s,t}, for example v = 110 in <code>tzvsssssstzzzosssz</code>, so the recovery lemma needs one more rule.
+3. Formal proofs of CASCADE and the k0 law. These are mechanical, from the phase table.</p>
+<h2 id="decision-2026-10-10-auto-applied-round-3">Decision (2026-10-10, auto-applied, round 3)</h2>
+<p>Question: With every #29 round ruled and the size bound proven by test except in rare leading-spacer epochs (where a surviving t has always recovered), fund one ~2 h recovery stage, or park #29 as STUCK?
+Answer: <strong>recovery</strong> (Fund one ~2 h recovery stage). auto-applied: Claude's recommendation, under Dennis's standing instruction 'do your recommendations and continuously orchestrate' (2026-10-10, while he was away). Override any time.</p>
+<h2 id="funded-stage-2026-10-10-recovery">Funded stage (2026-10-10, recovery)</h2>
+<p>Scope (decision <code>recovery</code>): write the informal proof of the generic size lemma (h(eat(W)) &lt;= D(W)-1 when the eat word starts with a digit) from CASCADE and the eat recursion; for the leading-spacer case prove a recovery lemma instead (a top t that survives one eat is cleared later without halting), with one more rule for the v = 110 unit, checked by layout over all bit patterns. Exit: proof.md at medium-high confidence; CRYPTID_CANDIDATE if the recovery depends on the counter's bits; otherwise STUCK.
+Scripts: <code>scripts/recovery/</code> (<code>common.py</code>, <code>eatu.py</code>, <code>lemma_h.py</code>, <code>generic_chain.py</code>, <code>leadrec.py</code>, <code>survshape.py</code>, <code>survprefix.py</code>, <code>trace_eat.py</code>). Each test writes a JSON summary next to its script. Light compute only (Python plus the existing C oracles <code>../deepen/episode</code> and <code>../sizeinv/emodel</code>); no Rocq.</p>
+<p><strong>Result in one line.</strong> The generic lemma is now proved (informally), through a closed unit-level form of the eat (EATU) and a potential that never grows under CASCADE (Hub). The leading-spacer recovery holds in every test (265,642 words, all layouts and bit patterns up to 13 units, 8 epochs each, 0 halts, at most 3 epochs with a t), but it is not proved. The surviving-t states are not safe in general: 862 of 2,179 arbitrary ones halt. Exit: <strong>STUCK</strong> at the recovery lemma; not a cryptid.</p>
+<p><strong>1. EATU: the eat in closed form</strong> (<code>eatu.py</code>). Let W be a t-free eat word (units o, z, s; the last unit is a digit) at K(W,0,c). Then:
+- Level 1: W_1 = inc(W). This is the round that empties the bell.
+- Level i: write W_i = Y x o^k, with k &gt;= 0 trailing o's and x the unit before them (0^inf counts as z).
+  - x = z: stop.
+  - x = s: write Y = Y0 s^j, where Y0 is empty or ends in a digit, and set W_{i+1} = inc^(j+1)(Y0). Here x becomes the marker, and the trailing spacers of Y are its bell, which gives j+1 rounds.
+  - x = t: halt. This cannot happen for a t-free W, because inc never creates a t.
+- Then X = reread(Y) o, with reread o -&gt; s, z -&gt; z, s -&gt; t, and <strong>P = cascade(X)</strong>, the first round in the new grid. The bell is b' = c + delta, where <strong>delta = the number of units removed by the levels</strong> (k of the last level, plus k+1+j for every x = s level).
+- Derivation from the phase table:
+  - D passes o (Do: o -&gt; u). Ds turns s into the marker t and goes on in B, which gives the mini-rounds. Dz writes D = 111 and E enters the unit y to its left.
+  - E turns on y and writes a 1 into its third cell: Es s -&gt; u, Eo o -&gt; S, Ez z -&gt; t.
+  - The A sweep then turns u^M into o^M, the new bell, and the marker is reborn at the right end (R8).
+  - Read one cell to the left, the E-modified y gives exactly reread(y), and its third-cell 1 turns the x position into the new digit o.
+- No c appears anywhere, which explains the deepen stage's "P and delta do not depend on c".
+- Validation: P and delta are exact on <strong>1,070,595/1,070,595</strong> words: all t-free words up to 13 units, plus 20,000 random words of 13..90 units, against the cell-level oracle (<code>eatu_validate.json</code>).</p>
+<p><strong>2. Lemma H: the Hub potential</strong> (<code>lemma_h.py</code>). Hub(X) = #{s,z strictly between the top and the lowest t} + #{z,o below the lowest t}. Invariant I: no o lies above the lowest t. On {z,o,s,t} words satisfying I, one CASCADE round:
+- (a) never meets the uncovered case (a turn on o);
+- (b) keeps I;
+- (c) adds exactly 1 to the value (o = 1, z = 0, s and t skipped);
+- (d) never increases Hub while a t remains;
+- (e) creates no t;
+- (f) leaves a value of 2^m with m &lt;= Hub when it removes the top t.</p>
+<p>Proof sketch:
+- <strong>I, (a) and (b).</strong> A STOP writes its o either where B stops, below the lowest remaining t (B cannot pass a t), or at the lowest unit of a run, which is directly above the t just entered and below every t the run passed. So I is kept. A C run only walks above the lowest t, where I says there is no o, so a turn on o never happens.
+- <strong>(c).</strong> By I every digit above the lowest t is z, so the z digits that C runs insert (s -&gt; z) or delete (turn z -&gt; s) do not change the value. The rest is a binary +1.
+- <strong>(d) and (e).</strong> Hub counts, below the top t, the z/o units and the s units that have a t below them. No unit ever becomes a t, and t's never move. The only conversion to a digit is s -&gt; z inside a C run, which sits above the entered t, so that s was already counted. Every other change only removes counts:
+  - a turn z -&gt; s that ends up below the lowest t;
+  - an s whose last t below it is gone;
+  - an entered t, which becomes an s with no t below it.
+- <strong>(f).</strong> The carry that removes the top t turns every digit below its o into z, and by I every digit above is z, so the value is 2^m. The m digits below that o are units Hub counted at the start of the round. Usually the top t is the lowest t by then; the case where two adjacent t's go in one round (<code>tzt</code> -&gt; <code>ossss</code>) is in the exhaustive check.</p>
+<p>So from value(P) = 2 the top t goes at round k0 with <strong>k0 + 2 = 2^h and h &lt;= Hub(P)</strong>. This is the size stage's exact t-lifetime law, now with a proof.</p>
+<p>Validation:
+- (a)-(f) hold on all 649,539 I-words with a t up to 11 units (39,424 of them remove the top t; 20,481 of those are tight).
+- CASCADE equals the cell-level TM round on all 17,496 I-words up to 8 units (<code>lemma_h_L11.json</code>).</p>
+<p><strong>3. Proof of the generic lemma</strong> (<code>generic_chain.py</code>). For every t-free W:</p>
+<p>h &lt;= Hub(P) &lt;= Hub(X) &lt;= G(Y)+1 &lt;= G(W_final) &lt;= G(W_1) = G(W),</p>
+<p>where G = the number of digits strictly below the top spacer and W_final = Y z o^k is the last level.
+- <strong>h &lt;= Hub(P) &lt;= Hub(X):</strong> Lemma H. X satisfies I, since its only o is the last unit.
+- <strong>Hub(X) &lt;= G(Y)+1:</strong> the t's of X are the spacers of Y. Its counted units are the digits of Y between its top and lowest spacer, the z digits of Y below its lowest spacer, and the appended o.
+- <strong>G(Y)+1 &lt;= G(W_final):</strong> W_final = Y z o^k.
+- <strong>G(W_final) &lt;= G(W_1):</strong> inc keeps the spacers in place and only prepends digits above all of them, and a level removes a suffix s^(j+1) o^k.</p>
+<p>If the first unit of W is a digit, G(W) &lt;= D(W)-1. Then 2^h &lt;= 2^(D-1) &lt;= value(W) = c+1, so k0 = 2^h - 2 &lt;= c-1 &lt; b' = c+delta: <strong>every t clears before the next eat, and the next eat word is t-free with value = c'+1 again.</strong> The eat cannot halt on a t-free word (EATU, x = t impossible), and neither can a round (I-words, Lemma H (a)). Every link holds on all 294,590 words with a t in P (348,151 t-free words up to 12 units), with 0 failures (<code>generic_chain_L12.json</code>). So the generic case now rests only on validated, finite unit rules: the phase table, the A-sweep law, ROUND, EATU and CASCADE.</p>
+<p><strong>4. The leading-spacer case is exactly one short.</strong> For W = s ..., G(W) = D(W), so the chain only gives h &lt;= D. A t survives the epoch iff h = D and value(W) + delta + 1 &lt; 2^D. Every link of the chain must then be an equality, so all of the following hold:
+- every level has k = 0;
+- Y has no o below its lowest spacer;
+- no round lowers Hub, so no C run turns strictly between two t's below the top.</p>
+<p>These conditions are logical consequences of the proof and were not tested separately.</p>
+<p><strong>5. Recovery: what was tested.</strong>
+- <strong>All leading-spacer words</strong> (<code>leadrec.py</code>). Every t-free W = s^a … (a &gt;= 1; first digit o) at the consistent c = value(W) - 1 goes through EATU, then several epochs of the exact epoch model.
+  - All 265,642 words up to 13 units, 8 epochs each: <strong>0 halts</strong>, 0 model flags, and the value invariant never broken. A t is present at the eat in 1 epoch for 1,137 words, in 2 epochs for 1,130 and in 3 epochs for 109. There are never more than 3 consecutive t-epochs, and the word is t-free afterwards (<code>leadrec_L13_E8.json</code>).
+  - Up to 11 units over 10 epochs: 29,469 words, 0 halts, the same at-most-3 pattern (<code>leadrec_L11_E10.json</code>).
+  - With the size stage's 24,576 patterns on the real layouts, this covers every bit pattern of every leading-spacer layout up to 13 units.
+- <strong>But a surviving t is not harmless in general</strong> (<code>survshape.py</code>). Take eat words pre·t·Z with Z any t-free word up to 8 units, pre = s or empty, at the consistent c:
+  - 207 of 2,179 halt in the first eat, because the levels reach the t (e.g. <code>stooz</code>: inc gives <code>stooo</code>, so x = t);
+  - 655 more halt in later epochs;
+  - this holds for both prefixes (<code>survshape_s_L8.json</code>, <code>survshape_none_L8.json</code>).
+- <strong>Halting mechanisms in a transient.</strong> These were checked on single rounds with the cell-level TM:
+  - The eat halts if the level recursion reaches the t.
+  - A round halts if the <strong>B carry reaches a v = 110 unit</strong>: Bv writes 101 and D then reads a 1. This happens directly (<code>vo</code>, <code>tzvo</code> halt) or after an empty C run (<code>vzto</code>, <code>tzvzto</code>, <code>tzvsszto</code> halt).
+  - A C run that reaches v through s's is safe: Cv = 011 L F (<code>tzvsto</code> -&gt; <code>tstzosz</code>).
+  - v itself is the re-read of a surviving t followed by o. The t's third-cell 1 moves into the next unit: o -&gt; v, s -&gt; S, z -&gt; o.
+- <strong>The failure-produced shapes are varied</strong> (<code>survprefix_L11.json</code>).
+  - They show 17 eat-word prefixes, multi-t ones (<code>stto</code>, <code>sttt</code>) among them.
+  - <code>stoz</code> occurs 127 times, and its post-eat word starts <code>tzvz</code> 62 times. That is the halting-prone <code>v z</code> layout, yet none of these halted.
+  - So the recovery does not follow from a local shape rule. A proof has to use how a failure builds the next word.
+- In the real run no t has ever survived an eat (0 to N = 1e8, size stage), so the lemma is needed only to close the proof.</p>
+<p><strong>Cryptid check.</strong> Not flagged. The bits decide whether a t survives and for how long (1 to 3 epochs). They never decided halting in any test: every bit pattern of every leading-spacer layout up to 13 units recovered. No pseudo-random arithmetic rule appears. The open part is a structural lemma about the words that a tight failure produces. The decision's exit therefore gives <strong>STUCK</strong>, not CRYPTID_CANDIDATE.</p>
+<p><strong>For R2.</strong> This does not settle R2's R1 (T_k + 1 &lt;= I_k). The Hub/G potential is specific to #29's eat (re-read plus one new-grid round). I found no exact transfer, so there is no R2 section.</p>
+<p><strong>Still open:</strong>
+1. <strong>Recovery lemma.</strong> For every t-free leading-spacer eat word W with value(W) = c+1, the machine reaches a t-free, value-consistent eat word within 3 epochs without halting. It is true by exhaustive test to 13 units but unproved. A possible route:
+   - use the equality conditions of section 4 to pin down which words a tight failure produces;
+   - then show (i) that the next eat's levels stop below the surviving t (a value margin under 2^D), and (ii) that every v is reached first by a C run through s's, or is rewritten before the B carry can reach it.
+2. proof.md lemmas for EATU and CASCADE, written out from the phase table (sketched in sections 1 and 2). Step counts per macro rule.</p>
+<h2 id="decision-2026-10-11">Decision (2026-10-11)</h2>
+<p>Question: With #29's generic size lemma proved and only the leading-spacer recovery left (true on all 265,642 test words, unproved), fund one last ~2 h stage on it with a hard stop, or park #29 as STUCK now?
+Answer: <strong>tight</strong> (One last ~2 h stage on the recovery lemma). Dennis: go with recommendations (2026-10-11).</p>
+<h2 id="funded-stage-2026-10-10-tight">Funded stage (2026-10-10, tight)</h2>
+<p>Scope (decision <code>tight</code>, answered 2026-10-11, Dennis: go with recommendations): use the equality cases of the proved chain (h = Hub = G = D) to pin down the words a tight leading-spacer failure produces; then prove that the next eat stops below the surviving t and that every v unit is met by a C run, never by the B carry. Exit: proof.md at medium-high confidence. Hard stop: if the recovery lemma is not proved in the stage, park #29 as STUCK with no further stages.
+Scripts: <code>scripts/tight/</code>. Validators: <code>tightf.py</code> (closed form), <code>tf_validate.py</code>, <code>tight_validate.py</code>, <code>next_eat.py</code>, <code>cv_event.py</code>, <code>tight_list.py</code>. Exploration: <code>explore*.py</code>, <code>rounds_show.py</code>. Each validator writes a JSON summary next to it. Light compute: Python plus the existing exact oracles (<code>../recovery/eatu.py</code>, <code>../sizeinv/emodel</code>, <code>../sizeinv/wround.py</code>); no Rocq.</p>
+<p><strong>Result in one line.</strong> The first two steps the decision asked for are now proved:
+- the words a tight failure produces are pinned exactly, by a closed form of tightness (TF);
+- the next eat never reaches the surviving t;
+- the first unit to touch the new v is always a C run.</p>
+<p>What is still unproved is the head after that C run (a v-triggered event in the head, and how long the head lives), so the recovery lemma as a whole is not proved. The hard stop fires: <strong>STUCK</strong>, no further stages. Not a cryptid. No test run of this stage halted (about 990,000 word runs in all).</p>
+<p><strong>1. Equality cases (proof).</strong> Let W = s^a M (a &gt;= 1, M t-free and starting with o) be a leading-spacer eat word with value(W) = c+1 and D digits. A t survives the epoch iff h = D and value(W) + delta + 1 &lt; 2^D (recovery stage, section 4). h = D forces every link of the chain to be an equality:
+- <strong>G(W_final) = G(W_1).</strong> A level with k &gt;= 1 removes k digits below the top spacer, and inc never adds any there. So k = 0 at every level. Since W_1 = inc(W) ends in a digit, k = 0 means it ends in z, and the eat stops at level 1. Hence <strong>W ends in o, the eat has a single level (W_final = inc(W)), and delta = 0.</strong>
+- <strong>Hub(X) = G(Y)+1.</strong> Y = inc(W) minus its last z has no o below its lowest spacer.
+- <strong>h = Hub(P) = Hub(X).</strong> Hub never drops during the epoch.
+- Consequences: value(W) is odd, so V := value(W)+1 is even, and V &gt;= 2^(D-1) + 1.</p>
+<p><strong>2. TF: tightness in closed form (proof sketch from CASCADE; exact in every test).</strong> Write Y = s^a Z and split Z = g_0 s^e1 g_1 … s^em g_m into maximal digit groups g_i (o = 1, z = 0; value o_i, length L_i) and spacer runs. Then <strong>W is a tight failure iff</strong>:
+- W ends in o, m &gt;= 1, g_m is in z*, value(W) &lt;= 2^D - 2;
+- for i = m-1 down to 0: o_i + N_i ≡ 0 (mod 2^L_i), where N_(m-1) = e_m and N_i = e_(i+1) + C_(i+1), with C_i = (o_i + N_i) / 2^L_i.</p>
+<p>Why. In X = t^a s r(B1) o, read every group above the lowest t-run as one old binary counter (s = 1, z = 0, t-runs as spacers). Entering a t is one old increment, by the C run above it. All the t's of a run T_i are entered in one round, which exposes the group G_(i-1) above them to the new counter. Hub does not drop in that round iff the last of these increments rolls G_(i-1) over from all ones. Otherwise a turn leaves an s in G_(i-1), below the lowest t. G_(i-1) receives e_i increments plus one carry per rollover of G_i, which gives the recursion. The C_0 carries out of the top group pass the block t^a and build an old counter above it, starting from 0^inf.</p>
+<p>Consequences:
+- For every layout there is at most one tight bit pattern: the recursion fixes every o_i. Seen as exactly 1 per layout on all 942 tight layouts to 12 units.
+- Validation (<code>tf_validate.py</code>; TF against the exact EATU + emodel chain):
+  - all 265,642 leading-spacer words to 13 units: TF agrees 265,642/265,642 (1,986 tight; <code>tf_exh_L13.json</code>);
+  - 100,000 random words of the forced shape s^a M0 z V with 10..45 units: 100,000/100,000 (175 tight; <code>tf_both_100000_s5.json</code>);
+  - 3,000 words built from random layouts by the recursion (2,145 with 20..50 units): all 3,000 are exact tight failures, 0 halts over 6 epochs (<code>tf_build_3000_s11_E6.json</code>).</p>
+<p><strong>3. T1: the word a tight failure produces (proof).</strong> With B := inc(W)[a:] = Z z, the next eat word is</p>
+<p><strong>W_next = bin(C_0) t^a B</strong>   (bin in s = 1, z = 0, no leading z).</p>
+<p>Proof.
+- Give every unit position below the top a type: spacer positions hold t, or s once entered; digit positions hold s (an old 1 not yet converted), z or o. CASCADE keeps the types (t -&gt; s; s -&gt; z, z -&gt; o, o -&gt; z and the turn z -&gt; s on digit positions; nothing becomes t), and t's are entered from the bottom up.
+- Hub = (digit positions below the top t) - (unconverted s below the lowest t), and the first term is D.
+- Every t below the block is entered before the next eat: the highest such t has at most D-1 digit positions below it, and the value reaches V &gt; 2^(D-1). The block goes all at once, and only at value 2^D &gt; V, so it survives.
+- No unconverted s is left below the block: that would make Hub &lt; D, so h &lt; D.
+- So the region below the block is t-free, has B's layout and has value V, and a layout plus a value fix a t-free word: the region is B. Above the block lies the old counter of section 2, holding C_0.</p>
+<p>Validation (<code>tight_validate.py</code>):
+- all 265,642 words to 13 units, 8 epochs: 1,986 tight failures, single level / delta 0 / W ends in o 1,986/1,986, and the exact form 1,986/1,986 (<code>tight_exh_L13_E8.json</code>);
+- every bit pattern of the 4 real layouts with D &lt;= 14: 2/2 (<code>tight_real_E6.json</code>);
+- 10 random layouts with D = 12..15, all patterns: 6/6 (<code>tight_rand_10_D12-15_s20261011_E5.json</code>);
+- 150,000 random words of the forced shape: 84/84 (<code>tight_struct_150000_L8-40_s20261011_E5.json</code>);
+- the predicted bin(C_0) prefix matches in all 1,986 + 175 + 3,000 TF cases.</p>
+<p><strong>4. The eat after a tight failure (proof, from TF).</strong>
+- <strong>N0.</strong> V is even, so B ends in z, and the eat's first round is inc(B), inside B. No carry reaches the block.
+- <strong>N1.</strong> The level recursion has at most two levels and never reaches the block:
+  - g_m nonempty: level 1 has k = 1 and x = z, so it stops; delta = 1.
+  - g_m empty: level 1 has k = 1 and x = s (the bottom of s^em), so it runs e_m mini-rounds on the prefix. By TF, o_(m-1) + e_m ≡ 0 (mod 2^L_(m-1)), so g_(m-1) ends all z and level 2 stops at x = z; delta = e_m + 1.
+  - The mini-rounds are CASCADE rounds on an I-word (no o above the block), so they cannot halt, even when their carry overflows into the block and converts it.
+  - Checked on all 942 tight failures to 12 units: stops inside B 734, mini-rounds overflow into the block 208, reaches the block 0 (<code>next_eat_L12.json</code>).
+  - In the overflow case the block is converted inside the eat, and the word left at level 2 is t-free. Its post-eat word has no v. A t can still appear at the next eat (73 of these 208 to 12 units), through the ordinary leading-spacer mechanism; that case is not analysed further.
+- <strong>N2, first contact with v.</strong> When the levels stay inside B, the reread turns the block into z o^(a-1) and B's top o into v = 110. In epoch 2 the groups below v replay the same TF arithmetic: the same o_i and e_i; the top group loses its top bit, which keeps the congruence mod 2^(L_0 - 1); case g_m empty is the same after the mini-rounds' carries. So every exposure is again a full rollover, no C run is empty, and the B phase never rises above the lowest t-run. <strong>The first unit to reach v is therefore a C run (Cv: v -&gt; u, then F), never the B carry.</strong> Seen in all 511 such epochs to 12 units: the real and shadow bodies agree below v until that round (<code>cv_event_L12.json</code>).</p>
+<p><strong>5. What happens after Cv (observed, not proved).</strong> The C state that meets v starts a pass through the head: v -&gt; u, F turns the o above into s, D turns o^(a-2) into u, D on z gives 111, E climbs the reread t's and turns at the first z. The following A sweep then bounces inside the head, at the <code>s u</code> pair. I did not write a unit rule for this.
+- Observed: right after that round the real word is t + shadow (the shadow S_1 = s^a B run through the same rounds) in 241 of 511 cases (all with a = 1, A' = s). In the other 270 it is the shadow plus a few extra head units (<code>cv_event_L12.json</code>).
+- At epoch level, the earlier shadow regularity holds (<code>tight_validate.py</code>, to 13 units):
+  - if the next eat word W_(k+1) still has a t, its body equals the body of the shadow's next eat word: 1,279 exact; 22 more where the shadow's own epoch keeps a t and W_(k+1) = t + shadow word; 1 with a longer head;
+  - when W_(k+1) is t-free, the shadow is generic (1,962) or leading-spacer (24).
+- The head lasts 1, 2 or 3 eats (781 / 1,090 / 103 to 13 units; 689 / 2,302 / 9 on the 3,000 built words), never more.</p>
+<p><strong>Cryptid check.</strong> Not flagged. Tightness is now an explicit congruence on the layout (TF), and the eat after it is fixed by the same congruences. Halting never depends on the bits in any test: no run of this stage halted. No pseudo-random arithmetic rule appears.</p>
+<p><strong>Still open (why #29 is parked):</strong>
+1. <strong>The head after Cv.</strong> The recovery lemma needs:
+   - a unit rule for the Cv event (the F/D/E pass and the A bounce inside the head);
+   - an invariant "real = shadow plus a head" through rounds and through the next eats, with the head's reread;
+   - a bound of 3 on the number of eats the head survives.
+   Everything below the head is now covered by TF and the earlier proved lemmas.
+2. A route if #29 is ever reopened: write the Cv event as one more unit rule from the TM (as was done for EATU). Then prove the head invariant with the position bookkeeping of T1. The head's survival is again an exposure question, so it should reduce to a TF-like congruence on the shadow.
+3. proof.md lemmas for EATU and CASCADE (sketched in the recovery stage).</p>
+</main></body></html>

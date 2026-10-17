@@ -1,0 +1,892 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/proof.md · <a href="/busy-beaver/machines/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB/proof.md.html">raw</a></div>
+<h1 id="1rb0rd_1lc0ra_-1rd_1ra1le_1rc0lf_1le0lb-halts">1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB halts</h1>
+<p>This machine halts. Its computed step count, about 1.77 × 10^44, is not part of the formal proof (§9).</p>
+<p>Watched at the moments when its head reaches new ground on the right, the machine is a binary counter. Each digit is a stretch of tape with one marker for its bit, possibly some extra walls, and a supply of fuel. Every carry that touches a digit flips its bit and burns some of its fuel.</p>
+<p>Walls drift from digit to digit toward the head and refill digits that run low, and new digits are born at the right end. Measured against the fuel, the refills arrive sometimes earlier and sometimes later, and these swings grow. After about 1.16 × 10^22 increments, a digit with no spare wall has bit 0 and no fuel left, and the next carry into it halts the machine.</p>
+<p>The proof is a computation checked in Coq. Each kind of carry step is a general lemma about the machine, long stretches of increments are applied in closed form, and a checker replays the whole run from step 342 to the halting carry in 107,781 checked moves.</p>
+<h2 id="machine-and-status">Machine and status</h2>
+<ul>
+<li><strong>Machine:</strong> <code>1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB</code>, viewer https://bbchallenge.org/1RB0RD_1LC0RA_---1RD_1RA1LE_1RC0LF_1LE0LB</li>
+<li><strong>Holdout:</strong> on the BB(6) holdout list, class "Skelet 1-like Class 2".</li>
+<li><strong>Statement:</strong> <code>Lemma halt: halts tm c0.</code> with <code>tm</code> the <code>TM_from_str</code> of this string.</li>
+<li><strong>Status:</strong> formalized in the accompanying .v (1,142 lines). It compiles in Coq 8.20.1 against unmodified busycoq (commit <code>0940bb9</code>) in about 70 s with <code>-native-compiler yes</code>. coqchk re-checks it, the computed run included, in about 510 s.</li>
+<li><strong>Print Assumptions halt:</strong> <code>functional_extensionality_dep</code> only. It comes from the framework lemma <code>flip_halts_iff</code>.</li>
+<li><strong>Template:</strong> busycoq <code>verify/Sk1Machines.v</code>, Module <code>TM91</code> (a halting Skelet 1 machine) and Module <code>Sk1Auto</code>: a certificate checker iterated with <code>Eqb.N_iter_until</code> and proved sound once.</li>
+<li><strong>Framework pieces used:</strong></li>
+<li>the call predicates <code>segRR</code>, <code>segLL</code>, <code>segRL</code>, <code>segRLs</code>, <code>sideRL</code> of <code>verify/Individual.v</code>, as instantiated in <code>verify/Individual62.v</code>;</li>
+<li>the tactics <code>solve_seg</code>, <code>es</code>, <code>solve_init</code>, <code>solve_halt</code> of <code>verify/Individual62.v</code>;</li>
+<li><code>sideRLs_halt</code> of <code>verify/LongitudinalHalt.v</code>, <code>flip_halts_iff</code> of <code>verify/Flip.v</code> and <code>N_iter_until_spec</code> of <code>verify/Eqb.v</code>.</li>
+<li><strong>Step count:</strong> 176,522,930,997,643,289,094,015,905,898,381,767,890,130,463 steps, the halting step included. This count is computed (§9); the .v proves only that the machine halts.</li>
+</ul>
+<h3 id="where-each-part-lives-in-the-v">Where each part lives in the .v</h3>
+<table>
+<thead>
+<tr>
+<th>part</th>
+<th>names in the .v</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>the mirrored machine</td>
+<td><code>tmf</code>, and <code>flip_halts_iff</code> in <code>halt</code></td>
+</tr>
+<tr>
+<td>words for walls and gaps (§8.1)</td>
+<td><code>stack</code>, <code>blk</code>, <code>lead0</code>, <code>lead1</code>, <code>tailw</code>, <code>edgew</code>, <code>edge1w</code>, <code>uw</code>, <code>consume</code></td>
+</tr>
+<tr>
+<td>the carry rules (§3)</td>
+<td><code>t_stop</code>, <code>t_pass</code>, <code>t_ungl1</code>, <code>t_ungl2</code>, <code>t_halt</code>, <code>z_lead</code>, <code>z_empty</code>, <code>z_absorb</code>, <code>z_stop</code>, <code>z_1111</code>, <code>root_step</code>, <code>reset1</code>, <code>reset2</code></td>
+</tr>
+<tr>
+<td>records and one increment (§8.3)</td>
+<td><code>unitN</code>, <code>zN</code>, <code>tailN</code>, <code>cfg</code>, <code>denote</code>, <code>touchN</code>, <code>ztouch</code>, <code>callN</code>, <code>inc1</code>, <code>inc1_ok</code>, <code>inc1_halt</code></td>
+</tr>
+<tr>
+<td>batches (§4)</td>
+<td><code>pairK</code>, <code>pair1</code>, <code>clK0</code>, <code>clK1</code>, <code>cl10</code>, <code>cl11</code>, <code>closedU_spec</code>, <code>closedZ_spec</code>, <code>batchL_spec</code></td>
+</tr>
+<tr>
+<td>the checker (§8.4)</td>
+<td><code>propose</code> (untrusted), <code>batch_step_spec</code>, <code>next</code>, <code>next_spec</code>, <code>run_ok</code>, <code>run_halt</code></td>
+</tr>
+<tr>
+<td>the run (§5, §7)</td>
+<td><code>init</code>, <code>c342</code>, <code>k1</code> … <code>k21</code>, <code>s1</code> … <code>s22</code>, <code>halt_tmf</code>, <code>halt</code></td>
+</tr>
+</tbody>
+</table>
+<p>A comment at the end of the .v restates the rules in the .v's own notation.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>At each right record (§2) the tape reads as walls and gaps. The 11-walls cut it into units, and each unit is a binary digit whose lead wall, <code>00</code> or <code>1111</code>, is its bit.</li>
+<li>One increment is one carry from the right (§3). It passes the digits with bit 1 and stops at the first digit with bit 0. In every touch the digit's passive walls move two cells to the right and the right end of its lead one cell, so its fuel shrinks.</li>
+<li>Between structural events (glue, unglue, resets, edge events) all changes are linear in the number of touches, so long runs of increments are applied in closed form (§4).</li>
+<li>From step 342 the run reaches a digit with a single marker, bit 0 and no fuel (§5, §6). The next carry into it halts the machine (§7).</li>
+</ul>
+<h2 id="1-when-the-machine-can-halt">1. When the machine can halt</h2>
+<p>The transition table:</p>
+<div class="highlight"><pre><span></span><code>      0     1
+A   1RB   0RD
+B   1LC   0RA
+C   ---   1RD
+D   1RA   1LE
+E   1RC   0LF
+F   1LE   0LB
+</code></pre></div>
+
+<p>The only halting transition is C reading 0. State C is entered only by B0 (<code>1LC</code>) and by E0 (<code>1RC</code>).</p>
+<ul>
+<li>E is entered by D1 and F0. Both write 1 and move left. If E then reads 0, it moves right onto the 1 just written, so C reads 1.</li>
+<li>B is entered by A0 and F1. After A0 (write 1, move right), B0 moves left onto the 1 that A wrote, so C reads 1.</li>
+<li>After F1 (write 0, move left), B0 moves left once more, so C reads the second cell to the left of F's cell.</li>
+</ul>
+<p>So the machine halts exactly when the head is in F on a 1 whose two left neighbours are <code>0 0</code>:</p>
+<div class="highlight"><pre><span></span><code>0 0 1      with F on the 1
+</code></pre></div>
+
+<h2 id="2-the-wall-view">2. The wall view</h2>
+<h3 id="records-and-increments">Records and increments</h3>
+<p>A <strong>right record</strong> is a configuration in which the head is in state A on a blank cell and every cell to its right is blank. An <strong>increment</strong> is the run from one right record to the next one. All of the analysis looks at the tape at right records.</p>
+<h3 id="walls-and-gaps">Walls and gaps</h3>
+<p>Read the tape to the left of the head.</p>
+<ul>
+<li>A <strong>wall</strong> is a maximal run of at least two equal symbols: <code>00</code>, <code>11</code>, <code>1111</code>, <code>1^7</code>, and so on.</li>
+<li>A <strong>gap</strong> is the number of cells between two neighbouring walls. Those cells alternate, so a gap is fixed by its length.</li>
+</ul>
+<p>A gap between two 1-walls is odd, and a gap between a 1-wall and <code>00</code> is even.</p>
+<p>The 1-walls are sorted by their length modulo 3:</p>
+<table>
+<thead>
+<tr>
+<th>wall</th>
+<th>name</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>1^(3g+2)</code>: <code>11</code>, <code>1^5</code>, <code>1^8</code>, …</td>
+<td>boundary</td>
+<td>separates two units; for g ≥ 1 it carries g glued walls</td>
+</tr>
+<tr>
+<td><code>1^(3j+1)</code>: <code>1111</code>, <code>1^7</code>, …</td>
+<td>stack</td>
+<td>j passive walls glued together; j = 1 is a single passive wall</td>
+</tr>
+<tr>
+<td><code>00</code> or <code>1111</code> right after a boundary</td>
+<td>lead</td>
+<td>the bit of a digit: <code>00</code> = 0, <code>1111</code> = 1</td>
+</tr>
+<tr>
+<td>the leftmost wall <code>1^e</code></td>
+<td>edge</td>
+<td>grows at the left end of the tape</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-tape-at-a-right-record">The tape at a right record</h3>
+<p>At every right record of the run the tape has this form:</p>
+<div class="highlight"><pre><span></span><code>0^∞  E  U_0  b_1  U_1  b_2  …  b_n  U_n  b_T  [t]  A&gt;
+</code></pre></div>
+
+<ul>
+<li>E is the edge, b_1, …, b_n and b_T are boundaries, and <code>[t]</code> is the <strong>tail</strong>, an odd gap of t cells between b_T and the head.</li>
+<li>During a reset there is, for one increment, no tail: the tape ends with U_n at the head (§3.5).</li>
+<li>Each U_i with i ≥ 1 is a <strong>digit</strong>:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>[x, M, m_1, Q_1, m_2, Q_2, …, Q_r, y]
+</code></pre></div>
+
+<ul>
+<li>Here M is the lead, Q_1, …, Q_r are passive stacks, x is the gap between the left boundary and M, the m_i are the inner gaps, and y, the last gap, is the <strong>fuel</strong>.</li>
+<li>A digit with r = 0 is <strong>single-marker</strong>: <code>[x, M, y]</code>. A digit with r ≥ 1 is <strong>multi-marker</strong>.</li>
+<li>U_0 lies between the edge and b_1. It is a digit when e ≡ 1 (mod 3). When e ≡ 0 it is <strong>leadless</strong>, <code>[x, Q_1, m_2, …, Q_r, y]</code>, or <strong>empty</strong>, <code>[y]</code>.</li>
+</ul>
+<p>The digits form a binary number with U_n, next to the tail, as its least significant digit.</p>
+<h3 id="the-start-step-342">The start: step 342</h3>
+<p>From the blank tape the machine reaches this right record after 342 steps:</p>
+<div class="highlight"><pre><span></span><code>0^∞ 111 0 1111111111 0 11111 01 00 101 A&gt;
+</code></pre></div>
+
+<p>In the wall view:</p>
+<div class="highlight"><pre><span></span><code>E = 111,   U_0 = [1, 1^10, 1],   b_1 = 1^5,   U_1 = [2, 00, 3],   no tail
+</code></pre></div>
+
+<p>This is the middle of a reset (§3.5): there is no tail yet, and the next increment creates one.</p>
+<h2 id="3-the-rules">3. The rules</h2>
+<p>An increment is one <strong>carry</strong>. It enters at the right end and moves left one unit at a time. Each unit it reaches is <strong>touched</strong>: it changes as below and either stops the carry or passes it on to the left.</p>
+<h3 id="31-stop-and-pass">3.1 Stop and pass</h3>
+<p>In every touch of a digit, all of its passive stacks move two cells to the right and the right end of its lead moves one cell to the right. The lead flips.</p>
+<table>
+<thead>
+<tr>
+<th>touch</th>
+<th>when</th>
+<th>change</th>
+<th>the carry</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stop</td>
+<td>lead <code>00</code>, x ≥ 2</td>
+<td>lead becomes <code>1111</code>, x decreases by 1</td>
+<td>stops</td>
+</tr>
+<tr>
+<td>pass</td>
+<td>lead <code>1111</code>, left boundary <code>11</code></td>
+<td>lead becomes <code>00</code>, x increases by 3</td>
+<td>goes on to the left</td>
+</tr>
+<tr>
+<td>halt</td>
+<td>single-marker, lead <code>00</code>, y = 0</td>
+<td>the machine halts (§3.6)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>The fuel changes the same way in a stop and in a pass:</p>
+<table>
+<thead>
+<tr>
+<th>digit</th>
+<th>change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>single-marker</td>
+<td>y decreases by 1</td>
+</tr>
+<tr>
+<td>multi-marker</td>
+<td>m_1 increases by 1, y decreases by 2 (glue when y = 1, §3.2)</td>
+</tr>
+</tbody>
+</table>
+<p>The inner gaps m_2, …, m_r do not change.</p>
+<h3 id="32-glue">3.2 Glue</h3>
+<p>A multi-marker digit touched with y = 1 would get y = −1. Instead its last stack runs into the boundary on its right:</p>
+<div class="highlight"><pre><span></span><code>… m_r  1^(3j+1)  [1]  1^(3g+2) …    -&gt;    … m_r  1^(3(g+j)+2) …
+</code></pre></div>
+
+<p>The digit loses its last stack Q_r = <code>1^(3j+1)</code>, and the boundary to its right now carries g + j glued walls.</p>
+<p>The digit's new fuel is the gap that was left of the lost stack, as it stands after the touch: m_r if r ≥ 2 (the touch leaves it unchanged), and m_1 + 1 if r = 1 (the touch adds 1 to m_1).</p>
+<h3 id="33-unglue">3.3 Unglue</h3>
+<p>A digit with lead <code>1111</code> whose left boundary carries g ≥ 1 glued walls is not passed as in §3.1. The glued walls came from the left neighbour, and now they enter this digit:</p>
+<div class="highlight"><pre><span></span><code>1^5      [x, 1111, m_1, Q_1, …, y]   -&gt;   11 [2, 00, x+1, 1111, m_1, Q_1, …, y−2]
+1^(3g+2) [x, 1111, m_1, Q_1, …, y]   -&gt;   11 [2, 00, 0, 1^(3g−2), x, 1111, m_1, Q_1, …, y−2]     (g ≥ 2)
+</code></pre></div>
+
+<ul>
+<li>The first glued wall becomes the new lead. It has just been passed, so it is <code>00</code>.</li>
+<li>For g ≥ 2 the other g − 1 glued walls follow as one stack.</li>
+<li>The old lead <code>1111</code> becomes a passive wall.</li>
+<li>The boundary is plain <code>11</code> again, and the carry goes on to the left.</li>
+</ul>
+<p>For a single-marker digit the part <code>m_1, Q_1, …</code> is empty, so <code>[x, 1111, y]</code> becomes <code>[2, 00, x+1, 1111, y−2]</code>. As always, y − 2 = −1 means a glue instead (§3.2).</p>
+<h3 id="34-the-unit-next-to-the-edge">3.4 The unit next to the edge</h3>
+<p>An increment whose carry passes every digit U_1, …, U_n is an <strong>overflow</strong>; it touches U_0.</p>
+<table>
+<thead>
+<tr>
+<th>U_0</th>
+<th>edge</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>leadless <code>[x, Q_1, …, y]</code></td>
+<td>e ≡ 0</td>
+<td>e grows by 3; y decreases by 2, or glue when y = 1; x and the inner gaps stay</td>
+</tr>
+<tr>
+<td>empty <code>[y]</code>, y ≥ 3</td>
+<td>e ≡ 0</td>
+<td>e grows by 3; y decreases by 2</td>
+</tr>
+<tr>
+<td>empty <code>[1]</code></td>
+<td>e ≡ 0</td>
+<td>absorption: the edge and b_1 = <code>11</code> merge into a new edge <code>1^(e+4)</code>; U_1 becomes U_0</td>
+</tr>
+<tr>
+<td>a digit, lead <code>00</code></td>
+<td>e ≡ 1</td>
+<td>a stop, as in §3.1</td>
+</tr>
+<tr>
+<td>a digit, lead <code>1111</code></td>
+<td>e ≡ 1</td>
+<td>fossilization, below</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Fossilization.</strong> The old edge becomes a passive stack, the old lead becomes a passive wall, and a new edge <code>111</code> starts at the left end:</p>
+<div class="highlight"><pre><span></span><code>1^e [x, 1111, m_1, Q_1, …, y]   -&gt;   111 [1, 1^e, x, 1111, m_1, Q_1, …, y−2]        (e ≡ 1 mod 3)
+</code></pre></div>
+
+<p>U_0 is then leadless and the edge is ≡ 0 again. The stacks left behind by the fossilizations form the far left part of the tape.</p>
+<h3 id="35-tail-and-resets">3.5 Tail and resets</h3>
+<p>Every increment adds 2 to the tail: t becomes t + 2.</p>
+<p>A <strong>reset</strong> takes two increments. It starts when the least significant digit has glued its last stack onto the tail boundary, so that b_T = <code>1^5</code>:</p>
+<div class="highlight"><pre><span></span><code>… 1^5 [t] A&gt;          -&gt;   … 11 [2, 00, t+2] A&gt;                   (first increment)
+… b [2, 00, y] A&gt;     -&gt;   … b [1, 1111, y−2] 11 [1] A&gt;           (second increment)
+</code></pre></div>
+
+<ul>
+<li>In the first increment the old tail becomes the fuel of a new least significant digit. Its lead is the glued wall, already passed, so the carry goes on into the digits to the left.</li>
+<li>In the second increment the new digit stops the carry at once, and a new tail <code>[1]</code> appears.</li>
+<li>The boundary b left of the new digit is <code>11</code>, unless the carry of the first increment glued walls onto it.</li>
+</ul>
+<p>The configuration at step 342 is the state between the two increments of a reset, with b = <code>1^5</code>.</p>
+<h3 id="36-the-halt">3.6 The halt</h3>
+<p>A carry that touches a single-marker digit <code>[x, 00, 0]</code> halts the machine. There the tape reads</p>
+<div class="highlight"><pre><span></span><code>… 00 11 …
+</code></pre></div>
+
+<p>the lead <code>00</code> followed at once by the digit's right boundary. By §1 this is the halting pattern: the head reaches the left 1 of <code>11</code> in state F, with <code>0 0</code> to its left.</p>
+<h3 id="37-what-the-rules-exclude">3.7 What the rules exclude</h3>
+<p>No rule covers these shapes:</p>
+<ul>
+<li>a stop with x = 0;</li>
+<li>a tail boundary with two or more glued walls;</li>
+<li>an absorption when there is no digit left to become U_0;</li>
+<li>the halting shape <code>[x, 00, 0]</code> in U_0.</li>
+</ul>
+<p>If the run ever reached such a shape, the checker of §8 would stall and never report the halt. It does report it, so these shapes never occur on the run.</p>
+<p>The edge class always matches U_0: an absorption leaves a U_0 digit with e ≡ 1, a fossilization leaves a leadless U_0 with e ≡ 0, and edge growth keeps e mod 3.</p>
+<h2 id="4-batching">4. Batching</h2>
+<h3 id="touch-counts">Touch counts</h3>
+<p>Call the least significant digit depth 0, its left neighbour depth 1, and so on. A digit at depth q is touched by a carry exactly when the q digits to its right all have bit 1.</p>
+<p>So the touches follow binary counting. If the q digits to the right of a digit form the number C &lt; 2^q, then in d increments that digit is touched</p>
+<div class="highlight"><pre><span></span><code>floor((C + d) / 2^q)
+</code></pre></div>
+
+<p>times, as long as no structural event (glue, unglue, reset, absorption, fossilization, halt) happens.</p>
+<p>The .v counts the same way, digit by digit. A digit with bit b that is touched n times passes on</p>
+<div class="highlight"><pre><span></span><code>p = floor((n + b) / 2)
+</code></pre></div>
+
+<p>carries to its left neighbour, which is therefore touched p times.</p>
+<h3 id="closed-forms">Closed forms</h3>
+<p>Take a digit touched n times without a structural event. Its bit flips at every touch, and its touches are p passes and s = n − p stops. The rules of §3.1 add up to:</p>
+<table>
+<thead>
+<tr>
+<th>quantity</th>
+<th>after n touches</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bit</td>
+<td>(b + n) mod 2</td>
+</tr>
+<tr>
+<td>x</td>
+<td>x + 3p − s</td>
+</tr>
+<tr>
+<td>y, single-marker</td>
+<td>y − n</td>
+</tr>
+<tr>
+<td>m_1, multi-marker</td>
+<td>m_1 + n</td>
+</tr>
+<tr>
+<td>y, multi-marker</td>
+<td>y − 2n</td>
+</tr>
+</tbody>
+</table>
+<p>For U_0 with an edge ≡ 0, m overflows give: e grows by 3m, and the last gap (y of a leadless U_0, or the gap of an empty one) shrinks by 2m.</p>
+<h3 id="when-a-batch-is-allowed">When a batch is allowed</h3>
+<p>A batch of d increments applies these closed forms to every unit at once. It is used only when the closed forms are exact, that is, when for every touched unit:</p>
+<ul>
+<li>no glue happens: a multi-marker y stays ≥ 1, and so does the last gap of U_0;</li>
+<li>no unglue happens: a digit that gets a pass has a plain <code>11</code> on its left;</li>
+<li>a single-marker digit keeps y ≥ 0, and is never touched with lead <code>00</code> and y = 0;</li>
+<li>a digit whose first touch is a stop has x ≥ 2;</li>
+<li>U_0, if it is touched, is leadless or empty (edge ≡ 0);</li>
+<li>the tail boundary is <code>11</code> (no reset is under way).</li>
+</ul>
+<p>These are exactly the guards of <code>closedU</code> and <code>closedZ</code> in the .v. Under them <code>closedU_spec</code>, <code>closedZ_spec</code> and <code>batchL_spec</code> prove that the batch equals d single increments.</p>
+<h3 id="choosing-d">Choosing d</h3>
+<p>A batch size d is proposed by a function <code>propose</code>. It finds, for each unit, the first increment at which that unit would meet a structural event, using the touch count formula above, and takes one less than the earliest.</p>
+<p><code>propose</code> is untrusted: whatever d it returns, the guards above are checked. If a guard fails, or d = 0, the checker does one exact increment instead.</p>
+<h2 id="5-the-run">5. The run</h2>
+<p>From the step-342 configuration the checker repeats one move, <code>next</code>: a batch if one is allowed, otherwise one exact increment by the rules of §3.</p>
+<ul>
+<li>The 107,781st move is the halting touch.</li>
+<li>The halt happens during increment 11,631,266,794,472,450,654,093, counted from the step-342 configuration. The .v does not count increments: this number adds up the increments of the same 107,781 moves, computed outside Coq.</li>
+<li>About half of the moves are batches. The others are single increments, at the structural events.</li>
+<li>The run passes 82 resets.</li>
+</ul>
+<p>When the counter runs dry, the tape holds the edge <code>1^998730056409855</code>, a leadless U_0 with 1,302 passive walls and stacks (the fossils), and 22 digits. Its right end, three increments before the halt, is shown in §7.</p>
+<h2 id="6-why-the-run-reaches-a-fuel-out">6. Why the run reaches a fuel-out</h2>
+<p>The proof does not need this section: the checker simply runs. It explains why a halt is reached at all.</p>
+<h3 id="only-single-marker-digits-can-halt">Only single-marker digits can halt</h3>
+<p>The halt rule (§3.6) needs a single-marker digit. A multi-marker digit never halts: when its fuel runs out it glues its last stack onto the boundary to its right instead (§3.2). That stack then enters the right neighbour at its next pass (§3.3).</p>
+<p>So walls flow to the right, from digit to digit, toward the head. A single-marker digit loses one fuel cell per touch and survives only if walls arrive from its left neighbour before its fuel is gone.</p>
+<h3 id="the-race-at-the-right-end">The race at the right end</h3>
+<p>At reset n a new least significant digit is born:</p>
+<div class="highlight"><pre><span></span><code>[1, 1111, 2 a_n − 1]
+</code></pre></div>
+
+<p>Its fuel 2a_n − 1 is the old tail. It is touched at every increment, so it lasts about 2a_n increments unless walls reach it. The next reset comes a_{n+1} + 1 increments later.</p>
+<p>Roughly, the counter survives as long as each time between resets stays below twice the one before, a_{n+1} &lt; 2 a_n. The ratio a_{n+1}/a_n oscillates, and its swings grow:</p>
+<table>
+<thead>
+<tr>
+<th>reset n</th>
+<th>a_n</th>
+<th>a_n / a_{n−1}</th>
+<th>digits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>173</td>
+<td>1.860</td>
+<td>6</td>
+</tr>
+<tr>
+<td>24</td>
+<td>721,916</td>
+<td>1.796</td>
+<td>7</td>
+</tr>
+<tr>
+<td>45</td>
+<td>199,353,255,316</td>
+<td>1.882 (peak)</td>
+<td>11</td>
+</tr>
+<tr>
+<td>53</td>
+<td>26,669,001,961,895</td>
+<td>1.818 (trough)</td>
+<td>14</td>
+</tr>
+<tr>
+<td>62</td>
+<td>8,809,301,845,079,351</td>
+<td>1.977 (peak)</td>
+<td>17</td>
+</tr>
+<tr>
+<td>75</td>
+<td>34,660,098,682,790,716,341</td>
+<td>1.813 (trough)</td>
+<td>20</td>
+</tr>
+<tr>
+<td>82</td>
+<td>2,856,408,035,907,009,885,019</td>
+<td>1.969, still rising</td>
+<td>23</td>
+</tr>
+</tbody>
+</table>
+<p>The peaks at resets 45 and 62 are 17 resets apart, and the troughs at resets 53 and 75 are 22 apart. Over the same stretch the number of digits grows slowly.</p>
+<h3 id="the-third-swing-crosses-2">The third swing crosses 2</h3>
+<p>After reset 82 the next reset would need about 2 a_82 increments. It never comes. The digit at depth 1 runs low on fuel, and its left neighbour is single-marker, so it has no wall to hand on.</p>
+<p>The configuration three increments before the halt (§7) comes 5,712,816,071,814,019,770,034 increments after reset 82.</p>
+<h2 id="7-the-halt">7. The halt</h2>
+<p>Increments are counted from the step-342 configuration, and …090 stands for increment 11,631,266,794,472,450,654,090.</p>
+<p>After increment …090, three increments before the halt, the right end of the tape is (U_22 is the least significant digit):</p>
+<div class="highlight"><pre><span></span><code>… 11 [1495536819214692213317, 1111, 4812803520428781749]       U_20
+  11 [2901296570081134732223, 1111, 1]                         U_21
+  11 [5712816071814019770035, 1111, 3]                         U_22
+  11 [11425632143628039540069] A&gt;                               tail
+</code></pre></div>
+
+<p>Digits U_20, U_21 and U_22 are single-marker and all have bit 1.</p>
+<p><strong>Increment …091.</strong> The carry passes U_22, U_21, U_20, and further digits with bit 1, and stops at U_17. U_21 is passed with fuel 1:</p>
+<div class="highlight"><pre><span></span><code>11 [2901296570081134732226, 00, 0]                             U_21
+11 [5712816071814019770038, 00, 2]                             U_22
+</code></pre></div>
+
+<p><strong>Increment …092.</strong> The carry stops at U_22:</p>
+<div class="highlight"><pre><span></span><code>11 [5712816071814019770037, 1111, 1]                           U_22
+</code></pre></div>
+
+<p><strong>Increment …093,</strong> number 11,631,266,794,472,450,654,093 after step 342. The carry passes U_22, whose fuel becomes 0, and touches U_21 = <code>[2901296570081134732226, 00, 0]</code>. That is the halt of §3.6.</p>
+<h2 id="8-how-the-v-states-it">8. How the .v states it</h2>
+<h3 id="81-the-mirror-and-the-words">8.1 The mirror and the words</h3>
+<p>The .v works in the mirrored machine <code>tmf = flip tm</code>, where the counter lies to the right of the head. <code>flip_halts_iff</code> turns <code>halts tmf c0</code> into <code>halts tm c0</code>.</p>
+<p>Words are lists of cells, written starting next to the head. In the original orientation they read from right to left:</p>
+<table>
+<thead>
+<tr>
+<th>word</th>
+<th>cells, nearest the head first</th>
+<th>wall view</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>blk c j</code></td>
+<td><code>[0] (10)^c 1^(3j+1)</code></td>
+<td>a gap of 2c + 1, then a stack of j walls</td>
+</tr>
+<tr>
+<td><code>lead1 a x</code></td>
+<td><code>blk a 1</code>, then <code>[0] (10)^x</code></td>
+<td>gap 2a + 1, lead <code>1111</code>, gap 2x + 1</td>
+</tr>
+<tr>
+<td><code>lead0 a x</code></td>
+<td><code>(01)^a 00 (10)^x</code></td>
+<td>gap 2a, lead <code>00</code>, gap 2x</td>
+</tr>
+<tr>
+<td><code>tailw g</code></td>
+<td><code>1^(3g+2)</code></td>
+<td>a boundary with g glued walls</td>
+</tr>
+<tr>
+<td><code>edgew x f</code></td>
+<td><code>[0] (10)^x 1^(3f)</code></td>
+<td>a gap of 2x + 1, then an edge ≡ 0</td>
+</tr>
+<tr>
+<td><code>edge1w f</code></td>
+<td><code>1^(3f+1)</code></td>
+<td>an edge ≡ 1</td>
+</tr>
+</tbody>
+</table>
+<p>A unit is</p>
+<div class="highlight"><pre><span></span><code>uw bs b a x far  =  cw bs ++ leadw b a x ++ far
+</code></pre></div>
+
+<p>the passive stacks first (the one next to the fuel first), then the lead, then the far boundary. For a single-marker digit, bs is empty and the lead's first gap is the fuel.</p>
+<p>The two kinds of configuration at a record are below. In both the head is in state A on a blank cell with only blanks on its far side, next to the word.</p>
+<div class="highlight"><pre><span></span><code>root t X  =  0^∞ &lt;A (01)^t 0 11 X                tail [2t+1]
+NT s g X  =  0^∞ &lt;A (10)^s 1 00 10 1^(3g+2) X    no tail: the digit [2, 00, 2s+1]
+</code></pre></div>
+
+<h3 id="82-one-shift-for-every-touch">8.2 One shift for every touch</h3>
+<p>In the mirror every touch removes the first two cells of the unit's word, <code>[0;1]</code>, the two nearest the head: all passive walls move two cells toward the head. <code>consume</code> says what that does to the stack list:</p>
+<div class="highlight"><pre><span></span><code>consume ((c+1, j) :: r) a  =  (0, (c, j) :: r, a)      the fuel gap shrinks by 2
+consume ((0, j) :: r)   a  =  (j, r, a)                glue: j walls go to the boundary nearer the head
+consume []          (a+1)  =  (0, [], a)               single-marker: the fuel shrinks
+consume []              0  =  none                     single-marker without fuel
+</code></pre></div>
+
+<p>With it each rule of §3 is one lemma:</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>lemma</th>
+<th>form</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stop</td>
+<td><code>t_stop</code></td>
+<td><code>segRL tmf hB hD</code>: the call enters in B and returns in D</td>
+</tr>
+<tr>
+<td>pass</td>
+<td><code>t_pass</code></td>
+<td><code>segRLs tmf h h</code>: one call in, one call forwarded to the next unit</td>
+</tr>
+<tr>
+<td>unglue</td>
+<td><code>t_ungl1</code>, <code>t_ungl2</code></td>
+<td><code>segRLs tmf h h</code></td>
+</tr>
+<tr>
+<td>halt</td>
+<td><code>t_halt</code></td>
+<td><code>halts tmf (l {{B}}&gt; uw [] false 0 x far *&gt; r)</code></td>
+</tr>
+<tr>
+<td>U_0</td>
+<td><code>z_lead</code>, <code>z_empty</code>, <code>z_absorb</code>, <code>z_stop</code>, <code>z_1111</code></td>
+<td><code>sideRL tmf hB hD</code> on the end of the tape</td>
+</tr>
+<tr>
+<td>tail</td>
+<td><code>root_step</code></td>
+<td><code>root t X --&gt;+ root (t+1) X'</code></td>
+</tr>
+<tr>
+<td>reset, first increment</td>
+<td><code>reset1</code></td>
+<td><code>root t (111 X) --&gt;* NT (t+1) 0 X'</code></td>
+</tr>
+<tr>
+<td>reset, second increment</td>
+<td><code>reset2</code></td>
+<td><code>NT (s+1) g X --&gt;* root 0 ((lead1 s 0 ++ tailw g) X)</code></td>
+</tr>
+</tbody>
+</table>
+<p>Each lemma is proved from short fixed-word lemmas and generic composition:</p>
+<ul>
+<li>the fixed-word cores are proved by <code>solve_seg</code> or <code>es</code>;</li>
+<li>a run of passive stacks is crossed by <code>blkRR_F</code> and <code>blkLL</code>, lifted to whole lists by induction (<code>chainRR</code>, <code>chainLL</code>);</li>
+<li><code>gen_RL</code>, <code>gen_fwd</code> and <code>gen_side</code>, with their glue variants, put a core word behind any such run of stacks.</li>
+</ul>
+<h3 id="83-records-and-one-increment">8.3 Records and one increment</h3>
+<p>A configuration is stored as a record with binary numbers:</p>
+<ul>
+<li><code>unitN</code>: the stack list, the bit, the parameters a and x, and the far boundary's g;</li>
+<li><code>zN</code>: U_0, either <code>Z0</code> (edge ≡ 0, leadless or empty) or <code>ZD</code> (edge ≡ 1, a digit);</li>
+<li><code>tailN</code>: <code>TT t g</code> (a tail with tail boundary <code>tailw g</code>) or <code>NTl s g</code> (no tail);</li>
+<li><code>cfg</code>, and <code>denote</code>, which maps a record to a tape.</li>
+</ul>
+<p>One increment on records is computed by <code>touchN</code> (a digit), <code>ztouch</code> (U_0), <code>callN</code> (the carry through the list) and <code>inc1</code> (the tail and resets).</p>
+<ul>
+<li><code>inc1_ok</code>: if <code>inc1 c</code> returns c', then <code>denote c --&gt;* denote c'</code>.</li>
+<li><code>inc1_halt</code>: if <code>inc1 c</code> reports the halt, then <code>halts tmf (denote c)</code>.</li>
+</ul>
+<h3 id="84-batches-and-the-checker">8.4 Batches and the checker</h3>
+<ul>
+<li><code>pairK</code> and <code>pair1</code> do 2q touches of one digit (q stops and q passes) by induction on q. <code>clK0</code>, <code>clK1</code>, <code>cl10</code> and <code>cl11</code> add the odd last touch and the start from bit 1.</li>
+<li><code>closedU_spec</code> turns these into the closed forms of §4 on records, and <code>closedZ_spec</code> does the same for U_0.</li>
+<li><code>batchL_spec</code> chains the units: n touches of the first one forward p calls to the next.</li>
+<li><code>batch_step</code> asks <code>propose</code> for d and applies <code>batchL</code>; <code>batch_step_spec</code> proves the result.</li>
+<li><code>next</code> is a batch if <code>batch_step</code> succeeds, else <code>inc1</code>. When <code>inc1</code> fails, <code>next</code> stays at the same configuration, which is trivially sound. <code>next_spec</code> covers all three cases.</li>
+</ul>
+<h3 id="85-the-run">8.5 The run</h3>
+<p><code>run T c</code> iterates <code>next</code> at most T times with <code>N_iter_until</code>.</p>
+<p>Its two soundness lemmas, <code>run_ok</code> and <code>run_halt</code>, follow from <code>N_iter_until_spec</code> and <code>next_spec</code>.</p>
+<p>The run is cut into pieces of 5,000 moves: 21 full pieces, and a 22nd that reaches the halt at its 2,781st move.</p>
+<div class="highlight"><pre><span></span><code>k_i  :=  the configuration after 5,000 moves from k_{i−1}       (k_0 = c342; Eval vm_compute)
+s_i  :   run 5000 k_{i−1} = inl k_i                              (i = 1 … 21)
+s22  :   run 5000 k21 = inr tt                                   (the halt)
+</code></pre></div>
+
+<p>Each <code>s_i</code> is proved by <code>vm_cast_no_check (eq_refl _)</code>. The kernel checks it when the lemma is closed, and coqchk checks it again. The <code>k_i</code> are plain definitions, and the <code>s_i</code> certify them, so their values need no trust.</p>
+<p>The final chain:</p>
+<ul>
+<li><code>init</code>: the blank tape reaches <code>denote c342</code> in 342 steps of <code>tmf</code> (<code>solve_init</code>);</li>
+<li><code>halt_tmf</code>: <code>init</code>, then <code>run_ok</code> over <code>s1</code> … <code>s21</code>, then <code>run_halt</code> on <code>s22</code>;</li>
+<li><code>halt</code>: <code>flip_halts_iff</code> applied to <code>halt_tmf</code>.</li>
+</ul>
+<h3 id="86-what-is-trusted">8.6 What is trusted</h3>
+<p>Only the framework and the kernel. <code>propose</code> only chooses d, and every batch it proposes is checked by the guards of <code>closedU</code> and <code>closedZ</code>. The final theorem uses no custom notation, and <code>Print Assumptions halt</code> lists only <code>functional_extensionality_dep</code>.</p>
+<h2 id="9-step-count-computed-not-proved">9. Step count (computed, not proved)</h2>
+<p>Adding up per-rule step costs over the same run, the machine halts after</p>
+<div class="highlight"><pre><span></span><code>N = 176,522,930,997,643,289,094,015,905,898,381,767,890,130,463  ≈ 1.765 × 10^44
+</code></pre></div>
+
+<p>steps, counting the halting step, from the blank tape. In busycoq's convention (<code>halts_in tm c0 n</code>: n steps, then a halting configuration) this is n = N − 1. The .v does not prove this number.</p>
+<p>In the table, Σm is the sum of a unit's inner gaps, and Qc sums (14L − 8)/3 over the unit's passive walls <code>1^L</code> (16 for a <code>1111</code>). The costs are computed from the values before the touch.</p>
+<table>
+<thead>
+<tr>
+<th>action</th>
+<th>steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tail <code>11 [t]</code></td>
+<td>2t + 11</td>
+</tr>
+<tr>
+<td>glued tail <code>1^5 [t]</code> (first increment of a reset)</td>
+<td>2t + 24</td>
+</tr>
+<tr>
+<td>no tail, stop on <code>[x, 00, …, y]</code> (second increment of a reset)</td>
+<td>2(Σm + y) + Qc + 12</td>
+</tr>
+<tr>
+<td>digit pass or unglue, left boundary <code>1^(3g+2)</code></td>
+<td>2(x + Σm + y) + Qc + 14g + 20</td>
+</tr>
+<tr>
+<td>digit stop</td>
+<td>2(Σm + y) + Qc + 5</td>
+</tr>
+<tr>
+<td>leadless U_0</td>
+<td>2(x + Σm + y) + Qc + 3</td>
+</tr>
+<tr>
+<td>empty U_0 <code>[y]</code></td>
+<td>2y + 3</td>
+</tr>
+<tr>
+<td>U_0 a digit with lead <code>1111</code> (edge ≡ 1)</td>
+<td>2(x + Σm + y) + Qc + 19</td>
+</tr>
+<tr>
+<td>edge ≡ 0 (growth or absorption)</td>
+<td>14e/3</td>
+</tr>
+<tr>
+<td>edge ≡ 1 (fossilization)</td>
+<td>(14e − 2)/3</td>
+</tr>
+<tr>
+<td>the halting increment (§7, from its start values t and x of U_22)</td>
+<td>t + x + 24</td>
+</tr>
+</tbody>
+</table>
+<p>Glue and absorption add no steps beyond these.</p>
+<p>These costs are not derived in the .v. They agree with direct simulation on all 276,427 increments from step 342 to 10^11 steps. On every single-stepped increment of the run they were also checked on smaller tapes of the same shape. A batch sums them in closed form.</p>
+<p>For scale, summing only the two sweeps of the tail, 2t per increment, already gives more than 8.7 × 10^43 steps.</p>
+<h2 id="appendix-working-copy-only-evidence-and-files">Appendix (working copy only): evidence and files</h2>
+<p>This appendix is not part of the public write-up (submission/proof.md is the public copy; everything above this heading is identical to it).</p>
+<ul>
+<li>Checkpoint B is pending (non-blocking); there are no notes to fold in yet.</li>
+<li>Formal proof: the .v in this directory = the concatenation of rocq/r2/{H0,A0,A1,A2,B1,B2,B3,B4,Z1}.v (same sha256 95335b49…515c); build log and design notes in rocq/log.md. Fresh <code>tools/check_kill.sh --halt</code> run: submission/check_kill.txt (PASS, compile 69.7 s, coqchk 509.7 s of the 600 s cap; earlier runs rocq/check_kill_r2.log (coqchk out of memory, single vm_cast) and rocq/check_kill_r2b.log (PASS)).</li>
+<li>Python mirror of the Coq checker: rocq/tools/coqmirror.py (matches work/rules3.py + work/fast.py at all 107,778 checkpoints, then the halt at move 107,781).</li>
+<li>Rules and run: work/rules3.py (closed rules, 27,813/27,813 orbit increments to 1e9, 600/600 far TM checks), work/fast.py (batched form), work/longrun.py (run to the fuel-out), work/fuelout_config.json, work/resets_long.jsonl (all 82 resets).</li>
+<li>Independent re-implementation from the TM table only: work/indep/ (run_to_halt.py, same halting increment, same fuel-out configuration and resets).</li>
+<li>Step count: work/steps_exact/ (costs.py, stepsexact.py, longsteps.py, final3.py, certify.py; exact_steps.json). Not proved in Coq.</li>
+<li>Full history of the analysis: notes.md (stages 1-3, step count, independent re-check, kill).</li>
+</ul>
+<p>AI assistance: this proof sketch, the scripts and the checks were produced with the help of Claude (Anthropic).</p>
+</main></body></html>

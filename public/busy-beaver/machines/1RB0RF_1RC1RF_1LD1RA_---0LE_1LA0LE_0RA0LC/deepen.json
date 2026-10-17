@@ -1,0 +1,56 @@
+{
+ "confidence": "med",
+ "recommend": "proof",
+ "mechanism": "Hub K(a,b,X)=(110)^a 0 (011)^b C> X. Each bounce applies inc to a counter word of 3-cell groups (000/001 digits, 010 inert, 100 pending residue): a binary +1 that skips inert groups and turns each pending 100 into an inert group while adding 1 to the i/0 string after it. After n-1 bounces the counter holds n, the bell eats the low groups (n odd: +1; n even: J-walk), and the uneaten part, shifted by one cell, comes back as the next residue (inert->100, 1->010, 0->000) at record L(n',Q'), which restarts as K(1,n',1Q').",
+ "closed_gaps": [
+  "Epoch map with residue found exactly: R restart L(n,Q)->K(1,n,1Q) in 3n+5 steps; B bounce K(a,b+1,X)->K(a+1,b,inc X) for every X in x0{000,001,010}*{100,010,000}* (inc carry rule incl. the 100 toggle); E eat on normalized words (n odd: H=carry(G), n'=n+1; n even: J-walk 001 drop / 010 drop+carry / 000 stop) and residue map Q'=regroup(H[1:]). Each validated 3,000/3,000 on random instances (9,000 total, a,b up to 2000, words up to 60 groups); mutation test confirms the check is not vacuous.",
+  "Abstract model reproduces the TM exactly: 1,142/1,142 epochs to 1e11 steps (n 2->8,416) and 276/276 to 1e9.",
+  "Residue 'inert 1s' explained: old 1-digits become inert groups (010) in the next counter; old inert groups become 100 groups, which a carry converts to inert while adding 1 to the i/0 string after them. dN = 1 for odd n; otherwise 1 + the number of groups the J-walk consumes.",
+  "Halting conditions isolated at cell level (Fa turn over a 0, or E meeting 010); neither occurs under R/B/E on L_X words.",
+  "Non-halting reduces to one inequality: normalization depth D(Q_t) <= bitlen(n_t)-1 (counter normalized at every eat). It holds on 200,000 abstract epochs (n to 2.28M) with slack >= 2 for all t >= 16."
+ ],
+ "remaining_gaps": [
+  "No inductive invariant proven yet. Candidate I: Z*(Q) <= bitlen(n)-2. Lemma 1* (D(Q') <= 1+Z*(Q)) holds on the trajectory and on 26,185/26,185 random states. Lemma 2* (I preserved) holds on the trajectory for t >= 16 but fails on 2 of 22,747 random states with B >= 10 (e.g. n=8107, Q=0SSii000ii) and 66 with B < 10, so the true invariant must use more of the structure of reachable residues.",
+  "The tail of D looks geometric (ratio ~0.4) against a threshold that grows like log2 n, so a purely heuristic argument is borderline. If no inductive invariant is found, re-flag as a cryptid candidate. The machine can halt when normalization fails (1 of 113 artificial non-normalized runs halted).",
+  "Early epochs t <= 15 (n <= 57) violate the candidate bound and need direct simulation in the proof; that is already covered by the 1e11 TM run.",
+  "Step counts per epoch were not derived; a non-halting proof does not need them."
+ ],
+ "evidence": [
+  "scripts/deepen_val.py seeds 1,2,3 x 1000: R 3000/3000, B 3000/3000, E 3000/3000",
+  "scripts/deepen_xcheck.py on deepen_lrec.c records to 1e11 steps: 1142/1142 epochs exact (last n=8416, step 99,859,646,893)",
+  "scripts/deepen_invariant.py 200000: normalization slack B-1-D >= 2 for t>=16; tight cases listed in notes.md; D(t+1) <= 1+Z(t) on 199,999/199,999 transitions",
+  "Z* <= B-2 along the trajectory for all t >= 16 (equality about once per doubling of t)",
+  "scripts/deepen_induct.py 1 30000: Lemma 1* 26185/26185; Lemma 2* 22745/22747 at B>=10",
+  "Artificial non-normalized eats: 112/113 continued, 1 halted (n=2) -> invariant is load-bearing"
+ ],
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "lemma_x",
+   "stage": "funded stage: classify excursion entries (Lemma X), cryptid flag as the exit",
+   "confidence": "med",
+   "outcome": "CRYPTID_CANDIDATE (stop rule fired: the entry types do not close into a finite list of safe types)",
+   "closed_gaps": [
+    "Potential identities F4 (odd: P' = P + m(P) - L(c,P)) and F5 (even), exact: 40,000/40,000 random states (seeds 1, 2).",
+    "Lemma A: no excursion is entered from an even eat (even n, P < 2^B1 => P' < 2^B1). Proved; 32,448 even non-excursion states, 0 entries.",
+    "Lemma B: P + m(P) <= 2^b + 2^(b-2) for P < 2^b, so an odd entry has P' <= 1.25*2^B1. Proved; exhaustive b <= 18 (max exactly 2^(b-2)); 32,110 odd states.",
+    "Reduction R2: after a slack>=0 eat the slack can fail only via a super-cascade (odd, P = 2^B1), P >= 2^(B1+1), or an even cascade with B(n) < B1. Proved; 238,873 pairs, 36 failures, 0 unclassified.",
+    "Lemma EC: an even cascade (V = 2^B1, B(n) = B1, slack>=0) is safe for any residue and is followed by 1.125 < P/2^B1 <= 1.25; it extends cascade lemma (iii). 39,535/39,535."
+   ],
+   "remaining_gaps": [
+    "Lemma X is not provable from entry types: sigma0(B) = (3*2^(B-2)-7, [3,0^(B-6),10,0,2]) has slack 2 and no excursion, entry shape P0 = 15*2^(B-4), and reaches a super-cascade at epoch 2 and slack -1 at epoch 3 for every B >= 8 (exact for B = 8..300; TM-confirmed non-normalized eat at n = 194 from n0 = 185).",
+    "The TM does not halt after the family's non-normalized eat (B = 8, 9, 10 recover within 1 epoch), so the family breaks Lemma N as a proof strategy, not the machine.",
+    "Natural orbits enter excursions only via cascades (1,769) and w = 1 near-cascades (11) in 5.9M eats; excluding w >= 2 entries with residues that solve P = 2^B would need an orbit-specific arithmetic invariant. None is known: magnitude bounds do not suffice (the main orbit reaches C/2^(B-1) = 0.688 at a non-excursion odd eat; a w = 2 entry needs about 0.5)."
+   ],
+   "evidence": [
+    "scripts/fs_lemmax.py seeds 1, 2 (N = 20,000): all PASS (logs scripts/fs_lemmax_seed1.log, scripts/fs_lemmax_seed2.log); seed 3 also PASS",
+    "scripts/fs_struct_search.py 1 400000 10 40 8: 41,539 slack>=0 non-excursion states, violations at B = 10 (2), 16, 28",
+    "scripts/fs_super_search.py 1 400000 8 20 8: 4 super-cascade hits (B = 9, 16), 1 violation (B = 9)",
+    "scripts/fs_chains.py 1 150000 30 10 30 I: 104,325 states; excursion patterns EO 2,616 / EE 2,567 / E 14 / EOEO 3 / EOE 2 / EOEE 1 / EOEOE 1; all entries from odd eats",
+    "scripts/fs_natural_entries.py nat 1 2000 3000: 5.9M eats, 0 violations, entries casc 1,769 / w=1 11 / w>=2 0; main orbit 400k epochs: 1 entry (cascade)"
+   ],
+   "scripts": "scripts/: fs_lemmax.py (checks), fs_gen.py, fs_chains.py, fs_struct_search.py, fs_super_search.py, fs_natural_entries.py (python3 -B, from anywhere)"
+  }
+ ],
+ "updated": "2026-10-10"
+}

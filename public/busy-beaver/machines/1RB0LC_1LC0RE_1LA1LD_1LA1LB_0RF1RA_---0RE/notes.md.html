@@ -1,0 +1,694 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LC_1LC0RE_1LA1LD_1LA1LB_0RF1RA_---0RE/notes.md · <a href="/busy-beaver/machines/1RB0LC_1LC0RE_1LA1LD_1LA1LB_0RF1RA_---0RE/notes.md.html">raw</a></div>
+<h1 id="w5-6-1rb0lc_1lc0re_1la1ld_1la1lb_0rf1ra_-0re-740-line-88-observe-notes">W5-6 · 1RB0LC_1LC0RE_1LA1LD_1LA1LB_0RF1RA_---0RE (740 line 88), observe notes</h1>
+<p>Date: 2026-10-13. Stage: PLAN §6 step 1 (Observe). Sheet class: Bell eats counter. Confidence: <strong>med</strong>.</p>
+<h2 id="checks-before-starting">Checks before starting</h2>
+<ul>
+<li>Byte-exact on <code>data/holdouts/BB6_holdouts_740.txt</code> line 88 (778 list line 94, eqv_1590 line 2291, and every older list back to 2024-06-14_12091).</li>
+<li>No claim: no hit in <code>data/discord/*.txt</code>; <code>data/sheet/2026-10-09_results.csv</code> row 1010 has only the class "Bell eats counter" (Status/Notes/Done By empty).</li>
+<li><code>tools/holdouts.py solved</code>: absent from verify/ (no byte-exact, notation-only or equivalent row).</li>
+</ul>
+<h2 id="table-starts-and-the-family">Table, starts and the family</h2>
+<table>
+<thead>
+<tr>
+<th>start</th>
+<th>what it is</th>
+<th>status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>ours (740 line 88)</td>
+<td>holdout</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>1LB0RD_1LC1LE_1RA0LB_0RF1RC_1LC1LA_---0RD</code> (its A..F = our B,C,A,E,D,F; no mirror)</td>
+<td><strong>proved</strong>: IndBECv1.v Module Others <code>nonhalt17</code>, line 626 (vendor 0940bb9 and upstream 9cf9e88), <code>solve_hlin_nonhalt (config_BEC 1000 3 B F [0] [0] [0;1])</code></td>
+</tr>
+<tr>
+<td>C, D</td>
+<td>halt at step 4</td>
+<td>-</td>
+</tr>
+<tr>
+<td>E, F</td>
+<td>halt at step 1 / 0</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<p>No other 740 entry shares this table (all 1,440 renamings/mirrors of every start searched in the 740/778/eqv lists, verify/*.v and solved_index).</p>
+<p><strong>280</strong> (<code>1RB0LC_1LC0RE_1LA1LD_1LA1LF_0RB1RA_1LC---</code>) is a different table with the same orbit:
+- 88's state B is entered by A0 and D1; 280 splits it: 280's B = 88's B entered by A0 or (via E0) 88's F reading 1; 280's F = 88's B entered by D1.
+- So the two runs coincide step for step as long as 88's F reads 1 (88 halts on F0) and 88's B entered by D1 reads 0 (280 halts on F1). Both machines are at the same tape at 1e9 (step 1e9, state A, pos -916, span -2286..1133, 2,395 nonzeros).
+- 280's own table: start F certified (IndBECv1 Eat1Digit <code>nonhalt6</code>, line 526); starts C and D are Eqv_v2 partners of 280 (lines 17309, 19379); start B and its F-mirror are an Eqv_v2 pair (line 8729).
+- One proof of the shared orbit that excludes both halting reads covers 280 too; listed as sibling with that caveat.</p>
+<h2 id="simulation">Simulation</h2>
+<ul>
+<li>1e10 steps, no halt; span -4904..2441 (7,346 cells), 5,089 nonzeros. 1e9: span 3,420. Span ~ t^(1/3).</li>
+<li>Only undefined cell F0; F is entered only by E0 (0RF). In 280: F1 after D1.</li>
+</ul>
+<h2 id="mechanism">Mechanism</h2>
+<p>Turn configuration (C has just turned left at the bell):</p>
+<div class="highlight"><pre><span></span><code>R(u, e) = 0^inf u &lt;C 0 1^e 0^inf        u = w 1 (101)^k, k maximal
+</code></pre></div>
+
+<p><code>w</code> is the counter, <code>1</code> a separator, <code>(101)^k</code> the middle field, <code>1^e</code> the bell. <code>enc(v)</code> = v in binary, MSB first, digit 1 = <code>10</code>, digit 0 = <code>00</code>.</p>
+<ol>
+<li><strong>Bounce</strong> (R1, R6). The head sweeps left through the middle field (CDA per block: <code>101 -&gt; 011</code>), increments the counter at its right end, sweeps right (EAB per block: <code>011 -&gt; 101</code>) and turns at the bell, which loses 3 cells:
+   <code>R(w 1 (101)^k, e+3) -&gt; R(inc(w) 1 (101)^(k+1), e)</code>, steps <code>6k + 4t + 9</code> for clean w (t = trailing 1-digits).
+   inc on a clean word is +1 (R1). Separators: <code>110</code> is transparent to the carry (R2); a lone <code>1</code> before a <code>00</code> digit lets the counter after it count until its top digit is 1, then it is a <code>110</code> (R3). On all 2,000 sampled real words inc does not depend on k or e (R6).</li>
+<li><strong>Eat</strong> (R4, R5). When the bell is down to e = r in {0, 2} the next pass fills the middle field with 1s, increments twice and drops the counter's low end:
+   - z = inc(inc(w)) ends in <code>00</code>: <code>R(p 00 ..) -&gt; R(p 1, 3k+3+3[r=2])</code> (one digit eaten);
+   - z ends in <code>10</code>: <code>R(q c 10 ..) -&gt; R(q 101, 3k+2+3[r=2])</code> (the last 3 cells become a middle block).
+   On clean counters this is R4: v = 2m -&gt; enc(m+1); v = 2m+1 -&gt; enc((m+1)//2) with a <code>1 101</code> tail (m+1 odd) or a <code>010 1</code> tail (m+1 even).
+   R5 matches all 631 checked real eats (287 of the 289 eats of start A to 5.1e7, skipping the first two, whose counters are shorter than 4 cells; all 344 of start B to 4.2e7). Hence e mod 3 is always 0 or 2 (33,987 / 26,014 turns), never 1.</li>
+<li><strong>Certified start B</strong> stays on the clean orbit R7: <code>R(enc(s) 1, 3s) -&gt; R(enc(s+1) 1, 3s+3)</code> (s bounces, then an even eat). Only R1 and R4's even case are ever used, which is what the hlin certificate (side_binary_inc_rule on <code>10</code>/<code>00</code> digits) covers.</li>
+<li><strong>Start A</strong> leaves that orbit: the bell and the counter value are not tied (s != e/3), odd eats happen (e = 2 mod 3 cycles), and the <code>010</code> tail turns into lone-1 separators inside w that move towards the low end and are eaten later. To 5.1e7: 90 of 289 cycle starts have a junk counter; 83 eats act on junk words, with 29 distinct junk-eat shapes. Every rule above still applies.</li>
+</ol>
+<h2 id="halting-analysis">Halting analysis</h2>
+<ul>
+<li>Enumerating every word w of length &lt;= 13 (k = 2, e = 12): inc halts on 104 words; all but one contain <code>1111</code> (the exception is <code>1110111011101</code>). The shortest has 7 cells.</li>
+<li>In the run, w (5,434 distinct words to 5.1e7) never contains <code>1111</code>, and <code>111</code> appears in only 6 words.</li>
+<li>So a proof needs an invariant language L for w that excludes these shapes and is closed under inc and the eat.</li>
+<li>Factor-language test: the 8-cell factors of the observed turn words give a language on which no word up to length 22 halts (54,005 words x 6 bell values), but it is not closed. Iterating the closure (words &lt;= 20) reaches halting words after 3 rounds, so a small n-gram language is too coarse.</li>
+</ul>
+<h2 id="template-check">Template check</h2>
+<ul>
+<li>Nearest proved neighbour: the same table, start B (IndBECv1 Others nonhalt17, hlin with <code>side_binary_inc_rule [0;1] [0] [0] B F</code>, i.e. in our names <code>l 00 (10)^n &lt;C 0 r -&gt; l 10 (00)^n 0 F&gt; r</code>).</li>
+<li>That is R1 on clean words; the certified run is R7, which only uses R4's even case.</li>
+<li>Ours additionally needs odd eats, separators (R2, R3) and the generic eat R5. The critic's merge test (no shared configuration with start B) fits: our counter carries junk the B orbit never has.</li>
+<li>7 hlinx configs are already false on start A (critic); not rerun here.</li>
+</ul>
+<h2 id="cryptid-check-ground-rule-6">Cryptid check (ground rule 6)</h2>
+<p>All updates are +1 on a binary counter, a digit drop and +3 on the bell. Which eat case fires depends on the low bits of the counter at the bell's end (a chaotic parity, as in W4-2 and W5-5), but there is no multiplicative or Collatz-like map. <strong>Not a cryptid candidate.</strong> Caveat: no invariant is known for the junk yet.</p>
+<h2 id="open-next">Open / next</h2>
+<ul>
+<li>Find a closed regular language for w: an automaton search over turn words with the generic eat (R5) and inc, checked to length ~30, then minimise.</li>
+<li>If found: proof.md, then Rocq (inc lemmas per word shape, eat lemma, progress_nonhalt_cond), with 280 by the shared orbit plus its own halting reads.</li>
+<li>If not: park (hlinx grid capped at 1 h per the critic).</li>
+</ul>
+<h2 id="scripts-and-data">Scripts and data</h2>
+<ul>
+<li><code>scripts/validate_rules.py</code> (R1-R7, 200 random instances each, R7 20; seed 56) -&gt; <code>data/validation.json</code>; it reads <code>data/turn_words_sample.json</code> (2,000 real counter words).</li>
+<li><code>scripts/macro.py</code> (turn-to-turn stepper), <code>scripts/traj.py</code> (turn sequence from blank), <code>scripts/junk.py</code> (parse u = w 1 (101)^k, clean prefix), <code>scripts/draw_cyclestarts.py</code> (Fig 3).</li>
+</ul>
+<h2 id="wave-5-stage-1-2026-10-12">Wave 5, stage 1 (2026-10-12)</h2>
+<p>Run on 2026-10-13. Goal: find a regular counter-word language L that is closed under the bounce (inc) and the eat. Result: <strong>no such L exists</strong>, whether regular or not. Non-halting needs an arithmetic link between the counter and the cycle length (W4-2 / BECv5 style). Confidence: <strong>med</strong>.</p>
+<h3 id="1-no-counter-word-invariant-the-stage-goal-is-impossible">1. No counter-word invariant (the stage goal is impossible)</h3>
+<ul>
+<li><code>scripts/stage1/free2.py</code> computes the free closure of the counter word under inc, eat (r = 0) and eat (r = 2). Every map is an exact simulation, run with middle field k = 1, 2 and 3, and every distinct outcome is kept.</li>
+<li>Any number of bounces between eats, words up to 18 cells: starting from <code>10</code>, a halting word is reached (<code>data/stage1/free_closure_any.txt</code>). The path's cycles:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>bounces</th>
+<th>counter word at the eat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>126</td>
+<td><code>10101010101010</code></td>
+</tr>
+<tr>
+<td>126</td>
+<td><code>110101010101010</code></td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>1011001010101010</code></td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>101110010101010</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>10111100101010</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>1011111001010</code></td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>101111110010</code></td>
+</tr>
+</tbody>
+</table>
+<p>It ends at <code>10111111</code>, where the bounce and both eats halt.
+- At least 12 bounces between eats, words up to 22 cells: a halt again, at the bounce of <code>1011111111010</code> (<code>data/stage1/free_closure_min12.txt</code>). There the cycles have about 1,000, then 255, 127, 63, 31, 15 and 14 bounces.
+- Any L that contains <code>10</code> and is closed under inc and both eats contains these words. So the plan from the observe stage cannot work.
+- The halting paths need the cycle length n to be far from the counter value v (n much larger than v, then n halving each cycle). In the real run n never decreases: n' = k + [r = 2] + [z ends in 00], with k = k0 + n.
+- A whole-tape regular language (CTL, MITM-DFA) is ruled out only heuristically. Pumping the bell keeps the counter fixed while n grows without bound, which is the n &gt;&gt; v regime of the paths above; I did not test the residue-class variant.
+- <code>scripts/stage1/mitm_driver/</code> drives busycoq's MITMDFA decider (CTL.v, extracted unmodified) and reads DFA files. It returns true on CTLCertv1 tm28's certificate. It is ready for a later DFA attempt; none was tried, given the result above.</p>
+<h3 id="2-token-rules-validated">2. Token rules (validated)</h3>
+<p>Read the counter word left to right in tokens: digit 1 = <code>10</code>, digit 0 = <code>00</code>, <strong>F</strong> = <code>110</code> (frozen separator), <strong>S</strong> = a lone <code>1</code> followed by <code>00</code>.
+<code>scripts/stage1/tokrules.py</code> checks four rules against exact simulation, on 400 random cases each (353 for T4), with 0 failures:</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1</td>
+<td>F is inert. <code>inc(H 110 L) = H 110 (L+1)</code>; if L is all ones, the carry passes through F: <code>(H+1) 110 0^len(L)</code></td>
+</tr>
+<tr>
+<td>T2</td>
+<td>S freezes on its first carry. <code>inc(H 1 00 L) = H 1 00 (L+1)</code>; if L is all ones: <code>H 110 0^len(L)</code> (the carry stops there)</td>
+</tr>
+<tr>
+<td>T3</td>
+<td>Odd eat on clean z = H 1 0^m 1 (bits): w' = H S enc(0^m 1), i.e. S takes the place of the lowest 1 above bit 0; if m = 0, w' = H with k' = 1</td>
+</tr>
+<tr>
+<td>T4</td>
+<td>Even eat on clean z = p 0: w' = p</td>
+</tr>
+</tbody>
+</table>
+<p>So junk is made of particles:
+- Each odd eat creates an S at the lowest 1 above bit 0.
+- The S turns into an F at the first carry into it.
+- Each F stays on its cells. Every eat brings it one digit closer to the low end, where it is eaten.
+- An F that reaches the low end is absorbed into the middle field at the eat (k0' = 1 or 2; a stack of F's gives a larger k0').
+- An odd eat whose S would land inside an F (z = H F 0^m 1, m &gt;= 1) leaves shift junk instead: an <code>11</code> pair, E, giving the word <code>H 11 0^m 1</code>. It clears within a few bounces. These are the 10 words of the run to 5.1e7 that do not tokenize (steps 5.30e6 and 1.14e7).</p>
+<p>Of the 59,991 turn words that tokenize (to 5.1e7), each has exactly one tokenization. Junk shapes seen: F d, F F d, F d F d, S d, S, S d F d, F S, F S d.</p>
+<h3 id="3-coupling-between-the-counter-and-the-cycle-length">3. Coupling between the counter and the cycle length</h3>
+<p>Here v is the live value (the digits only, with F and S skipped), n = floor(e/3) at a cycle start, and L = (|w| + 3k0)/2.
+- Over the 263 cycle starts after turn 500 (to 5.1e7): log2(n) - L lies in [-3.43, 0.55], and log2(n) - D - k0 (D = live digits) lies in [-2.39, 0.86].
+- v/n lies in [0.24, 0.997], so v &lt; n at every cycle start. With k0 = 0 the range is [0.575, 0.997]. The low values come from k0 &gt;= 1, where the eat removed more than one digit.
+- In clean terms the cycle map contracts: v' - n' is about (v - n)/2.
+- T2 roughly halves v when an S freezes. The contraction then restores v/n over the next cycles.</p>
+<h3 id="4-robustness-of-the-real-dynamics-no-halts">4. Robustness of the real dynamics (no halts)</h3>
+<p><code>scripts/stage1/cyc.c</code> is an exact TM runner that starts from a turn configuration. The real dynamics never halted from random starts:</p>
+<table>
+<thead>
+<tr>
+<th>starts</th>
+<th>start condition</th>
+<th>steps each</th>
+<th>halts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>300</td>
+<td>n/v in [0.8, 4]; F/S junk in the low 5 tokens</td>
+<td>3e7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>300</td>
+<td>n/v in [0.05, 0.8]</td>
+<td>3e7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>300</td>
+<td>n/v in [4, 40]</td>
+<td>3e7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>400</td>
+<td>arbitrary 1-6-cell junk without <code>1111</code> planted at a random depth; n/v in [0.8, 4]</td>
+<td>2e7</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><code>scripts/stage1/rstart.py</code> and <code>rstart2.py</code> generate the starts; the results are in <code>data/stage1/randstart_*.txt</code>. Every start converges to the v/n band. So non-halting looks robust, and the dynamics are not cryptid-like.</p>
+<h3 id="5-coupled-closure-window-on-n">5. Coupled closure (window on n)</h3>
+<p><code>scripts/stage1/cclos_*.c</code> compute the closure of the cycle map when the adversary may pick any cycle length n inside a window tied to the counter. Each bounce and each eat is an exact simulation of the turn; the bounce is memoized at the word level. The window types:
+- <strong>size</strong>: 2^(D+k0-1.25) &lt;= n &lt;= 2^(D+k0+1.25), with D the live digits;
+- <strong>value</strong>: v-1 &lt;= n &lt;= 5(v+2), with v the live value. Unparsable words get a size window. The check also tests whether n' (from the real rule) lands in the successor's window.</p>
+<table>
+<thead>
+<tr>
+<th>window</th>
+<th>max cells</th>
+<th>cycle-start states</th>
+<th>halts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>size</td>
+<td>20</td>
+<td>24,220</td>
+<td>0</td>
+</tr>
+<tr>
+<td>size</td>
+<td>22</td>
+<td>62,562</td>
+<td>0</td>
+</tr>
+<tr>
+<td>value</td>
+<td>18</td>
+<td>11,052</td>
+<td>0</td>
+</tr>
+<tr>
+<td>value</td>
+<td>20</td>
+<td>29,056</td>
+<td>0</td>
+</tr>
+<tr>
+<td>value, top F/S words on a size window</td>
+<td>20</td>
+<td>28,258</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Results are in <code>data/stage1/coupled_closure.txt</code>. No value closure ever showed a bell residue of 1 (the size closures do not check it).</p>
+<p><strong>Window maintenance.</strong> The value window is almost inductive. On the 20-cell value closure (42.0M checks), n' leaves the window 2,875 times (0.007%).
+- 99% of the 18-cell exits (1,270 of 1,283, <code>data/stage1/value_window_violations_18.txt</code>) come from unparsable predecessors.
+- These are E words, <code>H 11 0^m 1</code>, made when an odd eat puts its S into an F (z = H F 0^m 1).
+- An E resolves within a few carries, mostly into <code>FF</code>. In doing so it can cut the live value by a factor of about 4: H = 1001, m = 4 gives an effective value of 65 against H·2^(m+1) = 288. The effective value is not a simple function of H (H = 100 gives a negative offset).
+- The other exits come from S at the top (z = 1 0^m 1 gives v' = 1 while n' stays large) and from F near the top.</p>
+<p>So the invariant needs a value with pending-loss terms for S, E and a top F, or wider windows for those shapes. Ordinary F and S particles keep the window as it is.</p>
+<p><strong>Effective value (first try at the pending-loss terms).</strong> <code>scripts/stage1/cclos_veff.c</code> sets v_eff(w) = V(inc^J(w)) - J, with J = 2^ceil(|w|/2). After J bounces every particle has had a carry, so v_eff is the value the counter behaves as from then on. The window becomes v_eff - 1 &lt;= n &lt;= 10(v_eff + 2). Each state's incoming n' range is checked against its own window when v_eff &gt;= 32.</p>
+<table>
+<thead>
+<tr>
+<th>max cells</th>
+<th>states</th>
+<th>states checked</th>
+<th>window exits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td>8,083</td>
+<td>4,664</td>
+<td>0</td>
+</tr>
+<tr>
+<td>20</td>
+<td>20,770</td>
+<td>13,443</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>The 6 exits at 20 cells: 5 low (n' = v_eff - 3 at v_eff = 33..35, or n' = 1 handed on by exempt small states) and 1 high (not inspected). The lower ratio bound has to be 0.1 rather than 0.2: an S created high up over a small H (for example <code>10 00 S 00 00 00 00 00 10</code>) leaves v_eff/n near 0.12.</p>
+<p>The 2 bell-residue-1 events come from one exempt state with v_eff &lt; 32 that was explored at n = 1. They are not real dynamics, since n only grows. So an effective-value window, with ratio in [0.1, 1] and a few units of slack at the lower end, is the candidate invariant. The open part is a closed form for v_eff per junk shape.</p>
+<h3 id="validated-open">Validated / open</h3>
+<ul>
+<li>Validated: the free closure halts (exact maps), T1-T4, the coupling ranges on the real run, 0 halts in 1,300 random starts, 0 halts in every coupled closure (up to 62,562 states, 22 cells), and the effective-value window closed on 18 cells (0 exits).</li>
+<li>Open, first: an exact invariant. That means a closed form for v_eff (pending losses for S, E and a top F), the window v_eff - 3 &lt;= n &lt;= 10(v_eff + 2), plus a junk grammar G (cycle starts: d (F | FF... | S | E-junk) d ..., F stacks at the low end absorbed as middle blocks, k0 up to 9 in the closure). It must be checked closed with 0 window exits on words up to 22-24 cells.</li>
+<li>Open, second: a general-length argument. Particles are local: T1 for F, T2 for S, an E rule, and a finite table of eats at the low end. The high part is a clean counter.</li>
+<li>Then Rocq. <code>scripts/stage1/seg.py</code> gives the per-token sweep table that Longitudinal-style segment lemmas would need. 280 is covered by the same orbit argument, provided its two halting reads are excluded.</li>
+</ul>
+<h2 id="wave-5-stage-2-2026-10-12">Wave 5, stage 2 (2026-10-12)</h2>
+<p>Run on 2026-10-13, about 2 h. Goal: close the effective-value window exactly and write proof.md. Result: the effective value now has an exact closed form and the bounce is understood at every length, but <strong>no closed window was found</strong>. Two of the planned window shapes are provably not invariant, and the weakest closed set computed so far depends on the word in a way that is not yet a formula. Outcome: still <strong>progress</strong>, confidence <strong>med</strong>. No proof.md.</p>
+<h3 id="1-closed-form-for-the-effective-value-validated">1. Closed form for the effective value (validated)</h3>
+<p>Tokens as in stage 1: <code>10</code> = digit 1, <code>00</code> = digit 0, F = <code>110</code>, S = a lone <code>1</code> together with the <code>00</code> after it (<code>100</code>).
+- A <em>normal digit</em> is a <code>10</code> or <code>00</code> that is not S's own <code>00</code>.
+- The weight of a token is 2^(number of normal digits below it).</p>
+<div class="highlight"><pre><span></span><code>Phi(w) = sum of weights of the normal 1-digits  -  sum of weights of the S tokens
+</code></pre></div>
+
+<p>Why: the time until the first carry leaves a tail X, and the period after that, follow a recursion. A 1-digit keeps the time and doubles the period. A 0-digit adds one period and doubles it. F changes neither. S adds one period but does not double it, because S's 0 freezes into F at its first carry. Phi(w) = P(w*) - T(w) gives the formula above. It is exactly "a pending loss of one place value per live S".</p>
+<p>Checks (<code>scripts/stage2/phi.h</code>, <code>cclos_phi.c</code>): Phi equals the simulated v_eff = V(inc^J w) - J on every parsable closure state, with <strong>0 mismatches</strong> on 2,416 / 5,989 / 15,089 states at 16 / 18 / 20 cells. Words that do not parse (E junk, a lone 1 at the low end, <code>11</code> at the top) fall back to the simulated value: 842 / 2,094 / 5,681 states, needing at most 31 / 31 / 63 incs.</p>
+<h3 id="2-the-bounce-at-every-length-validated-with-a-cell-level-argument">2. The bounce at every length (validated, with a cell-level argument)</h3>
+<p>G0 = canonical words in (<code>10</code> | <code>00</code> | <code>110</code> | <code>100</code>)*. On G0 the carry runs right to left:
+- C or D reading 0 writes 1 and goes to A.
+- A reading 1 writes 0 and goes to C (a 1-digit, now <code>01</code>).
+- A reading 0 stops: <code>00</code> becomes <code>10</code> via B and E.
+- C reading 1 goes to D (the top cell of an F, now <code>101</code>).
+- D never reads 1 inside G0.</p>
+<p>The right sweep in E then restores <code>01</code> to <code>00</code> and <code>101</code> to <code>110</code>. S never sees the carry, since the carry stops at S's own <code>00</code>, which leaves <code>110</code> = F. So inc maps G0 to G0, never halts, and adds exactly 1 to Phi, at any length. An F that reaches the low end is absorbed into the middle field.</p>
+<p>Exhaustive check (<code>g0check.py 16</code>): all <strong>6,111</strong> canonical G0 words up to 16 cells, 0 failures.</p>
+<h3 id="3-windows-that-are-not-invariant">3. Windows that are not invariant</h3>
+<ul>
+<li><strong>Upper bound n &lt;= Phi/rho (any rho).</strong> An odd eat on z = <code>11 0^m 1</code> (H = 1) gives w' = 1 S 0^(m-1) 1, Phi' = 1, while n' is about 3·2^m. On z = <code>1 0^m 1</code> it gives Phi' = 1 - 2^m &lt; 0. The real run does this: at step 21,875 the cycle start is <code>1S001</code> with Phi = 1 and n = 28. In the seeded closure with rho = 0.1 there are 13 exits at 18 cells, for example 1 S 0 0 0 0 0 1 with Phi = 1 and incoming n' = 353. So only a lower bound on n can be part of the invariant.</li>
+<li><strong>One-sided n &gt;= Phi - c.</strong> At 18 cells, c = 3, seeded with real states at n = 50..56: 8 exits.</li>
+<li>All the exits are words with <code>11</code> at the top, such as <code>11 00 00 00 00 00 01</code> (k0 = 1, Phi = 67, incoming n' = 60).</li>
+<li>They come from a lone <code>1</code> at the low end (<code>10 00 00 00 00 00 00 1</code>, k0 = 1), whose eat gives Phi' above Phi(z)/2: a pending <em>gain</em>.</li>
+<li>n &gt;= (Phi - c)/lambda still exits for lambda = 1.25, 1.5 and 2 (79 exits at 16 cells for lambda = 2).</li>
+<li><strong>Size window n &gt;= 2^((|w| - C)/2).</strong> Exits for C = 8 and 10, and a halt for C = 12 (18 and 20 cells).</li>
+</ul>
+<h3 id="4-what-is-closed-bounded-checks">4. What is closed (bounded checks)</h3>
+<ul>
+<li><strong>Every n &gt;= 50, no link to the counter.</strong> Seeds are the real cycle starts at n = 50..56. The closure has 0 halts and 0 bell residue 1 at 16 / 18 / 20 cells: 1,880 / 6,819 / 22,786 states and 1.35M / 7.6M / 40.3M transitions (<code>data/stage2/gfix*.out</code>). Successors longer than the cap are not followed.</li>
+<li><strong>Greatest closed set of the form n &gt;= g(w, k0)</strong>, from the same seeds and every n &gt;= 1 (<code>gfix.c</code>):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>cells</th>
+<th>states</th>
+<th>transitions</th>
+<th>unsafe (halt or r = 1)</th>
+<th>g = 1</th>
+<th>max g</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16</td>
+<td>5,722</td>
+<td>3.1M</td>
+<td>18</td>
+<td>5,711</td>
+<td>2</td>
+</tr>
+<tr>
+<td>18</td>
+<td>18,019</td>
+<td>15.3M</td>
+<td>69</td>
+<td>17,974</td>
+<td>4</td>
+</tr>
+<tr>
+<td>20</td>
+<td>56,845</td>
+<td>76.0M</td>
+<td>258</td>
+<td>56,674</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>The real seeds lie inside the set. The states that need g &gt; 1 are junk words with long runs of 1s (max at 20 cells: <code>101111111000010</code>, g = 8). Max g doubles every 2 cells, so these words need about n &gt;= 2^(|w|/2 - 6).
+  Reading: nothing is dangerous unless a word carries a long 1-run while n is small next to its size. In the real run, Phi/n lies in [0.036, 0.99] over the 58 parsable cycle starts with n &gt;= 20, up to step 9e5 (<code>data/stage2/realcyc.txt</code>). It never has a 1-run longer than 3 (stage 1: <code>111</code> in 6 words, <code>1111</code> never).</p>
+<h3 id="validated-open_1">Validated / open</h3>
+<ul>
+<li>Validated: the closed form of Phi (0 mismatches, 23,494 states), inc on G0 at every length (cell-level argument plus 6,111/6,111 exhaustive), the two non-invariance results in §3 (explicit counterexamples, one from the real run), and the bounded closed sets in §4.</li>
+<li>Open, the whole proof:
+  1. A closed-form invariant. Best lead: (a) a junk grammar G that bounds the 1-runs, plus (b) n &gt;= g(w), where g is about 2^(|w|/2 - 6) for G-words with junk and 1 otherwise, or (b') Phi - (pending gains) &lt;= n + c.
+  2. A finite eat table at the low end (R5 is local: it reads the last 2-3 cells of z).
+  3. An E-word rule.
+  4. Then proof.md for 88 and 280, then Rocq at W4-2 scale or larger (W4-2: 1,217 lines).</li>
+</ul>
+<h2 id="funded-stage-2026-10-10-stage3">Funded stage (2026-10-10, stage3)</h2>
+<p>Run on 2026-10-13, about 2 h (Dennis 2026-10-13: "go with recommendations"). Goal: turn the computed closed set into a closed-form invariant (junk grammar plus a formula for g), test it as a window with 0 exits, then proof.md for 88 and 280. Result: <strong>no closed form</strong>, so the stage ends at its stop rule and W5-6 is <strong>parked</strong> (with 280). One new exact object was found: the junk grammar of the forward-least closed set. Confidence stays <strong>med</strong>. No proof.md.</p>
+<h3 id="1-greatest-closed-set-n-gw-at-22-cells">1. Greatest closed set n &gt;= g(w) at 22 cells</h3>
+<p><code>scripts/stage3/gfixl.c</code> is stage 2's <code>gfix.c</code> with light storage: it keeps a transition only if its n2 is below a cap (256), which is exact because the final max g is below the cap. At 20 cells it reproduces stage 2 exactly (56,845 states, the same g values) in 24 s and 0.2 GB.</p>
+<table>
+<thead>
+<tr>
+<th>cells</th>
+<th>states</th>
+<th>transitions (with too-long)</th>
+<th>unsafe</th>
+<th>g = 1</th>
+<th>max g</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20</td>
+<td>56,845</td>
+<td>76.0M</td>
+<td>258</td>
+<td>56,674</td>
+<td>8</td>
+</tr>
+<tr>
+<td>22</td>
+<td>179,610</td>
+<td>380.6M</td>
+<td>971</td>
+<td>178,926</td>
+<td>16</td>
+</tr>
+</tbody>
+</table>
+<p>(<code>data/stage3/gfix22_n1.out</code>, the 684 states with g &gt; 1 in <code>data/stage3/g22_gt1.txt</code>.) Max g doubles every 2 cells (2, 4, 8, 16 at 16 to 22 cells). The 24-cell run was stopped at 60,000 / 190,006 explored states (machine load above 28, stage budget).</p>
+<p>g is not a function of the 1-runs. At 20 cells, 130 states with no run longer than 3 have g &gt; 1, and 4,928 states with runs of 4 to 8 have g = 1. With L = a lone 1 (a 1 that is not part of a digit, F or S), the g &gt; 1 words are all L-rich, mostly ending in <code>F L L S 1</code> or <code>L S S</code>. The worst ones are <code>1 L^j S 0^i 1</code> (g = 8 for <code>1LLLLLLS01</code>), and they are reached only along paths where n halves every cycle.</p>
+<h3 id="2-the-forward-least-closed-set-has-a-small-grammar-new-exact-up-to-22-cells">2. The forward-least closed set has a small grammar (new, exact up to 22 cells)</h3>
+<p><code>scripts/stage3/hmin.c</code> computes h(w, k0), the least cycle length with which a cycle start is reached from the real seeds (data/stage2/seed50.txt) when every n &gt;= h is allowed at every state. The set {n &gt;= h} is forward closed by construction and contains the real orbit from the seeds on.</p>
+<table>
+<thead>
+<tr>
+<th>cells</th>
+<th>states</th>
+<th>transitions</th>
+<th>halts / r = 1</th>
+<th>in G*</th>
+<th>n &gt;= Phi + 1</th>
+<th>min log2(h) - D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>18</td>
+<td>5,071</td>
+<td>5.4M</td>
+<td>0 / 0</td>
+<td>all</td>
+<td>3,943 / 3,943</td>
+<td>-0.994</td>
+</tr>
+<tr>
+<td>20</td>
+<td>14,547</td>
+<td>26.4M</td>
+<td>0 / 0</td>
+<td>all</td>
+<td>11,021 / 11,021</td>
+<td>-0.997</td>
+</tr>
+<tr>
+<td>22</td>
+<td>40,998</td>
+<td>126.2M</td>
+<td>0 / 0</td>
+<td>all</td>
+<td>30,242 / 30,242</td>
+<td>-0.999</td>
+</tr>
+</tbody>
+</table>
+<p>Here D is the number of digit tokens, and the Phi column counts the states where Phi has a closed form. The grammar is:</p>
+<div class="highlight"><pre><span></span><code>G* = (d | F)*  T        T in { nothing,  L (k0 = 1),  S 0^j 1 (k0 = 0),  L S 0^j 1 (k0 = 0) }
+</code></pre></div>
+
+<ul>
+<li>At most one S, and it is always the fresh S from T3 (<code>S enc(0^j 1)</code>); every older S has frozen.</li>
+<li>At most one L: either at the low end with k0 = 1 (the E word with m = 0), or directly above the fresh S.</li>
+<li>F stacks reach FFFF.</li>
+</ul>
+<p>The real orbit agrees. To step 17,829,276 there are 204 cycle starts, all 204 in G*. n &gt;= Phi + 1 holds on all 191 parsable ones after the first (<code>data/stage3/realcyc_1.78e7.txt</code>). L words are real: <code>dL</code> (9 times), <code>dLSd</code> (2), <code>dFL</code> (1). The first one is at step 223,794 (<code>1000101000001</code>, k0 = 1, n = 63). Their first bounce is not a word-level inc: it turns <code>1 0 1 1 0 0 L</code> plus one middle block into <code>1 0 1 F 0 F 0</code>.</p>
+<h3 id="3-closed-form-windows-are-not-closed">3. Closed-form windows are not closed</h3>
+<p><code>scripts/stage3/swin.c</code> runs the window closure with every n &gt;= nlo(w) at every state. The full table is in <code>data/stage3/window_tests.txt</code>; at 18 cells:
+- <strong>Digit windows.</strong> 2^(D - C) has exits for every C from 1 to 4: 105 to 8,378. For C = 2 to 4 it also halts, along <code>101110 -&gt; S0000001 (n = 209) -&gt; 1LS000001 (254) -&gt; 1LLS00001 (62) -&gt; ... -&gt; 1LLLLLLS1 (2)</code>. There n halves every cycle, which n' &gt;= n forbids but a word-only window allows. Weighting S or L as digits gives more exits (up to 129,680).
+- <strong>The two bounds of §2 combined.</strong> max(Phi_eff + 1, 2^(D-1)) has 571 exits, and 397 with Phi_eff instead of Phi_eff + 1.
+- <strong>Adding the freeze bound for the fresh S (2^dS - 1 or 2^dS).</strong> 472 to 483 exits, plus 268 new states outside G<em>.
+- </em><em>Where the exits are.</em><em> S-top words entered with n below 2^D: in the forward-least set h(S000001) = 64 = 2^D exactly, but the window lets n = 62 in, and that gives LS0001 with Phi_eff = 64 &gt; n2. Also L-bottom words with n below their h: 1000000L at n = 29..36 gives S10001, S10010, ..., which are outside G</em>. And F F .. L words at n = 4..8.</p>
+<p>So the two bounds that hold on every reachable state (n &gt;= Phi + 1 and n &gt;= 2^(D-1)) are not inductive. What keeps the real set inside G* is a memory of the n at which the fresh S or the L was made. That n is about 2^(depth) and is not a function of the word. A closed invariant would have to carry it as a third coordinate, for example (w, n, n at the last odd eat), or a per-particle "time to freeze". That is a new design, not a formula for g.</p>
+<h3 id="validated-open_2">Validated / open</h3>
+<ul>
+<li>Validated: g at 22 cells (exact, cap check), the doubling of max g, the forward-least sets at 18/20/22 cells (0 halts, all in G<em>, n &gt;= Phi + 1), the real orbit to 1.78e7 in G</em>, and the negative window results above (exact simulation, counts in the table).</li>
+<li>Open, and the reason for parking: an inductive invariant. G* is the right junk grammar, but the coupling needs history (the n at the last odd eat and at the last L), so neither the planned formula for g nor a window on (w, n) closes. Next attempt, if this is reopened: the state (w, k0, n, m) with m = the n of the last odd eat, and the window n &gt;= max(Phi + 1, 2^(D-1)) with m &gt;= 2^(dS) for the fresh S. It is untested.</li>
+<li>280 stays covered by the same orbit argument once one exists. Nothing new is needed for it.</li>
+</ul>
+</main></body></html>

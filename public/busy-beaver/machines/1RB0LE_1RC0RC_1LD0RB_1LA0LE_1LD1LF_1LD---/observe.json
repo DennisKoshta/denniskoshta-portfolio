@@ -1,0 +1,608 @@
+{
+ "tm": "1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---",
+ "rank": 11,
+ "class_sheet": "Skelet 1-like Class 2",
+ "class_guess": "Binary counter over a block list with re-pairing overflow (TM21-like Skelet 1-like Class 2)",
+ "confidence": "high",
+ "summary": "Binary counter on (10)^u[00](01)^v blocks; carries + re-pairing overflow explain every step to 1e9",
+ "mechanism": [
+  "Tape = digits (10)^u J (01)^v (J = 00: bit 0, empty: bit 1), then a growing (10)^a 000 (10)^b block at the right end.",
+  "Every 4 right records = +1: the head runs left to the first 0-bit (ruler-depth carry); each touched v drops by 1.",
+  "All bits 1 -> overflow: a run to the far left re-pairs the blocks. A digit whose v runs out fuses with its neighbour."
+ ],
+ "diagrams": [
+  {
+   "mode": "every:10",
+   "png": "img/counter_from_K.png",
+   "html": null,
+   "steps": 5600,
+   "caption": "From a constructed K-config: ruler-depth carries, then one overflow to left",
+   "title": "Carry sweeps from a built counter tape",
+   "why": "Every 10 steps from a built counter tape. Dotted diagonals are head sweeps; compare how deep each one goes.",
+   "primary": true,
+   "start": "constructed: 0^inf 10 01 (10)^2 00 (01)^3 (10)^3 00 (01)^5 (10)^3 00 (01)^9 (10)^3 00 (01)^17 (10)^4 0^3 B> 0^inf",
+   "rows": "every 10 steps, steps 0..5,600 after the start (561 rows, 3 px each; no head drawn on row 0). The head moves up to 10 cells between rows, so each sweep shows as a dotted diagonal",
+   "window": "cells -116..66, 1 px = 1/3 cell (each cell 3x3 px); cell 0 = the head's start cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_3e5.png",
+   "html": "img/viewer.html",
+   "steps": 300000,
+   "caption": "Dashed walls = digits; each band break = one overflow",
+   "title": "Edge records to 300,000 steps",
+   "why": "Edge records to 300,000 steps. Look at the dashed vertical walls and each band break (left edge steps out).",
+   "primary": true,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new leftmost or rightmost cell (1,153 rows to step 300,000; not evenly spaced in time)",
+   "window": "cells -57..1095, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left); the 1010 background is 1-px stripes that look gray when shrunk",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e7.png",
+   "html": null,
+   "steps": 5122482,
+   "caption": "5000 records (to step 5.1e6): digit walls flip and drift",
+   "title": "Edge records to 5.1 million steps",
+   "why": "The same view to 5.1M steps. Compare its walls and band breaks with Fig 2.",
+   "primary": true,
+   "start": "blank",
+   "rows": "left/right records: the start, then one row per new record; stopped at the 5,000-row cap at step 5,122,482 (not evenly spaced in time)",
+   "window": "cells -87..4912, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left); the 1010 background is 1-px stripes that look gray when shrunk",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge Default view, 10k steps",
+   "title": "bbchallenge Default view, first 10,000 steps",
+   "why": "For orientation: the start of the run as bbchallenge.org shows it.",
+   "primary": false,
+   "start": "blank",
+   "rows": "every step 0..9,999, squeezed into 500 px by the site's bilinear filter: px row y blends steps 20y+9 and 20y+10, so it is effectively one sample every 20 steps",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "blaze",
+   "png": "img/blaze_1e7.png",
+   "html": null,
+   "steps": 10000000,
+   "caption": "Blaze 1e7: span grows ~t^0.5, faint wall lines",
+   "title": "Blaze view, 10 million steps",
+   "why": "The right edge grows like the square root of time; the faint vertical lines are digit walls.",
+   "primary": false,
+   "start": "blank",
+   "rows": "Blaze time blocks of 16,384 steps (each averaged), 611 blocks to step 1e7, stretched to 500 px (1 px = about 20,000 steps)",
+   "window": "cells -104..6903, 1 px = 8.8 cells (Blaze image: 1 column per 8 cells, averaged; 876 columns stretched to 800 px)",
+   "legend": "white = 0, orange = 1, paler orange = 1 only part of the time (or in part of the cells) of that pixel's block; no head; the 1010 background averages to pale orange",
+   "style": "bbchallenge-blaze"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf 10 01 [(10)^u_i (01)^v_i]_{i=1..n} (10)^a 0^3 (10)^b B> 0^inf",
+  "vars": [
+   "n",
+   "u_1..u_n",
+   "v_1..v_n",
+   "a",
+   "b"
+  ],
+  "rows": [
+   {
+    "step": 148244,
+    "values": [
+     4,
+     "67,31,31,63",
+     "14,12,8,48",
+     62,
+     61
+    ]
+   },
+   {
+    "step": 196569,
+    "values": [
+     5,
+     "1,15,15,15,63",
+     "66,28,24,48,32",
+     94,
+     61
+    ]
+   },
+   {
+    "step": 323918,
+    "values": [
+     4,
+     "68,31,94,63",
+     "12,8,32,32",
+     126,
+     125
+    ]
+   },
+   {
+    "step": 398427,
+    "values": [
+     5,
+     "1,13,11,39,47",
+     "67,28,87,48,96",
+     158,
+     61
+    ]
+   },
+   {
+    "step": 561920,
+    "values": [
+     5,
+     "69,31,94,63,127",
+     "10,4,24,16,96",
+     126,
+     125
+    ]
+   },
+   {
+    "step": 755701,
+    "values": [
+     6,
+     "1,11,7,31,31,127",
+     "68,28,87,48,96,64",
+     190,
+     125
+    ]
+   },
+   {
+    "step": 1267210,
+    "values": [
+     4,
+     "70,125,190,127",
+     "8,16,64,64",
+     254,
+     253
+    ]
+   },
+   {
+    "step": 1406407,
+    "values": [
+     5,
+     "1,9,19,71,79",
+     "69,122,183,112,224",
+     286,
+     61
+    ]
+   },
+   {
+    "step": 1659148,
+    "values": [
+     5,
+     "71,125,190,127,255",
+     "6,12,56,48,224",
+     126,
+     125
+    ]
+   },
+   {
+    "step": 1917105,
+    "values": [
+     6,
+     "1,7,15,63,63,255",
+     "70,122,183,112,224,64",
+     190,
+     125
+    ]
+   },
+   {
+    "step": 2517862,
+    "values": [
+     6,
+     "72,125,190,127,255,127",
+     "4,8,48,32,192,64",
+     254,
+     253
+    ]
+   },
+   {
+    "step": 3255155,
+    "values": [
+     7,
+     "1,5,11,55,47,223,127",
+     "71,122,183,112,224,64,128",
+     382,
+     253
+    ]
+   },
+   {
+    "step": 5250968,
+    "values": [
+     6,
+     "73,125,190,127,255,382",
+     "2,4,40,16,160,128",
+     510,
+     509
+    ]
+   },
+   {
+    "step": 6469645,
+    "values": [
+     7,
+     "1,3,7,47,31,191,191",
+     "72,122,183,112,224,319,384",
+     638,
+     253
+    ]
+   },
+   {
+    "step": 9142178,
+    "values": [
+     4,
+     "389,382,382,511",
+     "32,128,64,384",
+     510,
+     509
+    ]
+   },
+   {
+    "step": 9463015,
+    "values": [
+     5,
+     "1,33,131,71,399",
+     "388,379,375,496,480",
+     542,
+     61
+    ]
+   },
+   {
+    "step": 9966524,
+    "values": [
+     5,
+     "390,382,382,511,511",
+     "30,124,56,368,480",
+     126,
+     125
+    ]
+   },
+   {
+    "step": 10405097,
+    "values": [
+     6,
+     "1,31,127,63,383,511",
+     "389,379,375,496,480,64",
+     190,
+     125
+    ]
+   },
+   {
+    "step": 11256622,
+    "values": [
+     6,
+     "391,382,382,511,511,127",
+     "28,120,48,352,448,64",
+     254,
+     253
+    ]
+   },
+   {
+    "step": 12174531,
+    "values": [
+     7,
+     "1,29,123,55,367,479,127",
+     "390,379,375,496,480,64,128",
+     382,
+     253
+    ]
+   },
+   {
+    "step": 14421112,
+    "values": [
+     6,
+     "392,382,382,511,511,382",
+     "26,116,40,336,416,128",
+     510,
+     509
+    ]
+   },
+   {
+    "step": 15820405,
+    "values": [
+     7,
+     "1,27,119,47,351,447,191",
+     "391,379,375,496,480,319,384",
+     638,
+     253
+    ]
+   },
+   {
+    "step": 18743706,
+    "values": [
+     7,
+     "393,382,382,511,511,382,511",
+     "24,112,32,320,384,64,384",
+     510,
+     509
+    ]
+   },
+   {
+    "step": 22061823,
+    "values": [
+     8,
+     "1,25,115,39,335,415,127,511",
+     "392,379,375,496,480,319,384,256",
+     766,
+     509
+    ]
+   },
+   {
+    "step": 30571412,
+    "values": [
+     7,
+     "394,382,382,511,511,893,511",
+     "22,108,24,304,352,256,256",
+     1022,
+     1021
+    ]
+   },
+   {
+    "step": 35551585,
+    "values": [
+     8,
+     "1,23,111,31,319,383,319,383",
+     "393,379,375,496,480,830,384,768",
+     1278,
+     509
+    ]
+   },
+   {
+    "step": 46376294,
+    "values": [
+     8,
+     "395,382,382,511,511,893,511,1023",
+     "20,104,16,288,320,192,128,768",
+     1022,
+     1021
+    ]
+   },
+   {
+    "step": 59038875,
+    "values": [
+     9,
+     "1,21,107,23,303,351,255,255,1023",
+     "394,379,375,496,480,830,384,768,512",
+     1534,
+     1021
+    ]
+   },
+   {
+    "step": 92220944,
+    "values": [
+     8,
+     "396,382,382,511,511,893,1534,1023",
+     "18,100,8,272,288,128,512,512",
+     2046,
+     2045
+    ]
+   },
+   {
+    "step": 111528109,
+    "values": [
+     9,
+     "1,19,103,15,287,319,191,639,767",
+     "395,379,375,496,480,830,1407,768,1536",
+     2558,
+     1021
+    ]
+   },
+   {
+    "step": 153971602,
+    "values": [
+     8,
+     "397,382,893,511,893,1534,1023,2047",
+     "16,96,256,256,64,384,256,1536",
+     2046,
+     2045
+    ]
+   },
+   {
+    "step": 176217463,
+    "values": [
+     9,
+     "1,17,99,263,271,95,447,383,1791",
+     "396,379,886,496,862,1471,896,1792,1536",
+     2558,
+     1021
+    ]
+   },
+   {
+    "step": 222615948,
+    "values": [
+     9,
+     "398,382,893,511,893,1534,1023,2047,2047",
+     "14,92,248,240,32,320,128,1280,1536",
+     2046,
+     2045
+    ]
+   },
+   {
+    "step": 275605721,
+    "values": [
+     10,
+     "1,15,95,255,255,63,383,255,1535,2047",
+     "397,379,886,496,862,1471,896,1792,1536,1024",
+     3070,
+     2045
+    ]
+   },
+   {
+    "step": 411458142,
+    "values": [
+     8,
+     "399,382,893,511,2427,3070,2047,2047",
+     "12,88,240,224,256,1024,1024,1024",
+     4094,
+     4093
+    ]
+   },
+   {
+    "step": 447518227,
+    "values": [
+     9,
+     "1,13,91,247,239,287,1087,1151,1279",
+     "398,379,886,496,2396,3007,1920,1792,3584",
+     4606,
+     1021
+    ]
+   },
+   {
+    "step": 513030920,
+    "values": [
+     9,
+     "400,382,893,511,2427,3070,2047,2047,4095",
+     "10,84,232,208,224,960,896,768,3584",
+     2046,
+     2045
+    ]
+   },
+   {
+    "step": 579826725,
+    "values": [
+     10,
+     "1,11,87,239,223,255,1023,1023,1023,4095",
+     "399,379,886,496,2396,3007,1920,1792,3584,1024",
+     3070,
+     2045
+    ]
+   },
+   {
+    "step": 734793354,
+    "values": [
+     10,
+     "401,382,893,511,2427,3070,2047,2047,4095,2047",
+     "8,80,224,192,192,896,768,512,3072,1024",
+     4094,
+     4093
+    ]
+   },
+   {
+    "step": 924601615,
+    "values": [
+     11,
+     "1,9,83,231,207,223,959,895,767,3583,2047",
+     "400,379,886,496,2396,3007,1920,1792,3584,1024,2048",
+     6142,
+     4093
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "M_k carry (k = trailing 1-bits)",
+   "from": "l (10)^u_k 0^2 (01)^v_k [(10)^u_i (01)^v_i]_{i=k-1..0} (10)^a 0^3 (10)^b B> 0^inf",
+   "to": "l (10)^(u_k+1) (01)^(v_k-1) [(10)^u_i 0^2 (01)^(v_i-1)]_{i=k-1..0} (10)^(a+1) 0^3 (10)^(b+2) B> 0^inf",
+   "steps": "32 + 8a + 8b + 8*sum_{i<k} u_i + 4*sum_{i<=k} v_i",
+   "cases": "k=0..5 tested; needs v_i>=1 (i<=k), u_i>=1 (i<k), u_k>=0, a>=1, b>=0; v=1 gives a fused (merged) digit",
+   "validated": {
+    "instances": 84,
+    "passed": 84
+   },
+   "source": "manual"
+  },
+  {
+   "name": "O overflow (all bits 1)",
+   "from": "0^inf 10 01 [(10)^u_i (01)^v_i]_{i=1..n} (10)^a 0^3 (10)^b B> 0^inf",
+   "to": "0^inf 10 01 00 (01)^u_1 [(10)^(v_i-1) 0^2 (01)^u_(i+1)]_{i=1..n-1} (10)^v_n (01)^a (10)^(b+3) 0^3 10 B> 0^inf",
+   "steps": "89 - 4n + 8a + 20b + 4*sum u_i + 8*sum v_i",
+   "cases": "n=1..7 tested; needs v_i>=1 (i<n); left edge moves 3 cells; counter restarts at 1",
+   "validated": {
+    "instances": 118,
+    "passed": 118
+   },
+   "source": "manual"
+  },
+  {
+   "name": "init (blank tape to first K)",
+   "from": "0^inf A> 0^inf",
+   "to": "0^inf 10 01 (10)^3 01 (10)^2 0^3 10 B> 0^inf",
+   "steps": "142",
+   "cases": "twins: start B -> K((1,2);2,1) in 122 steps; start C -> K((1,1);2,1) in 101 steps",
+   "validated": {
+    "instances": 1,
+    "passed": 1
+   },
+   "source": "manual"
+  },
+  {
+   "name": "B sweep right",
+   "from": "B> (01)^n",
+   "to": "(10)^n B>",
+   "steps": "2n",
+   "cases": null,
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "D sweep left",
+   "from": "(01)^n <D",
+   "to": "<D (10)^n",
+   "steps": "2n",
+   "cases": null,
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "vendor/busycoq/verify/SBCv6.v",
+  "module": "TM21",
+  "machine": "1RB1LB_0LC1RD_0RA1LC_0RB1RE_0RD0LF_---1LE",
+  "diff": "10 of 12 transitions differ under the best renaming/mirror (Sk1like_TC_v2 TM1: 9 of 12)",
+  "applies": "partly",
+  "note": "Same architecture (LIncs = carries, Ov = re-pairing overflow, BigStep), but TM21's S' configs never recur here (0 real hits in 2e5 steps, all 6 states). Its LWF invariant fails: here digits run out and merge."
+ },
+ "strategy": "Copy TM21's shape: K(list,a,b) as a Fixpoint over (u,bit,v) blocks; prove M_k by induction on k (like LIncs_spec) and O by induction on the list (like Ov_spec) from es-level sweep lemmas. Then nonhalt via multistep_nonhalt + progress_nonhalt_cond with a merge-aware invariant that keeps every v reached by a carry >= 1. Same rules give the 2 twins (new init lemmas only).",
+ "risks": [
+  "Invariant is the real work: digits do run out and merge (9 -> 5 digits in one cycle); TM21's LWF does not carry over.",
+  "Twin on the 'worked on extensively' tab (hipparcos, Oct 2025 thread) is this same table: duplicate-work risk until he answers.",
+  "Size: list bookkeeping plus merge cases likely 20-50 KB of Rocq (TM21 is ~300 lines)."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 1: do the sweep depths follow a ruler pattern (shallow, deeper, shallow, deepest), ending in one sweep to the left edge?",
+   "figs": [
+    0
+   ]
+  },
+  {
+   "text": "Fig 2: does the tape look like blocks separated by dashed walls, with the whole pattern reshuffling at each band break?",
+   "figs": [
+    1
+   ]
+  },
+  {
+   "text": "Fig 3: further out, are the walls and band breaks the same kind as in Fig 2, with nothing new appearing?",
+   "figs": [
+    2,
+    1
+   ]
+  }
+ ],
+ "discord_check": "see reports/discord-drafts.md message 2",
+ "stats": {
+  "simulated_steps": 1000000000,
+  "cells": 77685,
+  "nonzeros": 38836,
+  "growth": "right edge ~t^0.51; left edge -3 cells per overflow (54 by 1e9; rules-only model: 122 by 1e15, 23 digits)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "M_k + O validated, exact to 1e9; rules-only model runs to 1e15 with no stuck case. Not cryptid. Ask hipparcos first (same table)."
+}

@@ -1,0 +1,639 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB/notes.md · <a href="/busy-beaver/machines/1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB/notes.md.html">raw</a></div>
+<h1 id="1rb0lf_0rc-_1rd0ra_1le0rc_0la0le_1le1lb">1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB</h1>
+<p>Status: KILLED_NONHALT (2026-10-10; see ## Kill at the bottom)
+Class guess (agent / Dennis): Sync bouncer counter, spread-digit variant (agent, med) / —
+Spreadsheet notes / Discord thread: Results row 918, "Sync bouncer counter", no status, notes, links or strikethrough; no xlsx comment. On mxdys's UBRRBA_TODO (2026-08-24); Dennis 2026-10-10: fair game.
+Viewer: https://bbchallenge.org/1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB</p>
+<h2 id="observation">Observation</h2>
+<ul>
+<li>No halt to 1e10. Span ~ t^0.5 (181,589 cells, 60,536 nonzeros at 1e10). The right edge has been fixed at hi = 11 since step 1527.</li>
+<li>Hub = A at a new left record. Skeleton (validated):
+  <code>K(a; b0..bk; g1..gk) = 0^inf &lt;A (010)^a 00 b0 10001 (100)^g1 0 b1 10001 ... (100)^gk 0 bk 10001 R 0^inf</code></li>
+<li>Digits are <code>0b10001</code> (7 cells) at unary gaps. b0 is the LSB, next to the lead.</li>
+<li>R is a frozen right block: 12–17 packed high digits plus a fixed tail.</li>
+<li>History (gaps, LSB side first):</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>step</th>
+<th>a</th>
+<th>gaps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.6e4</td>
+<td>11</td>
+<td>28</td>
+</tr>
+<tr>
+<td>2.4e5</td>
+<td>47</td>
+<td>68, 28</td>
+</tr>
+<tr>
+<td>2.8e6</td>
+<td>203</td>
+<td>260, 68, 28</td>
+</tr>
+<tr>
+<td>5.6e8</td>
+<td>799</td>
+<td>7, 4097, 1028, 260, 68, 28</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Overflow pauses: lo stalls during 17k–36k, 92k–237k, 1.0e6–2.85e6 and 1.14e8–5.55e8. Each one adds one R digit; R grows leftward and hi stays fixed.</li>
+<li>Tools:</li>
+<li>rulefit: no validated rules (8 fitted rules failed validation).</li>
+<li>qsim: block size 3, 0 prover rules, no acceleration.</li>
+<li>compress: fine, but a regex digit decoder was needed (<code>work/history.py</code>).</li>
+<li>Images (exact start/rows/window/colours: observe.json <code>diagrams</code>; the two constructed ones are made by <code>scripts/diagrams.py</code>):</li>
+<li><code>img/counter_ruler.png</code>: every step from K(6; 000000; 5,4,3,3,3), 8 increments. Each +1 sweeps right to the bit cell of the lowest 0 digit, so the sweep depths read 1,2,1,3,1,2,1,4.</li>
+<li><code>img/counter_bits.png</code>: same start, one row per +1 (64 rows). The 6 bit columns blink with periods 1,2,4,8,16,32.</li>
+<li><code>img/records_L_3e6.png</code>: real run, one row per new left cell. The thin vertical lines are the digit blocks; new ones appear farther left.</li>
+<li><code>img/blaze_1e7.png</code>, <code>img/default_site.png</code>, <code>img/viewer.html</code>.</li>
+<li>Replaced 2026-10-10: <code>counter_from_config.png</code> had 3 record rows per +1, so its "periods 1,2,4,…" were really 3,6,12,… rows. <code>counter_zigzag_default.png</code> showed only cells −96..63, which cut off the depth-4 sweeps (they reach cell 78).</li>
+</ul>
+<h2 id="candidate-rules">Candidate rules</h2>
+<ul>
+<li><strong>Inc:</strong> <code>K(a; bits) -&gt; K(a+1; bits+1)</code> when some bit is 0.</li>
+<li>Steps: <code>6a + 6(g1+..+gj) + 24j + 9</code>, where j is the lowest 0 bit.</li>
+<li>Validated 400/400 (random a ≤ 2000, gaps 1–400, 1–6 digits, exact steps). Script: <code>work/validate_inc.py</code>.</li>
+<li><strong>Ovf-insert</strong> (all bits 1, a ≥ g'+6): a new LSB digit appears at gap <code>g' = 2^(2k+5) − 4 − Σ 2^i g_i</code>.</li>
+<li>The lead becomes <code>a − g' − 5</code>, and the old gaps are kept.</li>
+<li>Real inserts were 28, 68, 260 and 1028. All four fit the formula.</li>
+<li>Validated 30/30 for k = 3 with random (g1, g2, g3, a). Script: <code>work/validate_pause.py</code>.</li>
+<li><strong>Ovf-short</strong> (a &lt; g'+6): nothing is inserted, the gaps are unchanged and the lead becomes a − 1.</li>
+<li>The counter is reloaded with a value linear in a (+2 per +1 in a).</li>
+<li>Validated 12/12 (<code>work/validate_ovf_short.py</code>); the linear reload was checked for a = 100..115 (<code>work/short_bits.py</code>).</li>
+<li><strong>Open:</strong></li>
+<li>Exact bits after a pause.</li>
+<li>How R grows.</li>
+<li>Multi-insert pauses: step 1.14e8 inserted 1028, 4097 and 7, where 4097 + 7 ≠ the predicted 4100 + digit.</li>
+<li><strong>Template check:</strong> nearest neighbour is SBCv2_6x2_solved.v tm108 (line 1195), <code>1LB0RE_0LC---_1LD0LA_1RA0LC_1RF1RB_0RA0RF</code>.</li>
+<li>It matches ours after mirror + relabel E↔F, except D0 (ours 1LE, template 1LA).</li>
+<li>Its mirrored LInc/RInc0 pass 10/10 on the template and 0/10 on ours (<code>work/template_check.py</code>). Applies: no.</li>
+<li><strong>Cryptid check:</strong> all observed arithmetic is linear (gap formula, linear reload). There is no parity branching on exponential values, so this is not a cryptid candidate.</li>
+</ul>
+<h2 id="checkpoint-a-dennis">Checkpoint A (Dennis)</h2>
+<p>Questions are in observe.json (<code>checkpoint_questions</code>).</p>
+<h2 id="informal-proof">Informal proof</h2>
+<p>proof.md (2026-10-10, informal_proof stage; revised after skeptic round 1); evidence check_proof.py (10 checks; log work/check_proof.full.log).
+- Token view: right of the lead, the tape is a word over <code>00</code>, <code>01</code> and <code>Z = 100</code>. A digit is <code>b Z 01 Z^g</code>.
+- Window lemmas: 23 of them, each a finite run, so each holds in every context.
+- Inc_L is proved parametrically, by induction on the carry depth.
+- Every pause rule is a chain Inc_L, B1, Inc_L, END-type lemma. ENDZX is 22 steps; ZXP2 ends with BN.
+- Overflow = right sweep, then the tail window T(f), then the UE/UF alternation over the R block, then BN (N) or BS (S).
+  - N/S is decided by the parity of σ(f) and q = 2r + H.
+  - T(f) is context-free for every f ≠ 1^15: the end unit is never read.
+  - ENDCARRY = CF1, then the L3/L3F alternation, then PEN/PFN.
+- Macro arithmetic: the closed forms S/P1/P1S/P3 are derived by hand, and the interval invariant is closed.
+- First configuration in X ∩ INV: step 92,299.
+- Open: the Rocq route for the 16,384-entry T(f) table (proof.md §9 step 5).
+- Skeptic round 1 (2026-10-10): sound, 6 minor gaps, all fixed (proof.md Review log). The fixes:
+  - PFN restated as the 73-cell window <code>P1 &lt;F → &lt;F F(010000100100101)</code>;
+  - F(f) is 73 cells, not 75;
+  - M ≥ 256 added to INV;
+  - a three-way slot rule (PO iff cyc ≤ w−1, WX iff cyc ≥ w+1, cyc = w excluded);
+  - lemma RB (R-block return) written out by induction on q, with TAILFRONT/L* closure derived from four finite T(f) facts (T1)–(T4);
+  - new check 10, which tests whole paths by direct simulation from INV configurations (N = 8 exhaustive).
+  - check_proof.py now has 10 checks.</p>
+<h2 id="formalization-log">Formalization log</h2>
+<ul>
+<li>Round 1 (2026-10-10, formalization). Rule layer proved in Rocq, 0 admits, compiles in ~1.8 s
+  (native off). Development in rocq/T1.v; copied into the kill file with the house header (kill file
+  is WIP: it has no <code>nonhalt</code> yet, so check_kill FAILs only on theorem_text, all other text checks PASS).
+  Tactics and lessons are in rocq/log.md. Proved: the window lemmas (es), the counter <code>ctr</code>, <code>IncC</code>
+  (C-sweep carry), <code>IncL</code> (A-entry carry), the left bounce <code>Bnc</code>, the normal-mode increment <strong><code>Inc</code></strong>
+  (IR-&gt;IR, lead a-&gt;a+1, v-&gt;v+1), and the overflow return <strong><code>OvRet</code></strong>.
+  Key result: the 16,384-entry T(f) table of proof.md section 9 is NOT needed in Rocq. The overflow
+  return is the finite token transducer <code>retf</code> (C sweeps the all-ones body to the first 0 of the
+  tail, then a 4-rule E/F return), proved sound against TM.step by <code>retf_spec</code>/<code>OvRet</code>. This should be
+  folded back into proof.md section 9 (replace option (a)/(b)/(c) with "retf transducer").
+  Remaining for rounds 2-4: pause rules P100/WX/P010/ZX/ZXN/ZXP (follow chains; BN/ENDZX already
+  proved), the N/S boundary (BN for F-&gt;N, a BS lemma for E-&gt;S) + NO/PO/SILENT/SILENTP, framing the
+  all-ones body as a noT0 word for OvRet, the macro interval invariant INV + paths S/P1/P1S/P3
+  (proof.md section 5, the bulk), and init (92,299-step esx) + nonhalt via progress_nonhalt_cond.</li>
+</ul>
+<h2 id="outcome">Outcome</h2>
+<p>—</p>
+<h2 id="card-data-pass-2026-10-10">Card data pass (2026-10-10)</h2>
+<ul>
+<li>Figures on the card: Fig 1 = <code>img/counter_bits.png</code>, Fig 2 = <code>img/counter_ruler.png</code>, Fig 3 = <code>img/records_L_3e6.png</code>, Fig 4 = <code>img/blaze_1e7.png</code>, Fig 5 = <code>img/default_site.png</code>. Figs 1-3 are the primary figures, shown beside the checkpoint.</li>
+<li>The card's mechanism is cut to 3 bullets. The full list before the cut:</li>
+<li>Bouncer: the head shuttles from the left edge into the tape; every trip adds one (010) block to the left lead a.</li>
+<li>Inside the (100) body sit 7-cell digits 0b10001 at unary gaps; each trip is a binary +1 (LSB = leftmost digit): run to the first 0-digit, set it, clear the 1s, return.</li>
+<li>The right end is frozen (hi = 11 from step 1527 to 1e10): 12-17 tightly packed high digits plus a fixed tail.</li>
+<li>Overflow (all digits 1) = long pause: a new LSB digit is cut from the lead at gap g' = 2^(2k+5)-4-sum 2^i*g_i (28, 68, 260, 1028, ...).</li>
+<li>If the lead is too short: no insert, the lead drops by 1 and the counter is reloaded with a value linear in a. 4 overflows in 1e10 steps; span ~ t^0.5.</li>
+<li>Checkpoint questions are now yes/no questions about the figures. Moved off the card (strategy calls, not figure reading; settle them in proof.md / Checkpoint B):</li>
+<li>"blaze_1e7.png notch = one overflow pause. Spend stage 3 mapping the pause (the unmapped bulk of a proof) rather than parking this machine?"</li>
+<li>Old Q2 (accept 'spread binary counter + digit insertion' as the class) is now Q3, asked about <code>records_L_3e6.png</code>.</li>
+</ul>
+<h2 id="deepen-pass-overnight-2026-10-10">Deepen pass (overnight 2026-10-10)</h2>
+<p>Outcome: the overflow pause is now mapped. It is a nested "wall" process with seven local rules plus two overflow transitions, all validated by direct simulation. A macro model built from these rules reproduces the real history exactly from step 36,124 to 555,048,797. One component is still undecoded: the bounded right-end <strong>tail</strong> (79 cells ending at hi = 11). It decides, at each overflow, whether a new R digit appears and whether the overflow is silent. Confidence stays <strong>med</strong>.</p>
+<p><strong>Inner-record form.</strong> Every left turn of A onto a 0, where the right side matches, has the form
+<code>0^inf W A&gt;(001)^p 00 D T</code>.
+- D = digits (<code>0b10001</code> with <code>(100)^g</code> gaps, LSB leftmost), value v, N digits.
+- T = tail.
+- W = wall. In normal mode W is empty and p is the lead a.
+- Z(g) := <code>(010)^(g+1)</code> is a large gap g packed into the wall (a "zone").</p>
+<p><strong>Pause rules</strong> (<code>scripts/deepen_rules.py</code>, seed 7: 150/150 each, 1050/1050; seed 1: 70/70; exact whole-tape match at the next inner record). In P100/P010/ZX/ZXN/ZXP below, b0 = 0, and every counter increment must stay below 2^N.
+- <strong>P100:</strong> <code>(100)^(n+1) 1 | p, v</code> -&gt; <code>(100)^n 1 | p+1, v+2</code>.
+  - Steps: <code>12p + 6(g1+..+gj) + 24j + 19</code>, where j is the carry depth of the second +1.
+  - Exact on 60/60.
+- <strong>WX:</strong> <code>1 | p</code> -&gt; empty wall, i.e. normal mode with lead p+1 and v+2.
+- <strong>P010:</strong> <code>Y (010)^(m+1) 01 | p</code> -&gt; <code>Y (010)^m 01 | p+1, v+2</code>. Same step formula as P100.
+- <strong>ZX</strong> (end of a zone): <code>Y (010)^h 1001 01 | p</code> -&gt; <code>Y (010)^(h-3) 01 | 0</code>, with a new LSB digit 0 at gap p+2. The value becomes 2v+4.
+  - Steps: <code>12p + 6S + 24j + 39</code>. Exact on 60/60.
+- <strong>ZXN:</strong> <code>(100)^n 10100101 | p</code> -&gt; <code>(100)^(n-2) 1 | 0</code>, new digit at gap p+2, value 2v+4.
+- <strong>ZXP:</strong> <code>(100)^n 01 | p</code> -&gt; <code>(100)^(n-1) 10 | p+1</code> (v+2) -&gt; <code>(100)^(n-3) 1 | 0</code>, new digit at gap p+1, value 2v+6.
+- Y ranges over the wall prefixes seen in the run.
+- <strong>Inc</strong> (normal mode) is unchanged from the observe pass.</p>
+<p><strong>Overflow transitions</strong> (<code>scripts/deepen_ovf.py</code>: 260/260). These start from the 13 real overflow configurations up to 6e8 steps, randomising a, n, p and the large gaps G while keeping the R block and the tail.
+- <strong>NO</strong> (normal mode, all ones): <code>A&gt;(001)^a 00 D T</code> -&gt; <code>(100)^a 101001 [Z(g) 1001 for g in G] 01 A&gt; 00 D_R(0) T'</code>.
+- <strong>PO</strong> (wall <code>(100)^n 1</code>, v = 2^N - 2): -&gt; <code>(100)^n (010)^(p+1) 1001 [Z(g) 1001 for g in G] 01 A&gt; 00 D_R(0) T'</code>.
+- <strong>SILENT</strong> (only the tail state of the step-1.45e7 event): there is no pause. The counter wraps to 0 and the lead grows by 1.
+- D_R(0) T' (the R block reset, possibly one digit longer, plus the new tail) depends only on T. It is the same for NO and PO in 13/13 cases (<code>scripts/deepen_tail_typeindep.py</code>).</p>
+<p><strong>What a pause is.</strong>
+1. The overflow packs every large gap into a zone. The lead (NO) or the inner lead p (PO) goes into the wall.
+2. The zones are rebuilt innermost first, with +2 per cycle. ZX restores each gap exactly; the gap-2 digit is ZX with p = 0.
+3. The outer <code>(100)</code> wall is then eaten, also +2 per cycle.
+4. The pause ends one of two ways:
+   - WX first: back to normal mode with lead = wall + 1. This is the old "Ovf-short".
+   - PO first: p becomes a new gap p-1 via ZXP, and the outer phase continues.</p>
+<p>This answers the observe-pass open items:
+- <strong>Exact bits after a pause:</strong> v follows the rules above.
+- <strong>Gap formula:</strong> each new gap is p_ovf - 1.
+- <strong>Multi-insert at 1.14e8:</strong> three POs in one pause (1028, then 4097, then 7). The 7 is the remainder of the wall.
+- <strong>R growth:</strong> the tail emits a gap-1 digit at alternate overflows. The emission bit equals the new low bit of the tail's first 2-bit unit.
+- <strong>The 1.45e7 event:</strong> a silent overflow, which is why the next pause came only at 1.14e8 (a = 1849 + 4096 = 5945).</p>
+<p><strong>Macro model</strong> (<code>scripts/deepen_abstract.py</code>). It uses the tail oracle e0, e1, e0, e1, S, e0, e1, e0, e1 (e = R digits emitted, S = silent). It reproduces every normal-mode entry from step 36,124:</p>
+<table>
+<thead>
+<tr>
+<th>real step</th>
+<th>a</th>
+<th>v</th>
+<th>G</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>236,797</td>
+<td>48</td>
+<td>602</td>
+<td>68, 28</td>
+</tr>
+<tr>
+<td>2,847,332</td>
+<td>204</td>
+<td>2450</td>
+<td>260, 68, 28</td>
+</tr>
+<tr>
+<td>555,048,797</td>
+<td>800</td>
+<td>bits 01110100011000001</td>
+<td>7, 4097, 1028, 260, 68, 28 (NR = 10)</td>
+</tr>
+</tbody>
+</table>
+<p>Every value is exact.</p>
+<p>Run forward with strict e0/e1 alternation and no silent events, the model is perfectly regular for 40 normal-mode cycles: each NO is followed by exactly one PO, the new gaps are 32778, 131076, 524292, ..., and no degenerate case occurs.</p>
+<p><strong>Tail.</strong>
+- Front: two 2-bit units <code>0x0y10001</code> (cells -66/-64 and -57/-55).
+- Further right: about 8 more cells that change rarely.
+- Driven only by overflow carries.
+- <strong>Synthetic driving</strong> (<code>scripts/deepen_tail_chain.py</code>): a fresh small counter is prepended each round. Over 675+ rounds (about 7,500 overflow events), every tail cell up to the last few has changed, with no right-edge move, no halt and no growth past the 79 cells.
+- <strong>Not decoded:</strong>
+  - when an overflow is silent;
+  - whether the tail cycles;
+  - what its own top overflow does.</p>
+<p><strong>Remaining gaps</strong> (all needed for a proof):
+1. The tail's full transition function (finite but undecoded).
+2. A SILENT overflow during a pause. A synthetic PO with that tail state gives no pause, and no rule is written for it.
+3. Degenerate small parameters that the arithmetic might produce after silent events:
+   - a PO with p ≤ 2 (new gap ≤ 1, a zone with fewer than 3 blocks);
+   - an outer wall n &lt; 3 at a PO;
+   - a &lt; 2 at a NO.
+4. Step counts for NO, PO, ZXN and ZXP (they are needed for the Rocq accounting, not for the argument).</p>
+<p>Not a cryptid candidate: all arithmetic is linear (v -&gt; 2v+4, gap = p+2), the tail is a deterministic finite-state transducer, and there is no parity branching on exponential values.</p>
+<h2 id="deepen-pass-2">Deepen pass 2</h2>
+<p>Outcome: the tail is decoded far enough to drive the real dynamics, but not far enough for a proof. Confidence stays <strong>med</strong>; recommend more observation (round 3: a general tail rule).</p>
+<p><strong>Round 1's tail chain was wrong.</strong> <code>deepen_tail_chain.py</code> prepended a prefix with no gap-2 digit, so the tail sequence it produced is not the real one: about half its events were silent. Its "675 rounds, no right-edge move" result does not carry over. In fact the right edge does move, as shown below.</p>
+<p><strong>Correct driver</strong> (<code>scripts/deepen2_rc_chain.c</code>, Python reference <code>deepen2_rc_chain.py</code>):
+- RC = everything right of the gap-2 digit (the gap-1 R digits plus the tail). Tail cells change only at overflows.
+- So the RC at the next overflow is the RC after this overflow with its digit bits set to 1.
+- Each step simulates <code>A&gt;(001)^a 00 0110001(100)^2 RC</code> directly, up to the next inner record, with a random a.
+- It reproduces all 12 real RC transitions exactly (steps 8,109 to 400,944,248, including the silent one at 1.45e7).</p>
+<p><strong>40,000 overflows</strong> (<code>deepen2_rc_chain_40k.summary.json</code>):
+- 34,984 NO and 5,016 SILENT. Nothing else, and no halt. Each NO left part is checked exactly; each SILENT is checked for lead a+1 with the gap-2 digit kept.
+- R ends with 17,496 digits; the RC is 175,040 cells.
+- The right edge moves +2 at overflows 9,057 and 24,241.</p>
+<p><strong>Tail decision rule</strong> (40,000/40,000). The front unit is cells c-78, c-76, counted from the right end before the first growth:
+- The cycle is 10 → 01 → 11 → 00 → 10.
+- SILENT ⇔ the wrap goes 11 → 10 instead of 11 → 00.
+- An R digit is emitted ⇔ c-78 flips 0 → 1.
+- Whether the wrap is to 00 or to 10 depends on the rest of the tail. Silent overflows come 7 or 11 overflows apart.</p>
+<p><strong>Tail shape.</strong> Five fixed units, then a growing end unit:
+<code>0?0?0?10001 | 0?0?10001 | 0?1000?10001 | 0?0?1000?10001 | 0?1000?1000?1000?1000?10001 | (0?)^m 01</code>
+- m = 3 → 4 → 5 at overflows 9,057 and 24,241. Every other cell is constant.
+- Up to overflow 9,057, the number of silent events so far is an exact linear function of the tail bits. Weights: 1, 2, 3, 6, 10, 16, 32, 52, 64, 104, 128, 256, 464, 720.
+- The end unit changes only at overflows 3313, 5361, 7009, 9057 | 14801, 18497, 20545, 22193, 24241 | 33681, 39425.
+- The gaps between those changes are 2048, 1648, 2048 | 5744, 3696, 2048, 1648, 2048 | 9440, 5744. They satisfy F(n) = F(n-1) + F(n-2), which looks like a Zeckendorf-style counter. Not yet a rule.</p>
+<p><strong>Macro model with the true oracle</strong> (<code>deepen2_macro.py</code>; <code>deepen2_macro_8000.result.json</code>). The run covers 8,000 overflows: 2,495 NO, 1,004 SILENT and 4,501 PO.
+- Silent overflows happen only in normal mode, never inside a pause.
+- Smallest parameters reached:</p>
+<table>
+<thead>
+<tr>
+<th>parameter</th>
+<th>minimum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p at a PO</td>
+<td>8</td>
+</tr>
+<tr>
+<td>wall at a PO</td>
+<td>50</td>
+</tr>
+<tr>
+<td>a at a NO</td>
+<td>121</td>
+</tr>
+<tr>
+<td>gap</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>No zone has fewer than 3 blocks, and no overflow happens during a zone rebuild.</li>
+<li>Observed pattern, not proven:</li>
+<li>After a non-silent NO there is one PO, at p = 2^k + 11.</li>
+<li>After each SILENT, the next pause has three POs: p = 2^x + 5, then 2^y + 2, then 8. That last PO is the gap-7 digit (1,003 of 1,004 cases).</li>
+</ul>
+<p><strong>New rules</strong> (<code>deepen2_validate_s5.result.json</code>: 60/60 each):
+- <strong>SILENTP</strong>, a silent overflow inside a pause: <code>(100)^(n+1) 1 A&gt;(001)^p 00 D(2^N-2) T_s -&gt; (100)^n 1 A&gt;(001)^(p+1) 00 D(0) T_s'</code>. This is P100 with the counter wrapping. The macro model never reaches it.
+- SILENT re-checked with the real silent tail state (random a ≥ 0 and 0–3 large gaps).</p>
+<p><strong>Steps</strong> (all exact):</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>steps</th>
+<th>instances</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ZXN</td>
+<td>12p + 6S + 24j + 39</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>ZXP, first half</td>
+<td>12p + 6S + 24j + 19</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>ZXP, second half</td>
+<td>6(p+1) + 23</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>NO</td>
+<td>3a + 3ΣG + 7|G| + C_NO(RC)</td>
+<td>60/60</td>
+</tr>
+<tr>
+<td>PO</td>
+<td>9p + 3ΣG + 7|G| + C_PO(RC)</td>
+<td>60/60</td>
+</tr>
+</tbody>
+</table>
+<p>For NO and PO the RC is held fixed; C is 248 and 258 for the RC just before overflow 7. Sources: <code>deepen2_validate_s5.result.json</code> and <code>deepen2_ovf_steps_s2.result.json</code>.</p>
+<p><strong>Edge probes</strong> (<code>deepen2_edge_s3.result.jsonl</code>): NO with a ∈ {0,1}, PO with p ≤ 2 and PO with wall n ≤ 2 still give the NO/PO transition forms. The pause that would follow them was not followed.</p>
+<p><strong>Still open</strong> (needed for a proof):
+1. A general tail rule:
+   - the carry through the five fixed units (finite, so it can be enumerated);
+   - a parametric rule for the end unit <code>(0?)^m 01</code>, including its growth.
+2. A closed form for the macro dynamics as a function of the tail count: the super-cycle induction above.
+3. The ZX and ZXP rules at small parameters. They are unreachable per the model, but that is not proven.
+4. C_NO(RC) and C_PO(RC); these matter only for Rocq accounting.</p>
+<p>Not a cryptid: every quantity seen is linear or follows a fixed recurrence (powers of 2 plus constants, Fibonacci-like tail gaps). There is no parity branching on exponential values.</p>
+<h2 id="decision-2026-10-10">Decision (2026-10-10)</h2>
+<p>Question: #8's left counter and overflow pause are fully ruled. Only the right-end tail, which decides NO / emit / SILENT at each overflow, lacks a general rule. Fund a third deepen round aimed at a tail-independent proof, or park #8?
+Answer: <strong>deepen3_oracle_free</strong> (Fund deepen round 3, scoped to an oracle-free proof). Dennis: go with all recommendations (2026-10-10).</p>
+<h2 id="funded-stage-2026-10-10-deepen3_oracle_free">Funded stage (2026-10-10, deepen3_oracle_free)</h2>
+<p>Outcome: both tests pass once test (1) is stated with the front-unit rule. The proof does not need the Zeckendorf-like schedule or the super-cycle induction. It needs four things: the tail closure, the front-unit automaton, one parametric end-unit rule, and a short interval invariant for the macro arithmetic. Confidence is now <strong>high</strong>; proof.md is next. Scripts are <code>scripts/deepen3_*</code>. The big closure tables are not kept; <code>deepen3_closure.c</code> rebuilds them in about 2 minutes in total.</p>
+<p><strong>Test (1): the macro model under outcome sequences</strong> (<code>deepen3_macro.py</code>, an event-level rewrite of <code>deepen2_macro.run</code> that adds SILENTP).
+- Regression: with the true tail sequence it gives the same counts as <code>deepen2_macro_8000</code> (2,494 NO, 4,499 PO, 1,003 S; min p 8, min wall 50).
+- <strong>Arbitrary sequences fail.</strong> Uniform e0/e1/S at every slot: 200/200 seeds degenerate within 400 events (150 PO with p &lt;= 2, 50 counter overflows during a rebuild). The arithmetic shows why. A PO with e0 right after a NO rebuild leaves 2 cycles to the next PO, and an S at a PO slot followed by an e0 PO overflows the rebuild.
+- <strong>Front-unit sequences pass.</strong> These are the TAILFRONT sequences (10 -e0-&gt; 01 -e1-&gt; 11 -e0-&gt; 00 -e1-&gt; 10, or 11 -S-&gt; 10), with S free at every 11 slot, including slots inside a pause:
+  - random runs: 400 seeds x 1,500 events (q = 0.05 / 0.3 / 0.7, plus S only in normal mode), 0 degenerate, 16,053 silent overflows inside pauses;
+  - exhaustive DFS: all 2,265,815 such sequences of 72 events from the step-36,124 state (12.5 M nodes, 803,709 SILENTP), 0 degenerate.
+  - Minimum values reached: p at a PO 8, wall at a PO slot 34, a at a NO 121.
+- <strong>Invariant (derived by hand, then checked).</strong> At a normal-mode overflow let M = 2^N, c = D(G,R) - 4 with D = 2^(k+R) - 2^(k+1) - 2·Σ(G_i - 1)·2^i, s = a - c, and f = the front unit. Then
+  - f = 11 and 24 &lt;= s &lt;= M/4 + 2, or
+  - f = 10 and s is in [8, M-14] or in [M+24, 2M];
+  - and always c = M/4 + κ with κ in {2, 8}.
+  Between normal-mode overflows only four paths occur (P1 from either f, so five transition types in the data):</p>
+<table>
+<thead>
+<tr>
+<th>path</th>
+<th>from f</th>
+<th>acts</th>
+<th>M'</th>
+<th>s'</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S</td>
+<td>11 (to 10)</td>
+<td>S</td>
+<td>M</td>
+<td>s + M</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>10 / 11 (to 11 / 10)</td>
+<td>e0 e1</td>
+<td>4M</td>
+<td>M + 10 - s</td>
+</tr>
+<tr>
+<td>P1S</td>
+<td>10 (to 10)</td>
+<td>e0 e1 S</td>
+<td>4M</td>
+<td>5M + 10 - s</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>10 (to 10)</td>
+<td>e0 e1 e0 e1</td>
+<td>32M</td>
+<td>9M + 32 - s</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Each path maps the invariant into itself by interval arithmetic. Along the way it keeps PO#1 at wall s-5 &gt;= 3 and p = c+3 &gt;= 69, PO#2 at wall s-M-10 &gt;= 14, and PO#3 at p = 8 with wall s-M-21 &gt;= 3. Every new gap is &gt;= 7, and the rebuild cannot overflow because a non-negative final slack forces every earlier slack positive.</li>
+<li>S at a PO slot happens only at PO#2 (f = 11), and the wall left after it, s-M-11 &lt; 2M-1, runs out before another PO slot.</li>
+<li>Start: f = 11, s = 55, M = 256.</li>
+<li>Checked against the macro model: the invariant held at 61,269/61,269 normal-mode overflows, and 61,089/61,089 transitions matched the table exactly, with no other path (<code>deepen3_inv.result.jsonl</code>). On the true orbit it held at 3,497/3,497 normal-mode overflows, and all 7,996 events are front-unit sequences.</li>
+</ul>
+<p><strong>Test (2): tail closure</strong> (<code>deepen3_closure.c</code>, <code>deepen3_closure_check.py</code>).
+- The tail is a right-anchored window W(m) = the round-2 template with every <code>?</code> free. RC = (0110001100)^r H W, where H = <code>01100</code> is the half R digit.
+- Every bit setting for m = 0..8 was run through one overflow by direct simulation: 33,488,896 inputs. All give N or S, with the NO wall / SILENT form checked, and the output is again in the shape (m or m+1). No halt, no other outcome.
+- <strong>L*</strong> (x = 1 and H = y; the real tails are in it): 8,372,224 inputs. All are closed in L*, and the front unit (y,z) with emission e = (r'+H') - (r+H) follows TAILFRONT exactly.
+- Outside L*, TAILFRONT does fail, so L* is the right invariant language.
+- The tables are byte-identical for (r,a) = (1,2), (2,2), (5,7) and (9,30) at m = 3 and 4.
+- They reproduce 9,299/9,299 true RC-chain transitions, including the m = 3 -&gt; 4 growth at overflow 9,057 (<code>deepen3_closure_vs_chain.py</code>).</p>
+<p><strong>Locality and the end-unit rule.</strong>
+- When the 15 fixed bits are not all 1, the head stays at least 6 cells left of the end unit (m = 0, 3, 6). So those 16,383 L* fixed states give a finite table that holds for every m and every end-bit setting.
+- When all 15 fixed bits are 1, the carry enters the end unit. Read its bits left to right:
+  - <code>1^j 0 rest</code> -&gt; j even: N, <code>(10)^(j/2) 1 rest</code>; j odd: S, <code>(01)^((j+1)/2) rest</code>.
+  - <code>1^m</code> behaves like j = m+1 (the end marker <code>01</code> counts as a 1), and the unit grows to m+1.
+  - The fixed bits become 100100010001010 (N, H'=0) or 110000100100101 (S, H'=1), with e0 either way.
+- ENDCARRY 300/300 and NOCARRY 300/300 (emission included). Both used m = 9..60, r &lt;= 12, a &lt;= 40, 0-2 large gaps, a full wall-form check and a reset check on the R digits (<code>deepen3_endunit_s11.result.json</code>).
+- Pause context: random L* tails give the same new RC from a PO / SILENTP start as from a NO / SILENT start, 200/200 (176 N, 24 S; <code>deepen3_po_context_s5.result.json</code>).
+- Token view, for proof.md: right of the lead the tape is a word over <code>00</code>, <code>01</code>, <code>100</code>. A digit is <code>b 100 01 (100)^g</code>; an R digit is <code>b 100 01 100</code>. The tail units are <code>xyz Z 1</code>, <code>?? Z 1</code>, <code>? Z ? Z 1</code>, <code>?? Z ? Z 1</code>, <code>(? Z)^5 1</code>, <code>?^m 1</code>, where Z = <code>100</code> and 1 = <code>01</code>.</p>
+<p><strong>Non-halting argument (for proof.md).</strong>
+1. Direct simulation from blank to step 36,124. The tape there is K(12; v=146; G=[28]) with r + H = 6, the tail is in L* with m = 3, f = 11 and s = 55.
+2. The invariant set is: a normal-mode overflow configuration with the tail in L* and (M, s, f, κ) as above.
+3. Each path above is a finite composition of the validated rules: Inc, NO, PO, SILENT, SILENTP, P100, P010, ZX, ZXN, ZXP, WX, the L* tail table and ENDCARRY. Each takes at least one step and none halts. Each lands in the invariant set again, whatever the tail decides at an 11 slot.</p>
+<p><strong>Still open</strong> (formalization only, none of it a mechanism question):
+- The L* fixed-part table has 16,384 states. It is too big for one case per state in Rocq, so proof.md should break it into token-level sweep rules over <code>00 / 01 / 100</code>.
+- Parametric proofs are still needed for Inc, the R-digit carry, the end-unit carry and the pause rules. All are validated only on random instances.
+- The step constants C_NO / C_PO remain unknown; they are needed only if the accounting needs them.
+- The .v file will be large, and the nearest pattern is a hand-written multi-level counter proof (busycoq <code>CounterClass3v2.v</code>).
+- Round 2 (2026-10-10, formalization). <strong>check_kill PASS -- this is a kill</strong> (sha256 0ddf7487..a879a1;
+  compile 10.2 s native on, coqchk 3.2 s, 0 assumptions). Built in rocq/T2.v (details and lessons in
+  rocq/log.md): tail layer without any table (Tail10/Tail0z/Tail11 via the retf transducer, 13
+  generated first-zero leaves + the end-unit induction), overflow core OvN1/OvN0/OvS1, generic
+  pause/zone-rebuild lemmas (TwoInc, ZXg, ZXP2g, Zones), NOrb/POrb/SILENT/SILENTP, the four paths
+  pathS/P1/P1S/P3, INV (gaps &gt;= 2 suffice), step, init (solve_init, 92,299 steps), nonhalt via
+  progress_nonhalt_cond. Open: fold the retf reduction into proof.md section 9 / package the kill.</p>
+<h2 id="kill">Kill</h2>
+<ul>
+<li>2026-10-10: <strong>KILLED_NONHALT.</strong> Kill file <code>1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB.v</code> (1,327 lines, 1,613 sentences, sha256 <code>0ddf748799bcd23dc220017b4b5897e15d9df7ccbd52fc4b7b8f5e3a83a879a1</code>) proves top-level <code>Lemma nonhalt : ~ halts tm c0.</code>. Header: "Adapted from verify/CounterClass3v2.v, Module TM1".</li>
+<li><code>tools/check_kill.sh</code>: PASS 3 times on the same sha256.</li>
+<li>Formalizer, 23:03Z: compile 10.2 s (native on), coqchk -norec pass 3.2 s, 0 assumptions.</li>
+<li>Independent audit, <code>--json</code>: 17/17 checks pass, compile 10.3 s, coqchk 3.2 s, 0 assumptions ("closed"). The audit also confirmed the string is line 437 of <code>data/holdouts/2026-10-07_778.txt</code> (<code>holdouts.py contains</code> and <code>grep -x</code>), read the file end to end, and found nothing suspicious. One benign note: <code>Lemma step</code> (line 1212) reuses the short name of the framework's <code>TM.step</code>; it is used only inside <code>nonhalt</code>, and the isolated re-statement uses absolute names, so nothing needs to change.</li>
+<li>Fresh human-readable run for the submission, 23:07Z: 17/17 PASS, compile 10.3 s, coqchk 3.2 s, 0 assumptions, max RSS 530 MB, 14.9 s wall.</li>
+<li><code>holdouts.py lookup</code>: in all 26 snapshots (2024-06-14 to 2026-10-07). <code>holdouts.py solved</code>: absent from busycoq <code>verify/</code> (no byte-exact, renamed or mirrored proof).</li>
+<li>The proof follows proof.md, except §4.2's tail table: the overflow's leftward return is the 4-rule token transducer <code>retf</code> (<code>retf_spec</code>), and the tail's answer depends only on the position of its first 0 bit (<code>Tail0z</code>, <code>Tail10</code>, 12 cases of <code>Tail11</code>, plus <code>Tail11_end</code> for f = 1^15 by an induction over the end unit). So the 16,384-entry table and the facts (T1)-(T4) are not needed. Then <code>RB_*</code>, <code>BNp</code>, <code>OvN1</code>/<code>OvN0</code>/<code>OvS1</code>, <code>NOrb</code>/<code>POrb</code>/<code>SILENT</code>/<code>SILENTP</code>, the paths <code>pathS</code>/<code>pathP1</code>/<code>pathP1S</code>/<code>pathP3</code>, <code>INV</code> (gaps &gt;= 2 suffice), <code>step</code>, <code>init</code> (92,299 steps, <code>solve_init</code>) and <code>nonhalt</code> = <code>multistep_nonhalt</code> + <code>progress_nonhalt_cond</code> with <code>P := INV</code>. Imports <code>Individual62</code> only from busycoq. Details: rocq/log.md, atlas/rocq-notes.md.</li>
+<li>Submission package: <code>submission/</code>.</li>
+<li>The .v, unchanged (same sha256).</li>
+<li>proof.md: a public write-up built from the working proof.md. §0-§7 keep their numbering, so the .v's section references still match. §4.2 is rewritten around the <code>retf</code> transducer, with the 14-row first-zero table (re-checked by direct simulation, 30 random settings per row). §8 maps sections to lemma names, and §9 lists the numerical checks without script names. It has no review log, status lines or internal file names, and <code>tools/writeup_lint.py</code> reports 0 errors and 0 warnings. The working proof.md is untouched; its §4.2/§9 still describe the table route.</li>
+<li>check_kill.txt (the 23:07Z run), README.md (writeup_lint: 0 errors; 1 warning, for the holdout snapshot dates).</li>
+<li>discord.md: a draft of 1,510 characters plus <code>&lt;LINK&gt;</code>. <strong>Not posted.</strong></li>
+<li>Before posting:</li>
+<li>The string is on mxdys's UBRRBA_TODO list (2026-08-24). Search Discord #bb6 for it in case someone has claimed it since.</li>
+<li>No Checkpoint B notes from Dennis were on file when this was packaged. If he adds any, fold them into proof.md and the submission copy first.</li>
+<li>check_kill.txt carries absolute local paths (<code>[local working file]</code>), as every earlier package does. Scrub them before attaching it anywhere public.</li>
+</ul>
+</main></body></html>

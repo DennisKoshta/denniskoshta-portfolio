@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>BB(6) hunt</title><style>
+:root{color-scheme:light;
+ --bg:#f7f8fa;--surface:#ffffff;--surface-2:#f1f3f6;--border:#e4e7ec;--border-2:#cfd4dc;
+ --text:#111827;--text-2:#4a5263;--text-3:#6b7280;
+ --accent:#3b5bdb;--accent-weak:#eef1fd;--on-accent:#ffffff;
+ --ok:#0f7a52;--ok-weak:#e7f5ee;--ok-mid:#3fae7f;--ok-soft:#b5e0cb;
+ --warn:#a85d00;--warn-weak:#fdf3e1;--bad:#b42318;--bad-weak:#fdecea;
+ --shadow:0 1px 2px rgba(17,24,39,.04),0 1px 3px rgba(17,24,39,.05);
+ --mat:#0c0d10}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+ --bg:#0e1014;--surface:#161920;--surface-2:#1d2129;--border:#272c36;--border-2:#384050;
+ --text:#e9ebf0;--text-2:#b4bac6;--text-3:#8a92a2;
+ --accent:#92a8ff;--accent-weak:rgba(146,168,255,.13);--on-accent:#0e1014;
+ --ok:#5fd29c;--ok-weak:rgba(95,210,156,.12);--ok-mid:#2f9a6a;--ok-soft:#24533f;
+ --warn:#f2b552;--warn-weak:rgba(242,181,82,.12);--bad:#f87171;--bad-weak:rgba(248,113,113,.12);
+ --shadow:none;--mat:#060708}}
+:root[data-theme="dark"]{color-scheme:dark;
+ --bg:#0e1014;--surface:#161920;--surface-2:#1d2129;--border:#272c36;--border-2:#384050;
+ --text:#e9ebf0;--text-2:#b4bac6;--text-3:#8a92a2;
+ --accent:#92a8ff;--accent-weak:rgba(146,168,255,.13);--on-accent:#0e1014;
+ --ok:#5fd29c;--ok-weak:rgba(95,210,156,.12);--ok-mid:#2f9a6a;--ok-soft:#24533f;
+ --warn:#f2b552;--warn-weak:rgba(242,181,82,.12);--bad:#f87171;--bad-weak:rgba(248,113,113,.12);
+ --shadow:none;--mat:#060708}
+:root{
+ --sp-h:4px;--sp-1:8px;--sp-2:16px;--sp-3:24px;--sp-4:32px;--sp-6:48px;--sp-8:64px;
+ --r:12px;--r-sm:8px;--r-pill:999px;--maxw:1100px;
+ --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+ --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,Menlo,monospace;
+ --page:var(--bg);--sunk:var(--surface-2);--ink:var(--text);--ink2:var(--text-2);--muted:var(--text-3);
+ --line:var(--border);--axis:var(--border-2);--caution:var(--warn);--code:var(--surface-2);--series:var(--accent);
+ --good:var(--ok);--good-strong:var(--ok);--good-soft:var(--ok-soft);--good-weak:var(--ok-weak)}
+
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+code,pre,.tt,.skel,.cfg,.cs{font-family:var(--mono)}
+code{font-size:.88em;background:var(--surface-2);padding:1px 5px;border-radius:5px}
+p{margin:0}
+[hidden]{display:none!important}
+.muted,.dash{color:var(--text-3)}
+.bad{color:var(--bad);font-weight:600}.strong{color:var(--text);font-weight:600}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:var(--sp-4) var(--sp-3) var(--sp-6)}
+.eyebrow,h2{font-size:12px;font-weight:650;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);margin:0 0 8px}
+@media (max-width:600px){.wrap{padding:var(--sp-3) var(--sp-2) var(--sp-4)}}
+
+header.sn-bar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 88%,transparent);
+ backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
+.sn-in{max-width:var(--maxw);margin:0 auto;padding:0 var(--sp-3);height:56px;display:flex;align-items:center;gap:var(--sp-3)}
+a.sn-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:var(--text);letter-spacing:-.01em;
+ white-space:nowrap}
+a.sn-brand:hover{text-decoration:none}
+.sn-logo{width:22px;height:22px;border-radius:6px;background:var(--text);display:grid;grid-template-columns:repeat(3,1fr);
+ gap:2px;padding:4px}
+.sn-logo i{background:var(--bg);border-radius:1px}.sn-logo i:nth-child(2n){opacity:.25}
+nav.sn{margin-left:auto;display:flex;align-items:center;min-width:0}
+.sn-links,.sn-mlinks{display:flex;gap:var(--sp-h)}
+.sn-links a,.sn-mlinks a{display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:var(--r-sm);
+ color:var(--text-2);font-size:14.5px;font-weight:500;white-space:nowrap}
+.sn-links a:hover,.sn-mlinks a:hover{text-decoration:none;color:var(--text);background:var(--surface-2)}
+.sn-links a[aria-current="page"],.sn-mlinks a[aria-current="page"]{color:var(--text);background:var(--surface-2);font-weight:600}
+.sn-n{min-width:20px;height:20px;padding:0 6px;border-radius:var(--r-pill);background:var(--accent);color:var(--on-accent);
+ font:700 12px/20px var(--font);text-align:center}
+.sn-n.zero{background:var(--surface-2);color:var(--text-3)}
+details.sn-menu{display:none;position:relative}
+details.sn-menu>summary{list-style:none;cursor:pointer;height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;
+ border:1px solid var(--border);border-radius:var(--r-sm);font-size:14.5px;font-weight:550;color:var(--text);
+ background:var(--surface)}
+details.sn-menu>summary::-webkit-details-marker{display:none}
+.sn-burger{width:16px;height:10px;display:inline-flex;flex-direction:column;justify-content:space-between}
+.sn-burger i{height:2px;border-radius:1px;background:currentColor}
+.sn-mlinks{position:absolute;right:0;top:calc(100% + 8px);flex-direction:column;align-items:stretch;min-width:220px;
+ padding:var(--sp-1);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+ box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.sn-mlinks a{height:40px;justify-content:space-between}
+@media (max-width:820px){nav.sn .sn-links{display:none}details.sn-menu{display:block}.sn-in{padding:0 var(--sp-2)}}
+footer.sn-foot{max-width:var(--maxw);margin:0 auto;padding:var(--sp-3) var(--sp-3) var(--sp-6);color:var(--text-3);
+ font-size:13.5px;display:flex;flex-wrap:wrap;gap:var(--sp-1) var(--sp-3);border-top:1px solid var(--border)}
+footer.sn-foot a{color:var(--text-2)}
+@media (max-width:600px){footer.sn-foot{padding-left:var(--sp-2);padding-right:var(--sp-2)}}
+.nm{display:inline;min-width:0}
+.nm code.tmn{background:none;padding:0;font:600 .92em/1.35 var(--mono);color:var(--text);overflow-wrap:normal}
+.nm code.tmn span{white-space:nowrap}
+a.nm:hover{text-decoration:none}a.nm:hover code.tmn{color:var(--accent)}
+.nm .tag{display:inline-flex;align-items:center;height:20px;margin-left:6px;padding:0 7px;border:1px solid var(--border-2);
+ border-radius:6px;color:var(--text);background:var(--surface);font:650 12px/1 var(--font);white-space:nowrap;
+ vertical-align:1px}
+.stale{margin:0 0 var(--sp-2);padding:10px 14px;border:1px solid var(--border);border-left:4px solid var(--warn);
+ border-radius:var(--r-sm);background:var(--warn-weak);font-size:13.5px;color:var(--text)}
+.stale b{color:var(--warn)}
+
+.ui-muted{color:var(--text-3)}
+.ui-eyebrow{margin:0 0 var(--sp-1);font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--text-3)}
+.ui-h2{margin:0;font-size:18px;line-height:1.3;font-weight:650;letter-spacing:-.005em;text-transform:none;color:var(--text)}
+.ui-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.ui-sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2);margin:0 0 var(--sp-2)}
+.ui-link{font-size:14px;font-weight:550;white-space:nowrap}
+.ui-title{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px var(--sp-2);margin:0 0 var(--sp-3)}
+.ui-title h1{margin:0;font-size:28px;line-height:1.2;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.ui-title>span{font-size:14px;color:var(--text-3);max-width:100%}
+.ui-title>span b{color:var(--text-2);font-weight:600}
+.ui-lead{margin:calc(-1 * var(--sp-2)) 0 var(--sp-3);font-size:15px;color:var(--text-2);max-width:80ch}
+.ui-pill{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--r-pill);
+ font:600 12.5px/1 var(--font);white-space:nowrap;border:1px solid transparent;vertical-align:middle}
+.ui-pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.ui-pill.ok{color:var(--ok);background:var(--ok-weak)}
+.ui-pill.ok-solid{color:#fff;background:var(--ok)}
+:root[data-theme="dark"] .ui-pill.ok-solid{color:var(--bg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ui-pill.ok-solid{color:var(--bg)}}
+.ui-pill.ok-soft{color:var(--ok);background:transparent;border-color:var(--ok-soft)}
+.ui-pill.warn{color:var(--warn);background:var(--warn-weak)}
+.ui-pill.accent{color:var(--accent);background:var(--accent-weak)}
+.ui-pill.muted{color:var(--text-2);background:var(--surface-2)}
+.ui-pill.bad{color:var(--bad);background:var(--bad-weak)}
+.ui-pill.plain::before{display:none}
+a.ui-pill:hover{text-decoration:none;filter:brightness(.97)}
+.ui-tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;border:1px solid var(--border-2);
+ font:650 12.5px/1 var(--font);color:var(--text);background:var(--surface);white-space:nowrap}
+.ui-btn{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:var(--r-sm);border:1px solid var(--border-2);
+ background:var(--surface);color:var(--text);font-size:13.5px;font-weight:600;white-space:nowrap}
+.ui-btn:hover{text-decoration:none;border-color:var(--accent);color:var(--accent)}
+.ui-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.ui-btn.primary:hover{color:var(--on-accent);filter:brightness(1.07)}
+details.ui-fold{margin-top:var(--sp-2);border:1px solid var(--border);border-radius:var(--r);background:var(--surface)}
+details.ui-fold>summary{cursor:pointer;list-style:none;padding:14px var(--sp-2);font-weight:600;font-size:15px;display:flex;
+ align-items:center;gap:10px;color:var(--text)}
+details.ui-fold>summary::-webkit-details-marker{display:none}
+details.ui-fold>summary::before{content:"";flex:none;width:8px;height:8px;border-right:2px solid var(--text-3);
+ border-bottom:2px solid var(--text-3);transform:rotate(-45deg);transition:transform .15s;margin-right:2px}
+details.ui-fold[open]>summary::before{transform:rotate(45deg)}
+details.ui-fold>summary small{font-weight:500;color:var(--text-3);font-size:13.5px}
+details.ui-fold>summary .ui-pill{margin-left:auto}
+.ui-fold-b{padding:0 var(--sp-2) var(--sp-2);font-size:14.5px;min-width:0;overflow-wrap:anywhere}
+.ui-about{margin-top:var(--sp-4);font-size:13px;color:var(--text-3)}
+.ui-about>summary{cursor:pointer;color:var(--text-2);font-weight:550}
+.ui-about[open]>summary{margin-bottom:var(--sp-1)}
+@media (max-width:600px){.ui-title h1{font-size:24px}}
+
+/* header: one line; the class phrase is cut short (full text on hover) rather than wrapping */
+header.top{display:flex;flex-wrap:nowrap;align-items:center;gap:6px 14px;padding-bottom:10px;border-bottom:1px solid var(--line);min-width:0}
+.rank{font-weight:700;font-size:16px;color:var(--muted);flex:none}
+.tmname{font:600 16px/1.3 ui-monospace,"Cascadia Code",Consolas,monospace;white-space:nowrap;background:none;padding:0;flex:none}
+header.top .copy{flex:none}
+.cls{font-size:13.5px;color:var(--ink2);flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cls b{color:var(--ink);font-weight:600}
+.links{display:flex;gap:2px 14px;font-size:13.5px;margin-left:auto;flex:none;white-space:nowrap}
+/* state line: what this card asks of you right now */
+.state{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-top:10px;padding:7px 12px;border-radius:8px;
+ background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--axis);font-size:14px}
+.state.wait{border-left-color:var(--accent);background:var(--accent-weak)}
+.state.done,.state.killed{border-left-color:var(--good)}
+.state.parked{border-left-color:var(--caution)}
+.gtag{font-weight:700;white-space:nowrap}
+.state.wait .gtag{color:var(--accent)}.state.done .gtag,.state.killed .gtag{color:var(--good)}
+.state.parked .gtag{color:var(--caution)}
+.stx{flex:1 1 380px;min-width:0;color:var(--ink)}
+.sst{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--muted);margin-left:auto}
+.plink{font-weight:650;font-size:13.5px}
+.chip,.vchip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--surface);
+ border-radius:999px;padding:1px 9px 1px 7px;font-size:12.5px;white-space:nowrap;color:var(--ink)}
+.chip .ic,.vchip .ic{font-weight:700;color:var(--muted)}
+.chip.info{border-color:var(--accent)}.chip.info .ic{color:var(--accent)}
+.chip.good{border-color:var(--good)}.chip.good .ic{color:var(--good)}
+.warn,.serious{border-color:var(--caution)}.warn .ic,.serious .ic{color:var(--caution)}
+.crit{border-color:var(--bad)}.crit .ic{color:var(--bad)}
+.vchip{border:0;background:none;padding:0;font-variant-numeric:tabular-nums}
+.vchip.good .ic{color:var(--ink2)}
+.neq{color:var(--accent);font-weight:700}.eq{color:var(--muted)}
+.conf{letter-spacing:-1px;color:var(--ink2)}
+button.copy{font:12px system-ui,sans-serif;border:1px solid var(--line);background:var(--surface);color:var(--ink2);
+ border-radius:6px;padding:1px 8px;cursor:pointer}
+button.copy:hover{border-color:var(--accent);color:var(--ink)}
+/* how we proved it never halts (machines/<tm>/how_proved.md; killed or submitted machines only) */
+.howp{margin:14px 0 2px;padding:12px 16px 14px;max-width:980px;background:var(--surface);border:1px solid var(--line);
+ border-left:4px solid var(--good);border-radius:10px;scroll-margin-top:14px;overflow-wrap:break-word}
+.howp-hd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0 0 6px}
+.howp h2{font-size:17px;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:650;margin:0}
+.howp-tag{display:inline-block;max-width:100%;font-size:13px;line-height:1.4;color:var(--ink);border:1px solid var(--good);
+ border-radius:6px;padding:1px 8px;overflow-wrap:anywhere}
+.howp-k{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--good);margin-right:6px}
+.howp-tx{font-size:15.5px;line-height:1.6;max-width:78ch;color:var(--ink)}
+.howp-tx+.howp-tx{margin-top:8px}
+.howp-tag.sm{font-size:12px;padding:0 6px;margin-top:4px;white-space:normal;max-width:240px;color:var(--ink2)}
+a.howp-tag:hover{text-decoration:none;border-color:var(--accent)}
+/* in one sentence; mechanism notes folded */
+.intro{padding:14px 0 2px;max-width:980px}
+.eyebrow{margin-bottom:4px}
+.summary{font-size:18px;line-height:1.4;font-weight:500}
+ul.mech{margin:6px 0 0;padding-left:20px;color:var(--ink2);font-size:14.5px}ul.mech li{margin:4px 0}
+details.moremech{margin:6px 0 0;font-size:13.5px;color:var(--ink2)}
+details.moremech summary{cursor:pointer;color:var(--accent)}
+/* look at these + checkpoint */
+.look{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin-top:16px}
+.look>section>h2{font-size:17px;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:650;margin:0 0 10px}
+.prims{display:flex;flex-direction:column;gap:22px}
+.fig{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px 12px;
+ min-width:0;scroll-margin-top:14px}
+.fig:target{box-shadow:0 0 0 3px var(--accent);animation:flash 1.6s ease-out}
+.fig.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 9px var(--accent-weak),0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 3px var(--accent)}}
+figcaption{margin:0 0 10px}
+.ftl{display:flex;align-items:baseline;gap:4px 12px}
+.ftt{flex:1 1 auto;min-width:0;font-size:16px;line-height:1.35}
+.fno{font-weight:700;color:var(--accent);white-space:nowrap}
+.fsep{color:var(--muted)}
+.ftitle{font-weight:650}
+.fside{flex:none;display:flex;gap:10px;font-size:13px;align-items:baseline}
+a.qref{font-weight:600}a.qref.done{color:var(--muted);font-weight:500}
+.why{color:var(--ink2);font-size:14px;margin-top:2px}
+/* images: sized in the HTML (whole-number pixel enlargement, smooth shrink to the column and window
+   height); a box never grows past the window, so a tall strip or a big annotated picture scrolls inside it */
+.imgbox{container-type:inline-size;max-height:max(260px,calc(100vh - 226px));overflow:auto}
+.imgbox a.zoom{display:block;width:max-content;margin:0 auto;cursor:zoom-in}
+img.dg{display:block;height:auto;background:var(--mat);outline:1px solid var(--line);outline-offset:-1px}
+img.dg.px{image-rendering:pixelated}
+.imgbox.tall{overflow-x:hidden}
+.missing,.nodiag,.noplot{color:var(--muted);font-size:12.5px;text-align:center;padding:36px 12px}
+.missing,.nodiag{background:var(--sunk);border-radius:8px;flex:1}
+/* label: four short cells (Start · Rows · Window · Colors), side details on a smaller line below */
+.dlabel{font-size:12.5px;line-height:1.5;color:var(--ink2);margin-top:8px;overflow-wrap:anywhere}
+.lrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 0}
+.lc{padding:0 10px;border-left:1px solid var(--line);min-width:0}
+.lrow .sty+.lc{border-left:0;padding-left:4px}
+.lc .lk{font-size:10.5px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.lc.lcol{flex:1 1 260px}
+.lpair{margin-right:10px}
+i.lsw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px;
+ box-shadow:inset 0 0 0 1px var(--axis)}
+i.lsw+i.lsw{margin-left:-2px}
+.lmore{margin-top:2px;font-size:11.5px;line-height:1.45;color:var(--muted)}
+.lmore .lk{font-weight:600}.dlabel .sep{color:var(--muted)}
+.dlabel .lmiss{color:var(--bad);font-weight:700}
+.sty{display:inline-block;font:600 10.5px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace;color:var(--muted);
+ border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-right:2px;white-space:nowrap;vertical-align:1px}
+.sty.custom{color:var(--ink2);border-color:var(--axis)}
+.sty.none{border-color:var(--bad);color:var(--bad)}
+aside.cp{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:12px;
+ padding:16px 18px 18px;min-width:0}
+aside.cp h2{font-size:18px;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:650;margin:0 0 4px}
+.cpcount{font-weight:500;color:var(--muted);font-size:14px}
+.cpwhy{font-size:12.5px;color:var(--muted);margin-bottom:12px}.cpwhy b{color:var(--ink2);font-weight:650}
+ol.qs{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px}
+ol.qs li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:baseline;border-radius:8px;scroll-margin-top:14px}
+ol.qs li:target{box-shadow:0 0 0 6px var(--accent-weak);background:var(--accent-weak)}
+.qn{font-weight:700;color:var(--accent)}
+.qb{min-width:0}
+.qk{display:inline-block;font:650 10px/1.5 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;
+ border:1px solid var(--axis);border-radius:4px;padding:0 4px;color:var(--muted);vertical-align:2px;cursor:help}
+.qk.decision{border-color:var(--caution);color:var(--caution)}
+ol.qs li.done .qt,ol.qs li.done .qn{color:var(--muted)}
+ol.qs li.done a.fref{background:none;color:var(--muted);border:1px solid var(--line)}
+.qa{margin-top:3px;font-size:13.5px;color:var(--good)}.qa b{font-weight:650}.qd{color:var(--muted)}
+.qnote{color:var(--ink2);margin-top:2px}
+details.dc{margin-top:16px;font-size:13px;border-top:1px solid var(--line);padding-top:10px}
+details.dc summary{cursor:pointer;color:var(--ink2)}
+a.fref{display:inline-block;padding:0 7px;border-radius:999px;background:var(--accent-weak);color:var(--accent);
+ font-weight:650;font-size:.9em;line-height:1.55;white-space:nowrap}
+a.fref:hover{text-decoration:none;background:var(--accent);color:var(--surface)}
+.see{color:var(--muted)}
+.dhead{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px;font-size:12.5px;color:var(--muted)}
+pre.discord{margin:0;white-space:pre-wrap;word-break:break-word;background:var(--code);border-radius:6px;
+ padding:8px 10px;font-size:12.5px;max-height:260px;overflow:auto}
+@media (min-width:1180px){.look.has-cp{grid-template-columns:minmax(0,1fr) 370px;gap:28px}
+ aside.cp{position:sticky;top:14px;align-self:start;max-height:calc(100vh - 28px);overflow:auto;margin-top:38px}}
+/* folded sections */
+.secs{margin-top:40px;border-top:1px solid var(--line)}
+details.sec{border-bottom:1px solid var(--line)}
+details.sec>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:6px 14px;padding:14px 4px;
+ flex-wrap:wrap}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::before{content:"▸";display:inline-block;color:var(--muted);width:12px;flex:none;
+ transition:transform .12s}
+details.sec[open]>summary::before{transform:rotate(90deg)}
+details.sec>summary:hover .st{color:var(--accent)}
+.st{font-weight:650;font-size:16px;white-space:nowrap}
+.sd{color:var(--muted);font-size:13.5px;flex:1 1 300px;min-width:0}
+.secbody{padding:4px 4px 28px 30px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:18px}
+.mgrid .imgbox{max-height:420px}
+/* tables */
+table{border-collapse:collapse}
+.tt{font-size:14px}
+.tt th,.tt td{border:1px solid var(--line);padding:2px 9px;text-align:center}
+.tt thead th{color:var(--muted);font-weight:600}
+.tt tbody th{text-align:left;font-weight:700;white-space:nowrap}
+.tt td.halt{color:var(--muted)}
+.tt td.diff{background:var(--accent-weak);outline:2px solid var(--accent);outline-offset:-2px;font-weight:700}
+.tt td small{display:block;font-size:10.5px;font-weight:400;color:var(--ink2)}
+.ttnote{font-size:12.5px;color:var(--muted);margin-top:6px}
+.hlkey{display:inline-block;width:10px;height:10px;border:2px solid var(--accent);background:var(--accent-weak);vertical-align:-1px}
+.tmpl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px 32px;align-items:start}
+.sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:0;box-shadow:0 0 0 1px var(--line)}
+.hd{font-weight:700;border-bottom:2px solid var(--sc,var(--ink2));padding:0 1px}
+.halt{font-weight:700;color:var(--bad)}
+.skel{font-size:14px;margin:0 0 8px;word-break:break-word}
+.hwrap{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:16px;align-items:start}
+.htable{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+table.num{font-size:12.5px;font-variant-numeric:tabular-nums}
+table.num th{position:sticky;top:0;background:var(--surface);color:var(--muted);font-weight:600;text-align:right;
+ padding:3px 8px;border-bottom:1px solid var(--axis)}
+table.num td{text-align:right;padding:1px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.num td.st{color:var(--ink2)}
+.plots{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px 16px}
+.pcell{min-width:0}.ptitle{display:flex;gap:8px;align-items:baseline;font-size:12.5px}
+svg.plot{display:block;width:100%;max-width:300px;height:auto;overflow:visible}
+svg.plot .ax{stroke:var(--axis);stroke-width:1}
+svg.plot .tk{fill:var(--muted);font:10px ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}
+svg.plot .lg{fill:var(--ink2)}
+svg.plot .ln{fill:none;stroke:var(--series);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+svg.plot .end{fill:var(--series);stroke:var(--surface);stroke-width:2}
+svg.plot .hit{fill:transparent;stroke:none}
+svg.plot .hit:hover{fill:var(--series);fill-opacity:.25}
+.rtable{overflow:auto;max-height:520px}
+table.rules{width:100%;font-size:13px}
+table.rules th{text-align:left;color:var(--muted);font-weight:600;padding:3px 8px;border-bottom:1px solid var(--axis);
+ position:sticky;top:0;background:var(--page)}
+table.rules td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.rules td.cfg{word-break:break-word;min-width:220px}
+table.rules .arr{color:var(--muted)}
+table.rules td.rn{font-weight:650;white-space:nowrap}
+dl.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+dl.kv dt{color:var(--muted);font-size:13px}dl.kv dd{margin:0;min-width:0;word-break:break-word}
+.pl{white-space:pre-line}
+.tm{word-break:break-all}
+.warnmark{color:var(--caution);font-size:12px}
+.stratx{white-space:pre-line;max-width:980px}
+ul.risks{margin:12px 0 0;padding:0;list-style:none}ul.risks li{display:flex;gap:8px;margin:4px 0}
+ul.risks .ic{color:var(--caution)}
+footer{margin-top:18px;color:var(--muted);font-size:12.5px}
+footer details{display:inline}footer summary{cursor:pointer;display:inline}
+footer summary.err{color:var(--bad)}
+footer ul{margin:6px 0;padding-left:18px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;z-index:10;overflow:auto;cursor:zoom-out}
+#lb.on{display:block}
+#lb img{display:block;margin:12px auto 90px;background:#000;cursor:zoom-in}
+#lb.full img{cursor:zoom-out}
+#lb img.crisp{image-rendering:pixelated}
+#lb .lbcap{position:fixed;left:0;right:0;bottom:0;background:rgba(0,0,0,.86);color:#fff;font-size:13px;
+ line-height:1.45;padding:7px 14px;cursor:default;max-height:70vh;overflow-y:auto}
+#lb .lbt{font-weight:650}#lb .lbl{color:#c9c9c9;font-size:12px}#lb .lbh{color:#a9c4ff;font-size:12px}
+#lb .lbmore{display:none;float:right;margin:0 0 2px 12px;padding:2px 0 2px 8px;border:0;background:none;
+ color:#a9c4ff;font:inherit;font-size:12px;cursor:pointer}
+@media (max-width:760px){.wrap{padding:12px 16px 32px}.links{margin-left:0}
+ header.top{flex-wrap:wrap}.tmname{white-space:normal;word-break:break-all;flex:1 1 100%}.cls{white-space:normal}
+ .hwrap,.tmpl{grid-template-columns:minmax(0,1fr)}.mgrid{grid-template-columns:minmax(0,1fr)}
+ .secbody{padding-left:4px}.fig{padding:12px}.summary{font-size:17px}
+ .howp{padding:10px 12px 12px}.howp h2{font-size:16px}.howp-tx{font-size:15px}
+ #lb .lbl{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+ #lb .lbcap.open .lbl{display:block;-webkit-line-clamp:none;overflow:visible}
+ #lb .lbcap.long .lbmore,#lb .lbcap.open .lbmore{display:block}}
+
+.ph{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px;margin:2px 0 4px}
+.ph h1{font-size:21px;margin:0}
+.ph .sub{font-size:13px;color:var(--muted)}.ph .sub b{color:var(--ink2)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.bstats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;margin:10px 0 4px}
+a.bs{display:flex;flex-direction:column;gap:1px;background:var(--surface);border:1px solid var(--line);
+ border-top:3px solid var(--axis);border-radius:10px;padding:7px 12px 8px;color:var(--ink);min-width:0}
+a.bs:hover{text-decoration:none;border-color:var(--accent)}
+.bs .bn{font-size:26px;font-weight:650;line-height:1.15;font-variant-numeric:tabular-nums}
+.bs .bl{font-size:14px;font-weight:650}.bs .ic{margin-right:5px;color:var(--muted)}
+.bs .bm{font-size:12px;color:var(--muted)}
+.bs .lvc,.bs .hlv{font-size:12px;font-weight:600;color:var(--ink2);white-space:nowrap}
+.bs .bof{font-size:11.5px;color:var(--muted);white-space:nowrap}
+/* the three kill buckets: one green family; strong + tinted = accepted, dashed = submitted, soft = claimed */
+.bs.accepted{border-top-color:var(--good-strong);background:linear-gradient(var(--good-weak),var(--good-weak)),var(--surface)}
+.bs.accepted .ic{color:var(--good-strong)}
+.bs.submitted{border-top-style:dashed;border-top-color:var(--good)}.bs.submitted .ic{color:var(--good)}
+.bs.claimed{border-top-color:var(--good-soft)}.bs.claimed .ic{color:var(--good)}
+.bs.active{border-top-color:var(--ink2)}.bs.active .ic{color:var(--ink2)}
+.bs.waiting{border-top-color:var(--accent)}.bs.waiting .ic{color:var(--accent)}
+.bs.parked{border-top-color:var(--caution)}.bs.parked .ic{color:var(--caution)}
+.bs.cryptid{border-top-style:dashed;border-top-color:var(--caution)}.bs.cryptid .ic{color:var(--caution)}
+.tnote{font-size:12.5px;color:var(--muted);margin:2px 0 0}.tnote b{color:var(--ink2);font-weight:600}
+.tlab{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-size:12.5px;color:var(--muted);margin:4px 0 2px}
+.tlab .dlabel{margin-top:0;flex:1 1 600px}
+.tlab b{color:var(--ink2);font-weight:650}
+.tkey{font-size:12.5px;color:var(--muted);margin:2px 0 2px;line-height:1.6}
+.tkey .ki{display:inline-block;max-width:100%;margin-right:16px;vertical-align:top}
+.tkey b{color:var(--ink2);font-weight:650}
+/* filter bar (JS only) */
+.bar{position:sticky;top:0;z-index:5;background:var(--page);display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;
+ padding:8px 0;border-bottom:1px solid var(--line);margin:8px 0 0}
+.bar input[type=search]{font:13px ui-monospace,"Cascadia Code",Consolas,monospace;width:min(340px,100%);padding:4px 9px;
+ border:1px solid var(--axis);border-radius:6px;background:var(--surface);color:var(--ink)}
+.bar input[type=search]:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.fcs{display:flex;flex-wrap:wrap;gap:4px}
+button.fc{font:12.5px system-ui,-apple-system,"Segoe UI",sans-serif;border:1px solid var(--line);background:var(--surface);
+ color:var(--ink);border-radius:999px;padding:2px 10px;cursor:pointer;white-space:nowrap}
+button.fc:hover{border-color:var(--accent)}
+button.fc[aria-pressed=true]{border-color:var(--accent);background:var(--accent-weak);color:var(--accent);font-weight:650}
+button.fc .n{color:var(--muted);margin-left:4px;font-variant-numeric:tabular-nums}
+details.cf{position:static}
+details.cf>summary{list-style:none;cursor:pointer;font-size:12.5px;border:1px solid var(--line);border-radius:999px;
+ padding:2px 10px;background:var(--surface);white-space:nowrap}
+details.cf>summary::-webkit-details-marker{display:none}
+details.cf[open]>summary,details.cf.on>summary{border-color:var(--accent);color:var(--accent)}
+.bar .fcs.bk{flex:1 1 100%}
+details.cf .fcs{position:absolute;top:calc(100% - 4px);left:0;z-index:6;width:min(760px,100%);max-height:60vh;overflow:auto;
+ background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+.bar select{font:12.5px system-ui,sans-serif;border:1px solid var(--line);border-radius:6px;padding:2px 6px;
+ background:var(--surface);color:var(--ink)}
+.bar .srt{font-size:12.5px}
+.bar .shown{font-size:12.5px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+button.clr{font:12.5px system-ui,sans-serif;border:0;background:none;color:var(--accent);cursor:pointer;padding:2px 4px}
+.key{font-size:12.5px;color:var(--muted);margin:2px 0 4px;line-height:1.55;font-weight:400}
+.key b{color:var(--ink2);font-weight:600}
+.key .tsame{display:inline}
+a.th{flex:none;display:flex;align-items:center;justify-content:center;background:var(--mat);border-radius:6px;overflow:hidden;
+ width:128px;height:160px}
+a.th img{display:block;width:100%;height:100%}
+a.th:hover{outline:2px solid var(--accent)}
+.nothumb{color:#9a9a9a;font-size:11.5px;padding:8px;text-align:center}
+.kno{font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 5px;
+ white-space:nowrap}
+a.prc{font-size:12px;font-weight:700;border-radius:4px;padding:0 6px;white-space:nowrap;border:1px solid transparent}
+a.prc:hover{text-decoration:none;outline:2px solid var(--accent);outline-offset:1px}
+a.prc.merged{background:var(--good-strong);border-color:var(--good-strong);color:var(--surface)}
+a.prc.open{border:1px dashed var(--good);color:var(--good);background:var(--good-weak)}
+a.prc.closed{border-color:var(--bad);color:var(--bad)}
+a.prc.unk{border:1px dashed var(--muted);color:var(--muted)}
+.kpr{font-size:12.5px;color:var(--ink2)}.kpr code{font-size:11.5px;padding:0 3px}
+.pcn{color:var(--accent);font-weight:650}
+.offl{font-size:11.5px;color:var(--ink2);border:1px solid var(--axis);border-radius:4px;padding:0 5px;background:var(--sunk)}
+.live{font-size:12px;font-weight:650;color:var(--ink)}
+.tmn{font:600 12.5px/1.35 ui-monospace,"Cascadia Code",Consolas,monospace;color:var(--ink)}
+.tmn span{white-space:nowrap}
+.tmn.sm{font-size:10px;font-weight:500;color:var(--ink2);line-height:1.3}
+.tcl{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;min-width:0}
+.cl{font-size:13px;font-weight:600;color:var(--ink2)}
+.gs{font-size:12px;color:var(--ink2)}.gs b{font-weight:700;color:var(--caution);text-transform:uppercase;font-size:10.5px;
+ letter-spacing:.05em;margin-right:2px}
+.viag .gs{background:var(--accent-weak);border-radius:3px}
+.kf{font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}.kf b{color:var(--ink)}
+.lk{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:3px}
+.tpr{font-size:12.5px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tpr.two{-webkit-line-clamp:2}
+.tlw{font-size:11.5px;color:var(--muted)}
+.ttab{font-size:12px;color:var(--ink2)}
+.ttab .tsm{white-space:nowrap}.ttab .tsm b{font-weight:650;color:var(--ink)}
+.bi{margin-left:3px;font-size:11px;color:var(--muted)}
+.bi.accepted{color:var(--good-strong)}.bi.submitted,.bi.claimed{color:var(--good)}.bi.waiting{color:var(--accent)}.bi.parked,.bi.cryptid{color:var(--caution)}.bi.active{color:var(--ink2)}
+.tsame{font-size:11.5px;line-height:1.3;color:var(--ink2);border:1px solid var(--accent);border-radius:4px;padding:1px 5px;
+ margin:1px 0}
+.tsame.k{border-color:var(--good);color:var(--ink);font-weight:600}.tsame.k a{color:var(--good)}
+.tsame.q{border-style:dashed}
+.ask{font-size:13px;background:var(--accent-weak);border-radius:6px;padding:5px 8px;color:var(--ink);margin-top:3px}
+.ask .lk{color:var(--accent)}
+.ask.via{background:none;border:1px dashed var(--accent)}
+.ask ul.aq{margin:3px 0 0;padding:0;list-style:none;font-size:12.5px;color:var(--ink2)}
+.ask ul.aq li{margin:2px 0;padding-left:26px;text-indent:-26px}
+.ask ul.aq b{display:inline-block;width:26px;text-indent:0;color:var(--accent);font-weight:700}
+ol.pipe{display:flex;list-style:none;margin:1px 0;padding:0;font-size:11.5px;line-height:1.6;flex-wrap:wrap}
+ol.pipe li{padding:0 7px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+ol.pipe li+li{border-left:0}
+ol.pipe li:first-child{border-radius:4px 0 0 4px}ol.pipe li:last-child{border-radius:0 4px 4px 0}
+ol.pipe li.done{color:var(--ink2);background:var(--sunk)}
+ol.pipe li.done::before{content:"✓ ";color:var(--good)}
+ol.pipe li.now{color:var(--accent);border-color:var(--accent);background:var(--accent-weak);font-weight:700}
+ol.pipe li.now+li{border-left:0}
+.tmeta{display:flex;flex-wrap:wrap;gap:3px 6px;align-items:center;font-size:11.5px;color:var(--ink2)}
+.mt{font-variant-numeric:tabular-nums;white-space:nowrap}
+.mt.sim13{color:var(--caution);font-weight:650}
+.fl{border:1px solid var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+.fl.rk{border-color:var(--accent);color:var(--accent);font-weight:700}
+.fl.ss{border-color:var(--caution);color:var(--caution)}
+.fl.ss.x{border-color:var(--line);color:var(--muted);white-space:normal}
+.fl.q{border-color:var(--accent)}.fl.dc{border-color:var(--caution)}.fl.x{border-color:var(--bad)}
+.tln{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12.5px}
+.t{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0}
+.t:target{outline:2px solid var(--accent);outline-offset:1px}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:8px}
+.t.mini{display:flex;flex-direction:column;gap:2px;padding:6px 7px 7px;content-visibility:auto;
+ contain-intrinsic-size:auto 284px;scroll-margin-top:calc(var(--barh,96px) + 12px)}
+.t.mini a.th{margin:0 auto 2px}
+.t.mini .cl{font-size:12px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+ overflow:hidden;min-height:2.6em}
+.t.mini .tcl{flex-direction:column;gap:0}
+.t.mini .gs{font-size:11px;line-height:1.3}
+.t.mini .tmeta{font-size:11px}
+.t.mini .tln{font-size:11.5px;gap:0 10px}
+.empty{color:var(--muted);font-size:13px;font-weight:400;margin:2px 0 6px}
+a.tgl{font-weight:650;white-space:nowrap}span.tgl{font-weight:650}
+.nm.sm code.tmn{font-size:.85em}
+footer .src{margin:4px 0 0;padding-left:18px}
+@media (max-width:1500px){.bstats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:760px){.bstats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .minis{grid-template-columns:repeat(auto-fill,minmax(138px,1fr))}
+ .bar{position:relative}.bar .shown{margin-left:0}}
+
+.claim-definition{color:var(--text-2);margin:12px 0 8px}
+.claim-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));list-style:none;padding:0;margin:16px 0 0;gap:8px}
+.claim-stage{min-width:0;border:1px solid var(--border);border-top:3px solid var(--warn);border-radius:8px;background:var(--surface-2)}
+.claim-stage a{display:flex;flex-direction:column;padding:12px 10px;color:var(--text);height:100%;font-size:13px}
+.claim-stage a:hover{text-decoration:none;background:var(--accent-weak)}
+.claim-stage b{font-size:28px;line-height:1.2;font-variant-numeric:tabular-nums}
+.claim-stage span{font-weight:650;margin:4px 0}.claim-stage small{font-size:11px;color:var(--text-2)}
+.claim-stage.ready{background:var(--warn-weak);border-color:var(--warn)}
+.claim-stage.submitted{border-top-color:var(--accent)}.claim-stage.accepted{border-top-color:var(--ok)}
+.claim-inventory{grid-column:1/-1;font-size:14px;color:var(--text-2);border-top:1px solid var(--border);padding-top:16px}
+.claim-inventory a{color:var(--text-2)}
+.claim-ready{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;margin:24px 0;border:1px solid var(--warn);border-radius:12px;background:var(--warn-weak)}
+.claim-ready h2{font-size:18px;text-transform:none;letter-spacing:0;color:var(--text);margin:0 0 4px}
+.claim-ready p{font-size:14px;color:var(--text-2)}
+@media(max-width:700px){.claim-flow{grid-template-columns:repeat(2,minmax(0,1fr))}.claim-ready{align-items:stretch;flex-direction:column}.claim-ready{padding:16px}}
+
+.hm-hero{padding:var(--sp-4);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:var(--sp-4);align-items:center;
+ scroll-margin-top:72px}
+.hm-big{display:flex;align-items:baseline;gap:var(--sp-2)}
+.hm-big b{font-size:64px;line-height:1;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.hm-big span{font-size:18px;color:var(--text-2);font-weight:500}
+.hm-split{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin-top:var(--sp-2)}
+.hm-split a{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:var(--r-pill);
+ border:1px solid var(--border);color:var(--text-2);font-size:14px;background:var(--surface)}
+.hm-split a:hover{text-decoration:none;border-color:var(--border-2);color:var(--text)}
+.hm-split a b{color:var(--text);font-variant-numeric:tabular-nums}
+.hm-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.hm-dot.d-accepted{background:var(--ok)}.hm-dot.d-submitted{background:var(--ok-mid)}
+.hm-dot.d-claimed{background:var(--ok-soft);box-shadow:inset 0 0 0 1px var(--ok-mid)}
+.hm-prog-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px var(--sp-2);margin-bottom:10px}
+.hm-prog-top b{font-size:15px}
+.hm-prog-top span{white-space:nowrap;font-size:14px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.hm-bar{display:flex;height:12px;border-radius:var(--r-pill);background:var(--surface-2);overflow:hidden;box-shadow:inset 0 0 0 1px var(--border)}
+.hm-bar i{display:block;height:100%}
+.hm-bar .d-accepted{background:var(--ok)}.hm-bar .d-submitted{background:var(--ok-mid)}.hm-bar .d-claimed{background:var(--ok-soft)}
+.hm-rest{margin-top:var(--sp-2);display:flex;flex-wrap:wrap;gap:4px var(--sp-3);font-size:14px}
+.hm-rest a{color:var(--text-3)}.hm-rest a:hover{text-decoration:none;color:var(--text)}
+.hm-rest b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.hm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--sp-3);margin-top:var(--sp-3);align-items:start}
+.hm-panel{padding:var(--sp-3);scroll-margin-top:72px;min-width:0}
+.hm-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;margin-left:8px;
+ border-radius:var(--r-pill);background:var(--accent);color:var(--on-accent);font:700 13px/1 var(--font);vertical-align:2px}
+ul.hm-needs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.hm-needs li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:14px 0;
+ border-top:1px solid var(--border)}
+ul.hm-needs li:first-child{border-top:0;padding-top:4px}
+.hm-ico{width:32px;height:32px;border-radius:var(--r-sm);display:grid;place-items:center;font:700 15px/1 var(--font);flex:none}
+.hm-ico.i-dec{background:var(--accent-weak);color:var(--accent)}
+.hm-ico.i-wait{background:var(--warn-weak);color:var(--warn)}
+.hm-ico.i-post{background:var(--surface-2);color:var(--text-2)}
+.hm-ico.i-ready{background:var(--warn-weak);color:var(--warn)}
+.hm-ico.i-pr{background:var(--bad-weak);color:var(--bad)}
+.hm-nt{font-weight:600;font-size:15px;line-height:1.35;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.hm-nd{font-size:14px;color:var(--text-2);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hm-none{display:flex;gap:12px;align-items:center;color:var(--text-2);font-size:15px;padding:var(--sp-1) 0}
+ol.hm-recent{list-style:none;margin:0;padding:0}
+ol.hm-recent li{display:grid;grid-template-columns:52px 10px minmax(0,1fr);gap:0 12px;align-items:center;min-height:40px;
+ border-top:1px solid var(--border);font-size:14.5px}
+ol.hm-recent li:first-child{border-top:0}
+.hm-when{color:var(--text-3);font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hm-kd{width:8px;height:8px;border-radius:50%;background:var(--border-2)}
+.hm-kd.ok{background:var(--ok)}.hm-kd.warn{background:var(--warn)}.hm-kd.accent{background:var(--accent)}.hm-kd.muted{background:var(--text-3)}
+.hm-line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-2)}
+.hm-line a.hm-who{color:var(--text);font-weight:600}
+.hm-line b{font-weight:600}.hm-line b.t-ok{color:var(--ok)}.hm-line b.t-warn{color:var(--warn)}.hm-line b.t-accent{color:var(--accent)}
+.hm-line b.t-muted{color:var(--text-2)}
+.hm-entries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-3);margin-top:var(--sp-3)}
+a.hm-entry{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-2);align-items:center;padding:var(--sp-3);color:var(--text)}
+a.hm-entry:hover{text-decoration:none;border-color:var(--border-2);box-shadow:0 4px 16px rgba(17,24,39,.08)}
+a.hm-entry h3{margin:0;font-size:18px;font-weight:650}
+a.hm-entry p{margin:2px 0 0;color:var(--text-2);font-size:14.5px}
+.hm-eico{width:48px;height:48px;border-radius:var(--r);display:grid;place-items:center;background:var(--surface-2);color:var(--text-2)}
+.hm-eico svg{width:24px;height:24px}
+.hm-arrow{color:var(--text-3);font-size:20px}
+a.hm-entry:hover .hm-arrow{color:var(--accent)}
+#more{margin-top:var(--sp-3)}
+/* the folded detail (the old Home's blocks) */
+.nb{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border-2);border-radius:var(--r-sm);
+ padding:10px 14px 12px;margin:0 0 10px;min-width:0}
+.nb.also{border-left-color:var(--text-2)}.nb.q{border-left-color:var(--accent)}.nb.dq{border-left-color:var(--warn)}
+.nb>h3{font-size:14.5px;font-weight:650;margin:0 0 6px;display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
+.nb>h3 .gm{font-size:12.5px;font-weight:400;color:var(--text-3)}
+.nb>h3 .go{margin-left:auto;font-size:13px;font-weight:600;white-space:nowrap}
+ul.nl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+ul.nl>li{min-width:0;font-size:13.5px;overflow-wrap:anywhere}
+ul.nl.fams,ul.nl.qs{gap:4px}
+.nq{margin-top:2px;color:var(--text)}
+.nr{font-size:12.5px;color:var(--text-2);margin-top:2px}
+details.nd>summary{cursor:pointer;color:var(--text-2);font-size:13.5px}
+details.nd[open]>summary{margin-bottom:8px}
+.dqi{margin:0 0 10px}.dqi .it{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:13px;margin-bottom:3px}
+.dqi pre{margin:0;white-space:pre-wrap;word-break:break-word;background:var(--surface-2);border:1px solid var(--border);
+ border-radius:6px;padding:7px 9px;font-size:12.5px;max-height:220px;overflow:auto}
+.hh3{font-size:13px;font-weight:650;color:var(--text-2);margin:16px 0 6px;letter-spacing:0;text-transform:none}
+.hh3 .gm{font-weight:400;color:var(--text-3);font-size:12.5px}
+ul.lgl{list-style:none;margin:0;padding:0;font-size:12.5px;color:var(--text-2)}
+ul.lgl li{padding:5px 0;border-bottom:1px solid var(--border);display:grid;grid-template-columns:110px minmax(0,1fr);gap:0 12px}
+.lgt{color:var(--text-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lga{min-width:0;overflow-wrap:anywhere}
+.lgm{grid-column:2;color:var(--text-3);font-size:12px}
+.rpl{margin-top:12px;font-size:13.5px;overflow-wrap:anywhere}
+@media (max-width:900px){.hm-hero{grid-template-columns:minmax(0,1fr);gap:var(--sp-3)}.hm-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.hm-hero{padding:var(--sp-3)}
+ .hm-line{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}ol.hm-recent li{padding:8px 0;align-items:start}
+ ol.hm-recent li .hm-kd{margin-top:8px}ol.hm-recent li .hm-when{line-height:24px}.hm-big b{font-size:52px}
+ .hm-entries{grid-template-columns:minmax(0,1fr);gap:var(--sp-2)}
+ ul.hm-needs li{grid-template-columns:auto minmax(0,1fr)}ul.hm-needs li .ui-btn{grid-column:2;justify-self:start;margin-top:6px}
+ a.hm-entry{padding:var(--sp-2)}.hm-panel{padding:var(--sp-2)}ol.hm-recent li{grid-template-columns:44px 8px minmax(0,1fr);gap:0 10px}
+ ul.lgl li{grid-template-columns:minmax(0,1fr)}.lgm{grid-column:1}.nb>h3 .go{margin-left:0}}
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html" aria-current="page">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions<span class="sn-n zero" title="0 waiting on your answer (open decision cards, plus calls and Checkpoint A questions listed under &#x27;Also waiting on you&#x27;)">0</span></a><a href="/busy-beaver/learn/index.html">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html" aria-current="page">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions<span class="sn-n zero" title="0 waiting on your answer (open decision cards, plus calls and Checkpoint A questions listed under &#x27;Also waiting on you&#x27;)">0</span></a><a href="/busy-beaver/learn/index.html">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header><main class="wrap"><div class="stale" id="stale" hidden><b>Built <span class="sm"></span>.</b> It shows the files as they were then (ages and “working now” follow your clock). <code>tools/rebuild_pages.sh</code> rebuilds the site within 5 minutes of a change; by hand: <code>python3 -B tools/site.py</code>.</div><div class="ui-title"><h1>BB(6) holdout hunt</h1><span>Updated Fri Oct 16, 13:29</span></div><section class="ui-card hm-hero" id="counts" aria-label="Claimed kills"><div><div class="hm-big"><b>21</b><span>kills claimed</span></div><p class="claim-definition">Our proofs accepted upstream.</p><a class="ui-link" href="/busy-beaver/dashboard/machines.html#b-accepted">See claimed kills →</a></div><div><h2 class="ui-h2">From proof to claim</h2><ol class="claim-flow" aria-label="Proof to claim workflow"><li class="claim-stage proved"><a href="/busy-beaver/dashboard/submissions.html"><b>0</b><span>Locally proved</span><small>Needs packaging</small></a></li><li class="claim-stage ready"><a href="/busy-beaver/dashboard/submissions.html#ready"><b>0</b><span>Ready for PR</span><small>Submit early</small></a></li><li class="claim-stage submitted"><a href="/busy-beaver/dashboard/machines.html#b-submitted"><b>1</b><span>PR submitted</span><small>Awaiting acceptance</small></a></li><li class="claim-stage accepted"><a href="/busy-beaver/dashboard/machines.html#b-accepted"><b>21</b><span>Kill claimed</span><small>Our PR accepted</small></a></li></ol></div><div class="claim-inventory"><b>663</b> current holdouts · <a href="/busy-beaver/dashboard/machines.html#b-active"><b>15</b> in progress</a> · <a href="/busy-beaver/dashboard/machines.html#b-parked"><b>47</b> parked</a> · <a href="/busy-beaver/dashboard/machines.html#b-untouched"><b>600</b> not started</a></div></section><div class="hm-grid"><section class="ui-card hm-panel" id="needs"><div class="ui-sec-head"><h2 class="ui-h2">Needs you</h2></div><p class="hm-none"><span class="hm-ico i-ready">✓</span>Nothing needs you right now.</p></section><section class="ui-card hm-panel" id="recent"><div class="ui-sec-head"><h2 class="ui-h2">Recent</h2><a class="ui-link" href="/busy-beaver/reports/overnight-ledger.md.html">Full log →</a></div><ol class="hm-recent"><li><span class="hm-when" title="Oct 16 12:10">1h</span><span class="hm-kd accent"></span><span class="hm-line" title="→ PR submitted · PR #29"><a class="hm-who" href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/index.html" title="1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF">W6-1</a> → <b class="t-accent">PR submitted</b> · PR #29</span></li><li><span class="hm-when" title="Oct 16 11:52">1h</span><span class="hm-kd warn"></span><span class="hm-line" title="→ Locally proved · local proof 33, never halts"><a class="hm-who" href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/index.html" title="1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF">W6-1</a> → <b class="t-warn">Locally proved</b> · local proof 33, never halts</span></li><li><span class="hm-when" title="Oct 16 00:09">13h</span><span class="hm-kd ok"></span><span class="hm-line" title="→ Kill claimed · PR #28"><a class="hm-who" href="/busy-beaver/machines/1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB/index.html" title="1RB0RC_1LC1RB_0RE1LD_0LC1LA_1RF1RA_---0RB">W5-4</a> → <b class="t-ok">Kill claimed</b> · PR #28</span></li><li><span class="hm-when" title="Oct 16 00:09">13h</span><span class="hm-kd ok"></span><span class="hm-line" title="→ Kill claimed · PR #27"><a class="hm-who" href="/busy-beaver/machines/1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF/index.html" title="1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF">W5-8</a>, <a class="hm-who" href="/busy-beaver/machines/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF/index.html" title="1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF">W5-8b</a>, <a class="hm-who" href="/busy-beaver/machines/1RB0RD_0RC0LB_0RD1RD_1LE1RA_1RC1LF_---1LA/index.html" title="1RB0RD_0RC0LB_0RD1RD_1LE1RA_1RC1LF_---1LA">W5-8c</a> → <b class="t-ok">Kill claimed</b> · PR #27</span></li><li><span class="hm-when" title="Oct 15 04:58">32h</span><span class="hm-kd accent"></span><span class="hm-line" title="→ In progress · The guarded matched-producer language proposed in this stage is refuted by a concrete 557-step counterexample."><a class="hm-who" href="/busy-beaver/machines/1RB0LA_0RC0LE_0RD1RC_1LD1RE_1LA1RF_---0RB/index.html" title="1RB0LA_0RC0LE_0RD1RC_1LD1RE_1LA1RF_---0RB">Astra research 169</a> → <b class="t-accent">In progress</b> · The guarded matched-producer language proposed in this stage is refuted by a concrete 557-step counterexample.</span></li><li><span class="hm-when" title="Oct 15 04:57">32h</span><span class="hm-kd accent"></span><span class="hm-line" title="→ In progress · The fixed source-calibrated certificate recipe returned no verdict."><a class="hm-who" href="/busy-beaver/machines/1RB1RF_0RC1RD_1LC1LA_0LE1RE_1RA0RB_---0LC/index.html" title="1RB1RF_0RC1RD_1LC1LA_0LE1RE_1RA0RB_---0LC">Astra research 725</a> → <b class="t-accent">In progress</b> · The fixed source-calibrated certificate recipe returned no verdict.</span></li><li><span class="hm-when" title="Oct 15 04:57">32h</span><span class="hm-kd accent"></span><span class="hm-line" title="→ In progress · The automatically generated sixteen-scan catalog and checked mixed-counter executor are proved."><a class="hm-who" href="/busy-beaver/machines/1RB1LD_1RC1RF_1LA1RD_1RE0LB_---0RA_0LA1RC/index.html" title="1RB1LD_1RC1RF_1LA1RD_1RE0LB_---0RA_0LA1RC">Astra research 666</a>, <a class="hm-who" href="/busy-beaver/machines/1RB1RF_1LC1RD_1RA1LD_1RE0LA_---0RC_0LC1RB/index.html" title="1RB1RF_1LC1RD_1RA1LD_1RE0LA_---0RC_0LC1RB">Astra research 476</a> → <b class="t-accent">In progress</b> · The automatically generated sixteen-scan catalog and checked mixed-counter executor are proved.</span></li><li><span class="hm-when" title="Oct 15 04:57">32h</span><span class="hm-kd accent"></span><span class="hm-line" title="→ In progress · The finite-return study completed, but the proposed sparse epoch language is refuted."><a class="hm-who" href="/busy-beaver/machines/1RB1RE_0RC0RF_1LC1RD_1RA0LE_0RA0LD_0RA---/index.html" title="1RB1RE_0RC0RF_1LC1RD_1RA0LE_0RA0LD_0RA---">Astra research 267</a> → <b class="t-accent">In progress</b> · The finite-return study completed, but the proposed sparse epoch language is refuted.</span></li></ol></section></div><section class="ui-card hm-panel" id="reconciliation" style="margin:24px 0"><div class="ui-sec-head"><h2 class="ui-h2">663-list reconciliation</h2></div><p>77 machines removed since the 740 list: 20 through our merged PRs, <a href="/busy-beaver/dashboard/submissions.html#upstream-overlap">11 claimed by someone else while ours remained unsubmitted</a>, and <a href="/busy-beaver/dashboard/machines.html#b-external_solved">46 others</a>.</p><p>1 of the 663 listed machines have local proofs; 662 have no full local proof recorded. The published list remains 663.</p><p class="ui-muted">Reconciled 2026-10-16. Upstream snapshot <a href="https://github.com/ccz181078/busycoq/commit/2733f6108e394f55b29b83f07c1c7aaa1b6139c1">2733f610</a>; rebuilding this page does not fetch new upstream results. <a href="/busy-beaver/unavailable.html">List report</a> · <a href="/busy-beaver/unavailable.html">Overlap timeline and timing limits</a></p></section><div class="hm-entries"><a class="ui-card hm-entry" href="/busy-beaver/dashboard/machines.html"><span class="hm-eico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span><h3>Machines</h3><p>All 742 machines · 109 local folders</p></span><span class="hm-arrow">→</span></a><a class="ui-card hm-entry" href="/busy-beaver/learn/index.html"><span class="hm-eico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 8h7M9 12h5"/></svg></span><span><h3>Learn</h3><p>How holdouts get proved, in 9 short chapters</p></span><span class="hm-arrow">→</span></a></div><details class="ui-fold" id="more"><summary>More detail <small>other calls, Checkpoint A questions, Discord drafts, the ledger</small></summary><div class="ui-fold-b"><div class="nb also"><h3>Other calls on file (5)<span class="gm">work goes on; your answer redirects it</span></h3><ul class="nl"><li><a class="nm" href="/busy-beaver/machines/1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---/index.html" title="1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA--- · current list line 506 · 740 list line 561"><code class="tmn"><span>1RB0RE_</span><wbr><span>1LC0RD_</span><wbr><span>1LD0LD_</span><wbr><span>1RA0LC_</span><wbr><span>1RA1RF_</span><wbr><span>1RA---</span></code><span class="tag">R4</span></a><div class="ask"><span class="lk">also for you</span> R4 and #32 are flagged CRYPTID_CANDIDATE: stop here, or fund a recursive abstract model to follow R4&#x27;s real orbit, whose top already has the halting residue? <a href="/busy-beaver/machines/1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---/index.html">open its page →</a></div><div class="nr">the call also covers <a class="tgl" href="/busy-beaver/machines/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/index.html" title="1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD--- · current list line 336 · 740 list line 372">#32</a></div></li><li><a class="nm" href="/busy-beaver/machines/1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA/index.html" title="1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA · current list line 620 · 740 list line 693"><code class="tmn"><span>1RB0LD_</span><wbr><span>0RC---_</span><wbr><span>0LD0RF_</span><wbr><span>1LE1LD_</span><wbr><span>0LA0RD_</span><wbr><span>0RB1RA</span></code><span class="tag">693</span></a><div class="ask"><span class="lk">also for you</span> Park 693 + twins (recommended) or fund stage 4 (compiled explorer, K = 64 to ~1e8 shapes)? See decision.json. <a href="/busy-beaver/machines/1RB0LD_0RC---_0LD0RF_1LE1LD_0LA0RD_0RB1RA/index.html">open its page →</a></div></li><li><a class="nm" href="/busy-beaver/machines/1RB0LF_1LC0RE_0LD1LC_1LA---_0RB1RA_0LE1LF/index.html" title="1RB0LF_1LC0RE_0LD1LC_1LA---_0RB1RA_0LE1LF · current list line 280 · 740 list line 310"><code class="tmn"><span>1RB0LF_</span><wbr><span>1LC0RE_</span><wbr><span>0LD1LC_</span><wbr><span>1LA---_</span><wbr><span>0RB1RA_</span><wbr><span>0LE1LF</span></code><span class="tag">B-2</span></a><div class="ask"><span class="lk">also for you</span> Observe stopped early; waiting for your call (reports/bec-sweep/ranking.md, Critic). <a href="/busy-beaver/machines/1RB0LF_1LC0RE_0LD1LC_1LA---_0RB1RA_0LE1LF/index.html">open its page →</a></div></li><li><a class="nm" href="/busy-beaver/machines/1RB0LF_1LC0RE_0LD1LC_1LA---_0RB1RA_1LC1LF/index.html" title="1RB0LF_1LC0RE_0LD1LC_1LA---_0RB1RA_1LC1LF · current list line 476 · 740 list line 528"><code class="tmn"><span>1RB0LF_</span><wbr><span>1LC0RE_</span><wbr><span>0LD1LC_</span><wbr><span>1LA---_</span><wbr><span>0RB1RA_</span><wbr><span>1LC1LF</span></code><span class="tag">740 line 528</span></a><div class="ask"><span class="lk">also for you</span> Observe stopped early; waiting for your call (reports/bec-sweep/ranking.md, Critic). <a href="/busy-beaver/machines/1RB0LF_1LC0RE_0LD1LC_1LA---_0RB1RA_1LC1LF/index.html">open its page →</a></div></li><li><a class="nm" href="/busy-beaver/machines/1RB0LF_1LC0RD_1LA1LC_---0RE_0RB1RA_1LC1LF/index.html" title="1RB0LF_1LC0RD_1LA1LC_---0RE_0RB1RA_1LC1LF · current list line 495 · 740 list line 548"><code class="tmn"><span>1RB0LF_</span><wbr><span>1LC0RD_</span><wbr><span>1LA1LC_</span><wbr><span>---0RE_</span><wbr><span>0RB1RA_</span><wbr><span>1LC1LF</span></code><span class="tag">B-3</span></a><div class="ask"><span class="lk">also for you</span> Observe stopped early; waiting for your call (reports/bec-sweep/ranking.md, Critic). <a href="/busy-beaver/machines/1RB0LF_1LC0RD_1LA1LC_---0RE_0RB1RA_1LC1LF/index.html">open its page →</a></div></li></ul></div><div class="nb q"><h3>Checkpoint A questions<span class="gm">non-blocking unless the machine waits on you</span></h3><details class="nd"><summary>94 questions on 32 machines · none blocks work</summary><ul class="nl qs"><li><span class="lk">Open (in pipeline)</span> <a class="tgl" href="/busy-beaver/machines/1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA---/index.html#mechanism" title="1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA--- · current list line 76 · 740 list line 82">W7-4</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD/index.html#mechanism" title="1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD · current list line 160 · 740 list line 175">W7-2</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---/index.html#mechanism" title="1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA--- · current list line 506 · 740 list line 561">R4</a><span class="muted">×3</span></li><li><span class="lk">Parked</span> <a class="tgl" href="/busy-beaver/machines/1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF/index.html#mechanism" title="1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF · current list line 8 · 740 list line 9">W6-8</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1LE_0RC1RC_0RD0RB_1RE0RF_1LA0LE_---1RB/index.html#mechanism" title="1RB1LE_0RC1RC_0RD0RB_1RE0RF_1LA0LE_---1RB · current list line 10 · 740 list line 11">#20</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD---/index.html#mechanism" title="1RB1RC_1LC1LE_1RD0RA_1LB0RA_0LD1LF_1LD--- · current list line 70 · 740 list line 75">W7-1</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC---/index.html#mechanism" title="1RB0RD_1LC0LE_0RA0LB_1RC1RF_1LB1RD_0RC--- · current list line 86 · 740 list line 96">W6-2</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE/index.html#mechanism" title="1RB---_0RC0RF_0RD0RA_1RE0LB_1LF0LE_1RC0LE · current list line 89 · 740 list line 99">W4-6</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0RA_1LC0RE_0LD0LB_1LA1LF_1RA0LF_1LC---/index.html#mechanism" title="1RB0RA_1LC0RE_0LD0LB_1LA1LF_1RA0LF_1LC--- · current list line 142 · 740 list line 156">W4-4</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---/index.html#mechanism" title="1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA--- · also called H-4 · current list line 245 · 740 list line 269">R5</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB---/index.html#mechanism" title="1RB1RF_1RC0RA_1LD1RE_1LE0LE_0RA0LD_0RB--- · current list line 314 · 740 list line 347">#18</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LE_1RC1RB_1LD0RE_1LA1LC_1RB0LF_0LC---/index.html#mechanism" title="1RB0LE_1RC1RB_1LD0RE_1LA1LC_1RB0LF_0LC--- · current list line 373 · 740 list line 412">W6-4</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA/index.html#mechanism" title="1RB0LC_1RC0RA_1RD0RF_0LE---_1LB1LA_1LD1RA · current list line 398 · 740 list line 440">#16</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC/index.html#mechanism" title="1RB0LE_1LC1RD_1LA0RB_1RC1RB_1LF0LC_---0RC · current list line 401 · 740 list line 443">#13</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LF_1RC0LB_1RD1RB_1RE1RF_1LA---_0RC1LA/index.html#mechanism" title="1RB0LF_1RC0LB_1RD1RB_1RE1RF_1LA---_0RC1LA · current list line 426 · 740 list line 469">W4-5</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA/index.html#mechanism" title="1RB0LF_1RC1RB_0RD0RC_1LE1LF_1LD---_0LB1LA · also called P-500 · current list line 453 · 740 list line 500">#37</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LF_1LC0LA_---1RD_1RF1RE_1LF1RD_1LB0RE/index.html#mechanism" title="1RB0LF_1LC0LA_---1RD_1RF1RE_1LF1RD_1LB0RE · current list line 481 · 740 list line 533">#35</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD/index.html#mechanism" title="1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD · current list line 482 · 740 list line 534">R8</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RF_1LC0RF_1LE0LD_1RC0LB_---1RA_1LB1RA/index.html#mechanism" title="1RB1RF_1LC0RF_1LE0LD_1RC0LB_---1RA_1LB1RA · current list line 552 · 740 list line 615">#36</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RF_1LC0RB_1RD0LC_1LE1RA_0RC1LB_---1RE/index.html#mechanism" title="1RB1RF_1LC0RB_1RD0LC_1LE1RA_0RC1LB_---1RE · current list line 562 · 740 list line 625">R9</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LF_0RC0RB_1LC1LD_1RE0RD_---0RA_1LA0LF/index.html#mechanism" title="1RB0LF_0RC0RB_1LC1LD_1RE0RD_---0RA_1LA0LF · current list line 564 · 740 list line 628">#17</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---/index.html#mechanism" title="1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA--- · current list line 569 · 740 list line 633">#9</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RA_1LC0RE_1LE0LD_0LB1LB_1RA0LF_1LD---/index.html#mechanism" title="1RB1RA_1LC0RE_1LE0LD_0LB1LB_1RA0LF_1LD--- · current list line 578 · 740 list line 644">W4-8</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF/index.html#mechanism" title="1RB1RF_1RC---_1RD0RD_1LE1RC_1RA1LE_1RE0LF">#19</a><span class="muted">×3</span></li><li><span class="lk">Cryptid candidate</span> <a class="tgl" href="/busy-beaver/machines/1RB0LA_1RC---_0LD1RD_0RA0RE_0RF1RC_1LF0LA/index.html#mechanism" title="1RB0LA_1RC---_0LD1RD_0RA0RE_0RF1RC_1LF0LA · current list line 29 · 740 list line 33">W7-6</a><span class="muted">×2</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RF_0RC0LE_1RD0RF_1LB---_1LB1LE_1RA0LC/index.html#mechanism" title="1RB1RF_0RC0LE_1RD0RF_1LB---_1LB1LE_1RA0LC · current list line 181 · 740 list line 198">W6-7</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0LD_0RC---_0RD0RF_1LE0LA_1LF1LE_1RA0RD/index.html#mechanism" title="1RB0LD_0RC---_0RD0RF_1LE0LA_1LF1LE_1RA0RD · current list line 201 · 740 list line 221">W6-6</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1LC_1LA1RF_0RD1RD_0RA0LE_1LA0LE_0RC---/index.html#mechanism" title="1RB1LC_1LA1RF_0RD1RD_0RA0LE_1LA0LE_0RC--- · current list line 262 · 740 list line 291">W6-3</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD/index.html#mechanism" title="1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD · current list line 324 · 740 list line 358">#6</a><span class="muted">×2</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD/index.html#mechanism" title="1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD · current list line 331 · 740 list line 365">#5</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB1RA_1LC1RE_---0LD_1LE1LD_0RA0LF_1LF0LB/index.html#mechanism" title="1RB1RA_1LC1RE_---0LD_1LE1LD_0RA0LF_1LF0LB · current list line 362 · 740 list line 400">#26</a><span class="muted">×3</span>, <a class="tgl" href="/busy-beaver/machines/1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---/index.html#mechanism" title="1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA--- · current list line 371 · 740 list line 409">W5-2</a><span class="muted">×3</span></li></ul><p class="muted">Each link opens the machine's Mechanism, where the questions sit next to the figures.</p></details></div><div class="nb dq"><h3>Discord question drafts</h3><details class="nd"><summary>2 drafts, not posted (observe.json <code>discord_check</code>)</summary><div class="dqi"><div class="it"><b>Message</b><span>for <a class="tgl" href="/busy-beaver/machines/1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA---/index.html#mechanism" title="1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA--- · current list line 76 · 740 list line 82">W7-4</a></span><button type="button" class="copy" data-copy="dq0" hidden>copy</button></div><pre id="dq0">Is anyone working on 1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA--- (Skelet 1-like Class 1)? Its other starts 1RB0RD_0LC0LF_1RD1LB_0RE---_1RA0LC_0LA1LF and 1RB1LE_0RC---_1RD0LA_1RE0RB_0LA0LF_0LD1LF are on the list too. It looks like a clean base-4 counter: digits are 10-regions in a 100 background, an overflow eats the left wall and spawns a new digit on the right, no glider in sight to 1e14. We&#x27;d like to try a closed-invariant proof for all three unless someone already has one.</pre></div><div class="dqi"><div class="it"><b>Message</b><span>for <a class="tgl" href="/busy-beaver/machines/1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA---/index.html#mechanism" title="1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA--- · also called H-4 · current list line 245 · 740 list line 269">R5</a></span><button type="button" class="copy" data-copy="dq1" hidden>copy</button></div><pre id="dq1">Has anyone run 1RB1LA_1RC1RE_1RD0RD_1LA1RC_1RF0LE_1RA--- (sheet: Shift-overflow structural counter) past ~8e13 steps, or analysed its long-run overflow? We see a binary counter stored between segments of 6-cell blocks. It widens by eating a finite reservoir (10)^m, and then the older prefix gadgets. Quick_Sim (block 12) shows no halt to 8e13, but the next overflow into blank tape looks much further out. (AI-assisted analysis.)</pre></div></details></div><h3 class="hh3">Overnight ledger <span class="gm">the last 6 rows, newest first · <a href="/busy-beaver/reports/overnight-ledger.md.html">the whole ledger</a></span></h3><ul class="lgl"><li><span class="lgt">10-14 23:1x</span><span class="lga" title="Dennis: stop for handover -&gt; stopped Wave 7 (wf_5a083869-f1b), W7-4 continuation (wf_ffeae37e-2fe), cron 3171daa3. No orphan coqc. Found W7-5 line 274 kill file PASS in formalize round 1 (coqchk pass); orchestrator check_kill PASS (sha 1dec277e); audit + bundle pending. Ledger in-progress rows 413-415. HANDOFF.md section 3a: relaunch steps.">Dennis: stop for handover -&gt; stopped Wave 7 (wf_5a083869-f1b), W7-4 continuation (wf_ffeae37e-2fe), cron 3171daa3. No orphan coqc. Found W7-5 line 274 kill file PASS in formalize round 1 (coqchk pass); orchestrator check …</span><span class=lgm>handoff</span></li><li><span class="lgt">10-14 23:0x</span><span class="lga" title="Running: Wave 7 agents W7-2:skeptic1 and W7-5 formalize round 1. Found: W7-4 (82/464/722, observe confidence HIGH) silently dropped by Wave 7 because its status field held a sentence (includes() check failed). Launched wf_ffeae37e-2fe: W7-4 proof -&gt; 2 skeptic rounds -&gt; formalize (status parsed by first word). W7-6 (33...) -&gt; CRYPTID_CANDIDATE, card &#x27;park&#x27; rec.">Running: Wave 7 agents W7-2:skeptic1 and W7-5 formalize round 1. Found: W7-4 (82/464/722, observe confidence HIGH) silently dropped by Wave 7 because its status field held a sentence (includes() check failed). Launched w …</span><span class=lgm><a href="/busy-beaver/machines/1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA---/index.html" title="1RB0LD_1RC0RF_0LD0LE_1RF1LC_0LB1LE_0RA---">W7-4</a>, <a href="/busy-beaver/machines/1RB0LA_1RC---_0LD1RD_0RA0RE_0RF1RC_1LF0LA/index.html" title="1RB0LA_1RC---_0LD1RD_0RA0RE_0RF1RC_1LF0LA">W7-6</a></span></li><li><span class="lgt">10-14 22:5x</span><span class="lga">Wrote HANDOFF.md (state, running Wave 7, decisions waiting, Astra coordination, ledger, paths, lessons). Old session still owns wf_5a083869-f1b and cron 3171daa3.</span><span class=lgm>handoff</span></li><li><span class="lgt">10-14 19:3x</span><span class="lga" title="Ledger + CB3 workflow (wf_f361b4b0-d23) done. Ledger: tools/attempts.py + coord/attempts.tsv; backfill 223 Claude + 69 Astra rows; coverage check 18/25 found, 7 missing added; applied Astra&#x27;s &#x27;success&#x27; outcome patch, appended its 4 pending success rows; query accepts &#x27;---&#x27; strings; summary metric fixed; tests 26/26; 360 rows lint OK. CB3 explorer: stage 1 progress, stage 2 STOP (left-side run-length leak; S0LC calibration never closed); reports/cb3/decision.md &#x27;Next&#x27;: B hand to Astra (rec) / C park / A3 stage 3.">Ledger + CB3 workflow (wf_f361b4b0-d23) done. Ledger: tools/attempts.py + coord/attempts.tsv; backfill 223 Claude + 69 Astra rows; coverage check 18/25 found, 7 missing added; applied Astra&#x27;s &#x27;success&#x27; outcome patch, app …</span><span class=lgm>ledger, CB3</span></li><li><span class="lgt">10-14 18:4x</span><span class="lga" title="Dennis: plan the next wave -&gt; launched wf_5a083869-f1b Wave 7 at table/cluster level: lenses (untouched multi-start clusters; sibling-residue triage + engine fit; remaining Unknown/small classes) -&gt; planner + critic (checks the attempts ledger, honest odds, cryptid signatures) -&gt; GO only if &gt;= 3 picks with odds &gt;= 0.2 -&gt; attack &lt;= 6 picks, 3 at a time (observe all starts -&gt; &lt;=2 stages -&gt; start-parametric proof + 2 skeptic rounds -&gt; formalize). reports/wave7/plan.md.">Dennis: plan the next wave -&gt; launched wf_5a083869-f1b Wave 7 at table/cluster level: lenses (untouched multi-start clusters; sibling-residue triage + engine fit; remaining Unknown/small classes) -&gt; planner + critic (che …</span><span class=lgm>wave 7</span></li><li><span class="lgt">10-14 18:3x</span><span class="lga" title="Mailed Astra: attempts ledger + rule (before/after every attempt), backfill of its side read-only with corrections by appended rows; K42 parked; CB3 explorer may send certificates for packaging; ack of its directions.md corrections.">Mailed Astra: attempts ledger + rule (before/after every attempt), backfill of its side read-only with corrections by appended rows; K42 parked; CB3 explorer may send certificates for packaging; ack of its directions.md …</span><span class=lgm>coord</span></li></ul><p class="rpl"><span class="lk">latest report</span> <a href="/busy-beaver/reports/overnight-2026-10-10.md.html">bb6-hunt: report for 2026-10-10 to 10-13</a> <span class="muted">· Oct 14 18:03 · all reports on <a href="/busy-beaver/dashboard/reports.html">Reports</a></span></p><p class="rpl"><span class="lk">the list</span> <b>663 holdouts (current list)</b> <code>BB6_holdouts_663.txt</code> · <a href="/busy-beaver/dashboard/machines.html#off" title="historical machines and mapped upstream results not on the current list, shown in their bucket with the reason">+79 off the list</a> · previous list 740 (<code>BB6_holdouts_740.txt</code>; 77 gone since) · 1,370 with equivalents · <span title="sheet Direct Simulation tab: 128 of the 663 not yet simulated to 1e14; 32 more simulated to 1e14 but not to 1e15">sim pending 128 / 32</span></p></div></details></main><footer class="sn-foot"><span>Built <time id="built" data-ts="1792182570">2026-10-16 13:29</time><span id="bago"></span></span><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer><script>
+(function(){
+ var LIVE=30*60,STALE=15*60,MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+ function p2(n){return(n<10?'0':'')+n}
+ function when(ts){var d=new Date(ts*1000);return MO[d.getMonth()]+' '+d.getDate()+' '+p2(d.getHours())+':'+p2(d.getMinutes())}
+ function rel(m){return m<1?'just now':m<120?m+' min ago':m<2880?Math.floor(m/60)+' h ago':Math.floor(m/1440)+' d ago'}
+ function ago(ts,now){var m=Math.floor((now-ts)/60),w=when(ts);return m>=2880?w:w+' ('+rel(m)+')'}
+ function tick(){var now=Date.now()/1000,cnt={};
+  document.querySelectorAll('.ago[data-ts]').forEach(function(e){e.textContent=ago(+e.dataset.ts,now)});
+  document.querySelectorAll('.live[data-ts]').forEach(function(e){var f=now-e.dataset.ts<LIVE;e.hidden=!f;
+   e.textContent='● working now';if(f){var t=e.closest('[data-b]');if(t)cnt[t.dataset.b]=(cnt[t.dataset.b]||0)+1}});
+  document.querySelectorAll('.lwk[data-ts]').forEach(function(e){e.textContent=(now-e.dataset.ts<LIVE)?'last change':'idle since'});
+  document.querySelectorAll('.lvc[data-lvb]').forEach(function(e){var n=cnt[e.dataset.lvb]||0;e.hidden=!n;
+   e.textContent='● '+n+' working now'});
+  var b=document.getElementById('built');if(!b)return;var m=Math.floor((now-b.dataset.ts)/60);
+  document.getElementById('bago').textContent=' ('+rel(m)+')';
+  var s=document.getElementById('stale');if(s){s.hidden=m*60<STALE;s.querySelector('.sm').textContent=rel(m)}}
+ tick();setInterval(tick,60000);
+})();
+
+(function(){
+ function copyText(t,b){
+  function ok(){var o=b.getAttribute('data-t')||b.textContent;b.setAttribute('data-t',o);b.textContent='copied';
+   setTimeout(function(){b.textContent=o},1200)}
+  function fb(){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';
+   document.body.appendChild(a);a.select();try{document.execCommand('copy');ok()}catch(e){}document.body.removeChild(a)}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(ok,fb)}else{fb()}
+ }
+ document.querySelectorAll('button.copy[data-copy]').forEach(function(b){b.hidden=false;
+  b.addEventListener('click',function(){var e=document.getElementById(b.getAttribute('data-copy'));if(e)copyText(e.textContent,b)})});
+})();
+</script></body></html>

@@ -1,0 +1,16 @@
+The first candidate I discovered:
+
+`1RB0RF_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---` (Bell eats counter, sheet row 1035)
+
+My Coq proof that it never halts: https://github.com/DennisKoshta/busycoq/blob/59de13796aa9dbccedd52bc5d081e87980dd2f7e/verify/BellEatsCounter_1RB0RF.v
+PR: https://github.com/ccz181078/busycoq/pull/14
+Informal write-up: attached
+
+It is very similar to busycoq's SOMDCv6 TM7 (`1RB0RC_1LC0RE_0LC0LD_1RD1LB_0RF1RA_0RB---`) with the only difference being that A1 changed from 0RC to 0RF. The sweep config is the same, `0^inf 11 D> <r> 0^inf` over the digits L=110, 0=000, 1=100. The behavioural difference: whenever a sweep enters an L digit (eater or drain pass), A1 now runs one extra h-pass to the right. That pass adds +1 to the 0/1 digits (little-endian binary, L skipped) and comes back to exactly where TM7 is one step after its A1. The proof is TM7's with three changes:
+- an `Inc` relation, added as a premise to the two L clauses of `RIncs`;
+- two zero-pass end clauses, `RIncs h1 0 [D1] [LD]` and `RIncs h1 0 [D0] [D1]`. They are just `1 100 0^inf = 110 0^inf` and `1 000 0^inf = 100 0^inf`, but without them the domain is not closed;
+- the domain lemma, redone with a count j of pending +1 passes. At j = 0 it reduces to TM7's conditions.
+
+It is one file with a top-level `Lemma nonhalt: ~halts tm c0.`, built with Coq 8.20.1 against busycoq 0940bb9c. It compiles in about 4 s, `Print Assumptions` is closed, and coqchk passes.
+
+AI disclosure: as I mentioned above, the informal proof and the Coq formalization were produced with Claude Code (Opus 5.5), and checked by compiling against unmodified busycoq, with Print Assumptions and coqchk. I then manually reviewed everything, and it seems to check out, but I am quite new to this and so would appreciate extra verification and any feedback!

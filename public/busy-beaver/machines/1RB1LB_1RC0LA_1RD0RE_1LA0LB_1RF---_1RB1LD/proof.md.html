@@ -1,0 +1,627 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>proof.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD/proof.md · <a href="/busy-beaver/machines/1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD/proof.md.html">raw</a></div>
+<h1 id="w7-2-1rb1lb_1rc0la_1rd0re_1la0lb_1rf-_1rb1ld-informal-proof-start-parametric">W7-2 · 1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD: informal proof (start-parametric)</h1>
+<ul>
+<li>Table: <code>1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD</code>, viewer https://bbchallenge.org/1RB1LB_1RC0LA_1RD0RE_1LA0LB_1RF---_1RB1LD</li>
+<li>Listed starts:</li>
+<li><strong>line 175</strong> = this string (start A);</li>
+<li><strong>line 489</strong> = <code>1RB0RC_1LC1RC_1LD0RB_1LA0LE_1LF---_1LC1RA</code> = this table from <strong>start D</strong>, mirrored, states renamed A→B, B→C, C→D, D→A (check_proof.py §A).</li>
+</ul>
+<p>Nonhalting is invariant under mirroring and renaming, so everything below runs the table above, from A or from D.
+- Stage: informal_proof (2026-10-14). Status: OPEN (Checkpoint B material; not formalized).
+- <strong>State of the argument.</strong> Both starts are covered by one invariant made of two exact cycles of the same table:</p>
+<p><code>INV := { N(Y) : Y &gt;= 22 }  ∪  { Q(W) : W &gt;= 14 }
+  N(Y) --&gt;+ N(2^18 Y + 32859022)        (start A enters here)
+  Q(W) --&gt;+ Q(2^18 W + 34431880)        (start D enters here)</code></p>
+<p>Start A reaches N(508932094) after about 4.1e18 steps. Start D first reaches a regime with two far fields (9.4e17 and 1.0e19 words), crosses it with a three-parameter lemma applied 39,144,505,581,733,537 times, and enters Q when the first far field runs out. Every claim is checked by <code>check_proof.py</code> (§A-§G, ALL OK, 38 checks in about 3 minutes, most of it the 8.9M-move opening run of start D).
+- <strong>Correction to the observe notes.</strong> The notes said 489 is "not covered" and feared that its depth "grows like a tower". The build-up is finite: the far fields are refilled once more inside the opening run, and when the big Y1 runs out, Y2 is absorbed into the accumulator in one event and the run settles into the cycle Q. No residue of a huge number is ever needed: every side-condition log is empty (§6).</p>
+<h2 id="0-machine-and-the-halting-transition">0. Machine and the halting transition</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>0</th>
+<th>1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1RB</td>
+<td>1LB</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1RC</td>
+<td>0LA</td>
+</tr>
+<tr>
+<td>C</td>
+<td>1RD</td>
+<td>0RE</td>
+</tr>
+<tr>
+<td>D</td>
+<td>1LA</td>
+<td>0LB</td>
+</tr>
+<tr>
+<td>E</td>
+<td>1RF</td>
+<td><strong>---</strong></td>
+</tr>
+<tr>
+<td>F</td>
+<td>1RB</td>
+<td>1LD</td>
+</tr>
+</tbody>
+</table>
+<p>Only C1 enters E, and only B0 enters C. So the machine halts exactly when it reaches <code>B&gt; 0 1 1</code>.</p>
+<p>The proof never needs this fact. It only uses that every computation it cites is an exact run of the machine that does not halt.</p>
+<h2 id="1-notation-4-cell-blocks">1. Notation: 4-cell blocks</h2>
+<p>Cut the tape into fixed blocks of 4 cells. A configuration is written</p>
+<div class="highlight"><pre><span></span><code>0^inf  w_1^{e_1} ... w_k^{e_k}  &lt;S  u_1^{f_1} ... u_l^{f_l}  0^inf      (head faces left)
+0^inf  w_1^{e_1} ... w_k^{e_k}  S&gt;  u_1^{f_1} ... u_l^{f_l}  0^inf      (head faces right)
+</code></pre></div>
+
+<p>Each <code>w_i</code>, <code>u_j</code> is a 4-cell word and <code>w^e</code> is e copies of it. The head always sits on a block boundary.</p>
+<ul>
+<li><code>&lt;S</code> means: state S, reading the last cell of the block to its left.</li>
+<li><code>S&gt;</code> means: state S, reading the first cell of the block to its right.</li>
+</ul>
+<p>This is the repo's directed-head notation (tools/sim.py) with block words.</p>
+<p><strong>The three key shapes.</strong></p>
+<div class="highlight"><pre><span></span><code>N(Y)          := 0^inf 0001 1011^Y &lt;A 0001^28 0011 0000 1000 0^inf
+Q(W)          := 0^inf 0011 1101 F&gt; 1010 0010^W 0000 0010^28 0000 1000 0100 0^inf
+D(X, Y2, Y1)  := 0^inf 1101^17 1111 0111^X 1101^Y2 1111 0111^Y1 C&gt; 0^inf
+</code></pre></div>
+
+<p>N(Y) is a few moves before the record M(X) of the observe notes, with X = Y - 14:</p>
+<div class="highlight"><pre><span></span><code>M(X) = 0^inf 1 1011^X 10111110 1110^26 &lt;A 01010100010000010001000100001 0^inf
+</code></pre></div>
+
+<p>check_proof.py §C/§E tie N to the independent qsim records 21, 42 and 63 (<code>M(508932080)</code>, <code>2^18 X0 + 36529024</code>, <code>M(2^36 X0 + 9575900996480)</code>).</p>
+<h2 id="2-the-three-kinds-of-moves">2. The three kinds of moves</h2>
+<p>Every computation in this proof is a sequence of the following moves. Each one is an exact run of the machine.</p>
+<p><strong>(a) Block step.</strong> The head faces a block. Run the machine inside that block until the head leaves it.</p>
+<p>This is a finite table: 6 states × 16 words × 2 directions = 192 cases, each a few dozen steps at most. §B1 checks the table against plain simulation. A case that halts aborts the run; none occurs anywhere in this proof.</p>
+<p><strong>(b) Chain step (shift rule).</strong> Suppose a block step on word w, from state S facing d, leaves w' and exits on the far side in the same state S facing d. Then for every n &gt;= 0, by induction on n,</p>
+<div class="highlight"><pre><span></span><code>S&gt; w^n  --&gt;  w'^n S&gt;          and the mirror form          w^n &lt;S  --&gt;  &lt;S w'^n
+</code></pre></div>
+
+<p>This table has exactly 7 such entries:</p>
+<table>
+<thead>
+<tr>
+<th>rule</th>
+<th>steps per block</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>B&gt; 0100  --&gt;  1011 B&gt;</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>C&gt; 1000  --&gt;  0111 C&gt;</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>E&gt; 0001  --&gt;  1110 E&gt;</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>F&gt; 0010  --&gt;  1101 F&gt;</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>0111 &lt;A  --&gt;  &lt;A 0100</code></td>
+<td>14</td>
+</tr>
+<tr>
+<td><code>1111 &lt;A  --&gt;  &lt;A 0101</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>1111 &lt;B  --&gt;  &lt;B 1010</code></td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>So a right sweep turns 1-one words (rotations of <code>0001</code>) into 3-ones words, and the left sweeps turn them back.</p>
+<p><strong>(c) Diff rule.</strong> A Diff rule is a configuration shape with some exponents fixed and the others written <code>v_i + k_i</code>:</p>
+<div class="highlight"><pre><span></span><code>C(v_1 + k_1, ..., v_r + k_r)  --&gt;+  C(v_1 + k_1 + d_1, ..., v_r + k_r + d_r)       for all v_i &gt;= 0
+</code></pre></div>
+
+<p>The deltas d_i are integers, at least one negative.</p>
+<ul>
+<li><strong>Proof obligation.</strong> One symbolic run of moves (a)-(c) from the generalized configuration back to the same shape, with every exponent shifted by d_i. Every decision in it (is this block non-empty?) must follow from <code>v_i &gt;= 0</code> alone.</li>
+<li><strong>Use.</strong> If the current exponents are e_i &gt;= k_i, the rule applies <code>n = min over d_i &lt; 0 of floor((e_i - k_i) / |d_i|) + 1</code> times in a row, giving exponents <code>e_i + n d_i</code>. Each application starts with every slot still &gt;= its k_i.</li>
+<li><strong>Linear forms.</strong> When an e_i is a linear form in a parameter, the division must be exact in its coefficients; otherwise the step is refused.</li>
+</ul>
+<p>Typical Diff rules are the <strong>left carries</strong>, e.g.</p>
+<div class="highlight"><pre><span></span><code>0001 1011^(v+2) 1111 &lt;A 0001^(w+2) T  --&gt;+  0001 1011^(v+1) 1111 &lt;A 0001^(w+3) T
+</code></pre></div>
+
+<p>Here the head walks one 1011 word at a time from the left run into the right run (T is a fixed tail).</p>
+<p>The other family is the <strong>doubling transfers</strong> of the observe notes, <code>(0100)^a 11 (0001)^b -&gt; a+2, b-1</code> per visit. A marker crosses the right run one word per left-end visit, and every word it crosses becomes two words on the other side. Applied b times this is <code>Z -&gt; 2Z + c</code>. A pair of them, or a transfer that writes four words, is <code>Z -&gt; 4Z + c</code>.</p>
+<p><strong>Side conditions.</strong> A symbolic run carries one designated parameter (m, x or z below). When a decision holds only for large values of it, the run records the side condition <code>param &gt;= B</code> and continues. Every lemma below reports this log; in this proof all of them are empty.</p>
+<h2 id="3-the-two-cycle-lemmas-start-independent">3. The two cycle lemmas (start-independent)</h2>
+<h3 id="31-cycle-n">3.1 Cycle N</h3>
+<p><strong>Lemma N.</strong> For every Y &gt;= 22,</p>
+<div class="highlight"><pre><span></span><code>N(Y)  --&gt;+  N(2^18 (Y - 14) + 36529038)  =  N(2^18 Y + 32859022).
+</code></pre></div>
+
+<p>On X = Y - 14 this is <code>X -&gt; 2^18 X + 36529024</code>. Two of these give</p>
+<div class="highlight"><pre><span></span><code>X -&gt; 2^36 X + 36529024 (2^18 + 1) = 2^36 X + 9575900996480,
+</code></pre></div>
+
+<p>which is exactly the period map <code>M(X) --&gt;+ M(2^36 X + 9575900996480)</code> fitted in observe (42 qsim records). The 42-record period is two of these half-cycles. In 4-cell blocks they have the same shape, so the proof needs one lemma and <strong>no residue condition on Y</strong>.</p>
+<p><strong>Proof.</strong> A symbolic run from N(m + 22), m a free natural number: 187,865 moves (49,938 chain steps, 130,998 block steps, 6,929 Diff-rule applications, each rule proved by its own symbolic run as in §2(c)). Its side-condition log is empty (check_proof.py §D).</p>
+<p>The big field is never divided: every m-dependent transfer multiplies it by 2 or 4. Its m-coefficient changes at these points (<code>scripts/segments.py</code>, <code>work/segments.txt</code>; every row starts and ends with <code>0^inf</code>):</p>
+<table>
+<thead>
+<tr>
+<th>move</th>
+<th>configuration at the segment boundary</th>
+<th>m-coefficient</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>0001 1011^(m+21) 1110 E&gt; 0001^28 0011 0000 1000</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>31,965</td>
+<td><code>1101^(4m+481) 1111 0111^82 1101 F&gt; 1000^4 1001 0010^21 0001</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>35,984</td>
+<td><code>1101^(8m+1046) &lt;B 1010 0010^4 0100 1000^81 0000 0010^19 0001</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td>36,980</td>
+<td><code>1101^(16m+2118) &lt;B 1010 0010^4 0000^2 1000^79 0000 0010^19 0001</code></td>
+<td>16</td>
+</tr>
+<tr>
+<td>38,311</td>
+<td><code>1101^(32m+4590) &lt;B 1010 0010^4 1001 0010^18 0001</code></td>
+<td>32</td>
+</tr>
+<tr>
+<td>70,182</td>
+<td><code>0001 1011^(128m+18745) 1110^83 &lt;A 0101 0001^4 0010 0100^12 0010</code></td>
+<td>128</td>
+</tr>
+<tr>
+<td>74,238</td>
+<td><code>0001 1011^(256m+37576) &lt;A 0100^4 1001 0001^80 0000^2 0100^10 0010</code></td>
+<td>256</td>
+</tr>
+<tr>
+<td>75,216</td>
+<td><code>0001 1011^(512m+75176) &lt;A 0100^4 0000 0001^79 0000^2 0100^10 0010</code></td>
+<td>512</td>
+</tr>
+<tr>
+<td>76,496</td>
+<td><code>0001 1011^(1024m+150702) &lt;A 0100^4 0101 0010 0100^9 0010</code></td>
+<td>1024</td>
+</tr>
+<tr>
+<td>108,124</td>
+<td><code>0011 0111^(4096m+603193) 1101^83 &lt;B 1010 0010^4 0100 1000^3 0100</code></td>
+<td>4096</td>
+</tr>
+<tr>
+<td>112,135</td>
+<td><code>0011 0111^(8192m+1206469) 1101 F&gt; 1000^4 1001 0010^81 0000^2 1000 0100</code></td>
+<td>8192</td>
+</tr>
+<tr>
+<td>113,150</td>
+<td><code>0011 0111^(16384m+2412967) 1101 F&gt; 1000^4 0000 0010^79 0000^2 1000 0100</code></td>
+<td>16384</td>
+</tr>
+<tr>
+<td>114,458</td>
+<td><code>0011 0111^(32768m+4826285) 1101 F&gt; 1000^4 1010 0100^2</code></td>
+<td>32768</td>
+</tr>
+<tr>
+<td>131,480</td>
+<td><code>0011 1101 F&gt; 1010 0010^(65536m+9656504) 0000 1000 1010 0100</code></td>
+<td>65536</td>
+</tr>
+<tr>
+<td>141,612</td>
+<td><code>0001 1011^(262144m+38626173) 1110^29 &lt;A 0101 0001^4 0000 1000</code></td>
+<td>262144</td>
+</tr>
+<tr>
+<td>end</td>
+<td><code>0001 1011^(262144m+38626190) &lt;A 0001^28 0011 0000 1000</code> = N(2^18 m + 38626190)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Between the boundaries the run does bookkeeping on small fields only. The far-end words (<code>0001^28</code>, <code>0010^21</code>, <code>1000^81</code>, ...) are consumed and rewritten one sweep at a time, and the small constants 82, 80, 28, ... are the same in every cycle. ∎</p>
+<h3 id="32-cycle-q">3.2 Cycle Q</h3>
+<p><strong>Lemma Q.</strong> For every W &gt;= 14,</p>
+<div class="highlight"><pre><span></span><code>Q(W)  --&gt;+  Q(2^18 (W - 14) + 38101896)  =  Q(2^18 W + 34431880).
+</code></pre></div>
+
+<p><strong>Proof.</strong> A symbolic run from Q(m + 14): 184,086 moves (6,814 Diff-rule applications), side-condition log empty (check_proof.py §G1). It has the same rhythm as cycle N, with the far end in the other phase (<code>scripts/segments.py Q</code>, <code>work/segments_Q.txt</code>):</p>
+<table>
+<thead>
+<tr>
+<th>move</th>
+<th>configuration at the segment boundary</th>
+<th>m-coefficient</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>0011 1101 &lt;D 1010 0010^(m+14) 0000 0010^28 0000 1000 0100</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>32,332</td>
+<td><code>0110 1110^(4m+476) 1111 1011^83 &lt;A 0100^4 1001 0001^20 0000 1000</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>38,619</td>
+<td><code>0110 1110^(32m+4525) &lt;A 0101 0001^4 0100 1001 0001^17 0000 1000</code></td>
+<td>32</td>
+</tr>
+<tr>
+<td>70,211</td>
+<td><code>1101^(128m+18489) 1111 0111^82 1101 F&gt; 1000^4 1001 0010^12 0001</code></td>
+<td>128</td>
+</tr>
+<tr>
+<td>76,557</td>
+<td><code>1101^(1024m+148654) &lt;B 1010 0010^4 1001 0010^9 0001</code></td>
+<td>1024</td>
+</tr>
+<tr>
+<td>108,422</td>
+<td><code>0001 1011^(4096m+595001) 1110^83 &lt;A 0101 0001^4 0010 0100^3 0010</code></td>
+<td>4096</td>
+</tr>
+<tr>
+<td>114,736</td>
+<td><code>0001 1011^(32768m+4760750) &lt;A 0100^4 0101 0010^2</code></td>
+<td>32768</td>
+</tr>
+<tr>
+<td>131,719</td>
+<td><code>0001 1110 E&gt; 0101 0001^(65536m+9525432) 0000 0100 0101 0010</code></td>
+<td>65536</td>
+</tr>
+<tr>
+<td>141,777</td>
+<td><code>1101^(262144m+38101889) 1111 0111^28 1101 F&gt; 1000^4 0100</code></td>
+<td>262144</td>
+</tr>
+<tr>
+<td>end</td>
+<td>Q(2^18 m + 38101896)</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>(The ×2 steps between the listed rows are as in cycle N; the full list is in <code>work/segments_Q.txt</code>.) ∎</p>
+<h3 id="33-checks-of-the-two-lemmas">3.3 Checks of the two lemmas</h3>
+<ul>
+<li>§D and §G1: the symbolic runs themselves, with their side-condition logs (both empty).</li>
+<li>§E and §G2: the same lemmas re-run on concrete values (N(22), N(23), N(29), N(64), N(1001); Q(14), Q(15), Q(40), Q(777)) by the concrete engine, which detects its loops differently and gets the same results.</li>
+<li>§B3: every Diff rule of these runs (400 sampled per run) is re-checked on 3 instances by a rule-free run (block and chain steps only), and the small instances also by plain simulation, step for step.</li>
+<li>§B1-B2: the block table and 171 random rule-free runs agree with plain simulation.</li>
+</ul>
+<h2 id="4-invariant-progress-halting-unreachable">4. Invariant, progress, halting unreachable</h2>
+<ul>
+<li><strong>Invariant.</strong> <code>INV := { N(Y) : Y &gt;= 22 } ∪ { Q(W) : W &gt;= 14 }</code>.</li>
+<li><strong>Closure.</strong> By Lemma N, N(Y) with Y &gt;= 22 reaches N(2^18 Y + 32859022), again with Y &gt;= 22. By Lemma Q, Q(W) with W &gt;= 14 reaches Q(2^18 W + 34431880), again with W &gt;= 14.</li>
+<li><strong>Progress.</strong> Each cycle is at least one machine step (each has over 100,000 block steps).</li>
+<li><strong>Halting unreachable.</strong> Every move of every run is an exact machine computation, and none of them halts (a halting block step would abort the run; none occurs). So from any configuration in INV the machine runs forever: this is <code>progress_nonhalt</code> with INV.</li>
+<li><strong>Entry.</strong> Start A enters N (§5), start D enters Q (§6).</li>
+</ul>
+<h2 id="5-start-a-line-175-the-opening-run">5. Start A (line 175): the opening run</h2>
+<p><strong>Claim.</strong> From the blank tape in state A, the machine reaches <code>N(508932094)</code>.</p>
+<p><strong>Proof.</strong> A checked accelerated run with the same three moves on concrete numbers: 657,961 moves, 24,932 Diff-rule applications, each rule proved by its own symbolic run (400 re-checked on instances in §B3).</p>
+<p>It passes the regime the observe notes describe: the far fields 0001^100, 0100^14, ..., 1000^15901602 are exhausted and refilled, and 15901602 is absorbed into the accumulator (<code>63616434 = 4 · 15901602 + 26</code>). After that the run enters N.</p>
+<p><strong>Independent cross-check.</strong> sligocki's accelerated simulator (qsim, <code>work/trace175_r.txt</code>) reaches <code>M(508932080)</code> at step 4,111,147,719,584,449,981 (record 21), and 508932080 = 508932094 - 14. Its records 42 and 63 are <code>1011^(2^18 X0 + 36529024)</code> and <code>M(2^36 X0 + 9575900996480)</code>, i.e. Lemma N twice (§E).</p>
+<p>With §4: <strong>line 175 does not halt</strong> (informal level).</p>
+<h2 id="6-start-d-line-489-the-opening-run">6. Start D (line 489): the opening run</h2>
+<p>The run from D has three parts.</p>
+<p><strong>6.1 Opening, blank tape to the D regime.</strong> A checked accelerated run from the blank tape in state D reaches</p>
+<div class="highlight"><pre><span></span><code>D(X0, Y2_0, Y1_0)    with  X0 a 29-digit number,  Y2_0 = 10456559309013950571,  Y1_0 = 939468133961604901
+</code></pre></div>
+
+<p>after 8,855,536 moves (check_proof.py §F1, about 2.5 minutes). The far fields Y1 and Y2 are the two huge fields of the observe notes (there at qsim record 183).</p>
+<p>The D shape already occurs once before, at move 313,457, with small far fields (X a 6-digit number, Y2 = 330, Y1 = 54). Two applications of Lemma D and the exhaustion of that instance build the big far fields. This is the "far-end refill" of the observe notes. It happens inside the concrete opening run, so the proof does not need a lemma for it; it simply enters at the first D shape with Y1 &gt; 10^17.</p>
+<p><strong>6.2 Lemma D (three parameters).</strong> For all X &gt;= 100, Y2 &gt;= 130, Y1 &gt;= 30,</p>
+<div class="highlight"><pre><span></span><code>D(X, Y2, Y1)  --&gt;+  D(2^20 X + 349479900, Y2 - 120, Y1 - 24).
+</code></pre></div>
+
+<p>Proof: a symbolic run from D(x + 100, b + 130, a + 30) with x, a, b free natural numbers, ending at D(2^20 (x + 100) + 349479900, b + 10, a + 6). The side-condition log is empty (§F2). About 518,000 moves, 19,916 Diff-rule applications.</p>
+<p>Cross-check: two applications give <code>X -&gt; 2^40 X + 349479900 (2^20 + 1)</code>, Y1 - 48, Y2 - 240. This is qsim's fitted 40-record period <code>X_q -&gt; 2^40 X_q + 377451701380050</code> exactly, with X_q = X - 10 (§F2).</p>
+<p><strong>6.3 Iteration.</strong> Apply Lemma D while Y1 &gt;= 30. Y2 and X only grow or stay huge, so the count is fixed by Y1:</p>
+<div class="highlight"><pre><span></span><code>n = floor((Y1_0 - 30) / 24) + 1 = 39144505581733537
+Y1_n = Y1_0 - 24 n = 13,      Y2_n = Y2_0 - 120 n = 5759218639205926131,      X_n = 2^20 X_(n-1) + 349479900.
+</code></pre></div>
+
+<p>Before each application Y1 &gt;= 30 and Y2 &gt;= Y2_n + 120 &gt;= 130, so every application is valid.</p>
+<p><strong>6.4 The exhaustion event.</strong> Write z := X_(n-1). It is a huge number, but the next run needs nothing about it except z &gt;= 0 (it is &gt;= X0 &gt;= 100). A symbolic run with z free:</p>
+<div class="highlight"><pre><span></span><code>D(2^20 z + 349479900, 5759218639205926131, 13)  --&gt;+  Q(2^33 z + 23036877419765819664)
+</code></pre></div>
+
+<p>339,452 moves (12,895 Diff-rule applications), side-condition log empty (§F4). In this run the remaining Y1 words are used up, Y2 is absorbed into the accumulator in one transfer (as 15901602 was for start A), and the far end settles into the tail of Q.</p>
+<p><strong>6.5 Conclusion for line 489.</strong> Q(2^33 z + 23036877419765819664) is in INV (W &gt;= 14 for every z), so by §4 the run from D never halts: <strong>line 489 does not halt</strong> (informal level).</p>
+<p><strong>What the observe notes got wrong.</strong> They expected a tower: Y1 running out would push the accumulator into the far end as a new far field. Instead Y2 is absorbed and the run enters a cycle with a fixed far end. The cryptid concern (residues of tower-size numbers) does not arise: §6.4 needs no residue of z, and n is an explicit number.</p>
+<h2 id="7-lemma-plan-for-the-rocq-file">7. Lemma plan for the Rocq file</h2>
+<p>Nearest solved example: our kill #3, <code>machines/1RB0LD_1RC0RA_1RD1RF_1LA0LE_1RE1LD_0RB---/</code> (Skelet 1-like Class 2, Individual62: one macro lemma per segment, then <code>progress_nonhalt</code>). What carries over and what changes:</p>
+<ul>
+<li><strong>Invariant.</strong> Simpler here, and the same for both starts: <code>fun c =&gt; (exists m, c = N(m + 22)) \/ (exists m, c = Q(m + 14))</code>. No residue, no case split.</li>
+<li><strong>Cycles.</strong> Two lemmas, <code>N(m + 22) --&gt;+ N(2^18 m + 38626190)</code> and <code>Q(m + 14) --&gt;+ Q(2^18 m + 38101896)</code>. Each is a chain of segment lemmas along the tables in §3 (15 boundaries each). Each segment composes:</li>
+<li>the 7 shift rules of §2(b) (one <code>shift_rule</code>-style lemma per row);</li>
+<li>the left-carry and doubling-transfer Diff rules (<code>forall n, C(n + k) --&gt;* C'(...)</code>, by induction on n with <code>execute</code> and the shift lemmas);</li>
+<li>finite <code>execute</code> runs for the far-end bookkeeping (fixed small exponents only).</li>
+<li><strong>Size.</strong> Each half-cycle applies about 6,900 Diff rules, about 600 of them with a parameter-dependent count. Most share a handful of shapes (left carries on <code>1011/0001</code>, <code>1110/0100</code>, <code>0111/0010</code>, <code>1101/1000</code>, with different far-end tails), so the tail should be a parameter of the lemma. A tactic-driven symbolic executor, or a reflective checker that replays the engine's trace, is the realistic route; 600 hand-written lemmas are not.</li>
+<li><strong>Start D, extra pieces.</strong> Lemma D with three parameters; its iteration, by induction on n, stated as <code>D(X, Y2 + 120 n, Y1 + 24 n) --&gt;* D(f^n X, Y2, Y1)</code> with f X = 2^20 X + 349479900; then <code>exists z &gt;= 100, X_n = 2^20 z + 349479900</code> for the exhaustion run.</li>
+<li><strong>Opening runs.</strong> Start A: 657,961 moves (about 4.1e18 steps). Start D: 8,855,536 moves plus the 339,452-move exhaustion run. Options: replay the engine trace with the same lemmas on concrete numbers, or upstream <code>Sk1Machines.v</code>'s <code>Sk1Auto</code> checked accelerated run (its counter shapes do not fit the cycles, but a checked run only needs the step lemmas).</li>
+<li><strong>Upstream Sk1CounterMixed</strong> does not fit the cycles: there are no periodic digit words, and the far ends are fixed words.</li>
+</ul>
+<h2 id="8-reproduce">8. Reproduce</h2>
+<div class="highlight"><pre><span></span><code><span class="nb">cd</span><span class="w"> </span><span class="s2">"[local working file]"</span>
+python3<span class="w"> </span>-B<span class="w"> </span>check_proof.py<span class="w">            </span><span class="c1"># §A-§G, 38 checks, about 3 min; prints ALL OK</span>
+python3<span class="w"> </span>-B<span class="w"> </span>check_proof.py<span class="w"> </span>A<span class="w"> </span>C<span class="w"> </span>D<span class="w"> </span>E<span class="w"> </span>G<span class="w">  </span><span class="c1"># everything except start D (§F) and the re-checks (§B), about 40 s</span>
+python3<span class="w"> </span>-B<span class="w"> </span>scripts/segments.py<span class="w">       </span><span class="c1"># the segment table of Lemma N (argument Q: Lemma Q)</span>
+python3<span class="w"> </span>-B<span class="w"> </span>scripts/bigrules.py<span class="w">       </span><span class="c1"># the m-dependent Diff-rule applications of one N half-cycle</span>
+</code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>section</th>
+<th>claim</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>strings byte-exact (lines 175, 489); E1 is the only halt and is reached only from <code>B&gt; 0 1 1</code>; 489 = start D mirrored and renamed</td>
+</tr>
+<tr>
+<td>B</td>
+<td>block table and random rule-free runs agree with plain simulation; Diff rules of C, D, F, G re-checked on instances</td>
+</tr>
+<tr>
+<td>C</td>
+<td>blank tape, start A --&gt;* N(508932094); qsim record 21 = M(508932080)</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Lemma N: N(m + 22) --&gt;+ N(2^18 m + 38626190) for all m &gt;= 0, no side condition</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Lemma N on 5 concrete values; composite = 2^36 X + 9575900996480; qsim records 42 and 63</td>
+</tr>
+<tr>
+<td>F</td>
+<td>start D: opening to D(X0, Y2, Y1); Lemma D; iteration count; exhaustion run into Q</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Lemma Q: Q(m + 14) --&gt;+ Q(2^18 m + 38101896) for all m &gt;= 0; 4 concrete re-runs</td>
+</tr>
+</tbody>
+</table>
+<p>The engine is <code>scripts/engine.py</code> (stdlib only). Last full run: <code>work/check_proof_all.txt</code>.</p>
+<h2 id="9-risks-and-open-points">9. Risks and open points</h2>
+<ul>
+<li><strong>The engine is the proof.</strong> The symbolic runs are too long to read; their soundness rests on <code>scripts/engine.py</code> (about 500 lines) and the checks in §B. The three move kinds are elementary, but a bug in the linear-form comparisons or in the Diff-rule application count would be a gap. A second, independent implementation (or the Rocq replay) is the real check.</li>
+<li><strong>Anchors.</strong> A Diff-rule application can jump over a configuration, so each cycle anchor was chosen where no loop passes (N(Y) right after the far-end <code>0001</code> run is used up; Q(W) right after the last transfer of the cycle). The lemmas are what the runs prove; the anchor choice only affects whether a run is found.</li>
+<li><strong>Rule thresholds.</strong> The bounds Y &gt;= 22, W &gt;= 14, X &gt;= 100, Y2 &gt;= 130, Y1 &gt;= 30 are what the runs use, not optimal values. They are all far below the values that occur.</li>
+</ul>
+</main></body></html>

@@ -1,0 +1,449 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>plan-check.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/plan-check.md · <a href="/busy-beaver/machines/1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF/rocq/plan-check.md.html">raw</a></div>
+<h1 id="w6-1-planning-stage-independent-check-2026-10-14">W6-1 planning stage: independent check (2026-10-14)</h1>
+<p>This is a check of the formal-planning stage (<code>W61Exit.v</code>, <code>W61Plan.v</code>, <code>plan.md</code>). It was made from a fresh compile in a separate directory. None of the author's files were edited.</p>
+<h2 id="verdict">Verdict</h2>
+<ul>
+<li><strong>The exit is real.</strong> <code>W61Exit.v</code> recompiles with no Admitted, admit or Axiom. Every lemma rests on nothing, or on <code>functional_extensionality_dep</code> only. The statements say what <code>proof.md</code> says for T2, O, C and E′/E″.</li>
+<li><strong>The reduction in <code>W61Plan.v</code> is not valid yet.</strong> The Admitted <code>tail_round</code> is <strong>false as stated</strong>: two counterexamples are proved in Coq below. From the four open statements you can therefore prove <code>False</code>, so "<code>nonhalt</code> follows from exactly 4 open statements" proves nothing yet. The repair of the statement is small. The repair of the invariant behind it is real work, and part of it is not in the plan.</li>
+<li><strong>The estimate is optimistic.</strong> The plan says about 10 stages (range 9-12), about 20 h. My estimate is <strong>about 14 stages (range 12-18), about 28 h</strong>. The decision card should be corrected (section 6).</li>
+</ul>
+<h2 id="1-recompilation">1. Recompilation</h2>
+<p>Setup:</p>
+<ul>
+<li>a fresh directory with copies of the three files;</li>
+<li>Coq 8.20.1, switch <code>bb6</code>, <code>ulimit -s unlimited</code>, <code>ulimit -v 8000000</code>, <code>nice -n 10</code>;</li>
+<li>one coqc at a time, with <code>pgrep -xc coqc</code> = 0 before each one.</li>
+</ul>
+<p><code>SOBCv10.v</code> was compiled from scratch rather than reusing the author's <code>.vo</code>.</p>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>sha256 (first 8)</th>
+<th>result</th>
+<th>time</th>
+<th>memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SOBCv10.v</code> (vendor 0940bb9)</td>
+<td>227009dd</td>
+<td>exit 0, only funext</td>
+<td>88 s</td>
+<td>0.80 GB</td>
+</tr>
+<tr>
+<td><code>W61Exit.v</code></td>
+<td>a1ace5ad</td>
+<td>exit 0</td>
+<td>2.0 s</td>
+<td>0.45 GB</td>
+</tr>
+<tr>
+<td><code>W61Plan.v</code></td>
+<td>d0b31e60</td>
+<td>exit 0, 4 Admitted</td>
+<td>1.6 s</td>
+<td>0.45 GB</td>
+</tr>
+<tr>
+<td>reviewer's <code>W61Check.v</code></td>
+<td>e0341aef</td>
+<td>exit 0</td>
+<td>5.4 s</td>
+<td>0.47 GB</td>
+</tr>
+</tbody>
+</table>
+<p>The vendor <code>SOBCv10.v</code>, upstream <code>cdaf693:verify/SOBCv10.v</code> and <code>rocq/build/SOBCv10.v</code> have the same sha256. The rocq files and their <code>build/</code> copies are identical. <code>git status</code> in vendor shows only the untracked <code>.coq-native/</code> from 2026-10-09. Nothing in vendor/ is newer than proof.md.</p>
+<h2 id="2-assumptions-lemma-by-lemma">2. Assumptions, lemma by lemma</h2>
+<p><code>Print Assumptions</code> on every lemma in the report's "proved" list:</p>
+<table>
+<thead>
+<tr>
+<th>lemma</th>
+<th>assumptions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>raw_tail_base</code>, <code>raw_tail_column</code>, <code>raw_tail_columns</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>cycler_step</code>, <code>cycler_nonhalt</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>overflow_base</code>, <code>overflow_column</code>, <code>overflow_columns</code>, <code>exit_nonhalt</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>pre_rotate_list</code>, <code>nested_pre_left</code>, <code>launch_far</code>, <code>relaunch_far</code>, <code>relaunches_far</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>nested_launch</code></td>
+<td>funext</td>
+</tr>
+<tr>
+<td><code>E_to_B</code>, <code>digits_word_repeat_BB</code>, <code>digits_value_repeat_BB</code>, <code>nested_counter</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>nested_exit</code></td>
+<td>funext</td>
+</tr>
+<tr>
+<td><code>entry_last_value</code>, <code>entry_level</code>, <code>perm</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>sobc_D_nonhalt</code>, <code>nonhalt</code></td>
+<td><code>tail_round</code>, <code>tail_round_trigger</code>, <code>opening</code>, <code>entry_pre</code>, funext</td>
+</tr>
+</tbody>
+</table>
+<p>A grep of <code>W61Exit.v</code> finds no Admitted, admit, Axiom, Parameter, Hypothesis, Conjecture, Abort or guard switches.</p>
+<p><code>tm61</code> prints the 12 transitions of <code>1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF</code>, the string at line 10 of the 740 list. <code>perm</code> and <code>nonhalt</code> are a correct mirror-and-rename bridge (A..F to D,E,F,A,B,C, our start = SOBCv10's state D).</p>
+<h2 id="3-do-the-statements-say-what-planmd-and-proofmd-claim">3. Do the statements say what plan.md and proof.md claim?</h2>
+<p><strong>C (cycler).</strong> Busycoq's notation <code>l {{q}}&gt; r</code> puts the head on the first cell of <code>r</code>, in state <code>q</code>. So <code>(rev Yw *&gt; L) {{B}}&gt; 0inf</code> is "L, then Y, then the head in state B on the first blank cell". <code>Yw</code> is proof.md's 70-cell <code>Y</code>, cell for cell.</p>
+<ul>
+<li><code>cycler_step</code> gives <code>L Y B&gt;</code> to <code>L 100 Y B&gt;</code>, for every L.</li>
+<li><code>cycler_nonhalt</code> gives <code>~ halts</code> from that configuration for every L, through busycoq's <code>progress_nonhalt_simple</code>.</li>
+</ul>
+<p>So <strong>C really is nonhalting from the cycler entry</strong>. Lemma O ends exactly in that form: <code>overflow_base</code> ends in <code>(rev Yw *&gt; [0;1;0;1] *&gt; l) {{B}}&gt; 0inf</code>.</p>
+<p><strong>O (overflow).</strong> <code>overflow_base</code> is proof.md's Lemma O with w = 1: <code>B U^13 B t</code> becomes <code>1010 Y B&gt;</code>, with <code>l</code> never read. <code>overflow_column</code> and <code>overflow_columns</code> extend it to any all-B layout through SOBCv10's <code>raw_B_forward</code> and <code>raw_Us_to_Xs</code>. This matches proof.md section 5.4.</p>
+<p><strong>T2 (raw pass).</strong> It matches proof.md section 3 and opening family (c):</p>
+<ul>
+<li><code>tail_word k</code> is <code>U^(2k+1) B t</code>.</li>
+<li><code>y_after k</code> is the level k − 1 word of proof.md's table (A, B, E t, D t, A t, B t).</li>
+<li><code>raw_tail_columns</code>: every column <code>B^(e+1)</code> becomes <code>E^e A</code>, the last one becomes <code>E^e</code>, the U run grows by one pair, <code>101</code> is written on the left, and the head comes back in state F.</li>
+</ul>
+<p>"Any column layout" means any widths with every digit B. That is the only case that occurs, because the raw pass starts at a trigger, when the counter is all B.</p>
+<p><strong>E′ and E″.</strong></p>
+<ul>
+<li><code>nested_pre_left</code> is proof.md 5.2's list identity.</li>
+<li><code>nested_launch</code> gives E′ its S f calls, with the far end never read.</li>
+<li><code>nested_required es e</code> is proof.md's h″ − 1. I checked this by hand for one column, 3(2^b − 1), and for two columns, 3·2^(a+b) − 2^a − 3, against h″ = 3·2^(W−1) − S − 2.</li>
+<li>With f = h_t − 1 = 4·2^W − S − 3, the hypothesis <code>nested_required es e &lt;= f</code> of <code>nested_exit</code> holds with margin (5/2)·2^W, as proof.md 5.3 says.</li>
+</ul>
+<p>What remains open is that exception 9 actually reaches <code>nested_exit</code>'s configuration (<code>exception_call_left c f</code>, then B&gt;, then an all-B layout, then <code>U^11 B t</code>). That is <code>tail_round_trigger</code>'s job, as plan.md says.</p>
+<p>Two small slips in plan.md, neither of which matters:</p>
+<ul>
+<li>The report counts 98/200/344/502/696/910 steps, which is <code>run_c 97</code> etc. plus one.</li>
+<li><code>columns_step_exists</code> is at SOBCv10 line 2589, not inside the quoted range 3159-3310.</li>
+</ul>
+<h2 id="4-problems-in-the-open-statements-w61planv">4. Problems in the open statements (<code>W61Plan.v</code>)</h2>
+<h3 id="41-tail_round-is-false-as-stated-proved">4.1 <code>tail_round</code> is false as stated (proved)</h3>
+<p>Both lemmas below compile, and <code>Print Assumptions</code> lists only <code>tail_round</code>.</p>
+<p><strong>(a) k = 4 without a trigger.</strong> Take <code>current = 100</code>, <code>previous = 10</code>, <code>zs = []</code>, <code>last = [SB;SA;SA]</code> (value 1, length 3), <code>k = 4</code>, <code>lv = 5</code>.</p>
+<ul>
+<li>The precondition holds and <code>tail_triggers</code> is false, since eff_level = 4.</li>
+<li>The conclusion asks for <code>tail_round_pre … (S 4) …</code>, whose field <code>tp_k</code> says 5 ≤ 4.</li>
+</ul>
+<p>This is <code>tail_round_false_k4 : False</code>.</p>
+<p><strong>(b) A last column of length 2.</strong> Take <code>last = [SD;SD]</code> (value −3), <code>k = 1</code>, <code>lv = 4</code>.</p>
+<ul>
+<li>The precondition holds.</li>
+<li>The conclusion asks for <code>length last' = 1</code> together with <code>tp_last_len : 2 &lt;= length last'</code>.</li>
+</ul>
+<p>This is <code>tail_round_false_len2 : False</code>.</p>
+<p>The chain in <code>sobc_D_nonhalt</code> uses only k = 1, 2, 3 and lengths 29 to 26, so the statement fix is two hypotheses: <code>k &lt;= 3</code> (or <code>tp_k : k &lt;= 5</code> in the conclusion) and <code>3 &lt;= length last</code>. Until then, the four Admitted are inconsistent.</p>
+<p>Proof skeleton of (a), from <code>W61Check.v</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">Definition</span> <span class="n">cx_last4</span> <span class="o">:</span> <span class="n">list</span> <span class="n">SDigit</span> <span class="o">:=</span> <span class="o">[</span><span class="n">SB</span><span class="o">;</span> <span class="n">SA</span><span class="o">;</span> <span class="n">SA</span><span class="o">].</span>
+<span class="kn">Lemma</span> <span class="n">cx_pre4</span> <span class="o">:</span> <span class="n">tail_round_pre</span> <span class="mi">100</span> <span class="mi">10</span> <span class="bp">[]</span> <span class="n">cx_last4</span> <span class="mi">4</span> <span class="mi">5</span><span class="o">.</span>  <span class="c">(* constructor; lia / vm_compute *)</span>
+<span class="kn">Lemma</span> <span class="n">cx_not_trig4</span> <span class="o">:</span> <span class="o">~</span> <span class="n">tail_triggers</span> <span class="mi">4</span> <span class="n">cx_last4</span> <span class="mi">5</span><span class="o">.</span>      <span class="c">(* vm_compute *)</span>
+<span class="kn">Lemma</span> <span class="n">tail_round_false_k4</span> <span class="o">:</span> <span class="n">False</span><span class="o">.</span>
+<span class="kn">Proof</span><span class="o">.</span>
+  <span class="k">destruct</span> <span class="o">(</span><span class="n">tail_round</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">cx_pre4</span> <span class="n">cx_not_trig4</span><span class="o">)</span>
+    <span class="k">as</span> <span class="o">[</span><span class="n">zs'</span> <span class="o">[</span><span class="kr">last</span><span class="k">'</span> <span class="o">[</span><span class="n">lv'</span> <span class="o">[_</span> <span class="o">[</span><span class="n">P</span> <span class="o">_]]]]].</span>
+  <span class="k">destruct</span> <span class="n">P</span> <span class="k">as</span> <span class="o">[_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="o">_</span> <span class="n">Hk</span> <span class="o">_].</span> <span class="kp">lia</span><span class="o">.</span>
+<span class="kn">Qed</span><span class="o">.</span>
+</code></pre></div>
+
+<h3 id="42-the-draft-precondition-is-not-inductive">4.2 The draft precondition is not inductive</h3>
+<p><strong><code>Forall column_safe zs</code> does not survive a step.</strong> SOBCv10's own column step breaks it. A width-4 column of value 3 whose right neighbour is even steps to 2^4 − 1 = 15 &gt; 2^4 − 6. This is <code>safe_not_preserved</code>, which is closed.</p>
+<p>SOBCv10 carries <code>columns_schedule</code>, the abstract schedule theory at lines 3345-3790, for exactly this reason. With a tail, the rightmost z-column steps with the last column's parity, not with the constant <code>true</code> of SOBCv10's <code>abstract_columns_next</code>. So that theory is <strong>not</strong> reusable unchanged, although plan.md lists it as reused unchanged.</p>
+<p>Only 4 rounds are needed, so SOBCv10's <code>lineage_inputs_safe</code> (line 942, which takes arbitrary input parities) looks like the right tool. That is new glue, and the plan does not include it.</p>
+<p><strong><code>tp_last_window</code> does not survive a step either.</strong> The last column's law v → 2^(w−1) − ⌊v/2⌋ keeps the upper bound only when v ≥ 12. The window also admits small and negative v.</p>
+<p>It does hold on the real trajectory. I recomputed proof.md section 4, deficits included:</p>
+<ul>
+<li>391,468,375 → 72,701,269 → 97,867,094 → 18,175,317;</li>
+<li>the signed values are 72,701,269 − 2^28 and 18,175,317 − 2^27;</li>
+<li>eff_level is 3, −1, 4, 0.</li>
+</ul>
+<p><strong>Suggestion.</strong> The last column is concrete in all four rounds (29 to 26 digits, known values). Pin it in the precondition, or state four round lemmas with the concrete last column. That avoids a general signed-digit invariant, and it is also the plan's own fallback for the T3 risk.</p>
+<h2 id="5-is-the-estimate-honest">5. Is the estimate honest?</h2>
+<p>It is optimistic by about 40%. The plan's top value (12) is at the bottom of my range.</p>
+<table>
+<thead>
+<tr>
+<th>item</th>
+<th>plan</th>
+<th>check</th>
+<th>why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1: statements and invariant</td>
+<td>1</td>
+<td>1.5-2</td>
+<td><code>tail_round</code> must be restated (4.1). Z-column safety needs a schedule or lineage argument with the last column's parity (4.2). The window must be tied to the trajectory.</td>
+</tr>
+<tr>
+<td>R2-R5: the tail-aware round</td>
+<td>4</td>
+<td>5-6</td>
+<td>The T3 decode with D/E deficit digits needs new signed odometer lemmas. SOBCv10's frontier, raw-pass, decode and odometer part (about lines 1373-3310) all gain a column plus a tail.</td>
+</tr>
+<tr>
+<td>R6: trigger round</td>
+<td>1</td>
+<td>1-2</td>
+<td>Closed form of <code>nested_required</code> against h_t on a symbolic layout.</td>
+</tr>
+<tr>
+<td>R7-R8: opening</td>
+<td>2</td>
+<td>3-5</td>
+<td>See the note below this table.</td>
+</tr>
+<tr>
+<td>R9: kill file</td>
+<td>1</td>
+<td>1-1.5</td>
+<td>check_kill accepts exactly one top-level <code>Definition tm</code> and flags any re-binding of <code>tm</code>. The inlined SOBCv10 defines its own <code>tm</code> (its own table string), so it must be renamed throughout the 4,234 lines. The other route is to build SOBCv10.vo in vendor and import it through check_kill's framework_build path. The plan does not mention this.</td>
+</tr>
+<tr>
+<td>contingency</td>
+<td>0</td>
+<td>1-2</td>
+<td>Exceptions 6-9 are model-only, and never simulated at real size. An off-by-one moves the exit (proof.md section 6), which changes the k that triggers and the number of rounds. <code>tail_round_trigger</code> is specific to k = 4.</td>
+</tr>
+<tr>
+<td><strong>total</strong></td>
+<td><strong>10 (9-12)</strong></td>
+<td><strong>about 14 (12-18)</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Why the opening costs more than 2 stages:</p>
+<ul>
+<li>Families (a), (b) and (d) are new dynamics on words with C/t markers and D/E digits (<code>B^m C t C A^2 t^2</code>, <code>A^p C A^m D^2 A U E A</code>). They are not SOBCv10's words.</li>
+<li>The closed forms of (b) and (d), with (1292·2^m + 4)/3 and (140·2^m + 4)/3, were checked on only 11 and 9 small pairs. Their induction proofs start from scratch.</li>
+<li><code>n4 = 3·2^29 − 2</code> is a <code>nat</code>, and the entry has 2^n4 terms. One stray <code>cbn</code> or <code>vm_compute</code> on n4 builds 1.6·10^9 constructors.</li>
+</ul>
+<p>Plan.md's own line counts point the same way: 800-1,200 generalized lines plus 600-900 new opening lines is about 1,400-2,100 hard lines. That is more than any kill in this repo so far, and those took 500-1,800 lines, mostly adapted from a close template.</p>
+<p>The re-ask after R4 is a good control, but by then about 8-10 h are spent and the opening, the other big unknown, has not started. A cheaper order would be:</p>
+<ol>
+<li>the statement repair (4.1) and the invariant design (4.2), half a stage;</li>
+<li>a spike proving family (b)'s closed form, the least checked claim;</li>
+<li>then R2 onward.</li>
+</ol>
+<h2 id="6-what-the-decision-card-should-say">6. What the decision card should say</h2>
+<ul>
+<li>Effort: <strong>"about 14 × 2 h (range 12-18)"</strong> instead of "about 10 × 2 h (range 9-12)".</li>
+<li>The rationale line "W61Plan.v reduces nonhalt to exactly 4 stated lemmas" should become: "…to 4 stated lemmas; one of them (<code>tail_round</code>) is false as stated and is restated in R1 (independent check)".</li>
+<li>"Low risk of a wrong claim" is fair about the machine, since the exit is proved and the mechanism is robust. It is not yet true of the formal round statements.</li>
+</ul>
+<h2 id="reviewers-files-scratch-not-part-of-the-machine-folder">Reviewer's files (scratch, not part of the machine folder)</h2>
+<ul>
+<li><code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/w61check/W61Check.v</code>: Print Assumptions for every lemma, the two counterexamples, <code>safe_not_preserved</code>.</li>
+<li><code>/tmp/claude-1000/-home-dennis/dbf3e2a9-21e7-4eb2-b481-38a0113aca31/scratchpad/w61check/cc.sh</code> and <code>build1.out</code>: the build script and its log.</li>
+</ul>
+</main></body></html>

@@ -1,0 +1,482 @@
+{
+ "tm": "1RB0LE_1RC---_0RD0RB_1RE0LA_1RF0LF_1LD1RF",
+ "rank": 10,
+ "class_sheet": "Shift-overflow bouncer counter",
+ "class_guess": "Shift-overflow bouncer counter that exits into a translated cycler: SOBCv10's table (its D start, mirrored), with a far-end tail that ends the rounds",
+ "confidence": "high",
+ "summary": "SOBCv10's machine from another start: 4 rounds with a growing tail, then nested exceptions overflow into a cycler",
+ "mechanism": [
+  "Same table as SOBCv10.v (ours A..F = its D,E,F,A,B,C, mirrored; rules here use its frame, wall on the left; in our frame all is mirrored, Fig 2). Words: A=11111011 (0), B=11101111 (1), C, D, E markers, U=1011, X=0100, wall W=10100100, edge t=11. A hash = one signal from the wall into the words and back.",
+  "Each hash adds one X to the wall's tally and increments a binary A/B counter; marker words absorb the carries. When all is B and a carry hits the edge, an exception turns the tally into n fresh hashes and leaves C A U^(2n), which takes 2(2^n-1) hashes to drain: exceptions come at tower-like times.",
+  "Our run: exceptions at n = 0, 0, 28, 3*2^29-2, then n5 ~ 2^(n4+36.7), giving SOBCv10's post_ca state plus a far-end tail U^3 A t. The tail U^(2k+1) y is one digit with levels -1..4 (A, B, E t, D t, A t, B t). Each exception eats the last column's top digit, adds a U pair and sets the level to k+1-L: 3, -1, 4, 0. In exception 9 a decode carry hits B t: a nested exception E' starts, using exception 9's finished calls as its tally. E' (tail U^13 B t) triggers E'' long before its calls run out. E'''s raw pass overflows at U^13 and, without touching anything to its left, becomes a translated cycler (period 919, shift 3)."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site_1e4.png",
+   "html": null,
+   "steps": 10000,
+   "caption": "bbchallenge Default view, first 10k steps",
+   "title": "bbchallenge Default view, 10,000 steps",
+   "why": "Orientation: the start-up exceptions, then a fixed block at the left and a band growing right.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step 0..9,999, squeezed into 500 px by the site's bilinear filter (about one sample per 20 steps)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:1000",
+   "png": "img/every1000_4e5.png",
+   "html": null,
+   "steps": 400000,
+   "caption": "every 1000 steps to 400k: fixed left block, growing tally",
+   "title": "One row per 1,000 steps, 400,000 steps",
+   "why": "Top ~16 rows: exceptions 1-3. Below: the left block (counter + fossil) stays put while the right part grows.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every 1000 steps, steps 0..400,000 (401 rows)",
+   "window": "cells -12..1153, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "every:6",
+   "png": "img/exception_analog_m3.png",
+   "html": null,
+   "steps": 2800,
+   "caption": "small exception-4 analog (m=3, n=10) from a constructed tape",
+   "title": "Exception mechanism, small instance (m=3)",
+   "why": "Top: one pass rewrites the right block. Then each zigzag from the right is one of the n=10 hashes.",
+   "primary": true,
+   "start": "constructed: 0^inf 11111101111111011111011111111101111111111101111111011111110111 <E 00100010001000100010001000100010001000100010001000100010001000100010001000100010001000100101 0^inf",
+   "rows": "every 6 steps, steps 0..2,800 (467 rows); ends at exception_done 10 with output A^2 D^2 A U E A (SOBCv10 frame)",
+   "window": "cells -62..101, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "default",
+   "png": "img/default_site_1e5.png",
+   "html": null,
+   "steps": 99999,
+   "caption": "bbchallenge Default view, first 100k steps",
+   "title": "bbchallenge Default view, 99,999 steps",
+   "why": "Same view over 10x longer: after exception 3 only the tally band keeps growing.",
+   "primary": false,
+   "start": "blank",
+   "rows": "every step 0..99,998, squeezed into 500 px by the site's bilinear filter (about one sample per 200 steps)",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "SOBCv10 frame: W X^u B> [right side]; rows indexed by hash count H (not TM steps), from the exact hash-level run work/hashlevel_run_ours.txt",
+  "vars": [
+   "u (tally)",
+   "right side"
+  ],
+  "rows": [
+   {
+    "step": 1,
+    "values": [
+     1,
+     "B 1^2"
+    ]
+   },
+   {
+    "step": 1,
+    "values": [
+     1,
+     "exception 1 fires, n = 0"
+    ]
+   },
+   {
+    "step": 1,
+    "values": [
+     0,
+     "exception 2 fires, n = 0"
+    ]
+   },
+   {
+    "step": 4,
+    "values": [
+     3,
+     "B U A C U^2"
+    ]
+   },
+   {
+    "step": 16,
+    "values": [
+     15,
+     "B U A B A"
+    ]
+   },
+   {
+    "step": 58,
+    "values": [
+     57,
+     "exception 3 fires, n = 28"
+    ]
+   },
+   {
+    "step": 64,
+    "values": [
+     6,
+     "A^2 C A U^55 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 256,
+    "values": [
+     198,
+     "A^3 B A^2 D C A U^45 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 1024,
+    "values": [
+     966,
+     "A^3 B A^2 B^2 D C A U^41 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 4096,
+    "values": [
+     4038,
+     "A^3 B A^2 B^4 D C A U^37 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 16384,
+    "values": [
+     16326,
+     "A^3 B A^2 B^6 D C A U^33 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 65536,
+    "values": [
+     65478,
+     "A^3 B A^2 B^8 D C A U^29 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 262144,
+    "values": [
+     262086,
+     "A^3 B A^2 B^10 D C A U^25 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 1048576,
+    "values": [
+     1048518,
+     "A^3 B A^2 B^12 D C A U^21 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 4194304,
+    "values": [
+     4194246,
+     "A^3 B A^2 B^14 D C A U^17 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 16777216,
+    "values": [
+     16777158,
+     "A^3 B A^2 B^16 D C A U^13 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 67108864,
+    "values": [
+     67108806,
+     "A^3 B A^2 B^18 D C A U^9 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 268435456,
+    "values": [
+     268435398,
+     "A^3 B A^2 B^20 D C A U^5 A B^2 1^2"
+    ]
+   },
+   {
+    "step": 1073741824,
+    "values": [
+     1073741766,
+     "A^3 B A^2 B^22 D C A U A B^2 1^2"
+    ]
+   },
+   {
+    "step": 1342177280,
+    "values": [
+     1342177222,
+     "A^3 B A^2 B^22 A C A U A B^2 1^2"
+    ]
+   },
+   {
+    "step": 1610612736,
+    "values": [
+     1610612678,
+     "A^3 B A^2 B^23 C A U A B^2 1^2"
+    ]
+   },
+   {
+    "step": 1879048192,
+    "values": [
+     1879048134,
+     "A^3 B A^2 B^22 A D C 1^2 C A^2 1^4"
+    ]
+   },
+   {
+    "step": 2147483648,
+    "values": [
+     2147483590,
+     "A^3 B A^2 B^23 D C 1^2 C A^2 1^4"
+    ]
+   },
+   {
+    "step": 2415919104,
+    "values": [
+     2415919046,
+     "A^3 B A^2 B^22 A^2 C 1^2 C A^2 1^4"
+    ]
+   },
+   {
+    "step": 2684354560,
+    "values": [
+     2684354502,
+     "A^3 B A^2 B^23 A C 1^2 C A^2 1^4"
+    ]
+   },
+   {
+    "step": 2952790016,
+    "values": [
+     2952789958,
+     "A^3 B A^2 B^22 A B C 1^2 C A^2 1^4"
+    ]
+   },
+   {
+    "step": 3221225472,
+    "values": [
+     3221225414,
+     "A^3 B A^2 B^24 C 1^2 C A^2 1^4"
+    ]
+   },
+   {
+    "step": 3221225527,
+    "values": [
+     3221225469,
+     "exception 4 fires, n = 1610612734"
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "emit (left_emit_call)",
+   "from": "W X^u <F r",
+   "to": "W X^(u+1) B> r",
+   "steps": "1 hash",
+   "cases": "any u, any r",
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "D absorb (primary_D_absorb)",
+   "from": "W X^u B> A^p D R",
+   "to": "W X^(u+2^p) B> A^(p+1) R",
+   "steps": "2^p hashes",
+   "cases": null,
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "U pairs (initial_u_pairs)",
+   "from": "W X^u B> A^p C A U^(2k) R",
+   "to": "W X^(u+2^(p+1)(2^k-1)) B> A^(p+k) C A R",
+   "steps": "2^(p+1)(2^k-1) hashes",
+   "cases": "k >= 1",
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "cd drain (exception_done_cd)",
+   "from": "W B> C A U^(2n) R",
+   "to": "W X^(2(2^n-1)) B> A^n C A R",
+   "steps": "2(2^n-1) hashes",
+   "cases": "n >= 1",
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "frontier to exception (ordinary_all_A_to_exception)",
+   "from": "W X^u B> A^m t",
+   "to": "W B> U^(2n+1) B^m t",
+   "steps": "2^m hashes",
+   "cases": "u + 2^m - 1 = 2n+1",
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "canonical exception (sobc1_exception_from_seg)",
+   "from": "W B> U^(2n+1) B^(e+1) t",
+   "to": "W B> C A U^(2n) digits(ds)",
+   "steps": null,
+   "cases": "n = 2^(e+1)-2+value(ds), |ds| = e+1",
+   "validated": {
+    "instances": 10,
+    "passed": 10
+   },
+   "source": "manual"
+  },
+  {
+   "name": "(a) exception 4 family (ours)",
+   "from": "W X^(2n+1) B> B^m C t C A^2 t^2",
+   "to": "W B> C A U^(2n) A^(m-1) D^2 A U E A",
+   "steps": null,
+   "cases": "n = 3*2^(m-1)-2; real run m = 30",
+   "validated": {
+    "instances": 4,
+    "passed": 4
+   },
+   "source": "manual"
+  },
+  {
+   "name": "(b) fossil run after cd (ours)",
+   "from": "W X^u B> A^p C A^m D^2 A U E A",
+   "to": "W X^(u+H) B> B^(p+m+5) U B t",
+   "steps": "H = 2^(p-1)(1292*2^m+4)/3 - 1 hashes",
+   "cases": "m even; real run m = 30, p = n4",
+   "validated": {
+    "instances": 22,
+    "passed": 22
+   },
+   "source": "manual"
+  },
+  {
+   "name": "(c)+(d) exception 5 (ours)",
+   "from": "W X^(2n+1) B> B^W U B t",
+   "to": "W B> C A U^(2n) A^(p-2) digits_(m+6)(R) U^3 A t",
+   "steps": null,
+   "cases": "W = p+m+5, n = 2^p-2+2^(p-2)(1292*2^m+4)/3, R = (140*2^m+4)/3+4",
+   "validated": {
+    "instances": 14,
+    "passed": 14
+   },
+   "source": "manual"
+  },
+  {
+   "name": "T1 tail timing (ours)",
+   "from": "W X^u B> [digits, total V] U^(2k+1) y",
+   "to": "exception trigger",
+   "steps": "5*2^W - V hashes (A=0, B=1, D=-1, E=-2; tail level at weight 2^W)",
+   "cases": "tail level -1..4, any columns",
+   "validated": {
+    "instances": 80,
+    "passed": 80
+   },
+   "source": "manual"
+  },
+  {
+   "name": "T2 raw pass with tail (ours)",
+   "from": "W B> U^(2n+1) ... B^w U^(2k+1) B t",
+   "to": "... E^(w-1) U^(2k+3) y, level(y) = k-1",
+   "steps": null,
+   "cases": "k = 0..5; k >= 6 overflows into the cycler (16/16)",
+   "validated": {
+    "instances": 48,
+    "passed": 48
+   },
+   "source": "manual"
+  },
+  {
+   "name": "T3 decode with tail (ours)",
+   "from": "exception with n = n_s + (2-L)*2^(W-1)",
+   "to": "SOBCv10's output columns, last one truncated; 2-L carries into the tail (or a deficit of L-2)",
+   "steps": null,
+   "cases": "full exception vs segment decode, 25 random cases: 23 match; the other 2 are not decodes (one decode trigger, which then reaches the cycler, and one n = 0)",
+   "validated": {
+    "instances": 23,
+    "passed": 23
+   },
+   "source": "manual"
+  },
+  {
+   "name": "exit: decode trigger, nested exceptions, overflow, translated cycler (ours)",
+   "from": "exception 9's decode, call h_t = 4*2^W - S - 2: carry reaches B t",
+   "to": "E' (tail U^13 B t) with n' = h_t calls; E'' on E' call h'' = 3*2^(W-1) - S - 2; its raw pass overflows at B^w U^13 B t into state B right of window 1000100010001000100010001000100010010001000100010001000100010010100100, blank beyond",
+   "steps": "overflow 1208 + 14(w-1) steps, never left of its start; then 919 steps per 3 cells, never reading the left, forever",
+   "cases": "52 random layouts (h_t, h'' exact against hash-level sim, cycler reached, pending 0-300); 32 n' = f+1 threshold cases; overflow w = 1..30 with junk left (90); shift rule with random left (50)",
+   "validated": {
+    "instances": 224,
+    "passed": 224
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "SOBCv10.v:3847",
+  "module": null,
+  "machine": "1LB0RD_1LC0RC_1RA1LC_1LE0RB_1LF---_0LA0LE",
+  "diff": "same table: ours A,B,C,D,E,F = SOBCv10 D,E,F,A,B,C, mirrored; ours starts in its D",
+  "applies": "partly",
+  "note": "Every SOBCv10 rule we use holds verbatim (same table). Our opening differs: 5 exceptions instead of 4. After exception 5 the run is SOBCv10's post_ca_state(round_post_unary c p, round_primary_width c p, [col]) with c = (n5-6)/2 and p = 3*2^28-4. col has 29 digits (2*14+1), value 391,468,375 (odd, safe), and the width dominance holds. But a far-end fossil U^3 A t follows the column, so sobc1_canonical_nonhalt does not apply as stated."
+ },
+ "strategy": "No infinite round invariant: the tail ends the SOBCv10 rounds at exception 9. The proof is a finite chain: the opening (families (a)-(d)) to SOBCv10's post_ca state, exceptions 6-9 as SOBCv10 rounds with the tail laws T1-T3, the decode trigger in exception 9, the nested exceptions E' and E'' (exact call counts from T1), a local overflow lemma and the translated cycler. See proof.md.",
+ "risks": [
+  "Exceptions 6-9 at real size are a model (T1-T3 plus SOBCv10's round formulas). The robustness argument (k = 6 always overflows into the cycler) makes the outcome safe, but the formal path needs the exact chain.",
+  "Families (b) and (d) are closed forms checked on small (p, m); at p = n4 they need induction proofs. Family (a) is checked exactly at m = 30.",
+  "Formalization is large: a tail-aware copy of SOBCv10's round machinery (4,234 lines upstream), used for four rounds."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 2: after the first ~16 rows, does the left block stay fixed while the right part grows smoothly (no new structure appearing)?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fig 3: does each zigzag coming in from the right look like one hash, ten of them in a row, after one rewriting pass at the top?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "The informal proof is complete (proof.md); the formal proof is large. Fund a 2 h planning stage (exit lemmas in Rocq, the tail-aware round lemma stated and priced), the full formalization, or park? See decision.json.",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 16880279271418,
+  "cells": 48069,
+  "nonzeros": 25188,
+  "growth": "direct 1e9 steps (span 48,069); qsim block 4: 1.69e13 steps in 600 s, no rules; hash-level: 3,221,225,527 hashes to exception 4 (n4 = 3*2^29-2), exception 5 at about 2^(n4+36.7) hashes"
+ },
+ "status": "OPEN",
+ "status_reason": "Exit closed: decode trigger -> nested exceptions E', E'' -> local overflow -> 919/3 translated cycler. proof.md written; formalization needs funding (decision.json)."
+}

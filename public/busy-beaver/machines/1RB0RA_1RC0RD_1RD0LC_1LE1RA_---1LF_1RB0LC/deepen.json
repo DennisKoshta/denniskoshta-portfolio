@@ -1,0 +1,155 @@
+{
+ "tm": "1RB0RA_1RC0RD_1RD0LC_1LE1RA_---1LF_1RB0LC",
+ "rounds": [
+  {
+   "round": 1,
+   "stage": "decider2 (funded option 'decider2', Dennis 2026-10-11: go with recommendations)",
+   "date": "2026-10-11",
+   "confidence": "med",
+   "recommend": "hand",
+   "mechanism": "Unchanged from observe: two big bells (fields of 101 blocks, a 00 marker stepping one block per pass, rule F) take turns feeding a base-3 counter whose low digits can be wide (d (110)^n 0; I0/I1a/I1b/I2; n = 0 is the certified start's side_3ary rule K1-K6), plus a second digit encoding after a wide 2 (J0, J1). The hlin decider that certifies start B closes only on a one-parameter family c0 =lb=> config(n); here the wide digits stay explicit segments in front of the 3ary side and the layer stack never closes.",
+   "closed_gaps": [
+    "Decider route (funded): busycoq's hlin decider extracted to OCaml and calibrated against Coq (start B cert true in 0.01 s natively vs 4.4 s in Coq; IndBECv1 Bell nonhalt1 true; our flipped table with the cert's config false at fuel 1e6, as in Coq). 384 runs on 317 and sibling 707 (flipped with the cert's 3ary rule; flipped and unflipped without rules): block size 0/3/6/9/12, T 0..1e6, mnc 2-4, max_repeater_len 3..64, exp loop, arithseq, allowed repeaters, fuel 1e5 and 1e6: 0 true, 0 errors.",
+    "The block-size-0 Coq run that never finished (rocq/g2_bsz0_T5000.v) is false natively at fuel 1e5 and 1e6.",
+    "CTL tail with #7's extracted CTL62: 178 runs (79 NG len 2-20 + 10 CPS_LRU size 3/6/9, both orientations): 176 false, 2 timeouts at 120 s, 0 true.",
+    "Why hlin cannot close here: the pinned ExtraRules (7 constructors) has no ternary counter with digits of free width, so a wide-digit side rule is not a configuration; and the left-end visits are not a one-parameter family (field 1 +1 block per visit, 199/199; the second field's first segment +0 in 133 visits and +1..+8 in 66, at all three digit forms)."
+   ],
+   "remaining_gaps": [
+    "Bell hand-over E, both directions (traces only).",
+    "Carry J2 past the digit after a wide 2 (leaves in state A; next encoding not pinned).",
+    "Law for the second field's size (the jumps of m at left-end visits), and the full right-part grammar.",
+    "Bounded field count (2 big bells + 1 small wide digit observed to 5e9), then proof.md and Rocq (BellEatsCounter_1RB0RF.v / SOMDCv6 templates)."
+   ],
+   "evidence": [
+    "scripts/hlin_extract/summary.json (all 384 runs), grid1.log, grid2.log, grid3.log",
+    "scripts/hlin_extract/runs/trace_317f_T745_bsz3.txt, trace_317f_T100000_bsz3.txt, trace_707f_T100000_bsz3.txt",
+    "scripts/ctl_tail/ctl_317.jsonl, ctl_317f.jsonl",
+    "data/left_visits_3e7.json (scripts/left_visits.py)"
+   ],
+   "scripts": [
+    "scripts/hlin_extract/ (Ext.v, main.ml -> hlinx, trace.ml -> tracex, run1.sh, gen_grid1.py, gen_grid2.py, grid3.txt, summarize.py, README.txt)",
+    "scripts/ctl_tail/ (sweep_ctl.py, params.txt, params_ng_tail.txt, README.txt)",
+    "scripts/left_visits.py"
+   ],
+   "validation": "no new local rules this stage; the 13 observe-stage rules stand at 200/200 each (data/validation.json)"
+  },
+  {
+   "round": 2,
+   "stage": "hand1 (funded option 'hand', Dennis 2026-10-12: apply recommendations)",
+   "date": "2026-10-12",
+   "confidence": "med",
+   "recommend": "grammar",
+   "mechanism": "Bells and wide ternary digits are one object in two modes: a wide digit that receives a carry in the form left by the last long left sweep runs as a bell (field 2 once per field-1 traversal, field 3 sometimes), delivering its width in increments to the right; at its end it collapses into a wide 0 and eats the next digit when that digit sits in adjacent (011) form. Field 1 is the bell at the blank left end and grows by one block per left visit.",
+   "closed_gaps": [
+    "Hand-over E pinned as local rules, both directions: F2 (bell-2 step, 8b+16), G (bell exhausted, both bells, 8), SD/SE sweeps (5n), H2 (bell-2 collapse back to the field-1 marker, width n+j+1), H1 (bell-1 collapse at the left edge); each 200/200 from random instances with a window check (data/validation_handover.json).",
+    "Field-size law exact as a local law: at the last field-2 pass '111 (110)^j 1 [F0] 11 (110)^3 Y', the new width is j+4+w with w = leading (011) blocks of Y; 673/673 bell-2 ends to 1e9 (451 w=0, 222 merges w=1..10), 180/180 to 3e7 (data/merge_law_1e9.json). Explains decider2's m jumps.",
+    "Stop rule (park if the size law is not exact) does not fire."
+   ],
+   "remaining_gaps": [
+    "The B> carry between G and the D-sweep (where the merge happens) is pinned only at orbit level, not from random local instances.",
+    "J2 not pinned; outcomes depend on the right context, and some non-grammatical contexts run off or halt (collapse with Y = (011)^4 0 1 0^inf halts).",
+    "Exact right-part grammar (digit encodings by phase + bell-ready flags) and bounded nesting (field 3 also runs as a bell).",
+    "proof.md and Rocq (BellEatsCounter_1RB0RF.v / SOMDCv6)."
+   ],
+   "evidence": [
+    "data/validation_handover.json (6 rules x 200)",
+    "data/merge_law_1e9.json (673/673 bell-2 ends)",
+    "orbit trace: step 8,309,027 D-sweep start -> 8,310,267 field-1 marker, width 105+6+1 = 112"
+   ],
+   "scripts": [
+    "scripts/handover/validate_handover.py",
+    "scripts/handover/merge_law.py (uses scripts/handover/wsim, built from wsim.c: gcc -O2 -o wsim wsim.c)",
+    "scripts/handover/tok.py"
+   ],
+   "validation": "6 new rules, 200/200 each (seed 5); orbit law 673/673 to 1e9"
+  },
+  {
+   "round": 3,
+   "stage": "grammar (funded option 'grammar', Dennis 2026-10-12: b (fund all five))",
+   "date": "2026-10-12",
+   "confidence": "med",
+   "recommend": "grammar2",
+   "mechanism": "At every bell-1 marker turn the counter is a list of digits in 6 encodings: rest '0 d (110)^n' (d = 000/110/010) or ready 'd' (110)^n' (d' = 000/011/001, no own boundary cell), narrow and wide alike. inc on rest: ordinary base-3 carry. inc on ready 2 = bell run: n increments of the next digit, then collapse to rest 0 (one cell right) plus a B> carry into the next digit: rest 0 -> ready 1, rest 2 -> ready 0 (carry absorbed), rest 1 -> eaten (width n_i+n_j+1) and the following digit incremented, ready -> ordinary inc. H1 = B> carry into field 2, field 1 + 1 block. Each collapse readies the next digit, so bells nest.",
+   "closed_gaps": [
+    "Right-part grammar: 6 encodings parse 225,804 of 227,415 bell-1 marker turns to 1e9 (99.29%); no new encoding appears over the run; the earlier '60+ shapes' were tokenizer block-phase artifacts (data/grammar_census_1e9.json).",
+    "B> merge carry pinned as a digit-level table (rest 0/1/2, ready); with the bell rule (n+1 increments) it gives the size law j+4+w (w = n_j+1).",
+    "One bell-1 pass validated from random grammatical instances: 600/600 (562 ordinary + 38 H1; seed 5; no two adjacent ready digits, H1 with field 2 rest and != 1) (data/validation_grammar_R600.json).",
+    "Abstract simulator from the left visit at step 1,016,724 reproduces all 1,540 following marker turns exactly (18 left visits, field 1 = 77..94), including bell-2 runs, nested field-3/4 bells and merges (data/absim_orbit_check.json).",
+    "J2 not needed in the new frame: the increment of a ready 2 is the bell rule."
+   ],
+   "remaining_gaps": [
+    "Top family: width-0 ready-2 bells and narrow-top merges leave '111'/'1111' top forms (1,611 of 227,415 turns, all at the top); first orbit mismatch at step 2,083,626 is this case.",
+    "Width-0 ready-2 bell next to a ready digit: 7/47 random instances fail; H1 with field 2 = 1 (<= 5 of 667 H1 passes) not pinned.",
+    "Orbit check past 2.08e6 to 1e9, then proof.md (grammar invariant + no top form reaches A> 0 1 0) and Rocq."
+   ],
+   "evidence": [
+    "data/grammar_census_1e9.json (227,415 turns, 6 encodings)",
+    "data/validation_grammar_R600.json (600/600), data/validation_grammar_U300.json (unrestricted: 217/217, 40/47 adjacent-ready)",
+    "data/absim_orbit_check.json (1,540 exact; first mismatch 2,083,626)"
+   ],
+   "scripts": [
+    "scripts/grammar/ (README.txt, b1z.c -> b1z, census.py, absim.py, passcheck.py)"
+   ],
+   "validation": "pass rule 600/600 (restricted grammar), 257/264 ordinary passes unrestricted; orbit 1,540/1,540 marker turns from step 1,016,724 to 2,083,626"
+  },
+  {
+   "round": 4,
+   "stage": "grammar2 (funded option 'grammar2', Dennis 2026-10-12: 'fund w4-7')",
+   "date": "2026-10-12",
+   "confidence": "med",
+   "recommend": "invariant",
+   "mechanism": "Unchanged in kind: a nested base-3 counter of digits in 6 encodings (rest '0 e 0 (110)^n', ready '0 e (110)^n', 2-cell core e = 00/11/01); a ready 2 runs as a bell (n increments of the next digit) and collapses with a B> carry. New: the full B> table, including ready targets (ready 2 -> ready 0; ready 1 runs as a bell and is eaten, B> passes on; ready (0,m>=1) -> ready (0,0) ready (1,m-1) + inc; ready (0,0) -> closed-form re-read by the next digit), and the bell's end form (rest (0,n), or '000 (011)^n' = ready (0,0) + n x ready (1,0) when the target is ready).",
+   "closed_gaps": [
+    "The '111/1111 top family' was a parser artifact: with zero-padded tops all 227,415 bell-1 marker turns to 1e9 parse in the 6 encodings (data/grammar2_ready00_contexts_1e9.json, census field).",
+    "B> carry into ready digits pinned (4 rules + closed-form re-read for ready (0,0)); bell end form pinned; H1 with field 2 = rest 1 (eaten, b' = a+m+2) and ready (1,0) pinned.",
+    "Op-level validation from random instances (unrestricted, adjacent ready allowed): 19,907/19,907, 0 fail, 93 unsupported (data/validation_grammar2_op20000.json).",
+    "Pass-level validation (real TM to the next marker turn): 1,405/1,405 (840 H1 + 565 ordinary), 0 fail, 595 unsupported (data/validation_grammar2_pass2000.json).",
+    "absim2 reproduces every bell-1 marker turn from step 10 to 1e9 exactly: 227,414/227,414, 667 left visits, no unsupported case on the orbit (data/absim2_orbit_check_1e9.json). Stop rule (new top forms keep appearing) does not fire."
+   ],
+   "remaining_gaps": [
+    "Invariant on digit lists excluding (a) a ready field 2 at a left visit and (b) B> into a ready (0,0) followed by rest 2 / ready 1-2 / non-top ready (0,0); (b) leaves a flagged digit and can halt (ready (2,0) + flagged rest 2 halts at the next inc). Orbit: never to 1e9; the ready2-(ready1)*-ready(0,0) pattern occurs only at the top (587 turns).",
+    "Non-halting argument from the invariant, then proof.md and Rocq (BellEatsCounter_1RB0RF.v / SOMDCv6; start B = IndBECv1 _3ary nonhalt3)."
+   ],
+   "evidence": [
+    "data/absim2_orbit_check_1e9.json (227,414 turns exact from step 10)",
+    "data/validation_grammar2_op20000.json, data/validation_grammar2_pass2000.json",
+    "data/grammar2_ready00_contexts_1e9.json (census 227,415/227,415; ready (0,0) contexts)"
+   ],
+   "scripts": [
+    "scripts/grammar/absim2.py (rules in docstrings), opcheck2.py, passcheck2.py, orbit_check2.py, ready00_contexts.py, tm47.py"
+   ],
+   "validation": "op level 19,907/19,907 (seed 41); pass level 1,405/1,405 (seed 13); orbit 227,414/227,414 marker turns to 1e9"
+  },
+  {
+   "round": 5,
+   "stage": "invariant (funded option 'invariant', Dennis 2026-10-12: 'Invariant stage')",
+   "date": "2026-10-12",
+   "confidence": "med",
+   "recommend": "park",
+   "mechanism": "Unchanged rule set (absim2). New picture: a ready digit is a wave that climbs one digit per bell, dies at the first rest 1 and cannot pass an older wave; each field-2 bell (n0 increments) pushes all older waves into the last three digits, and at left visits the counter above field 2 has a value close to n0. Case (b) needs a new wave to reach an older one, which on the orbit happens only at the top. Not a cryptid candidate: long perturbed runs (66 x 2e9 TM steps) never halt; halts need a drastic size change and come at once.",
+   "closed_gaps": [
+    "Invariant question answered (negatively): no property of the digit word excludes the unsupported cases. 237 orbit states at left visits with one number changed and the digit word kept reach an unsupported case within 30,000 passes: n0 -1/+1: 3/2, a -1/+1: 1/3, n0 -10: 28, a +-10: 9/7, redraws 6-12; unperturbed 0/237 (data/invariant_perturb.json). Stop rule fires.",
+    "Wave census over 2e7 absim2 passes, 0 flags: at all 6,317 left visits ready digits sit only among the last 3 digits and case (a) never occurs; the upper of two consecutive ready digits is always among the last 4; all 139 B> into ready digits happen among the last 3 (data/invariant_waves_20M.json).",
+    "Unsupported cases reached by perturbed orbits are top-of-counter (69/69 within the last 4 digits; 55 the same top ready (0,0) ready (1,0) rest (1,0)) and about half are parse artifacts: 35/69 pre-flag tapes have another 6-encoding parse on which the pass is supported, and all 1,578 such parses match the real TM's next marker turn (0 mismatches) (data/invariant_reparse.json).",
+    "Real TM from the 69 pre-flag tapes, 2e9 steps: 66 do not halt (8 followed 300 marker turns: 7 parse again throughout, 1 at 261/300); 3 HALT (steps 61,670 / 307,823 / 376,776), all B> into ready (0,0) followed by ready (2,0) near the top, all within 1.1 traversals of a large width redraw (data/invariant_flag_tm.json). Op level 1,586 unsupported B> into ready (0,0) instances: 0 halts, 0 timeouts, 185 re-parse, 1,401 leave a flagged digit (data/invariant_flag_probe_op4000.json). So halting tapes are word-level grammatical; any proof needs size information.",
+    "Line 707 (start C): absim2 reproduces every bell-1 marker turn from step 117 to 1e9, 226,216/226,216, 669 left visits (data/absim2_orbit_check_707_1e9.json); the 6 earlier turns (H1 into a lone top ready (2,0)) are a transient for direct simulation."
+   ],
+   "remaining_gaps": [
+    "Parked by the stage's stop rule (no small invariant closes). Restart route, if picked up again: (i) make absim2 total near the top (re-parse the ambiguous border pairs ready (1,0) rest (1,m) = rest (1,m+1), ready (1,0) rest (0,m) = rest (1,0) ready (0,m); pin B> into ready (0,0) for every next digit and the flagged-digit forms it leaves).",
+    "(ii) A quantitative invariant excluding the halting tops (ready (2,0), ready (1,0)*, ready (0,0), ready (2,0) + B>): e.g. every ready digit at a left visit in the last three digits, kept by a size balance (counter value near n0, a - n0 small). No candidate found.",
+    "Then proof.md and Rocq (BellEatsCounter_1RB0RF.v / SOMDCv6; start B = IndBECv1 _3ary nonhalt3)."
+   ],
+   "evidence": [
+    "data/invariant_perturb.json (237 states x 16 perturbations, 30,000 passes each)",
+    "data/invariant_waves_20M.json",
+    "data/invariant_reparse.json, data/invariant_flag_tm.json, data/invariant_flag_probe_op4000.json",
+    "data/absim2_orbit_check_707_1e9.json"
+   ],
+   "scripts": [
+    "scripts/invariant/ (README.txt): waves.py, perturb_check.py, flag_where.py, reparse_check.py, flag_tm.py, flag_probe.py, orbit_kinds.py, b1zs.c, orbit_check_start.py"
+   ],
+   "validation": "no new rules; absim2 cross-checked on 1,578 alternative parses (0 mismatches vs the real TM); orbit 707: 226,216/226,216 marker turns to 1e9"
+  }
+ ],
+ "updated": "2026-10-12"
+}

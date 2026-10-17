@@ -1,6 +1,6 @@
 # Dennis Koshta — portfolio
 
-Public portfolio at **https://denniskoshta.com**. Static HTML, system fonts, a small stylesheet, and browser JavaScript for project search and an optional application embed. No frontend framework, analytics, database, or visitor accounts.
+Public portfolio at **https://denniskoshta.com**. Static HTML, a locally hosted font, a small stylesheet, and browser JavaScript for project search and an optional application embed. No frontend framework, analytics, database, or visitor accounts.
 
 ## Run locally
 
@@ -32,7 +32,7 @@ The homepage is deliberately selective. The complete project index and existing 
 
 ## Interactive application
 
-The Signal Garden panel embeds the real application hosted on GitHub Pages. It makes no application request before the visitor opens the panel. Closing the panel removes the iframe and stops its audio. An ordinary link to the full application remains available with or without JavaScript. The application is developed separately; portfolio checks do not certify every application workflow.
+The Signal Garden panel embeds the real application hosted on GitHub Pages. A visible screenshot and Start demo button appear immediately, but no application request or animation runs until activation. Stop demo removes the iframe and stops its audio and animation. The app starts paused on Scenes. An ordinary link to the full application remains available with or without JavaScript. The application is developed separately; portfolio checks do not certify every application workflow.
 
 After replacing the headshot, rebuild and start the preview server, run `node scripts/render-social.mjs`, then rebuild again. This regenerates the link-preview card from HTML using the photo unchanged. The renderer accepts `TEST_BASE_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`.
 
@@ -62,3 +62,20 @@ The previous design is preserved in source commit `43372fe4763f8b101a49e7a0c97e8
 ## Attribution
 
 The portrait was supplied directly by Dennis. Codex and Claude contributed to the projects in the ways described on their pages. This site was implemented with Codex. Preserve contribution distinctions, upstream credit, and the recorded negative findings when editing.
+
+## Busy Beaver dashboard snapshot
+
+`public/busy-beaver/` is a dated static export, served at `/busy-beaver/`. It includes the dashboard, machine pages, learning material, reports, rendered proof files, and the browser-based explorer. It has no connection to the live research workspace.
+
+To refresh it deliberately, with the BB6 local read-only server running on port 8765:
+
+```bash
+python3 scripts/snapshot-busy-beaver.py /path/to/bb6-hunt
+python3 scripts/check-snapshot.py
+npm run build
+npm run check
+```
+
+The exporter follows website links rather than copying the repository. Hidden/configuration files, symlinks, coordination files, compiled artifacts, and large raw simulation dumps are excluded. Omitted files have an explanatory page. Directory listings expose documents and diagrams, not recursive working directories. Never copy the live server's access configuration.
+
+Portfolio image delivery uses resized WebP variants; originals remain available as source assets. The theme initializer is inlined to avoid a blocking network round trip.

@@ -1,0 +1,87 @@
+{
+ "tm": "1RB0RF_1RC0RE_1LD1RA_1LA0LD_1RA---_0RA0LB",
+ "pass": "crossing (funded 2026-10-10)",
+ "confidence": "med",
+ "recommend": "Park with R2 (stop rule: no inductive form for C/C0 found). If revived, one Big-Y stage: show Y_e >= 2^(bitlen N_e + 1) only right after an exact-power epoch (Y = 2^m), where C then needs only popcount(N - v + 1) >= 2 - s.",
+ "mechanism": "Hub K(a,b,T) = 0^inf (101)^a 00 (101)^b A> cells(T) 0^inf, with T read from the head cell in tokens 0=000, 1=001, j=010, t=10. R1 adds 1 to T (j transparent; the t case is a cascade inc(tR) = j inc(sigma(inc R))). At b=0 the low digits pick E (0 1^r j^k: eat into blocks) or a bell B0/B1 (sweep, then the one-cell shift sigma). sigma of a clean word leaves exactly one t at its first j. The t walks through the j's and vanishes at increment 2^P, P = #0 bits of Y = value(V) + sum_j 2^depth(j) below the last j. In integers a clean word is (digit value v, multiset M of j depths); the cleanup maps M to {Z_d(Y)} + {Z_p(Y): p a 1 bit of Y} (Z_x = zeros of Y below x) and the b=0 steps act on the potential U = n + sum 2^d as E: (U+2)/2^mu - 2, B0: (U+2)/2^(r+1) - 1, B1: U + 1. Lemma S: the bell after epoch e is safe whenever zb(Y_e) <= bitlen(N_e) - 1 + s_e (s = eat shift), or s = 0 and Y_e = 2^bitlen(N_e); so non-halting reduces to the Big-Y lemma: Y_e >= 2^(bitlen N_e + 1) implies zb(Y_e) <= bitlen(N_e) - 1 + s_e.",
+ "rounds": [
+  {
+   "date": "2026-10-10",
+   "option": "prep",
+   "confidence": "med",
+   "outcome": "CHECKPOINT_A",
+   "model": {
+    "tokens": "cells right of the hub head, read from the head cell: 0=000, 1=001, j=010 (3 cells), t=10 (2 cells); bad 011 (halt), 11",
+    "inc": "inc(eps)=1; inc(0R)=1R; inc(1R)=0 inc(R); inc(jR)=j inc(R); inc(tR)=j inc(sigma(inc R))",
+    "sigma": "drop one cell: on a clean word 0->0, 1->j before the first j, first j -> t, rest unchanged",
+    "cleanup": "V = word the bell shifts; d_i = depths (#digit tokens before) of V's j's, f = d_k; Y = value(V) + sum 2^d_i; t gone at increment exactly 2^P, P = #zero bits of Y in [0,f); afterwards Y's 1 bits are j, 0 bits slots, top j at depth zb(Y), value = increments since the bell",
+    "b0": "E: 0 1^r j^k T' -> K(a+2+r, k-1, T'); B0: 0 1^r 0 T'' -> K(0, a+2+r, sigma(0 T'')); B1: 1 T' -> K(0, a+1, sigma(inc(1T')))"
+   },
+   "closed_gaps": [
+    "Carry transducer on sigma-words, derived from the TM's right pass / D pass and validated: 11,584/11,584 reachable marked words (every W = 0{0,1,J}^<=7), lockstep from blank to 1e9 on 189,846/189,846 clean and 2,196/2,196 one-t R1 transitions, random direct-TM checks 1,200/1,200 clean and 1,000/1,000 one-t (3 seeds).",
+    "Every reachable marked word has exactly one t; closure of {clean} + {one t} under inc and sigma, with no halting token met (paper).",
+    "Closed-form cleanup time 2^P (paper, from the recursion); exact on 100,000/100,000 macro epochs, 4,800/4,800 random V in the model, 240/240 random V by direct TM.",
+    "value(T) <= a at every b=0 hub (equality at an epoch's first b=0) and N >= value(V) at every bell (paper; 199,045 b=0 hubs and 100,000 bells, 0 failures).",
+    "If V has a digit after its last j then 2^P <= 2^f <= value(V) <= N (paper); L*(e) implies this for epoch e+1 (paper)."
+   ],
+   "remaining_gaps": [
+    "L*: 2^zb(Y_e) <= N_e for every epoch e >= 16. It holds at all 100,000 epochs to N = 1,091,790 except 7, 8, 14 and 15, but its margin shrinks: 0.687 bits to 20,000 epochs, 0.319 at epoch 62,386 (N = 654,227). So it may not be the right inductive form.",
+    "The needed bound 2^P(e) <= N_e keeps min log2 N - P = 2.32 bits for N >= 100 (0.64 overall, epoch 8). A direct inductive proof needs a crossing lemma on the potential Y (the same arithmetic as R2's R1).",
+    "Finite prefix (epochs 1..16) as an explicit hub chain; step counts per macro rule."
+   ],
+   "evidence": [
+    "scripts/prep/reach_7_check.txt: 11,584/11,584 reachable marked words, tok.inc == TM, all with exactly one t",
+    "scripts/prep/lockstep_1e9.txt: 189,846/189,846 clean + 2,196/2,196 one-t R1 transitions from blank to 1e9",
+    "scripts/prep/fuzz_{2026,7,99}.txt: R1 clean 400/400 x3, R1 one-t 328/328, 333/333, 339/339, cleanup formula 1,600/1,600 x3, cleanup by direct TM 84/84, 77/77, 79/79",
+    "scripts/prep/invariants_1e5.txt: 100,000 epochs; value(T) <= a and N >= value(V) with 0 failures; S1' fails only at 8, 9, 15, 16; L* fails only at 7, 8, 14, 15; min margins 0.319 bits (L*) and 2.32 bits (2^P <= N, N >= 100)"
+   ],
+   "scripts": [
+    "scripts/prep/tok.py",
+    "scripts/prep/amacro.py",
+    "scripts/prep/cleanup_formula.py",
+    "scripts/prep/reach.py",
+    "scripts/prep/lockstep_tok.py",
+    "scripts/prep/fuzz_tok.py",
+    "scripts/prep/invariants.py"
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "option": "crossing",
+   "confidence": "med",
+   "outcome": "STUCK",
+   "model": {
+    "integer_model": "scripts/crossing/nmodel.py: (N, v, M) per bell; Y = v + sum 2^d; P = Z_{max M}(Y); M* = {Z_d(Y)} + {Z_p(Y) : p 1-bit of Y}; b=0 loop B1 (n odd: N+1, v=n+1), E (n mod 2^mu = 2^mu-2: n -> (n>>mu)+k-1, depths -mu), B0 (N=a+2+r, v=n>>(r+1), depths -(r+1))",
+    "potential": "U = n + sum_{d in M} 2^d at b=0; E(mu,k): U -> (U+2)/2^mu - 2; B0(r): Y' = (U+2)/2^(r+1) - 1; B1: Y' = U + 1",
+    "lemma_S": "safe(e) and C(e) => safe(e+1), C(e): zb(Y_e) <= m-1+s_e or (s_e = 0 and Y_e = 2^m), m = bitlen N_e; corollary: Y_e < 2^(m+1) => C(e)"
+   },
+   "closed_gaps": [
+    "Integer epoch model, a restatement of the validated token rules: lockstep 100,000/100,000 epochs from blank vs amacro (N, v, M, cleanup time) and 21/21 at epochs 350,260-350,280; whole epochs by direct TM from random states (N <= 200, hub by hub to the next bell) 1,200/1,200 (400 x seeds 2026, 7, 99).",
+    "Potential identities for E/B0/B1 (paper): 199,046/199,046 trajectory b=0 steps and 96,498/96,498 random.",
+    "Lemma S (paper): C(e) implies safety of epoch e+1; C fails only if Y_e >= 2^(bitlen N_e + 1). Checked 100,000/100,000 trajectory epochs and 59,887/59,887 random states (3 seeds, half tuned to Y near 2^q).",
+    "Every epoch safe to 1e7 epochs (N = 144,073,582); C and C0 hold at all of them. L* fails at exactly 6 epochs (7, 8, 14, 15, 350,273, 350,274), all with Y = 2^bitlen(N) exactly, in pairs (shift 1, then 0)."
+   ],
+   "remaining_gaps": [
+    "Big-Y lemma: Y_e >= 2^(bitlen N_e + 1) implies zb(Y_e) <= bitlen(N_e) - 1 + s_e. Hypothesis met only at epochs 9, 16 and 350,275 to 1e7, each right after an exact-power pair (C-margins 3, 3, 15). Conjecture C0 (2^zb(Y) <= N or Y = 2^bitlen N) holds to 1e7 but is not inductive alone: it broke in 3/6,000 perturbed reachable and 7/6,000 tuned starts over 5 epochs, 1 tuned start went unsafe.",
+    "The safety margin is not 2.3 bits: it falls to 1.000 bit at epoch 350,274 (N = 2^22 - 4,693, cleanup 2^21), structurally (Lemma S, exact-power pair).",
+    "Step counts per macro rule; Rocq model not started."
+   ],
+   "evidence": [
+    "scripts/crossing/cmp_amacro_1e5.txt: 100,000/100,000 epochs nmodel == amacro",
+    "scripts/crossing/cmp_amacro_350k.txt: 21/21 epochs 350,260..350,280 (cleanup 2^21 at 350,274)",
+    "scripts/crossing/longrun_1e7.txt and crossing_stats_1e7.txt: 1e7 epochs, all safe, min margin 1.000 bit, C/C0 never fail, 3 big-Y epochs",
+    "scripts/crossing/lemma_s_checks.txt, c0test_rand.txt, epoch_tm_3seeds.txt"
+   ],
+   "scripts": [
+    "scripts/crossing/nmodel.py",
+    "scripts/crossing/cmp_amacro.py",
+    "scripts/crossing/longrun.py",
+    "scripts/crossing/lemma_s.py",
+    "scripts/crossing/c0test.py",
+    "scripts/crossing/crossing_stats.py",
+    "scripts/crossing/epoch_tm.py",
+    "scripts/crossing/show.py"
+   ]
+  }
+ ]
+}

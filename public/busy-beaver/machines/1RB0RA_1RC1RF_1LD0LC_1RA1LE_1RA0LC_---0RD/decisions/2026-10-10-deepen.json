@@ -1,0 +1,68 @@
+{
+ "tm": "1RB0RA_1RC1RF_1LD0LC_1RA1LE_1RA0LC_---0RD",
+ "bucket_reason": "Low confidence at observe: the left-overflow pause and the m=14 creep have no rules, so proof work waits for a priority call.",
+ "question": "Spend one deepen stage, with a stop rule, decoding the overflow pause and the creep, or park R8?",
+ "options": [
+  {
+   "id": "deepen",
+   "label": "One deepen stage (2 h): the pause's inner counter, both endings, and creeps at K <= 0",
+   "consequence": "Goal: rules for the pause (an inner P/Q/R counter fed by the left recount) and for both of its endings. If both endings return to the normal regime for every K, including a creep with no ternary digits left, the proof can case-split on creep or no creep and never has to predict the trigger. Then proof.md, then a TM31-style Longitudinal proof. If a branch that matters for halting depends on the trigger arithmetic (e.g. the base-3 digits of about 2^m), flag CRYPTID_CANDIDATE and stop."
+  },
+  {
+   "id": "park",
+   "label": "Park as STUCK at observe",
+   "consequence": "No spend. Gives up a neighbour 1 transition from a proved machine whose normal regime is already exact."
+  },
+  {
+   "id": "proof_now",
+   "label": "Start proof.md for the normal regime now",
+   "consequence": "Not allowed at low confidence without a call, and the unruled pause is the only place a halt could come from."
+  }
+ ],
+ "recommended": "deepen",
+ "rationale": "The normal regime is fully ruled and validated: RL, RS, RT and the record rule pass 600/600 over two seeds, and RM passes 300/300. SBCv8 TM31 is a proved machine 1 transition away (F1 0RE vs our 0RD), and its Longitudinal machinery can be reused (its module is about 325 lines). A halt needs A to read 0 1 0, which every validated rule avoids, so it could only come from the unruled pause or creep. The open part is therefore small and well located. The cryptid worry (only m=14 of m=9..18 crept) matters only if a creep can be dangerous. Hand tests with K = 1, 0 and -1 keep running, which suggests both branches are safe. A proof that covers both branches does not need to predict the trigger. One stage answers the question either way.",
+ "evidence": [
+  {
+   "kind": "rules",
+   "text": "RL/RS/RT/record pass 300/300 with seed 1 and again with seed 2, plus RM (the middle is unchanged) 300/300.",
+   "href": "validation_seed2.json"
+  },
+  {
+   "kind": "data",
+   "text": "Overflow table m = 9..18 to 2e11: pause about 80*2^m steps, K drops 3 -> 2 only at m = 14 (step 148,780,415). No halt to 2e11.",
+   "href": "notes.md"
+  },
+  {
+   "kind": "data",
+   "text": "Tape before and after every overflow to 2e11 (left and right zones).",
+   "href": "ovf_2e11.txt"
+  },
+  {
+   "kind": "robustness",
+   "text": "kdrop.py / kdrop_m1.py: from the real configuration at 3e8, K = 1, 0 and -1 (s3 removed) all keep running (1e8-2e8 steps each), with no halts.",
+   "href": "scripts/kdrop.py"
+  },
+  {
+   "kind": "template",
+   "text": "SBCv8.v TM31 (line 9675): same vocabulary and layout, differs only in F1. Reuse its segRLs transfer lemmas and DivModCases, not its invariant.",
+   "href": "../../vendor/busycoq/verify/SBCv8.v"
+  },
+  {
+   "kind": "figure",
+   "text": "Card Fig 3: the m=14 creep across the middle. Fig 2 shows an ordinary pause.",
+   "href": "card.html#fig-3"
+  },
+  {
+   "kind": "status",
+   "text": "status.json: CHECKPOINT_A, observe, confidence low, priority_call = deepen or park.",
+   "href": "status.json"
+  }
+ ],
+ "effort_if_yes": "One stage, at most 2 h of agent time, with light compute: a pause is about 80*2^m steps, so the C trackers replay m up to 18 quickly (one or two niced processes). If the stage passes, proof.md is the next stage and formalization takes several stages on TM31's segRLs machinery.",
+ "updated": "2026-10-10",
+ "answer": {
+  "option": "deepen",
+  "note": "Dennis: go with all recommendations (2026-10-10)",
+  "date": "2026-10-10"
+ }
+}

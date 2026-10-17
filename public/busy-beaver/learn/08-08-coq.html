@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From proof to Coq</title>
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* page-local pieces: the file strip and its key, the notation key, mini tapes (with boxes), the mirror widget,
+     the numbered picture, code excerpts, the timeline, the reports */
+  :root { --cm-head: var(--axis); --cm-setup: var(--sA); --cm-shape: var(--sB); --cm-seg: var(--sE); --cm-count: var(--sD);
+    --cm-q: var(--sX); --cm-walk: var(--sC); --cm-bs: var(--sF); --cm-init: var(--caution); --cm-j: var(--good); --cm-thm: var(--ink); }
+
+  /* beat 1: the file strip and its key */
+  .fstrip { display: flex; height: 36px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); margin: 12px 0 2px; background: var(--surface); }
+  .fstrip button { flex: var(--n) 1 0; min-width: 0; border: 0; border-left: 1px solid var(--surface); padding: 0 2px; margin: 0; background: var(--c);
+    color: var(--badge-fg); font: 650 11.5px/1 system-ui, sans-serif; cursor: pointer; overflow: hidden; white-space: nowrap; }
+  .fstrip button:first-child { border-left: 0; }
+  .fstrip button.on { box-shadow: inset 0 0 0 3px var(--ink); }
+  .fstrip button.grey, .fkey .n.grey { color: var(--ink); }
+  @media (max-width: 480px) { .fstrip button { font-size: 10px; padding: 0 1px; } }
+  .fscale { display: flex; justify-content: space-between; font: 11px ui-monospace, Consolas, monospace; color: var(--muted); margin-bottom: 8px; }
+  main.learn ol.fkey { list-style: none; padding: 0; margin: 4px 0 12px; max-width: none; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+  .fkey li { display: grid; grid-template-columns: 22px 6.2em 4.6em minmax(0, 1fr); gap: 2px 10px; align-items: baseline; padding: 5px 12px; margin: 0; font-size: 14.5px; cursor: pointer; }
+  .fkey li + li { border-top: 1px solid var(--line); }
+  .fkey li:hover { background: var(--sunk); }
+  .fkey li.on { background: var(--accent-weak); }
+  .fkey .n { display: inline-flex; width: 20px; height: 20px; border-radius: 5px; background: var(--c); color: var(--badge-fg); font: 700 11.5px/20px system-ui, sans-serif;
+    justify-content: center; align-self: center; }
+  .fkey .nm { font-weight: 650; }
+  .fkey .ln { font: 12.5px ui-monospace, Consolas, monospace; color: var(--muted); white-space: nowrap; }
+  .fkey .what { color: var(--ink2); }
+  .fkey .what a { white-space: nowrap; font-size: 13px; margin-left: 4px; }
+  @media (max-width: 560px) { .fkey li { grid-template-columns: 22px auto minmax(0, 1fr); } .fkey .what { grid-column: 2 / -1; } }
+
+  /* the reference: code excerpts, part by part */
+  .fmap { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin: 6px 0 14px; overflow: hidden; }
+  .fseg + .fseg { border-top: 1px solid var(--line); }
+  .fseg > summary { display: grid; grid-template-columns: 9px 70px minmax(0, 1fr); gap: 2px 10px; align-items: baseline; padding: 7px 12px; cursor: pointer; list-style: none; }
+  .fseg > summary::-webkit-details-marker { display: none; }
+  .fseg > summary:hover { background: var(--sunk); }
+  .fseg .sw { align-self: stretch; border-radius: 3px; background: var(--c); min-height: 18px; }
+  .fseg .ln { font: 12.5px ui-monospace, Consolas, monospace; color: var(--muted); white-space: nowrap; }
+  .fseg .nm { font-weight: 650; }
+  .fseg .nm small { font-weight: 400; color: var(--ink2); font-size: 14px; }
+  .fseg[open] > summary { background: var(--accent-weak); }
+  .fseg .body { padding: 4px 14px 12px 33px; font-size: 15px; }
+  .fseg .body p { margin: 6px 0; }
+  @media (max-width: 560px) {
+    .fseg > summary { grid-template-columns: 8px minmax(0, 1fr); }
+    .fseg .ln { grid-column: 2; grid-row: 2; }
+    .fseg .sw { grid-row: 1 / span 2; }
+    .fseg .body { padding-left: 14px; }
+  }
+
+  /* code excerpts: exact file lines, numbered */
+  pre.code { counter-reset: ln var(--ln); background: var(--surface); border: 1px solid var(--line); padding: 8px 10px 8px 0; font-size: 13px; line-height: 1.5; margin: 8px 0; }
+  pre.code .l::before { counter-increment: ln; content: counter(ln); display: inline-block; width: 3.4em; padding-right: .9em; text-align: right; color: var(--muted);
+    border-right: 3px solid transparent; margin-right: .7em; }
+  pre.code .l.hl::before, pre.code .l[class*="c-"]::before { border-right-color: var(--c, var(--accent)); color: var(--ink); font-weight: 650; }
+  pre.code .c-leat { --c: var(--sE); } pre.code .c-y2c { --c: var(--sC); } pre.code .c-cnt { --c: var(--sD); } pre.code .c-wk { --c: var(--sB); }
+  pre.code .c-phi { --c: var(--sC); } pre.code .c-perm { --c: var(--sE); } pre.code .c-thm { --c: var(--good); }
+  .src { font-size: 12.5px; color: var(--muted); margin: -4px 0 8px; }
+
+  /* beat 2: the notation key */
+  .nleg { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin: 10px 0 14px; }
+  .nrow { display: grid; grid-template-columns: 11.5em max-content minmax(0, 1fr); gap: 6px 16px; align-items: center; padding: 10px 14px; }
+  .nrow + .nrow { border-top: 1px solid var(--line); }
+  .nrow .ncode code { font-size: 13.5px; white-space: nowrap; }
+  .nrow .ncode .k { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .nrow .nmean { font-size: 14.5px; color: var(--ink2); }
+  .nrow .ntape { min-width: 0; overflow-x: auto; }
+  .nrow .nsteps { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+  .nrow .nsteps .to { font: 600 12.5px ui-monospace, Consolas, monospace; color: var(--accent); padding-left: 4px; }
+  .nrow .nsteps .cap { font-size: 11.5px; color: var(--muted); }
+  @media (max-width: 900px) { .nrow { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+
+  /* the timeline of BS2's chain */
+  .tl { display: flex; height: 34px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); margin: 12px 0 0; }
+  .tl button { flex: var(--n) 1 0; min-width: 0; border: 0; border-left: 1px solid var(--surface); margin: 0; padding: 0 1px; background: var(--c); color: var(--badge-fg);
+    font: 650 11.5px/1 system-ui, sans-serif; cursor: pointer; overflow: hidden; white-space: nowrap; }
+  .tl button:first-child { border-left: 0; }
+  .tl button.alt { opacity: .78; }
+  .tl button.on { box-shadow: inset 0 0 0 3px var(--ink); opacity: 1; }
+  .tlax, .tlbr { display: flex; font: 11px ui-monospace, Consolas, monospace; color: var(--muted); }
+  .tlax span { flex: var(--n) 1 0; min-width: 0; overflow: hidden; white-space: nowrap; padding-top: 2px; }
+  .tlax span:last-child { flex: 0 0 auto; }
+  .tlbr .sp { flex: var(--n) 1 0; }
+  .tlbr .br { flex: var(--n) 1 0; border: 2px solid var(--sB); border-top: 0; height: 8px; border-radius: 0 0 5px 5px; position: relative; margin-top: 2px; }
+  .tlbr .br span { position: absolute; top: 9px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 12px system-ui, sans-serif; color: var(--ink2); }
+  .tlbr { height: 30px; }
+  .tlkey { font-size: 12.5px; color: var(--muted); margin: 0 0 6px; }
+  .tlkey b { color: var(--ink2); font-weight: 650; }
+  @media (max-width: 480px) { .tl button { font-size: 10px; } .tlbr .br span { font-size: 11px; } }
+
+  /* mini tapes (real runs, drawn small; the cell size fits the box) */
+  .minis { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px; margin: 12px 0 14px; overflow-x: auto; }
+  .mrowwrap { display: grid; grid-template-columns: 9.5em max-content; gap: 6px 12px; align-items: start; }
+  .mlab { font-size: 13px; color: var(--ink2); padding-top: 14px; line-height: 1.3; }
+  .mlab b { color: var(--ink); }
+  .mini { position: relative; padding-top: 14px; width: max-content; }
+  .mcells { display: flex; gap: 1px; }
+  .mc { flex: none; width: var(--mc, 15px); height: var(--mc, 15px); border-radius: 2px; border: 1px solid var(--line); box-sizing: border-box; font: 600 9.5px/1 ui-monospace, Consolas, monospace;
+    display: flex; align-items: center; justify-content: center; }
+  .mc.s0 { background: var(--c0); color: var(--c0fg); }
+  .mc.s1 { background: var(--c1); color: var(--c1fg); border-color: var(--c1); }
+  .mc.unv { background: var(--unv); border-style: dashed; }
+  .mc.hd { box-shadow: 0 0 0 2px var(--hc); position: relative; z-index: 1; }
+  .mbox { flex: none; height: var(--mc, 15px); border-radius: 4px; border: 1.5px solid var(--axis); background: var(--sunk); box-sizing: border-box;
+    display: flex; align-items: center; justify-content: center; font: 650 11.5px/1 ui-monospace, Consolas, monospace; color: var(--ink); white-space: nowrap; }
+  .mbox.rside { border-style: dashed; color: var(--ink2); font-weight: 500; }
+  .mbox.hr { box-shadow: inset -4px 0 0 var(--hc); }
+  .mbox.hl { box-shadow: inset 4px 0 0 var(--hc); }
+  .mbadge { position: absolute; top: 0; height: 12px; min-width: 12px; padding: 0 2px; border-radius: 6px; font: 700 9px/12px system-ui, sans-serif; color: var(--badge-fg); text-align: center; }
+  .mmarks { position: relative; height: 22px; }
+  .mbr { position: absolute; top: 2px; height: 5px; border: 1.5px solid var(--accent); border-top: 0; border-radius: 0 0 3px 3px; }
+  .mbr span { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); white-space: nowrap; font: 600 10.5px/1.2 system-ui, sans-serif; color: var(--accent); }
+  .mbr.defect { border-color: var(--bad); } .mbr.defect span { color: var(--bad); top: 16px; }   /* a one-cell defect: its label one line lower */
+  .mmarks:has(.defect) { height: 32px; }
+  .mbr.item { border-color: var(--axis); } .mbr.item span { color: var(--ink2); font-weight: 500; }
+  .marrow { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); padding: 0 0 0 2px; width: 0; min-width: 100%; }  /* text never widens the grid */
+  .marrow b { color: var(--ink2); font-weight: 650; }
+  @media (max-width: 560px) { .mrowwrap { grid-template-columns: max-content; } .mlab { padding-top: 4px; width: 0; min-width: 100%; } }
+
+  /* beat 6: the numbered picture and the mirror widget */
+  .flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 12px 0 16px; }
+  .flow .st { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 8px 10px 10px; font-size: 13.5px; color: var(--ink2); min-width: 0; }
+  .flow .st .hd { display: flex; gap: 6px; align-items: baseline; color: var(--ink); font-weight: 650; font-size: 14px; }
+  .flow .st .k { flex: none; display: inline-flex; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); color: var(--page); font: 700 11.5px/20px system-ui, sans-serif;
+    justify-content: center; transform: translateY(-1px); }
+  .flow .st .by { display: block; font: 12px ui-monospace, Consolas, monospace; color: var(--accent); margin: 0 0 4px; }
+  .flow .st .pic { margin: 6px 0 2px; overflow-x: auto; }
+  .flow .st.end { border-color: var(--bad); }
+  .flow .st.end .k { background: var(--bad); }
+  .flow .st .x { font: 700 30px/1 system-ui, sans-serif; color: var(--bad); margin: 8px 0 2px; }
+  @media (max-width: 760px) { .flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .mirror { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); padding: 10px 12px 12px; margin: 12px 0 16px; }
+  .mirror .mtitle { font-weight: 650; font-size: 15px; }
+  .mirror .msub { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .mctl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 8px; }
+  .mctl button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 7px; padding: 4px 11px; min-height: 34px; cursor: pointer; }
+  .mctl button.primary { background: var(--ink); color: var(--page); border-color: var(--ink); min-width: 86px; font-weight: 600; }
+  .mctl button:disabled { opacity: .4; cursor: default; }
+  .mctl input[type=range] { flex: 1 1 120px; min-width: 100px; accent-color: var(--accent); }
+  .mctl .stp { font: 13px ui-monospace, Consolas, monospace; color: var(--ink2); min-width: 6.5em; }
+  .mpane { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 0 8px; overflow-x: auto; }
+  .mtapes { display: flex; align-items: flex-start; }
+  .mtapes .col { flex: none; }
+  .mtapes .gap { flex: none; align-self: stretch; border-left: 2px dashed var(--axis); }
+  .mtapes .who { font-size: 12.5px; font-weight: 650; color: var(--ink); margin-bottom: 2px; white-space: nowrap; }
+  .mtapes .rt { font-size: 12px; color: var(--ink2); margin-top: 4px; line-height: 1.35; min-height: 4.1em; }
+  .mhist { max-height: 400px; overflow-y: auto; overflow-x: hidden; margin-top: 8px; border-top: 1px solid var(--line); overscroll-behavior: contain; }
+  .mhist canvas { display: block; cursor: pointer; margin: 0 auto; }
+  .mtapes { margin: 0 auto; }
+  .mirror .mcap { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  table.plain td.ok { color: var(--good); font-weight: 700; }
+  table.plain td.bad { color: var(--bad); font-weight: 700; }
+  table.plain .mono { font-family: ui-monospace, Consolas, monospace; white-space: nowrap; }
+  table.plain .arr { color: var(--muted); }
+
+  /* the check_kill report */
+  .gate { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; margin: 10px 0 14px; }
+  .gate .dem { font-size: 15px; margin: 10px 0 0; display: flex; gap: 8px; align-items: baseline; }
+  .gate .dem .k { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: var(--good); color: var(--page); font: 700 12.5px/22px system-ui; justify-content: center; flex: none; transform: translateY(-1px); }
+  .gate .dem.extra .k { background: var(--axis); color: var(--ink); }
+  .gate h3 { margin: 18px 0 0; }
+  pre.report { background: var(--surface); border: 1px solid var(--line); font-size: 12.5px; margin: 4px 0; }
+  pre.report b.ok { color: var(--good); }
+
+  /* drill 3: three reports side by side */
+  .spot .reps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 10px 0 4px; }
+  @media (max-width: 760px) { .spot .reps { grid-template-columns: minmax(0, 1fr); } }
+  .rep { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 7px 10px 8px; min-width: 0; }
+  .rep .rh { font-weight: 700; font-size: 14.5px; }
+  .rep .rh .after { display: none; font-weight: 500; color: var(--ink2); font-size: 13.5px; }
+  .spot:has(.tm-predict[data-revealed]) .rep .rh .after { display: inline; }
+  pre.kreport { margin: 4px 0 0; background: transparent; padding: 0; font-size: 12px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre.kreport .f { color: var(--bad); font-weight: 700; }
+  pre.kreport .p { color: var(--good); font-weight: 700; }
+  pre.kreport .d { border-radius: 3px; }
+  .spot:has(.tm-predict[data-revealed]) pre.kreport .d { background: var(--bad-weak); box-shadow: 0 0 0 2px var(--bad-weak); }
+
+  /* beat 5: annotated code */
+  .anno { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 10px 0 14px; }
+  .anno pre.code { margin: 8px 0 2px; }
+  .anno .an { font-size: 15px; color: var(--ink2); padding: 2px 0 8px 14px; border-left: 3px solid var(--good); margin-left: 4px; }
+  .anno .an b { color: var(--ink); }
+
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); background: var(--surface); border-radius: 10px; padding: 12px 16px; margin: 30px 0 14px; }
+  .kills .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 2px; }
+  .recap { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 16px; margin: 14px 0; }
+  .recap .tag { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .recap ol { margin: 6px 0 2px; }
+  .answer ul { margin: 6px 0 4px; }
+  .answer li { margin: 3px 0; }
+
+  /* drills whose run would show the answer before the reveal; pictures shown only after a reveal */
+  .nospoil .tm-predict:not([data-revealed]) .tm-plinked { visibility: hidden; height: 0; overflow: hidden; }
+  .afterreveal { display: none; }
+  .revwrap:has(.tm-predict[data-revealed]) .afterreveal { display: block; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 8 · From proof to Coq</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/07-07-cryptids.html" title="Cryptids">← Module 7</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 8 of 8 · about 15 minutes</div>
+<h1>From informal proof to Coq: a tour of one kill file</h1>
+<div class="answer"><b>The answer</b>
+  <p>A kill file is the informal proof, rule by rule, written so that Coq can check every step.</p>
+  <ul>
+    <li>Each finite rule is a <b>lemma</b>. Coq proves it by running the machine on a tape with unknowns in it (the tactic <code>es</code>).</li>
+    <li>Lemmas <b>chain</b> into one macro rule per case of N (<code>BS1</code> to <code>BS5</code>), each from one eat configuration <code>EC p N</code> to the next. <code>BS4</code> and <code>BS5</code> pass a second eat on the way. A rule for any number of counts is proved by <b>induction</b>.</li>
+    <li>The invariant becomes one <b>closure</b> lemma, <code>step_J</code>.</li>
+    <li>Two busycoq lemmas turn "the blank tape reaches the invariant, and every configuration with it moves on to another" into the final theorem, <code>nonhalt</code>.</li>
+  </ul>
+  <p>The tour follows W5-3's file: 530 lines, compiled by check_kill in 3.4 seconds.</p>
+</div>
+
+<!-- ============================================================== 1 -->
+<section class="beat" id="map"><h2><span class="num">1</span>The whole file on one strip</h2>
+<p>Each band is one part of W5-3's proof, as wide as its share of the 530 lines. The key under it says what each part is and which beat shows it.</p>
+<div class="fstrip" id="fstrip" role="group" aria-label="the file's parts, in order">
+  <button type="button" data-k="1" class="grey" style="--n:22;--c:var(--cm-head)" title="1 · lines 1-22: header comment">head</button>
+  <button type="button" data-k="2" style="--n:13;--c:var(--cm-setup)" title="2 · lines 24-35: imports and the machine (line 32)">tm</button>
+  <button type="button" data-k="3" style="--n:5;--c:var(--cm-shape)" title="3 · lines 37-40: the counter C and the count configuration HF">C</button>
+  <button type="button" data-k="4" style="--n:75;--c:var(--cm-seg)" title="4 · lines 42-115: segment lemmas">lemmas</button>
+  <button type="button" data-k="5" style="--n:34;--c:var(--cm-count)" title="5 · lines 117-149: one count">count</button>
+  <button type="button" data-k="6" style="--n:61;--c:var(--cm-q)" title="6 · lines 151-210: the misaligned counter">Q</button>
+  <button type="button" data-k="7" style="--n:101;--c:var(--cm-walk)" title="7 · lines 212-310: walks, by induction">walks</button>
+  <button type="button" data-k="8" style="--n:120;--c:var(--cm-bs)" title="8 · lines 313-431: macro rules BS1-BS5">BS1-BS5</button>
+  <button type="button" data-k="9" style="--n:10;--c:var(--cm-init)" title="9 · lines 433-441: the opening, init">init</button>
+  <button type="button" data-k="10" style="--n:37;--c:var(--cm-j)" title="10 · lines 443-478: the closure, step_J">J</button>
+  <button type="button" data-k="11" style="--n:10;--c:var(--cm-thm)" title="11 · lines 480-488: the theorem, nonhalt">thm</button>
+  <button type="button" data-k="12" class="grey" style="--n:41;--c:var(--cm-head)" title="12 · lines 490-530: summary comment">notes</button>
+</div>
+<div class="fscale"><span>line 1</span><span>265</span><span>530</span></div>
+<ol class="fkey" id="fkey">
+  <li data-k="1"><span class="n grey" style="--c:var(--cm-head)">1</span><span class="nm">head</span><span class="ln">1–22</span><span class="what">What the machine does, in prose. <a href="/busy-beaver/learn/08-08-coq.html#ref-head">key lines</a></span></li>
+  <li data-k="2"><span class="n" style="--c:var(--cm-setup)">2</span><span class="nm">tm</span><span class="ln">24–35</span><span class="what">The machine itself, on line 32 (beat 7). <a href="/busy-beaver/learn/08-08-coq.html#ref-setup">key lines</a></span></li>
+  <li data-k="3"><span class="n" style="--c:var(--cm-shape)">3</span><span class="nm">C, HF</span><span class="ln">37–40</span><span class="what">The counter C n and the count configuration HF l r (beat 2). <a href="/busy-beaver/learn/08-08-coq.html#ref-shape">key lines</a></span></li>
+  <li data-k="4"><span class="n" style="--c:var(--cm-seg)">4</span><span class="nm">lemmas</span><span class="ln">42–115</span><span class="what">12 short stretches of the run, like <code>LEat</code> (beat 2). <a href="/busy-beaver/learn/08-08-coq.html#ref-seg">key lines</a></span></li>
+  <li data-k="5"><span class="n" style="--c:var(--cm-count)">5</span><span class="nm">count</span><span class="ln">117–149</span><span class="what">One count: <code>Cnt1</code>, <code>Cnt0</code>, <code>Cnt011</code> (beat 3). <a href="/busy-beaver/learn/08-08-coq.html#ref-count">key lines</a></span></li>
+  <li data-k="6"><span class="n" style="--c:var(--cm-q)">6</span><span class="nm">Q</span><span class="ln">151–210</span><span class="what">A fixed-width counter, needed only inside <code>BS5</code>. <a href="/busy-beaver/learn/08-08-coq.html#ref-q">key lines</a></span></li>
+  <li data-k="7"><span class="n" style="--c:var(--cm-walk)">7</span><span class="nm">walks</span><span class="ln">212–310</span><span class="what">Many counts in a row, by induction (beat 3). <a href="/busy-beaver/learn/08-08-coq.html#ref-walk">key lines</a></span></li>
+  <li data-k="8"><span class="n" style="--c:var(--cm-bs)">8</span><span class="nm">BS1–BS5</span><span class="ln">313–431</span><span class="what">The macro rules: eat configuration to the next (beat 3). <a href="/busy-beaver/learn/08-08-coq.html#ref-bs">key lines</a></span></li>
+  <li data-k="9"><span class="n" style="--c:var(--cm-init)">9</span><span class="nm">init</span><span class="ln">433–441</span><span class="what">The opening: blank tape to <code>EC 2 4</code> (beat 5). <a href="/busy-beaver/learn/08-08-coq.html#ref-init">key lines</a></span></li>
+  <li data-k="10"><span class="n" style="--c:var(--cm-j)">10</span><span class="nm">J</span><span class="ln">443–478</span><span class="what">The closure <code>step_J</code>: the invariant (beat 4). <a href="/busy-beaver/learn/08-08-coq.html#ref-j">key lines</a></span></li>
+  <li data-k="11"><span class="n" style="--c:var(--cm-thm)">11</span><span class="nm">thm</span><span class="ln">480–488</span><span class="what">The theorem <code>nonhalt</code>, 9 lines (beat 5). <a href="/busy-beaver/learn/08-08-coq.html#ref-thm">key lines</a></span></li>
+  <li data-k="12"><span class="n grey" style="--c:var(--cm-head)">12</span><span class="nm">notes</span><span class="ln">490–530</span><span class="what">Every rule again, on paper. <a href="/busy-beaver/learn/08-08-coq.html#ref-sum">key lines</a></span></li>
+</ol>
+<p class="note">Read the file from the bottom up and you get the informal proof from the top down. The theorem (line 480) needs an opening (435) and a closure (447). The closure needs the macro rules (331 to 431), and those need the walks (224 to 310) and the segment lemmas (46 to 115).</p>
+</section>
+
+<!-- ============================================================== 2 -->
+<section class="beat" id="lemma"><h2><span class="num">2</span>One lemma is one run you can watch</h2>
+<pre class="code" data-src="/busy-beaver/learn/w53" data-from="71" style="--ln:70"><span class="l">(* EAT: EB, then the C/F sweep EAT0 over the whole word, then CS *)</span>
+<span class="l">Lemma LEat b r:</span>
+<span class="l">  HF (0inf &lt;* [0;1]^^b) r --&gt;+ 0inf &lt;* [0;1]^^(b+2) &lt;* [0;1;1] {{A}}&gt; r.</span>
+<span class="l">Proof. unfold HF. es. Qed.</span></pre>
+<p><code>LEat</code> says: from the tape on the left of <code>--&gt;+</code>, the machine reaches the tape on the right. It holds for every b and every right side r. First, the four pieces of notation, each on W5-3's real tape.</p>
+
+<div class="nleg" id="nleg">
+  <div class="nrow"><div class="ncode"><code>l &lt;{{E}} r</code></div><div class="ntape" id="nl1"></div>
+    <div class="nmean">E reads the <b>last cell of l</b>, the one next to r. Step 171. <code>HF l r</code> is <code>l &lt;{{E}} [1;0;1;1] *&gt; r</code>.</div></div>
+  <div class="nrow"><div class="ncode"><code>l {{A}}&gt; r</code></div><div class="ntape" id="nl2"></div>
+    <div class="nmean">A reads the <b>first cell of r</b>. Step 190: this is how <code>LEat</code> ends.</div></div>
+  <div class="nrow"><div class="ncode"><code>0inf &lt;* [0;1]^^2</code><span class="k">a left side</span></div><div class="ntape" id="nl3"></div>
+    <div class="nmean"><code>[0;1]^^2</code> = <code>[0;1;0;1]</code>, the list twice. <code>0inf</code> = blank forever. The list starts at the head and runs left (1, 2, 3, 4), so on the tape it reads <b>1 0 1 0</b>.</div></div>
+  <div class="nrow"><div class="ncode"><code>--&gt;+</code> and <code>--&gt;*</code></div><div class="ntape nsteps" id="nl4"></div>
+    <div class="nmean"><code>c --&gt;+ c'</code>: from c the machine reaches c' in <b>one or more</b> steps (here 19). <code>--&gt;*</code> also allows zero steps; <code>init</code> uses it.</div></div>
+</div>
+
+<h3>The trap: a left list starts at the head</h3>
+<p>Row 3 is the trap. Coq keeps the left side as a list that starts at the head and runs left. So <code>0inf &lt;* [0;1]^^2</code> is <b>1 0 1 0</b> on the tape, which is (10)<sup>2</sup>. The file's header says the same: <code>EC p N = HF (0^inf (10)^p) (C N)</code> (line 17).</p>
+<p>A right-hand list like <code>[1;0;1;1] *&gt; r</code> starts <b>next to</b> the head (or at the head, in the <code>{{A}}&gt;</code> form) and reads left to right, as written. Both notations are one busycoq function, <code>Str_app</code>:</p>
+<pre class="code" data-src="/busy-beaver/learn/helper" data-from="179" style="--ln:178"><span class="l">Notation "xs *&gt; r" := (Str_app xs r) (at level 25, right associativity).</span>
+<span class="l">Notation "l &lt;* xs" := (Str_app xs l) (at level 24, left associativity, only parsing).</span></pre>
+<p class="src">busycoq <code>verify/Helper.v</code>, lines 179–180: <code>Str_app xs s</code> puts the list xs in front of the side s, first item nearest the head.</p>
+
+<h3>LEat on the real run</h3>
+<p>Here is <code>LEat</code> at the moment it applies, with b = 2 and r = <code>C 4</code>: steps 171 to 190.</p>
+<div id="leatrun"></div>
+<p>The brackets on the first and last rows show which piece of the lemma covers which cells. The eat never reads r, and it takes 4b + 11 steps (we checked b = 0 to 12).</p>
+
+<h3>What <code>es</code> sees: b left unknown</h3>
+<p>Coq cannot try every b one by one. So <code>es</code> treats <code>(10)^b</code> as one box, and r as another. It runs the cells outside the boxes one step at a time, and crosses a box in one jump with a shift rule (module 2): a rule for one copy of 10, used b times.</p>
+<div class="minis" id="esrun" role="img" aria-label="LEat with the block (10)^b drawn as one box: two jumps and seven single steps, 4b + 11 steps in all"></div>
+<p class="src">Each row is the real tape at b = 2 (the run above, steps in brackets), with the cells of <code>(10)^b</code> and of r drawn as boxes. The page checks the same five rows for b = 0 to 8.</p>
+
+<div class="nospoil" data-tm-predict data-opts='{"id":"m8-left-list","prompt":"<b>Drill 1.</b> In Coq, the left side is <code>0inf &lt;* [0;1]^^3</code>. What do its six cells read on the tape, left to right? The last of the six is the cell the head reads.","input":{"kind":"cells","length":6},"answer":"101010","run":{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","start":"0^inf 1 0 1 0 1 0 <E 1 0 1 1 0 0 0 0 1 1 0^inf","startLabel":"EC 3 4 = HF (0inf <* [0;1]^^3) (C 4), built from the Coq term","rows":"each","count":24,"mark":{"digits":"m8-d1"},"table":true,"speed":4,"title":"W5-3 started from EC 3 4"},"revealTo":{"row":0},"actual":"decoded.left","explain":"The list starts at the head and runs left: 0 (the cell E reads), 1, 0, 1, 0, 1. Left to right on the tape that is 1 0 1 0 1 0 = (10)^3. Press play: LEat eats from here in 4·3 + 11 = 23 steps. The last row is LEat&#39;s right side with b = 3: <code>0inf &lt;* [0;1]^^5 &lt;* [0;1;1] {{A}}&gt; C 4</code>.","checkId":"C-M8-d1, C-M8-d1b, C-M8-leat"}'></div>
+</section>
+
+<!-- ============================================================== 3 -->
+<section class="beat" id="chain"><h2><span class="num">3</span>Lemmas chain into a macro rule</h2>
+<pre class="code" data-src="/busy-beaver/learn/w53" data-from="343" style="--ln:342"><span class="l">(* M2: N = 0 mod 4 *)</span>
+<span class="l">Lemma BS2 p n: EC p (n*4) --&gt;+ EC (p+3+p mod 2) (n+p+4).</span>
+<span class="l">Proof.</span>
+<span class="l">  unfold EC.</span>
+<span class="l c-leat">  eapply progress_trans. 1: apply LEat.</span>
+<span class="l c-y2c">  eapply progress_trans. 1: apply Y2C.</span>
+<span class="l c-cnt">  eapply progress_trans. 1: apply (Cnt1 (0inf &lt;* [0;1]^^(p+2) &lt;* [1;1]) 0 (C n) _ (IncC n)).</span>
+<span class="l c-wk">  eapply pt_eq. 1: apply (Wk (p+2) 1 (1+n)).</span>
+<span class="l">  apply HF_eq. 2: f_equal; lia.</span>
+<span class="l">  f_equal. f_equal. lia.</span>
+<span class="l">Qed.</span></pre>
+<p>Each <code>eapply progress_trans. 1: apply X.</code> means: first run lemma X, then prove the rest. So the proof of <code>BS2</code> is a list of lemmas laid end to end, and its last two lines check the arithmetic with <code>lia</code>. The bar is the real run from <code>EC 2 4</code> (step 171) to <code>EC 5 7</code> (step 457), cut where each lemma ends. Tap a piece to jump there.</p>
+<div id="tl"></div>
+<p class="tlkey"><b>LEat</b> 171–190 · <b>Y2C</b> 190–203 · <b>Cnt1</b> 203–231 · then <b>Wk 4 1 2</b> 231–457: Cnt1, Cnt0, Cnt1, Cnt0, Cnt1</p>
+<div id="chainrun"></div>
+<p><code>Wk 4 1 2</code> (line 350) covers the last five counts. Watch the lone <code>1</code> in the word on the left. Every two counts it moves two <code>10</code> pairs further left, and the counter goes up by one per count, from <code>C 2</code> to <code>C 7</code>.</p>
+
+<h3>Induction: one lemma for every size</h3>
+<div class="minis" id="wkstack" role="img" aria-label="W5-3 at steps 231, 307, 403 and 457: the lone 1 moves left two pairs at a time"></div>
+<pre class="code" data-src="/busy-beaver/learn/w53" data-from="234" style="--ln:233"><span class="l">(* W(a,b): G((10)^a 1 (10)^b, C n) -&gt; E(a+b+[a odd], n+a+1), a+1 counts *)</span>
+<span class="l">Lemma Wk a: forall b n,</span>
+<span class="l">  HF (0inf &lt;* [0;1]^^a &lt;* [1] &lt;* [0;1]^^b) (C n) --&gt;+</span>
+<span class="l">  HF (0inf &lt;* [0;1]^^(a+b+a mod 2)) (C (n+a+1)).</span>
+<span class="l">Proof.</span>
+<span class="l">  induction a as [a IH] using lt_wf_ind. intros b n.</span>
+<span class="l">  destruct a as [|[|a]].</span></pre>
+<p><code>Wk</code> is stated for every a (line 235), so Coq proves it by induction on a (line 239). For a = 0 and a = 1 the counts are done directly. For a ≥ 2 the proof runs <code>W2</code> (two counts that move the lone 1 two pairs left) and then uses <code>Wk</code> itself for a − 2. Here a goes 4, 2, 0, as in the rows above.</p>
+</section>
+
+<!-- ============================================================== 4 -->
+<section class="beat" id="closure"><h2><span class="num">4</span>The invariant becomes one lemma</h2>
+<pre class="code" data-src="/busy-beaver/learn/w53" data-from="447" style="--ln:446"><span class="l">Lemma step_J p N: 1 &lt;= N &lt;= 2*p -&gt;</span>
+<span class="l">  exists p' N', EC p N --&gt;+ EC p' N' /\ 1 &lt;= N' &lt;= 2*p'.</span></pre>
+<p><code>step_J</code>: if 1 ≤ N ≤ 2p (this is J), then <code>EC p N</code> runs to some <code>EC p' N'</code> where J holds again. Below is the real run: the blank tape, then every <code>EC</code> configuration up to step 2,731, with J checked and the macro rule that comes next.</p>
+<div class="minis" id="jstack" role="img" aria-label="W5-3: the blank tape, then EC 0 1, EC 2 4, EC 5 7, EC 8 12, EC 11 15 and EC 14 22, with J checked"></div>
+<p>The row at step 37 is a real <code>EC</code> configuration too: <code>EC 0 1</code>. But J fails there, because 1 ≤ 2·0 is false. That is why the opening runs on to <code>EC 2 4</code>.</p>
+<p>The proof of <code>step_J</code> (lines 449–478) is this table: split N into cases, apply that case's macro rule, then let <code>lia</code> check 1 ≤ N' ≤ 2p'.</p>
+<table class="plain">
+  <tr><th>case of N</th><th>macro rule</th><th>uses in the first 61 eat-to-eat steps</th></tr>
+  <tr><td>N odd</td><td><code>BS1</code></td><td>31</td></tr>
+  <tr><td>N = 0 mod 4</td><td><code>BS2</code></td><td>14</td></tr>
+  <tr><td>N = 2 mod 8</td><td><code>BS3</code></td><td>5</td></tr>
+  <tr><td>N = 6 mod 16</td><td><code>BS4</code></td><td>5</td></tr>
+  <tr><td>N = 14 mod 16</td><td><code>BS5</code>, if 2<sup>t+1</sup> ≤ p + 7</td><td>6</td></tr>
+</table>
+<p>For <code>BS5</code>, write N/2 + 1 = (2m+1)·2<sup>t+3</sup>: an odd number times a power of 2, at least 8. For example, N = 62 gives N/2 + 1 = 32 = 1·2<sup>5</sup>, so m = 0 and t = 2, and <code>BS5</code> needs 2<sup>3</sup> = 8 ≤ p + 7. (The file writes 2<sup>t+1</sup> as <code>2^(S t)</code>, line 388.)</p>
+
+<div class="revwrap">
+<div data-tm-predict data-opts='{"id":"m8-weak-j2","prompt":"<b>Drill 2.</b> Suppose J were weakened to just 1 ≤ N. Which proof in the file would break?","input":{"kind":"choice","options":[{"label":"LEat","value":"LEat"},{"label":"BS5","value":"BS5"},{"label":"step_J","value":"step_J"},{"label":"init","value":"init"}]},"answer":"step_J","explain":"The proof of step_J. With only 1 ≤ N, step_J must also handle <code>EC 0 62</code>. 62 = 14 mod 16, so its case is BS5: N/2 + 1 = 32 = 1·2<sup>5</sup> gives m = 0 and t = 2, and BS5 needs 2<sup>t+1</sup> = 8 ≤ p + 7 = 7. That is false, and in the file only N ≤ 2p guarantees it (line 473), so that step fails. BS5 itself stays true, because it keeps its premise. The weakened lemma might even be true: from <code>EC 0 62</code> the machine reaches <code>EC 12 7</code>, inside J, after 688 steps (below). This proof just cannot show it. An invariant must be a fence Coq can check, not the exact border of halting.","checkId":"C-M8-E062, C-M8-t"}'></div>
+<div class="afterreveal minis" id="d2stack" role="img" aria-label="EC 0 62, built from the Coq term, and EC 12 7, 688 steps later"></div>
+</div>
+</section>
+
+<!-- ============================================================== 5 -->
+<section class="beat" id="nonhalt"><h2><span class="num">5</span>The last nine lines</h2>
+<div class="minis" id="nhchain" role="img" aria-label="the blank tape, then EC 2 4, EC 5 7, EC 8 12 and EC 11 15, each with J checked"></div>
+<p>This is the whole argument as a picture. The blank tape reaches a configuration with J. From every configuration with J, the machine moves on, in one step or more, to another with J. So it can never stop. The nine lines say exactly this:</p>
+<div class="anno">
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="480" style="--ln:479"><span class="l">Lemma nonhalt: ~halts tm c0.</span></pre>
+  <div class="an">The claim: started on the blank tape <code>c0</code> (state A, every cell 0), <code>tm</code> never halts. check_kill requires exactly this line.</div>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="481" style="--ln:480"><span class="l">Proof.</span>
+<span class="l">  eapply multistep_nonhalt. 1: apply init.</span></pre>
+  <div class="an"><code>multistep_nonhalt</code> (busycoq <code>TM.v</code> line 584): if <code>c0</code> reaches some configuration c, and c never halts, then <code>c0</code> never halts. <code>init</code> gives c = <code>EC 2 4</code>.</div>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="483" style="--ln:482"><span class="l">  change (EC 2 4) with ((fun x : nat*nat =&gt; let (p,N) := x in EC p N) (2,4)).</span></pre>
+  <div class="an">Rewrites <code>EC 2 4</code> as "EC applied to the pair (2, 4)", so the next lemma can talk about pairs (p, N).</div>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="484" style="--ln:483"><span class="l">  apply progress_nonhalt_cond with (P := fun x : nat*nat =&gt; let (p,N) := x in 1 &lt;= N &lt;= 2*p).</span></pre>
+  <div class="an"><code>progress_nonhalt_cond</code> (<code>TM.v</code> line 632) with P = J: if every pair with J moves, in at least one step, to another pair with J, and the start pair has J, the machine never halts. Two goals are left.</div>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="485" style="--ln:484"><span class="l">  - intros [p N] HJ. destruct (step_J p N HJ) as [p' [N' [H1 H2]]].</span>
+<span class="l">    exists (p',N'). split; assumption.</span></pre>
+  <div class="an">Goal 1, every pair with J moves on to another pair with J: that is <code>step_J</code>.</div>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="487" style="--ln:486"><span class="l">  - lia.</span>
+<span class="l">Qed.</span></pre>
+  <div class="an">Goal 2, the start pair has J: 1 ≤ 4 ≤ 2·2, checked by <code>lia</code>. At <code>Qed</code>, Coq's kernel re-checks the whole proof.</div>
+</div>
+<p>The opening is the one part Coq checks by running the concrete machine. <code>init</code> (line 435) makes it run these 171 steps from the blank tape and compare the result with <code>EC 2 4</code>. The brackets appear twice: at step 171, and at step 37, where the tape is <code>EC 0 1</code> and J fails.</p>
+<div data-tm-run data-opts='{"tm":"1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC","rows":"each","count":172,"mark":{"digits":"m8-ec"},"speed":30,"grow":true,"title":"The opening on W5-3: c0 to EC 2 4, every step (init, line 435)"}'></div>
+</section>
+
+<!-- ============================================================== 6 -->
+<section class="beat" id="perm"><h2><span class="num">6</span>Another start state: mirror and rename</h2>
+<p>A machine whose table is another machine's table seen in a mirror needs no new macro rules. It needs only a new opening, plus three busycoq lemmas.</p>
+<p>W5-8b <code>1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</code> is such a machine. Mirror its table (swap L and R everywhere) and rename its states A→C, B→A, C→B (D, E, F stay): you get W5-8 <code>1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code>. W5-8b starts in A, which becomes C. Here is the proof as a picture, with each machine's real tape at step 20:</p>
+<div class="flow" id="flow">
+  <div class="st"><div class="hd"><span class="k">1</span>Suppose W5-8b halts</div><div class="pic" id="fl1"></div>W5-8b from A, the usual start.</div>
+  <div class="st"><div class="hd"><span class="k">2</span>Its mirror halts</div><span class="by">flip_halts</span><div class="pic" id="fl2"></div><code>flip tm</code>: the same tape, reversed, from the blank tape.</div>
+  <div class="st"><div class="hd"><span class="k">3</span>W5-8 from C halts</div><span class="by">perm_halts</span><div class="pic" id="fl3"></div>The same tape again, states renamed (here B is A).</div>
+  <div class="st end"><div class="hd"><span class="k">4</span>Contradiction</div><span class="by">nonhaltP</span><div class="x">✗</div>W5-8's own proof says it never halts from C. So W5-8b never halts.</div>
+</div>
+<p>The two runs below share one set of controls. Their pictures are mirror images, row for row, across the dashed line. Only the colours differ, because the states are renamed: where W5-8b is in A (red), W5-8 is in C (blue).</p>
+<div id="mirror"></div>
+<div id="permtable"></div>
+<p class="src">Every cell of W5-8b, mirrored and renamed, is the matching cell of W5-8. The page computes this table from the two strings. Coq checks the same 12 cells in <code>perm</code>.</p>
+<pre class="code" data-src="/busy-beaver/learn/w58b" data-from="351" style="--ln:350"><span class="l c-phi">Definition phi (q : Q) : Q :=</span>
+<span class="l c-phi">  match q with</span>
+<span class="l c-phi">  | A =&gt; C | B =&gt; A | C =&gt; B | D =&gt; D | E =&gt; E | F =&gt; F</span>
+<span class="l c-phi">  end.</span>
+<span class="l"></span>
+<span class="l c-perm">Lemma perm: Perm (flip tm) tmP phi.</span>
+<span class="l">Proof.</span>
+<span class="l">  split.</span>
+<span class="l">  - intros [] [] H; cbn in *; try discriminate; reflexivity.</span>
+<span class="l">  - intros [] [] s' d q' H; cbn in *; inversion H; subst; reflexivity.</span>
+<span class="l">Qed.</span>
+<span class="l"></span>
+<span class="l c-thm">Lemma nonhalt: ~halts tm c0.</span>
+<span class="l c-thm">Proof.</span>
+<span class="l c-thm">  intros H.</span>
+<span class="l c-thm">  apply flip_halts in H.</span>
+<span class="l c-thm">  change (halts (flip tm) (A;; tape0)) in H.</span>
+<span class="l c-thm">  exact (nonhaltP (perm_halts _ _ _ _ _ perm H)).</span>
+<span class="l">Qed.</span></pre>
+<ul>
+  <li><code>phi</code> (line 351) is the renaming, from W5-8b's states to W5-8's. In this file W5-8 is called <code>tmP</code>.</li>
+  <li><code>perm</code> (line 356): the mirrored table <code>flip tm</code>, renamed by phi, is <code>tmP</code>, cell for cell (the table above).</li>
+  <li><code>nonhalt</code> (line 363) is the picture: H is box 1, <code>flip_halts</code> gives box 2, <code>perm_halts</code> box 3, and <code>nonhaltP</code> (line 335) box 4.</li>
+</ul>
+<p>So the macro rules carry over from W5-8's own proof. What is new is the opening from the new start state (W5-8 from C: 4,098,826 steps to its first macro configuration, line 148) and these 19 lines.</p>
+</section>
+
+<!-- ============================================================== 7 -->
+<section class="beat" id="gate"><h2><span class="num">7</span>The gate: what check_kill demands</h2>
+<p>A file counts as a kill only when <code>tools/check_kill.sh</code> prints PASS. It demands five things. Here they are with the matching lines of W5-3's real report:</p>
+<div class="gate">
+  <p class="dem"><span class="k">1</span><span>It compiles against the unmodified busycoq framework (pinned commit, Coq 8.20).</span></p>
+  <pre class="report"><b class="ok">[PASS]</b> framework      (a) busycoq HEAD == tools/busycoq.pin, no tracked changes under verify/
+       HEAD 0940bb9cf434ba68f0c025dabfde45a219999973 == pin; no tracked changes under verify/
+<b class="ok">[PASS]</b> compile        (f) temp copy + appended checks compile within 1800s, flags from verify/_CoqProject
+       compiled in 3.4s with all appended checks</pre>
+  <p class="dem"><span class="k">2</span><span>The machine string on line 32 equals the holdout entry, byte for byte.</span></p>
+  <pre class="report"><b class="ok">[PASS]</b> tm_text        (b) TM_from_str literal of the top-level `Definition tm` == &lt;tm&gt; byte for byte
+       line 32: TM_from_str "1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC" == &lt;tm&gt; (41 bytes)</pre>
+  <p class="dem"><span class="k">3</span><span>The final theorem is <code>Lemma nonhalt: ~halts tm c0.</code></span></p>
+  <pre class="report"><b class="ok">[PASS]</b> theorem_text   (c) exactly one top-level `nonhalt : ~halts tm c0` (text)
+       line 480: nonhalt : ~halts tm c0</pre>
+  <p class="dem"><span class="k">4</span><span>No Admitted, admit, Axiom, Parameter, Hypothesis, Conjecture, Abort, Unset Guard Checking or bypass_check anywhere.</span></p>
+  <pre class="report"><b class="ok">[PASS]</b> forbidden      (d) forbidden tokens anywhere in the file (comments and strings included)
+       none of 30 forbidden patterns occur (ground rule 1's words: anywhere; command words: outside comments and strings; comments never split a token)</pre>
+  <p class="dem"><span class="k">5</span><span><code>Print Assumptions nonhalt</code> lists nothing beyond the baseline.</span></p>
+  <pre class="report"><b class="ok">[PASS]</b> assumptions    (e) Print Assumptions nonhalt within tools/assumptions_baseline.txt
+       0 assumption(s), all in the baseline</pre>
+  <h3>An extra check, not one of the five</h3>
+  <p class="dem extra"><span class="k">+</span><span><code>coqchk</code> re-checks the compiled proof with a second, independent checker. Only then is the result PASS.</span></p>
+  <pre class="report"><b class="ok">[PASS]</b> coqchk         (h) coqchk -norec re-checks the compiled candidate (VM/native steps included)
+       coqchk -norec BB6Kill.Candidate ok (1.0s); its context summary lists nothing of the file's own
+<b class="ok">RESULT: PASS</b> -- this is a kill</pre>
+</div>
+<p>check_kill compares line 32 with the machine string it is given on the command line. We always give the entry copied from the holdout list, the machines no decider has settled: W5-3 is line 134 of the 740 list.</p>
+
+<div class="spot revwrap">
+<p>Three edited copies of W5-3's file went through check_kill's text checks (<code>--text-only</code>, no Coq run): <b>(a)</b> the last <code>Qed.</code> replaced by <code>Admitted.</code>, <b>(b)</b> one letter of the machine string on line 32 changed, <b>(c)</b> unchanged. Here are the three real reports, shuffled and cut to the lines that matter:</p>
+<div class="reps">
+  <div class="rep"><div class="rh">Report X <span class="after">· copy (c), unchanged</span></div>
+<pre class="kreport" data-report="c"><span class="p">[PASS]</span> forbidden
+<span class="p">[PASS]</span> tm_text
+<span class="p">[PASS]</span> theorem_text
+RESULT: TEXT_ONLY_OK -- text-level checks only; NOT a kill verdict</pre></div>
+  <div class="rep"><div class="rh">Report Y <span class="after">· copy (b), one letter</span></div>
+<pre class="kreport" data-report="b"><span class="p">[PASS]</span> forbidden
+<span class="d"><span class="f">[FAIL]</span> tm_text</span>
+<span class="d">  file (line 32): '…---0RB'</span>
+<span class="d">  arg:            '…---0RC'</span>
+<span class="p">[PASS]</span> theorem_text
+RESULT: FAIL -- failed: tm_text</pre></div>
+  <div class="rep"><div class="rh">Report Z <span class="after">· copy (a), Admitted</span></div>
+<pre class="kreport" data-report="a"><span class="d"><span class="f">[FAIL]</span> forbidden</span>
+<span class="d">  line 488 (code): `Admitted`</span>
+<span class="p">[PASS]</span> tm_text
+<span class="p">[PASS]</span> theorem_text
+RESULT: FAIL -- failed: forbidden</pre></div>
+</div>
+<div data-tm-predict data-opts='{"id":"m8-gate-spot","prompt":"<b>Drill 3: spot the difference.</b> Which report comes from copy (b), the one-letter change?","input":{"kind":"choice","options":[{"label":"Report X","value":"X"},{"label":"Report Y","value":"Y"},{"label":"Report Z","value":"Z"}]},"answer":"Y","explain":"Y: its tm_text check fails, because the file says <code>---0RB</code> where the holdout entry says <code>---0RC</code>. Z is (a): <code>Admitted</code> is a forbidden word, found on line 488. X is (c): every text check passes, so the result is TEXT_ONLY_OK. That is not yet a kill: the full gate then compiles the file and runs Print Assumptions and coqchk, as in W5-3&#39;s report above.","checkId":"C-M8-gate, C-M8-excerpts"}'></div>
+</div>
+</section>
+
+<aside class="kills"><span class="tag">From our kills</span>
+  <p><b>W5-3</b> <code>1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC</code>, our 24th kill, class "Bell eats counter". Its file is the one toured above, and its public write-up is the informal proof the file follows.</p>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/index.html">W5-3 machine page</a><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html">the .v file, line-numbered</a><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/submission/proof.md.html">the public write-up</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC&amp;steps=1e5&amp;style=explore">W5-3 in the explorer</a></p>
+  <p><b>W5-8b</b> <code>1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF</code>: W5-8's table, mirrored and renamed, started in another state (beat 6). <b>W5-8</b> <code>1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF</code> is the machine its proof reduces to.</p>
+  <p class="links"><a href="/busy-beaver/machines/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF/index.html">W5-8b machine page</a><a href="/busy-beaver/machines/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF/1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF.v.html#L-345">W5-8b's .v at the mirror lemmas</a><a href="/busy-beaver/machines/1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF/index.html">W5-8 machine page</a><a href="/busy-beaver/tools/explorer/index.html#tm=1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF&amp;steps=1e5&amp;style=explore">W5-8b in the explorer</a></p>
+</aside>
+
+<div class="recap"><span class="tag">Recap</span>
+  <ol>
+    <li>Each finite rule is a lemma that <code>es</code> proves by running the machine on a tape with unknowns, crossing each block in one jump. Rules for any number of counts are inductions. Macro rules chain lemmas end to end.</li>
+    <li>The invariant becomes <code>step_J</code>. <code>multistep_nonhalt</code> (the opening) and <code>progress_nonhalt_cond</code> (the closure) give <code>~halts tm c0</code>. A mirrored, renamed table started in another state needs a new opening plus <code>Perm</code>, <code>flip_halts</code> and <code>perm_halts</code>.</li>
+    <li>check_kill demands: it compiles on unmodified busycoq, the string equals the holdout entry, the theorem is <code>Lemma nonhalt: ~halts tm c0.</code>, nothing is admitted, and no assumption is added.</li>
+  </ol>
+</div>
+
+<!-- ============================================================== reference -->
+<section class="beat" id="reference"><h2>Reference: the file part by part</h2>
+<p>The key lines of each band of beat 1, exactly as in the file. Tap a part to open it.</p>
+<div class="fmap" id="fmap">
+<details class="fseg" id="ref-head" style="--c:var(--cm-head)"><summary><span class="sw"></span><span class="ln">1–22</span><span class="nm">1 · Header comment <small>· prose for the reader</small></span></summary>
+  <div class="body"><p>What the machine does, which busycoq file the proof is modelled on, and the two shapes used below. Coq ignores comments, but check_kill still scans them for forbidden words.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="16" style="--ln:15"><span class="l">    Configurations are taken 6 steps after the write-up's G form (after rule TS):</span>
+<span class="l">      HF l r  =  l &lt;E 1 0 1 1 r,   EC p N  =  HF (0^inf (10)^p) (C N)  ( = E(p,N) ).</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-1">open the file at line 1</a></p></div></details>
+<details class="fseg" id="ref-setup" style="--c:var(--cm-setup)"><summary><span class="sw"></span><span class="ln">24–35</span><span class="nm">2 · Imports and the machine <small>· line 32</small></span></summary>
+  <div class="body"><p>Line 32 builds <code>tm</code> from the machine string. check_kill compares this string with the holdout entry, byte for byte (beat 7).</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="32" style="--ln:31"><span class="l">Definition tm := Eval compute in (TM_from_str "1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC").</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-32">open at line 32</a><a href="/busy-beaver/learn/00-00-reading.html#table">module 0: the string is a table</a></p></div></details>
+<details class="fseg" id="ref-shape" style="--c:var(--cm-shape)"><summary><span class="sw"></span><span class="ln">37–40</span><span class="nm">3 · The two shapes <small>· C and HF</small></span></summary>
+  <div class="body"><p><code>C n</code> is the counter: n in binary, two cells per digit, lowest digit first. <code>HF l r</code> is the count configuration: E reads the last cell of the left side l, then come <code>1 0 1 1</code> and the right side r. Beat 2 draws both on the real tape.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="37" style="--ln:36"><span class="l">(** C(n): n in binary, lowest digit first, 1 = 11, 0 = 00, leading 1 last.</span>
+<span class="l">    HF l r: E reads the last cell of l, followed by 1 0 1 1 and the right side r. *)</span>
+<span class="l">Definition C n := BinInc [1;1] n.</span>
+<span class="l">Definition HF (l r : side) := l &lt;{{E}} [1;0;1;1] *&gt; r.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-37">open at line 37</a><a href="/busy-beaver/learn/03-03-counters.html">module 3: counters</a></p></div></details>
+<details class="fseg" id="ref-seg" style="--c:var(--cm-seg)"><summary><span class="sw"></span><span class="ln">42–115</span><span class="nm">4 · Segment lemmas (12) <small>· one stretch of run each</small></span></summary>
+  <div class="body"><p>Each lemma is one finite stretch of the run, stated for all sizes at once, like <code>LEat</code> on line 72 (beat 2). Most are proved by <code>es</code>. <code>RInc</code> below reuses busycoq's ready-made counter lemma <code>RBinInc_spec</code>, fed with <code>RIncG</code> (line 46).</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="51" style="--ln:50"><span class="l">(* the counter increment on C *)</span>
+<span class="l">Lemma RInc n l:</span>
+<span class="l">  l &lt;* [1;1;0;1] {{A}}&gt; C n --&gt;+ HF l (C (1+n)).</span>
+<span class="l">Proof.</span>
+<span class="l">  unfold C, HF. apply RBinInc_spec. intros. apply RIncG.</span>
+<span class="l">Qed.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-42">open at line 42</a><a href="/busy-beaver/learn/02-02-compression.html">module 2: shift rules</a></p></div></details>
+<details class="fseg" id="ref-count" style="--c:var(--cm-count)"><summary><span class="sw"></span><span class="ln">117–149</span><span class="nm">5 · One count <small>· left part + counter step</small></span></summary>
+  <div class="body"><p><code>Inc r r'</code> says the counter part turns r into r'. <code>Cnt1</code>, <code>Cnt0</code> and <code>Cnt011</code> glue a left part (<code>L1</code>, <code>L0</code>, <code>L011</code>) to an <code>Inc</code>: one whole count, from one HF configuration to the next.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="139" style="--ln:138"><span class="l">Lemma Cnt1 u b r r': Inc r r' -&gt;</span>
+<span class="l">  HF (u &lt;* [1] &lt;* [0;1]^^b) r --&gt;+ HF (u &lt;* [0] &lt;* [0;1]^^b) r'.</span>
+<span class="l">Proof. intros I. eapply progress_trans. 1: apply L1. apply I. Qed.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-117">open at line 117</a><a href="/busy-beaver/learn/03-03-counters.html">module 3: counters</a></p></div></details>
+<details class="fseg" id="ref-q" style="--c:var(--cm-q)"><summary><span class="sw"></span><span class="ln">151–210</span><span class="nm">6 · The misaligned counter <small>· only for BS5</small></span></summary>
+  <div class="body"><p>A fixed-width version of the counter, needed only inside the <code>BS5</code> eat. <code>Dk_even</code> to <code>Dk_inc</code> (lines 161–203) are facts about lists of digits. <code>IncQ</code> (line 205) turns them into one count on the machine, via <code>RIncG</code>.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="153" style="--ln:152"><span class="l">Fixpoint Dk (k x : nat) : list Sym :=</span>
+<span class="l">  match k with</span>
+<span class="l">  | O =&gt; []</span>
+<span class="l">  | S k' =&gt; (if Nat.odd x then [1;1] else [0;0]) ++ Dk k' (Nat.div2 x)</span>
+<span class="l">  end.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-151">open at line 151</a></p></div></details>
+<details class="fseg" id="ref-walk" style="--c:var(--cm-walk)"><summary><span class="sw"></span><span class="ln">212–310</span><span class="nm">7 · Walks, by induction <small>· many counts in a row</small></span></summary>
+  <div class="body"><p><code>Wk</code>, <code>W2Q</code>, <code>Bk</code> and <code>W0k</code> each cover many counts in a row, for any number of counts, and each is proved by induction on that number. <code>W2</code> (two counts, line 224) is the building block of <code>Wk</code> and <code>W2Q</code>. <code>Bk</code> and <code>W0k</code> chain <code>Cnt1</code> and <code>Cnt0</code> directly. Beat 3 plays <code>Wk</code> on the real run.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="234" style="--ln:233"><span class="l">(* W(a,b): G((10)^a 1 (10)^b, C n) -&gt; E(a+b+[a odd], n+a+1), a+1 counts *)</span>
+<span class="l">Lemma Wk a: forall b n,</span>
+<span class="l">  HF (0inf &lt;* [0;1]^^a &lt;* [1] &lt;* [0;1]^^b) (C n) --&gt;+</span>
+<span class="l">  HF (0inf &lt;* [0;1]^^(a+b+a mod 2)) (C (n+a+1)).</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-212">open at line 212</a><a href="/busy-beaver/learn/04-04-bells.html">module 4: bells eating counters</a></p></div></details>
+<details class="fseg" id="ref-bs" style="--c:var(--cm-bs)"><summary><span class="sw"></span><span class="ln">313–431</span><span class="nm">8 · Macro rules BS1 to BS5 <small>· eat to eat</small></span></summary>
+  <div class="body"><p><code>EC p N</code> is module 4's eat configuration E(p,N), taken 6 steps later. There is one lemma per case of N (the write-up's rules M1 to M5), each from one eat configuration to the next. <code>BS4</code> and <code>BS5</code> apply <code>LEat</code> twice: their second eat (lines 377 and 403) is at a tape that is not an <code>EC</code>. Each proof chains the lemmas above, end to end (beat 3). <code>BS5</code> has an extra premise, on line 388.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="315" style="--ln:314"><span class="l">Definition EC p N := HF (0inf &lt;* [0;1]^^p) (C N).</span></pre>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="387" style="--ln:386"><span class="l">(* M5: N = (2m+1) 2^(t+4) - 2 with t' = t+1 &gt;= 1, precondition 2^t' &lt;= p+7 *)</span>
+<span class="l">Lemma BS5 p m t: 2^(S t) &lt;= p+7 -&gt;</span>
+<span class="l">  EC p (((m*2+1)*2^(S (S (S t)))-1)*2) --&gt;+ EC (p+8+t) (m+2^(S t)+t+2).</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-313">open at line 313</a><a href="/busy-beaver/learn/04-04-bells.html">module 4: the eat rules</a></p></div></details>
+<details class="fseg" id="ref-init" style="--c:var(--cm-init)"><summary><span class="sw"></span><span class="ln">433–441</span><span class="nm">9 · The opening: init <small>· blank tape to EC 2 4</small></span></summary>
+  <div class="body"><p>From the blank tape <code>c0</code> to <code>EC 2 4</code>. <code>solve_init</code> makes Coq run the concrete machine, 171 steps, and compare the tape it gets with <code>EC 2 4</code>.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="435" style="--ln:434"><span class="l">Lemma init: c0 --&gt;* EC 2 4.</span>
+<span class="l">Proof.</span>
+<span class="l">  unfold EC, HF.</span>
+<span class="l">  replace (C 4) with ([0;0;0;0;1;1] *&gt; 0inf) by reflexivity.</span>
+<span class="l">  change ([0;1]^^2) with [0;1;0;1].</span>
+<span class="l">  solve_init.</span>
+<span class="l">Qed.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-435">open at line 435</a></p></div></details>
+<details class="fseg" id="ref-j" style="--c:var(--cm-j)"><summary><span class="sw"></span><span class="ln">443–478</span><span class="nm">10 · The closure: step_J <small>· the invariant</small></span></summary>
+  <div class="body"><p>J(p,N) is 1 ≤ N ≤ 2p. If J holds at <code>EC p N</code>, one of <code>BS1</code> to <code>BS5</code> reaches a next <code>EC p' N'</code> where J holds again (beat 4).</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="447" style="--ln:446"><span class="l">Lemma step_J p N: 1 &lt;= N &lt;= 2*p -&gt;</span>
+<span class="l">  exists p' N', EC p N --&gt;+ EC p' N' /\ 1 &lt;= N' &lt;= 2*p'.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-447">open at line 447</a><a href="/busy-beaver/learn/05-05-invariants.html">module 5: invariants</a></p></div></details>
+<details class="fseg" id="ref-thm" style="--c:var(--cm-thm)"><summary><span class="sw"></span><span class="ln">480–488</span><span class="nm">11 · The theorem: nonhalt <small>· 9 lines</small></span></summary>
+  <div class="body"><p>Opening plus closure gives "never halts". Beat 5 reads the nine lines one by one.</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="480" style="--ln:479"><span class="l">Lemma nonhalt: ~halts tm c0.</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-480">open at line 480</a></p></div></details>
+<details class="fseg" id="ref-sum" style="--c:var(--cm-head)"><summary><span class="sw"></span><span class="ln">490–530</span><span class="nm">12 · Summary comment <small>· the rules on paper</small></span></summary>
+  <div class="body"><p>Every rule again, in the write-up's notation, so a reviewer can hold the paper version next to the Coq version. These are the eat-to-eat rules M1 to M3:</p>
+  <pre class="code" data-src="/busy-beaver/learn/w53" data-from="519" style="--ln:518"><span class="l">eat to eat                                                                  E(p, N) -&gt; E(p', N')</span>
+<span class="l">M1  N odd                EAT,Y1; W(p+2,0)                                   p+2+[p odd],  (N+1)/2 + p + 3</span>
+<span class="l">M2  N = 0 (mod 4)        EAT,Y2; INC1; W(p+2,1)                             p+3+[p odd],  N/4 + p + 4</span>
+<span class="l">M3  N = 8m+2             EAT,Y3(0); OVF(0,0); W(p+4,0)                      p+4+[p odd],  m + p + 6</span></pre>
+  <p class="links"><a href="/busy-beaver/machines/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC/1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC.v.html#L-490">open at line 490</a></p></div></details>
+</div>
+</section>
+
+<nav class="pager"><a href="/busy-beaver/learn/07-07-cryptids.html">← Module 7: Cryptids</a><a href="/busy-beaver/learn/index.html">All modules →</a></nav>
+
+<footer class="checked">
+  <b>checked:</b> every tape on this page is simulated in the page by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). When it loads, the page also checks every bracket against the tape under it (each Coq piece must read exactly its cells), the boxed <code>LEat</code> rows for b = 0 to 8, the EC rows against the macro rules, the mirror pictures (W5-8b, its mirror and W5-8 from C, cell for cell), and its own numbers; any difference is logged as an error.
+  Checked with <code>tools/sim.py</code> and the cited files by <code>python3 -B learn/checks/m8_coq.py</code> (results in <code>learn/checks/m8_coq.json</code>):
+  C-M8-1 (530 lines; every line number on this page; the section boundaries) · C-M8-facts (W2 used only by <code>Wk</code> and <code>W2Q</code>, lines 255 and 271; <code>Bk</code> and <code>W0k</code> chain <code>Cnt1</code>/<code>Cnt0</code>; <code>Dk_even</code>…<code>Dk_inc</code> are list lemmas and <code>IncQ</code>, line 205, is an <code>Inc</code> via <code>RIncG</code>; <code>LEat</code> applied at lines 373, 377, 396, 403; 12 segment lemmas) · C-M8-fw (<code>multistep_nonhalt</code> at <code>TM.v</code>:584, <code>progress_nonhalt_cond</code> at :632, <code>&lt;{{q}}</code> at :101, <code>{{q}}&gt;</code> at :102, <code>l &lt;* xs = Str_app xs l</code> at <code>Helper.v</code>:180) · C-M8-ec (each of the 62 eat configurations <code>EC p N</code> with J up to step 3·10<sup>6</sup> is, 6 steps after module 4's E(p,N), exactly the Coq term built with busycoq's list semantics; init reaches <code>EC 2 4</code> at step 171; the EC rows fire there and at step 37, <code>EC 0 1</code>, only) · C-M8-eats (up to step 3·10<sup>6</sup> there are 74 tapes of the form <code>HF (0inf &lt;* [0;1]^^b) r</code>: the 63 <code>EC</code> ones and 11 second eats, one inside each of the 5 <code>BS4</code> and 6 <code>BS5</code> uses) · C-M8-leat (4b + 11 steps for b = 0..12, the head never past r's first cell; 171 → 190 on the run) · C-M8-es (the five boxed rows at steps 0, 2b, 2b+3, 4b+7, 4b+11 for b = 0..12, r = C 4, C 7, C 22) · C-M8-chain (the 9 configurations of <code>BS2</code>'s chain at steps 171, 190, 203, 231, 261, 307, 349, 403, 457) · C-M8-stepJ (every eat-to-eat step follows the macro rule its case names; uses 31/14/5/5/6; J on all 62) · C-M8-t (N = 62: N/2 + 1 = 32 = 1·2<sup>5</sup>, m = 0, t = 2, 2<sup>t+1</sup> = 8) · C-M8-E062 (no macro rule at <code>EC 0 62</code>; the run reaches <code>EC 12 7</code> after 688 steps) · C-M8-2 (the 12-cell mirror-and-rename table; W5-8b and W5-8 from C agree mirrored for 10<sup>6</sup> steps; W5-8 from C reaches K(1953,34,68,45,18) at step 4,098,826; the lemma texts) · C-M8-flip (<code>flip tm</code> = <code>1LB1RE_1RC1LD_0RA1RA_---1LE_1RF0RA_0RC0LF</code>; its run is W5-8b's mirrored, and W5-8 from C is its run renamed, for 1,000 steps) · C-M8-gate (<code>check_kill.sh --text-only</code> on the three drill-3 copies: exit 1 forbidden, exit 1 tm_text, exit 4 text checks pass; line 134 of the 740 list) · C-M8-d1, C-M8-d1b (<code>0inf &lt;* [0;1]^^3</code> = 101010; 23 steps from <code>EC 3 4</code> give <code>0inf &lt;* [0;1]^^5 &lt;* [0;1;1] {{A}}&gt; C 4</code>) · C-M8-excerpts (every code block equals the file lines it numbers; every report line is in W5-3's <code>submission/check_kill.txt</code>; every line of the three drill-3 reports is a line of that copy's real output, cut short where it shows …).
+  Cited, not re-run: the 3.4 s compile and the coqchk result (that report, 2026-10-13); the five kill criteria (CLAUDE.md).
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, decoders, parseTM, parseConfig, viewOf, Run, STATES, blank, ruleText } from './tm.js';
+
+const W53 = '1RB1RA_1LC1LE_1RF1LD_1RE0LD_0LB0RA_---0RC';
+const W58 = '1RB1LD_0RC1RC_1LA1RE_---1LE_1RF0RC_0RB0LF';
+const W58B = '1RB1LE_1LC1RD_0LA1LA_---1RE_1LF0LA_0LC0RF';
+const PHI = { A: 'C', B: 'A', C: 'B', D: 'D', E: 'E', F: 'F' };      // the file's phi: W5-8b's state -> W5-8's
+const sc = (q) => (q === 'Z' ? 'var(--sZ)' : `var(--s${q})`);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const fail = (msg) => { console.error('m8 page check: ' + msg); (window.__tmErrors ||= []).push(msg); };
+const fmt = (n) => n.toLocaleString('en-US');
+
+// ------------------------------------------------------------------ Coq lists as cells
+// busycoq Helper.v:180: l <* xs = Str_app xs l, so xs[0] is the cell nearest the head (a left list runs leftwards).
+function C(n) { const out = []; while (n > 0) { out.push(...(n % 2 ? [1, 1] : [0, 0])); n = Math.floor(n / 2); } return out; }
+function coqBits(label) {
+  let m = /^\[([01;]+)\](?:\^\^(\d+))?$/.exec(label);
+  if (m) { const xs = m[1].split(';').map(Number); return Array.from({ length: +(m[2] ?? 1) }, () => xs).flat(); }
+  m = /^C (\d+)$/.exec(label);
+  if (m) return C(+m[1]);
+  throw new Error('bad piece ' + label);
+}
+/** Brackets for a configuration written as Coq pieces, and whether the tape is exactly that.
+ *  form 'HF': E reads hd l, so the first left piece starts at the head cell, and the right side starts after it.
+ *  form 'A>': A reads hd r, so the right side starts at the head cell. L: from the head outward; R: rightward. */
+function pieceMarks(v, form, L, R) {
+  const marks = [];
+  let ok = true, p = form === 'HF' ? v.pos : v.pos - 1;
+  for (const lab of L) {
+    const bits = coqBits(lab);
+    bits.forEach((b, i) => { if (v.read(p - i) !== b) ok = false; });
+    marks.push({ from: p - bits.length + 1, to: p + 1, label: lab });
+    p -= bits.length;
+  }
+  for (let x = p; x >= v.lo; x--) if (v.read(x) !== 0) ok = false;
+  let q = form === 'HF' ? v.pos + 1 : v.pos;
+  for (const lab of R) {
+    const bits = coqBits(lab);
+    bits.forEach((b, i) => { if (v.read(q + i) !== b) ok = false; });
+    marks.push({ from: q, to: q + bits.length, label: lab });
+    q += bits.length;
+  }
+  for (let x = q; x <= v.hi; x++) if (v.read(x) !== 0) ok = false;
+  return { marks, ok };
+}
+
+// ------------------------------------------------------------------ BS2's chain on the real run (C-M8-chain)
+const CHAIN = [
+  { step: 171, lemma: 'EC 2 4', form: 'HF', L: ['[0;1]^^2'], R: ['[1;0;1;1]', 'C 4'], term: 'EC 2 4 = HF (0inf <* [0;1]^^2) (C 4)' },
+  { step: 190, lemma: 'LEat', form: 'A>', L: ['[0;1;1]', '[0;1]^^4'], R: ['C 4'], term: '0inf <* [0;1]^^4 <* [0;1;1] {{A}}> C 4' },
+  { step: 203, lemma: 'Y2C', form: 'HF', L: ['[1;1;1]', '[0;1]^^4'], R: ['[1;0;1;1]', 'C 1'], term: 'HF (0inf <* [0;1]^^4 <* [1;1;1]) (C 1)' },
+  { step: 231, lemma: 'Cnt1', form: 'HF', L: ['[0;1]^^1', '[1]', '[0;1]^^4'], R: ['[1;0;1;1]', 'C 2'], term: 'HF (0inf <* [0;1]^^4 <* [1] <* [0;1]^^1) (C 2)' },
+  { step: 261, lemma: 'Wk: Cnt1', form: 'HF', L: ['[0;1]^^1', '[0]', '[0;1;0;1]', '[0;1]^^2'], R: ['[1;0;1;1]', 'C 3'], term: 'HF (0inf <* [0;1]^^2 <* [0;1;0;1] <* [0] <* [0;1]^^1) (C 3)' },
+  { step: 307, lemma: 'Wk: Cnt0', form: 'HF', L: ['[0;1]^^3', '[1]', '[0;1]^^2'], R: ['[1;0;1;1]', 'C 4'], term: 'HF (0inf <* [0;1]^^2 <* [1] <* [0;1]^^3) (C 4)' },
+  { step: 349, lemma: 'Wk: Cnt1', form: 'HF', L: ['[0;1]^^3', '[0]', '[0;1;0;1]'], R: ['[1;0;1;1]', 'C 5'], term: 'HF (0inf <* [0;1;0;1] <* [0] <* [0;1]^^3) (C 5)' },
+  { step: 403, lemma: 'Wk: Cnt0', form: 'HF', L: ['[0;1]^^5', '[1]'], R: ['[1;0;1;1]', 'C 6'], term: 'HF (0inf <* [1] <* [0;1]^^5) (C 6)' },
+  { step: 457, lemma: 'Wk: Cnt1 = EC 5 7', form: 'HF', L: ['[0;1]^^5'], R: ['[1;0;1;1]', 'C 7'], term: 'HF (0inf <* [0] <* [0;1]^^5) (C 7) = EC 5 7' },
+];
+const BY_STEP = new Map(CHAIN.map((c) => [c.step, c]));
+const checked = new Set();
+function chainDecoder(labelOf, textOf, only) {
+  return (v) => {
+    const c = BY_STEP.get(v.step);
+    if (!c || (only && !only.includes(c.step))) return null;
+    const { marks, ok } = pieceMarks(v, c.form, c.L, c.R);
+    if (!ok && !checked.has(c.step)) fail(`step ${c.step}: the tape is not ${c.term}`);
+    checked.add(c.step);
+    return { label: labelOf(c), text: textOf(c), marks };
+  };
+}
+decoders['m8-chain'] = chainDecoder((c) => c.lemma, (c) => (c.step === 171 ? `start: ${c.term}` : `${c.lemma.split(' = ')[0]} ends here: ${c.term}`));
+decoders['m8-leat'] = chainDecoder((c) => (c.step === 171 ? 'LEat: left of -->+' : 'LEat: right of -->+'),
+  (c) => (c.step === 171 ? 'HF (0inf <* [0;1]^^b) r with b = 2 and r = C 4' : '0inf <* [0;1]^^(b+2) <* [0;1;1] {{A}}> r with b = 2 and r = C 4'), [171, 190]);
+
+// ------------------------------------------------------------------ EC p N = HF (0inf <* [0;1]^^p) (C N), and step_J's case
+function bsOf(p, N) {
+  if (N % 2) return { name: 'BS1', next: [p + 2 + (p % 2), (N - 1) / 2 + p + 4] };
+  if (N % 4 === 0) return { name: 'BS2', next: [p + 3 + (p % 2), N / 4 + p + 4] };
+  if (N % 8 === 2) return { name: 'BS3', next: [p + 4 + (p % 2), (N - 2) / 8 + p + 6] };
+  if (N % 16 === 6) return { name: 'BS4', next: [p + 7, (N - 6) / 16 + 5] };
+  let x = N / 2 + 1, k = 0;                       // N = ((2m+1) 2^(t+3) - 1) 2
+  while (x % 2 === 0) { x /= 2; k++; }
+  const t = k - 3, m = (x - 1) / 2;
+  if (2 ** (t + 1) > p + 7) return { name: 'none', t, m, why: `BS5 would need 2^${t + 1} = ${2 ** (t + 1)} ≤ p + 7 = ${p + 7}` };
+  return { name: 'BS5', t, m, next: [p + 8 + t, m + 2 ** (t + 1) + t + 2] };
+}
+decoders['m8-ec'] = (v) => {
+  if (v.state !== 'E') return null;
+  const h = v.pos;
+  if (v.read(h + 1) !== 1 || v.read(h + 2) !== 0 || v.read(h + 3) !== 1 || v.read(h + 4) !== 1) return null;
+  let hi = v.hi;
+  while (hi > h + 4 && v.read(hi) === 0) hi--;
+  if ((hi - h - 4) % 2 || hi === h + 4) return null;
+  let N = 0;
+  for (let q = h + 5, k = 0; q <= hi; q += 2, k++) { const a = v.read(q); if (a !== v.read(q + 1)) return null; N += a * 2 ** k; }
+  let p = 0, x = h;
+  while (v.read(x) === 0 && v.read(x - 1) === 1) { p++; x -= 2; }
+  for (let y = x; y >= v.lo; y--) if (v.read(y) !== 0) return null;
+  const J = N >= 1 && N <= 2 * p, b = bsOf(p, N);
+  let left = '';
+  for (let y = h - 2 * p + 1; y <= h; y++) left += v.read(y);
+  const marks = [];
+  if (p) marks.push({ from: h - 2 * p + 1, to: h + 1, label: `[0;1]^^${p}` });
+  marks.push({ from: h + 1, to: h + 5, label: '[1;0;1;1]' }, { from: h + 5, to: hi + 1, label: `C ${N}` });
+  return {
+    p, N, J, next: b, left, marks,
+    label: `EC ${p} ${N} · J ${J ? '✓' : '✗'}` + (J ? ` · next: ${b.name}` : ''),
+    text: `EC ${p} ${N} = HF (0inf <* [0;1]^^${p}) (C ${N}). J: 1 ≤ ${N} ≤ ${2 * p} ${J ? 'holds' : 'fails'}.` +
+      (J ? ` step_J uses ${b.name}, which gives EC ${b.next[0]} ${b.next[1]}.` : b.name === 'none' ? ` No macro rule applies: ${b.why}.` : ''),
+  };
+};
+// drill 1: EC p N, or LEat's right side 0inf <* [0;1]^^k <* [0;1;1] {{A}}> C N (k = b + 2)
+decoders['m8-d1'] = (v) => {
+  const e = decoders['m8-ec'](v);
+  if (e) return e;
+  if (v.state !== 'A') return null;
+  const h = v.pos;
+  if (v.read(h - 1) !== 0 || v.read(h - 2) !== 1 || v.read(h - 3) !== 1) return null;
+  let k = 0, x = h - 4;
+  while (v.read(x) === 0 && v.read(x - 1) === 1) { k++; x -= 2; }
+  let hi = v.hi;
+  while (hi >= h && v.read(hi) === 0) hi--;
+  if (hi < h || (hi - h + 1) % 2) return null;
+  let N = 0;
+  for (let q = h, j = 0; q <= hi; q += 2, j++) { const a = v.read(q); if (a !== v.read(q + 1)) return null; N += a * 2 ** j; }
+  const { marks, ok } = pieceMarks(v, 'A>', ['[0;1;1]', `[0;1]^^${k}`], [`C ${N}`]);
+  if (!ok || k < 2) return null;
+  return { k, N, marks, label: `LEat's right side, b = ${k - 2}`,
+    text: `0inf <* [0;1]^^(b+2) <* [0;1;1] {{A}}> r with b = ${k - 2} and r = C ${N}: 0inf <* [0;1]^^${k} <* [0;1;1] {{A}}> C ${N}` };
+};
+
+// ------------------------------------------------------------------ mini tapes (drawn from real configurations)
+function mini(cfg, a, b, marks = [], { digits = true, cell = 15 } = {}) {
+  const v = cfg.read ? cfg : viewOf(cfg);
+  const box = el('div', 'mini');
+  box.style.setProperty('--mc', cell + 'px');
+  const row = el('div', 'mcells');
+  for (let p = a; p <= b; p++) {
+    const s = v.read(p), c = el('div', `mc s${s}` + (p < v.lo || p > v.hi ? ' unv' : ''), digits ? String(s) : '');
+    if (p === v.pos) { c.classList.add('hd'); c.style.setProperty('--hc', sc(v.state)); }
+    row.append(c);
+  }
+  const badge = el('div', 'mbadge', v.state);
+  badge.style.background = sc(v.state);
+  badge.style.left = `${(v.pos - a) * (cell + 1) + cell / 2 - 6}px`;
+  box.append(badge, row);
+  if (marks.length) {
+    const mk = el('div', 'mmarks');
+    for (const m of marks) {
+      const br = el('div', 'mbr' + (m.cls ? ' ' + m.cls : ''));
+      br.style.left = `${(Math.max(m.from, a) - a) * (cell + 1)}px`;
+      br.style.width = `${(Math.min(m.to, b + 1) - Math.max(m.from, a)) * (cell + 1) - 1}px`;
+      br.append(el('span', null, m.label));
+      mk.append(br);
+    }
+    box.append(mk);
+  }
+  return box;
+}
+/** Re-draw a stack of mini tapes whenever its box changes width; the cell size fits ncols cells into the box. */
+function fitStack(host, ncols, build, { max = 16, min = 5, label = true } = {}) {
+  let lastW = -1;
+  const render = () => {
+    const W = host.clientWidth;
+    if (!W || W === lastW) return;
+    lastW = W;
+    const wide = label && window.matchMedia('(min-width: 561px)').matches;
+    const avail = W - 26 - (wide ? 164 : 0);            // the box's padding and border; the label column (9.5em + gap)
+    const cell = Math.max(min, Math.min(max, Math.floor(avail / ncols) - 1));
+    host.textContent = '';
+    host.append(build(cell));
+  };
+  render();
+  if (window.ResizeObserver) new ResizeObserver(render).observe(host);
+}
+function stackGrid(items, a, b, cell) {
+  const grid = el('div', 'mrowwrap');
+  for (const it of items) {
+    const lab = el('div', 'mlab'); lab.innerHTML = it.label;
+    const marks = (it.marks || []).map((m) => (cell < 10 && m.label === '[1;0;1;1]' ? { ...m, label: '' } : m));   // too narrow to name
+    grid.append(lab, mini(it.cfg, a, b, marks, { digits: cell >= 13, cell }));
+    if (it.arrow) { const ar = el('div', 'marrow'); ar.innerHTML = it.arrow; grid.append(ar); }
+  }
+  return grid;
+}
+function configAt(tm, step, start) { const r = new Run(tm, start || blank()); r.stepTo(step); return r.config(); }
+
+// ------------------------------------------------------------------ beat 2: the notation key (real tapes at steps 171 and 190)
+const c171 = configAt(W53, 171), c190 = configAt(W53, 190);
+{
+  const v = viewOf(c171);
+  const got = [1, 0, -1, -2].map((p) => v.read(p)).join('');
+  if (v.pos !== 1 || v.state !== 'E' || got !== '0101') fail(`trap tape: head ${v.state} on ${v.pos}, list cells ${got} (want E on 1, 0101)`);
+  const w = viewOf(c190);
+  if (w.pos !== 6 || w.state !== 'A') fail(`step 190: head ${w.state} on ${w.pos} (want A on 6)`);
+  document.getElementById('nl1').append(mini(c171, -4, 11, [{ from: -4, to: 2, label: 'l (runs on left)' }, { from: 2, to: 12, label: 'r' }], { cell: 16 }));
+  document.getElementById('nl2').append(mini(c190, -6, 11, [{ from: -6, to: 6, label: 'l' }, { from: 6, to: 12, label: 'r' }], { cell: 16 }));
+  document.getElementById('nl3').append(mini(c171, -6, 1, [{ from: -6, to: -2, label: '0inf' },
+    { from: -2, to: -1, label: '4', cls: 'item' }, { from: -1, to: 0, label: '3', cls: 'item' }, { from: 0, to: 1, label: '2', cls: 'item' }, { from: 1, to: 2, label: '1', cls: 'item' }], { cell: 16 }));
+  const n4 = document.getElementById('nl4');
+  const fig = (cfg, cap) => { const d = el('div'); d.append(mini(cfg, -6, 11, [], { cell: 9, digits: false }), el('div', 'cap', cap)); return d; };
+  n4.append(fig(c171, 'c: step 171'), el('span', 'to', '↓ -->+ (19 steps)'), fig(c190, "c': step 190"));
+}
+
+// ------------------------------------------------------------------ beat 2: LEat on the real run
+const leatCtl = mountRun(document.getElementById('leatrun'), {
+  tm: W53, from: 171, rows: 'each', count: 20, mark: { digits: 'm8-leat' }, table: true, speed: 3,
+  title: 'LEat on W5-3’s real run: b = 2, r = C 4, steps 171 to 190',
+});
+
+// ------------------------------------------------------------------ beat 2: what es sees: (10)^b as one box (C-M8-es)
+// Rows at steps 0, 2b, 2b+3, 4b+7, 4b+11 after HF (0inf <* [0;1]^^b) r. h = the head at step 0, L = h - 2b.
+const ES_ROWS = (b) => [
+  { t: 0, q: 'E', d: 0, left: '000', word: '10', mid: '1011' },
+  { t: 2 * b, q: 'E', d: -2 * b, left: '000', word: '10', mid: '1011' },
+  { t: 2 * b + 3, q: 'F', d: -2 * b - 1, left: '110', word: '10', mid: '1011' },
+  { t: 4 * b + 7, q: 'F', d: 3, left: '101', word: '01', mid: '0111' },
+  { t: 4 * b + 11, q: 'A', d: 5, left: '101', word: '01', mid: '0110' },
+];
+function esCheck(b) {
+  const start = parseConfig(`0^inf ${'1 0 '.repeat(b)}<E 1 0 1 1 0 0 0 0 1 1 0^inf`);
+  const run = new Run(W53, start), h = viewOf(start).pos, L = h - 2 * b, rr = [0, 0, 0, 0, 1, 1];
+  for (const r of ES_ROWS(b)) {
+    run.stepTo(r.t);
+    const v = run.view(), cells = (x, y) => { let s = ''; for (let p = x; p <= y; p++) s += v.read(p); return s; };
+    let ok = v.state === r.q && v.pos === h + r.d && cells(L - 2, L) === r.left && cells(L + 1, h) === r.word.repeat(b) && cells(h + 1, h + 4) === r.mid
+      && cells(h + 5, h + 14) === rr.join('') + '0000';
+    for (let p = v.lo; p < L - 2; p++) if (v.read(p)) ok = false;
+    if (!ok) { fail(`es rows: b = ${b}, step ${r.t} is not as drawn`); return; }
+  }
+}
+for (let b = 0; b <= 8; b++) esCheck(b);
+function boxRow(v, a, z, boxes, marks, cell) {
+  const wrap = el('div', 'mini');
+  wrap.style.setProperty('--mc', cell + 'px');
+  const row = el('div', 'mcells');
+  const X = new Map();
+  let x = 0;
+  for (let p = a; p <= z;) {
+    const bx = boxes.find((o) => o.from === p);
+    if (bx) {
+      const d = el('div', 'mbox' + (bx.cls ? ' ' + bx.cls : ''), bx.label);
+      d.style.width = bx.w + 'px';
+      if (v.pos === bx.to - 1) { d.classList.add('hr'); d.style.setProperty('--hc', sc(v.state)); }
+      if (v.pos === bx.from && bx.to - bx.from > 1) { d.classList.add('hl'); d.style.setProperty('--hc', sc(v.state)); }
+      row.append(d);
+      const n = bx.to - bx.from;
+      for (let q = bx.from; q < bx.to; q++) X.set(q, { x: x + ((q - bx.from) * bx.w) / n, w: bx.w / n });
+      if (v.pos === bx.to - 1) X.set(v.pos, { x: x + bx.w - cell, w: cell });
+      if (v.pos === bx.from) X.set(v.pos, { x, w: cell });
+      x += bx.w + 1; p = bx.to; continue;
+    }
+    const s = v.read(p), c = el('div', `mc s${s}` + (p < v.lo || p > v.hi ? ' unv' : ''), String(s));
+    if (p === v.pos) { c.classList.add('hd'); c.style.setProperty('--hc', sc(v.state)); }
+    row.append(c);
+    X.set(p, { x, w: cell });
+    x += cell + 1; p++;
+  }
+  const hp = X.get(v.pos);
+  const badge = el('div', 'mbadge', v.state);
+  badge.style.background = sc(v.state);
+  badge.style.left = `${hp.x + hp.w / 2 - 6}px`;
+  wrap.append(badge, row);
+  if (marks.length) {
+    const mk = el('div', 'mmarks');
+    for (const m of marks) {
+      const f = X.get(m.from), t = X.get(m.to - 1);
+      const br = el('div', 'mbr');
+      br.style.left = `${f.x}px`; br.style.width = `${t.x + t.w - f.x}px`;
+      br.append(el('span', null, m.label));
+      mk.append(br);
+    }
+    wrap.append(mk);
+  }
+  return wrap;
+}
+{
+  const b = 2, h = 1, L = h - 2 * b, a = L - 2, z = h + 10;           // the real run: E on cell 1 at step 171
+  const run = new Run(W53); run.stepTo(171);
+  const BOXW = { word: 62, r: 76 }, cell = 19;
+  const rows = ES_ROWS(b).map((r, i) => {
+    run.stepTo(171 + r.t);
+    const v = viewOf(run.config());
+    const boxes = [{ from: L + 1, to: h + 1, label: `(${r.word})^b`, w: BOXW.word }, { from: h + 5, to: h + 11, label: 'r', cls: 'rside', w: BOXW.r }];
+    const marks = i === 4 ? [{ from: a, to: h + 2, label: '[0;1]^^(b+2)' }, { from: h + 2, to: h + 5, label: '[0;1;1]' }] : [];
+    return { v, boxes, marks, step: 171 + r.t, r };
+  });
+  const LAB = ['<b>step 0</b> (171)<br>LEat&#39;s left side', '<b>step 2b</b> (175)<br>E is left of the box', '<b>step 2b + 3</b> (178)<br>F turns back right',
+    '<b>step 4b + 7</b> (186)', '<b>step 4b + 11</b> (190)<br>LEat&#39;s right side'];
+  const ARROW = ['↓ <b>jump</b>: E and B walk left over the box, 2 steps per 10 (shift rule <code>10 &lt;E → &lt;E 10</code>): 2b steps',
+    '↓ 3 single steps at the blank end: E, B and C write 0, 1, 1',
+    '↓ <b>jump</b>: F and C sweep right over 1 0, the box and 1 0, that is (10)^(b+2), turning each 10 into 01 (shift rule <code>F&gt; 10 → 01 F&gt;</code>): 2b + 4 steps',
+    '↓ 4 single steps: F, C, D, E. A now reads the first cell of r', ''];
+  const grid = el('div', 'mrowwrap');
+  rows.forEach((r, i) => {
+    const lab = el('div', 'mlab'); lab.innerHTML = LAB[i];
+    grid.append(lab, boxRow(r.v, a, z, r.boxes, r.marks, cell));
+    if (ARROW[i]) { const ar = el('div', 'marrow'); ar.innerHTML = ARROW[i]; grid.append(ar); }
+  });
+  const tot = el('div', 'marrow'); tot.innerHTML = '<b>In all: 2b + 3 + (2b + 4) + 4 = 4b + 11 steps</b>, and r is never read.';
+  grid.append(tot);
+  document.getElementById('esrun').append(grid);
+  // the last row is LEat's right side for b = 2
+  const { ok } = pieceMarks(rows[4].v, 'A>', ['[0;1;1]', '[0;1]^^4'], ['C 4']);
+  if (!ok) fail('es rows: step 190 is not LEat’s right side');
+}
+
+// ------------------------------------------------------------------ beat 3: the timeline and the chain run
+const SEGCOL = { LEat: 'var(--sE)', Y2C: 'var(--sC)', Cnt1: 'var(--sD)' };
+const SHORT = { LEat: 'Eat', Y2C: 'Y2', Cnt1: 'C1', Cnt0: 'C0' };
+const chainCtl = mountRun(document.getElementById('chainrun'), {
+  tm: W53, from: 171, rows: 'each', count: 287, mark: { digits: 'm8-chain' }, speed: 10, grow: true,
+  title: 'BS2 on W5-3’s real run: EC 2 4 (step 171) to EC 5 7 (step 457), every step',
+});
+/** Show each band's name if it fits, else its short name, else nothing (the key below names it). */
+function fitLabels(bar) {
+  for (const b of bar.querySelectorAll('button')) {
+    const full = b.dataset.full ?? (b.dataset.full = b.textContent);
+    b.textContent = full;
+    if (b.scrollWidth > b.clientWidth + 0.5 && b.dataset.short) b.textContent = b.dataset.short;
+    if (b.scrollWidth > b.clientWidth + 0.5) b.textContent = '';
+  }
+}
+function watchLabels(bar) {
+  fitLabels(bar);
+  let w = bar.clientWidth;
+  if (window.ResizeObserver) new ResizeObserver(() => { if (bar.clientWidth !== w) { w = bar.clientWidth; fitLabels(bar); } }).observe(bar);
+}
+{
+  const host = document.getElementById('tl');
+  const bar = el('div', 'tl'), ax = el('div', 'tlax'), brs = el('div', 'tlbr');
+  bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'the run from step 171 to 457, cut where each lemma ends');
+  const segs = [];
+  for (let i = 1; i < CHAIN.length; i++) {
+    const a = CHAIN[i - 1].step, b = CHAIN[i].step, name = CHAIN[i].lemma.replace(/^Wk: /, '').split(' = ')[0];
+    const wk = CHAIN[i].lemma.startsWith('Wk');
+    const btn = el('button', wk && i % 2 ? 'alt' : null, name);
+    btn.type = 'button';
+    btn.dataset.short = SHORT[name] || '';
+    btn.style.setProperty('--n', b - a);
+    btn.style.setProperty('--c', wk ? 'var(--sB)' : SEGCOL[name]);
+    btn.title = `${CHAIN[i].lemma}: steps ${a} to ${b} (${b - a} steps)`;
+    btn.setAttribute('aria-label', btn.title);
+    btn.addEventListener('click', () => { chainCtl.pause(); chainCtl.goto(b - 171); });
+    bar.append(btn);
+    segs.push({ a, b, btn });
+  }
+  for (const [txt, n] of [['171', CHAIN[3].step - 171], ['231', 457 - CHAIN[3].step], ['457', 0]]) { const t = el('span', null, txt); if (n) t.style.setProperty('--n', n); ax.append(t); }
+  const sp = el('div', 'sp'); sp.style.setProperty('--n', CHAIN[3].step - 171);
+  const br = el('div', 'br'); br.style.setProperty('--n', 457 - CHAIN[3].step); br.append(el('span', null, 'Wk 4 1 2: five counts, by induction'));
+  brs.append(sp, br);
+  host.append(bar, ax, brs);
+  watchLabels(bar);
+  chainCtl.on('row', (row) => { for (const s of segs) s.btn.classList.toggle('on', row.step > s.a && row.step <= s.b); });
+}
+
+// ------------------------------------------------------------------ beat 3: the induction stack (Wk rows)
+{
+  const WK = [{ step: 231, a: 4, b: 1, n: 2 }, { step: 307, a: 2, b: 3, n: 4 }, { step: 403, a: 0, b: 5, n: 6 }, { step: 457, a: null, b: 5, n: 7 }];
+  const cfgs = WK.map((w) => configAt(W53, w.step));
+  const vs = cfgs.map((c) => viewOf(c));
+  const A = Math.min(...vs.map((v) => v.pos - 12)), B = Math.max(...vs.map((v) => v.hi));
+  const items = WK.map((w, i) => {
+    const v = vs[i], h = v.pos, marks = [];
+    let ok = v.state === 'E';
+    const pairs = (from, k) => { for (let j = 0; j < k; j++) if (v.read(from + 2 * j) !== 1 || v.read(from + 2 * j + 1) !== 0) ok = false; };
+    if (w.a === null) {
+      marks.push({ from: h - 9, to: h + 1, label: '(10)^5' }); pairs(h - 9, 5);
+    } else {
+      const d = h - 2 * w.b;                                        // the lone 1
+      if (w.a) { marks.push({ from: d - 2 * w.a, to: d, label: `(10)^${w.a}` }); pairs(d - 2 * w.a, w.a); }
+      marks.push({ from: d, to: d + 1, label: '1', cls: 'defect' }); if (v.read(d) !== 1) ok = false;
+      marks.push({ from: d + 1, to: h + 1, label: `(10)^${w.b}` }); pairs(d + 1, w.b);
+    }
+    const dec = decoders['m8-ec'](v);
+    if (w.a === null && !(dec && dec.p === 5 && dec.N === 7)) ok = false;
+    if (!ok) fail(`Wk stack: step ${w.step} does not read as drawn`);
+    const why = i < 2 ? 'W2: two counts, a − 2' : 'the a = 0 case: one count';
+    return { cfg: cfgs[i], marks,
+      label: w.a === null ? `<b>step ${w.step}</b><br>done: EC 5 7` : `<b>step ${w.step}</b><br>a = ${w.a}, b = ${w.b}, counter ${w.n}`,
+      arrow: i < WK.length - 1 ? `↓ <b>${why}</b> (${WK[i + 1].step - w.step} steps)` : '' };
+  });
+  fitStack(document.getElementById('wkstack'), B - A + 1, (cell) => stackGrid(items, A, B, cell), { max: 18 });
+}
+
+// ------------------------------------------------------------------ beat 4: the blank tape, then every EC configuration to step 2,731
+const ECROWS = [];
+{
+  const run = new Run(W53);
+  ECROWS.push({ step: 0, cfg: run.config(), d: null });
+  while (ECROWS.length < 8) {
+    if (run.until((v) => decoders['m8-ec'](v) !== null, { max: 1e6 }) === null) break;
+    ECROWS.push({ step: run.t, cfg: run.config(), d: decoders['m8-ec'](viewOf(run.config())) });
+  }
+  const want = [[37, 0, 1], [171, 2, 4], [457, 5, 7], [911, 8, 12], [1701, 11, 15], [2731, 14, 22], [3103, 21, 6]];
+  want.forEach(([st, p, N], i) => { const r = ECROWS[i + 1]; if (!r || r.step !== st || r.d.p !== p || r.d.N !== N) fail(`EC row ${i + 1}: want EC ${p} ${N} at step ${st}`); });
+  for (let i = 2; i + 1 < ECROWS.length; i++) {
+    const d = ECROWS[i].d, e = ECROWS[i + 1].d;
+    if (!d.J || !d.next.next || d.next.next[0] !== e.p || d.next.next[1] !== e.N) fail(`step_J: EC ${d.p} ${d.N} -> EC ${e.p} ${e.N} is not ${d.next.name}'s`);
+  }
+  const shown = ECROWS.slice(0, 7), last = ECROWS[7];
+  const vs = shown.map((r) => viewOf(r.cfg));
+  const A = Math.min(...vs.map((v) => v.lo)) - 1, B = Math.max(...vs.map((v) => v.hi)) + 1;
+  const items = shown.map((r, i) => {
+    const d = r.d, nx = ECROWS[i + 1];
+    if (!d) return { cfg: r.cfg, label: '<b>c0</b>, step 0<br>the blank tape', arrow: `↓ ${nx.step} steps` };
+    const lab = `<b>EC ${d.p} ${d.N}</b> · step ${fmt(r.step)}<br>J: 1 ≤ ${d.N} ≤ ${2 * d.p} ${d.J ? '✓' : '✗'}` + (d.J ? ` · next <b>${d.next.name}</b>` : '');
+    const arrow = !d.J ? `↓ J fails, so the opening keeps going: ${nx.step - r.step} more steps (init ends at EC 2 4)`
+      : `↓ <b>${d.next.name}</b> gives EC ${d.next.next[0]} ${d.next.next[1]}: ${nx.step - r.step} steps` + (i === shown.length - 1 ? ` (step ${fmt(nx.step)})` : '');
+    return { cfg: r.cfg, marks: d.marks, label: lab, arrow };
+  });
+  if (!(last && last.d.p === 21 && last.d.N === 6)) fail('EC rows: the row after EC 14 22 is not EC 21 6');
+  fitStack(document.getElementById('jstack'), B - A + 1, (cell) => stackGrid(items, A, B, cell));
+}
+
+// ------------------------------------------------------------------ drill 2 (shown after the reveal): EC 0 62 and the next EC
+{
+  const term = `0^inf <E 1 0 1 1 ${C(62).join(' ')} 0^inf`;            // EC 0 62 = HF 0inf (C 62)
+  const start = parseConfig(term);
+  const d0 = decoders['m8-ec'](viewOf(start));
+  if (!d0 || d0.p !== 0 || d0.N !== 62 || d0.next.name !== 'none' || d0.next.t !== 2 || d0.next.m !== 0) fail('drill 2: the start is not EC 0 62 with t = 2, m = 0 and no macro rule');
+  const run = new Run(W53, start);
+  const t = run.until((v) => decoders['m8-ec'](v) !== null, { max: 5000 });
+  const c1 = run.config(), d1 = decoders['m8-ec'](viewOf(c1));
+  if (t !== 688 || !d1 || d1.p !== 12 || d1.N !== 7 || !d1.J) fail(`drill 2: from EC 0 62 the next EC is not EC 12 7 at step 688 (got ${t})`);
+  const v0 = viewOf(start), v1 = viewOf(c1);
+  const A = Math.min(v0.lo, v1.lo) - 1, B = Math.max(v0.hi, v1.hi) + 1;
+  const items = [
+    { cfg: start, marks: d0.marks, label: '<b>EC 0 62</b>, built from the Coq term<br>J ✗: 62 ≤ 0 is false', arrow: '↓ no macro rule covers it (BS5 needs 8 ≤ 7), but the machine runs on: 688 steps' },
+    { cfg: c1, marks: d1 ? d1.marks : [], label: '<b>EC 12 7</b>, 688 steps later<br>J ✓: 1 ≤ 7 ≤ 24' },
+  ];
+  fitStack(document.getElementById('d2stack'), B - A + 1, (cell) => stackGrid(items, A, B, cell));
+}
+
+// ------------------------------------------------------------------ beat 5: the nonhalt chain picture, from the EC rows
+{
+  const picks = [ECROWS[0], ECROWS[2], ECROWS[3], ECROWS[4], ECROWS[5]];
+  const vs = picks.map((r) => viewOf(r.cfg));
+  const A = Math.min(...vs.map((v) => v.lo)), B = Math.max(...vs.map((v) => v.hi));
+  const items = picks.map((r, i) => {
+    const nx = picks[i + 1];
+    const label = i === 0 ? '<b>c0</b><br>the blank tape, step 0' : `<b>EC ${r.d.p} ${r.d.N}</b>, step ${r.step}<br>J: 1 ≤ ${r.d.N} ≤ ${2 * r.d.p} ✓`;
+    const arrow = nx ? (i === 0 ? `↓ <b>init</b> (line 435): ${nx.step} steps` : `↓ <b>step_J</b>, by ${r.d.next.name}: ${nx.step - r.step} steps`)
+      : '↓ <b>step_J</b> again, forever: J holds every time, so the run never reaches the halting cell F0';
+    return { cfg: r.cfg, label, arrow };
+  });
+  fitStack(document.getElementById('nhchain'), B - A + 1, (cell) => {
+    const g = stackGrid(items, A, B, cell);
+    for (const c of g.querySelectorAll('.mc')) c.textContent = '';
+    return g;
+  }, { max: 12 });
+}
+
+// ------------------------------------------------------------------ beat 6: the numbered picture (step 20 of three real runs)
+const FLIP = W58B.split('_').map((g) => [g.slice(0, 3), g.slice(3)].map((a) => (a === '---' ? a : a[0] + (a[1] === 'L' ? 'R' : 'L') + a[2])).join('')).join('_');
+{
+  const v1 = viewOf(configAt(W58B, 20)), v2 = viewOf(configAt(FLIP, 20)), v3 = viewOf(configAt(W58, 20, blank('C')));
+  let ok = v2.pos === -v1.pos && v2.state === v1.state && v3.pos === v2.pos && v3.state === PHI[v2.state];
+  for (let x = -12; x <= 12; x++) if (v2.read(-x) !== v1.read(x) || v3.read(x) !== v2.read(x)) ok = false;
+  if (!ok || FLIP !== '1LB1RE_1RC1LD_0RA1RA_---1LE_1RF0RA_0RC0LF') fail('numbered picture: the three tapes are not mirror and rename of each other');
+  document.getElementById('fl1').append(mini(v1, -3, 3, [], { cell: 14 }));
+  document.getElementById('fl2').append(mini(v2, -3, 3, [], { cell: 14 }));
+  document.getElementById('fl3').append(mini(v3, -3, 3, [], { cell: 14 }));
+}
+
+// ------------------------------------------------------------------ beat 6: the mirror widget (one set of controls, both runs)
+const MIRROR = (() => {
+  const host = document.getElementById('mirror');
+  const N = 61, WB = [-8, 3], WP = [-3, 8];                           // W5-8b's cells, W5-8's cells: mirror images
+  const rb = new Run(W58B), rp = new Run(W58, blank('C'));
+  const RB = [], RP = [];
+  for (let i = 0; i < N; i++) {
+    if (i) { rb.step(); rp.step(); }
+    RB.push({ cfg: rb.config(), rule: rb.view().rule }); RP.push({ cfg: rp.config(), rule: rp.view().rule });
+  }
+  // page check: row for row, W5-8b = W5-8 from C, mirrored, states renamed; both stay inside their windows
+  for (let i = 0; i < N; i++) {
+    const vb = viewOf(RB[i].cfg), vp = viewOf(RP[i].cfg);
+    let ok = PHI[vb.state] === vp.state && vb.pos === -vp.pos && vb.lo >= WB[0] && vb.hi <= WB[1] && vp.lo >= WP[0] && vp.hi <= WP[1];
+    for (let x = -12; x <= 12 && ok; x++) if (vb.read(x) !== vp.read(-x)) ok = false;
+    if (!ok) { fail(`mirror: step ${i} differs`); break; }
+  }
+  const box = el('div', 'mirror');
+  box.append(el('div', 'mtitle', 'W5-8b from A and W5-8 from C, linked: steps 0 to 60'));
+  box.append(el('div', 'msub', 'Left: W5-8b, cells −8 … 3. Right: W5-8 started in C, cells −3 … 8. The dashed line is the mirror.'));
+  const ctl = el('div', 'mctl');
+  const bPrev = el('button', null, '◀ step'), bPlay = el('button', 'primary', '▶ play'), bNext = el('button', null, 'step ▶');
+  [bPrev, bPlay, bNext].forEach((b) => { b.type = 'button'; });
+  const range = el('input'); range.type = 'range'; range.min = 0; range.max = N - 1; range.value = 0; range.setAttribute('aria-label', 'step');
+  const stp = el('span', 'stp');
+  ctl.append(bPrev, bPlay, bNext, range, stp);
+  const pane = el('div', 'mpane');
+  const tapes = el('div', 'mtapes');
+  const hist = el('div', 'mhist');
+  const canvas = el('canvas');
+  hist.append(canvas);
+  pane.append(tapes, hist);
+  const cap = el('div', 'mcap', 'History: time goes down, one row per step; tap a row to go there. Each coloured cell is the head, in its state’s colour.');
+  box.append(ctl, pane, cap);
+  host.append(box);
+  let cur = 0, timer = null, geo = null;
+  const STEPW = 34, GAP = 18;
+  function layout() {
+    const W = pane.clientWidth;
+    const pitch = Math.max(8, Math.min(18, Math.floor((W - STEPW - GAP - 16) / 24)));
+    const rowH = Math.max(5, Math.min(8, Math.floor(pitch / 2)));
+    geo = { pitch, rowH, w: STEPW + 24 * pitch + GAP + 8, h: N * rowH + 4 };
+  }
+  function cols(name, cfg, a, b, rule, tm) {
+    const col = el('div', 'col');
+    col.style.width = 12 * geo.pitch + 'px';
+    col.append(el('div', 'who', name), mini(cfg, a, b, [], { cell: geo.pitch - 1, digits: geo.pitch - 1 >= 13 }));
+    col.append(el('div', 'rt', rule ? ruleText(tm, rule) : 'the start: a blank tape'));
+    return col;
+  }
+  function drawTapes() {
+    tapes.textContent = '';
+    tapes.style.width = geo.w + 'px';
+    const sp = el('div'); sp.style.width = STEPW + 'px'; sp.style.flex = 'none';
+    const g = el('div', 'gap'); g.style.width = GAP / 2 + 'px'; g.style.marginLeft = GAP / 2 + 'px';
+    tapes.append(sp, cols('W5-8b, from A', RB[cur].cfg, WB[0], WB[1], RB[cur].rule, W58B), g, cols('W5-8, from C', RP[cur].cfg, WP[0], WP[1], RP[cur].rule, W58));
+  }
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  function drawHist() {
+    const { pitch, rowH, w, h } = geo, dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+    const g = canvas.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h);
+    const col = { c0: css('--c0'), c1: css('--c1'), unv: css('--unv'), line: css('--line'), axis: css('--axis'), cur: css('--accent-weak'), ink: css('--ink'), muted: css('--muted') };
+    g.fillStyle = col.cur; g.fillRect(0, 2 + cur * rowH - 1, w, rowH + 1);
+    const gap = pitch >= 10 ? 1 : 0;
+    const drawOne = (rows, win, x0) => {
+      for (let r = 0; r < N; r++) {
+        const v = viewOf(rows[r].cfg);
+        for (let c = 0; c < 12; c++) {
+          const p = win[0] + c, s = v.read(p);
+          g.fillStyle = p === v.pos ? css(`--s${v.state}`) : s ? col.c1 : p < v.lo || p > v.hi ? col.unv : col.c0;
+          g.fillRect(x0 + c * pitch, 2 + r * rowH, pitch - gap, rowH - (rowH >= 7 ? 1 : 0));
+        }
+      }
+    };
+    drawOne(RB, WB, STEPW);
+    drawOne(RP, WP, STEPW + 12 * pitch + GAP);
+    g.strokeStyle = col.axis; g.setLineDash([4, 3]); g.lineWidth = 2;
+    const ax = STEPW + 12 * pitch + GAP / 2;
+    g.beginPath(); g.moveTo(ax, 0); g.lineTo(ax, h); g.stroke(); g.setLineDash([]);
+    g.font = '10px ui-monospace, Consolas, monospace'; g.textAlign = 'right'; g.textBaseline = 'middle';
+    for (let r = 0; r < N; r++) {
+      if (r % 10 && r !== cur) continue;
+      g.fillStyle = r === cur ? col.ink : col.muted;
+      g.fillText(String(r), STEPW - 6, 2 + r * rowH + rowH / 2);
+    }
+  }
+  function show() {
+    stp.textContent = `step ${cur} of ${N - 1}`;
+    range.value = cur;
+    bPrev.disabled = cur === 0; bNext.disabled = cur === N - 1;
+    drawTapes(); drawHist();
+    const y = 2 + cur * geo.rowH;
+    if (y + geo.rowH > hist.scrollTop + hist.clientHeight) hist.scrollTop = y + geo.rowH - hist.clientHeight + 20;
+    else if (y < hist.scrollTop) hist.scrollTop = Math.max(0, y - 20);
+  }
+  function go(i) { cur = Math.max(0, Math.min(N - 1, i)); show(); }
+  function pause() { if (timer) clearInterval(timer); timer = null; bPlay.textContent = '▶ play'; }
+  function play() {
+    if (timer) return;
+    if (cur >= N - 1) go(0);
+    bPlay.textContent = '❚❚ pause';
+    timer = setInterval(() => { if (cur >= N - 1) { pause(); return; } go(cur + 1); }, 250);
+  }
+  bPrev.addEventListener('click', () => { pause(); go(cur - 1); });
+  bNext.addEventListener('click', () => { pause(); go(cur + 1); });
+  bPlay.addEventListener('click', () => (timer ? pause() : play()));
+  range.addEventListener('input', () => { pause(); go(+range.value); });
+  canvas.addEventListener('click', (e) => { const r = Math.floor((e.clientY - canvas.getBoundingClientRect().top - 2) / geo.rowH); if (r >= 0 && r < N) { pause(); go(r); } });
+  layout(); show();
+  let lastW = pane.clientWidth;
+  if (window.ResizeObserver) new ResizeObserver(() => { if (pane.clientWidth !== lastW) { lastW = pane.clientWidth; layout(); show(); } }).observe(pane);
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq.addEventListener) mq.addEventListener('change', () => drawHist());
+  return { go, rows: () => [RB, RP] };
+})();
+
+// ------------------------------------------------------------------ beat 6: the mirror-and-rename table
+{
+  const tb = parseTM(W58B), tp = parseTM(W58);
+  const t = el('table', 'plain');
+  t.innerHTML = '<tr><th>W5-8b cell</th><th>does → mirrored → renamed</th><th>W5-8 cell</th><th>does</th><th></th></tr>';
+  let all = true;
+  for (let q = 0; q < 6; q++) for (let s = 0; s < 2; s++) {
+    const Q = STATES[q], act = tb.acts[q * 2 + s];
+    const mir = act === '---' ? '---' : act[0] + (act[1] === 'L' ? 'R' : 'L') + act[2];
+    const ren = act === '---' ? '---' : mir.slice(0, 2) + PHI[mir[2]];
+    const pq = STATES.indexOf(PHI[Q]), pact = tp.acts[pq * 2 + s];
+    const ok = ren === pact;
+    all &&= ok;
+    const tr = el('tr');
+    tr.innerHTML = `<td class="mono">${Q}${s}</td><td class="mono">${act} <span class="arr">→</span> ${mir} <span class="arr">→</span> ${ren}</td><td class="mono">${PHI[Q]}${s}</td><td class="mono">${pact}</td><td class="${ok ? 'ok' : 'bad'}">${ok ? '✓' : '✗'}</td>`;
+    t.append(tr);
+  }
+  if (!all) fail('mirror-and-rename table: a cell differs');
+  document.getElementById('permtable').append(t);
+}
+
+// ------------------------------------------------------------------ beat 1: the strip and its key light each other up
+{
+  const strip = document.getElementById('fstrip'), key = document.getElementById('fkey');
+  let on = null;
+  const set = (k) => {
+    on = on === k ? null : k;
+    for (const b of strip.children) b.classList.toggle('on', b.dataset.k === on);
+    for (const li of key.children) li.classList.toggle('on', li.dataset.k === on);
+  };
+  for (const b of strip.children) b.setAttribute('aria-label', b.title);
+  strip.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) set(b.dataset.k); });
+  key.addEventListener('click', (e) => { if (e.target.closest('a')) return; const li = e.target.closest('li'); if (li) set(li.dataset.k); });
+  for (const b of strip.children) b.dataset.short = b.dataset.k;
+  watchLabels(strip);
+  // a "key lines" link opens that part of the reference
+  const openRef = (id) => { const d = document.getElementById(id); if (d && d.tagName === 'DETAILS') d.open = true; };
+  key.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#ref-"]'); if (a) openRef(a.getAttribute('href').slice(1)); });
+  if (location.hash.startsWith('#ref-')) openRef(location.hash.slice(1));
+}
+
+// ------------------------------------------------------------------ mount the data-opts widgets last, then the page checks
+const done = autoMount();
+Promise.all([leatCtl.ready, chainCtl.ready, done]).then(() => {
+  for (const l of document.querySelectorAll('.tm-label')) {
+    l.textContent = l.textContent.replace('each m8-ec configuration', 'each EC p N configuration');
+  }
+  if (checked.size < CHAIN.length) fail(`chain: only ${checked.size} of ${CHAIN.length} configurations reached`);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,727 @@
+{
+ "tm": "1RB0LD_0RC1RA_1RD1RF_1LA0LE_0RA0LC_0RA---",
+ "rank": 9,
+ "class_sheet": "Shift-overflow structural counter",
+ "class_guess": "Shift-overflow counter: base-4 digit blocks in a bouncer, plus a one-time reset that leaves walls",
+ "confidence": "med",
+ "summary": "Bouncer on 11111010 with 4-state digit blocks (base-4 carry); 1 reset at 3e7 left static walls; no halt to 2e10",
+ "mechanism": [
+  "Tape: runs of P=11111010 split by 6-cell digit blocks D0-D3; the head sweeps from the right edge to the first D0/D1.",
+  "Each sweep steps every visited digit D0>D1>D2>D3>D0 (base-4 carry); D3>D0 moves one P across, so runs double leftward.",
+  "At 2.97e7 the carry hit the left end: an 8e6-step rebuild left static walls X=11; digits cross them unchanged (to 2e10)."
+ ],
+ "diagrams": [
+  {
+   "mode": "blaze",
+   "png": "img/blaze_1e8.png",
+   "html": "img/viewer.html",
+   "steps": 100000000,
+   "caption": "sqrt bouncer; flat step at 3e7 = the reset",
+   "title": "Blaze, 100M steps",
+   "why": "Time runs down; step 3e7 is about 30% of the way down. Look along both edges for any break.",
+   "primary": true,
+   "start": "blank",
+   "rows": "Blaze time blocks of 131,072 steps (averaged), 763 blocks stretched to 500 px, so 1 px row ~ 200,000 steps (steps 0..100,000,000)",
+   "window": "cells -48..16559, 1 px = 20.8 cells",
+   "legend": "white = 0, orange = 1, paler orange = mixed (each pixel averages its cells over its time block); no head drawn",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "phase",
+   "png": "img/phase_1e8.png",
+   "html": null,
+   "steps": 100000000,
+   "caption": "Phase colour per 8-cell block, row = every 2nd sweep",
+   "title": "Phase colours, one row per 2nd sweep",
+   "why": "One row per 2nd sweep; colour shows how the 8-cell word is shifted. Watch the top half's colour edges.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per 2nd sweep end (head at the right edge in state D): 2,069 rows, steps 17..99,998,776. Not equal time: rows ~200 steps apart at the top, ~100,000 at the bottom, and between rows 1,093 and 1,094 (from the top) 8.0M steps are skipped (29,754,243 -> 37,788,160: the reset never reaches the right edge)",
+   "window": "cells -40..16551, 1 px = 8 cells",
+   "legend": "away from digits the tape repeats the 8-cell word P = 11111010, and colour = how P is shifted in that 8-cell block (red, orange, yellow, green, cyan, blue, purple, magenta = shift 0..7); colour edge = a digit block (6 cells: colour steps back 2, e.g. green -> orange) or a wall X = 11 (2 cells: colour steps forward 2); white = block that is not a copy of P; dark slate = not visited yet",
+   "style": "custom"
+  },
+  {
+   "mode": "phase",
+   "png": "img/phase_1e9_left.png",
+   "html": null,
+   "steps": 1000000000,
+   "caption": "After reset: vertical walls stay put; digit lines cross them",
+   "title": "After the reset: left quarter to 1e9",
+   "why": "The left quarter after the reset, to 1e9. Look where the slanted lines meet the vertical ones.",
+   "primary": true,
+   "start": "blank",
+   "rows": "one row per 6th sweep end (head at the right edge in state D): 2,177 rows, steps 527..999,316,836. Not equal time: rows ~1,000 steps apart at the top, ~950,000 at the bottom, and between rows 363 and 364 (from the top) 8.1M steps are skipped (29,646,275 -> 37,788,160: the reset)",
+   "window": "cells -40..13559, 1 px = 8 cells: the left quarter of the tape, an exact crop of img/phase_1e9.png; all 7 walls left by the reset (cells ~190..8,750) are in it, and cells 13,560..52,247 (not shown) hold only the newest digit runs",
+   "legend": "away from digits the tape repeats the 8-cell word P = 11111010, and colour = how P is shifted in that 8-cell block (red, orange, yellow, green, cyan, blue, purple, magenta = shift 0..7); colour edge = a digit block (6 cells: colour steps back 2, e.g. green -> orange) or a wall X = 11 (2 cells: colour steps forward 2); white = block that is not a copy of P; dark slate = not visited yet",
+   "style": "custom"
+  },
+  {
+   "mode": "blaze:from-config@29754243",
+   "png": "img/blaze_reset_2.98e7.png",
+   "html": null,
+   "steps": 8100000,
+   "caption": "The reset: inner bouncer regrows from the left",
+   "title": "The reset, Blaze view",
+   "why": "8.1M steps from step 29,754,243: the inner bouncer regrows from the left.",
+   "start": "mid-run: step 29754243 (the last right-edge visit before the reset; head at cell 8,747)",
+   "rows": "Blaze time blocks of 8,192 steps (averaged), 989 blocks stretched to 500 px, so 1 px row ~ 16,200 steps (steps 29,754,243..37,854,243)",
+   "window": "cells -37..8770, 1 px = 11 cells",
+   "legend": "white = 0, orange = 1, paler orange = mixed (each pixel averages its cells over its time block); no head drawn",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "records",
+   "png": "img/records_1e7.png",
+   "html": "img/viewer.html",
+   "steps": 9473093,
+   "caption": "Left/right records to 9.47e6: digit boundaries are straight lines",
+   "title": "Left/right records to 9.47M steps",
+   "why": "Before the reset: digit boundaries are straight lines.",
+   "start": "blank",
+   "rows": "left/right records: the start, then one row each time the head reaches a new leftmost or rightmost cell (5,000 rows = the row cap, steps 0..9,473,093; rows are not equal time)",
+   "window": "cells -32..4967, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or never visited, red/green = head just moved right/left",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf L .. b3 P^n3 b2 P^n2 b1 P^n1 b0 P^n0 T D> 0^inf ; P=11111010, D0=111010 D1=101111 D2=101011 D3=111111 X=11; T=A: last P ends under head (..1111101 D> 0^inf), T=B: P^n0 101 D> 0^inf",
+  "vars": [
+   "T",
+   "n0",
+   "b0",
+   "n1",
+   "b1",
+   "n2",
+   "b2",
+   "n3",
+   "b3",
+   "#D",
+   "#X"
+  ],
+  "rows": [
+   {
+    "step": 10009637,
+    "values": [
+     "B",
+     314,
+     "D3",
+     155,
+     "D0",
+     79,
+     "D3",
+     39,
+     "D1",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10027525,
+    "values": [
+     "A",
+     314,
+     "D0",
+     156,
+     "D1",
+     79,
+     "D3",
+     39,
+     "D1",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10039479,
+    "values": [
+     "B",
+     314,
+     "D1",
+     156,
+     "D1",
+     79,
+     "D3",
+     39,
+     "D1",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10051439,
+    "values": [
+     "A",
+     315,
+     "D2",
+     156,
+     "D1",
+     79,
+     "D3",
+     39,
+     "D1",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10069371,
+    "values": [
+     "B",
+     315,
+     "D3",
+     156,
+     "D2",
+     79,
+     "D3",
+     39,
+     "D1",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10091867,
+    "values": [
+     "A",
+     315,
+     "D0",
+     157,
+     "D3",
+     78,
+     "D0",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10103859,
+    "values": [
+     "B",
+     315,
+     "D1",
+     157,
+     "D3",
+     78,
+     "D0",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10115857,
+    "values": [
+     "A",
+     316,
+     "D2",
+     157,
+     "D3",
+     78,
+     "D0",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10136867,
+    "values": [
+     "B",
+     316,
+     "D3",
+     156,
+     "D0",
+     79,
+     "D1",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10154869,
+    "values": [
+     "A",
+     316,
+     "D0",
+     157,
+     "D1",
+     79,
+     "D1",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10166899,
+    "values": [
+     "B",
+     316,
+     "D1",
+     157,
+     "D1",
+     79,
+     "D1",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10178935,
+    "values": [
+     "A",
+     317,
+     "D2",
+     157,
+     "D1",
+     79,
+     "D1",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10196981,
+    "values": [
+     "B",
+     317,
+     "D3",
+     157,
+     "D2",
+     79,
+     "D1",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10218073,
+    "values": [
+     "A",
+     317,
+     "D0",
+     158,
+     "D3",
+     79,
+     "D2",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10230141,
+    "values": [
+     "B",
+     317,
+     "D1",
+     158,
+     "D3",
+     79,
+     "D2",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10242215,
+    "values": [
+     "A",
+     318,
+     "D2",
+     158,
+     "D3",
+     79,
+     "D2",
+     40,
+     "D2",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10266327,
+    "values": [
+     "B",
+     318,
+     "D3",
+     157,
+     "D0",
+     80,
+     "D3",
+     40,
+     "D3",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10284443,
+    "values": [
+     "A",
+     318,
+     "D0",
+     158,
+     "D1",
+     80,
+     "D3",
+     40,
+     "D3",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10296549,
+    "values": [
+     "B",
+     318,
+     "D1",
+     158,
+     "D1",
+     80,
+     "D3",
+     40,
+     "D3",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10308661,
+    "values": [
+     "A",
+     319,
+     "D2",
+     158,
+     "D1",
+     80,
+     "D3",
+     40,
+     "D3",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10326821,
+    "values": [
+     "B",
+     319,
+     "D3",
+     158,
+     "D2",
+     80,
+     "D3",
+     40,
+     "D3",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10350381,
+    "values": [
+     "A",
+     319,
+     "D0",
+     159,
+     "D3",
+     79,
+     "D0",
+     40,
+     "D0",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10362525,
+    "values": [
+     "B",
+     319,
+     "D1",
+     159,
+     "D3",
+     79,
+     "D0",
+     40,
+     "D0",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 10374675,
+    "values": [
+     "A",
+     320,
+     "D2",
+     159,
+     "D3",
+     79,
+     "D0",
+     40,
+     "D0",
+     12,
+     5
+    ]
+   },
+   {
+    "step": 40005946,
+    "values": [
+     "A",
+     56,
+     "X",
+     378,
+     "D3",
+     81,
+     "D3",
+     82,
+     "X",
+     20,
+     11
+    ]
+   },
+   {
+    "step": 100058178,
+    "values": [
+     "B",
+     892,
+     "D0",
+     83,
+     "X",
+     229,
+     "D3",
+     312,
+     "X",
+     20,
+     11
+    ]
+   },
+   {
+    "step": 400090666,
+    "values": [
+     "B",
+     1948,
+     "D0",
+     839,
+     "D1",
+     300,
+     "X",
+     322,
+     "D3",
+     20,
+     11
+    ]
+   },
+   {
+    "step": 1600152606,
+    "values": [
+     "A",
+     3965,
+     "D3",
+     1846,
+     "D0",
+     1125,
+     "D1",
+     183,
+     "X",
+     20,
+     11
+    ]
+   },
+   {
+    "step": 6400057808,
+    "values": [
+     "B",
+     7952,
+     "D2",
+     3841,
+     "D3",
+     2121,
+     "D0",
+     994,
+     "D2",
+     20,
+     11
+    ]
+   },
+   {
+    "step": 20000291798,
+    "values": [
+     "A",
+     14060,
+     "D1",
+     6895,
+     "D3",
+     3648,
+     "D0",
+     1757,
+     "D0",
+     20,
+     11
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "edge",
+   "from": "l P^n A",
+   "to": "l' P^n B   |   l P^n B --> l' P^(n+1) A",
+   "steps": null,
+   "cases": "every sweep; tail alternates A/B, edge +4 cells",
+   "validated": {
+    "instances": 120,
+    "passed": 120
+   },
+   "source": "manual"
+  },
+  {
+   "name": "turn@D0",
+   "from": "l D0 P^a A",
+   "to": "l D1 P^a B  (from B: l D1 P^(a+1) A)",
+   "steps": "38a+22 (A) / 38a+30 (B)",
+   "cases": "head turns at D0; l untouched",
+   "validated": {
+    "instances": 61,
+    "passed": 61
+   },
+   "source": "manual"
+  },
+  {
+   "name": "turn@D1",
+   "from": "l D1 P^a A",
+   "to": "l D2 P^a B  (from B: l D2 P^(a+1) A)",
+   "steps": "38a+20 (A) / 38a+28 (B)",
+   "cases": "head turns at D1; l untouched",
+   "validated": {
+    "instances": 59,
+    "passed": 59
+   },
+   "source": "manual"
+  },
+  {
+   "name": "carry@D2",
+   "from": "l D2 P^c R",
+   "to": "l* D3 P^c R'",
+   "steps": "+38c+14 on top of the turn",
+   "cases": "carry continues into l (l* = l after its own visit)",
+   "validated": {
+    "instances": 69,
+    "passed": 69
+   },
+   "source": "manual"
+  },
+  {
+   "name": "carry@D3",
+   "from": "l D3 P^c R",
+   "to": "l* P D0 P^(c-1) R'",
+   "steps": "+38c+36 on top of the turn",
+   "cases": "c>=1; one P moves left across the digit",
+   "validated": {
+    "instances": 71,
+    "passed": 71
+   },
+   "source": "manual"
+  },
+  {
+   "name": "wall pass",
+   "from": "l X P^c R",
+   "to": "l* X P^c R'",
+   "steps": null,
+   "cases": "X=11 (phase +2 wall) is transparent to the carry",
+   "validated": {
+    "instances": 24,
+    "passed": 24
+   },
+   "source": "manual"
+  },
+  {
+   "name": "D1 meets wall",
+   "from": "l D1 X P^c R",
+   "to": "l* X P D0 P^(c-1) R'",
+   "steps": null,
+   "cases": "empty run between D1 and X; carry continues",
+   "validated": {
+    "instances": 24,
+    "passed": 24
+   },
+   "source": "manual"
+  },
+  {
+   "name": "full-sweep model (real orbit)",
+   "from": "E(T; n_i, b_i) at a right-edge D record",
+   "to": "next D record = rules above applied once",
+   "steps": null,
+   "cases": "gen 1 at 1e7 (297 sweeps) + gen 2 at 1e9 (596); D-X adjacency sweeps excluded",
+   "validated": {
+    "instances": 893,
+    "passed": 893
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "verify/SBCv6a.v",
+  "module": "TM1",
+  "machine": "1LB1RE_0LC0RB_1RD0LA_0RA0RD_0RF0RA_1RD---",
+  "diff": "9/12 transitions differ after best renaming+mirror; SBCv10 TM4/TM5, SOBLv1 TM2, Bouncer_v1 TM1: 8; look-alike Bouncer_v1 TM2: 10",
+  "applies": "partly",
+  "note": "No proved neighbour is within 8 transitions, and its blocks (10011001) never appear here. Only the method transfers: Longitudinal segRLs/sideRLs passes, plus RIncs/WF over a digit list, fit gen 1; nothing covers the reset."
+ },
+ "strategy": "Mirror SBCv6a TM1 (Longitudinal, flip tm): pass lemmas for P^n, D0-D3, X, D1.X via es/ind; BigStep over an Inductive digit list with a WF invariant; multistep_nonhalt to a post-reset config, then progress_nonhalt_cond. First close the block alphabet (D2.X, X.D1 transients; left-prefix overflow).",
+ "risks": [
+  "Reset not modelled: if the left overflow recurs (after 2e10, beyond our sim), each rebuild may nest new walls, so the proof needs a generation invariant.",
+  "Rule table not closed: D2.X and X.D1 adjacency create extra transient blocks ((10)^5 1^3 ..).",
+  "No template within 8 transitions: new-mechanism proof, likely SBCv10-sized (~50 KB)."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 1: is the flat step near 3e7 the only break in otherwise smooth growth (the one-time reset)?",
+   "figs": [
+    0
+   ]
+  },
+  {
+   "text": "Fig 2: in the top half, do the colour edges fanning out from the left read as the digit lines of one base-4 counter?",
+   "figs": [
+    1
+   ]
+  },
+  {
+   "text": "Fig 3: do the slanted digit lines cross the vertical walls without bending, so the walls can be treated as inert?",
+   "figs": [
+    2
+   ]
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 20000000000,
+  "cells": 227260,
+  "nonzeros": 146198,
+  "growth": "~1.61*sqrt(t) cells (+4 cells per sweep); 56,806 sweeps by 2e10"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Counter rules validated (8 rules, random + 893 real sweeps); no Collatz-like arithmetic; reset and D-X transients still open"
+}

@@ -1,0 +1,501 @@
+{
+ "tm": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA",
+ "rank": 28,
+ "class_sheet": "Bell eats counter",
+ "class_guess": "Bell eats counter: BECv1 tm10 with E1 = 1LB (3-cell binary counter with fillers + unary marker; eats shift the counter)",
+ "confidence": "med",
+ "summary": "tm10 sibling: 3-cell binary counter eats a unary run; 9 round rules predict 100% of rounds to 1e10",
+ "mechanism": [
+  "Left: a binary counter in 3-cell blocks (1=100, 0=000, filler f=010 that carries skip). Right: tm10's 011 unary run with a 00 marker. Each round adds 1 and moves the marker one block left.",
+  "When the marker reaches the counter, one of 3 eats fires. EAT0f drops the low digit and fillers into the unary. EAT0z and EAT1 absorb the marker and shift the counter one cell right (phi).",
+  "The shifted blocks are debris (s=001). A carry that reaches an s re-encodes them (CARRY_S, recursive). On the blank run the debris is always gone before the next eat."
+ ],
+ "diagrams": [
+  {
+   "mode": "default",
+   "png": "img/default_site.png",
+   "html": "img/viewer.html",
+   "steps": 10000,
+   "caption": "bbchallenge view: first rounds, sweeps and marker",
+   "title": "bbchallenge default view, 10,000 steps",
+   "why": "The site's view: the counter sits at the left edge, the unary run to its right.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every step 0..9,999, squeezed into 500 px by the site's bilinear filter: px row y blends steps 20y+9 and 20y+10, so about one sample every 20 steps",
+   "window": "cells -200..199, 1 px = 1 cell",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "state:E:L",
+   "png": "img/stateEL_left_4e4.png",
+   "html": "img/viewer.html",
+   "steps": 40000,
+   "caption": "One row per left entry into E; diagonal = 00 marker",
+   "title": "One row per left entry into E",
+   "why": "Left edge pinned. Follow one dark diagonal down to the left band, then watch the band and the next diagonal.",
+   "primary": true,
+   "start": "blank",
+   "rows": "every entry into state E moving left: 552 rows to step 40,000; every round start is one of them, and carries add a few more rows",
+   "window": "cells 0..119, 1 px = 1 cell; counted from each row's leftmost visited cell (frame = left), so only the 120 leftmost cells are shown",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  },
+  {
+   "mode": "explore",
+   "png": "img/eat1_explore.png",
+   "html": null,
+   "steps": 140,
+   "caption": "Constructed EAT1: marker absorbed, counter shifted one cell",
+   "title": "Close-up: an EAT1 eat",
+   "why": "Compare the counter's 1-cells (columns left of the start head) in the top row and below the first left sweep.",
+   "primary": true,
+   "start": "constructed: 0^inf 100 000 010 1 <E 11 00 (011)^6 0^inf",
+   "rows": "every step: 141 rows, step 0 to step 140 (the eat ends at step 37, then the next round runs)",
+   "window": "cells -12..24, 1 px = 0.25 cells (each cell 4x4 px); cell 0 = the start head (the LSB cell b)",
+   "legend": "slate = 0, white = 1, head cell coloured by state: red = A, orange = B, blue = C, green = D, magenta = E, cyan = F",
+   "style": "bbchallenge-explore"
+  },
+  {
+   "mode": "blaze",
+   "png": "img/blaze_1e8.png",
+   "html": "img/viewer.html",
+   "steps": 100000000,
+   "caption": "Blaze, 1e8 steps: bell-shaped left edge, slow right edge",
+   "title": "Blaze, 100 million steps",
+   "why": "Whole run at a glance: left edge grows like a bell, the right edge slowly.",
+   "primary": false,
+   "start": "blank",
+   "rows": "Blaze time blocks of 131,072 steps (each averaged), 763 blocks to step 1e8 (Blaze image, not stretched)",
+   "window": "cells -2076..283, 1 px = 2 cells (Blaze image, 1,180 columns)",
+   "legend": "white = 0, orange = 1, paler orange = 1 only part of the time (or in part of the cells) of that pixel's block; no head",
+   "style": "bbchallenge-blaze"
+  },
+  {
+   "mode": "records:L",
+   "png": "img/recordsL_left_1e9.png",
+   "html": "img/viewer.html",
+   "steps": 1000000000,
+   "caption": "Left records to 1e9: counter digits at the pinned left edge",
+   "title": "Left records, left edge pinned, 1e9",
+   "why": "Left edge pinned. Each row is a new leftmost cell; the counter digits sit in the first columns.",
+   "primary": false,
+   "start": "blank",
+   "rows": "left records only: the start, then one row per new leftmost cell (4,634 rows to step 1,000,000,000; not evenly spaced in time)",
+   "window": "cells 0..149, 1 px = 1 cell; counted from each row's leftmost visited cell (frame = left), so only the 150 leftmost cells are shown",
+   "legend": "white = 1, black = 0 or unvisited, red/green = head (last move right/left)",
+   "style": "bbchallenge-default"
+  }
+ ],
+ "history": {
+  "skeleton": "0^inf W 0 <E 11 (011)^n 0^inf",
+  "vars": [
+   "n (unary blocks; the next epoch lasts about n rounds)",
+   "|W| (blocks)",
+   "#s (shifted debris blocks)",
+   "W (1=100 0=000 f=010 s=001)"
+  ],
+  "rows": [
+   {
+    "step": 120,
+    "values": [
+     5,
+     1,
+     0,
+     "f"
+    ]
+   },
+   {
+    "step": 337,
+    "values": [
+     6,
+     3,
+     1,
+     "f f s"
+    ]
+   },
+   {
+    "step": 664,
+    "values": [
+     9,
+     3,
+     1,
+     "f s 0"
+    ]
+   },
+   {
+    "step": 1191,
+    "values": [
+     10,
+     5,
+     2,
+     "f s 0 s f"
+    ]
+   },
+   {
+    "step": 2118,
+    "values": [
+     19,
+     1,
+     0,
+     "f"
+    ]
+   },
+   {
+    "step": 6335,
+    "values": [
+     30,
+     0,
+     0,
+     ""
+    ]
+   },
+   {
+    "step": 10475,
+    "values": [
+     36,
+     0,
+     0,
+     ""
+    ]
+   },
+   {
+    "step": 22976,
+    "values": [
+     41,
+     5,
+     1,
+     "f 0 f s 0"
+    ]
+   },
+   {
+    "step": 52983,
+    "values": [
+     54,
+     8,
+     3,
+     "f f 0 f f s s s"
+    ]
+   },
+   {
+    "step": 100967,
+    "values": [
+     68,
+     8,
+     3,
+     "f 0 s 0 s f s 0"
+    ]
+   },
+   {
+    "step": 191998,
+    "values": [
+     79,
+     13,
+     8,
+     "f 0 f s s s s 0 0 s s s s"
+    ]
+   },
+   {
+    "step": 415534,
+    "values": [
+     111,
+     7,
+     3,
+     "f f s f 0 s s"
+    ]
+   },
+   {
+    "step": 880399,
+    "values": [
+     138,
+     17,
+     10,
+     "f 0 0 0 f s 0 s f s s s s s s s s"
+    ]
+   },
+   {
+    "step": 1884030,
+    "values": [
+     189,
+     10,
+     4,
+     "f f s 0 0 s f s f s"
+    ]
+   },
+   {
+    "step": 3995447,
+    "values": [
+     248,
+     10,
+     3,
+     "f f f s f f s 0 s 0"
+    ]
+   },
+   {
+    "step": 8577850,
+    "values": [
+     313,
+     20,
+     13,
+     "f 0 0 f f f s s f s s s s s s s s s s s"
+    ]
+   },
+   {
+    "step": 18895844,
+    "values": [
+     429,
+     15,
+     8,
+     "f f s 0 f 0 f s s s s f s s s"
+    ]
+   },
+   {
+    "step": 39652245,
+    "values": [
+     560,
+     10,
+     1,
+     "f 0 0 0 f f 0 0 s 0"
+    ]
+   },
+   {
+    "step": 84498575,
+    "values": [
+     720,
+     20,
+     12,
+     "f 0 f f 0 s s f 0 s s s s 0 s s s s s s"
+    ]
+   },
+   {
+    "step": 178862950,
+    "values": [
+     973,
+     5,
+     0,
+     "f f f f f"
+    ]
+   },
+   {
+    "step": 385954048,
+    "values": [
+     1225,
+     14,
+     5,
+     "f 0 0 f f s 0 0 s s s f f s"
+    ]
+   },
+   {
+    "step": 820471330,
+    "values": [
+     1589,
+     29,
+     21,
+     "f f 0 0 f 0 0 s s s 0 s s s s s s s s s s s s s ..."
+    ]
+   },
+   {
+    "step": 1738588788,
+    "values": [
+     2071,
+     18,
+     8,
+     "f 0 0 0 0 0 s f 0 0 0 s s s s s s s"
+    ]
+   },
+   {
+    "step": 3720429457,
+    "values": [
+     2668,
+     18,
+     8,
+     "f 0 f 0 0 s f s s f f s f s s s 0 s"
+    ]
+   },
+   {
+    "step": 7958424339,
+    "values": [
+     3518,
+     20,
+     10,
+     "f f 0 s s s f f 0 f f s s s f s f s s s"
+    ]
+   },
+   {
+    "step": 9996109695,
+    "values": [
+     3804,
+     22,
+     12,
+     "f f f 0 f f 0 f f s s s f s s s s s s s s s"
+    ]
+   }
+  ]
+ },
+ "rules": [
+  {
+   "name": "R1 A-sweep (= BECv1 HR1)",
+   "from": "l A> (011)^n r",
+   "to": "l (010)^n A> r",
+   "steps": "5n",
+   "cases": null,
+   "validated": {
+    "instances": 25,
+    "passed": 25
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R2 marker step (= HR2)",
+   "from": "l A> 011 00 011 r",
+   "to": "l <B 00 011 011 r",
+   "steps": null,
+   "cases": null,
+   "validated": {
+    "instances": 25,
+    "passed": 25
+   },
+   "source": "manual"
+  },
+  {
+   "name": "R3 B-sweep (= HR3)",
+   "from": "l (010)^n <B r",
+   "to": "l <B (011)^n r",
+   "steps": "3n",
+   "cases": null,
+   "validated": {
+    "instances": 25,
+    "passed": 25
+   },
+   "source": "manual"
+  },
+  {
+   "name": "INC0",
+   "from": "RS(W,0,n+1,m)",
+   "to": "RS(W,1,n,m+1)",
+   "steps": "8n+16",
+   "cases": "RS(W,b,n,m) = 0^inf W b <E 11 (011)^n 00 (011)^m 0^inf; W over blocks 1=100 0=000 f=010 s=001",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  },
+  {
+   "name": "CARRY",
+   "from": "RS(W,1,n+1,m)",
+   "to": "RS(inc W,0,n,m+1)",
+   "steps": "8n+16+carry",
+   "cases": "inc = binary +1 from the right: f skip, 1->0, 0->1 stop, overflow prepends 1",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  },
+  {
+   "name": "CARRY_S (carry meets debris)",
+   "from": "RS(X s Y,1,n+1,m)",
+   "to": "RS(inc(incC X) f Y0,0,n,m+1)",
+   "steps": null,
+   "cases": "Y in {1,f}*, Y0 = Y with 1->0; incC = +1 with f=1, 0=0, s skipped (overflow prepends f); recursive when inc meets another s",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "BIRTH (marker reborn at the right end)",
+   "from": "NM(W,0,n+1)",
+   "to": "RS(W,1,n,1)",
+   "steps": "8n+16",
+   "cases": "NM(W,b,n) = 0^inf W b <E 11 (011)^n 0^inf; BIRTHC: NM(W,1,n+1) -> RS(inc W,0,n,1) (validated, never fires from blank)",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT0f",
+   "from": "RS(W' d f^k 1^j,0,0,m)",
+   "to": "RS(W',d,k-1,m+2+j)",
+   "steps": null,
+   "cases": "k >= 1, d in {0,1}, j >= 0; marker stays at the counter",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT0z",
+   "from": "RS(W' 0 1^j,0,0,m)",
+   "to": "NM(phi W',0,m+2+j)",
+   "steps": null,
+   "cases": "phi: 1->f, 0->0, f->s (each block shifted one cell right); W = 1^j uses W' empty",
+   "validated": {
+    "instances": 200,
+    "passed": 200
+   },
+   "source": "manual"
+  },
+  {
+   "name": "EAT1",
+   "from": "RS(W,1,0,m)",
+   "to": "NM(phi(inc W),0,m+1)",
+   "steps": null,
+   "cases": "W in {1,0,f}*",
+   "validated": {
+    "instances": 100,
+    "passed": 100
+   },
+   "source": "manual"
+  }
+ ],
+ "template": {
+  "file": "verify/BECv1_6x2_solved.v:88 (+ verify/BECv1.v Section; structure: verify/BECv7.v)",
+  "module": "tm10 / nonhalt10, cert Build_BEC_cert_v1 B A E A [0] [1] [1] [0] [1] ... 1 0 0",
+  "machine": "1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LE_---0RA",
+  "diff": "E1: 1LB (ours) vs 1LE (tm10); the other 11 transitions are equal (#7 has E1 = 0LA)",
+  "applies": "partly",
+  "note": "Our TM on tm10's cert: 10/11 hypotheses hold (HL1, HL3-5, HR1-3, HE0-3: 25/25 each); HL2, the 1-cell carry 1<E1 -> <E11, fails 0/25 (E1 = 1LB sends the carry through B and C, so digits are 3 cells apart).\nThe unary half carries over; LeftBinaryCounter becomes a block-list counter with fillers and a phase-shifted debris region, closest to BECv7.v's inductive RIncs carry relation over 110/000/100 blocks."
+ },
+ "strategy": "Proof on round starts RS/NM, with W over {1,0,f,s}. Invariant: no 1 left of an s, and no s at an eat (the flush lemma). Unary lemmas from BECv1; inc/incC/CARRY_S as an inductive carry relation in BECv7 style.\nThen progress_nonhalt_cond. The open piece is the flush lemma: before the marker returns, the counter carries through every s block.",
+ "risks": [
+  "The flush lemma is a size bound (2^(digits right of the leftmost s) < epoch length, about m+1); it holds with slack on the blank run (worst ratio 0.44, below 0.11 after 1e9) but is not proved.",
+  "An eat with s still present leaves the block alphabet; random words that do this can halt (26 of 1,200 fuzz samples), so the invariant must carry the bound.",
+  "CARRY_S is recursive (debris inside debris), so the Coq carry relation must be mutually inductive, like BECv7's RIncs."
+ ],
+ "checkpoint_questions": [
+  {
+   "text": "Fig 2: does each dark diagonal (the 00 marker) drift left until it meets the left band (the counter), and does a fresh diagonal then start further right?",
+   "figs": [
+    1
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Fig 3: once the head is back at the left, has the 00 gap gone, and is each counter 1-cell one cell further right than in the top row (plus one new 1 from the carry)?",
+   "figs": [
+    2
+   ],
+   "kind": "check"
+  },
+  {
+   "text": "Decision: should the next stage prove the flush lemma and write proof.md (hand route), or run a native CTL search first?",
+   "figs": [],
+   "kind": "decision"
+  }
+ ],
+ "discord_check": null,
+ "stats": {
+  "simulated_steps": 10000000000,
+  "cells": 11492,
+  "nonzeros": 5201,
+  "growth": "span ~t^0.34 (5,197 cells at 1e9, 11,492 at 1e10); epoch length n ~t^0.35 (1,589 at 8.2e8, 3,804 at 1e10)"
+ },
+ "status": "CHECKPOINT_A",
+ "status_reason": "Mechanism found: 9 round rules (1,000/1,000 random-instance sims) predict all 1,008,130 rounds to 1e10, 0 mismatches. Not cryptid. Non-halting needs the unproved flush lemma, so confidence is med."
+}

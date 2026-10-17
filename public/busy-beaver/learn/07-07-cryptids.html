@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cryptids</title>
+<meta name="description" content="Module 7 of the BB(6) learning guide: Antihydra's rule by hand, why its halting is a Collatz-like open problem, and why cryptids block an exact BB(6).">
+<link rel="stylesheet" href="/busy-beaver/learn/learn.css">
+<style>
+  /* chart colours: categorical slots 1-2 (blue, orange), validated light and dark (dataviz validate_palette.js) */
+  :root { --even: #2a78d6; --odd: #eb6834; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --even: #3987e5; --odd: #d95926; } }
+  :root[data-theme="dark"] { --even: #3987e5; --odd: #d95926; }
+
+  .words { font-size: 14.5px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 8px 14px; margin: 0 0 20px; }
+  .words summary { cursor: pointer; font-weight: 600; color: var(--ink2); }
+  .words dl { margin: 8px 0 2px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; }
+  .words dt { font-weight: 650; }
+  .words dd { margin: 0; color: var(--ink2); }
+  @media (max-width: 480px) { .words dl { grid-template-columns: minmax(0, 1fr); gap: 0; } .words dd { margin-bottom: 6px; } }
+
+  table.plain td.r, table.plain th.r { text-align: right; font-variant-numeric: tabular-nums; }
+  table.plain code { white-space: nowrap; }
+  .rulecard td:first-child { font-weight: 650; white-space: nowrap; }
+
+  /* a figure box (the four E(a,b) tapes, #32's digits, W5-2's bits) */
+  .fig { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px 12px; margin: 12px 0 14px; position: relative; min-width: 0; }
+  .fig .ttl { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .fig .lab { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; overflow-wrap: anywhere; }
+  .fig svg { display: block; }
+  .fig .prog { font-size: 13.5px; color: var(--muted); padding: 6px 2px; }
+
+  figure.pic { margin: 14px 0 16px; }
+  figure.pic .imgwrap { position: relative; max-width: 760px; }
+  figure.pic img { display: block; width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); image-rendering: pixelated; }
+  figure.pic figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; max-width: 72ch; }
+  /* labels drawn on top of the #5 picture (positions in % of the image) */
+  .ptag { position: absolute; transform: translate(-50%, -50%); font: 650 12.5px/1.25 system-ui, sans-serif; color: #151514; background: rgba(255, 255, 255, .93);
+    border: 2px solid var(--accent); border-radius: 6px; padding: 2px 7px; white-space: nowrap; pointer-events: none; }
+  .ptag.edge { border-color: #c4372f; }
+  .ptag.frozen { border-color: #75736d; }
+  @media (max-width: 560px) { .ptag { font-size: 10.5px; padding: 1px 4px; border-width: 1.5px; } }
+
+  /* the b walk chart */
+  .viz { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 10px 12px 12px; margin: 12px 0 8px; position: relative; }
+  .viz .ttl { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .viz .lab { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .viz .seg { display: inline-flex; margin: 2px 0 8px; }
+  .viz .seg button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 4px 11px; min-height: 34px; cursor: pointer; }
+  .viz .seg button:first-child { border-radius: 7px 0 0 7px; }
+  .viz .seg button:last-child { border-radius: 0 7px 7px 0; margin-left: -1px; }
+  .viz .seg button.on { background: var(--accent-weak); border-color: var(--accent); font-weight: 650; position: relative; }
+  .viz svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+  .viz svg text { font: 11px system-ui, sans-serif; fill: var(--muted); }
+  .viz svg .dl { font-weight: 650; fill: var(--ink2); }
+  .viz .legend { font-size: 13px; color: var(--ink2); display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; }
+  .viz .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; margin-right: 5px; }
+  .viz .legend i.line { width: 16px; height: 2px; border-radius: 1px; vertical-align: 3px; }
+  .viz .tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--axis); border-radius: 8px; padding: 6px 9px;
+    font-size: 13px; line-height: 1.4; color: var(--ink); box-shadow: 0 2px 10px rgba(0,0,0,.12); max-width: 240px; display: none; z-index: 2; }
+  .viz .tip b { font-weight: 650; }
+  .selfcheck { font-size: 13px; color: var(--muted); margin: 4px 2px 10px; }
+  .selfcheck.ok::before { content: "✓ "; color: var(--good); font-weight: 800; }
+  .selfcheck.bad { color: var(--bad); font-weight: 600; }
+  details.data { font-size: 14px; margin: 6px 0 14px; }
+  details.data summary { cursor: pointer; color: var(--ink2); }
+  details.data .tw { max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; margin-top: 6px; }
+  details.data table.plain { margin: 0; display: table; }
+  table.coins { margin: 8px 0 4px; }
+  table.coins td.hit { font-weight: 650; }
+
+  /* two machine tables side by side */
+  .pair2 { display: flex; flex-wrap: wrap; gap: 4px 28px; align-items: flex-start; }
+  .pair2 > div { min-width: 0; max-width: 100%; }
+
+  /* #11 vs #32, side by side */
+  .diff { border: 1px solid var(--line); border-radius: 12px; background: var(--sunk); padding: 10px 12px 12px; margin: 12px 0 16px; }
+  .diff .ttl { font-weight: 650; font-size: 15px; margin: 0 0 2px; }
+  .diff .lab { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .diff .heads { display: flex; font-size: 13px; font-weight: 650; color: var(--ink2); margin: 2px 0 3px; }
+  .diff .box { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); max-height: 430px; overflow: auto; overscroll-behavior: contain; }
+  .diff canvas { display: block; }
+  .diff .sum { font-size: 14px; margin: 8px 2px 0; }
+  .diff .sum b { color: var(--bad); }
+  .diff .hide-note { font-size: 14px; color: var(--muted); padding: 6px 2px; }
+  .diff .jumpbtn { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 7px; padding: 4px 11px; min-height: 34px; cursor: pointer; }
+  .diff .jumpbtn:hover { border-color: var(--accent); }
+
+  /* #32's tape as digits: a few real cells per piece, a bracket under each piece */
+  .kt { display: flex; flex-wrap: wrap; gap: 14px 10px; align-items: flex-start; padding-top: 4px; }
+  .kseg { display: flex; flex-direction: column; align-items: stretch; min-width: 0; }
+  .kcells { display: flex; align-items: center; gap: 2px; padding-top: 18px; position: relative; }
+  .kcells i { flex: none; width: 13px; height: 17px; border-radius: 3px; border: 1px solid var(--line); background: var(--c0); }
+  .kcells i.one { background: var(--c1); border-color: var(--c1); }
+  .kcells .krep { display: inline-flex; align-items: center; gap: 2px; padding: 2px 3px; border: 1.5px dashed var(--axis); border-radius: 6px; }
+  .kcells .krep i:nth-child(2n+3) { margin-left: 4px; }
+  .kcells .kx { font: 650 12px/1 ui-monospace, Consolas, monospace; color: var(--muted); padding: 0 3px; white-space: nowrap; }
+  .kcells i.here { box-shadow: 0 0 0 2px var(--sB); }
+  .kcells .kbadge { position: absolute; top: 0; transform: translateX(-50%); background: var(--sB); color: var(--badge-fg); font: 700 11px/15px system-ui, sans-serif;
+    border-radius: 4px; padding: 0 5px; }
+  .kbr { height: 7px; border: 2px solid var(--accent); border-top: 0; border-radius: 0 0 4px 4px; margin-top: 3px; }
+  .kseg.hot .kbr { border-color: var(--caution); border-width: 3px; }
+  .kseg .kl { font: 600 12.5px/1.3 system-ui, sans-serif; color: var(--accent); text-align: center; margin-top: 3px; white-space: nowrap; }
+  .kseg.hot .kl { color: var(--caution); font-weight: 750; }
+  .kseg.more { justify-content: center; align-self: center; font-size: 13px; color: var(--muted); padding-top: 14px; }
+  @media (max-width: 480px) { .kcells i { width: 10px; height: 14px; border-radius: 2px; } .kseg .kl { font-size: 11.5px; } }
+
+  /* #32: which fuel cuts halt */
+  .cuts { display: flex; flex-wrap: wrap; gap: 3px; margin: 10px 0 4px; }
+  .cuts .n { width: 30px; display: flex; flex-direction: column; align-items: center; }
+  .cuts .c { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--line); background: var(--c0); display: flex; align-items: center; justify-content: center;
+    font: 650 12px/1 ui-monospace, Consolas, monospace; color: var(--muted); }
+  .cuts .c.halt { background: var(--sZ); border-color: var(--sZ); color: #111110; }
+  .cuts .c.deep { background: repeating-linear-gradient(135deg, var(--axis) 0 1.5px, var(--c0) 1.5px 6px); color: var(--muted); }
+  .cuts .c.deep.mod2 { border: 2px solid var(--sZ); }
+  .cutleg { font-size: 13px; color: var(--ink2); display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 4px 0 8px; }
+  .cutleg i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; border: 1px solid var(--line); }
+  .cutleg i.h { background: var(--sZ); border-color: var(--sZ); }
+  .cutleg i.d { background: repeating-linear-gradient(135deg, var(--axis) 0 1.5px, var(--c0) 1.5px 5px); }
+  @media (max-width: 480px) { .cuts .n, .cuts .c { width: 24px; } .cuts .c { height: 24px; font-size: 10.5px; } }
+
+  /* W5-2: x's bits, lowest first */
+  .bitrows { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 12px; align-items: center; }
+  .bitrows .who { font-size: 13px; color: var(--muted); line-height: 1.35; }
+  .bitrows .who b { color: var(--ink); font-weight: 650; }
+  .bits { display: flex; flex-wrap: wrap; gap: 3px; }
+  .bit { display: flex; flex-direction: column; align-items: center; width: 24px; }
+  .bit .v { width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--line); background: var(--c0); color: var(--c0fg);
+    display: flex; align-items: center; justify-content: center; font: 700 12.5px/1 ui-monospace, Consolas, monospace; }
+  .bit.one .v { background: var(--c1); border-color: var(--c1); color: var(--c1fg); }
+  .bit.keep .v { background: var(--good); border-color: var(--good); color: #fff; }
+  .bit .p { font: 10.5px/1.3 ui-monospace, Consolas, monospace; color: var(--muted); }
+  .bit.even .p { color: var(--ink2); font-weight: 700; }
+  .bitleg { font-size: 13px; color: var(--ink2); display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 10px 0 0; }
+  .bitleg i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 5px; border: 1px solid var(--line); }
+  @media (max-width: 480px) { .bitrows { grid-template-columns: minmax(0, 1fr); gap: 2px; } .bitrows .bits { margin-bottom: 8px; }
+    .bit, .bit .v { width: 21px; } .bit .v { height: 21px; font-size: 11.5px; } }
+
+  /* why BB(6) waits */
+  .fates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 12px 0 10px; }
+  .fate { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 12px; font-size: 14.5px; }
+  .fate .h { font-weight: 700; margin-bottom: 4px; }
+  .fate .eff { margin-top: 6px; font-weight: 650; }
+  .fate.no { border-top: 4px solid var(--good); }
+  .fate.yes { border-top: 4px solid var(--sZ); }
+  .fate.cr { border-top: 4px solid var(--bad); }
+  .fate .eg { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  @media (max-width: 700px) { .fates { grid-template-columns: minmax(0, 1fr); } }
+  .maxline { font-size: 15.5px; text-align: center; margin: 4px 0 12px; }
+  ol.protocol { padding-left: 22px; }
+  ol.protocol li { margin: 6px 0; }
+
+  .kills { border: 1px solid var(--line); border-left: 4px solid var(--good); background: var(--surface); border-radius: 10px; padding: 12px 16px; margin: 30px 0 14px; }
+  .kills .tag2 { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--good); margin-bottom: 2px; }
+  .kills ul { margin: 6px 0; }
+  .recap { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 16px; margin: 14px 0; }
+  .recap .tag2 { display: block; font-size: 12px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .recap ol { margin: 6px 0 2px; }
+
+  /* a drill's own run must not hand out the answer before the reveal: before it, the run shows its first
+     tape only (no step / play / go-to-step controls; the page also makes it inert, so keys and taps do nothing) */
+  .nospoil .tm-predict:not(.go) .tm-plinked .tm-controls,
+  .nospoil .tm-predict:not(.go) .tm-plinked .tm-histhead { display: none; }
+</style>
+<style>.stale{display:none!important}</style></head>
+<body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside>
+<!-- sitekit:nav -->
+<header class="sn-bar"><div class="sn-in"><a class="sn-brand" href="/busy-beaver/dashboard/index.html"><span class="sn-logo" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>BB(6) hunt</a><nav class="sn" aria-label="site"><div class="sn-links"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div><details class="sn-menu"><summary><span class="sn-burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary><div class="sn-mlinks"><a href="/busy-beaver/dashboard/index.html">Home</a><a href="/busy-beaver/dashboard/machines.html">Machines</a><a href="/busy-beaver/dashboard/submissions.html">Submissions</a><a href="/busy-beaver/dashboard/decisions.html">Decisions</a><a href="/busy-beaver/learn/index.html" aria-current="page">Learn</a><a href="/busy-beaver/dashboard/reports.html">Reports</a></div></details></nav></div></header>
+<nav class="lg-crumb" aria-label="learning guide"><div class="lg-crumb-in"><a href="/busy-beaver/learn/index.html">Learning guide</a><span class="lg-sep" aria-hidden="true">/</span><span class="lg-here">Module 7 · Cryptids</span><span class="lg-pn"><a class="ui-btn" href="/busy-beaver/learn/06-06-astronomical-halts.html" title="Astronomical halts">← Module 6</a><a class="ui-btn" href="/busy-beaver/learn/08-08-coq.html" title="From proof to Coq">Module 8 →</a></span></div></nav>
+<!-- /sitekit:nav -->
+<main class="learn">
+<div class="eyebrow">Module 7 of 8 · about 15 minutes</div>
+<h1>Cryptids: when "does it halt?" is a math problem</h1>
+<div class="answer"><b>The answer</b>
+  <p>A cryptid is a machine whose halting question turns into an open number problem. Antihydra's tape is just two numbers, a and b. Each move, b goes up 2 when a is even and down 1 when a is odd, so b = 2 × (even a's so far) − (odd a's so far). The machine halts the first time an odd a arrives while b is 0. Nobody can prove that this never happens.</p>
+  <p>BB(6) is the longest run among halting machines, so it cannot be pinned down until every cryptid is settled. When we meet one, we write its rules down, flag it, and stop.</p>
+</div>
+
+<details class="words"><summary>Words used on this page</summary>
+  <dl>
+    <dt>cryptid</dt><dd>a machine whose halting question reduces to an open (and probably hard) math problem. The community's word, from the bbchallenge wiki.</dd>
+    <dt>Collatz-like</dt><dd>a rule that does different arithmetic depending on a remainder, here "is a even or odd", mixing ×3 and ÷2.</dd>
+    <dt>holdout list</dt><dd>the machines no decider has settled: 740 today. Antihydra is line 48 of it. All ten machines we have flagged as cryptid candidates are on it too; five of them are on this page.</dd>
+    <dt>fuel</dt><dd>a block on the tape that a counter uses up, a little on each pass (<a href="/busy-beaver/learn/03-03-counters.html">module 3</a>).</dd>
+    <dt>mirror, permutation</dt><dd>swap L and R everywhere; rename the states. Neither changes whether the machine halts.</dd>
+    <dt>start state</dt><dd>the state the run begins in, on a blank tape. A, unless the page says otherwise.</dd>
+  </dl>
+</details>
+
+<!-- ============================================================== 1 -->
+<section class="beat" id="two-numbers"><h2><span class="num">1</span>Antihydra's tape is two numbers</h2>
+<div class="fig" id="ahfigbox">
+  <div class="ttl">Antihydra from a blank tape: the four times its tape has the E(a,b) shape, steps 0 to 419</div>
+  <div class="lab">Start: blank tape (A on cell 0) · Rows: each step where the head is in E on the blank cell just right of the 1s · Cells drawn at their real positions, so the columns line up · simulated in your browser</div>
+  <div id="ahfig"></div>
+</div>
+<p>Antihydra <code>1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA</code> keeps coming back to the same shape: a block of b ones, one 0, a block of a ones, and the head in E just past the right end. The brackets name the two blocks.</p>
+<p>We write this tape <b>E(a,b)</b>, as busycoq's <code>AntiHydra.v</code> does: <code>0^inf 1^b 0 1^a E&gt; 0^inf</code>. The four rows are E(4,0), E(8,2), E(14,4) and E(23,6). The whole machine is these two numbers.</p>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#preset=antihydra-records">Antihydra's records in the explorer (10<sup>9</sup> steps)</a></p>
+</section>
+
+<!-- ============================================================== 2 -->
+<section class="beat" id="one-move"><h2><span class="num">2</span>One move, step by step: a grows by half</h2>
+<p>Here is the real run from the blank tape: 11 steps to E(4,0), then one full move to E(8,2) at step 58. At step 13, F writes a 0 inside a's block. That 0 is a <b>hole</b>, and it walks left.</p>
+<div data-tm-run data-opts='{"tm":"1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA","rows":"each","count":59,"table":true,"speed":3,"labels":"always","mark":{"digits":"antihydra-E"},"title":"Antihydra, every step from the blank tape to E(8,2) at step 58"}'></div>
+<p>Go to step 20: the hole is on cell −1, with 3 ones on its right, and B stands just left of it. Go to step 38: the hole is on cell −3, with 6 ones on its right. Each trip, the hole moves two cells left and the block on its right gains three 1s.</p>
+<p>Two 1s in, three 1s out: that is the ×3/2. The same move on a bigger tape, E(14,4) to E(23,6), shows it plainly. There is one row each time B steps onto the cell just left of the hole: the hole is on cell 7 with 3 ones on its right, then cell 5 with 6, and so on down to cell −5 with 21. Seven rows, six trips.</p>
+<div id="ahtrips"></div>
+<p class="note">One trip is busycoq's lemma <code>B_once</code> (in <code>AntiHydra.v</code>): <code>1 1 &lt;B 0 1^m</code> becomes <code>&lt;B 0 1^(m+3)</code>, as in the rows above. Our check counts 2m + 12 steps per trip, for m = 0 … 15 (C-M7-3). In the last row, B reads the 0 that separates a from b: the move ends there, and what happens next depends on a's parity (next section).</p>
+</section>
+
+<!-- ============================================================== 3 -->
+<section class="beat" id="parity"><h2><span class="num">3</span>Even or odd, and the door to halting</h2>
+<p>If a is even, the 1s pair up exactly, and the end of the move adds two 1s to b (you saw b go 0 → 2 above). If a is odd, one 1 is left over, and the machine takes one 1 <em>from</em> b. If b is already empty, F reads a 0, and F0 is <code>---</code>, Antihydra's only undefined transition: the machine halts.</p>
+<p>The real run has not come back near b = 0 (in its first 100,000 moves b never drops below 2; section 4). So here is a tape we wrote by hand, E(5,1). Play it: a = 5 is odd, so b drops to 0 at step 41, giving E(9,0). Then a = 9 is odd again, b is empty, and the machine halts at step 125.</p>
+<div data-tm-run data-opts='{"tm":"1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA","start":"0^inf 1 0 1^5 E> 0^inf","startLabel":"E(5,1) = 0^inf 1 0 1^5 E> 0^inf, written by hand (not from the blank tape)","rows":"each","count":130,"table":true,"speed":10,"labels":"always","mark":{"digits":"antihydra-E"},"title":"A hand-made start, E(5,1): odd, odd, halt"}'></div>
+<p>Go to step 124: F stands on the blank cell −8 and reads a 0. Step 125 is the halt. (Our simulator draws the halting step as "write 1, move right", so the last frame shows cell −8 as a 1 and the head on cell −7.)</p>
+<p>So one move is this rule. busycoq proves each line in Coq (<code>AntiHydra.v</code>: lemmas R0, R1 and Rhalt), and this page's check ran every start E(a,b) with a = 2 … 41 and b = 0 … 6 on the real machine: all 280 go where the table says (C-M7-4).</p>
+<table class="plain rulecard">
+  <thead><tr><th>a is</th><th>next tape</th><th>b</th><th>Coq lemma</th></tr></thead>
+  <tbody>
+    <tr><td>even</td><td>E(3a/2 + 2, b + 2)</td><td>goes up 2</td><td>R0</td></tr>
+    <tr><td>odd, b ≥ 1</td><td>E((3a + 3)/2, b − 1)</td><td>goes down 1</td><td>R1</td></tr>
+    <tr><td>odd, b = 0</td><td>halt (F reads 0)</td><td>would go below 0</td><td>Rhalt</td></tr>
+  </tbody>
+</table>
+<div class="nospoil">
+<div data-tm-predict data-opts='{"id":"m7-ah-23-6","prompt":"Your turn. The real run is at E(23,6) at step 419. a = 23 is odd. What is the next tape E(a,b)?","input":{"kind":"pair","labels":["a","b"]},"answer":[36,5],"run":{"tm":"1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA","from":419,"rows":{"decoded":"antihydra-E"},"count":2,"speed":2,"labels":"always","title":"Antihydra from step 419, each E(a,b)"},"revealTo":{"row":1},"actual":["decoded.a","decoded.b"],"explain":"a odd: (3·23 + 3)/2 = 36, and b loses one 1: 6 − 1 = 5. The machine took 500 steps to get there (step 919).","checkId":"C-M7-1"}'></div>
+<div data-tm-predict data-opts='{"id":"m7-ah-next3","prompt":"From E(36,5), predict the next three tapes. (One rule step each: check a&#39;s parity every time.)","input":{"kind":"pair","labels":["a₁","b₁","a₂","b₂","a₃","b₃"]},"answer":[56,7,86,9,131,11],"run":{"tm":"1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA","from":919,"rows":{"decoded":"antihydra-E"},"count":4,"speed":2,"labels":"always","title":"Antihydra from step 919, each E(a,b)"},"revealTo":{"row":3},"explain":"36 is even: (56, 7). 56 is even: (86, 9). 86 is even: (131, 11). Three evens in a row, so b climbs 5 → 7 → 9 → 11 (steps 2,128, 4,841 and 10,933). The page checks these three against its own run when it loads.","checkId":"C-M7-1"}'></div>
+</div>
+</section>
+
+<!-- ============================================================== 4 -->
+<section class="beat" id="walk"><h2><span class="num">4</span>The long run: b is a lopsided walk</h2>
+<p>Forget a's size and watch only b. It starts at 0 and goes up 2 for each even a and down 1 for each odd a. So after k moves, b = 2 × (number of even a so far) − (number of odd a so far). The machine halts the first time an odd a arrives while that count is 0.</p>
+<div class="viz" id="walkviz">
+  <div class="ttl">b after each move, from E(4,0)</div>
+  <div class="lab" id="walklab"></div>
+  <div class="seg" role="group" aria-label="range"><button type="button" data-k="40" class="on">first 40 moves</button><button type="button" data-k="10000">first 10,000 moves</button></div>
+  <div id="walksvg"></div>
+  <div class="legend" id="walkleg"></div>
+  <div class="tip" id="walktip"></div>
+</div>
+<div class="selfcheck" id="walkcheck">checking the rule against the machine…</div>
+<details class="data"><summary>The first 40 moves as numbers</summary><div class="tw"><table class="plain" id="walktable"><thead><tr><th class="r">move</th><th class="r">a</th><th>a is</th><th class="r">b</th></tr></thead><tbody></tbody></table></div></details>
+<p>The walk drifts up: b is 4,862 after 10,000 moves and 50,477 after 100,000. In the first 100,000 moves it never drops below 2. Of those 100,000 values of a, 50,159 are even and 49,841 odd: it looks like fair coin flips (C-M7-5).</p>
+<p>Pretend the parities really were coin flips. To halt from b + 1, the walk must first come down to b, and the chance that it ever comes down one step is 0.618. So each extra 1 in b multiplies the halting chance by 0.618: b = 0 gives 62%, b = 10 gives 0.5%, b = 4,862 gives 10<sup>−1016</sup>.</p>
+<p>In a formula: the chance of ever halting from b would be 0.618<sup>b+1</sup>, where 0.618 = (√5 − 1)/2. Here is the same thing with coin flips, done in your browser:</p>
+<div class="tw"><table class="plain coins" id="coins"><thead><tr><th class="r">start b</th><th class="r">walks that halt</th><th class="r">share</th><th class="r">0.618<sup>b+1</sup></th></tr></thead><tbody></tbody></table></div>
+<div class="selfcheck" id="coincheck">flipping coins…</div>
+<p>The community calls such a machine "probviously" non-halting: almost surely it never halts, but nobody has proved it.</p>
+<p>The parities are not coins: the rule fixes every one of them. The machine halts exactly when the odd a's get ahead of twice the even a's. Proving that repeated ×3/2 never lets that happen is a question of the same kind as the Collatz problem, and nobody knows how to do it. That is what makes Antihydra a cryptid (the wiki relates it to Mahler's 3/2 problem; <code>atlas/curriculum.md</code> §6.1).</p>
+</section>
+
+<!-- ============================================================== 5 -->
+<section class="beat" id="ours"><h2><span class="num">5</span>Ours: #32, one transition away from a kill</h2>
+<p>#11 <code>1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code> is one of our proved kills: a counter whose digits carry fuel (<a href="/busy-beaver/learn/03-03-counters.html">module 3</a>). #32 <code>1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---</code> is the same table with one cell changed: what A does on reading 1 (outlined).</p>
+<div class="pair2">
+  <div data-tm-table data-opts='{"tm":"1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---","highlight":["A1"],"caption":"#11 (proved never halts)"}'></div>
+  <div data-tm-table data-opts='{"tm":"1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---","highlight":["A1"],"caption":"#32 (cryptid candidate)"}'></div>
+</div>
+<div id="k32drill" data-tm-predict data-opts='{"id":"m7-k11-k32-rejoin","prompt":"Both start on a blank tape, and the two runs are identical until step 28, when A reads a 1 for the first time. #11 goes to E, #32 goes to C, and both now stand on a 0. Look at the two tables: what happens next?","input":{"kind":"choice","options":[{"label":"they differ from now on","value":"apart"},{"label":"identical again at step 29, for good","value":"forever"},{"label":"identical again at step 29, until E or C lands on a 1","value":"until"}]},"answer":"until","explain":"E0 and C0 are both <code>1LD</code>: the same write, the same move, the same next state. So at step 29 the runs are identical again. This repeats each time A&#39;s move lands on a 0: steps 28, 61, 71, 114, 166, 174, 182, 235 and 307 are one-step differences in the picture below. But E1 = <code>1LF</code> and C1 = <code>0RB</code>. At step 321, E and C land on a 1 for the first time, the two runs do different things, and they never agree again (checked to step 20,000).","checkId":"C-M7-2, C-M7-12"}'></div>
+<div class="diff" id="k32diff">
+  <div class="ttl">#11 and #32 side by side, steps 0 to 340</div>
+  <div class="lab">Start: blank tape (A on cell 0) for both · Rows: every step, time going down · Cells −12 … 22 in each run · head cell in the colour of its state · red bar: the two configurations differ at that step · red tint: a cell of #32 that differs from #11</div>
+  <div class="hide-note" id="k32hide">The two runs appear here once you reveal the answer above.</div>
+  <div id="k32body" hidden>
+    <div class="heads" id="k32heads"></div>
+    <div class="box" id="k32box"><canvas id="k32canvas"></canvas></div>
+    <div class="sum" id="k32sum"></div>
+  </div>
+</div>
+<p>#11 is proved. #32 is not. Its tape is a counter too: a wall on the left, then digits, each made of a block of <code>10</code>s, sometimes <code>00</code>, and a block of <code>01</code>s. Here is a real #32 tape. The orange bracket is the top digit's <code>01</code> block: its length is the fuel <b>N</b>.</p>
+<div class="fig" id="k32tapebox">
+  <div class="ttl">#32's real tape at step 276,564,068, piece by piece</div>
+  <div class="lab">Start: blank tape (A on cell 0), simulated in your browser to step 276,564,068 · a dashed box holds a repeated two-cell word, drawn twice, with its count: "01 01 ×136" is the word 01, 136 times · the head is at the far right end</div>
+  <div id="k32tape"><div class="prog">This tape is simulated when you scroll here (about 3 seconds).</div></div>
+</div>
+<p>Each cycle of the top digit takes 5 from N (and adds 1 to M). In the real run, N is 136 at step 276,564,068, 131 at step 943,819,758, and 126 at step 7,099,688,084 (C-M7-13). So N's remainder when divided by 5 never changes, and only remainder 2 leads to the halting path.</p>
+<p>We took the tape above, changed only N to each value 0 … 44, and ran each copy:</p>
+<div class="cuts" id="cuts" aria-label="N = 0 to 44: which cuts halt"></div>
+<div class="cutleg"><span><i class="h"></i>halts (by 10<sup>80</sup> steps)</span><span><i></i>no halt by 10<sup>80</sup> steps</span><span><i class="d"></i>the next digit runs out first, so N alone no longer decides</span><span><i class="d" style="border:2px solid var(--sZ)"></i>remainder 2, yet no halt</span></div>
+<p>Exactly N = 2, 7, 12, 17, 22 halt: the values with remainder 2, after 0, 1, 2, 3 or 4 cycles. From N = 23 on, the next digit's fuel (48, which loses 12 per cycle) runs out in the 5th cycle, before N does, and even the remainder-2 values stop halting. Cutting that digit's fuel too switches the outcome again, irregularly.</p>
+<p>So halting depends on remainders at every level of the counter, and no invariant we know of can capture that (#32's <code>status.json</code> and <code>notes.md</code>).</p>
+<p>R4 <code>1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---</code> is #32's table, mirrored and with the states permuted, started in #32's state D (C-M7-6). Its top fuel was N = 32 at step 475,465, and N = 27 one cycle later, at step 14,968,044,039. And 27 = 5 × 5 + 2: the halting remainder.</p>
+<p>If the top keeps losing 5 per cycle, R4 halts when N reaches 2. But a deeper digit (fuel 1,083) has to run out first, and neither machine halts by 10<sup>80</sup> steps. Unlike Antihydra, the coin-flip guess here leans to a halt, astronomically late (R4's <code>status.json</code>). That is how a cryptid could hold one of the longest runs of all (section 7).</p>
+</section>
+
+<!-- ============================================================== 6 -->
+<section class="beat" id="more"><h2><span class="num">6</span>Ours: a chaotic edge, and the bits of a number</h2>
+<figure class="pic">
+  <div class="imgwrap">
+    <a href="/busy-beaver/learn/img/07-p5-edge.png"><img src="/busy-beaver/learn/img/07-p5-edge.png" width="1200" height="501" alt="#5 over 10^9 steps: frozen leftovers on the left, a noisy diagonal edge in the middle, and the white block of 1s on the right"></a>
+    <span class="ptag frozen" style="left:12%;top:86%">frozen leftovers</span>
+    <span class="ptag edge" style="left:47%;top:47%">the edge ↘</span>
+    <span class="ptag" style="left:80%;top:22%">block of 1s →</span>
+  </div>
+  <figcaption>#5 <code>1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD</code>, drawn by <code>tools/diagram.py</code>: one row every 2,000,000 steps from step 0 to 10<sup>9</sup> (501 rows, time going down), cells −240 … 2,159 with every 2nd cell drawn. White is 1, black is 0 or never visited. The noisy diagonal band is the edge. The vertical stripes on its left are leftovers it no longer touches. The white region is the block of 1s, which runs far past the right side of the picture: at step 10<sup>9</sup> it covers cells 1,861 … 32,261.</figcaption>
+</figure>
+<p>#5 is a race. Each bounce, the head runs right through the block of 1s, adds one cell at its right end, runs back, and dives into the edge. So the block gains 1 cell per bounce on its right, while the edge eats about 0.04 cells per bounce on its left (C-M7-14).</p>
+<p>By step 10<sup>9</sup> there have been 32,262 bounces: the block's right end is at cell 32,261, its left end (the edge) only at cell 1,861. A Coq file of ours proves #5 never halts <em>exactly when</em> the edge never eats the block down to two cells. We found no bound on how fast the edge can eat in a burst. No halt in 10<sup>8</sup> bounces, about 9.6·10<sup>15</sup> steps (#5's <code>status.json</code>).</p>
+<p>#26 <code>1RB1RA_1LC1RE_---0LD_1LE1LD_0RA0LF_1LF0LB</code> is #5's table, mirrored and permuted, started in #5's state C (C-M7-6).</p>
+<p>W5-2 <code>1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---</code> repeats one cycle, and each cycle turns a number x into a much bigger one. Count x's bit positions from the lowest bit, which is position 0. The cycle repeats as long as x has a 1-bit at an even position (green below). Only a cycle whose 1-bits all sit at odd positions lets the machine leave the cycle, and then it can halt.</p>
+<div class="fig" id="w52box">
+  <div class="ttl">W5-2's x at its first three cycles, read off the real tape</div>
+  <div class="lab">Start: blank tape (A on cell 0), simulated in your browser · each row: the tape when B reaches a new cell on the left, where the tape is <code>0^inf &lt;B 1^(2L+4) 0000</code> followed by x in binary, one 5-cell word per bit, lowest bit first (<code>10000</code> = 1, <code>00000</code> = 0) · the boxes show x's bits in that order, with their positions</div>
+  <div id="w52bits"><div class="prog">simulating…</div></div>
+  <div class="bitleg"><span><i style="background:var(--good);border-color:var(--good)"></i>1 at an even position: keeps the cycle going</span><span><i style="background:var(--c1);border-color:var(--c1)"></i>1 at an odd position</span><span><i></i>0</span></div>
+</div>
+<p>If the bits were coin flips, a cycle whose x has k one-bits would leave with chance about 2<sup>−k</sup>: every one of them must land on an odd position. x has 25 one-bits at cycle 4 and 14,392 at cycle 20,000, and none of the first 20,000 cycles leaves (W5-2's <code>status.json</code> and <code>notes.md</code>). Again "probviously" non-halting, and again a question about the digits of a fast-growing number.</p>
+<table class="plain">
+  <thead><tr><th>machine</th><th>what decides halting</th><th>how far we looked</th></tr></thead>
+  <tbody>
+    <tr><td>#32, R4 (one table)</td><td>a fuel value with remainder 2 (mod 5) running out at the wrong moment, at some level</td><td>no halt to 10<sup>80</sup> steps</td></tr>
+    <tr><td>#5, #26 (one table)</td><td>whether the chaotic edge ever eats through the block</td><td>no halt in 10<sup>8</sup> bounces (#5)</td></tr>
+    <tr><td>W5-2</td><td>some cycle's x having no 1-bit at an even position</td><td>20,000 cycles, never</td></tr>
+  </tbody>
+</table>
+<p class="links"><a href="/busy-beaver/tools/explorer/index.html#preset=p5-edge">#5's edge in the explorer (zoom in on it)</a><a href="/busy-beaver/tools/explorer/index.html#preset=p5-edge-bounce">one bounce off the edge, every step</a></p>
+</section>
+
+<!-- ============================================================== 7 -->
+<section class="beat" id="why-stop"><h2><span class="num">7</span>Why BB(6) waits for cryptids, and why we stop</h2>
+<p class="maxline">BB(6) = the longest run among all <b>halting</b> 6-state machines.</p>
+<div class="fates">
+  <div class="fate no"><div class="h">Proved: never halts</div>It drops out of the race.<div class="eff">BB(6) does not depend on it.</div><div class="eg">e.g. our kills W5-3, #11</div></div>
+  <div class="fate yes"><div class="h">Proved: halts at step T</div>T is a candidate for the longest run.<div class="eff">BB(6) ≥ T.</div><div class="eg">e.g. our C2-552, T ≈ 1.765·10<sup>44</sup> (<a href="/busy-beaver/learn/06-06-astronomical-halts.html">module 6</a>)</div></div>
+  <div class="fate cr"><div class="h">Cryptid: unknown</div>If it halts, its T may be the longest of all; if not, it drops out.<div class="eff">Nobody can say which, so BB(6) stays open.</div><div class="eg">Antihydra, #32, R4, #5, #26, W5-2</div></div>
+</div>
+<p>R4 makes this concrete. Its coin-flip guess leans towards a halt, after more than 10<sup>80</sup> steps, at a step count nobody can compute (section 5). Until someone settles it, nobody can say whether that number beats every other halting machine.</p>
+<p>Every machine on the holdout list has to land in the first or second box before BB(6) has an exact value. A cryptid cannot be moved without solving its number problem, and simulation cannot do it: a run that has not halted yet proves nothing (<a href="/busy-beaver/learn/05-05-invariants.html">module 5</a>). So our rule for a cryptid is short (CLAUDE.md):</p>
+<ol class="protocol">
+  <li><b>Formalise the rules.</b> Prove the rules in Coq, so the machine provably reduces to its number problem. <code>AntiHydra.v</code> does this with R0, R1 and Rhalt; our <code>reduction.v</code> for #5 proves "never halts ⇔ the edge never eats the block".</li>
+  <li><b>Flag it.</b> Status <code>CRYPTID_CANDIDATE</code> in the machine's <code>status.json</code>: all five above.</li>
+  <li><b>Stop.</b> No more compute. Dennis stopped #32 and R4 on 2026-10-12; the effort goes to holdouts that can be proved.</li>
+</ol>
+</section>
+
+<aside class="kills"><span class="tag2">From our kills</span>
+  <p><b>#11</b> is our proved kill, accepted upstream (PR #16, merged 2026-10-13). #32, its one-cell neighbour, and four other machines on this page are flagged cryptid candidates, all on the 740 holdout list:</p>
+  <ul>
+    <li><a href="/busy-beaver/machines/1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/index.html">#11</a> (killed, line 438) and <a href="/busy-beaver/machines/1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---/index.html">#32</a> (line 372), one transition apart</li>
+    <li><a href="/busy-beaver/machines/1RB0RE_1LC0RD_1LD0LD_1RA0LC_1RA1RF_1RA---/index.html">R4</a> (line 561): #32's table, mirrored, started in D</li>
+    <li><a href="/busy-beaver/machines/1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD/index.html">#5</a> (line 365) and <a href="/busy-beaver/machines/1RB1RA_1LC1RE_---0LD_1LE1LD_0RA0LF_1LF0LB/index.html">#26</a> (line 400): one table, the chaotic edge</li>
+    <li><a href="/busy-beaver/machines/1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---/index.html">W5-2</a> (line 409): the bits of x</li>
+  </ul>
+  <p>We have flagged ten machines in all. The other five are <a href="/busy-beaver/machines/1RB0LC_1LA0RE_0RD1LF_1LC1LB_0LD0RB_0LA---/index.html">#1</a> (line 79), <a href="/busy-beaver/machines/1RB1LC_1RC---_1LD1LC_1RE0LC_1RF0RE_1RA0RD/index.html">#6</a> (line 358), <a href="/busy-beaver/machines/1RB1RF_1LC1RE_---0LD_1LE0LD_1RA0RF_0RE0LB/index.html">#15</a> (line 486), <a href="/busy-beaver/machines/1RB0RA_1LC0LD_1LE1LD_0LB0RE_1RF1LB_---0RA/index.html">#28</a> (line 596) and <a href="/busy-beaver/machines/1RB0RF_1RC1RF_1LD1RA_---0LE_1LA0LE_0RA0LC/index.html">#10</a> (line 611).</p>
+  <p class="links"><a href="/busy-beaver/tools/explorer/index.html#preset=antihydra-records">Antihydra (line 48) in the explorer</a></p>
+</aside>
+
+<div class="recap"><span class="tag2">Recap</span>
+  <ol>
+    <li>Antihydra's tape is two numbers, E(a,b). One move turns a into about 3a/2 and moves b up 2 (a even) or down 1 (a odd); it halts only if an odd a meets b = 0.</li>
+    <li>Whether that ever happens depends on the parities of repeated ×3/2: coin-flip odds say never, but proving it is a Collatz-like open problem. That is a cryptid.</li>
+    <li>BB(6) is a maximum over halting machines, so it stays open while any cryptid is unsettled. Five of our ten flagged machines are on this page (#32, R4, #5, #26, W5-2): rules written down, flagged, stopped.</li>
+  </ol>
+</div>
+
+<nav class="pager"><a href="/busy-beaver/learn/06-06-astronomical-halts.html">← Module 6: Halting at astronomical times</a><a href="/busy-beaver/learn/index.html">guide home</a><a href="/busy-beaver/learn/08-08-coq.html">Module 8: From informal proof to Coq →</a></nav>
+
+<footer class="checked">
+  <b>checked:</b> every tape on this page is simulated in the page by <code>learn/tm.js</code>, which matches <code>tools/sim.py</code> step for step (<code>node learn/test/tm.test.mjs</code>). When it loads, the page also re-derives its numbers (the four E(a,b) tapes, the trip rows, the first 14 E(a,b) points of the real run, b after 10,000 rule moves, the three tapes after E(36,5), every step where #11 and #32 differ, #32's tape at step 276,564,068, W5-2's three x values, and the coin flips against 0.618<sup>b+1</sup>) and shows a red error if any disagrees with the list below.
+  Simulated with <code>tools/sim.py</code> by <code>python3 -B learn/checks/m07_cryptids.py</code> (about 2 minutes; <code>--quick</code> skips the four longest runs; results in <code>learn/checks/m07_results.json</code>):
+  C-M7-1 (from the blank tape, the 14 E(a,b) points to step 3·10<sup>6</sup>, from (4,0) at step 11 to (1527,11) at step 1,405,105, follow the rule) ·
+  C-M7-2 (#11 and #32 differ only in A1; identical through step 27; they differ for one step only at 28, 61, 71, 114, 166, 174, 182, 235, 307, and at every step from 321 to 20,000) ·
+  C-M7-3 (the trip rule <code>0^inf 1 1 1 &lt;B 0 1^m 0 0^inf</code> → <code>0^inf 1 &lt;B 0 1^(m+3) 0^inf</code> in 2m + 12 steps, m = 0 … 15, head inside) ·
+  C-M7-4 (every start E(a,b), a = 2 … 41, b = 0 … 6, goes to the rule's next tape or halts on F0; E(5,1) reaches E(9,0) at step 41, F is on the blank cell −8 at step 124 and halts at step 125) ·
+  C-M7-5 (100,000 moves of the rule from (4,0): b = 4,862 after 10,000 and 50,477 after 100,000, min b = 2 over moves 1 … 100,000, b = 2 × evens − odds at every move, 50,159 even and 49,841 odd values of a; r = (√5 − 1)/2 solves r<sup>3</sup> − 2r + 1 = 0, r<sup>11</sup> = 0.005, and 0.618<sup>4,863</sup> ≈ 10<sup>−1016.3</sup>) ·
+  C-M7-6 (R4 is #32 mirrored with A→B, B→C, C→D, D→A, started in #32's D; #26 is #5 mirrored with A→D, B→E, C→A, D→B, E→C, started in #5's C) ·
+  C-M7-7 (lines in <code>data/holdouts/BB6_holdouts_740.txt</code>: Antihydra 48, #11 438, #32 372, R4 561, #5 365, #26 400, W5-2 409) ·
+  C-M7-8 (quoted from the machines' <code>status.json</code>, #32's <code>notes.md</code> and #5's <code>rocq/reduction.v</code>: the N cuts, 10<sup>80</sup>, 10<sup>8</sup> bounces, the 20,000 W5-2 cycles and their 1-bit counts, <code>reduction_iff</code>, R4's top cycle at N = 27 and the "astronomically late halt" heuristic, #11 merged) ·
+  C-M7-9 (<code>vendor/busycoq/verify/AntiHydra.v</code> states E, R0, R1, Rhalt, init and B_once, with no Admitted) ·
+  C-M7-10 (the walk with fair coins: halting chance from b solved numerically to 10<sup>−12</sup> equals 0.618<sup>b+1</sup> for b = 0 … 40, and 20,000 random walks per start land within 4 standard errors of it) ·
+  C-M7-11 (Antihydra: F writes the hole at step 13; hole on cell −1 with 3 ones at step 20, on −3 with 6 at step 38; from E(14,4) at step 169 the B rows are steps 178, 196, 220, 250, 286, 328, 376, hole on cells 7, 5, 3, 1, −1, −3, −5 with 3, 6, … 21 ones, then E(23,6) at step 419) ·
+  C-M7-12 (in #11's run, each of the 10 times A reads a 1 up to step 321, E then reads 0, except at step 321, where it reads 1; #32's C reads the same cells; E0 = C0 = 1LD, E1 = 1LF, C1 = 0RB) ·
+  C-M7-13 (#32: the K-configurations right after steps 276,440,631, 943,552,925 and 7,098,925,607 are at steps 276,564,068, 943,819,758 and 7,099,688,084, with top digits (0,0,136) (0,0,360) (48,0,169), (0,0,131) (0,0,361) (36,0,171), (0,0,126) (0,0,362) (24,0,173); the cuts N = 2 and 7 of the first one halt after 202,227,191 and 1,692,042,797 steps (our count includes the halting step; <code>notes.md</code> counts one less), N = 1 and 3 do not halt in 4·10<sup>8</sup> steps; R4, run as #32's table from state D: (0,0,32) (0,0,32) at step 475,465 and (0,0,27) (0,0,33) at step 14,968,044,039, with a digit (0,0,1083) further down) ·
+  C-M7-14 (#5 to 10<sup>9</sup> steps: 32,262 new cells on the right, block of 1s on cells 1,861 … 32,261; the 0.04 per bounce is quoted from <code>rocq/reduction.v</code> and <code>research/erosion.md</code>, 0.039 over 10<sup>8</sup> bounces) ·
+  C-M7-15 (W5-2: left records in B at steps 134, 1,285 and 319,930 read x = 3, 30, 7968 (L = 3, 6, 14), as in <code>notes.md</code>; 1-bits at even positions {0}, {2, 4}, {8, 10, 12}) ·
+  C-M7-16 (<code>machines/*/status.json</code>: exactly ten CRYPTID_CANDIDATE machines, all claimed by claude in <code>coord/claims.tsv</code>, at 740 lines 79, 358, 365, 372, 400, 409, 486, 561, 596, 611).
+  Cited, not simulated: the heuristic and its Collatz / Mahler 3/2 link (<code>atlas/curriculum.md</code> §6.1, from the bbchallenge wiki); C2-552's halting time (C-M5-3, C-M6-2 in <code>learn/checks/verify_plan.py</code>); the cryptid protocol (CLAUDE.md). The #5 picture: <code>python3 -B tools/diagram.py '1RB1RA_0LC0RF_1LD1LC_1RE1LB_---0RA_1RF0RD' --mode every:2000000 --steps 1e9 --style default --engine c --width 2400 --ox 0.1 --max-width 1200 -o learn/img/07-p5-edge.png</code>.
+</footer>
+</main>
+<!-- sitekit:foot -->
+<footer class="sn-foot"><a href="/busy-beaver/tools/explorer/index.html">Explorer</a><a href="/busy-beaver/reports/overnight-ledger.md.html">Overnight ledger</a><a href="/busy-beaver/learn/index.html">Learn</a></footer>
+<!-- /sitekit:foot -->
+<script type="module">
+import { autoMount, mountRun, parseTM, Run, decoders } from './tm.js';
+
+const AH = '1RB1RA_0LC1LE_1LD1LC_1LA0LB_1LF1RE_---0RA';
+const K11 = '1RB0LE_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---';
+const K32 = '1RB0LC_1RC0RC_1LD0RB_1LA0LE_1LD1LF_1LD---';
+const W52 = '1RB0RF_1RC1LB_1LD1RE_1LB0LD_1RF0RC_1RA---';
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const fmt = (n) => Number(n).toLocaleString('en-US');
+const fail = (msg) => { console.error('m7 page check: ' + msg); (window.__tmErrors ||= []).push(msg); };
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const tok = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const cellOf = (cfg, p) => { const i = p - cfg.lo; return i >= 0 && i < cfg.tape.length ? cfg.tape[i] : 0; };
+const SVGNS = 'http://www.w3.org/2000/svg';
+const sv = (tag, attrs = {}, txt) => { const e = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (txt != null) e.textContent = txt; return e; };
+const pageError = (host, msg) => { fail(msg); const e = el('div', 'tm-error', 'Page error: ' + msg); host.append(e); };
+const redraws = [];
+const onResize = (host, fn) => { redraws.push(fn); if (window.ResizeObserver) { let lw = 0; new ResizeObserver(() => { const w = host.clientWidth; if (w && w !== lw) { lw = w; fn(); } }).observe(host); } };
+const decAH = decoders['antihydra-E'];
+
+// ---------------------------------------------------------------- beat 1: the four E(a,b) tapes, aligned by cell
+const four = (() => {
+  const r = new Run(parseTM(AH)), out = [];
+  while (out.length < 4) {
+    const t = r.until((v) => decAH(v) != null, { max: 1e5 });
+    if (t === null) break;
+    const v = r.view(), d = decAH(v);
+    out.push({ step: t, a: d.a, b: d.b, pos: v.pos, lo: v.lo, hi: v.hi, cfg: r.config(), marks: d.marks });
+  }
+  return out;
+})();
+if (!same(four.map((f) => [f.step, f.a, f.b]), [[11, 4, 0], [58, 8, 2], [169, 14, 4], [419, 23, 6]])) fail('the four E(a,b) tapes changed: ' + JSON.stringify(four.map((f) => [f.step, f.a, f.b])));
+function drawFour() {
+  const host = $('ahfig');
+  host.textContent = '';
+  const W = Math.max(260, host.clientWidth || 600), small = W < 520;
+  const lo = Math.min(...four.map((f) => f.lo)), hi = Math.max(...four.map((f) => f.hi)), cols = hi - lo + 1;
+  const labW = small ? 0 : 84, labH = small ? 16 : 0;     // phones: the row label goes above the cells
+  const pitch = Math.max(6, Math.min(28, Math.floor((W - labW - 2) / cols)));
+  const cs = pitch - (pitch >= 12 ? 3 : 1), top = 19 + labH, brH = 28, gap = 10, rowH = top + cs + brH + gap;
+  const H = four.length * rowH;
+  const C = { c0: tok('--c0'), c1: tok('--c1'), unv: tok('--unv'), line: tok('--line'), axis: tok('--axis'), ink: tok('--ink'), muted: tok('--muted'),
+    acc: tok('--accent'), sE: tok('--sE'), bfg: tok('--badge-fg'), c0fg: tok('--c0fg'), c1fg: tok('--c1fg') };
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img',
+    'aria-label': 'Four tapes of Antihydra: E(4,0) at step 11, E(8,2) at step 58, E(14,4) at step 169, E(23,6) at step 419; brackets mark the b block and the a block' });
+  const X = (p) => labW + (p - lo) * pitch;
+  four.forEach((f, i) => {
+    const yl = i * rowH, y0 = yl + labH, yc = y0 + 19;
+    if (small) {
+      const t = sv('text', { x: 0, y: yl + 12, 'font-family': 'system-ui, sans-serif' });
+      t.append(sv('tspan', { fill: C.ink, 'font-size': 13, 'font-weight': 700 }, `E(${f.a},${f.b})`), sv('tspan', { fill: C.muted, 'font-size': 11.5, dx: 6 }, `at step ${fmt(f.step)}`));
+      svg.append(t);
+    } else {
+      svg.append(sv('text', { x: 2, y: yc + cs / 2 - 3, fill: C.muted, 'font-size': 11.5, 'font-family': 'system-ui, sans-serif' }, `step ${fmt(f.step)}`));
+      svg.append(sv('text', { x: 2, y: yc + cs / 2 + 12, fill: C.ink, 'font-size': 14, 'font-weight': 700, 'font-family': 'system-ui, sans-serif' }, `E(${f.a},${f.b})`));
+    }
+    for (let p = lo; p <= hi; p++) {
+      const unv = p < f.lo || p > f.hi, s = unv ? 0 : cellOf(f.cfg, p);
+      svg.append(sv('rect', { x: X(p) + 0.5, y: yc + 0.5, width: cs - 1, height: cs - 1, rx: Math.min(4, cs / 4),
+        fill: unv ? C.unv : s ? C.c1 : C.c0, stroke: s ? C.c1 : unv ? C.axis : C.line, 'stroke-width': 1, 'stroke-dasharray': unv ? '2 2' : 'none' }));
+      if (pitch >= 17 && !unv) svg.append(sv('text', { x: X(p) + cs / 2, y: yc + cs / 2 + 4, 'text-anchor': 'middle', fill: s ? C.c1fg : C.c0fg,
+        'font-size': Math.min(13, cs * 0.5), 'font-weight': 700, 'font-family': 'ui-monospace, Consolas, monospace' }, String(s)));
+    }
+    // the head: a ring on the cell it reads, and a badge above it
+    const hx = X(f.pos);
+    svg.append(sv('rect', { x: hx - 1, y: yc - 1, width: cs + 2, height: cs + 2, rx: Math.min(5, cs / 4 + 1), fill: 'none', stroke: C.sE, 'stroke-width': 2.5 }));
+    const bw = 16, bx = hx + cs / 2 - bw / 2;
+    svg.append(sv('rect', { x: bx, y: y0 + 1, width: bw, height: 14, rx: 4, fill: C.sE }));
+    svg.append(sv('path', { d: `M${hx + cs / 2 - 4} ${y0 + 15} L${hx + cs / 2 + 4} ${y0 + 15} L${hx + cs / 2} ${y0 + 19} Z`, fill: C.sE }));
+    svg.append(sv('text', { x: hx + cs / 2, y: y0 + 12, 'text-anchor': 'middle', fill: C.bfg, 'font-size': 11, 'font-weight': 700, 'font-family': 'system-ui, sans-serif' }, 'E'));
+    // brackets under the b block and the a block
+    const yb = yc + cs + 3;
+    for (const m of f.marks) {
+      const x1 = X(m.from) + 1, x2 = X(m.to - 1) + cs - 1;
+      svg.append(sv('path', { d: `M${x1} ${yb} L${x1} ${yb + 6} L${x2} ${yb + 6} L${x2} ${yb}`, fill: 'none', stroke: C.acc, 'stroke-width': 2, 'stroke-linejoin': 'round' }));
+      svg.append(sv('text', { x: (x1 + x2) / 2, y: yb + 20, 'text-anchor': 'middle', fill: C.acc, 'font-size': small ? 11 : 12.5, 'font-weight': 700, 'font-family': 'system-ui, sans-serif' }, m.label));
+    }
+    if (!f.b) {   // E(a,0): no b block; the separating 0 is the blank cell left of a's block
+      const xs = X(f.pos - f.a - 1) + cs / 2;
+      svg.append(sv('text', { x: xs, y: yb + 20, 'text-anchor': 'end', fill: C.muted, 'font-size': small ? 10.5 : 12, 'font-family': 'system-ui, sans-serif' }, 'b = 0'));
+    }
+  });
+  host.append(svg);
+}
+drawFour();
+onResize($('ahfig'), drawFour);
+
+// ---------------------------------------------------------------- beat 2: one row per trip of the hole
+const tripLabel = (row) => {
+  if (row.decoded) return row.decoded.label;
+  const hole = row.pos + 1;
+  let m = 0;
+  while (cellOf(row.cfg, hole + 1 + m) === 1) m++;
+  return `hole ${hole}, ${m} ones`;
+};
+const trips = mountRun($('ahtrips'), {
+  tm: AH, from: 169, count: 9, view: 'cells', speed: 1, grow: false, labels: 'always', mark: { digits: 'antihydra-E' },
+  rows: (v) => (v.state === 'B' && v.dir === 'L') || decAH(v) != null,
+  label: tripLabel,
+  title: 'E(14,4) at step 169 to E(23,6) at step 419: one row each time B steps onto the cell just left of the hole',
+});
+trips.ready.then(() => {
+  const got = trips.rows().map((r) => [r.step, r.label]);
+  const want = [[169, 'E(14,4)'], [178, 'hole 7, 3 ones'], [196, 'hole 5, 6 ones'], [220, 'hole 3, 9 ones'], [250, 'hole 1, 12 ones'],
+    [286, 'hole -1, 15 ones'], [328, 'hole -3, 18 ones'], [376, 'hole -5, 21 ones'], [419, 'E(23,6)']];
+  if (!same(got, want)) fail('trip rows changed: ' + JSON.stringify(got));
+});
+
+// ---------------------------------------------------------------- the rule (AntiHydra.v R0 / R1 / Rhalt)
+const next = (a, b) => (a % 2n === 0n ? [3n * a / 2n + 2n, b + 2] : b === 0 ? null : [(3n * a + 3n) / 2n, b - 1]);
+
+// the machine's own E(a,b) points, simulated here, against the rule
+function machinePoints(n) {
+  const r = new Run(parseTM(AH)), out = [];
+  while (out.length < n) {
+    const t = r.until((v) => decAH(v) != null, { max: 3e6 });
+    if (t === null) break;
+    const d = decAH(r.view());
+    out.push({ step: t, a: d.a, b: d.b });
+  }
+  return out;
+}
+const pts = machinePoints(14);
+{
+  let a = 4n, b = 0, okRule = pts.length === 14 && pts[0].step === 11;
+  for (let i = 0; i < pts.length && okRule; i++) {
+    if (BigInt(pts[i].a) !== a || pts[i].b !== b) okRule = false;
+    const nx = next(a, b); if (!nx) break; [a, b] = nx;
+  }
+  if (!okRule) fail('Antihydra: the machine run does not follow the rule at its first 14 E(a,b) points');
+  // drill 2's stated answer, checked against the run
+  const i36 = pts.findIndex((p) => p.a === 36 && p.b === 5);
+  const got = pts.slice(i36 + 1, i36 + 4).flatMap((p) => [p.a, p.b]);
+  if (!same(got, [56, 7, 86, 9, 131, 11])) fail('drill m7-ah-next3: the run gives ' + JSON.stringify(got));
+  window.__m7 = { pts, okRule };
+}
+
+// ---------------------------------------------------------------- beat 4: the b walk
+const K = 10000;
+const walk = (() => {
+  let a = 4n, b = 0, ev = 0, od = 0, identity = true;
+  const bs = [0], even = [true], as = [4n];
+  for (let k = 1; k <= K; k++) {
+    if (a % 2n === 0n) ev++; else od++;
+    [a, b] = next(a, b);
+    if (b !== 2 * ev - od) identity = false;
+    bs.push(b); even.push(a % 2n === 0n);
+    if (k <= 40) as.push(a);
+  }
+  return { bs, even, as, aDigits: a.toString().length, identity };
+})();
+{
+  const chk = $('walkcheck');
+  const msgs = [];
+  if (walk.bs[10000] !== 4862) msgs.push(`b after 10,000 moves is ${walk.bs[10000]}, not 4,862`);
+  if (walk.aDigits !== 1762) msgs.push(`a after 10,000 moves has ${walk.aDigits} digits, not 1,762`);
+  if (Math.min(...walk.bs.slice(1)) !== 2) msgs.push('the smallest b over moves 1 … 10,000 is not 2');
+  if (!walk.identity) msgs.push('b is not 2 × evens − odds');
+  if (!window.__m7.okRule) msgs.push('the machine does not follow the rule');
+  if (msgs.length) { chk.className = 'selfcheck bad'; chk.textContent = 'Page error: ' + msgs.join('; '); msgs.forEach((m) => fail('walk: ' + m)); }
+  else {
+    chk.className = 'selfcheck ok';
+    chk.textContent = `The chart iterates the rule (proved in Coq). Its first 14 points equal the machine's own run, simulated in this page to step ${fmt(pts[13].step)}. After 10,000 moves a has ${fmt(walk.aDigits)} digits and b = ${fmt(walk.bs[10000])} = 2 × evens − odds, as in learn/checks (C-M7-1, C-M7-5).`;
+  }
+  const tb = $('walktable').tBodies[0];
+  for (let k = 0; k <= 40; k++) {
+    const tr = el('tr');
+    tr.append(el('td', 'r', String(k)), el('td', 'r', fmt(walk.as[k])), el('td', null, walk.even[k] ? 'even' : 'odd'), el('td', 'r', fmt(walk.bs[k])));
+    tb.append(tr);
+  }
+}
+let walkK = 40;
+function drawWalk() {
+  const host = $('walksvg'), tip = $('walktip'), box = $('walkviz');
+  host.textContent = '';
+  const W = Math.max(280, host.clientWidth || 600), H = W < 500 ? 220 : 270;
+  const m = { l: 46, r: walkK === 40 ? 14 : 70, t: 12, b: 30 };
+  const n = walkK, bs = walk.bs.slice(0, n + 1);
+  const yMax = Math.max(...bs) * 1.08 + 1;
+  const X = (k) => m.l + (k / n) * (W - m.l - m.r), Y = (b) => H - m.b - (b / yMax) * (H - m.t - m.b);
+  const svg = sv('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img',
+    'aria-label': n === 40 ? 'b after each of the first 40 moves; up 2 when a is even, down 1 when a is odd' : 'b after each of the first 10,000 moves, close to the line k/2' });
+  const line = tok('--line'), axis = tok('--axis'), muted = tok('--muted'), cE = tok('--even'), cO = tok('--odd'), surf = tok('--surface');
+  // grid and axes (solid hairlines)
+  const yStep = n === 40 ? 5 : 1000;
+  for (let y = 0; y <= yMax; y += yStep) {
+    svg.append(sv('line', { x1: m.l, x2: W - m.r, y1: Y(y), y2: Y(y), stroke: y === 0 ? axis : line, 'stroke-width': 1 }));
+    svg.append(sv('text', { x: m.l - 6, y: Y(y) + 4, 'text-anchor': 'end' }, fmt(y)));
+  }
+  const xStep = n === 40 ? 5 : 2000;
+  for (let k = 0; k <= n; k += xStep) svg.append(sv('text', { x: X(k), y: H - m.b + 16, 'text-anchor': 'middle' }, fmt(k)));
+  svg.append(sv('text', { x: W - m.r, y: H - 3, 'text-anchor': 'end' }, 'move'));
+  svg.append(sv('text', { x: 4, y: m.t + 2 }, 'b'));
+  if (n === 40) {
+    for (let k = 0; k < n; k++) svg.append(sv('line', { x1: X(k), y1: Y(bs[k]), x2: X(k + 1), y2: Y(bs[k + 1]), stroke: walk.even[k] ? cE : cO, 'stroke-width': 2, 'stroke-linecap': 'round' }));
+    for (let k = 0; k <= n; k++) svg.append(sv('circle', { cx: X(k), cy: Y(bs[k]), r: 4.5, fill: walk.even[k] ? cE : cO, stroke: surf, 'stroke-width': 2 }));
+    svg.append(sv('text', { x: X(n), y: Y(0) - 5, 'text-anchor': 'end' }, 'b = 0: an odd a here halts'));
+  } else {
+    svg.append(sv('line', { x1: X(0), y1: Y(0), x2: X(n), y2: Y(n / 2), stroke: muted, 'stroke-width': 1 }));
+    const per = Math.max(1, Math.floor(n / (W - m.l - m.r)));
+    let d = '';
+    for (let k = 0; k <= n; k += per) d += (k ? 'L' : 'M') + X(k).toFixed(1) + ' ' + Y(bs[k]).toFixed(1);
+    d += 'L' + X(n).toFixed(1) + ' ' + Y(bs[n]).toFixed(1);
+    svg.append(sv('path', { d, fill: 'none', stroke: cE, 'stroke-width': 2, 'stroke-linejoin': 'round' }));
+    svg.append(sv('text', { x: X(n) + 6, y: Y(bs[n]) + 13, class: 'dl' }, `b = ${fmt(bs[n])}`));
+    svg.append(sv('text', { x: X(n) + 6, y: Y(n / 2) - 3 }, 'k/2'));
+  }
+  // hover: crosshair + tooltip
+  const cross = sv('line', { y1: m.t, y2: H - m.b, stroke: axis, 'stroke-width': 1, visibility: 'hidden' });
+  const dot = sv('circle', { r: 5, fill: 'none', stroke: tok('--ink'), 'stroke-width': 2, visibility: 'hidden' });
+  svg.append(cross, dot);
+  const hit = sv('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' });
+  svg.append(hit);
+  const move = (ev) => {
+    const r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) * (W / r.width);
+    const k = Math.max(0, Math.min(n, Math.round(((x - m.l) / (W - m.l - m.r)) * n)));
+    cross.setAttribute('x1', X(k)); cross.setAttribute('x2', X(k)); cross.setAttribute('visibility', 'visible');
+    dot.setAttribute('cx', X(k)); dot.setAttribute('cy', Y(bs[k])); dot.setAttribute('visibility', 'visible');
+    const aTxt = k <= 40 ? `a = ${fmt(walk.as[k])}` : 'a';
+    tip.innerHTML = `<b>after move ${fmt(k)}</b><br>${aTxt} is ${walk.even[k] ? 'even: next b + 2' : 'odd: next b − 1'}<br>b = <b>${fmt(bs[k])}</b>`;
+    tip.style.display = 'block';
+    const br = box.getBoundingClientRect(), px = ev.clientX - br.left, py = ev.clientY - br.top;
+    tip.style.left = Math.min(px + 14, br.width - tip.offsetWidth - 6) + 'px';
+    tip.style.top = Math.max(4, py - tip.offsetHeight - 10) + 'px';
+  };
+  const leave = () => { tip.style.display = 'none'; cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); };
+  hit.addEventListener('pointermove', move);
+  hit.addEventListener('pointerdown', move);
+  hit.addEventListener('pointerleave', leave);
+  host.append(svg);
+  $('walklab').textContent = n === 40
+    ? 'Rows: moves 0 … 40 of the rule E(a,b) → next E(a,b), starting at E(4,0) (step 11 of the real run) · each dot is one tape; its colour is the parity of a there, which decides the next move · hover or tap for the numbers'
+    : 'Moves 0 … 10,000 of the rule from E(4,0) · one point per move, drawn as a line · the grey line is k/2, the average drift if the parities were fair coins · hover or tap for the numbers';
+  const leg = $('walkleg');
+  leg.textContent = '';
+  if (n === 40) {
+    const a1 = el('span'); const i1 = el('i'); i1.style.background = cE; a1.append(i1, 'a even: b goes up 2'); leg.append(a1);
+    const a2 = el('span'); const i2 = el('i'); i2.style.background = cO; a2.append(i2, 'a odd: b goes down 1'); leg.append(a2);
+  } else {
+    const a1 = el('span'); const i1 = el('i', 'line'); i1.style.background = cE; a1.append(i1, 'b'); leg.append(a1);
+    const a2 = el('span'); const i2 = el('i', 'line'); i2.style.background = muted; a2.append(i2, 'k/2'); leg.append(a2);
+  }
+}
+for (const btn of document.querySelectorAll('#walkviz .seg button')) {
+  btn.addEventListener('click', () => {
+    walkK = +btn.dataset.k;
+    for (const b of document.querySelectorAll('#walkviz .seg button')) b.classList.toggle('on', b === btn);
+    drawWalk();
+  });
+}
+drawWalk();
+onResize($('walksvg'), drawWalk);
+
+// the same walk with fair coins: how often does it halt from b? (a fixed seed, so every reader sees the same numbers)
+{
+  let seed = 7;
+  const rnd = () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const r = (Math.sqrt(5) - 1) / 2, N = 20000, tb = $('coins').tBodies[0], bad = [];
+  for (const b0 of [0, 1, 2, 5, 10]) {
+    let halts = 0;
+    for (let i = 0; i < N; i++) {
+      let b = b0;
+      while (b < b0 + 60) {                       // from b0 + 60 the halting chance is below 10^-12: count it as escaped
+        if (rnd() < 0.5) b += 2;                  // a even
+        else if (b === 0) { halts++; break; }     // a odd with b = 0: halt
+        else b -= 1;                              // a odd
+      }
+    }
+    const p = r ** (b0 + 1), share = halts / N, se = Math.sqrt(p * (1 - p) / N);
+    if (Math.abs(share - p) > 4 * se) bad.push(`b = ${b0}: ${share} vs ${p.toFixed(4)}`);
+    const pct = (x) => (x >= 0.1 ? (100 * x).toFixed(1) : (100 * x).toFixed(2)) + '%';
+    const tr = el('tr');
+    tr.append(el('td', 'r', String(b0)), el('td', 'r', `${fmt(halts)} of ${fmt(N)}`), el('td', 'r hit', pct(share)), el('td', 'r', pct(p)));
+    tb.append(tr);
+  }
+  const cc = $('coincheck');
+  if (bad.length) { cc.className = 'selfcheck bad'; cc.textContent = 'Page error: coin flips far from 0.618^(b+1): ' + bad.join('; '); fail('coins: ' + bad.join('; ')); }
+  else { cc.className = 'selfcheck ok'; cc.textContent = '20,000 coin-flip walks from each start, simulated in your browser: each share is within 4 standard errors of 0.618^(b+1) (C-M7-10).'; }
+}
+
+// ---------------------------------------------------------------- beat 5: #11 vs #32
+const T_MAX = 340, LO = -12, HI = 22;
+const snap = (r) => { const v = r.view(); return { state: v.state, pos: v.pos, lo: v.lo, hi: v.hi, cells: v.cells(LO, HI) }; };
+const pair = (() => {
+  const a = new Run(parseTM(K11)), b = new Run(parseTM(K32)), rows = [], ranges = [];
+  for (let t = 0; t <= 20000; t++) {
+    const va = a.view(), vb = b.view();
+    let eq = va.state === vb.state && va.pos === vb.pos && va.lo === vb.lo && va.hi === vb.hi;
+    if (eq) for (let p = va.lo; p <= va.hi; p++) if (va.read(p) !== vb.read(p)) { eq = false; break; }
+    if (t <= T_MAX) rows.push({ a: snap(a), b: snap(b), eq });
+    if (!eq) { const r = ranges[ranges.length - 1]; if (r && r[1] === t - 1) r[1] = t; else ranges.push([t, t]); }
+    a.step(); b.step();
+  }
+  return { rows, ranges };
+})();
+const blips = pair.ranges.filter((r) => r[0] === r[1]).map((r) => r[0]);
+const split = pair.ranges[pair.ranges.length - 1];
+const identicalThrough = pair.ranges[0][0] - 1;
+if (identicalThrough !== 27) fail(`#11 vs #32: the runs are identical through step ${identicalThrough}, not 27`);
+if (!same(blips, [28, 61, 71, 114, 166, 174, 182, 235, 307]) || !same(split, [321, 20000])) fail('#11 vs #32: the difference steps changed: ' + JSON.stringify(pair.ranges));
+for (const r of pair.rows) for (const s of [r.a, r.b]) if (s.lo < LO || s.hi > HI) { fail('#11 vs #32: the run leaves cells −12 … 22'); break; }
+// the drill's reasoning: what E (in #11) reads right after each A1, up to step 321
+{
+  const r = new Run(parseTM(K11)), seen = [];
+  while (r.t < 321) { const v = r.view(), a1 = v.state === 'A' && v.read(v.pos) === 1; r.step(); if (a1) seen.push([r.t, r.view().read(r.view().pos)]); }
+  const want = [[28, 0], [61, 0], [71, 0], [114, 0], [166, 0], [174, 0], [182, 0], [235, 0], [307, 0], [321, 1]];
+  if (!same(seen, want)) fail('#11 vs #32 drill: what E reads after A1 changed: ' + JSON.stringify(seen));
+}
+
+let diffShown = false, diffRowH = 8;
+function drawDiff() {
+  if (!diffShown) return;
+  const cv = $('k32canvas'), box = $('k32box');
+  const W = box.clientWidth || 600, cols = HI - LO + 1, lab = W < 420 ? 30 : 42, gut = W < 420 ? 10 : 16;
+  const pitch = Math.max(4, Math.min(12, Math.floor((W - lab - gut - 6) / (2 * cols))));
+  const rowH = Math.max(5, Math.min(pitch, 9)), gridW = cols * pitch;
+  diffRowH = rowH;
+  const totalW = lab + 2 * gridW + gut + 4, totalH = pair.rows.length * rowH + 4;
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(totalW * dpr); cv.height = Math.round(totalH * dpr);
+  cv.style.width = totalW + 'px'; cv.style.height = totalH + 'px';
+  const g = cv.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const C = { c0: tok('--c0'), c1: tok('--c1'), unv: tok('--unv'), line: tok('--line'), bad: tok('--bad'), muted: tok('--muted'), surface: tok('--surface') };
+  g.fillStyle = C.surface; g.fillRect(0, 0, totalW, totalH);
+  const gap = pitch >= 7 ? 1 : 0;
+  const x0 = [lab, lab + gridW + gut];
+  pair.rows.forEach((r, t) => {
+    const y = 2 + t * rowH, h = rowH - (rowH >= 7 ? 1 : 0);
+    [r.a, r.b].forEach((s, side) => {
+      for (let c = 0; c < cols; c++) {
+        const p = LO + c, x = x0[side] + c * pitch;
+        const unv = p < s.lo || p > s.hi, v = s.cells[c];
+        g.fillStyle = p === s.pos ? tok('--s' + s.state) : unv ? C.unv : v ? C.c1 : C.c0;
+        g.fillRect(x, y, pitch - gap, h);
+        // red tint on a cell of #32 that differs from #11 (its symbol, or the head and its state); visible at any size
+        if (side === 1 && !r.eq && (v !== r.a.cells[c] || (p === s.pos && (s.state !== r.a.state || s.pos !== r.a.pos)) || (p === r.a.pos && s.pos !== r.a.pos))) {
+          g.globalAlpha = 0.55; g.fillStyle = C.bad; g.fillRect(x, y, pitch - gap, h); g.globalAlpha = 1;
+        }
+      }
+    });
+    if (!r.eq) { g.fillStyle = C.bad; g.fillRect(lab + gridW + 2, y, gut - 4, rowH - 1); }
+  });
+  g.font = '10px ui-monospace, Consolas, monospace'; g.textBaseline = 'middle'; g.textAlign = 'right';
+  const marked = new Set([...blips, split[0]]);
+  pair.rows.forEach((r, t) => {
+    const near = [...marked].some((s) => Math.abs(s - t) * rowH < 12 && s !== t);
+    if (marked.has(t) || (t % 20 === 0 && !near)) {
+      g.fillStyle = marked.has(t) ? C.bad : C.muted;
+      g.fillText(String(t), lab - 6, 2 + t * rowH + rowH / 2);
+    }
+  });
+  const heads = $('k32heads');
+  heads.textContent = '';
+  const h0 = el('span', null, ''); h0.style.width = lab + 'px'; h0.style.flex = 'none';
+  const h1 = el('span', null, '#11'); h1.style.width = (gridW + gut) + 'px'; h1.style.flex = 'none';
+  const h2 = el('span', null, '#32'); h2.style.flex = 'none';
+  heads.append(h0, h1, h2);
+}
+function showDiff() {
+  if (diffShown) return;
+  diffShown = true;
+  $('k32hide').hidden = true; $('k32body').hidden = false;
+  $('k32sum').innerHTML = `Identical through step <b>${identicalThrough}</b>. At steps ${blips.join(', ')} only the state differs, for one step each (A has just read a 1). From step ${split[0]} on they differ at every step (checked to step ${fmt(split[1])}).`;
+  const jumps = el('div', 'links');
+  for (const t of [28, 321]) { const b = el('button', 'jumpbtn', `show step ${t}`); b.type = 'button'; b.addEventListener('click', () => { $('k32box').scrollTop = Math.max(0, t * diffRowH - 80); }); jumps.append(b); }
+  $('k32sum').append(jumps);
+  drawDiff();
+  $('k32box').scrollTop = 0;
+}
+$('k32drill').addEventListener('click', (e) => { if (e.target.closest && e.target.closest('.tm-pactions button.primary')) setTimeout(showDiff, 0); });
+redraws.push(drawDiff);
+if (window.ResizeObserver) { let lw = 0; new ResizeObserver(() => { const w = $('k32box').clientWidth; if (w && w !== lw) { lw = w; drawDiff(); } }).observe($('k32box')); }
+
+// ---------------------------------------------------------------- #32's real tape, as digits (simulated when the reader gets near it)
+// K(L; a, b) = 0^inf L (10)^a 0^3 (10)^b B> 0^inf, L = 10 01 d_1 .. d_m, digit (u, 0, v) = (10)^u 00 (01)^v, (u, 1, v) = (10)^u (01)^v
+// (#32's proof.md). Regime I: I(N, M) = K(W (0,0,N) (0,0,M) ..; a, 1), the top digit's (01)^N is the fuel N (notes.md).
+const K32_STEP = 276564068;
+function k32digits(cfg) {
+  if (cfg.state !== 'B' || cfg.head !== cfg.tape.length - 1 || cfg.tape[cfg.head] !== 0) return null;
+  let s = '';
+  for (let i = 0; i < cfg.head; i++) s += cfg.tape[i];
+  const z = s.search(/1/);
+  s = s.slice(z);
+  if (!s.startsWith('1001') || !s.endsWith('00010')) return null;
+  let rest = s.slice(4, -5);
+  const out = [];
+  while (rest) {
+    const mo = /^((?:10)*)(00)?((?:01)*)/.exec(rest);
+    if (!mo || !mo[0].length) return null;
+    out.push({ u: mo[1].length / 2, bit: mo[2] ? 0 : 1, v: mo[3].length / 2 });
+    rest = rest.slice(mo[0].length);
+  }
+  const a = out.pop();
+  if (!a || a.bit !== 1 || a.v !== 0) return null;
+  return { digits: out, a: a.u, wallAt: cfg.lo + z, headAt: cfg.lo + cfg.head };
+}
+function drawK32(d) {
+  const host = $('k32tape');
+  host.textContent = '';
+  const kt = el('div', 'kt');
+  const cellsOf = (bits, extraCls) => bits.split('').map((b, i) => { const c = el('i', b === '1' ? 'one' : ''); if (extraCls && extraCls[i]) c.classList.add(extraCls[i]); return c; });
+  const seg = (parts, label, hot) => {
+    const s = el('div', 'kseg' + (hot ? ' hot' : '')), cs = el('div', 'kcells');
+    for (const p of parts) {
+      if (p.rep) { const g = el('span', 'krep'); g.append(...cellsOf(p.rep + p.rep), el('span', 'kx', `×${fmt(p.n)}`)); cs.append(g); }
+      else cs.append(...cellsOf(p.cells));
+    }
+    s.append(cs, el('div', 'kbr'), el('div', 'kl', label));
+    return { s, cs };
+  };
+  const [N, M, D] = d.digits;
+  kt.append(seg([{ cells: '1001' }], 'wall').s);
+  kt.append(seg([{ cells: '00' }, { rep: '01', n: N.v }], `fuel N = ${N.v}`, true).s);
+  kt.append(seg([{ cells: '00' }, { rep: '01', n: M.v }], `M = ${M.v}`).s);
+  kt.append(seg([{ rep: '10', n: D.u }, { cells: '00' }, { rep: '01', n: D.v }], `next digit: fuel ${D.u}`).s);
+  kt.append(el('div', 'kseg more', `… ${d.digits.length - 3} more digits …`));
+  const end = seg([{ rep: '10', n: d.a }, { cells: '00010' }, { cells: '0' }], `the head, cell ${fmt(d.headAt)}`);
+  const last = end.cs.lastElementChild;
+  last.classList.add('here');
+  const badge = el('span', 'kbadge', 'B');
+  end.cs.append(badge);
+  kt.append(end.s);
+  host.append(kt);
+  requestAnimationFrame(() => { badge.style.left = (last.offsetLeft + last.offsetWidth / 2) + 'px'; });
+  const note = el('div', 'lab');
+  note.style.margin = '10px 0 0';
+  note.textContent = `Tape: cells ${fmt(d.wallAt)} … ${fmt(d.headAt)} (${fmt(d.headAt - d.wallAt + 1)} cells), ${d.digits.length} digits. In proof.md's notation this is I(${N.v}, ${M.v}) = K(W (0,0,${N.v}) (0,0,${M.v}) (${D.u},0,${D.v}) …; ${d.a}, 1).`;
+  host.append(note);
+}
+async function simulateK32() {
+  const host = $('k32tape');
+  host.textContent = '';
+  const prog = el('div', 'prog', 'simulating #32 in your browser…');
+  host.append(prog);
+  const r = new Run(parseTM(K32), undefined, { maxSteps: 3e8 });
+  r.ckEvery = 2 ** 30;                         // no rewind checkpoints: this run only goes forward
+  const t0 = performance.now();
+  while (r.t < K32_STEP && !r.halted) {
+    const s0 = performance.now();
+    while (r.t < K32_STEP && performance.now() - s0 < 40) r.stepTo(Math.min(K32_STEP, r.t + 2e6));
+    prog.textContent = `simulating #32 in your browser: step ${fmt(r.t)} of ${fmt(K32_STEP)} (${Math.round(100 * r.t / K32_STEP)}%)`;
+    await new Promise((res) => setTimeout(res, 0));
+  }
+  const d = k32digits(r.config());
+  if (!d || d.digits.length < 3 || !same([d.digits[0], d.digits[1], d.digits[2]], [{ u: 0, bit: 0, v: 136 }, { u: 0, bit: 0, v: 360 }, { u: 48, bit: 0, v: 169 }]) || d.digits.length !== 10 || d.a !== 1024) {
+    host.textContent = '';
+    pageError(host, `#32 at step ${fmt(K32_STEP)} is not I(136, 360) with the next digit (48,0,169): ${JSON.stringify(d && d.digits.slice(0, 3))}`);
+  } else {
+    drawK32(d);
+    $('k32tapebox').querySelector('.lab').textContent += ` · ${((performance.now() - t0) / 1000).toFixed(1)} s here`;
+  }
+  document.documentElement.dataset.m7K32 = d ? 'done' : 'error';
+}
+{
+  let started = false;
+  const go = () => { if (!started) { started = true; simulateK32(); } };
+  if (window.IntersectionObserver) new IntersectionObserver((es, ob) => { if (es.some((e) => e.isIntersecting)) { ob.disconnect(); go(); } }, { rootMargin: '1200px 0px' }).observe($('k32tapebox'));
+  else go();
+}
+
+// #32's fuel cuts (from #32's status.json / notes.md, quoted and checked by learn/checks/m07_cryptids.py C-M7-8; N = 2, 7 re-run in C-M7-13)
+{
+  const cuts = $('cuts');
+  const HALT = new Set([2, 7, 12, 17, 22]);
+  for (let N = 0; N <= 44; N++) {
+    const w = el('div', 'n');
+    const c = el('div', 'c' + (HALT.has(N) ? ' halt' : N >= 23 ? ' deep' + (N % 5 === 2 ? ' mod2' : '') : ''), String(N));
+    c.title = HALT.has(N) ? `N = ${N}: halts` : N >= 23 ? `N = ${N}: no halt by 10^80; the next digit runs out first` : `N = ${N}: no halt by 10^80 steps`;
+    w.append(c);
+    cuts.append(w);
+  }
+}
+
+// ---------------------------------------------------------------- beat 6: W5-2's x, read off the real tape at its left records
+// a cycle's left record is 0^inf <B 1^(2L+3) RC(2x+1): RC(n) = n in binary, one 5-cell word per bit, lowest first (10000 = 1, 00000 = 0)
+function w52x(cfg) {
+  if (cfg.state !== 'B' || cfg.head !== 0 || cfg.tape[0] !== 0) return null;
+  let s = '';
+  for (let i = 1; i < cfg.tape.length; i++) s += cfg.tape[i];
+  const k = s.indexOf('0');                   // 1^(2L+3) and then n's lowest bit, which is 1 (n = 2x + 1 is odd)
+  if (k < 5 || k % 2) return null;
+  let rest = s.slice(k - 1).replace(/0+$/, '');
+  while (rest.length % 5) rest += '0';
+  const words = rest.match(/.{5}/g) || [];
+  if (!words.length || words[0] !== '10000' || !words.every((w) => w === '10000' || w === '00000')) return null;
+  const bits = words.slice(1).map((w) => (w[0] === '1' ? 1 : 0));
+  return { L: (k - 4) / 2, bits, x: parseInt(bits.slice().reverse().join('') || '0', 2) };
+}
+{
+  const r = new Run(parseTM(W52)), out = [];
+  while (out.length < 3) {
+    const t = r.until((v) => v.record === 'L' && v.state === 'B' && v.step > 100, { max: 1e6 });
+    if (t === null) break;
+    const d = w52x(r.config());
+    if (d) out.push({ step: t, ...d });
+  }
+  const host = $('w52bits');
+  host.textContent = '';
+  if (!same(out.map((o) => [o.step, o.L, o.x]), [[134, 3, 3], [1285, 6, 30], [319930, 14, 7968]])) {
+    pageError(host, 'W5-2: the first three cycles changed: ' + JSON.stringify(out.map((o) => [o.step, o.L, o.x])));
+  } else {
+    const grid = el('div', 'bitrows');
+    out.forEach((o, i) => {
+      const who = el('div', 'who');
+      const b = el('b', null, `x = ${fmt(o.x)}`);
+      who.append(`cycle ${i + 1} · step ${fmt(o.step)}`, el('br'), b);
+      const bits = el('div', 'bits');
+      o.bits.forEach((v, p) => {
+        const cell = el('div', 'bit' + (v ? ' one' : '') + (v && p % 2 === 0 ? ' keep' : '') + (p % 2 === 0 ? ' even' : ''));
+        cell.append(el('div', 'v', String(v)), el('div', 'p', String(p)));
+        cell.title = `position ${p}: ${v}` + (v ? (p % 2 === 0 ? ' (even: keeps the cycle going)' : ' (odd)') : '');
+        bits.append(cell);
+      });
+      grid.append(who, bits);
+    });
+    host.append(grid);
+    const evens = out.map((o) => o.bits.flatMap((v, p) => (v && p % 2 === 0 ? [p] : [])));
+    if (!same(evens, [[0], [2, 4], [8, 10, 12]])) fail('W5-2: even-position 1-bits changed: ' + JSON.stringify(evens));
+  }
+}
+
+// ---------------------------------------------------------------- theme changes
+if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => redraws.forEach((f) => f()));
+
+window.__learnReady = autoMount();
+
+// ---------------------------------------------------------------- drills: before the reveal, a drill's own run shows its first tape only
+// (its controls are hidden by CSS, and the run is inert, so neither keys nor taps can step it). Reveal unlocks it; Try again locks it.
+for (const box of document.querySelectorAll('.nospoil .tm-predict')) {
+  const run = box.querySelector('.tm-plinked');
+  if (!run) continue;
+  const lock = (on) => { run.inert = on; box.classList.toggle('go', !on); };
+  lock(true);
+  box.addEventListener('click', (e) => {
+    const b = e.target.closest && e.target.closest('.tm-pactions button');
+    if (!b || b.disabled) return;
+    lock(!b.classList.contains('primary'));
+  }, true);
+}
+</script>
+</body>
+</html>

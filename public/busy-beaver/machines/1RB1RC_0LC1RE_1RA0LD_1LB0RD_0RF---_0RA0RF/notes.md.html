@@ -1,0 +1,645 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>notes.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/machines/1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF/notes.md · <a href="/busy-beaver/machines/1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF/notes.md.html">raw</a></div>
+<h1 id="w6-8-1rb1rc_0lc1re_1ra0ld_1lb0rd_0rf-_0ra0rf-observe-notes-2026-10-14">W6-8 <code>1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF</code>: observe notes (2026-10-14)</h1>
+<p>740 line 9. Sheet class: Unknown, note "Code. Binary counting + bouncing" (nerdyjoe, 2025-12-28; Results tab row 24, an analysis note with no status). No Discord file mentions it. Claimed in coord/claims.tsv as <code>Wave 6 W6-8</code>.</p>
+<h2 id="checks">Checks</h2>
+<ul>
+<li>Byte-exact on <code>data/holdouts/BB6_holdouts_740.txt</code> line 9.</li>
+<li>Family: no other 740 line has the same table under renaming, mirror or any start state; no 740 line within 3 transitions. siblings = [].</li>
+<li>busycoq (origin/BB6 cdaf693) <code>Eqv_v2.v</code> modules TM238 and TM536 prove <code>1LB0RA_0LC1RE_1RD0LA_1RB1RC_0RF---_0RD0RF</code> and <code>1RB0LD_1RC1RA_0LA1RE_1LC0RD_0RF---_0RB0RF</code> equivalent to this machine. A proof here settles both through those lemmas.</li>
+<li>Halting: E1 is the only missing transition. E is entered only by B on a 1. So the machine halts exactly when (a) a left sweep reads <code>1 0 1 &lt;C</code>, or (b) a right sweep reads <code>A&gt; 0 1 1</code>.</li>
+</ul>
+<h2 id="tape-level-rules">Tape-level rules</h2>
+<p>Every rule was validated 300/300 by simulation with random surroundings (<code>work/vmicro.py</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>From</th>
+<th>To</th>
+<th>Steps</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Z (zigzag eats a pair)</td>
+<td><code>1 1 &lt;C</code></td>
+<td><code>&lt;C 0 1</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>O2 (odd block, 0^2 gap on its left: carry passes)</td>
+<td><code>0 0 1 &lt;C</code></td>
+<td><code>&lt;C 0 1 0</code></td>
+<td>3</td>
+</tr>
+<tr>
+<td>T (turn)</td>
+<td><code>0 &lt;C</code></td>
+<td><code>1 A&gt;</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>R1 (decode)</td>
+<td><code>A&gt; 1 0</code></td>
+<td><code>1 1 A&gt;</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td>R2 (decode a gap)</td>
+<td><code>A&gt; 0 1 0 1^m 0</code></td>
+<td><code>1 1 0^(m+2) A&gt;</code></td>
+<td>m+4</td>
+</tr>
+<tr>
+<td>R3 (bounce)</td>
+<td><code>1 A&gt; 0 0</code></td>
+<td><code>&lt;C 0 1 0</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td>R5 (bounce)</td>
+<td><code>A&gt; 1 1</code></td>
+<td><code>&lt;C 0 1</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td>halt (a)</td>
+<td><code>1 0 1 &lt;C</code></td>
+<td>halt</td>
+<td>3</td>
+</tr>
+<tr>
+<td>halt (b)</td>
+<td><code>A&gt; 0 1 1</code></td>
+<td>halt</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>The left sweep writes the same tokens as kill #8's <code>P = 01</code> and <code>PZ = 010</code>.</p>
+<h2 id="block-level-picture">Block-level picture</h2>
+<p>At each right-edge arrival in state A, the tape is</p>
+<div class="highlight"><pre><span></span><code>0^inf 1^b0 0^s0 1^b1 0^s1 ... 0^s(n-1) 1^z A&gt; 0^inf      (s_i in {1,2,3}; z may be 0)
+</code></pre></div>
+
+<p>One <strong>cycle</strong> runs from one such arrival to the next. A <strong>carry</strong> starts at the last block, whose effective length is z-1. It passes every block that is odd and has <code>0^2</code> on its left. It stops at the first block that is even, or odd with <code>0^3</code> on its left. An odd block with <code>0^1</code> on its left halts the machine.</p>
+<p>This is a binary counter. The gaps are the digits: <code>0^2</code> = 1 and <code>0^3</code> = 0, with the least significant digit at the right. The last block z is <strong>fuel</strong>: it loses 4 every two cycles.</p>
+<p>The rules below reproduce <strong>all 75,581 cycles</strong> between steps 11,118 and 4·10^9 exactly (<code>work/validate.py</code>). Each one was also checked against the TM on 200 random instances: 17 variants, 3,400/3,400 (<code>work/vrules.py</code>).</p>
+<p>In the table, the p_i are the passed interior blocks (odd, with <code>0^2</code> on their left).</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>From</th>
+<th>To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Todd0</td>
+<td><code>1^x 0^3 1^z A&gt;</code>, z even ≥ 2</td>
+<td><code>1^(x+3) 0^2 1^z A&gt;</code></td>
+</tr>
+<tr>
+<td>Todd</td>
+<td><code>1^x 0^3 1^y (0^2 1^p_i)* 0^2 1^z A&gt;</code>, y odd, z even ≥ 4</td>
+<td><code>1^(x+3) 0^2 1^(y+3) (0^3 1^(p_i-1))* 0^3 1^(z-4) A&gt;</code></td>
+</tr>
+<tr>
+<td>ToddZ2</td>
+<td>as Todd with z = 2</td>
+<td>as Todd, except the last gap stays <code>0^2</code> and the last block is empty: <code>... 0^3 1^(p_k-1) 0^2 A&gt;</code></td>
+</tr>
+<tr>
+<td>Teven s=1</td>
+<td><code>1^x 0^1 1^e (0^2 1^p_i)* 0^2 1^z A&gt;</code>, e even</td>
+<td><code>1^(x+3) 0^3 1^e (0^3 1^(p_i-1))* 0^3 1^(z-4) A&gt;</code></td>
+</tr>
+<tr>
+<td>Teven s=2,3</td>
+<td><code>1^x 0^s 1^e (...)</code>, e even</td>
+<td><code>1^x 0^(s-1) 1^3 0^3 1^e (0^3 1^(p_i-1))* 0^3 1^(z-4) A&gt;</code> (a block 1^3 is born)</td>
+</tr>
+<tr>
+<td>Z0b</td>
+<td><code>1^x 0^3 A&gt;</code> (empty last block)</td>
+<td><code>1^(x+3) 0^2 A&gt;</code></td>
+</tr>
+<tr>
+<td>Z0a (refill, w even)</td>
+<td><code>1^y 0^s 1^w 0^2 A&gt;</code>, s in {2,3}</td>
+<td><code>1^y 0^(s-1) 1^6 0^2 1^(w-2) A&gt;</code></td>
+</tr>
+<tr>
+<td>Z0c (refill, w odd)</td>
+<td><code>X 1^v 0^3 1^w 0^2 A&gt;</code></td>
+<td>v becomes v+3, and a carry enters it (passes give -1, a stop applies the Todd/Teven left part). Then <code>0^3 1^(w-3) A&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>The step count per cycle is 3·(cells from the stopping gap to the edge) + O(number of passes). Summing it reproduces the real step count at 4·10^9 to within 0.01%.</p>
+<h2 id="epochs-collatz-like-refill">Epochs: Collatz-like refill</h2>
+<p>Let F be the fuel just after each Z0c refill, and write F = 8a + 6. Then</p>
+<div class="highlight"><pre><span></span><code>a(n+1) = ceil(3 a(n) / 2) + 1,  a(0) = 7 at step 17,103
+</code></pre></div>
+
+<p>Equivalently, F' = (3F+10)/2 when F ≡ 6 (mod 16), and F' = (3F+18)/2 when F ≡ 14 (mod 16). This holds for all 14 real refills up to 4·10^9 and all 28 refills in the 2·10^7-cycle block run.</p>
+<p>F ≡ 6 (mod 8) is invariant. The next bit (the parity of a) chooses between two epoch shapes:</p>
+<ul>
+<li>a even: <code>ToddZ2 Z0a Z0b Z0c</code></li>
+<li>a odd: <code>ToddZ2 Z0a ToddZ2 Z0a Z0b Z0c</code></li>
+</ul>
+<p>That choice looks pseudo-random.</p>
+<h2 id="does-halting-depend-on-the-collatz-like-part-evidence-says-no">Does halting depend on the Collatz-like part? Evidence says no</h2>
+<p>The block map raises <code>Halt</code> / <code>Unknown</code> on any case it does not cover.</p>
+<ul>
+<li><strong>Long run.</strong> 2·10^7 cycles with the block map (≈ 2.9·10^14 TM steps by the step formula; tape 4·10^7 cells, 99 blocks): no Halt, no Unknown.</li>
+<li><strong>Fuel fuzz</strong> (<code>work/fuzz.py</code>). Every refilled fuel is replaced by a random value with the same residue mod 8: 300×2·10^4 cycles, all fine. Keeping only mod 4, or only parity, hits an uncovered Z0c case every time. The TM sometimes halts there (Z0c with <code>0^1</code> before w) and sometimes cycles on (<code>0^2</code> before w).</li>
+<li><strong>Block fuzz</strong> (<code>work/fuzz2.py</code>). Every block ≥ 9 is replaced by a random length with the same residue mod 8, either every 997 cycles (300×2·10^4) or every cycle (400×5·10^4): all fine. With mod 4 instead: all runs fail.</li>
+</ul>
+<p>Conclusion: the run seems safe for every refill path. What safety needs looks like the gap pattern plus the block lengths mod 8, not the orbit of a. This is a cryptid check that does not fire, but the invariant is not yet found. 3-gap windows (gap, length mod 8, gap) are <strong>not</strong> closed (<code>work/local.py</code>), so the invariant needs longer context or an automaton.</p>
+<p>Local facts seen in every cycle (<code>work/inv.py</code> style tables):</p>
+<ul>
+<li>A block after <code>0^1</code> is always ≡ 3 (mod 8) with <code>0^3</code> on its right, or ≡ 6 (mod 8) with <code>0^2</code> on its right.</li>
+<li>After <code>0^1 1^3 0^3</code> comes an even block followed by <code>0^3</code>, or an odd block followed by <code>0^2</code>.</li>
+</ul>
+<h2 id="long-run-shape">Long-run shape</h2>
+<ul>
+<li>The left end is frozen after step 10,325 (no left record up to 10^9).</li>
+<li>Old digits are reached only exponentially rarely; the active part is at the right end.</li>
+<li>At 4·10^9: 151,420 cells, 55 blocks. The tape grows like sqrt(steps).</li>
+</ul>
+<h2 id="template-check">Template check</h2>
+<p>The nearest proved neighbour as experience is kill #8 <code>1RB0LF_0RC---_1RD0RA_1LE0RC_0LA0LE_1LE1LB</code> (sync bouncer counter); I read its .v.</p>
+<ul>
+<li><strong>Different rule sets.</strong> #8 runs a C sweep over tokens T0/T1/TZ to the right of the head, uses a return transducer <code>retf</code>, a 15-bit tail and an interval INV. Here digits are gaps between unary blocks that keep changing length.</li>
+<li><strong>What transfers.</strong> #8's token words P = <code>[0;1]</code> and PZ = <code>[0;1;0]</code> are exactly what this machine's left sweep writes. The Csweep/retf list-induction pattern fits the encode/decode sweeps.</li>
+<li><strong>Others.</strong> Kill #4's .v (binary counter with <code>d0</code>/<code>d1</code> digits) has no matching rules. No holdout and no kill table is within 5 transitions.</li>
+</ul>
+<h2 id="discord">Discord</h2>
+<p>Not needed now. If Dennis wants to check nerdyjoe's interest first, ready to paste:</p>
+<div class="highlight"><pre><span></span><code>Hi @nerdyjoe, are you still working on 1RB1RC_0LC1RE_1RA0LD_1LB0RD_0RF---_0RA0RF (your sheet note "Code. Binary counting + bouncing")? We have exact block rules for it (binary counter in the 00/000 gaps, with fuel refilled about x1.5 each epoch) and are looking for an invariant. Happy to leave it to you if you're on it.
+</code></pre></div>
+
+<h2 id="files">Files</h2>
+<ul>
+<li><code>work/</code> holds the scripts:</li>
+<li><code>macro.py</code>: the block map</li>
+<li><code>validate.py</code>: checks it against the real run</li>
+<li><code>vrules.py</code>, <code>vmicro.py</code>: TM-level checks</li>
+<li><code>fuzz.py</code>, <code>fuzz2.py</code>, <code>local.py</code>: robustness tests</li>
+<li><code>farrun.py</code>, <code>farrun2.py</code>: long runs and step estimate</li>
+<li><code>counterfig.py</code>: Fig 2</li>
+<li><code>compact.py</code>: makes the cycle list</li>
+<li>Regenerate the cycle list: <code>tools/sim/tmsim TM --max-steps 4e9 --on-record --dh | python3 work/compact.py &gt; cyc_4e9.txt</code> (20 MB, not kept).</li>
+<li><code>work/macro_epoch_events_2e7.txt</code>: epoch events of the 2·10^7-cycle run.</li>
+</ul>
+<h2 id="wave-6-stage-1-2026-10-14">Wave 6, stage 1 (2026-10-14)</h2>
+<p>Goal: a regular invariant over the block rules. <strong>Not found yet</strong>, but three things changed the picture.</p>
+<h3 id="1-the-left-edge-is-harmless">1. The left edge is harmless</h3>
+<p>The old block map stopped with <code>Unknown</code> when a carry reached block 0. The TM does not halt there. It grows a new top digit:</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Block 0 (value y, 0^inf on its left)</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lodd</td>
+<td>y odd</td>
+<td><code>1^3 0^2 1^(y+3) ...</code> (like Todd with an empty block on the left)</td>
+</tr>
+<tr>
+<td>Leven</td>
+<td>y even</td>
+<td><code>1^3 0^3 1^y ...</code> (like Teven with an infinite gap)</td>
+</tr>
+</tbody>
+</table>
+<p>Passed blocks and the fuel change as usual.</p>
+<ul>
+<li><code>work/macro2.py</code> is the block map with these rules.</li>
+<li><code>work/vleft.py</code> checks it against the TM on random configurations: 0 mismatches in 3,000 (147 Lodd, 194 Leven, 104 LoddZ2, 118 LevenZ2 among them).</li>
+<li><code>work/macro2.py</code> also says Halt only for Z0c with <code>0^1</code> before w. Z0c with <code>0^2</code> before w is <code>Unknown</code>, because the TM goes on there.</li>
+</ul>
+<p>So the counter extends itself at the top. A single huge epoch is safe (<code>work/bigfuel.py</code>: fuel + 8·10^6 from step 11,118, 2·10^6 cycles, no stop).</p>
+<p>The frozen left part also survives carries. <code>work/prefixstress.py</code> keeps the real first 17, 20 or 25 blocks at cycle 3·10^6, joins on the last 3-4 blocks with a huge fuel, and runs 3·10^6 cycles. The old digits get rewritten and nothing halts. (One run with 38 blocks halted at once, but only because the join put an odd block right after a <code>0^1</code> gap.)</p>
+<h3 id="2-small-refills-really-halt">2. Small refills really halt</h3>
+<p><code>work/fuzz4.py</code> replaces 30% of refill fuels by the smallest value in their residue class mod 8:</p>
+<table>
+<thead>
+<tr>
+<th>Refilled fuel</th>
+<th>Result (200 runs × 2·10^4 cycles)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2, 4 or 6</td>
+<td>199 halts (odd block after <code>0^1</code>)</td>
+</tr>
+<tr>
+<td>≥ 8 + r</td>
+<td>0 halts</td>
+</tr>
+</tbody>
+</table>
+<p>So "fuel mod 8" alone is too coarse. An invariant must also know that the refilled fuel is at least 8. That means size classes for the fuel and the last blocks: exact below a threshold T, residue mod 8 above it.</p>
+<p>Real fuels are at least 62, so this costs nothing in the real run.</p>
+<h3 id="3-a-cleaner-picture-of-the-counter">3. A cleaner picture of the counter</h3>
+<p>Each block acts as a small transducer. It has a state (gap on its left, parity) and gets two kinds of input from its right neighbour:</p>
+<ul>
+<li><strong>N</strong>: +3, which flips the parity. This happens when the right neighbour stops with Todd or Teven1.</li>
+<li><strong>R</strong>: the carry arrives.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>On R</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(2, odd)</td>
+<td>pass: becomes (3, even), sends R left</td>
+</tr>
+<tr>
+<td>(3, odd)</td>
+<td>Todd: becomes (2, even), sends N left</td>
+</tr>
+<tr>
+<td>(1, even)</td>
+<td>Teven1: becomes (3, even), sends N left</td>
+</tr>
+<tr>
+<td>(2, even)</td>
+<td>becomes (3, even) and inserts (1, 3) on its left</td>
+</tr>
+<tr>
+<td>(3, even)</td>
+<td>becomes (3, even) and inserts (2, 3) on its left</td>
+</tr>
+<tr>
+<td>(1, odd)</td>
+<td><strong>halt</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The steady life of a block, mod 8, is</p>
+<div class="highlight"><pre><span></span><code>(3,6) -N-&gt; (3,1) -R-&gt; (2,4) -N-&gt; (2,7) -R-&gt; (3,6)
+</code></pre></div>
+
+<p>That is a binary digit: the left neighbour gets N on 0→1 and R on 1→0.</p>
+<p><strong>Phase consistency.</strong> Call a pair of neighbours consistent when the left block's expected input matches the right block's next output:</p>
+<ul>
+<li>Expected input: N if even, R if odd. For a gap-1 block it is the other way round.</li>
+<li>Next output: R if the gap is 2, N if it is 1 or 3.</li>
+</ul>
+<p>Over 10^6 cycles (<code>work/cons.py</code>), every pair right of the 17-block frozen prefix is consistent in 98% of the samples. The rest have one inconsistent pair, or two next to each other.</p>
+<p>These defects are <strong>waves</strong>. A refill launches one, it inserts a new digit at each level it passes, and it dies when it reaches a block that expects R. The blocks that later become fuel are always born near the right end, at depth 2 at most, one epoch earlier (<code>work/depth.py</code>).</p>
+<p>The race is comfortable. Per epoch there are 2 to 11 insertions. The deepest block a carry reaches stays 24 or fewer blocks from the right end, while the tape grows from 10 to 97 blocks over 27 epochs (<code>work/race.py</code>).</p>
+<h3 id="why-plain-window-languages-fail">Why plain window languages fail</h3>
+<p><code>work/winfix2.py</code> and <code>work/winfix4.py</code> compute the least k-window language that contains the step-11,118 word and is closed under the abstract step. Words are read from the fuel end. The last D blocks keep length mod 8 (<code>winfix4</code>: size classes with T = 12 or 16) and deeper blocks keep parity only. <code>winfix4</code> includes the left-edge rules.</p>
+<p>Every run (k = 2-5, D = 2-3) ends with a halting word. <code>work/winfix4o.py</code> traces the first bad window. It comes from a 4-window that puts a (3, even) block receiving R (an inconsistent pair) right next to a fresh (1, 3). The Teven3 insertion then places a (2, odd) block right of a (1, odd) one.</p>
+<p>Windows cannot say "pairs are consistent except inside at most one wave". So the invariant needs an automaton that carries that relation.</p>
+<h3 id="next">Next</h3>
+<p>Build a right-to-left automaton:</p>
+<ul>
+<li><strong>Tail:</strong> a finite set of shapes for the last 2-3 blocks and the fuel, with size classes (fuel ≥ 8 after a refill).</li>
+<li><strong>Body:</strong> a chain of (gap, parity) blocks that are phase-consistent except for at most one wave, from a finite catalogue of wave shapes learned from the inconsistent-pair data.</li>
+<li><strong>Left end:</strong> the frozen prefix, closed under Lodd/Leven.</li>
+</ul>
+<p>Check closure with the product search in <code>winfix4.py</code>, which already has every step case including the left edge.</p>
+<h2 id="wave-6-stage-2-2026-10-14">Wave 6, stage 2 (2026-10-14)</h2>
+<p>Goal: the invariant. <strong>Not found.</strong> The mechanism is now much sharper, and the obstacle is now a clear, specific one: a timing question between two travelling defects.</p>
+<h3 id="1-each-block-is-a-six-state-transducer">1. Each block is a six-state transducer</h3>
+<p>The interior rules of <code>work/macro2.py</code> say exactly this. A block's state is its left gap and its parity. It gets N (+3) or R (the carry) from its right neighbour.</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>(gap, parity)</th>
+<th>Expects</th>
+<th>On N</th>
+<th>On R</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>(3, even)</td>
+<td>N</td>
+<td>B</td>
+<td>stays A, inserts D on its left</td>
+</tr>
+<tr>
+<td>B</td>
+<td>(3, odd)</td>
+<td>R</td>
+<td>A</td>
+<td>C, sends N left (Todd)</td>
+</tr>
+<tr>
+<td>C</td>
+<td>(2, even)</td>
+<td>N</td>
+<td>D</td>
+<td>A, inserts F on its left</td>
+</tr>
+<tr>
+<td>D</td>
+<td>(2, odd)</td>
+<td>R</td>
+<td>C</td>
+<td>A, sends R left (pass)</td>
+</tr>
+<tr>
+<td>E</td>
+<td>(1, even)</td>
+<td>R</td>
+<td>F</td>
+<td>A, sends N left (Teven1)</td>
+</tr>
+<tr>
+<td>F</td>
+<td>(1, odd)</td>
+<td>N</td>
+<td>E</td>
+<td><strong>halt</strong></td>
+</tr>
+</tbody>
+</table>
+<p>A new block of length 3 is D when the gap is 2 and F when the gap is 1. A block's <strong>next output</strong> is N if its gap is 3 or 1, and R if its gap is 2.</p>
+<p>A normal block cycles A → B → C → D → A on the inputs N R N R. It sends N on B → C and R on D → A. So it divides its input stream by two, like a binary digit.</p>
+<h3 id="2-phase-defects-and-the-only-halting-route">2. Phase defects, and the only halting route</h3>
+<p>Call a pair of neighbours <strong>in phase</strong> when the left block expects what the right block will send next.</p>
+<ul>
+<li>A chain that is all in phase never inserts and never halts.</li>
+<li>A gap-1 block sends N twice in a row over its life: once on E → A, and again on A → B → C. So its left neighbour gets one pulse out of phase. This is a <strong>phase defect</strong>.</li>
+<li>A defect moves left by insertions: A + R inserts D, and C + R inserts F. Most die within a level or two. Real waves live 1, 24, 192 or more than 200 cycles and reach depth 2, 5, 8, 11 or 13 (<code>work/s2_wave.py</code>). Each level is about 3 blocks deeper and 8 times slower.</li>
+<li>Up to two defect clusters right of the frozen prefix coexist (218 of 2·10^6 cycles, <code>work/s2_wave2.py</code>). Particles (defects and gap-1 blocks) right of the prefix are always at least 9 blocks apart (<code>work/s2_particles.py</code>).</li>
+</ul>
+<p>In the body, the machine halts only when R reaches an F.</p>
+<h3 id="3-the-pairing-rule-that-keeps-f-safe">3. The pairing rule that keeps F safe</h3>
+<p>In the real run, every gap-1 block has one of only four right neighbours (<code>work/s2_p12.py</code>, 10^5 samples):</p>
+<table>
+<thead>
+<tr>
+<th>Gap-1 block</th>
+<th>Right neighbour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F (1, odd)</td>
+<td>A or B (gap 3)</td>
+</tr>
+<tr>
+<td>E (1, even)</td>
+<td>C or D (gap 2)</td>
+</tr>
+</tbody>
+</table>
+<p>A gap-3 block only ever sends N. So an F whose right neighbour has gap 3 can never get R.</p>
+<p>The pairing breaks only if something is inserted between F and its neighbour. That needs an R to reach the neighbour while it is A. In other words, a later defect must catch the F before F has received its first N.</p>
+<p>Refill fuzz (<code>work/s2_p12b.py</code>, 60 runs × 3,000 cycles per row; each refill replaced by 8·m + r):</p>
+<table>
+<thead>
+<tr>
+<th>Refill range</th>
+<th>Pairing broken</th>
+<th>Halts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>real run</td>
+<td>never</td>
+<td>0</td>
+</tr>
+<tr>
+<td>24-56 (+r)</td>
+<td>never</td>
+<td>0</td>
+</tr>
+<tr>
+<td>16-48 (+r)</td>
+<td>(E, F) pairs appear</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2, 4, 6 (stage 1)</td>
+<td>(F, C) and (F, D) appear</td>
+<td>yes: "odd block after 0^1"</td>
+</tr>
+</tbody>
+</table>
+<p>So the small-refill halts of stage 1 are exactly this: a second defect catches an F.</p>
+<h3 id="4-larger-window-languages">4. Larger window languages</h3>
+<p><code>work/winfix4.py</code> with k = 7 and k = 10 (D = 2, T = 16, seeded with 2·10^5 real cycles) finds no bad word, but it does not close either. It reached 730,000 windows after 67 rounds (k = 7) and 2.2 million after 22 rounds (k = 10), still growing when stopped (logs in the scratchpad, not kept).</p>
+<h3 id="5-what-an-invariant-needs">5. What an invariant needs</h3>
+<p>What keeps an F safe is timing. Its right neighbour must send N before any later defect arrives.</p>
+<p>A window language glues a defect from one moment next to an F from another, so it cannot see this. The invariant has to relate each F (or live wave) to the next defect on its right, through the digits between them. Those digits decide which one moves first. This is a comparison of two counter values: regular in principle, but not local.</p>
+<h3 id="cryptid-question">Cryptid question</h3>
+<p>The answer is still <strong>no</strong>, and the reason is now sharper. Safety does not depend on the refill orbit a → ceil(3a/2) + 1, only on refills of at least 24 + r, and every real refill is at least 62. What it needs is the defect-timing property above, which is a property of the counter alone.</p>
+<h3 id="next-if-funded">Next (if funded)</h3>
+<ul>
+<li>Write the six-state chain as a right-to-left automaton. Its state is: the phase relation to the right neighbour, whether a gap-1 block is pending, and the digits from it to the nearest defect, cut off at the depth where the defect provably arrives late.</li>
+<li>Check closure with a product search like <code>winfix4.py</code>, using the six-state alphabet in the body and size classes only in the last 2-3 blocks.</li>
+</ul>
+</main></body></html>

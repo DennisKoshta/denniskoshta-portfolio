@@ -1,0 +1,823 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>style_summary.md</title>
+<style>
+:root { --bg:#ffffff; --fg:#1d2330; --muted:#6b7385; --line:#d9dde5; --panel:#f5f7fa; --link:#2b59c3; --code:#f3f5f8; }
+@media (prefers-color-scheme: dark) { :root { --bg:#12151c; --fg:#e6e9ef; --muted:#8b93a5; --line:#2a303c; --panel:#1a1f29; --link:#7aa2f7; --code:#1a1f29; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:980px; margin:0 auto; padding:20px 20px 64px; }
+.top { font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:16px; word-break:break-all; }
+.top a { color:var(--link); }
+a { color:var(--link); }
+h1,h2,h3,h4 { line-height:1.3; margin:1.4em 0 .5em; } h1 { font-size:1.7em; } h2 { font-size:1.35em; border-bottom:1px solid var(--line); padding-bottom:.2em; }
+code { font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.9em; background:var(--code); padding:.1em .35em; border-radius:4px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:8px; padding:12px 14px; overflow-x:auto; line-height:1.45; }
+pre code { background:none; padding:0; font-size:13.5px; }
+table { border-collapse:collapse; margin:1em 0; display:block; overflow-x:auto; }
+th,td { border:1px solid var(--line); padding:6px 10px; vertical-align:top; text-align:left; }
+th { background:var(--panel); }
+blockquote { margin:1em 0; padding:.4em 1em; border-left:4px solid var(--line); color:var(--muted); background:var(--panel); }
+img { max-width:100%; }
+/* source view */
+.src table { display:table; border:none; margin:0; font:13px/1.5 ui-monospace,"Cascadia Code",Consolas,monospace; }
+.src td { border:none; padding:0 10px; }
+.src td.linenos { text-align:right; color:var(--muted); user-select:none; border-right:1px solid var(--line); }
+.src td.linenos a { color:var(--muted); text-decoration:none; }
+.src pre { border:none; background:none; padding:0; margin:0; }
+.src :target { background:#fff3bf55; }
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #3D7B7B; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #3D7B7B; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #3D7B7B; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #9C6500 } /* Comment.Preproc */
+.highlight .cpf { color: #3D7B7B; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #3D7B7B; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #3D7B7B; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #E40000 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #008400 } /* Generic.Inserted */
+.highlight .go { color: #717171 } /* Generic.Output */
+.highlight .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #B00040 } /* Keyword.Type */
+.highlight .m { color: #666 } /* Literal.Number */
+.highlight .s { color: #BA2121 } /* Literal.String */
+.highlight .na { color: #687822 } /* Name.Attribute */
+.highlight .nb { color: #008000 } /* Name.Builtin */
+.highlight .nc { color: #00F; font-weight: bold } /* Name.Class */
+.highlight .no { color: #800 } /* Name.Constant */
+.highlight .nd { color: #A2F } /* Name.Decorator */
+.highlight .ni { color: #717171; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #CB3F38; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #00F } /* Name.Function */
+.highlight .nl { color: #767600 } /* Name.Label */
+.highlight .nn { color: #00F; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #19177C } /* Name.Variable */
+.highlight .ow { color: #A2F; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #666 } /* Literal.Number.Bin */
+.highlight .mf { color: #666 } /* Literal.Number.Float */
+.highlight .mh { color: #666 } /* Literal.Number.Hex */
+.highlight .mi { color: #666 } /* Literal.Number.Integer */
+.highlight .mo { color: #666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
+.highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
+.highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight .se { color: #AA5D1F; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight .si { color: #A45A77; font-weight: bold } /* Literal.String.Interpol */
+.highlight .sx { color: #008000 } /* Literal.String.Other */
+.highlight .sr { color: #A45A77 } /* Literal.String.Regex */
+.highlight .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #00F } /* Name.Function.Magic */
+.highlight .vc { color: #19177C } /* Name.Variable.Class */
+.highlight .vg { color: #19177C } /* Name.Variable.Global */
+.highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
+.highlight .il { color: #666 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #49483e }
+.highlight { background: #272822; color: #F8F8F2 }
+.highlight .c { color: #959077 } /* Comment */
+.highlight .err { color: #ED007E; background-color: #1E0010 } /* Error */
+.highlight .esc { color: #F8F8F2 } /* Escape */
+.highlight .g { color: #F8F8F2 } /* Generic */
+.highlight .k { color: #66D9EF } /* Keyword */
+.highlight .l { color: #AE81FF } /* Literal */
+.highlight .n { color: #F8F8F2 } /* Name */
+.highlight .o { color: #FF4689 } /* Operator */
+.highlight .x { color: #F8F8F2 } /* Other */
+.highlight .p { color: #F8F8F2 } /* Punctuation */
+.highlight .ch { color: #959077 } /* Comment.Hashbang */
+.highlight .cm { color: #959077 } /* Comment.Multiline */
+.highlight .cp { color: #959077 } /* Comment.Preproc */
+.highlight .cpf { color: #959077 } /* Comment.PreprocFile */
+.highlight .c1 { color: #959077 } /* Comment.Single */
+.highlight .cs { color: #959077 } /* Comment.Special */
+.highlight .gd { color: #FF4689 } /* Generic.Deleted */
+.highlight .ge { color: #F8F8F2; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #F8F8F2; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FF4689 } /* Generic.Error */
+.highlight .gh { color: #F8F8F2 } /* Generic.Heading */
+.highlight .gi { color: #A6E22E } /* Generic.Inserted */
+.highlight .go { color: #66D9EF } /* Generic.Output */
+.highlight .gp { color: #FF4689; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { color: #F8F8F2; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #959077 } /* Generic.Subheading */
+.highlight .gt { color: #66D9EF } /* Generic.Traceback */
+.highlight .kc { color: #66D9EF } /* Keyword.Constant */
+.highlight .kd { color: #66D9EF } /* Keyword.Declaration */
+.highlight .kn { color: #FF4689 } /* Keyword.Namespace */
+.highlight .kp { color: #66D9EF } /* Keyword.Pseudo */
+.highlight .kr { color: #66D9EF } /* Keyword.Reserved */
+.highlight .kt { color: #66D9EF } /* Keyword.Type */
+.highlight .ld { color: #E6DB74 } /* Literal.Date */
+.highlight .m { color: #AE81FF } /* Literal.Number */
+.highlight .s { color: #E6DB74 } /* Literal.String */
+.highlight .na { color: #A6E22E } /* Name.Attribute */
+.highlight .nb { color: #A6E22E } /* Name.Builtin */
+.highlight .nc { color: #A6E22E } /* Name.Class */
+.highlight .no { color: #66D9EF } /* Name.Constant */
+.highlight .nd { color: #A6E22E } /* Name.Decorator */
+.highlight .ni { color: #F8F8F2 } /* Name.Entity */
+.highlight .ne { color: #A6E22E } /* Name.Exception */
+.highlight .nf { color: #A6E22E } /* Name.Function */
+.highlight .nl { color: #F8F8F2 } /* Name.Label */
+.highlight .nn { color: #F8F8F2 } /* Name.Namespace */
+.highlight .nx { color: #A6E22E } /* Name.Other */
+.highlight .py { color: #F8F8F2 } /* Name.Property */
+.highlight .nt { color: #FF4689 } /* Name.Tag */
+.highlight .nv { color: #F8F8F2 } /* Name.Variable */
+.highlight .ow { color: #FF4689 } /* Operator.Word */
+.highlight .pm { color: #F8F8F2 } /* Punctuation.Marker */
+.highlight .w { color: #F8F8F2 } /* Text.Whitespace */
+.highlight .mb { color: #AE81FF } /* Literal.Number.Bin */
+.highlight .mf { color: #AE81FF } /* Literal.Number.Float */
+.highlight .mh { color: #AE81FF } /* Literal.Number.Hex */
+.highlight .mi { color: #AE81FF } /* Literal.Number.Integer */
+.highlight .mo { color: #AE81FF } /* Literal.Number.Oct */
+.highlight .sa { color: #E6DB74 } /* Literal.String.Affix */
+.highlight .sb { color: #E6DB74 } /* Literal.String.Backtick */
+.highlight .sc { color: #E6DB74 } /* Literal.String.Char */
+.highlight .dl { color: #E6DB74 } /* Literal.String.Delimiter */
+.highlight .sd { color: #E6DB74 } /* Literal.String.Doc */
+.highlight .s2 { color: #E6DB74 } /* Literal.String.Double */
+.highlight .se { color: #AE81FF } /* Literal.String.Escape */
+.highlight .sh { color: #E6DB74 } /* Literal.String.Heredoc */
+.highlight .si { color: #E6DB74 } /* Literal.String.Interpol */
+.highlight .sx { color: #E6DB74 } /* Literal.String.Other */
+.highlight .sr { color: #E6DB74 } /* Literal.String.Regex */
+.highlight .s1 { color: #E6DB74 } /* Literal.String.Single */
+.highlight .ss { color: #E6DB74 } /* Literal.String.Symbol */
+.highlight .bp { color: #A6E22E } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #A6E22E } /* Name.Function.Magic */
+.highlight .vc { color: #F8F8F2 } /* Name.Variable.Class */
+.highlight .vg { color: #F8F8F2 } /* Name.Variable.Global */
+.highlight .vi { color: #F8F8F2 } /* Name.Variable.Instance */
+.highlight .vm { color: #F8F8F2 } /* Name.Variable.Magic */
+.highlight .il { color: #AE81FF } /* Literal.Number.Integer.Long */
+.highlight { background: none; }
+}
+
+</style><style>.stale{display:none!important}</style></head><body><aside style="padding:9px 18px;background:#e8eff3;color:#23323c;font:13px/1.5 system-ui;border-bottom:1px solid #aebbc4;position:relative;z-index:10">Static snapshot · 2026-10-17 04:33 UTC · <a style="color:inherit;text-decoration:underline" href="/work/busycoq/">Back to portfolio</a>. Statuses reflect the capture date.</aside><main>
+<div class="top">/reports/forensics/style_summary.md · <a href="/busy-beaver/reports/forensics/style_summary.md.html">raw</a></div>
+<h2 id="s1-proof-file-style-by-era-of-first-commit-median-per-file-proof-files-at-the-pin-certificates-excluded">S1. Proof-file style by era of first commit (median per file; proof files at the pin, certificates excluded)</h2>
+<table>
+<thead>
+<tr>
+<th>era</th>
+<th style="text-align: right;">files</th>
+<th style="text-align: right;">bytes_per_machine</th>
+<th style="text-align: right;">comment_ratio</th>
+<th style="text-align: right;">median_proof_lines</th>
+<th style="text-align: right;">fw_tac_per_lemma</th>
+<th style="text-align: right;">gen_tac_per_lemma</th>
+<th style="text-align: right;">lia_per_lemma</th>
+<th style="text-align: right;">n_inductive</th>
+<th style="text-align: right;">n_fixpoint</th>
+<th style="text-align: right;">coqdoc_headings</th>
+<th style="text-align: right;">bullets</th>
+<th style="text-align: right;">snake_lemma_frac</th>
+<th style="text-align: right;">mean_lemma_name_len</th>
+<th style="text-align: right;">mean_line_len</th>
+<th style="text-align: right;">late_requires</th>
+<th style="text-align: right;">has_header</th>
+<th style="text-align: right;">prose_comments_per_kloc</th>
+<th style="text-align: right;">cbn_lists</th>
+<th style="text-align: right;">intro_patterns</th>
+<th style="text-align: right;">zify_or_selector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a: before 2025-12</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">3599</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.44</td>
+<td style="text-align: right;">4.71</td>
+<td style="text-align: right;">0.71</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>b: 2025-12..2026-06</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">7124</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">6.03</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>c: 2026-07..08</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">23196</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">0.85</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">141</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">10.8</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>d: 2026-09..10</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: right;">13224</td>
+<td style="text-align: right;">0.0085</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">7.975</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">86</td>
+<td style="text-align: right;">0.715</td>
+<td style="text-align: right;">9.25</td>
+<td style="text-align: right;">41.1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.965</td>
+<td style="text-align: right;">27.5</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s2-same-split-by-assistant-style-header-external-file-references">S2. Same, split by assistant-style header / external-file references</h2>
+<table>
+<thead>
+<tr>
+<th>group</th>
+<th style="text-align: right;">files</th>
+<th style="text-align: right;">bytes_per_machine</th>
+<th style="text-align: right;">comment_ratio</th>
+<th style="text-align: right;">median_proof_lines</th>
+<th style="text-align: right;">fw_tac_per_lemma</th>
+<th style="text-align: right;">gen_tac_per_lemma</th>
+<th style="text-align: right;">lia_per_lemma</th>
+<th style="text-align: right;">n_inductive</th>
+<th style="text-align: right;">n_fixpoint</th>
+<th style="text-align: right;">coqdoc_headings</th>
+<th style="text-align: right;">bullets</th>
+<th style="text-align: right;">snake_lemma_frac</th>
+<th style="text-align: right;">mean_lemma_name_len</th>
+<th style="text-align: right;">mean_line_len</th>
+<th style="text-align: right;">late_requires</th>
+<th style="text-align: right;">has_header</th>
+<th style="text-align: right;">prose_comments_per_kloc</th>
+<th style="text-align: right;">cbn_lists</th>
+<th style="text-align: right;">intro_patterns</th>
+<th style="text-align: right;">zify_or_selector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>assistant-style header / c</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">88113</td>
+<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">8.73</td>
+<td style="text-align: right;">0.43</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">19.6</td>
+<td style="text-align: right;">43.6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.42</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>assistant-style header / d</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">23729.5</td>
+<td style="text-align: right;">0.0155</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.605</td>
+<td style="text-align: right;">6.35</td>
+<td style="text-align: right;">0.885</td>
+<td style="text-align: right;">4.5</td>
+<td style="text-align: right;">12.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">8.3</td>
+<td style="text-align: right;">43.15</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6.025</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>plain / a</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">3599</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1.44</td>
+<td style="text-align: right;">4.71</td>
+<td style="text-align: right;">0.71</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">6.2</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>plain / b</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">7124</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">6.03</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">0.59</td>
+<td style="text-align: right;">7.2</td>
+<td style="text-align: right;">24.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>plain / c</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">20577</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">9.665</td>
+<td style="text-align: right;">0.865</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">122.5</td>
+<td style="text-align: right;">0.895</td>
+<td style="text-align: right;">10.75</td>
+<td style="text-align: right;">29.85</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr>
+<td>plain / d</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">6605.5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.08</td>
+<td style="text-align: right;">9.385</td>
+<td style="text-align: right;">1.515</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.71</td>
+<td style="text-align: right;">9.5</td>
+<td style="text-align: right;">38.2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s3-files-with-an-assistant-style-header-or-references-to-files-not-in-the-repo">S3. Files with an assistant-style header or references to files not in the repo</h2>
+<table>
+<thead>
+<tr>
+<th>first seen</th>
+<th>commit</th>
+<th>file</th>
+<th style="text-align: right;">6x2 proved</th>
+<th style="text-align: right;">bytes</th>
+<th>header / external refs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-08-15</td>
+<td>7583181</td>
+<td><code>BLECv3x.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">88,113</td>
+<td>— refs: TM4x1.txt</td>
+</tr>
+<tr>
+<td>2026-08-15</td>
+<td>7583181</td>
+<td><code>BLECv3y.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">241,027</td>
+<td>— refs: TM4y1.txt</td>
+</tr>
+<tr>
+<td>2026-08-15</td>
+<td>7583181</td>
+<td><code>SBCv6a2.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">45,581</td>
+<td>— refs: TM11.txt</td>
+</tr>
+<tr>
+<td>2026-09-08</td>
+<td>a7183bb</td>
+<td><code>Sk17.v</code></td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">538,907</td>
+<td>Self-contained column-flow proofs for test_48/TM1--TM8 and Skelet17/v2--v8. Only BusyCoq and the Coq standard library are required.</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>FractalType7v2.v</code></td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">389,031</td>
+<td>— refs: FT7CallRules.v;FT7Compute.v;FT7ComputeSpec.v;FT7Cycle.v;FT7Entry.v;FT7Machines.v;FT7Proof.v;FT7Stages.v</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>FractalType7v3.v</code></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">74,080</td>
+<td>— refs: FT7TM16Compute.v;FT7TM16ComputeSpec.v;FT7TM16Cycle.v;FT7TM16Nonhalt.v;FT7TM16Prefix.v;FT7TM17.v;FT7TM17Compute.v;FT7TM17ComputeSpec.v</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_2_3_v4.v</code></td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">407,568</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC23_R2carry.v;SOC23_R2carry01.v;SOC23_R2half.v;SOC23_R2parity.v;SOC23_R2split.v;SOC23_R2weighted.v;SOC23_ShortSplit.v;SOC23_TM102Halt.v</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_2_4_v8.v</code></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">45,933</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC24_R3.v;SOC_FT7_CONSOLIDATION.md</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_2_5_v2.v</code></td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">106,563</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC25_R3.v;SOC25_R3zero.v;SOC25_TM85.v;SOC25_TM91.v;SOC_FT7_CONSOLIDATION.md</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_3_3_v5.v</code></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">142,447</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC33_TM4.v;SOC_EX_WEIGHTED.md;SOC_ExWeighted.v;SOC_FT7_CONSOLIDATION.md</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_3_4_v1.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16,383</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC_FT7_CONSOLIDATION.md</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_3_6_v1.v</code></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">38,932</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC_FT7_CONSOLIDATION.md</td>
+</tr>
+<tr>
+<td>2026-09-16</td>
+<td>51fa271</td>
+<td><code>SOC_4_3_v1.v</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">25,226</td>
+<td>Consolidated checked proofs. See SOC_FT7_CONSOLIDATION.md for numbering. — refs: SOC43_Extra.v;SOC_FT7_CONSOLIDATION.md</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>BTCv4.v</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">31,585</td>
+<td>M-Abozaid M23 and its sibling: event acceleration plus the existing CTL checker. Sources, certificate conversion and audit: EXTERNAL_BOUNCER_PROOFS.md. The DFA  — refs: EXTERNAL_BOUNCER_PROOFS.md;m23_dfa_analyze.py</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>SOC23_Halt165.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">91,057</td>
+<td>SOC23.TM165: standalone periodic-tape checker and halting proof. This file needs only BusyCoq and the standard library.</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>SOC23_Nonhalt51.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">130,826</td>
+<td>SOC23.TM51: nonhalting by a generated-block queue invariant. Standalone; only BusyCoq and standard-library dependencies. The finite entry is checked using binar — refs: SOC51_BLOCK_PROOF.md</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>SOC23_PeriodicHalt.v</code></td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">92,160</td>
+<td>SOC23.TM69/72/70: standalone periodic-tape checker, soundness and final checks. This file needs only BusyCoq and the standard library.</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>SOC43_Halt13.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">56,273</td>
+<td>SOC_ex 13 (test_SOC_4_3.TM10): finite halting proof with sparse powers. Standalone: only BusyCoq and standard-library dependencies. See SOC43_EX13_RUNS.md for t — refs: SOC43_EX13_RUNS.md</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>SOC43_Halt14.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">87,337</td>
+<td>SOC_ex row 14: standalone periodic-tape checker and its TM soundness.</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>SOTCv2.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">27,109</td>
+<td>M-Abozaid M7: BusyCoq translation of the translated-counter level cycle. Source and attribution: EXTERNAL_BOUNCER_PROOFS.md. All rules, initialization and nonha — refs: EXTERNAL_BOUNCER_PROOFS.md</td>
+</tr>
+<tr>
+<td>2026-09-30</td>
+<td>27b8b41</td>
+<td><code>Sk1Machines.v</code></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">83,110</td>
+<td>Sk1 Class1: TM17 nonhalts; TM91, TM94, TM104, TM105 halt. Self-contained except for BusyCoq and the Coq standard library.</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td>0940bb9</td>
+<td><code>Bell60.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">11,334</td>
+<td>Bell60: a complete RLE accelerator and its halting certificate. Only BusyCoq and standard-library dependencies; no stored long trace.</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td>0940bb9</td>
+<td><code>CounterClass3v2.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">40,609</td>
+<td>M1: macro-inductive nonhalting proof, ported to current BusyCoq. The two finite symbolic bridges are generated and checked inside Coq; no external trace table o — refs: Base.v;Tail.v;symsim.py</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td>0940bb9</td>
+<td><code>CubicMachines.v</code></td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">71,130</td>
+<td>Completed machines from cubic.txt: TM1, TM17, TM18, TM39, TM41, TM49. Five halt proofs and one nonhalt proof. TM17 and TM18 share their one long computation. On — refs: cubic.txt</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td>0940bb9</td>
+<td><code>QuadraticMess30.v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38,975</td>
+<td>Parameter lemmas adapted from the halting-proof archive supplied by the user. The entire route is generated by a proved RLE parameter interpreter.</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td>0940bb9</td>
+<td><code>Queue_v1.v</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">59,729</td>
+<td>Adapted from the October 2026 nonhalting proof archive supplied by the user. The finite graph is constructed by a small generator, not a literal table.</td>
+</tr>
+<tr>
+<td>2026-10-07</td>
+<td>0940bb9</td>
+<td><code>SOCMisc.v</code></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">316,038</td>
+<td>SOC A1--A7: independent nonhalting proofs, with shared arithmetic. TM1, TM5 and TM6 use literal L/R mirrors; the others use the originals. Each machine and its  — refs: SOCPair12Carry.v;SOCPair12Closure.v;SOCPair12Entry.v;SOCPair12EntryGuard.v;SOCPair12Exceptional.v;SOCPair12Guard.v;SOCPair12Ordinary.v;SOCPair12Overflow.v</td>
+</tr>
+</tbody>
+</table>
+<h2 id="s4-signal-hit-counts">S4. Signal hit counts</h2>
+<table>
+<thead>
+<tr>
+<th>source</th>
+<th>strength</th>
+<th>pattern</th>
+<th style="text-align: right;">hits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sheet</td>
+<td>strong</td>
+<td><code>\bClaude\b</code></td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>sheet</td>
+<td>strong</td>
+<td><code>\bOpus\b</code></td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>sheet</td>
+<td>weak</td>
+<td><code>\barchive\b</code></td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\b[A-Z][A-Z0-9_]+\.md\b</code></td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\barchive\b</code></td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\baudit\b</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bconsolidat\w*</code></td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bgenerated (?:and checked )?(?:inside|by|in) (?:Coq|a)\b</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bno (?:external|stored|literal)\b</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bported to current BusyCoq\b</code></td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bself-contained\b</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bstandalone\b</code></td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\bthe user'?s?\b</code></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>\buntrusted input\b</code></td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>only BusyCoq|requires only BusyCoq|BusyCoq and (?:the )?(?:Coq )?standard[- ]library</code></td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr>
+<td>v comment</td>
+<td>weak</td>
+<td><code>supplied by the user</code></td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+</main></body></html>
