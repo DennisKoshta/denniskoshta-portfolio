@@ -1,12 +1,13 @@
 // Shared light/dark theme state. Loaded before CSS to restore preferences without a flash.
 (() => {
-  const key = 'portfolio-appearance-v2';
+  const key = 'portfolio-appearance-v3';
   const presets = [
     {id:'mist', name:'Mist', mode:'light', bg:'#edf2f2', accent:'#426b70'},
     {id:'paper', name:'Paper', mode:'light', bg:'#f6f5f1', accent:'#526779'},
     {id:'porcelain', name:'Porcelain', mode:'light', bg:'#f5f7fa', accent:'#456b94'},
     {id:'sand', name:'Sand', mode:'light', bg:'#f2eee6', accent:'#796348'},
     {id:'mono', name:'Monochrome', mode:'light', bg:'#f3f3f3', accent:'#555555'},
+    {id:'midnight', name:'Midnight', mode:'dark', bg:'#0c0d0e', accent:'#a8bad2'},
     {id:'graphite', name:'Graphite', mode:'dark', bg:'#202326', accent:'#adc6c8'},
     {id:'ink', name:'Ink', mode:'dark', bg:'#181c22', accent:'#a8bad2'},
     {id:'night-mist', name:'Night mist', mode:'dark', bg:'#1c272a', accent:'#a8cbcc'},
@@ -51,7 +52,7 @@
   }
   const modeOf = theme => luminance(theme.bg)<.179?'dark':'light';
   const valid = theme => theme && hex(theme.bg) && hex(theme.accent);
-  const defaults = {light:presets[0],dark:presets.find(p=>p.id==='graphite')};
+  const defaults = {light:presets[0],dark:presets.find(p=>p.id==='midnight')};
   const state = {mode:'light',light:{...defaults.light},dark:{...defaults.dark}};
   try {
     const stored=JSON.parse(localStorage.getItem(key));
@@ -59,8 +60,10 @@
       for(const mode of ['light','dark'])if(valid(stored[mode])&&modeOf(stored[mode])===mode)state[mode]=stored[mode];
       if(['light','dark'].includes(stored.mode))state.mode=stored.mode;
     }else{
-      const legacy=JSON.parse(localStorage.getItem('portfolio-theme-preview-v1'));
-      if(valid(legacy)){state.mode=modeOf(legacy);state[state.mode]=legacy;}
+      // Retire experimental palettes while retaining the visitor's chosen mode.
+      const previous=JSON.parse(localStorage.getItem('portfolio-appearance-v2'));
+      if(previous&&['light','dark'].includes(previous.mode))state.mode=previous.mode;
+      else {const legacy=JSON.parse(localStorage.getItem('portfolio-theme-preview-v1'));if(valid(legacy))state.mode=modeOf(legacy);}
     }
   }catch{}
   let current;
@@ -75,7 +78,7 @@
     root.style.colorScheme=tokens.scheme;
     root.dataset.theme=current.id;root.dataset.mode=mode;
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content',current.bg);
-    if(persist)try{localStorage.setItem(key,JSON.stringify(state));localStorage.removeItem('portfolio-theme-preview-v1');}catch{}
+    if(persist)try{localStorage.setItem(key,JSON.stringify(state));localStorage.removeItem('portfolio-theme-preview-v1');localStorage.removeItem('portfolio-appearance-v2');}catch{}
     if(typeof window.dispatchEvent==='function')window.dispatchEvent(new Event('portfolio-theme-change'));
   }
   apply(state[state.mode],false);

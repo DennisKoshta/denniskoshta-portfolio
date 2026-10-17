@@ -46,7 +46,6 @@ function page({title, description = config.description, body, route = '/', activ
 <link rel="preload" href="/assets/fonts/dm-sans-0.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="/site.webmanifest"><link rel="stylesheet" href="/assets/site.css">
 <script type="module" src="/assets/mode-toggle.js"></script>
-<script type="module" src="/assets/theme-panel.js"></script>
 <script type="application/ld+json">${JSON.stringify(schema).replaceAll('<','\\u003c')}</script><script type="module" src="/assets/site.js"></script>
 </head><body class="${route === '/' ? 'home' : ['/work/','/studio/'].includes(route) ? 'project-index-page' : ''}"><a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header"><a class="site-mark" href="/" aria-label="Dennis Koshta — home">${brandMark}</a><nav aria-label="Main navigation">${[['Home','/'],['Work','/work/'],['Writing','/notes/'],['About','/about/']].map(([name,href]) => `<a href="${href}"${active === name || (name === 'Home' && route === '/') ? ' aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
