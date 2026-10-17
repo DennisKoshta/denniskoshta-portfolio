@@ -26,6 +26,23 @@ try {
    result.checks.push({width,route,status:response.status(),overflow,a11yViolations:violations.length});
   }
   if(exceptions.length)result.failures.push({width,exceptions});
+  // Padding, text, and images must follow the primary link; resource links stay independent.
+  await page.goto(base+'/');
+  const selectedTile=page.locator('#selected-work .project-tile').first();
+  const tileBox=await selectedTile.boundingBox();
+  await selectedTile.click({position:{x:tileBox.width-12,y:tileBox.height-12}});
+  await page.waitForURL(base+'/work/upbringing/');
+  await page.goto(base+'/');
+  const code=page.locator('#selected-work .project-tile').first().getByRole('link',{name:'Code',exact:true});
+  const codeURL=await code.getAttribute('href');
+  await page.route(codeURL,route=>route.fulfill({contentType:'text/html',body:'<title>Code link test</title>'}));
+  await code.click();await page.waitForURL(codeURL);await page.unroute(codeURL);
+  await page.goto(base+'/');
+  await page.locator('#selected-work .tile-link').first().focus();
+  await page.keyboard.press('Enter');await page.waitForURL(base+'/work/upbringing/');
+  await page.goto(base+'/work/');
+  await page.locator('.project-tile').filter({has:page.getByRole('link',{name:'TransferBatch',exact:true})}).click({position:{x:40,y:40}});
+  await page.waitForURL(base+'/work/transferbatch/');
   await page.goto(base+'/work/');
   await page.getByLabel('Category',{exact:true}).selectOption('research');
   assert.equal(await page.locator('[data-project]:visible').count(),7);
@@ -36,6 +53,7 @@ try {
   await page.getByRole('searchbox').fill('no-such-project-xyz');
   assert.equal(await page.locator('.empty-results').isVisible(),true);
   assert.equal(await page.locator('[data-project-group]:visible').count(),0);
+  assert.equal(await page.locator('.tile-grid:visible').count(),0);
   await page.getByRole('button',{name:'Show all projects'}).click();
   assert.equal(await page.locator('[data-project]:visible').count(),28);
   await page.getByRole('searchbox').fill('rag-eval-kit');
@@ -79,7 +97,7 @@ try {
   const bad=await page.goto(base+'/a-page-that-does-not-exist/');assert.equal(bad.status(),404);assert.equal(await page.locator('h1').count(),1);
   await context.close();
  }
- result.interactions='Passed project search and category filters, URL persistence, no-results/reset, project navigation, contents links, on-demand application playback and removal, no initial app/font requests, skip link, and 404';
+ result.interactions='Passed whole-tile padding/image clicks, independent resource links, keyboard activation, project search and category filters, URL persistence, no-results/reset, project navigation, contents links, on-demand application playback and removal, no initial app/font requests, skip link, and 404';
 }catch(error){result.failures.push({error:error.stack});}
 finally{await browser.close();fs.writeFileSync(path.join(qa,'browser-report.json'),JSON.stringify(result,null,2));}
 console.log(JSON.stringify({pageChecks:result.checks.length,failures:result.failures.length,interactions:result.interactions,report:path.join(qa,'browser-report.json')}));

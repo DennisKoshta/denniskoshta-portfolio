@@ -12,7 +12,7 @@ try {
   await page.goto(base);
   await page.setContent(`<!doctype html><html><head><meta charset="utf-8"><style>
     * { box-sizing:border-box; } body { margin:0; background:#1b211f; color:#eee9df; font-family:Arial,sans-serif; }
-    main { padding:68px 70px; border-top:3px solid #d8b58b; } .intro { display:flex; justify-content:space-between; align-items:start; }
+    main { padding:68px 70px; } .intro { display:flex; justify-content:space-between; align-items:start; }
     h1 { margin:22px 0 24px; font-size:60px; line-height:1.15; font-weight:600; letter-spacing:-2px; }
     p { margin:0; font-size:26px; line-height:1.55; color:#adb8b0; }
     img { width:205px; height:235px; object-fit:cover; object-position:center 25%; border-radius:4px; }

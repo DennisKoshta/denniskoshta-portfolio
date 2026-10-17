@@ -12,7 +12,7 @@ if (catalog) {
       entry.hidden = !((category.value === 'all' || entry.dataset.kind === category.value) && query.split(/\s+/).every(term => entry.dataset.search.includes(term)));
       if (!entry.hidden) count++;
     }
-    catalog.querySelectorAll('[data-project-group]').forEach(section => {
+    catalog.querySelectorAll('[data-project-group], .tile-grid').forEach(section => {
       section.hidden = ![...section.querySelectorAll('[data-project]')].some(entry => !entry.hidden);
     });
     catalog.querySelector('[data-result-count]').textContent = `${count} ${count === 1 ? 'project' : 'projects'}`;
