@@ -18,6 +18,7 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 
 - `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project slug and a short description.
 - `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 28 project records.
+- `content/papers.json`: paper titles, short descriptions, course labels, and links to the original PDFs in `public/papers/`. Papers are separate from project records.
 - `content/profile.json`: biography, experience, contribution disclosures, and the supplied headshot.
 - `scripts/build.mjs`: readable static page templates.
 - `styles/site.css`: responsive and print styles; minified into `dist/assets/site.css` at build time.

@@ -4,6 +4,12 @@ const root=path.resolve('dist');
 const errors=[];
 const read=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 const projects=['core','supporting','studio'].flatMap(n=>read(`content/${n}-projects.json`));
+const papers=read('content/papers.json');
+for(const paper of papers){
+ for(const key of ['title','type','course','summary','url'])if(!paper[key])errors.push(`Paper missing ${key}`);
+ if(!paper.url?.startsWith('/papers/')||!paper.url?.endsWith('.pdf'))errors.push(`Invalid paper URL: ${paper.url}`);
+ if(!Number.isInteger(paper.pages)||paper.pages<1)errors.push(`Invalid page count: ${paper.title}`);
+}
 const slugs=new Set();
 for(const p of projects){
  if(slugs.has(p.slug))errors.push(`Duplicate project ${p.slug}`);slugs.add(p.slug);
@@ -38,4 +44,4 @@ for(const file of pages){
  }
 }
 const index=read('dist/project-index.json');if(index.length!==projects.length)errors.push('Incomplete project catalog');
-if(errors.length){console.error(errors.join('\n'));process.exitCode=1;}else console.log(`Content and build checks passed: ${projects.length} projects, ${pages.length} HTML pages, ${localLinks} local references.`);
+if(errors.length){console.error(errors.join('\n'));process.exitCode=1;}else console.log(`Content and build checks passed: ${projects.length} projects, ${papers.length} papers, ${pages.length} HTML pages, ${localLinks} local references.`);
