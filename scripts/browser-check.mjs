@@ -53,8 +53,16 @@ try {
   assert.equal(await page.locator('.empty-results').isVisible(),true);
   assert.equal(await page.locator('[data-project-group]:visible').count(),0);
   assert.equal(await page.locator('.tile-grid:visible').count(),0);
-  await page.getByRole('button',{name:'Show all projects'}).click();
-  assert.equal(await page.locator('[data-project]:visible').count(),28);
+  await page.getByRole('button',{name:'Show all work'}).click();
+  assert.equal(await page.locator('[data-project]:visible').count(),30);
+  await page.getByLabel('Category',{exact:true}).selectOption('papers');
+  assert.equal(await page.locator('[data-project]:visible').count(),2);
+  await page.getByRole('searchbox').fill('choice');
+  assert.equal(await page.locator('[data-project]:visible').count(),1);
+  assert.equal(await page.locator('[data-project]:visible h3').textContent(),'Equivalents of the Axiom of Choice');
+  await page.reload();assert.equal(await page.locator('[data-project]:visible').count(),1);
+  await page.getByRole('searchbox').fill('');
+  await page.getByLabel('Category',{exact:true}).selectOption('all');
   await page.getByRole('searchbox').fill('rag-eval-kit');
   await page.getByRole('link',{name:'rag-eval-kit',exact:true}).click();
   assert.equal(new URL(page.url()).pathname,'/work/rag-eval-kit/');

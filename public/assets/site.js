@@ -15,7 +15,7 @@ if (catalog) {
     catalog.querySelectorAll('[data-project-group], .tile-grid').forEach(section => {
       section.hidden = ![...section.querySelectorAll('[data-project]')].some(entry => !entry.hidden);
     });
-    catalog.querySelector('[data-result-count]').textContent = `${count} ${count === 1 ? 'project' : 'projects'}`;
+    catalog.querySelector('[data-result-count]').textContent = `${count} ${count === 1 ? 'result' : 'results'}`;
     catalog.querySelector('.empty-results').hidden = count > 0;
     if (updateURL) {
       const url = new URL(location.href);

@@ -7,6 +7,7 @@ const config = read('content/site.json');
 const profile = read('content/profile.json');
 const papers = read('content/papers.json');
 const projects = ['core-projects', 'supporting-projects', 'studio-projects'].flatMap(name => read(`content/${name}.json`));
+const workItems = [...projects, ...papers.map(p => ({...p,kind:'Paper'}))];
 const bySlug = new Map(projects.map(p => [p.slug, p]));
 const out = path.resolve('dist');
 fs.rmSync(out, {recursive:true, force:true});
@@ -17,8 +18,8 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&l
 const rich = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 const url = slug => `/work/${slug}/`;
 const link = (href, label) => `<a href="${esc(href)}">${esc(label)}</a>`;
-const group = p => p.kind === 'Creative' ? 'studio' : p.kind === 'Foundations' ? 'foundations' : p.kind === 'Product' ? 'products' : 'research';
-const groups = [['research','Research & systems'], ['products','Software'], ['studio','Interactive projects'], ['foundations','Earlier work']];
+const group = p => p.kind === 'Paper' ? 'papers' : p.kind === 'Creative' ? 'studio' : p.kind === 'Foundations' ? 'foundations' : p.kind === 'Product' ? 'products' : 'research';
+const groups = [['research','Research & systems'], ['papers','Papers'], ['products','Software'], ['studio','Interactive projects'], ['foundations','Earlier work']];
 const routes = [];
 const brandMark = fs.readFileSync('public/favicon.svg','utf8').replace(/<style>[\s\S]*?<\/style>/,'').replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 function write(route, html) {
@@ -62,6 +63,7 @@ function resourceLinks(p) {
   return links.length ? `<p class="resource-links">${links.join('<span aria-hidden="true"> · </span>')}</p>` : '';
 }
 function entry(p, description = p.summary, resources = false, visual = false, href = url(p.slug)) {
+  if (p.kind === 'Paper') return paperEntry(p);
   const hasImage = visual && p.image;
   return `<li class="project-entry project-tile${hasImage ? ' has-image' : ''}" data-project data-kind="${group(p)}" data-search="${esc([p.title,p.summary,...p.domains || [],...p.stack || []].join(' ').toLowerCase())}">${hasImage ? `<img class="tile-image" src="${esc(p.image)}" alt="${esc(p.imageAlt || p.title)}" width="600" height="400" loading="lazy" decoding="async">` : ''}<div class="tile-copy"><p class="tile-topic">${esc(p.domains?.slice(0,2).join(' · ') || p.kind)}</p><h3><a class="tile-link" href="${esc(href)}">${esc(p.title)}</a></h3><p>${esc(description)}</p>${resources ? resourceLinks(p) : ''}</div></li>`;
 }
@@ -77,19 +79,26 @@ function catalog(items) {
     return itemsInGroup.length ? `<section id="${key}" class="catalog-group" data-project-group><h2>${title}</h2>${pictured.length ? `<ul class="project-list tile-grid visual-grid">${pictured.map(p => entry(p,p.summary,false,true)).join('')}</ul>` : ''}${textOnly.length ? `<ul class="project-list tile-grid">${textOnly.map(p => entry(p)).join('')}</ul>` : ''}</section>` : '';
   }).join('');
 }
+function paperEntry(p) {
+  return `<li class="project-tile paper-tile" data-project data-kind="papers" data-search="${esc([p.title,p.summary,p.type,p.course].join(' ').toLowerCase())}"><div class="tile-copy"><p class="tile-topic">${esc(p.type)} · ${esc(p.course)}</p><h3><a class="tile-link" href="${esc(p.url)}">${esc(p.title)}</a></h3><p>${esc(p.summary)}</p><p class="paper-format">Read PDF · ${p.pages} pages</p></div></li>`;
+}
+function paperList() {
+  return `<ul class="project-list tile-grid">${papers.map(paperEntry).join('')}</ul>`;
+}
 const demoURL = 'https://denniskoshta.github.io/studio/signal-garden/?embed=portfolio';
 function demo() {
   return `<div class="live-demo" data-demo><div class="demo-heading"><h3>Signal Garden demo</h3>${link('https://denniskoshta.github.io/studio/signal-garden/','Open full app')}</div><p>Choose a scene and press Play, or try Create random scene.</p><div class="demo-stage"><div data-demo-mount></div><template data-demo-template><iframe title="Signal Garden music composition application" src="${demoURL}" loading="lazy" allow="autoplay; fullscreen" sandbox="allow-scripts allow-same-origin allow-downloads allow-forms" referrerpolicy="no-referrer"></iframe></template><div class="demo-rest" data-demo-rest><img src="${bySlug.get('signal-garden').image}" alt="Signal Garden’s landscape and music sequencer" width="600" height="400" loading="lazy" decoding="async"><button type="button" data-start-demo>Start demo</button></div></div><div class="demo-bar"><p data-demo-status role="status">Start the demo here, then choose a scene or create a random one.</p><button type="button" data-stop-demo hidden>Stop demo</button></div></div>`;
 }
 const homeBody = `<section class="bio"><div><h1>Dennis Koshta</h1>${config.intro.map(p => `<p>${esc(p)}</p>`).join('')}<p class="contact-links">${link('mailto:' + profile.email,'Email')} · ${link(config.github,'GitHub')} · ${link(config.linkedin,'LinkedIn')}</p></div><img class="portrait" src="${profile.image}" width="${profile.imageWidth}" height="${profile.imageHeight}" alt="Dennis Koshta"></section>
-<section id="selected-work"><h2>Selected work</h2><ul class="project-list tile-grid selected-work">${config.selected.map(s => entry(bySlug.get(s.slug),s.description,true)).join('')}</ul><p>${link('/work/','All projects')} · ${link('/research/','Research & papers')}</p></section>
+<section id="selected-work"><h2>Selected work</h2><ul class="project-list tile-grid selected-work">${config.selected.map(s => entry(bySlug.get(s.slug),s.description,true)).join('')}</ul><p>${link('/work/','All work')} · ${link('/research/','Research & papers')}</p></section>
+<section id="papers"><h2>Papers</h2>${paperList()}</section>
 <section id="interactive"><h2>Interactive projects</h2><p>Games, music tools, and small simulations developed with GPT and Claude. I set the direction, test the software, and refine the results.</p><ul class="project-list tile-grid interactive-grid">${['signal-garden','event-horizon','impossible-rooms'].map(slug => { const p = bySlug.get(slug); return entry(p,p.summary,false,true,slug === 'signal-garden' ? url(slug) : `https://denniskoshta.github.io/studio/${slug}/`); }).join('')}</ul>${demo()}<p>${link('/studio/','All 12 interactive projects')}</p></section>
-<section><h2>Other software</h2><ul class="project-list tile-grid software-grid">${['rag-eval-kit','transferbatch','sheetmason'].map(slug => entry(bySlug.get(slug))).join('')}</ul><p>${link('/work/','All projects')}</p></section>`;
+<section><h2>Other software</h2><ul class="project-list tile-grid software-grid">${['rag-eval-kit','transferbatch','sheetmason'].map(slug => entry(bySlug.get(slug))).join('')}</ul><p>${link('/work/','All work')}</p></section>`;
 write('/',page({title:config.name,body:homeBody}));
 
-write('/work/',page({title:'Work',active:'Work',route:'/work/',body:`${intro('Work','Research, software, and interactive projects.')}<p>${link('/research/','Research & papers')}</p><div data-catalog><form class="catalog-controls" role="search"><div><label for="project-search">Find a project</label><input id="project-search" type="search" name="q" placeholder="Name, topic, or tool" autocomplete="off"></div><div><label for="project-category">Category</label><select id="project-category" name="type"><option value="all">All projects</option>${groups.map(([key,title]) => `<option value="${key}">${title}</option>`).join('')}</select></div></form><p class="result-count" data-result-count aria-live="polite">${projects.length} projects</p>${catalog(projects)}<div class="empty-results" hidden><p>No matching projects.</p><button type="button" data-clear-filters>Show all projects</button></div></div>`}));
+write('/work/',page({title:'Work',active:'Work',route:'/work/',body:`${intro('Work','Projects and papers in AI, mathematics, and software.')}<div data-catalog><form class="catalog-controls" role="search"><div><label for="project-search">Find work</label><input id="project-search" type="search" name="q" placeholder="Name, topic, or tool" autocomplete="off"></div><div><label for="project-category">Category</label><select id="project-category" name="type"><option value="all">All work</option>${groups.map(([key,title]) => `<option value="${key}">${title}</option>`).join('')}</select></div></form><p class="result-count" data-result-count aria-live="polite">${workItems.length} results</p>${catalog(workItems)}<div class="empty-results" hidden><p>No matches.</p><button type="button" data-clear-filters>Show all work</button></div></div>`}));
 write('/research/',page({title:'Research',active:'Work',route:'/research/',body:`${intro('Research','Papers, experiments, and tools in AI, mathematics, and computing.')}
-<section id="papers" class="catalog-group"><h2>Papers</h2><ul class="project-list tile-grid">${papers.map(p => `<li class="project-tile paper-tile"><div class="tile-copy"><p class="tile-topic">${esc(p.type)} · ${esc(p.course)}</p><h3><a class="tile-link" href="${esc(p.url)}">${esc(p.title)}</a></h3><p>${esc(p.summary)}</p><p class="paper-format">Read PDF · ${p.pages} pages</p></div></li>`).join('')}</ul></section>
+<section id="papers" class="catalog-group"><h2>Papers</h2>${paperList()}</section>
 <section id="projects" class="catalog-group"><h2>Projects & experiments</h2><ul class="project-list tile-grid">${projects.filter(p => group(p) === 'research').map(p => entry(p,p.summary,true)).join('')}</ul></section>`}));
 write('/studio/',page({title:'Interactive projects',active:'Work',route:'/studio/',body:`${intro('Interactive projects','Twelve tools, games, and simulations developed with GPT and Claude.')}<p>I set the direction, test the software, and refine the results.</p>${demo()}${config.studioGroups.map(g => `<section class="catalog-group"><h2>${esc(g.title)}</h2><ul class="project-list tile-grid visual-grid">${g.slugs.map(slug => bySlug.get(slug)).map(p => entry(p,p.summary,true,true)).join('')}</ul></section>`).join('')}`}));
 
@@ -110,7 +119,7 @@ const aboutBody = `${intro('About')}<div class="about-bio"><img class="portrait"
 <div class="about-side">${profile.aboutSections.map(s => `<section id="${esc(s.id)}"><h2>${esc(s.title)}</h2>${s.paragraphs.map(p => `<p>${esc(p)}</p>`).join('')}</section>`).join('')}<section><h2>Education</h2>${profile.education.map(e => `<p><strong>${esc(e.institution)}</strong><br>${esc(e.description)}</p>`).join('')}</section><section id="contact"><h2>Contact</h2><p>${link('mailto:' + profile.email,profile.email)}<br>${link(config.github,'GitHub')} · ${link(config.linkedin,'LinkedIn')}</p></section></div></div>`;
 write('/about/',page({title:'About',active:'About',route:'/about/',body:aboutBody}));
 write('/colophon/',page({title:'About this site',route:'/colophon/',body:`${intro('About this site')}<div class="prose"><section><h2>Implementation</h2><p>Static HTML and CSS, with a small script for project search and the Signal Garden embed. The site uses a locally hosted copy of DM Sans. Project descriptions and homepage selections are kept in editable content files.</p></section><section><h2>Attribution</h2><p>Individual project pages describe my contribution and credit collaborators. The Studio projects were developed with GPT and Claude. This portfolio was implemented with Codex. The portrait is the headshot I supplied.</p></section><section><h2>Evidence</h2><p>Results refer to particular recorded experiments, with conditions and limitations in the project notes. Source artifacts keep their actual timestamps. The site is organized by subject, not by chronology.</p></section><section><h2>Privacy</h2><p>There are no analytics scripts, advertising, or visitor accounts on this site. Search runs in your browser. Light/dark mode and theme colors are saved only in this browser. The Signal Garden demo loads from GitHub Pages only when you press Start demo. Audio starts only when you press Play or create a random scene; Stop demo unloads the application. Hosting providers process ordinary web requests. External applications have their own behavior and policies.</p></section><section><h2>Corrections</h2><p>${link('mailto:' + profile.email,'Email me')} if a link breaks or a claim needs clarification.</p></section></div>`}));
-write('/404.html',page({title:'Page not found',route:'/404.html',body:`${intro('Page not found','This page may have moved or no longer exists.')}<p>${link('/','Home')} · ${link('/work/','All projects')}</p>`}));
+write('/404.html',page({title:'Page not found',route:'/404.html',body:`${intro('Page not found','This page may have moved or no longer exists.')}<p>${link('/','Home')} · ${link('/work/','All work')}</p>`}));
 fs.writeFileSync(path.join(out,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${routes.map(route => `<url><loc>${config.origin + route}</loc></url>`).join('')}</urlset>`);
 fs.writeFileSync(path.join(out,'robots.txt'),`User-agent: *\nAllow: /\n\nSitemap: ${config.origin}/sitemap.xml\n`);
 fs.writeFileSync(path.join(out,'_headers'),'/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Permissions-Policy: camera=(), microphone=(), geolocation=()\n  X-Frame-Options: SAMEORIGIN\n');
