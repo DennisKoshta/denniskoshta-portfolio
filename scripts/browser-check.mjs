@@ -8,7 +8,7 @@ const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CH
 const result={base,checks:[],failures:[]};
 const routes=['/','/work/','/research/','/studio/','/about/','/colophon/'];
 for(const p of JSON.parse(fs.readFileSync('dist/project-index.json','utf8')))routes.push(p.url);
-for(const p of JSON.parse(fs.readFileSync('content/papers.json','utf8')))if(p.pdf)routes.push(p.url);
+for(const p of JSON.parse(fs.readFileSync('content/papers.json','utf8')))if(p.livePdf)routes.push(p.url);
 const qa=path.resolve('research/qa');fs.mkdirSync(qa,{recursive:true});
 try {
  for(const width of [1440,390]){
@@ -77,12 +77,11 @@ try {
   await page.getByRole('link',{name:'Read the paper',exact:true}).click();
   await page.waitForURL(base+'/papers/agentic-restraint/');
   assert.equal(await page.locator('h1').textContent(),'Direct Refusal Is Not Agentic Restraint');
-  assert.equal(await page.locator('.paper-pdf').getAttribute('src'),'/papers/agentic-restraint.pdf#view=FitH');
-  const pdf=await context.request.get(base+'/papers/agentic-restraint.pdf');
-  assert.equal(pdf.status(),200);
-  assert.match(pdf.headers()['content-type'],/application\/pdf/);
-  assert.equal((await pdf.body()).subarray(0,5).toString(),'%PDF-');
-  assert.equal(await page.getByRole('link',{name:'Download PDF',exact:true}).getAttribute('href'),'/papers/agentic-restraint.pdf');
+  await page.locator('[data-paper-state="ready"]').waitFor({timeout:35000});
+  assert.match(await page.locator('.paper-pdf').getAttribute('src'),/^blob:/);
+  const pdfURL=await page.getByRole('link',{name:'Download PDF',exact:true}).getAttribute('href');
+  assert.match(pdfURL,/^blob:/);
+  assert.equal(await page.evaluate(async url=>new TextDecoder().decode((await (await fetch(url)).arrayBuffer()).slice(0,5)),pdfURL),'%PDF-');
   for(const route of ['/','/research/','/work/']){
    await page.goto(base+route);
    await page.locator('.paper-tile .tile-link').filter({hasText:'Direct Refusal Is Not Agentic Restraint'}).click();

@@ -18,7 +18,7 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 
 - `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project slug and a short description.
 - `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 28 project records.
-- `content/papers.json`: paper titles, short descriptions, topic or course labels, and local PDF links. Paper records feed the homepage, the searchable Work catalog, and the focused Research view. Records with a `pdf` field generate a paper page at `url`, with an embedded reader and open/download links.
+- `content/papers.json`: paper titles, short descriptions, topic or course labels, and local PDF links. Paper records feed the homepage, the searchable Work catalog, and the focused Research view. Records with a `livePdf` field generate a paper page at `url`, with a live reader and open/download links.
 - `content/profile.json`: biography, experience, contribution disclosures, and the supplied headshot.
 - `scripts/build.mjs`: readable static page templates.
 - `styles/site.css`: responsive and print styles; minified into `dist/assets/site.css` at build time.
@@ -30,7 +30,7 @@ Project URLs remain `/work/<slug>/`. Evidence files retain their actual provenan
 
 The homepage is deliberately selective. The project index, research, Studio, and project URLs remain available. Project pages use a short description, practical access information, and brief credits. Writing and its two posts have been removed; their old URLs return 404.
 
-The AI Safety paper at `/papers/agentic-restraint/` displays `public/papers/agentic-restraint.pdf`, a byte-for-byte snapshot of the upstream PDF. Its paper record stores the source URL pinned to a Git commit and the SHA-256 checksum. To refresh it, replace the PDF and update the source URL, checksum, page count, and any changed metadata together; rebuild and run the content check. Publication serves the local file and does not fetch GitHub at runtime.
+The AI Safety paper at `/papers/agentic-restraint/` fetches the public `livePdf` URL from GitHub's `main` branch on every page load, history restoration, and Reload PDF click. `public/assets/paper-reader.js` uses a unique query parameter and `cache: no-store`, validates the PDF header, and displays the fetched bytes as an in-browser PDF. Open and Download use those same bytes. No PDF snapshot is bundled; failures clear the reader and show a retry message. GitHub must permit cross-origin requests. The catalog title, description, and attribution are curated separately; the reader does not show a fixed page count.
 
 ## Interactive application
 
@@ -47,11 +47,12 @@ npx playwright install chromium
 npm run dev
 # In another terminal:
 npm run test:browser
+node scripts/paper-check.mjs
 ```
 
 The content check validates all project records, local routes/assets/anchors, metadata, duplicate identifiers, and accidental private-path/credential patterns. Browser checks cover all routes at desktop and mobile widths, automated WCAG A/AA rules, search and URL persistence, keyboard navigation, application loading/closing, and the 404 page. Reports and screenshots go to ignored `research/qa/`.
 
-The browser suite accepts `TEST_BASE_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. A minimal Linux/WSL environment may also need browser libraries through `LD_LIBRARY_PATH`. No machine-specific cache paths belong in the project.
+The browser suite accepts `TEST_BASE_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. The paper check verifies live upstream bytes, downloads, simulated updates, and recovery from unavailable or invalid upstream content. A minimal Linux/WSL environment may also need browser libraries through `LD_LIBRARY_PATH`. No machine-specific cache paths belong in the project.
 
 ## Previous design
 
