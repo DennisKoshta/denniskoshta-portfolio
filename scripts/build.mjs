@@ -97,9 +97,11 @@ const homeBody = `<section class="bio"><div><h1>Dennis Koshta</h1>${config.intro
 write('/',page({title:config.name,body:homeBody}));
 
 write('/work/',page({title:'Work',active:'Work',route:'/work/',body:`${intro('Work','Projects and papers in AI, mathematics, and software.')}<div data-catalog><form class="catalog-controls" role="search"><div><label for="project-search">Find work</label><input id="project-search" type="search" name="q" placeholder="Name, topic, or tool" autocomplete="off"></div><div><label for="project-category">Category</label><select id="project-category" name="type"><option value="all">All work</option>${groups.map(([key,title]) => `<option value="${key}">${title}</option>`).join('')}</select></div></form><p class="result-count" data-result-count aria-live="polite">${workItems.length} results</p>${catalog(workItems)}<div class="empty-results" hidden><p>No matches.</p><button type="button" data-clear-filters>Show all work</button></div></div>`}));
+const researchHighlights = ['ai-safety','busycoq'];
+const researchProjects = [...researchHighlights.map(slug => bySlug.get(slug)), ...projects.filter(p => group(p) === 'research' && !researchHighlights.includes(p.slug))];
 write('/research/',page({title:'Research',active:'Work',route:'/research/',body:`${intro('Research','Papers, experiments, and tools in AI, mathematics, and computing.')}
 <section id="papers" class="catalog-group"><h2>Papers</h2>${paperList()}</section>
-<section id="projects" class="catalog-group"><h2>Projects & experiments</h2><ul class="project-list tile-grid">${projects.filter(p => group(p) === 'research').map(p => entry(p,p.summary,true)).join('')}</ul></section>`}));
+<section id="projects" class="catalog-group"><h2>Projects & experiments</h2><ul class="project-list tile-grid">${researchProjects.map(p => entry(p,p.summary,true)).join('')}</ul></section>`}));
 write('/studio/',page({title:'Interactive projects',active:'Work',route:'/studio/',body:`${intro('Interactive projects','Twelve tools, games, and simulations developed with GPT and Claude.')}<p>I set the direction, test the software, and refine the results.</p>${demo()}${config.studioGroups.map(g => `<section class="catalog-group"><h2>${esc(g.title)}</h2><ul class="project-list tile-grid visual-grid">${g.slugs.map(slug => bySlug.get(slug)).map(p => entry(p,p.summary,true,true)).join('')}</ul></section>`).join('')}`}));
 
 for (const p of projects) {
