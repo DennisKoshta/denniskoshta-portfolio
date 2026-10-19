@@ -113,6 +113,13 @@ ${p.slug === 'signal-garden' ? demo() : ''}
 ${p.note ? `<p class="small">${rich(p.note)}</p>` : ''}
 ${otherLinks.length ? `<details id="sources"><summary>Links & data</summary><ul class="sources">${otherLinks.map(l => `<li>${link(l.url,l.label)}</li>`).join('')}</ul></details>` : ''}</article>`;
   write(url(p.slug),page({title:p.title,description:p.summary,body,active:'Work',route:url(p.slug)}));
+  for (const alias of p.aliases || []) {
+    const html = page({title:p.title,description:p.summary,body,active:'Work',route:url(p.slug)})
+      .replace('</head>', `<meta http-equiv="refresh" content="0;url=${esc(url(p.slug))}"></head>`);
+    const file = path.join(out,url(alias),'index.html');
+    fs.mkdirSync(path.dirname(file),{recursive:true});
+    fs.writeFileSync(file,html);
+  }
 }
 const aboutBody = `${intro('About')}<div class="about-bio"><img class="portrait" src="${profile.image}" width="${profile.imageWidth}" height="${profile.imageHeight}" alt="Dennis Koshta"><div>${profile.aboutParagraphs.map(p => `<p>${rich(p)}</p>`).join('')}</div></div>
 <div class="about-details"><section class="about-experience"><h2>Experience</h2><ul class="experience-list">${profile.experience.map(e => `<li><h3>${esc(e.organization)}</h3><p class="small">${esc(e.role)}</p><p>${esc(e.description)}</p></li>`).join('')}</ul></section>
