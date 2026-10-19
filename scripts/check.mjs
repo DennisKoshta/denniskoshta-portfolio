@@ -1,14 +1,28 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 const root=path.resolve('dist');
 const errors=[];
 const read=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 const projects=['core','supporting','studio'].flatMap(n=>read(`content/${n}-projects.json`));
 const papers=read('content/papers.json');
 for(const paper of papers){
- for(const key of ['title','type','course','summary','url'])if(!paper[key])errors.push(`Paper missing ${key}`);
- if(!paper.url?.startsWith('/papers/')||!paper.url?.endsWith('.pdf'))errors.push(`Invalid paper URL: ${paper.url}`);
+ for(const key of ['title','type','summary','url'])if(!paper[key])errors.push(`Paper missing ${key}`);
+ if(!paper.topic&&!paper.course)errors.push(`Paper missing topic or course: ${paper.title}`);
+ if(!paper.url?.startsWith('/papers/')||!(paper.pdf ? paper.url.endsWith('/') : paper.url.endsWith('.pdf')))errors.push(`Invalid paper URL: ${paper.url}`);
  if(!Number.isInteger(paper.pages)||paper.pages<1)errors.push(`Invalid page count: ${paper.title}`);
+ if(paper.pdf){
+  for(const key of ['date','attribution','sourceUrl','sha256','project'])if(!paper[key])errors.push(`Paper missing ${key}: ${paper.title}`);
+  if(!projects.some(p=>p.slug===paper.project))errors.push(`Unknown paper project: ${paper.project}`);
+  if(!paper.pdf.startsWith('/papers/')||!paper.pdf.endsWith('.pdf'))errors.push(`Invalid PDF URL: ${paper.pdf}`);
+  const file=path.join(root,paper.pdf);
+  if(!fs.existsSync(file))errors.push(`Missing mirrored PDF: ${paper.pdf}`);
+  else {
+   const pdf=fs.readFileSync(file);
+   if(pdf.subarray(0,5).toString()!=='%PDF-')errors.push(`Invalid PDF file: ${paper.pdf}`);
+   if(createHash('sha256').update(pdf).digest('hex')!==paper.sha256)errors.push(`Mirrored PDF checksum mismatch: ${paper.pdf}`);
+  }
+ }
 }
 const slugs=new Set();
 for(const p of projects){

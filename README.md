@@ -18,7 +18,7 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 
 - `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project slug and a short description.
 - `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 28 project records.
-- `content/papers.json`: paper titles, short descriptions, course labels, and links to the original PDFs in `public/papers/`. Paper records feed the homepage, the searchable Work catalog, and the focused Research view.
+- `content/papers.json`: paper titles, short descriptions, topic or course labels, and local PDF links. Paper records feed the homepage, the searchable Work catalog, and the focused Research view. Records with a `pdf` field generate a paper page at `url`, with an embedded reader and open/download links.
 - `content/profile.json`: biography, experience, contribution disclosures, and the supplied headshot.
 - `scripts/build.mjs`: readable static page templates.
 - `styles/site.css`: responsive and print styles; minified into `dist/assets/site.css` at build time.
@@ -29,6 +29,8 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 Project URLs remain `/work/<slug>/`. Evidence files retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
 
 The homepage is deliberately selective. The project index, research, Studio, and project URLs remain available. Project pages use a short description, practical access information, and brief credits. Writing and its two posts have been removed; their old URLs return 404.
+
+The AI Safety paper at `/papers/agentic-restraint/` displays `public/papers/agentic-restraint.pdf`, a byte-for-byte snapshot of the upstream PDF. Its paper record stores the source URL pinned to a Git commit and the SHA-256 checksum. To refresh it, replace the PDF and update the source URL, checksum, page count, and any changed metadata together; rebuild and run the content check. Publication serves the local file and does not fetch GitHub at runtime.
 
 ## Interactive application
 

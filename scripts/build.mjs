@@ -80,7 +80,7 @@ function catalog(items) {
   }).join('');
 }
 function paperEntry(p) {
-  return `<li class="project-tile paper-tile" data-project data-kind="papers" data-search="${esc([p.title,p.summary,p.type,p.course].join(' ').toLowerCase())}"><div class="tile-copy"><p class="tile-topic">${esc(p.type)} · ${esc(p.course)}</p><h3><a class="tile-link" href="${esc(p.url)}">${esc(p.title)}</a></h3><p>${esc(p.summary)}</p><p class="paper-format">Read PDF · ${p.pages} pages</p></div></li>`;
+  return `<li class="project-tile paper-tile" data-project data-kind="papers" data-search="${esc([p.title,p.subtitle,p.summary,p.type,p.topic || p.course].join(' ').toLowerCase())}"><div class="tile-copy"><p class="tile-topic">${esc(p.type)} · ${esc(p.topic || p.course)}</p><h3><a class="tile-link" href="${esc(p.url)}">${esc(p.title)}</a></h3><p>${esc(p.summary)}</p><p class="paper-format">${p.pdf ? 'Read paper' : 'Read PDF'} · ${p.pages} pages</p></div></li>`;
 }
 function paperList() {
   return `<ul class="project-list tile-grid">${papers.map(paperEntry).join('')}</ul>`;
@@ -103,6 +103,16 @@ write('/research/',page({title:'Research',active:'Work',route:'/research/',body:
 <section id="papers" class="catalog-group"><h2>Papers</h2>${paperList()}</section>
 <section id="projects" class="catalog-group"><h2>Projects & experiments</h2><ul class="project-list tile-grid">${researchProjects.map(p => entry(p,p.summary,true)).join('')}</ul></section>`}));
 write('/studio/',page({title:'Interactive projects',active:'Work',route:'/studio/',body:`${intro('Interactive projects','Twelve tools, games, and simulations developed with GPT and Claude.')}<p>I set the direction, test the software, and refine the results.</p>${demo()}${config.studioGroups.map(g => `<section class="catalog-group"><h2>${esc(g.title)}</h2><ul class="project-list tile-grid visual-grid">${g.slugs.map(slug => bySlug.get(slug)).map(p => entry(p,p.summary,true,true)).join('')}</ul></section>`).join('')}`}));
+
+for (const p of papers.filter(p => p.pdf)) {
+  const body = `<article class="paper-reader"><header class="page-intro"><p class="back-link">${link('/research/#papers','All papers')}</p><h1>${esc(p.title)}</h1>${p.subtitle ? `<p>${esc(p.subtitle)}</p>` : ''}<p class="small">${esc(p.type)} · ${esc(p.date)} · ${p.pages} pages</p></header>
+<p>${esc(p.summary)}</p><p class="small">${esc(p.attribution)}</p>
+<p class="paper-actions">${link(p.pdf,'Open PDF')}<a href="${esc(p.pdf)}" download>Download PDF</a>${link(url(p.project),'About the research project')}</p>
+<iframe class="paper-pdf" src="${esc(p.pdf)}#view=FitH" title="${esc(p.title)} — PDF"></iframe>
+<p class="small">If the reader does not display in your browser, ${link(p.pdf,'open the PDF directly')}.</p>
+<p class="small">${link(p.sourceUrl,'Original PDF on GitHub')}</p></article>`;
+  write(p.url,page({title:p.title,description:p.summary,body,active:'Work',route:p.url}));
+}
 
 for (const p of projects) {
   const primary = p.primaryLink || p.links?.find(l => !/\.(json|csv)(?:$|\?)/i.test(l.url));
