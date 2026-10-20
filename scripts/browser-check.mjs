@@ -28,7 +28,7 @@ try {
   if(exceptions.length)result.failures.push({width,exceptions});
   // Padding, text, and images must follow the primary link; resource links stay independent.
   await page.goto(base+'/');
-  assert.deepEqual(await page.locator('#selected-work .tile-link').allTextContents(),['Direct Refusal Is Not Agentic Restraint','Busy Beaver Challenge','Cognanimus']);
+  assert.deepEqual(await page.locator('#selected-work .tile-link').allTextContents(),['Uncensored Is Not Unrestrained: Restraint and Its Failure Modes in Abliterated Agents','Busy Beaver Challenge','Cognanimus']);
   const selectedTile=page.locator('#selected-work .project-tile').first();
   const tileBox=await selectedTile.boundingBox();
   await selectedTile.click({position:{x:tileBox.width-12,y:tileBox.height-12}});
@@ -74,7 +74,7 @@ try {
    await page.goto(base+route);
    await page.waitForURL(base+'/papers/agentic-restraint/');
   }
-  assert.equal(await page.locator('h1').textContent(),'Direct Refusal Is Not Agentic Restraint');
+  assert.equal(await page.locator('h1').textContent(),'Uncensored Is Not Unrestrained: Restraint and Its Failure Modes in Abliterated Agents');
   await page.locator('#sources summary').click();
   assert.equal(await page.locator('#sources a').count(),4);
   await page.locator('[data-paper-state="ready"]').waitFor({timeout:35000});
@@ -84,7 +84,7 @@ try {
   assert.equal(await page.evaluate(async url=>new TextDecoder().decode((await (await fetch(url)).arrayBuffer()).slice(0,5)),pdfURL),'%PDF-');
   for(const route of ['/','/research/','/work/']){
    await page.goto(base+route);
-   await page.locator('.paper-tile .tile-link').filter({hasText:'Direct Refusal Is Not Agentic Restraint'}).click();
+   await page.locator('.paper-tile .tile-link').filter({hasText:'Uncensored Is Not Unrestrained: Restraint and Its Failure Modes in Abliterated Agents'}).click();
    await page.waitForURL(base+'/papers/agentic-restraint/');
   }
   for(const route of ['/notes/','/notes/when-steering-changes-nothing/','/notes/what-the-checker-actually-checks/']){
