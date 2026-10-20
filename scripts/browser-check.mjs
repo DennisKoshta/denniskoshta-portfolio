@@ -28,11 +28,11 @@ try {
   if(exceptions.length)result.failures.push({width,exceptions});
   // Padding, text, and images must follow the primary link; resource links stay independent.
   await page.goto(base+'/');
-  assert.deepEqual(await page.locator('#selected-work .tile-link').allTextContents(),['AI Safety Research','Busy Beaver Challenge','Cognanimus']);
+  assert.deepEqual(await page.locator('#selected-work .tile-link').allTextContents(),['Direct Refusal Is Not Agentic Restraint','Busy Beaver Challenge','Cognanimus']);
   const selectedTile=page.locator('#selected-work .project-tile').first();
   const tileBox=await selectedTile.boundingBox();
   await selectedTile.click({position:{x:tileBox.width-12,y:tileBox.height-12}});
-  await page.waitForURL(base+'/work/ai-safety/');
+  await page.waitForURL(base+'/papers/agentic-restraint/');
   await page.goto(base+'/');
   const code=page.locator('#selected-work .project-tile').first().getByRole('link',{name:'Code',exact:true});
   const codeURL=await code.getAttribute('href');
@@ -40,13 +40,14 @@ try {
   await code.click();await page.waitForURL(codeURL);await page.unroute(codeURL);
   await page.goto(base+'/');
   await page.locator('#selected-work .tile-link').first().focus();
-  await page.keyboard.press('Enter');await page.waitForURL(base+'/work/ai-safety/');
+  await page.keyboard.press('Enter');await page.waitForURL(base+'/papers/agentic-restraint/');
   await page.goto(base+'/work/');
   await page.locator('.project-tile').filter({has:page.getByRole('link',{name:'TransferBatch',exact:true})}).click({position:{x:40,y:40}});
   await page.waitForURL(base+'/work/transferbatch/');
   await page.goto(base+'/work/');
   await page.getByLabel('Category',{exact:true}).selectOption('research');
-  assert.equal(await page.locator('[data-project]:visible').count(),7);
+  assert.equal(await page.locator('[data-project]:visible').count(),6);
+  await page.getByLabel('Category',{exact:true}).selectOption('all');
   await page.getByRole('searchbox').fill('ai safety');
   assert.equal(await page.locator('[data-project]:visible').count(),1);
   await page.reload();assert.equal(await page.getByRole('searchbox').inputValue(),'ai safety');
@@ -56,7 +57,7 @@ try {
   assert.equal(await page.locator('[data-project-group]:visible').count(),0);
   assert.equal(await page.locator('.tile-grid:visible').count(),0);
   await page.getByRole('button',{name:'Show all work'}).click();
-  assert.equal(await page.locator('[data-project]:visible').count(),31);
+  assert.equal(await page.locator('[data-project]:visible').count(),30);
   await page.getByLabel('Category',{exact:true}).selectOption('papers');
   assert.equal(await page.locator('[data-project]:visible').count(),3);
   await page.getByRole('searchbox').fill('choice');
@@ -68,15 +69,14 @@ try {
   await page.getByRole('searchbox').fill('rag-eval-kit');
   await page.getByRole('link',{name:'rag-eval-kit',exact:true}).click();
   assert.equal(new URL(page.url()).pathname,'/work/rag-eval-kit/');
-  await page.goto(base+'/work/curiosity-satisfaction/');
-  await page.waitForURL(base+'/work/ai-safety/');
-  assert.equal(await page.locator('h1').textContent(),'AI Safety Research');
-  assert.equal(await page.locator('.project-links a').getAttribute('href'),'/papers/agentic-restraint/');
+  // The former AI Safety project URLs now redirect to the paper, which carries the project links.
+  for(const route of ['/work/ai-safety/','/work/curiosity-satisfaction/']){
+   await page.goto(base+route);
+   await page.waitForURL(base+'/papers/agentic-restraint/');
+  }
+  assert.equal(await page.locator('h1').textContent(),'Direct Refusal Is Not Agentic Restraint');
   await page.locator('#sources summary').click();
   assert.equal(await page.locator('#sources a').count(),4);
-  await page.getByRole('link',{name:'Read the paper',exact:true}).click();
-  await page.waitForURL(base+'/papers/agentic-restraint/');
-  assert.equal(await page.locator('h1').textContent(),'Direct Refusal Is Not Agentic Restraint');
   await page.locator('[data-paper-state="ready"]').waitFor({timeout:35000});
   assert.match(await page.locator('.paper-pdf').getAttribute('src'),/^blob:/);
   const pdfURL=await page.getByRole('link',{name:'Download PDF',exact:true}).getAttribute('href');
@@ -118,7 +118,7 @@ try {
   assert.equal(await app.locator('.tab').filter({hasText:'Scenes'}).getAttribute('aria-pressed'),'true');
   assert.equal(await demo.locator('iframe').count(),1);
   await page.goto(base+'/');await page.keyboard.press('Tab');assert.equal(await page.locator(':focus').textContent(),'Skip to content');
-  for(const route of ['/','/work/','/work/upbringing/','/work/ai-safety/','/studio/','/about/']){
+  for(const route of ['/','/work/','/work/upbringing/','/papers/agentic-restraint/','/studio/','/about/']){
    await page.goto(base+route,{waitUntil:'networkidle'});
    await page.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,25));}await Promise.all([...document.images].filter(i=>i.getClientRects().length).map(i=>i.decode().catch(()=>{})));window.scrollTo(0,0);});
    const broken=await page.locator('img').evaluateAll(imgs=>imgs.filter(i=>i.getClientRects().length&&(!i.complete||!i.naturalWidth)).map(i=>i.src));

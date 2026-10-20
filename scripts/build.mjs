@@ -9,6 +9,9 @@ const papers = read('content/papers.json');
 const projects = ['core-projects', 'supporting-projects', 'studio-projects'].flatMap(name => read(`content/${name}.json`));
 const workItems = [...projects, ...papers.map(p => ({...p,kind:'Paper'}))];
 const bySlug = new Map(projects.map(p => [p.slug, p]));
+// Homepage selections may name a project or a paper by slug.
+const selectable = new Map([...bySlug, ...papers.filter(p => p.slug).map(p => [p.slug, {...p,kind:'Paper'}])]);
+const selectedSlugs = new Set(config.selected.map(s => s.slug));
 const out = path.resolve('dist');
 fs.rmSync(out, {recursive:true, force:true});
 fs.mkdirSync(out, {recursive:true});
@@ -57,13 +60,14 @@ function resourceLinks(p) {
   const repo = p.links?.find(l => l.url.startsWith('https://github.com/'));
   const website = p.links?.find(l => /^https:\/\//.test(l.url) && !/github\.com|huggingface\.co|pypi\.org/.test(l.url));
   const links = [];
+  if (p.kind === 'Paper' && p.sourceUrl) links.push(link(p.sourceUrl,'PDF'));
   if (p.primaryLink) links.push(link(p.primaryLink.url,p.primaryLink.resourceLabel || p.primaryLink.label));
   if (repo) links.push(link(repo.url, p.slug === 'busycoq' ? 'Merged contributions' : 'Code'));
   if (website && website.url !== p.primaryLink?.url) links.push(link(website.url, p.kind === 'Creative' ? 'Open application' : p.slug === 'upbringing' ? 'Interactive study' : 'Website'));
   return links.length ? `<p class="resource-links">${links.join('<span aria-hidden="true"> · </span>')}</p>` : '';
 }
 function entry(p, description = p.summary, resources = false, visual = false, href = url(p.slug)) {
-  if (p.kind === 'Paper') return paperEntry(p);
+  if (p.kind === 'Paper') return paperEntry(p, description, resources);
   const hasImage = visual && p.image;
   return `<li class="project-entry project-tile${hasImage ? ' has-image' : ''}" data-project data-kind="${group(p)}" data-search="${esc([p.title,p.summary,...p.domains || [],...p.stack || []].join(' ').toLowerCase())}">${hasImage ? `<img class="tile-image" src="${esc(p.image)}" alt="${esc(p.imageAlt || p.title)}" width="600" height="400" loading="lazy" decoding="async">` : ''}<div class="tile-copy"><p class="tile-topic">${esc(p.domains?.slice(0,2).join(' · ') || p.kind)}</p><h3><a class="tile-link" href="${esc(href)}">${esc(p.title)}</a></h3><p>${esc(description)}</p>${resources ? resourceLinks(p) : ''}</div></li>`;
 }
@@ -79,25 +83,25 @@ function catalog(items) {
     return itemsInGroup.length ? `<section id="${key}" class="catalog-group" data-project-group><h2>${title}</h2>${pictured.length ? `<ul class="project-list tile-grid visual-grid">${pictured.map(p => entry(p,p.summary,false,true)).join('')}</ul>` : ''}${textOnly.length ? `<ul class="project-list tile-grid">${textOnly.map(p => entry(p)).join('')}</ul>` : ''}</section>` : '';
   }).join('');
 }
-function paperEntry(p) {
-  return `<li class="project-tile paper-tile" data-project data-kind="papers" data-search="${esc([p.title,p.subtitle,p.summary,p.type,p.topic || p.course].join(' ').toLowerCase())}"><div class="tile-copy"><p class="tile-topic">${esc(p.type)} · ${esc(p.topic || p.course)}</p><h3><a class="tile-link" href="${esc(p.url)}">${esc(p.title)}</a></h3><p>${esc(p.summary)}</p><p class="paper-format">${p.livePdf ? 'Read paper' : `Read PDF · ${p.pages} pages`}</p></div></li>`;
+function paperEntry(p, description = p.summary, resources = false) {
+  return `<li class="project-tile paper-tile" data-project data-kind="papers" data-search="${esc([p.title,p.subtitle,p.summary,p.type,p.topic || p.course,...p.domains || [],...p.stack || []].join(' ').toLowerCase())}"><div class="tile-copy"><p class="tile-topic">${esc(p.type)} · ${esc(p.topic || p.course)}</p><h3><a class="tile-link" href="${esc(p.url)}">${esc(p.title)}</a></h3><p>${esc(description)}</p>${resources ? resourceLinks(p) : `<p class="paper-format">${p.livePdf ? 'Read paper' : `Read PDF · ${p.pages} pages`}</p>`}</div></li>`;
 }
-function paperList() {
-  return `<ul class="project-list tile-grid">${papers.map(paperEntry).join('')}</ul>`;
+function paperList(items = papers) {
+  return `<ul class="project-list tile-grid">${items.map(p => paperEntry(p)).join('')}</ul>`;
 }
 const demoURL = 'https://denniskoshta.github.io/studio/signal-garden/?embed=portfolio';
 function demo() {
   return `<div class="live-demo" data-demo><div class="demo-heading"><h3>Signal Garden demo</h3>${link('https://denniskoshta.github.io/studio/signal-garden/','Open full app')}</div><p>Choose a scene and press Play, or try Create random scene.</p><div class="demo-stage"><div data-demo-mount></div><template data-demo-template><iframe title="Signal Garden music composition application" src="${demoURL}" loading="lazy" allow="autoplay; fullscreen" sandbox="allow-scripts allow-same-origin allow-downloads allow-forms" referrerpolicy="no-referrer"></iframe></template><div class="demo-rest" data-demo-rest><img src="${bySlug.get('signal-garden').image}" alt="Signal Garden’s landscape and music sequencer" width="600" height="400" loading="lazy" decoding="async"><button type="button" data-start-demo>Start demo</button></div></div><div class="demo-bar"><p data-demo-status role="status">Start the demo here, then choose a scene or create a random one.</p><button type="button" data-stop-demo hidden>Stop demo</button></div></div>`;
 }
 const homeBody = `<section class="bio"><div><h1>Dennis Koshta</h1>${config.intro.map(p => `<p>${esc(p)}</p>`).join('')}<p class="contact-links">${link('mailto:' + profile.email,'Email')} · ${link(config.github,'GitHub')} · ${link(config.linkedin,'LinkedIn')}</p></div><img class="portrait" src="${profile.image}" width="${profile.imageWidth}" height="${profile.imageHeight}" alt="Dennis Koshta"></section>
-<section id="selected-work"><h2>Selected work</h2><ul class="project-list tile-grid selected-work">${config.selected.map(s => entry(bySlug.get(s.slug),s.description,true)).join('')}</ul><p>${link('/work/','All work')} · ${link('/research/','Research & papers')}</p></section>
-<section id="papers"><h2>Papers</h2>${paperList()}</section>
+<section id="selected-work"><h2>Selected work</h2><ul class="project-list tile-grid selected-work">${config.selected.map(s => entry(selectable.get(s.slug),s.description,true)).join('')}</ul><p>${link('/work/','All work')} · ${link('/research/','Research & papers')}</p></section>
+<section id="papers"><h2>Papers</h2>${paperList(papers.filter(p => !selectedSlugs.has(p.slug)))}</section>
 <section id="interactive"><h2>Interactive projects</h2><p>Games, music tools, and small simulations developed with GPT and Claude. I set the direction, test the software, and refine the results.</p><ul class="project-list tile-grid interactive-grid">${['signal-garden','event-horizon','impossible-rooms'].map(slug => { const p = bySlug.get(slug); return entry(p,p.summary,false,true,slug === 'signal-garden' ? url(slug) : `https://denniskoshta.github.io/studio/${slug}/`); }).join('')}</ul>${demo()}<p>${link('/studio/','All 12 interactive projects')}</p></section>
 <section><h2>Other software</h2><ul class="project-list tile-grid software-grid">${['rag-eval-kit','transferbatch','sheetmason'].map(slug => entry(bySlug.get(slug))).join('')}</ul><p>${link('/work/','All work')}</p></section>`;
 write('/',page({title:config.name,body:homeBody}));
 
 write('/work/',page({title:'Work',active:'Work',route:'/work/',body:`${intro('Work','Projects and papers in AI, mathematics, and software.')}<div data-catalog><form class="catalog-controls" role="search"><div><label for="project-search">Find work</label><input id="project-search" type="search" name="q" placeholder="Name, topic, or tool" autocomplete="off"></div><div><label for="project-category">Category</label><select id="project-category" name="type"><option value="all">All work</option>${groups.map(([key,title]) => `<option value="${key}">${title}</option>`).join('')}</select></div></form><p class="result-count" data-result-count aria-live="polite">${workItems.length} results</p>${catalog(workItems)}<div class="empty-results" hidden><p>No matches.</p><button type="button" data-clear-filters>Show all work</button></div></div>`}));
-const researchHighlights = ['ai-safety','busycoq'];
+const researchHighlights = ['busycoq'];
 const researchProjects = [...researchHighlights.map(slug => bySlug.get(slug)), ...projects.filter(p => group(p) === 'research' && !researchHighlights.includes(p.slug))];
 write('/research/',page({title:'Research',active:'Work',route:'/research/',body:`${intro('Research','Papers, experiments, and tools in AI, mathematics, and computing.')}
 <section id="papers" class="catalog-group"><h2>Papers</h2>${paperList()}</section>
@@ -105,14 +109,28 @@ write('/research/',page({title:'Research',active:'Work',route:'/research/',body:
 write('/studio/',page({title:'Interactive projects',active:'Work',route:'/studio/',body:`${intro('Interactive projects','Twelve tools, games, and simulations developed with GPT and Claude.')}<p>I set the direction, test the software, and refine the results.</p>${demo()}${config.studioGroups.map(g => `<section class="catalog-group"><h2>${esc(g.title)}</h2><ul class="project-list tile-grid visual-grid">${g.slugs.map(slug => bySlug.get(slug)).map(p => entry(p,p.summary,true,true)).join('')}</ul></section>`).join('')}`}));
 
 for (const p of papers.filter(p => p.livePdf)) {
+  const repo = p.links?.find(l => l.url.startsWith('https://github.com/'));
   const body = `<article class="paper-reader" data-live-paper="${esc(p.livePdf)}"><header class="page-intro"><p class="back-link">${link('/research/#papers','All papers')}</p><h1>${esc(p.title)}</h1>${p.subtitle ? `<p>${esc(p.subtitle)}</p>` : ''}<p class="small">${esc(p.type)} · ${esc(p.date)}</p></header>
 <p>${esc(p.summary)}</p><p class="small">${esc(p.attribution)}</p>
-<p class="paper-actions"><a data-paper-open hidden>Open PDF</a><a data-paper-download download="agentic-restraint.pdf" hidden>Download PDF</a><button type="button" data-paper-reload hidden>Reload PDF</button>${link(url(p.project),'About the research project')}</p>
+${p.note ? `<p class="small">${rich(p.note)}</p>` : ''}
+<p class="paper-actions"><a data-paper-open hidden>Open PDF</a><a data-paper-download download="${esc(p.slug)}.pdf" hidden>Download PDF</a><button type="button" data-paper-reload hidden>Reload PDF</button>${repo ? link(repo.url,'Code') : ''}${p.details ? link('#about-research','About the research') : ''}</p>
 <p class="small" data-paper-status role="status">The reader loads the current PDF from GitHub each time this page opens.</p>
 <iframe class="paper-pdf" data-paper-frame hidden title="${esc(p.title)} — PDF"></iframe>
 <noscript><p>Enable JavaScript to read the current PDF here, or use the GitHub link below.</p></noscript>
-<p class="small">${link(p.sourceUrl,'Current PDF on GitHub')}</p></article><script type="module" src="/assets/paper-reader.js"></script>`;
+<p class="small">${link(p.sourceUrl,'Current PDF on GitHub')}</p>
+${p.details ? `<section id="about-research"><h2>About the research</h2>${p.status ? `<p class="small">${esc(p.status)}</p>` : ''}<div class="project-description">${p.details.map(text => `<p>${rich(text)}</p>`).join('')}${p.usage ? `<p>${rich(p.usage)}</p>` : ''}</div>
+${p.contribution ? `<p class="contribution"><strong>My role.</strong> ${esc(p.contribution)}</p>` : ''}
+${p.links?.length ? `<details id="sources"><summary>Links & data</summary><ul class="sources">${p.links.map(l => `<li>${link(l.url,l.label)}</li>`).join('')}</ul></details>` : ''}</section>` : ''}</article><script type="module" src="/assets/paper-reader.js"></script>`;
   write(p.url,page({title:p.title,description:p.summary,body,active:'Work',route:p.url}));
+  for (const alias of p.aliases || []) redirect(url(alias), p.url, p.title, p.summary);
+}
+// Former project URLs stay valid as lightweight redirects; they are not listed in the sitemap.
+function redirect(from, to, title, description) {
+  const html = page({title,description,route:to,active:'Work',body:`${intro(title,'This page has moved.')}<p>${link(to,'Continue to the new page')}</p>`})
+    .replace('</head>', `<meta http-equiv="refresh" content="0;url=${esc(to)}"></head>`);
+  const file = path.join(out,from,'index.html');
+  fs.mkdirSync(path.dirname(file),{recursive:true});
+  fs.writeFileSync(file,html);
 }
 
 for (const p of projects) {
@@ -126,13 +144,7 @@ ${p.slug === 'signal-garden' ? demo() : ''}
 ${p.note ? `<p class="small">${rich(p.note)}</p>` : ''}
 ${otherLinks.length ? `<details id="sources"><summary>Links & data</summary><ul class="sources">${otherLinks.map(l => `<li>${link(l.url,l.label)}</li>`).join('')}</ul></details>` : ''}</article>`;
   write(url(p.slug),page({title:p.title,description:p.summary,body,active:'Work',route:url(p.slug)}));
-  for (const alias of p.aliases || []) {
-    const html = page({title:p.title,description:p.summary,body,active:'Work',route:url(p.slug)})
-      .replace('</head>', `<meta http-equiv="refresh" content="0;url=${esc(url(p.slug))}"></head>`);
-    const file = path.join(out,url(alias),'index.html');
-    fs.mkdirSync(path.dirname(file),{recursive:true});
-    fs.writeFileSync(file,html);
-  }
+  for (const alias of p.aliases || []) redirect(url(alias), url(p.slug), p.title, p.summary);
 }
 const aboutBody = `${intro('About')}<div class="about-bio"><img class="portrait" src="${profile.image}" width="${profile.imageWidth}" height="${profile.imageHeight}" alt="Dennis Koshta"><div>${profile.aboutParagraphs.map(p => `<p>${rich(p)}</p>`).join('')}</div></div>
 <div class="about-details"><section class="about-experience"><h2>Experience</h2><ul class="experience-list">${profile.experience.map(e => `<li><h3>${esc(e.organization)}</h3><p class="small">${esc(e.role)}</p><p>${esc(e.description)}</p></li>`).join('')}</ul></section>

@@ -16,9 +16,9 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 
 ## Edit the site
 
-- `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project slug and a short description.
-- `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 28 project records.
-- `content/papers.json`: paper titles, short descriptions, topic or course labels, and local PDF links. Paper records feed the homepage, the searchable Work catalog, and the focused Research view. Records with a `livePdf` field generate a paper page at `url`, with a live reader and open/download links.
+- `content/site.json`: introductory paragraphs and the ordered `selected` projects on the homepage. Each selection has a project or paper slug and a short description. A selected paper is not repeated in the homepage Papers list.
+- `content/core-projects.json`, `content/supporting-projects.json`, `content/studio-projects.json`: the 27 project records.
+- `content/papers.json`: paper titles, short descriptions, topic or course labels, and local PDF links. Paper records feed the homepage, the searchable Work catalog, and the focused Research view. Records with a `livePdf` field generate a paper page at `url`, with a live reader and open/download links. A paper can also carry project-style fields (`slug`, `status`, `details`, `contribution`, `note`, `links`), shown on its page, and `aliases` that redirect old `/work/<alias>/` URLs to it.
 - `content/profile.json`: biography, experience, contribution disclosures, and the supplied headshot.
 - `scripts/build.mjs`: readable static page templates.
 - `styles/site.css`: responsive and print styles; minified into `dist/assets/site.css` at build time.
@@ -28,7 +28,7 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 
 Project URLs remain `/work/<slug>/`. Evidence files retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
 
-The homepage is deliberately selective. The project index, research, Studio, and project URLs remain available. Project pages use a short description, practical access information, and brief credits. Writing and its two posts have been removed; their old URLs return 404.
+The homepage is deliberately selective. The project index, research, Studio, and project URLs remain available. Project pages use a short description, practical access information, and brief credits. Writing and its two posts have been removed; their old URLs return 404. The former AI Safety Research project was merged into its paper; `/work/ai-safety/` and `/work/curiosity-satisfaction/` redirect to `/papers/agentic-restraint/`.
 
 The AI Safety paper at `/papers/agentic-restraint/` fetches the public `livePdf` URL from GitHub's `main` branch on every page load, history restoration, and Reload PDF click. `public/assets/paper-reader.js` uses a unique query parameter and `cache: no-store`, validates the PDF header, and displays the fetched bytes as an in-browser PDF. Open and Download use those same bytes. No PDF snapshot is bundled; failures clear the reader and show a retry message. GitHub must permit cross-origin requests. The catalog title, description, and attribution are curated separately; the reader does not show a fixed page count.
 

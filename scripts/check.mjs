@@ -10,8 +10,7 @@ for(const paper of papers){
  if(!paper.topic&&!paper.course)errors.push(`Paper missing topic or course: ${paper.title}`);
  if(!paper.url?.startsWith('/papers/')||!(paper.livePdf ? paper.url.endsWith('/') : paper.url.endsWith('.pdf')))errors.push(`Invalid paper URL: ${paper.url}`);
  if(paper.livePdf){
-  for(const key of ['date','attribution','sourceUrl','project'])if(!paper[key])errors.push(`Paper missing ${key}: ${paper.title}`);
-  if(!projects.some(p=>p.slug===paper.project))errors.push(`Unknown paper project: ${paper.project}`);
+  for(const key of ['date','attribution','sourceUrl'])if(!paper[key])errors.push(`Paper missing ${key}: ${paper.title}`);
   if(!/^https:\/\/raw\.githubusercontent\.com\/DennisKoshta\/llm-research\/main\/.+\.pdf$/.test(paper.livePdf))errors.push(`Invalid live PDF source: ${paper.livePdf}`);
  }else if(!Number.isInteger(paper.pages)||paper.pages<1)errors.push(`Invalid page count: ${paper.title}`);
 }
@@ -23,6 +22,9 @@ for(const p of projects){
  for(const o of p.outcomes||[])if(typeof o!=='object'||!o.value||!o.label)errors.push(`${p.slug}: incomplete outcome`);
  for(const l of p.links||[])if(!l.label||!l.url)errors.push(`${p.slug}: incomplete source link`);
 }
+for(const paper of papers)for(const s of [paper.slug,...paper.aliases||[]].filter(Boolean)){if(slugs.has(s))errors.push(`Paper slug or alias collides with a project: ${s}`);slugs.add(s);}
+for(const l of papers.flatMap(p=>p.links||[]))if(!l.label||!l.url)errors.push(`Paper: incomplete source link`);
+for(const s of read('content/site.json').selected)if(!projects.some(p=>p.slug===s.slug)&&!papers.some(p=>p.slug===s.slug))errors.push(`Unknown selected work: ${s.slug}`);
 for(const p of projects)for(const s of p.related||[])if(!slugs.has(s))errors.push(`${p.slug}: unknown related project ${s}`);
 const pages=[];
 function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const f=path.join(dir,e.name);if(e.isDirectory())walk(f);else if(e.name.endsWith('.html'))pages.push(f);}}
