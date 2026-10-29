@@ -26,7 +26,7 @@ Open `http://localhost:4173`. Set `PORT` to use a different port. Rebuild after 
 - `public/evidence/` and `public/assets/supporting/`: source-backed experimental and implementation summaries. Preserve their conditions, dates, and limitations.
 - `public/assets/studio/` and `public/assets/products/`: actual application screenshots. Product screenshots use demonstration data.
 
-Project URLs remain `/work/<slug>/`. Evidence files retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
+`/personakit/` redirects to PersonaKit Studio at `https://personakit.denniskoshta.com` (a live app served from the owner's machine, built in `scripts/build.mjs`). Project URLs remain `/work/<slug>/`. Evidence files retain their actual provenance. Private repositories should not become visitor-facing links. Content excludes Rootspan, homework collections, membership-only repositories, and infrastructure as standalone projects.
 
 The homepage is deliberately selective. The project index, research, Studio, and project URLs remain available. Project pages use a short description, practical access information, and brief credits. Writing and its two posts have been removed; their old URLs return 404. The former AI Safety Research project was merged into its paper; `/work/ai-safety/` and `/work/curiosity-satisfaction/` redirect to `/papers/agentic-restraint/`.
 
